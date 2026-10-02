@@ -101,4 +101,142 @@ class MockSlackAdapter(DataAdapter):
             limit,
      )
 
-    
+    def _convert_message(
+        self,
+        raw: dict,
+    ) -> Message:
+
+        user_id = raw["user"]
+
+        user = self.users[user_id]
+
+        reactions = [
+            reaction["name"]
+            for reaction in raw.get("reactions", [])
+    ]
+
+        return Message(
+            message_id=raw["ts"],
+            author_id=user_id,
+            author_name=user["name"],
+            author_role=Role(user["role"]),
+
+            timestamp=datetime.fromtimestamp(
+                float(raw["ts"]),
+                tz=timezone.utc,
+            ),
+
+            text=raw.get("text", ""),
+
+            source=MessageSource(
+                raw.get("source", "USER")
+            ),
+
+            reactions=reactions,
+        )
+
+    def get_threads(
+        self,
+        channel_id: str,
+    ) -> list[Thread]:
+
+        fixture = self._load_channel(channel_id)
+        channel = fixture["channel"]
+
+        history_messages = []
+
+        cursor = None
+
+        while True:
+            response = self.fetch_history(
+                channel_id=channel_id,
+                cursor=cursor,
+                limit=20,
+            )
+
+            history_messages.extend(
+                response["messages"]
+            )
+
+            cursor = response[
+                "response_metadata"
+            ]["next_cursor"]
+
+            if not cursor:
+                break
+
+            threads = []
+
+            for root_message in history_messages:
+
+                thread_ts = root_message["ts"]
+
+                raw_messages = []
+
+                if root_message.get("reply_count", 0) > 0:
+
+                    reply_cursor = None
+
+                    while True:
+
+                        response = self.fetch_replies(
+                            channel_id=channel_id,
+                            thread_ts=thread_ts,
+                            cursor=reply_cursor,
+                            limit=20,
+                        )
+
+                        raw_messages.extend(
+                            response["messages"]
+                        )
+
+                        reply_cursor = response[
+                            "response_metadata"
+                        ]["next_cursor"]
+
+                        if not reply_cursor:
+                            break
+                else:
+                    raw_messages = [
+                        root_message
+                    ]
+
+                messages = [
+                    self._convert_message(message)
+                    for message in raw_messages
+                ]
+
+                messages.sort(
+                    key=lambda message: message.timestamp
+                )
+
+                thread = Thread(
+                    thread_id=thread_ts,
+
+                    project_id=channel["project_id"],
+
+                    channel_id=channel["id"],
+                    channel_name=channel["name"],
+
+                    channel_type=ChannelType(
+                        channel["channel_type"]
+                    ),
+
+                    language=root_message.get(
+                        "language"
+                    ),
+
+                    created_at=datetime.fromtimestamp(
+                        float(thread_ts),
+                        tz=timezone.utc,
+                    ),
+
+                    messages=messages,
+                )
+
+                threads.append(thread)
+
+            threads.sort(
+                key=lambda thread: thread.created_at
+            )
+            return threads
