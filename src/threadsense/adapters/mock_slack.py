@@ -65,3 +65,40 @@ class MockSlackAdapter(DataAdapter):
             }
         }
     
+    def fetch_history(
+        self,
+        channel_id: str,
+        cursor: str | None = None,
+        limit: int = 20,
+    ) -> dict:
+
+        fixture = self._load_channel(channel_id)
+
+        return self._paginate(
+            fixture["history"],
+            cursor,
+            limit,
+        )
+
+    def fetch_replies(
+        self,
+        channel_id: str,
+        thread_ts: str,
+        cursor: str | None = None,
+        limit: int = 20,
+    ) -> dict:
+
+        fixture = self._load_channel(channel_id)
+
+        replies = fixture["replies"].get(
+            thread_ts,
+            [],
+    )
+
+        return self._paginate(
+            replies,
+            cursor,
+            limit,
+     )
+
+    
