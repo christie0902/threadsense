@@ -238,3 +238,38 @@ def test_safety_first_thread_has_team_lead_resolution():
     ]
 
     assert len(team_lead_messages) == 1
+
+def test_audio_channel_loads_correctly():
+    adapter = make_adapter()
+
+    threads = adapter.get_threads(
+        "C_AUDIO_GENERAL"
+    )
+
+    assert len(threads) == 2
+
+    assert all(
+        thread.project_id == "audio_multimodal"
+        for thread in threads
+    )
+
+def test_audio_unresolved_thread_has_no_team_lead():
+    adapter = make_adapter()
+
+    threads = adapter.get_threads(
+        "C_AUDIO_GENERAL"
+    )
+
+    target_thread = next(
+        thread
+        for thread in threads
+        if thread.thread_id == "1790899012.002000"
+    )
+
+    team_lead_messages = [
+        message
+        for message in target_thread.messages
+        if message.author_role == Role.TEAM_LEAD
+    ]
+
+    assert len(team_lead_messages) == 0
