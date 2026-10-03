@@ -159,3 +159,82 @@ def test_missing_language_defaults_to_none():
     )
 
     assert target_thread.language is None
+
+def test_multilingual_channel_loads_correctly():
+    adapter = make_adapter()
+
+    threads = adapter.get_threads(
+        "C_MULTI_GENERAL"
+    )
+
+    assert len(threads) == 2
+
+    languages = {
+        thread.language
+        for thread in threads
+    }
+
+    assert languages == {"ko", "vi"}
+
+def test_korean_thread_metadata():
+    adapter = make_adapter()
+
+    threads = adapter.get_threads(
+        "C_MULTI_GENERAL"
+    )
+
+    korean_thread = next(
+        thread
+        for thread in threads
+        if thread.language == "ko"
+    )
+
+    assert korean_thread.project_id == "multilingual_eval"
+    assert korean_thread.channel_name == "multilingual-eval-general"
+    assert korean_thread.message_count == 4
+
+def test_multilingual_thread_contains_team_lead():
+    adapter = make_adapter()
+
+    threads = adapter.get_threads(
+        "C_MULTI_GENERAL"
+    )
+
+    team_lead_messages = [
+        message
+        for thread in threads
+        for message in thread.messages
+        if message.author_role == Role.TEAM_LEAD
+    ]
+
+    assert len(team_lead_messages) > 0
+
+def test_safety_channel_loads_correctly():
+    adapter = make_adapter()
+
+    threads = adapter.get_threads(
+        "C_SAFETY_GENERAL"
+    )
+
+    assert len(threads) == 2
+    assert all(
+        thread.project_id == "safety_classification"
+        for thread in threads
+    )
+
+def test_safety_first_thread_has_team_lead_resolution():
+    adapter = make_adapter()
+
+    threads = adapter.get_threads(
+        "C_SAFETY_GENERAL"
+    )
+
+    first_thread = threads[0]
+
+    team_lead_messages = [
+        message
+        for message in first_thread.messages
+        if message.author_role == Role.TEAM_LEAD
+    ]
+
+    assert len(team_lead_messages) == 1
