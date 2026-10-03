@@ -15,7 +15,7 @@ def test_adapter_builds_threads():
         "C_RP_GENERAL"
     )
 
-    assert len(threads) == 2
+    assert len(threads) == 3
 
 def test_first_thread_contains_replies():
     adapter = make_adapter()
@@ -107,3 +107,55 @@ def test_pagination_returns_multiple_pages():
 
     assert len(third_page["messages"]) == 5
     assert third_page["response_metadata"]["next_cursor"] == ""
+
+def test_message_without_replies_becomes_thread():
+    adapter = make_adapter()
+
+    threads = adapter.get_threads(
+        "C_RP_GENERAL"
+    )
+
+    standalone_threads = [
+        thread
+        for thread in threads
+        if thread.thread_id == "1790880012.001400"
+    ]
+
+    assert len(standalone_threads) == 1
+
+    thread = standalone_threads[0]
+
+    assert thread.message_count == 1
+    assert thread.messages[0].text == (
+        "Reminder: queue closes at 6 PM today."
+    )
+
+def test_language_metadata_is_preserved():
+    adapter = make_adapter()
+
+    threads = adapter.get_threads(
+        "C_RP_GENERAL"
+    )
+
+    target_thread = next(
+        thread
+        for thread in threads
+        if thread.thread_id == "1790877012.001300"
+    )
+
+    assert target_thread.language == "en"
+
+def test_missing_language_defaults_to_none():
+    adapter = make_adapter()
+
+    threads = adapter.get_threads(
+        "C_RP_GENERAL"
+    )
+
+    target_thread = next(
+        thread
+        for thread in threads
+        if thread.thread_id == "1790873412.001200"
+    )
+
+    assert target_thread.language is None
