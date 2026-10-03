@@ -144,7 +144,6 @@ class MockSlackAdapter(DataAdapter):
         channel = fixture["channel"]
 
         history_messages = []
-
         cursor = None
 
         while True:
@@ -165,78 +164,76 @@ class MockSlackAdapter(DataAdapter):
             if not cursor:
                 break
 
-            threads = []
+        threads = []
 
-            for root_message in history_messages:
+        for root_message in history_messages:
 
-                thread_ts = root_message["ts"]
+            thread_ts = root_message["ts"]
+            raw_messages = []
 
-                raw_messages = []
+            if root_message.get("reply_count", 0) > 0:
 
-                if root_message.get("reply_count", 0) > 0:
+                reply_cursor = None
 
-                    reply_cursor = None
+                while True:
+                    response = self.fetch_replies(
+                        channel_id=channel_id,
+                        thread_ts=thread_ts,
+                        cursor=reply_cursor,
+                        limit=20,
+                    )
 
-                    while True:
+                    raw_messages.extend(
+                        response["messages"]
+                    )
 
-                        response = self.fetch_replies(
-                            channel_id=channel_id,
-                            thread_ts=thread_ts,
-                            cursor=reply_cursor,
-                            limit=20,
-                        )
+                    reply_cursor = response[
+                        "response_metadata"
+                    ]["next_cursor"]
 
-                        raw_messages.extend(
-                            response["messages"]
-                        )
+                    if not reply_cursor:
+                        break
 
-                        reply_cursor = response[
-                            "response_metadata"
-                        ]["next_cursor"]
-
-                        if not reply_cursor:
-                            break
-                else:
-                    raw_messages = [
-                        root_message
-                    ]
-
-                messages = [
-                    self._convert_message(message)
-                    for message in raw_messages
+            else:
+                raw_messages = [
+                    root_message
                 ]
 
-                messages.sort(
-                    key=lambda message: message.timestamp
-                )
+            messages = [
+                self._convert_message(message)
+                for message in raw_messages
+            ]
 
-                thread = Thread(
-                    thread_id=thread_ts,
-
-                    project_id=channel["project_id"],
-
-                    channel_id=channel["id"],
-                    channel_name=channel["name"],
-
-                    channel_type=ChannelType(
-                        channel["channel_type"]
-                    ),
-
-                    language=root_message.get(
-                        "language"
-                    ),
-
-                    created_at=datetime.fromtimestamp(
-                        float(thread_ts),
-                        tz=timezone.utc,
-                    ),
-
-                    messages=messages,
-                )
-
-                threads.append(thread)
-
-            threads.sort(
-                key=lambda thread: thread.created_at
+            messages.sort(
+                key=lambda message: message.timestamp
             )
-            return threads
+
+            thread = Thread(
+                thread_id=thread_ts,
+                project_id=channel["project_id"],
+                channel_id=channel["id"],
+                channel_name=channel["name"],
+
+                channel_type=ChannelType(
+                    channel["channel_type"]
+                ),
+
+                language=root_message.get(
+                    "language"
+                ),
+
+                created_at=datetime.fromtimestamp(
+                    float(thread_ts),
+                    tz=timezone.utc,
+                ),
+
+                messages=messages,
+            )
+
+            threads.append(thread)
+
+        threads.sort(
+            key=lambda thread: thread.created_at
+        )
+
+        return threads
