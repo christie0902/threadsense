@@ -273,3 +273,15 @@ def test_audio_unresolved_thread_has_no_team_lead():
     ]
 
     assert len(team_lead_messages) == 0
+
+def test_batch_id_is_preserved():
+    adapter = make_adapter()
+
+    threads = adapter.get_threads(
+        "C_AUDIO_GENERAL"
+    )
+
+    assert all(
+        thread.batch_id == "audio_batch_06"
+        for thread in threads
+    )

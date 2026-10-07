@@ -41,6 +41,8 @@ class Thread(BaseModel):
     thread_id: str
 
     project_id: str
+    batch_id: str | None = None
+    
     channel_id: str
     channel_name: str
     channel_type: ChannelType

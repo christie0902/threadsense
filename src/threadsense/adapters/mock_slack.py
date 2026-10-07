@@ -211,6 +211,8 @@ class MockSlackAdapter(DataAdapter):
             thread = Thread(
                 thread_id=thread_ts,
                 project_id=channel["project_id"],
+                batch_id=channel.get("batch_id"),
+                
                 channel_id=channel["id"],
                 channel_name=channel["name"],
 
