@@ -1,11 +1,7 @@
-"""Step 23: expand ThreadSense's topic catalog into a 200-thread evaluation blueprint.
-
-Run from the project root:
-    python scripts/generate_thread_blueprint.py
+"""
 
 Reads:
     data/evaluation/topic_catalog.json
-    data/evaluation/thread_blueprint.json  (existing sample threads; not modified)
 
 Writes:
     data/evaluation/thread_blueprint_200.json
