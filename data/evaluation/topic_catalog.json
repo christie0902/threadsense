@@ -1,0 +1,1136 @@
+{
+  "schema_version": "1.0",
+  "dataset_name": "ThreadSense current 24h mock Slack topic catalog",
+  "description": "Hidden generation/evaluation plan. Do not expose to agents or include in runtime RAG/MCP data.",
+  "snapshot_scope": "Approximately one 24-hour operational window. One active batch per project.",
+  "projects": {
+    "response_preference": {
+      "batch_id": "rp_batch_15",
+      "target_threads": 55,
+      "label": "Response Preference Evaluation"
+    },
+    "safety_classification": {
+      "batch_id": "safety_batch_08",
+      "target_threads": 50,
+      "label": "Safety / Content Classification"
+    },
+    "audio_multimodal": {
+      "batch_id": "audio_batch_06",
+      "target_threads": 45,
+      "label": "Audio / Multimodal Evaluation"
+    },
+    "multilingual_eval": {
+      "batch_id": "multi_batch_11",
+      "target_threads": 50,
+      "label": "Multilingual Evaluation"
+    }
+  },
+  "summary": {
+    "planned_threads": 200,
+    "scenario_groups": 39,
+    "recurring_issue_topic_groups": 35,
+    "distinct_recurring_issue_topics": 31,
+    "issue_threads": 184,
+    "routine_outlier_groups": 4,
+    "routine_outlier_threads": 16,
+    "historical_evidence_required_threads": 38
+  },
+  "generation_guidelines": {
+    "canonical_roles": [
+      "ENGINEER",
+      "TEAM_LEAD",
+      "QA_TUTOR",
+      "TUTOR"
+    ],
+    "channel_types": [
+      "GENERAL",
+      "QA",
+      "ANNOUNCEMENTS"
+    ],
+    "issue_classes": [
+      "PLATFORM_TECHNICAL",
+      "INSTRUCTION_CLARIFICATION",
+      "EDGE_CASE",
+      "QUARANTINE",
+      "QA_ALIGNMENT",
+      "MODEL_BEHAVIOR_OBSERVATION"
+    ],
+    "resolution_states": [
+      "UNRESOLVED",
+      "PARTIALLY_RESOLVED",
+      "RESOLVED_IN_THREAD"
+    ],
+    "target_resolution_counts": {
+      "UNRESOLVED": 90,
+      "PARTIALLY_RESOLVED": 55,
+      "RESOLVED_IN_THREAD": 55
+    },
+    "language_styles": [
+      "FORMAL",
+      "NORMAL",
+      "ABBREVIATED",
+      "SLANGY",
+      "WORKFLOW_STRUCTURED",
+      "TECHNICAL"
+    ],
+    "language_style_target_counts": {
+      "NORMAL": 70,
+      "ABBREVIATED": 50,
+      "SLANGY": 30,
+      "WORKFLOW_STRUCTURED": 30,
+      "FORMAL": 10,
+      "TECHNICAL": 10
+    },
+    "guidance": "Vary phrasing, role, reply count, severity, channel, ambiguity and resolution within each issue topic; sample phrases are seeds, not repeated verbatim. Some resolved issue discussions should not warrant an intervention. Historical labels belong only to hidden ground truth.",
+    "negative_case_rule": "Each routine/outlier thread gets its own distinct latent topic; do not lump them into an artificial noise cluster.",
+    "cross_project_rule": "Recurring latent topics have the same identifier across projects. cross_project_pattern=true only where the exact latent topic is shared.",
+    "evidence_source_enums": [
+      "NONE",
+      "CURRENT_GUIDELINES",
+      "PAST_DECISIONS",
+      "PROJECT_HISTORY",
+      "PRIOR_BATCH_LESSONS"
+    ]
+  },
+  "topics": [
+    {
+      "scenario_id": "response_preference_citation_scoring",
+      "project_id": "response_preference",
+      "batch_id": "rp_batch_15",
+      "topic_kind": "ISSUE",
+      "latent_topic": "citation_scoring",
+      "thread_target": 9,
+      "primary_issue_class": "EDGE_CASE",
+      "secondary_issue_classes": [
+        "INSTRUCTION_CLARIFICATION"
+      ],
+      "default_severity": "MEDIUM",
+      "expected_topic_action": "UPDATE_FAQ",
+      "should_surface": true,
+      "cross_project_pattern": false,
+      "expected_evidence_sources": [
+        "CURRENT_GUIDELINES"
+      ],
+      "temporal_case": "NONE",
+      "sample_phrasings": [
+        "Answer is good but source link is dead — penalize?",
+        "Cited source exists, but does not support claim."
+      ],
+      "scenario_description": "How to score responses with weak, missing, or misleading citations.",
+      "generation_notes": ""
+    },
+    {
+      "scenario_id": "response_preference_hallucinated_citations",
+      "project_id": "response_preference",
+      "batch_id": "rp_batch_15",
+      "topic_kind": "ISSUE",
+      "latent_topic": "hallucinated_citations",
+      "thread_target": 5,
+      "primary_issue_class": "MODEL_BEHAVIOR_OBSERVATION",
+      "secondary_issue_classes": [
+        "QA_ALIGNMENT"
+      ],
+      "default_severity": "MEDIUM",
+      "expected_topic_action": "POST_ALIGNMENT",
+      "should_surface": true,
+      "cross_project_pattern": false,
+      "expected_evidence_sources": [
+        "CURRENT_GUIDELINES"
+      ],
+      "temporal_case": "NONE",
+      "sample_phrasings": [
+        "Both answers cite papers I cannot find.",
+        "Model fabricated a DOI — where does that score?"
+      ],
+      "scenario_description": "Models invent references; uncertainty about rating guidance.",
+      "generation_notes": ""
+    },
+    {
+      "scenario_id": "response_preference_instruction_following_priority",
+      "project_id": "response_preference",
+      "batch_id": "rp_batch_15",
+      "topic_kind": "ISSUE",
+      "latent_topic": "instruction_following_priority",
+      "thread_target": 5,
+      "primary_issue_class": "INSTRUCTION_CLARIFICATION",
+      "secondary_issue_classes": [],
+      "default_severity": "MEDIUM",
+      "expected_topic_action": "UPDATE_DOCUMENTATION",
+      "should_surface": true,
+      "cross_project_pattern": false,
+      "expected_evidence_sources": [
+        "CURRENT_GUIDELINES"
+      ],
+      "temporal_case": "NONE",
+      "sample_phrasings": [
+        "A follows format, B is more accurate. Which wins?",
+        "Is missing a requested table major or minor?"
+      ],
+      "scenario_description": "Competing rubric dimensions: factuality versus instruction adherence.",
+      "generation_notes": ""
+    },
+    {
+      "scenario_id": "response_preference_major_error_definition",
+      "project_id": "response_preference",
+      "batch_id": "rp_batch_15",
+      "topic_kind": "ISSUE",
+      "latent_topic": "major_error_definition",
+      "thread_target": 7,
+      "primary_issue_class": "INSTRUCTION_CLARIFICATION",
+      "secondary_issue_classes": [],
+      "default_severity": "MEDIUM",
+      "expected_topic_action": "UPDATE_FAQ",
+      "should_surface": true,
+      "cross_project_pattern": false,
+      "expected_evidence_sources": [
+        "CURRENT_GUIDELINES"
+      ],
+      "temporal_case": "NONE",
+      "sample_phrasings": [
+        "Does this incorrect date count as major?",
+        "Rubric says significant factual error; how big is significant?"
+      ],
+      "scenario_description": "Confusion about what qualifies as a major factual error.",
+      "generation_notes": ""
+    },
+    {
+      "scenario_id": "response_preference_model_connection_failure",
+      "project_id": "response_preference",
+      "batch_id": "rp_batch_15",
+      "topic_kind": "ISSUE",
+      "latent_topic": "model_connection_failure",
+      "thread_target": 4,
+      "primary_issue_class": "PLATFORM_TECHNICAL",
+      "secondary_issue_classes": [],
+      "default_severity": "MEDIUM",
+      "expected_topic_action": "ESCALATE_ENGINEERING",
+      "should_surface": true,
+      "cross_project_pattern": true,
+      "expected_evidence_sources": [
+        "PROJECT_HISTORY"
+      ],
+      "temporal_case": "NONE",
+      "sample_phrasings": [
+        "Task keeps timing out before answers load.",
+        "Connection reset when I open the next response pair."
+      ],
+      "scenario_description": "Model/task connection drops during preference evaluation.",
+      "generation_notes": ""
+    },
+    {
+      "scenario_id": "response_preference_platform_submit_failure",
+      "project_id": "response_preference",
+      "batch_id": "rp_batch_15",
+      "topic_kind": "ISSUE",
+      "latent_topic": "platform_submit_failure",
+      "thread_target": 6,
+      "primary_issue_class": "PLATFORM_TECHNICAL",
+      "secondary_issue_classes": [
+        "QUARANTINE"
+      ],
+      "default_severity": "MEDIUM",
+      "expected_topic_action": "ESCALATE_ENGINEERING",
+      "should_surface": true,
+      "cross_project_pattern": true,
+      "expected_evidence_sources": [
+        "PROJECT_HISTORY"
+      ],
+      "temporal_case": "NONE",
+      "sample_phrasings": [
+        "Submit btn grey after I pick B.",
+        "LT will not let me send a completed pair."
+      ],
+      "scenario_description": "Submit control cannot complete labeled tasks; seen across projects.",
+      "generation_notes": ""
+    },
+    {
+      "scenario_id": "response_preference_qa_tie_rating_drift",
+      "project_id": "response_preference",
+      "batch_id": "rp_batch_15",
+      "topic_kind": "ISSUE",
+      "latent_topic": "qa_tie_rating_drift",
+      "thread_target": 6,
+      "primary_issue_class": "QA_ALIGNMENT",
+      "secondary_issue_classes": [],
+      "default_severity": "MEDIUM",
+      "expected_topic_action": "POST_ALIGNMENT",
+      "should_surface": true,
+      "cross_project_pattern": false,
+      "expected_evidence_sources": [
+        "CURRENT_GUIDELINES"
+      ],
+      "temporal_case": "NONE",
+      "sample_phrasings": [
+        "QA marked my tie as wrong again.",
+        "Some reviewers keep picking A for nearly identical answers."
+      ],
+      "scenario_description": "QA and tutors disagree on when two outputs are tied.",
+      "generation_notes": ""
+    },
+    {
+      "scenario_id": "response_preference_stale_rubric_examples",
+      "project_id": "response_preference",
+      "batch_id": "rp_batch_15",
+      "topic_kind": "ISSUE",
+      "latent_topic": "stale_rubric_examples",
+      "thread_target": 4,
+      "primary_issue_class": "INSTRUCTION_CLARIFICATION",
+      "secondary_issue_classes": [],
+      "default_severity": "MEDIUM",
+      "expected_topic_action": "UPDATE_DOCUMENTATION",
+      "should_surface": true,
+      "cross_project_pattern": false,
+      "expected_evidence_sources": [
+        "CURRENT_GUIDELINES",
+        "PAST_DECISIONS"
+      ],
+      "temporal_case": "SUPERSEDED_DECISION",
+      "sample_phrasings": [
+        "The guide example contradicts last Friday’s alignment.",
+        "Which version of the error rubric is valid now?"
+      ],
+      "scenario_description": "Current rubric examples conflict with a later TL decision.",
+      "generation_notes": ""
+    },
+    {
+      "scenario_id": "response_preference_tie_vs_slight_preference",
+      "project_id": "response_preference",
+      "batch_id": "rp_batch_15",
+      "topic_kind": "ISSUE",
+      "latent_topic": "tie_vs_slight_preference",
+      "thread_target": 5,
+      "primary_issue_class": "EDGE_CASE",
+      "secondary_issue_classes": [
+        "QA_ALIGNMENT"
+      ],
+      "default_severity": "MEDIUM",
+      "expected_topic_action": "UPDATE_FAQ",
+      "should_surface": true,
+      "cross_project_pattern": false,
+      "expected_evidence_sources": [
+        "CURRENT_GUIDELINES"
+      ],
+      "temporal_case": "NONE",
+      "sample_phrasings": [
+        "Both are okay, but B sounds a bit clearer.",
+        "How much improvement do we need to avoid a tie?"
+      ],
+      "scenario_description": "Borderline distinction between tie and slightly better response.",
+      "generation_notes": ""
+    },
+    {
+      "scenario_id": "response_preference_nonissue_mix",
+      "project_id": "response_preference",
+      "batch_id": "rp_batch_15",
+      "topic_kind": "ROUTINE_OUTLIER",
+      "latent_topic": null,
+      "thread_target": 4,
+      "individual_latent_topics": [
+        {
+          "latent_topic": "routine_queue_reminder",
+          "scenario_description": "Queue closes at 6 PM reminder"
+        },
+        {
+          "latent_topic": "routine_shift_coverage",
+          "scenario_description": "Shift coverage update"
+        },
+        {
+          "latent_topic": "routine_training_link",
+          "scenario_description": "Trainer shares onboarding link"
+        },
+        {
+          "latent_topic": "isolated_social_checkin",
+          "scenario_description": "Brief social check-in"
+        }
+      ],
+      "primary_issue_class": null,
+      "secondary_issue_classes": [],
+      "default_severity": "LOW",
+      "expected_topic_action": "NO_ACTION",
+      "should_surface": false,
+      "cross_project_pattern": false,
+      "expected_evidence_sources": [
+        "NONE"
+      ],
+      "temporal_case": "NONE",
+      "sample_phrasings": [],
+      "scenario_description": "Standalone routine updates/outliers intentionally excluded from actionable issue clusters.",
+      "generation_notes": "Generate one distinct thread per individual_latent_topics entry. Do not create a four-thread noise cluster."
+    },
+    {
+      "scenario_id": "safety_classification_borderline_nsfw_classification",
+      "project_id": "safety_classification",
+      "batch_id": "safety_batch_08",
+      "topic_kind": "ISSUE",
+      "latent_topic": "borderline_nsfw_classification",
+      "thread_target": 5,
+      "primary_issue_class": "EDGE_CASE",
+      "secondary_issue_classes": [
+        "QA_ALIGNMENT"
+      ],
+      "default_severity": "MEDIUM",
+      "expected_topic_action": "POST_ALIGNMENT",
+      "should_surface": true,
+      "cross_project_pattern": false,
+      "expected_evidence_sources": [
+        "CURRENT_GUIDELINES"
+      ],
+      "temporal_case": "NONE",
+      "sample_phrasings": [
+        "Is this suggestive enough for NSFW?",
+        "Where is the line between romance and explicit?"
+      ],
+      "scenario_description": "Gray area between suggestive and explicit adult content.",
+      "generation_notes": ""
+    },
+    {
+      "scenario_id": "safety_classification_fictional_pii_quarantine",
+      "project_id": "safety_classification",
+      "batch_id": "safety_batch_08",
+      "topic_kind": "ISSUE",
+      "latent_topic": "fictional_pii_quarantine",
+      "thread_target": 7,
+      "primary_issue_class": "QUARANTINE",
+      "secondary_issue_classes": [
+        "EDGE_CASE"
+      ],
+      "default_severity": "HIGH",
+      "expected_topic_action": "UPDATE_DOCUMENTATION",
+      "should_surface": true,
+      "cross_project_pattern": false,
+      "expected_evidence_sources": [
+        "CURRENT_GUIDELINES",
+        "PAST_DECISIONS"
+      ],
+      "temporal_case": "STALE_DOCUMENTATION",
+      "sample_phrasings": [
+        "Do fake email addresses need QN?",
+        "Story contains made-up phone number. Do we quarantine?"
+      ],
+      "scenario_description": "Fictional email/phone details cause QN uncertainty; newer TL decision not reflected in guide.",
+      "generation_notes": ""
+    },
+    {
+      "scenario_id": "safety_classification_jailbreak_content_labeling",
+      "project_id": "safety_classification",
+      "batch_id": "safety_batch_08",
+      "topic_kind": "ISSUE",
+      "latent_topic": "jailbreak_content_labeling",
+      "thread_target": 4,
+      "primary_issue_class": "MODEL_BEHAVIOR_OBSERVATION",
+      "secondary_issue_classes": [
+        "EDGE_CASE"
+      ],
+      "default_severity": "HIGH",
+      "expected_topic_action": "SCHEDULE_ALIGNMENT",
+      "should_surface": true,
+      "cross_project_pattern": false,
+      "expected_evidence_sources": [
+        "CURRENT_GUIDELINES"
+      ],
+      "temporal_case": "NONE",
+      "sample_phrasings": [
+        "Output pretends to ignore policies — category?",
+        "Is roleplay jailbreak wording automatically unsafe?"
+      ],
+      "scenario_description": "Model outputs that resemble jailbreak attempts create uncertain labeling.",
+      "generation_notes": ""
+    },
+    {
+      "scenario_id": "safety_classification_minor_mention_quarantine",
+      "project_id": "safety_classification",
+      "batch_id": "safety_batch_08",
+      "topic_kind": "ISSUE",
+      "latent_topic": "minor_mention_quarantine",
+      "thread_target": 4,
+      "primary_issue_class": "QUARANTINE",
+      "secondary_issue_classes": [
+        "INSTRUCTION_CLARIFICATION"
+      ],
+      "default_severity": "LOW",
+      "expected_topic_action": "NO_ACTION",
+      "should_surface": false,
+      "cross_project_pattern": false,
+      "expected_evidence_sources": [
+        "CURRENT_GUIDELINES"
+      ],
+      "temporal_case": "NONE",
+      "sample_phrasings": [
+        "A kid is mentioned in a harmless story; QN?",
+        "Does every mention of a minor trigger quarantine?"
+      ],
+      "scenario_description": "Routine resolved clarification: mention of minors without harmful context.",
+      "generation_notes": ""
+    },
+    {
+      "scenario_id": "safety_classification_model_connection_failure",
+      "project_id": "safety_classification",
+      "batch_id": "safety_batch_08",
+      "topic_kind": "ISSUE",
+      "latent_topic": "model_connection_failure",
+      "thread_target": 4,
+      "primary_issue_class": "PLATFORM_TECHNICAL",
+      "secondary_issue_classes": [],
+      "default_severity": "MEDIUM",
+      "expected_topic_action": "ESCALATE_ENGINEERING",
+      "should_surface": true,
+      "cross_project_pattern": true,
+      "expected_evidence_sources": [
+        "PROJECT_HISTORY"
+      ],
+      "temporal_case": "NONE",
+      "sample_phrasings": [
+        "Safety queue errors when opening new item.",
+        "Content never finishes loading in LT."
+      ],
+      "scenario_description": "Shared platform/model task requests stall in safety queues.",
+      "generation_notes": ""
+    },
+    {
+      "scenario_id": "safety_classification_outdated_qn_guidance",
+      "project_id": "safety_classification",
+      "batch_id": "safety_batch_08",
+      "topic_kind": "ISSUE",
+      "latent_topic": "outdated_qn_guidance",
+      "thread_target": 5,
+      "primary_issue_class": "INSTRUCTION_CLARIFICATION",
+      "secondary_issue_classes": [
+        "QUARANTINE"
+      ],
+      "default_severity": "MEDIUM",
+      "expected_topic_action": "UPDATE_DOCUMENTATION",
+      "should_surface": true,
+      "cross_project_pattern": false,
+      "expected_evidence_sources": [
+        "CURRENT_GUIDELINES",
+        "PAST_DECISIONS"
+      ],
+      "temporal_case": "SUPERSEDED_DECISION",
+      "sample_phrasings": [
+        "Help page still lists old quarantine trigger.",
+        "Didn’t TL replace this QN rule?"
+      ],
+      "scenario_description": "Old QN criteria remain in a help page despite revised TL announcement.",
+      "generation_notes": ""
+    },
+    {
+      "scenario_id": "safety_classification_pii_in_public_records",
+      "project_id": "safety_classification",
+      "batch_id": "safety_batch_08",
+      "topic_kind": "ISSUE",
+      "latent_topic": "pii_in_public_records",
+      "thread_target": 4,
+      "primary_issue_class": "EDGE_CASE",
+      "secondary_issue_classes": [
+        "QUARANTINE"
+      ],
+      "default_severity": "MEDIUM",
+      "expected_topic_action": "UPDATE_FAQ",
+      "should_surface": true,
+      "cross_project_pattern": false,
+      "expected_evidence_sources": [
+        "CURRENT_GUIDELINES"
+      ],
+      "temporal_case": "NONE",
+      "sample_phrasings": [
+        "Public business listing has a phone number — PII?",
+        "What if the name and address are from a news article?"
+      ],
+      "scenario_description": "Whether publicly accessible personal information still triggers PII handling.",
+      "generation_notes": ""
+    },
+    {
+      "scenario_id": "safety_classification_platform_submit_failure",
+      "project_id": "safety_classification",
+      "batch_id": "safety_batch_08",
+      "topic_kind": "ISSUE",
+      "latent_topic": "platform_submit_failure",
+      "thread_target": 4,
+      "primary_issue_class": "PLATFORM_TECHNICAL",
+      "secondary_issue_classes": [
+        "QUARANTINE"
+      ],
+      "default_severity": "MEDIUM",
+      "expected_topic_action": "ESCALATE_ENGINEERING",
+      "should_surface": true,
+      "cross_project_pattern": true,
+      "expected_evidence_sources": [
+        "PROJECT_HISTORY"
+      ],
+      "temporal_case": "NONE",
+      "sample_phrasings": [
+        "Submit stays disabled after category selection.",
+        "QN task is complete but LT won’t submit."
+      ],
+      "scenario_description": "Same cross-project submit failure while submitting safety labels.",
+      "generation_notes": ""
+    },
+    {
+      "scenario_id": "safety_classification_qa_safety_threshold_drift",
+      "project_id": "safety_classification",
+      "batch_id": "safety_batch_08",
+      "topic_kind": "ISSUE",
+      "latent_topic": "qa_safety_threshold_drift",
+      "thread_target": 4,
+      "primary_issue_class": "QA_ALIGNMENT",
+      "secondary_issue_classes": [],
+      "default_severity": "MEDIUM",
+      "expected_topic_action": "POST_ALIGNMENT",
+      "should_surface": true,
+      "cross_project_pattern": false,
+      "expected_evidence_sources": [
+        "CURRENT_GUIDELINES"
+      ],
+      "temporal_case": "NONE",
+      "sample_phrasings": [
+        "QA keeps scoring the same text differently.",
+        "A few L0s classify borderline items more strictly."
+      ],
+      "scenario_description": "Different reviewers apply inconsistent safety thresholds.",
+      "generation_notes": ""
+    },
+    {
+      "scenario_id": "safety_classification_self_harm_context_interpretation",
+      "project_id": "safety_classification",
+      "batch_id": "safety_batch_08",
+      "topic_kind": "ISSUE",
+      "latent_topic": "self_harm_context_interpretation",
+      "thread_target": 5,
+      "primary_issue_class": "EDGE_CASE",
+      "secondary_issue_classes": [
+        "QUARANTINE"
+      ],
+      "default_severity": "HIGH",
+      "expected_topic_action": "REQUEST_DECISION_OWNER",
+      "should_surface": true,
+      "cross_project_pattern": false,
+      "expected_evidence_sources": [
+        "CURRENT_GUIDELINES"
+      ],
+      "temporal_case": "NONE",
+      "sample_phrasings": [
+        "Quoted safety warning contains prohibited wording — label?",
+        "Educational discussion versus unsafe advice: which class?"
+      ],
+      "scenario_description": "Unclear classifications for quoted or educational self-harm references.",
+      "generation_notes": ""
+    },
+    {
+      "scenario_id": "safety_classification_nonissue_mix",
+      "project_id": "safety_classification",
+      "batch_id": "safety_batch_08",
+      "topic_kind": "ROUTINE_OUTLIER",
+      "latent_topic": null,
+      "thread_target": 4,
+      "individual_latent_topics": [
+        {
+          "latent_topic": "routine_policy_meeting_notice",
+          "scenario_description": "Announcement of policy meeting"
+        },
+        {
+          "latent_topic": "routine_queue_assignment",
+          "scenario_description": "Safety queue assignment notice"
+        },
+        {
+          "latent_topic": "routine_weekly_schedule",
+          "scenario_description": "Reminder of weekly schedule"
+        },
+        {
+          "latent_topic": "isolated_nonissue_question",
+          "scenario_description": "Non-operational channel question"
+        }
+      ],
+      "primary_issue_class": null,
+      "secondary_issue_classes": [],
+      "default_severity": "LOW",
+      "expected_topic_action": "NO_ACTION",
+      "should_surface": false,
+      "cross_project_pattern": false,
+      "expected_evidence_sources": [
+        "NONE"
+      ],
+      "temporal_case": "NONE",
+      "sample_phrasings": [],
+      "scenario_description": "Standalone routine updates/outliers intentionally excluded from actionable issue clusters.",
+      "generation_notes": "Generate one distinct thread per individual_latent_topics entry. Do not create a four-thread noise cluster."
+    },
+    {
+      "scenario_id": "audio_multimodal_audio_language_mismatch",
+      "project_id": "audio_multimodal",
+      "batch_id": "audio_batch_06",
+      "topic_kind": "ISSUE",
+      "latent_topic": "audio_language_mismatch",
+      "thread_target": 4,
+      "primary_issue_class": "MODEL_BEHAVIOR_OBSERVATION",
+      "secondary_issue_classes": [
+        "EDGE_CASE"
+      ],
+      "default_severity": "MEDIUM",
+      "expected_topic_action": "ROUTE_TO_LANGUAGE_SPECIALIST",
+      "should_surface": true,
+      "cross_project_pattern": false,
+      "expected_evidence_sources": [
+        "CURRENT_GUIDELINES"
+      ],
+      "temporal_case": "NONE",
+      "sample_phrasings": [
+        "Prompt was English but audio came out Spanish.",
+        "TTS switches languages halfway through."
+      ],
+      "scenario_description": "Generated audio switches unexpectedly into a different language.",
+      "generation_notes": ""
+    },
+    {
+      "scenario_id": "audio_multimodal_audio_player_loading_failure",
+      "project_id": "audio_multimodal",
+      "batch_id": "audio_batch_06",
+      "topic_kind": "ISSUE",
+      "latent_topic": "audio_player_loading_failure",
+      "thread_target": 10,
+      "primary_issue_class": "PLATFORM_TECHNICAL",
+      "secondary_issue_classes": [
+        "QUARANTINE"
+      ],
+      "default_severity": "HIGH",
+      "expected_topic_action": "ESCALATE_ENGINEERING",
+      "should_surface": true,
+      "cross_project_pattern": false,
+      "expected_evidence_sources": [
+        "PROJECT_HISTORY"
+      ],
+      "temporal_case": "PREVIOUS_INTERVENTION_FAILED",
+      "sample_phrasings": [
+        "Player never loads, should I QN?",
+        "Clip gets stuck buffering at 00:00."
+      ],
+      "scenario_description": "Audio player fails; previously attempted fix did not resolve it.",
+      "generation_notes": ""
+    },
+    {
+      "scenario_id": "audio_multimodal_platform_submit_failure",
+      "project_id": "audio_multimodal",
+      "batch_id": "audio_batch_06",
+      "topic_kind": "ISSUE",
+      "latent_topic": "platform_submit_failure",
+      "thread_target": 4,
+      "primary_issue_class": "PLATFORM_TECHNICAL",
+      "secondary_issue_classes": [],
+      "default_severity": "MEDIUM",
+      "expected_topic_action": "ESCALATE_ENGINEERING",
+      "should_surface": true,
+      "cross_project_pattern": true,
+      "expected_evidence_sources": [
+        "PROJECT_HISTORY"
+      ],
+      "temporal_case": "NONE",
+      "sample_phrasings": [
+        "Cannot submit after finishing audio score.",
+        "LT submit spinner never ends."
+      ],
+      "scenario_description": "Same shared submit failure, occurring on audio tasks.",
+      "generation_notes": ""
+    },
+    {
+      "scenario_id": "audio_multimodal_qa_audio_artifact_drift",
+      "project_id": "audio_multimodal",
+      "batch_id": "audio_batch_06",
+      "topic_kind": "ISSUE",
+      "latent_topic": "qa_audio_artifact_drift",
+      "thread_target": 4,
+      "primary_issue_class": "QA_ALIGNMENT",
+      "secondary_issue_classes": [],
+      "default_severity": "MEDIUM",
+      "expected_topic_action": "POST_ALIGNMENT",
+      "should_surface": true,
+      "cross_project_pattern": false,
+      "expected_evidence_sources": [
+        "CURRENT_GUIDELINES"
+      ],
+      "temporal_case": "NONE",
+      "sample_phrasings": [
+        "Some QA count light clipping as major.",
+        "Is static noise a major artifact or minor?"
+      ],
+      "scenario_description": "QA interpretation varies for compression, distortion, and clipping.",
+      "generation_notes": ""
+    },
+    {
+      "scenario_id": "audio_multimodal_repeated_generated_audio",
+      "project_id": "audio_multimodal",
+      "batch_id": "audio_batch_06",
+      "topic_kind": "ISSUE",
+      "latent_topic": "repeated_generated_audio",
+      "thread_target": 6,
+      "primary_issue_class": "MODEL_BEHAVIOR_OBSERVATION",
+      "secondary_issue_classes": [],
+      "default_severity": "MEDIUM",
+      "expected_topic_action": "ESCALATE_ENGINEERING",
+      "should_surface": true,
+      "cross_project_pattern": false,
+      "expected_evidence_sources": [
+        "CURRENT_GUIDELINES"
+      ],
+      "temporal_case": "NONE",
+      "sample_phrasings": [
+        "Model keeps saying the last sentence twice lol.",
+        "TTS output repeats a line near the end."
+      ],
+      "scenario_description": "Generated speech repeats the last phrase or loops.",
+      "generation_notes": ""
+    },
+    {
+      "scenario_id": "audio_multimodal_silent_audio_quarantine",
+      "project_id": "audio_multimodal",
+      "batch_id": "audio_batch_06",
+      "topic_kind": "ISSUE",
+      "latent_topic": "silent_audio_quarantine",
+      "thread_target": 4,
+      "primary_issue_class": "QUARANTINE",
+      "secondary_issue_classes": [
+        "PLATFORM_TECHNICAL"
+      ],
+      "default_severity": "MEDIUM",
+      "expected_topic_action": "UPDATE_DOCUMENTATION",
+      "should_surface": true,
+      "cross_project_pattern": false,
+      "expected_evidence_sources": [
+        "CURRENT_GUIDELINES"
+      ],
+      "temporal_case": "NONE",
+      "sample_phrasings": [
+        "No audio at all — QN or bad score?",
+        "Clip is just silence, not a player error."
+      ],
+      "scenario_description": "Whether empty/silent recordings should be QN or scored as low quality.",
+      "generation_notes": ""
+    },
+    {
+      "scenario_id": "audio_multimodal_speaker_overlap_edge_case",
+      "project_id": "audio_multimodal",
+      "batch_id": "audio_batch_06",
+      "topic_kind": "ISSUE",
+      "latent_topic": "speaker_overlap_edge_case",
+      "thread_target": 4,
+      "primary_issue_class": "EDGE_CASE",
+      "secondary_issue_classes": [],
+      "default_severity": "MEDIUM",
+      "expected_topic_action": "UPDATE_FAQ",
+      "should_surface": true,
+      "cross_project_pattern": false,
+      "expected_evidence_sources": [
+        "CURRENT_GUIDELINES"
+      ],
+      "temporal_case": "NONE",
+      "sample_phrasings": [
+        "Two people talk at once — mark unintelligible?",
+        "Background speaker gets transcribed as main speaker."
+      ],
+      "scenario_description": "Handling overlapping speakers or unclear turns.",
+      "generation_notes": ""
+    },
+    {
+      "scenario_id": "audio_multimodal_transcript_audio_mismatch",
+      "project_id": "audio_multimodal",
+      "batch_id": "audio_batch_06",
+      "topic_kind": "ISSUE",
+      "latent_topic": "transcript_audio_mismatch",
+      "thread_target": 5,
+      "primary_issue_class": "EDGE_CASE",
+      "secondary_issue_classes": [
+        "QA_ALIGNMENT"
+      ],
+      "default_severity": "MEDIUM",
+      "expected_topic_action": "UPDATE_FAQ",
+      "should_surface": true,
+      "cross_project_pattern": false,
+      "expected_evidence_sources": [
+        "CURRENT_GUIDELINES"
+      ],
+      "temporal_case": "NONE",
+      "sample_phrasings": [
+        "Transcript includes words the voice never said.",
+        "Voice says thirteen but subtitle says thirty."
+      ],
+      "scenario_description": "Text transcript disagrees with what the audio says.",
+      "generation_notes": ""
+    },
+    {
+      "scenario_id": "audio_multimodal_nonissue_mix",
+      "project_id": "audio_multimodal",
+      "batch_id": "audio_batch_06",
+      "topic_kind": "ROUTINE_OUTLIER",
+      "latent_topic": null,
+      "thread_target": 4,
+      "individual_latent_topics": [
+        {
+          "latent_topic": "routine_headset_reminder",
+          "scenario_description": "Headset recommendation announcement"
+        },
+        {
+          "latent_topic": "routine_audio_slot_schedule",
+          "scenario_description": "Audio calibration meeting time"
+        },
+        {
+          "latent_topic": "routine_queue_finish_notice",
+          "scenario_description": "Daily queue close notice"
+        },
+        {
+          "latent_topic": "isolated_social_audio_comment",
+          "scenario_description": "One-off social comment"
+        }
+      ],
+      "primary_issue_class": null,
+      "secondary_issue_classes": [],
+      "default_severity": "LOW",
+      "expected_topic_action": "NO_ACTION",
+      "should_surface": false,
+      "cross_project_pattern": false,
+      "expected_evidence_sources": [
+        "NONE"
+      ],
+      "temporal_case": "NONE",
+      "sample_phrasings": [],
+      "scenario_description": "Standalone routine updates/outliers intentionally excluded from actionable issue clusters.",
+      "generation_notes": "Generate one distinct thread per individual_latent_topics entry. Do not create a four-thread noise cluster."
+    },
+    {
+      "scenario_id": "multilingual_eval_code_switching_evaluation",
+      "project_id": "multilingual_eval",
+      "batch_id": "multi_batch_11",
+      "topic_kind": "ISSUE",
+      "latent_topic": "code_switching_evaluation",
+      "thread_target": 10,
+      "primary_issue_class": "EDGE_CASE",
+      "secondary_issue_classes": [
+        "INSTRUCTION_CLARIFICATION"
+      ],
+      "default_severity": "MEDIUM",
+      "expected_topic_action": "UPDATE_FAQ",
+      "should_surface": true,
+      "cross_project_pattern": false,
+      "expected_evidence_sources": [
+        "CURRENT_GUIDELINES"
+      ],
+      "temporal_case": "NONE",
+      "sample_phrasings": [
+        "It answers half in English — penalize?",
+        "User code-switched; should response mirror it?"
+      ],
+      "scenario_description": "Scoring mixed-language responses when prompts or context invite code switching.",
+      "generation_notes": ""
+    },
+    {
+      "scenario_id": "multilingual_eval_japanese_honorific_consistency",
+      "project_id": "multilingual_eval",
+      "batch_id": "multi_batch_11",
+      "topic_kind": "ISSUE",
+      "latent_topic": "japanese_honorific_consistency",
+      "thread_target": 5,
+      "primary_issue_class": "EDGE_CASE",
+      "secondary_issue_classes": [],
+      "default_severity": "MEDIUM",
+      "expected_topic_action": "ROUTE_TO_LANGUAGE_SPECIALIST",
+      "should_surface": true,
+      "cross_project_pattern": false,
+      "expected_evidence_sources": [
+        "CURRENT_GUIDELINES"
+      ],
+      "temporal_case": "NONE",
+      "sample_phrasings": [
+        "Keigo suddenly becomes casual — how to score?",
+        "Is dropping さん in this reply an error?"
+      ],
+      "scenario_description": "Japanese honorifics and politeness consistency.",
+      "generation_notes": ""
+    },
+    {
+      "scenario_id": "multilingual_eval_korean_register_switching",
+      "project_id": "multilingual_eval",
+      "batch_id": "multi_batch_11",
+      "topic_kind": "ISSUE",
+      "latent_topic": "korean_register_switching",
+      "thread_target": 7,
+      "primary_issue_class": "EDGE_CASE",
+      "secondary_issue_classes": [
+        "INSTRUCTION_CLARIFICATION"
+      ],
+      "default_severity": "MEDIUM",
+      "expected_topic_action": "ROUTE_TO_LANGUAGE_SPECIALIST",
+      "should_surface": true,
+      "cross_project_pattern": false,
+      "expected_evidence_sources": [
+        "CURRENT_GUIDELINES",
+        "PRIOR_BATCH_LESSONS"
+      ],
+      "temporal_case": "RECURRING_FROM_PRIOR_BATCH",
+      "sample_phrasings": [
+        "Answer starts in 존댓말 then switches to 반말.",
+        "Do we penalize inconsistent register in Korean?"
+      ],
+      "scenario_description": "Korean honorific/formality switching; issue also surfaced in previous batch.",
+      "generation_notes": ""
+    },
+    {
+      "scenario_id": "multilingual_eval_non_latin_script_rendering",
+      "project_id": "multilingual_eval",
+      "batch_id": "multi_batch_11",
+      "topic_kind": "ISSUE",
+      "latent_topic": "non_latin_script_rendering",
+      "thread_target": 4,
+      "primary_issue_class": "PLATFORM_TECHNICAL",
+      "secondary_issue_classes": [],
+      "default_severity": "MEDIUM",
+      "expected_topic_action": "ESCALATE_ENGINEERING",
+      "should_surface": true,
+      "cross_project_pattern": false,
+      "expected_evidence_sources": [
+        "CURRENT_GUIDELINES"
+      ],
+      "temporal_case": "NONE",
+      "sample_phrasings": [
+        "Hangul appears as boxes in LT.",
+        "Vietnamese tone marks break in the viewer."
+      ],
+      "scenario_description": "UI renders accents or CJK scripts incorrectly in labeling tool.",
+      "generation_notes": ""
+    },
+    {
+      "scenario_id": "multilingual_eval_platform_submit_failure",
+      "project_id": "multilingual_eval",
+      "batch_id": "multi_batch_11",
+      "topic_kind": "ISSUE",
+      "latent_topic": "platform_submit_failure",
+      "thread_target": 4,
+      "primary_issue_class": "PLATFORM_TECHNICAL",
+      "secondary_issue_classes": [],
+      "default_severity": "MEDIUM",
+      "expected_topic_action": "ESCALATE_ENGINEERING",
+      "should_surface": true,
+      "cross_project_pattern": true,
+      "expected_evidence_sources": [
+        "PROJECT_HISTORY"
+      ],
+      "temporal_case": "NONE",
+      "sample_phrasings": [
+        "Cannot submit the KO evaluation.",
+        "LT just freezes after choosing rating."
+      ],
+      "scenario_description": "Same cross-project LT submit issue on multilingual queue.",
+      "generation_notes": ""
+    },
+    {
+      "scenario_id": "multilingual_eval_qa_native_speaker_disagreement",
+      "project_id": "multilingual_eval",
+      "batch_id": "multi_batch_11",
+      "topic_kind": "ISSUE",
+      "latent_topic": "qa_native_speaker_disagreement",
+      "thread_target": 5,
+      "primary_issue_class": "QA_ALIGNMENT",
+      "secondary_issue_classes": [],
+      "default_severity": "MEDIUM",
+      "expected_topic_action": "POST_ALIGNMENT",
+      "should_surface": true,
+      "cross_project_pattern": false,
+      "expected_evidence_sources": [
+        "PROJECT_HISTORY",
+        "PRIOR_BATCH_LESSONS"
+      ],
+      "temporal_case": "RECURRING_FROM_PRIOR_BATCH",
+      "sample_phrasings": [
+        "Two native reviewers disagree on naturalness.",
+        "Last batch also had QA disagreement for this locale."
+      ],
+      "scenario_description": "Cross-reviewer language disagreements persisted from an earlier batch.",
+      "generation_notes": ""
+    },
+    {
+      "scenario_id": "multilingual_eval_spanish_formality_preference",
+      "project_id": "multilingual_eval",
+      "batch_id": "multi_batch_11",
+      "topic_kind": "ISSUE",
+      "latent_topic": "spanish_formality_preference",
+      "thread_target": 5,
+      "primary_issue_class": "EDGE_CASE",
+      "secondary_issue_classes": [],
+      "default_severity": "MEDIUM",
+      "expected_topic_action": "ROUTE_TO_LANGUAGE_SPECIALIST",
+      "should_surface": true,
+      "cross_project_pattern": false,
+      "expected_evidence_sources": [
+        "CURRENT_GUIDELINES"
+      ],
+      "temporal_case": "NONE",
+      "sample_phrasings": [
+        "Model alternates tú and usted — major?",
+        "Should formal address always be preferred in ES?"
+      ],
+      "scenario_description": "Spanish tú/usted formality and audience expectations.",
+      "generation_notes": ""
+    },
+    {
+      "scenario_id": "multilingual_eval_vietnamese_regional_variation",
+      "project_id": "multilingual_eval",
+      "batch_id": "multi_batch_11",
+      "topic_kind": "ISSUE",
+      "latent_topic": "vietnamese_regional_variation",
+      "thread_target": 6,
+      "primary_issue_class": "EDGE_CASE",
+      "secondary_issue_classes": [
+        "INSTRUCTION_CLARIFICATION"
+      ],
+      "default_severity": "MEDIUM",
+      "expected_topic_action": "ROUTE_TO_LANGUAGE_SPECIALIST",
+      "should_surface": true,
+      "cross_project_pattern": false,
+      "expected_evidence_sources": [
+        "CURRENT_GUIDELINES"
+      ],
+      "temporal_case": "NONE",
+      "sample_phrasings": [
+        "Is this northern wording acceptable for southern users?",
+        "Regional phrase sounds fine in VN but QA flags it."
+      ],
+      "scenario_description": "Regional vocabulary is natural in one dialect but appears odd to other reviewers.",
+      "generation_notes": ""
+    },
+    {
+      "scenario_id": "multilingual_eval_nonissue_mix",
+      "project_id": "multilingual_eval",
+      "batch_id": "multi_batch_11",
+      "topic_kind": "ROUTINE_OUTLIER",
+      "latent_topic": null,
+      "thread_target": 4,
+      "individual_latent_topics": [
+        {
+          "latent_topic": "routine_locale_shift_schedule",
+          "scenario_description": "Language reviewer shift schedule"
+        },
+        {
+          "latent_topic": "routine_training_resource",
+          "scenario_description": "Language team shares resource"
+        },
+        {
+          "latent_topic": "routine_queue_reopen_notice",
+          "scenario_description": "Queue reopen announcement"
+        },
+        {
+          "latent_topic": "isolated_social_language_comment",
+          "scenario_description": "One-off social language comment"
+        }
+      ],
+      "primary_issue_class": null,
+      "secondary_issue_classes": [],
+      "default_severity": "LOW",
+      "expected_topic_action": "NO_ACTION",
+      "should_surface": false,
+      "cross_project_pattern": false,
+      "expected_evidence_sources": [
+        "NONE"
+      ],
+      "temporal_case": "NONE",
+      "sample_phrasings": [],
+      "scenario_description": "Standalone routine updates/outliers intentionally excluded from actionable issue clusters.",
+      "generation_notes": "Generate one distinct thread per individual_latent_topics entry. Do not create a four-thread noise cluster."
+    }
+  ]
+}
