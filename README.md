@@ -91,8 +91,59 @@ Use `uv add package-name` to add future dependencies so they are recorded in
 `pyproject.toml` and `uv.lock` for both computers. Avoid a bare `pip install`,
 which can target a different interpreter and does not update the shared lockfile.
 
+### OpenRouter through LiteLLM
+
+The `crewai[litellm]` extra is included in the project dependencies. To add
+this integration to another uv project, use `uv add "crewai[litellm]"`.
+
+For this project, select a free OpenRouter model and run the demo. It prompts for
+your OpenRouter key with hidden input if `OPENROUTER_API_KEY` is not set.
+
+Windows PowerShell:
+
+```powershell
+$env:THREADSENSE_MODEL = "openrouter/openrouter/free"
+uv run python scripts/run_agent1_demo.py
+```
+
+macOS:
+
+```sh
+THREADSENSE_MODEL=openrouter/openrouter/free uv run python scripts/run_agent1_demo.py
+```
+
+Alternatively, copy `.env.example` to `.env`, fill in your key locally, and run:
+
+```sh
+uv run --env-file .env python scripts/run_agent1_demo.py
+```
+
+`.env` is ignored by Git. Each computer needs its own credentials. Development
+mode defaults to `openrouter/openrouter/free` and also accepts explicit
+`openrouter/<provider>/<model>:free` routes. Model prefixes are described in the
+[LiteLLM OpenRouter guide](https://docs.litellm.ai/docs/providers/openrouter).
+The demo validates the model before asking for a key. If a previous shell
+command set a paid model, reset `THREADSENSE_MODEL` with the command above.
+Running interpretation sends the selected thread to the configured model
+using your OpenRouter account.
+
+The demo uses LiteLLM with ordinary text completions. It asks for a JSON object
+and validates the result locally with Pydantic, including the thread ID and
+authority evidence references. It does not require a free provider to implement
+OpenAI's strict JSON-schema response format. Provider errors report the HTTP
+status and available error details without repeating a failed agent run.
+
+To inspect the fixture without a key or model request:
+
+```sh
+uv run python scripts/run_agent1_demo.py --inspect
+```
+
 ## Troubleshooting
 
+- `No module named pip`: uv-created environments do not include pip by default.
+  Use `uv add package-name` to install and record a project dependency, or
+  `uv sync --locked --extra dev` to restore the checked-in dependencies.
 - Rust compiler or wheel-build errors for `tiktoken` or `regex` while installing
   CrewAI: check the Python version and use this project's Python 3.13 environment.
   Python 3.14 is outside [CrewAI's supported range](https://pypi.org/project/crewai/).
