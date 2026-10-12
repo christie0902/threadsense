@@ -6,6 +6,7 @@ from threadsense.adapters.base import DataAdapter
 from threadsense.models import (
     ChannelType,
     Message,
+    Reaction,
     MessageSource,
     Role,
     Thread,
@@ -14,15 +15,16 @@ from threadsense.models import (
 
 class MockSlackAdapter(DataAdapter):
 
-    def __init__(
-        self,
-        fixture_dir: str,
-        users_file: str,
-    ):
+    def __init__(self, fixture_dir: str, users_file: str):
         self.fixture_dir = Path(fixture_dir)
 
         with open(users_file, encoding="utf-8") as f:
-            users = json.load(f)
+            users_data = json.load(f)
+
+        if isinstance(users_data, dict):
+            users = users_data["users"]
+        else:
+            users = users_data
 
         self.users = {
             user["id"]: user
@@ -132,7 +134,9 @@ class MockSlackAdapter(DataAdapter):
                 raw.get("source", "USER")
             ),
 
-            reactions=reactions,
+            reactions=self._convert_reactions(
+                raw.get("reactions", [])
+            ),
         )
 
     def get_threads(
@@ -239,3 +243,36 @@ class MockSlackAdapter(DataAdapter):
         )
 
         return threads
+
+    def _convert_reactions(self, raw_reactions):
+        converted = []
+
+        for reaction in raw_reactions or []:
+
+            # Support older sample fixtures
+            if isinstance(reaction, str):
+                converted.append(
+                    Reaction(name=reaction)
+                )
+                continue
+
+            reactor_ids = reaction.get("users") or []
+
+            reactor_roles = {}
+
+            for user_id in reactor_ids:
+                user = self.users.get(user_id)
+
+                if user:
+                    reactor_roles[user_id] = Role(user["role"])
+
+            converted.append(
+                Reaction(
+                    name=reaction["name"],
+                    users=reactor_ids,
+                    count=reaction.get("count"),
+                    reactor_roles=reactor_roles,
+                )
+            )
+
+        return converted

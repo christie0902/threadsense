@@ -35,7 +35,7 @@ class Message(BaseModel):
 
     source: MessageSource = MessageSource.USER
     reactions: list[Reaction] = Field(default_factory=list)
-
+    
 
 class Thread(BaseModel):
     thread_id: str
@@ -60,3 +60,7 @@ class Reaction(BaseModel):
     name: str
     users: list[str] = Field(default_factory=list)
     count: int | None = None
+
+    reactor_roles: dict[str, Role] = Field(
+        default_factory=dict
+    )
