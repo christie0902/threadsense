@@ -1,7 +1,7 @@
 """Verify MockSlackAdapter ingests the 200-thread Slack dataset.
 
 Install at: tests/test_generated_slack_adapter.py
-Run at project root: PYTHONPATH=src python3 -m pytest -q tests/test_generated_slack_adapter.py
+Run at project root: uv run --locked --extra dev python -m pytest -q tests/test_generated_slack_adapter.py
 
 Reads only agent-visible data/fixtures/slack_generated, not evaluation labels.
 """

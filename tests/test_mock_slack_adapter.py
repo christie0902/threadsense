@@ -1,11 +1,15 @@
+from pathlib import Path
+
 from threadsense.adapters.mock_slack import MockSlackAdapter
 from threadsense.models import Role
+
+FIXTURES = Path(__file__).resolve().parents[1] / "data" / "fixtures" / "slack"
 
 
 def make_adapter():
     return MockSlackAdapter(
-        fixture_dir="data/fixtures/slack/channels",
-        users_file="data/fixtures/slack/users.json",
+        fixture_dir=str(FIXTURES / "channels"),
+        users_file=str(FIXTURES / "users.json"),
     )
 
 def test_adapter_builds_threads():
