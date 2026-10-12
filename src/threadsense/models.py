@@ -34,7 +34,7 @@ class Message(BaseModel):
     text: str
 
     source: MessageSource = MessageSource.USER
-    reactions: list[str] = Field(default_factory=list)
+    reactions: list[Reaction] = Field(default_factory=list)
 
 
 class Thread(BaseModel):
@@ -55,3 +55,8 @@ class Thread(BaseModel):
     @property
     def message_count(self) -> int:
         return len(self.messages)
+
+class Reaction(BaseModel):
+    name: str
+    users: list[str] = Field(default_factory=list)
+    count: int | None = None

@@ -11,6 +11,10 @@ Input:
 Output (safe staging directory, NOT the existing original fixtures):
     data/fixtures/slack_generated/users.json
     data/fixtures/slack_generated/channels/C_*.json
+
+The generated Slack fixture JSON never contains the answer labels in the blueprint.
+Only stdlib is used. No API calls are made. This produces a reproducible *starter
+corpus*; review/hand-edit dialogue variety before treating it as final research data.
 """
 
 from __future__ import annotations
@@ -18,6 +22,7 @@ from __future__ import annotations
 from collections import Counter, defaultdict
 from copy import deepcopy
 from datetime import datetime, timezone
+import hashlib
 import json
 from pathlib import Path
 import random
@@ -28,7 +33,7 @@ ROOT = Path(__file__).resolve().parents[1]
 BLUEPRINT = ROOT / "data/evaluation/thread_blueprint_200.json"
 CATALOG = ROOT / "data/evaluation/topic_catalog.json"
 ORIGINAL = ROOT / "data/fixtures/slack"
-OUTPUT = ROOT / "data/fixtures/slack_generated"
+OUTPUT = ROOT / "data/fixtures/slack_generated"  # Never overwrite source examples.
 SEED = 20261024
 
 PROJECT_CHANNEL = {
@@ -365,6 +370,7 @@ def package_users(users, shape):
 
 
 def user_role(u):
+    # Matches the recommended sample fixture shape. No role inference from name.
     role = u.get("role", "TUTOR")
     if isinstance(role, dict):
         role = role.get("value", "TUTOR")
@@ -419,8 +425,51 @@ def get_seed_channels():
     return channels, seed_roots
 
 
-def msg(ts, user, text, source="USER", thread_ts=None):
-    row = {"ts": ts, "user": user, "text": text, "source": source, "reactions": []}
+def reaction(name, user_ids):
+    """Slack-style reaction with the identity of the people who reacted.
+
+    Example: {"name": "this", "users": ["U001"], "count": 1}
+    Names are Slack emoji IDs, without surrounding colons.
+    """
+    return {"name": name, "users": list(user_ids), "count": len(user_ids)}
+
+
+def stable_choice(key, options):
+    digest = hashlib.sha256(key.encode("utf-8")).digest()
+    return options[digest[0] % len(options)]
+
+
+def mock_reactions(ts, author_id, text, users_by_role):
+    """Non-authoritative background reactions on about 25% of new messages.
+
+    Never assign a TL a random approval reaction: TL confirmation is added
+    deliberately to a *specific substantive reply* in create_thread().
+    Hashing avoids changing the random stream for message content/timestamps.
+    """
+    digest = hashlib.sha256(f"{ts}|{author_id}|{text}".encode("utf-8")).digest()
+    if digest[0] >= 64:
+        return []
+    role = "QA_TUTOR" if digest[1] < 70 else "TUTOR"
+    pool = [uid for uid in users_by_role[role] if uid != author_id]
+    if not pool:
+        return []
+    reactor_id = pool[digest[2] % len(pool)]
+    names = ("eyes", "thumbsup", "thinking_face", "white_check_mark", "warning")
+    name = names[digest[3] % len(names)]
+    result = [reaction(name, [reactor_id])]
+    if digest[4] < 30:
+        other_pool = [uid for uid in users_by_role["TUTOR"] if uid not in {author_id, reactor_id}]
+        if other_pool:
+            result[0] = reaction(name, [reactor_id, other_pool[digest[5] % len(other_pool)]])
+    return result
+
+
+def msg(ts, user, text, users_by_role, source="USER", thread_ts=None):
+    row = {
+        "ts": ts, "user": user, "text": text,
+        "source": source,
+        "reactions": mock_reactions(ts, user, text, users_by_role),
+    }
     if thread_ts is not None:
         row["thread_ts"] = thread_ts
     return row
@@ -528,7 +577,7 @@ def create_thread(row, scenario, topic_index, users_by_role, rng, end_second):
     # No task references are personally identifying or evaluation labels.
     if issue and topic_index % 3 == 2:
         root_text += f" (task ref {row['project_id'][:2].upper()}-{int(float(row['thread_id'])) % 10000:04d})"
-    root = msg(row["thread_id"], root_user, root_text, nice_source(row, ctype))
+    root = msg(row["thread_id"], root_user, root_text, users_by_role, nice_source(row, ctype))
     if row["language"]:
         root["language"] = row["language"]
 
@@ -537,7 +586,7 @@ def create_thread(row, scenario, topic_index, users_by_role, rng, end_second):
         if topic_index % 3:
             root["reply_count"] = 0
             return root, []
-        reply = msg(timestamp_for_reply(root["ts"], 0, rng, end_second), choose_user(rng, users_by_role, "TUTOR", exclude=root_user), "Thanks for the heads-up!", thread_ts=root["ts"])
+        reply = msg(timestamp_for_reply(root["ts"], 0, rng, end_second), choose_user(rng, users_by_role, "TUTOR", exclude=root_user), "Thanks for the heads-up!", users_by_role, thread_ts=root["ts"])
         root["reply_count"] = 1
         return root, [reply]
 
@@ -560,18 +609,43 @@ def create_thread(row, scenario, topic_index, users_by_role, rng, end_second):
             text += " " + LANGUAGE_PEER_APPEND.get(row["language"], "")
         secondary_replies.append((author, text))
 
+    # About one in four *substantively resolved* issue threads will end with an
+    # actual QA/trainer answer + a TL emoji confirming that answer. No TL text.
+    # This means presence of TL text alone cannot determine resolution.
+    signature = hashlib.sha256(str(row["thread_id"]).encode("utf-8")).digest()
+    reaction_only_approval = (
+        state == "RESOLVED_IN_THREAD"
+        and ctype != "ANNOUNCEMENTS"
+        and signature[0] < 85  # roughly 1/3 of eligible resolved cases
+        and row["primary_issue_class"] != "PLATFORM_TECHNICAL"
+    )
+    approving_tl = None
     if state == "PARTIALLY_RESOLVED":
         secondary_replies.append((choose_user(rng, users_by_role, "TEAM_LEAD"), pick(rng, PARTIAL_TL_REPLIES)))
     if state == "RESOLVED_IN_THREAD":
-        tl = choose_user(rng, users_by_role, "TEAM_LEAD")
         content = RESOLVED_TL_BY_TOPIC.get(row["latent_topic"], RESOLVED_TL_BY_CLASS.get(row["primary_issue_class"]))
         if not content:
             raise ValueError(f"Missing resolved response for {row['primary_issue_class']}")
-        secondary_replies.append((tl, content))
+        if reaction_only_approval:
+            # QA or an experienced tutor supplies the concrete reasoning.
+            responder_role = "QA_TUTOR" if signature[1] < 204 else "TUTOR"
+            responder = choose_user(rng, users_by_role, responder_role, exclude=root_user)
+            secondary_replies.append((responder, content))
+            approving_tl = choose_user(rng, users_by_role, "TEAM_LEAD")
+        else:
+            secondary_replies.append((choose_user(rng, users_by_role, "TEAM_LEAD"), content))
 
-    replies = [msg(timestamp_for_reply(root["ts"], i, rng, end_second), user, text, thread_ts=root["ts"])
+    replies = [msg(timestamp_for_reply(root["ts"], i, rng, end_second), user, text, users_by_role, thread_ts=root["ts"])
                for i, (user, text) in enumerate(secondary_replies)]
-    # Ensure deterministic unique timestamps even near the edge of the window.
+
+    if reaction_only_approval:
+        # The endorsement belongs on the answer, NOT the original question.
+        name = ("this", "agree", "white_check_mark")[signature[2] % 3]
+        replies[-1]["reactions"].insert(0, reaction(name, [approving_tl]))
+    elif state == "UNRESOLVED" and replies and signature[0] < 20:
+        # TL saw the discussion but has not approved any answer.
+        root["reactions"].append(reaction("eyes", [choose_user(rng, users_by_role, "TEAM_LEAD")]))
+
     root["reply_count"] = len(replies)
     return root, replies
 
