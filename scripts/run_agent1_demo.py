@@ -16,6 +16,12 @@ def main() -> None:
     parser.add_argument("--channel", default="C_AUDIO_GENERAL")
     parser.add_argument("--thread-id", default="1790921338.000134")
     parser.add_argument("--inspect", action="store_true")
+    parser.add_argument(
+        "--list",
+        action="store_true",
+        help="Display channel conversations without calling the model.",
+    )
+
     args = parser.parse_args()
 
     fixture_root = PROJECT_ROOT / "data" / "fixtures" / "slack_generated"
@@ -26,6 +32,17 @@ def main() -> None:
     )
 
     threads = adapter.get_threads(args.channel)
+    if args.list:
+        for item in threads:
+            print(f"\nTHREAD: {item.thread_id}")
+
+            for message in item.messages:
+                print(f"  {message.message_id}: {message.text}")
+
+                for reaction in message.reactions:
+                    print(f"    Reaction: {reaction.model_dump_json()}")
+
+        return
     thread = next(
         (item for item in threads if item.thread_id == args.thread_id),
         None,
