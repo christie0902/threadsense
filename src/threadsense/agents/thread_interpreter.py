@@ -93,8 +93,9 @@ Output:
 - Copy thread_id exactly.
 - For authority_evidence_message_ids, cite the actual substantive answer
   or endorsed reply, not the root question or a mere evidence request.
-- Set authoritative_response_present to true only when that evidence list
-  is nonempty; otherwise use false and an empty list.
+- Return an empty authority_evidence_message_ids list when no message
+  qualifies. Do not output authoritative_response_present: Python derives
+  that flag from your evidence list after schema and reference validation.
 - Confidence is your estimated certainty, not a measured probability.
 - Return one JSON object matching this schema, without Markdown or commentary:
 {output_schema}
@@ -163,32 +164,65 @@ def validate_interpretation_references(
         )
 
 
+def get_interpretation_output_schema() -> dict:
+    """Ask the model for evidence; the application owns the redundant flag."""
+    schema = ThreadInterpretation.model_json_schema()
+    schema["properties"].pop("authoritative_response_present", None)
+    if "required" in schema:
+        schema["required"] = [
+            name for name in schema["required"]
+            if name != "authoritative_response_present"
+        ]
+    return schema
+
+
+def parse_interpretation_response(thread: Thread, raw: str) -> ThreadInterpretation:
+    """Validate evidence and derive authority without changing resolution."""
+    raw = raw.strip()
+    if raw.startswith(("```json\n", "```\n")) and raw.endswith("```"):
+        raw = raw.split("\n", 1)[1].rsplit("```", 1)[0].strip()
+    try:
+        payload = json.loads(raw)
+        if not isinstance(payload, dict):
+            raise ValueError("Expected a JSON object.")
+        # Require an explicit list so a missing field cannot look like a
+        # deliberate no-authority judgment through the contract's default.
+        if not isinstance(payload.get("authority_evidence_message_ids"), list):
+            raise ValueError("Expected an explicit authority evidence list.")
+        # Any model-supplied flag is ignored: this is now a code-owned field.
+        payload["authoritative_response_present"] = bool(
+            payload["authority_evidence_message_ids"]
+        )
+        result = ThreadInterpretation.model_validate(payload)
+    except (ValueError, ValidationError):
+        raise RuntimeError(
+            "The model did not return valid ThreadInterpretation JSON. "
+            "The output requires review."
+        ) from None
+
+    # No derived flag is returned unless every cited ID passes these checks.
+    validate_interpretation_references(thread, result)
+    return result
+
+
 def get_model_settings() -> tuple[str, str]:
-    """Validate the free development route before requesting credentials."""
+    """Select the model and its provider's credential variable."""
+    # gpt-4o-mini is the default for reliable development and evaluation;
+    # the free OpenRouter route remains available through THREADSENSE_MODEL.
     model = os.getenv(
         "THREADSENSE_MODEL",
-        "openrouter/openrouter/free",
+        "openai/gpt-4o-mini",
     ).strip()
 
-    # Keep this development configuration on free OpenRouter routes.
-    if not model.startswith("openrouter/"):
-        raise ValueError(
-            "THREADSENSE_MODEL must start with 'openrouter/'. "
-            "Use 'openrouter/openrouter/free' for the free router."
-        )
+    if not model:
+        raise ValueError("THREADSENSE_MODEL must not be empty.")
 
-    if model != "openrouter/openrouter/free" and not model.endswith(":free"):
-        raise ValueError(
-            "Development mode requires the free router or a :free model. "
-            "Set THREADSENSE_MODEL to 'openrouter/openrouter/free' "
-            "or a specific 'openrouter/<provider>/<model>:free' route."
-        )
-
-    return model, "OPENROUTER_API_KEY"
+    key_name = "OPENROUTER_API_KEY" if model.startswith("openrouter/") else "OPENAI_API_KEY"
+    return model, key_name
 
 
 def create_llm() -> LLM:
-    """Configure the free OpenRouter route without making a model request."""
+    """Configure the selected provider without making a model request."""
     model, key_name = get_model_settings()
     api_key = os.getenv(key_name, "").strip()
     if not api_key:
@@ -197,7 +231,11 @@ def create_llm() -> LLM:
     return LLM(
         model=model,
         is_litellm=True,
-        base_url="https://openrouter.ai/api/v1",
+        base_url=(
+            "https://openrouter.ai/api/v1"
+            if model.startswith("openrouter/")
+            else "https://api.openai.com/v1"
+        ),
         api_key=api_key,
         temperature=0,
         max_tokens=4096,
@@ -256,7 +294,7 @@ def interpret_thread(thread: Thread) -> ThreadInterpretation:
             inputs={
                 "thread_json": thread.model_dump_json(),
                 "output_schema": json.dumps(
-                    ThreadInterpretation.model_json_schema(), ensure_ascii=False
+                    get_interpretation_output_schema(), ensure_ascii=False
                 ),
                 "authority_eligible_message_ids": json.dumps(
                     sorted(get_authority_eligible_message_ids(thread))
@@ -274,24 +312,13 @@ def interpret_thread(thread: Thread) -> ThreadInterpretation:
         else:
             detail = None
         detail = str(detail or getattr(exc, "message", None) or str(exc))
-        api_key = os.getenv("OPENROUTER_API_KEY", "").strip()
+        _, key_name = get_model_settings()
+        api_key = os.getenv(key_name, "").strip()
         if api_key:
             detail = detail.replace(api_key, "[redacted]")
+        provider = "OpenRouter" if key_name == "OPENROUTER_API_KEY" else "OpenAI"
         raise RuntimeError(
-            f"OpenRouter request failed (HTTP {status}): {detail[:1000]}"
+            f"{provider} request failed (HTTP {status}): {detail[:1000]}"
         ) from None
 
-    raw = crew_output.raw.strip()
-    # Some free models wrap their JSON in a single Markdown code block.
-    if raw.startswith(("```json\n", "```\n")) and raw.endswith("```"):
-        raw = raw.split("\n", 1)[1].rsplit("```", 1)[0].strip()
-    try:
-        result = ThreadInterpretation.model_validate_json(raw)
-    except ValidationError:
-        raise RuntimeError(
-            "The model did not return valid ThreadInterpretation JSON. "
-            "Try the free router again or select another :free model."
-        ) from None
-
-    validate_interpretation_references(thread, result)
-    return result
+    return parse_interpretation_response(thread, crew_output.raw)

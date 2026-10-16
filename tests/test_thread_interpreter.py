@@ -8,9 +8,13 @@ from threadsense.adapters.mock_slack import MockSlackAdapter
 from threadsense.agents import thread_interpreter
 
 
-@pytest.fixture
-def configured_thread(monkeypatch, tmp_path):
-    monkeypatch.setenv("THREADSENSE_MODEL", "openrouter/openrouter/free")
+@pytest.fixture(params=[None, "openai/gpt-4o-mini", "openrouter/openrouter/free"])
+def configured_thread(monkeypatch, tmp_path, request):
+    if request.param is None:
+        monkeypatch.delenv("THREADSENSE_MODEL", raising=False)
+    else:
+        monkeypatch.setenv("THREADSENSE_MODEL", request.param)
+    monkeypatch.setenv("OPENAI_API_KEY", "test-openai-private-key")
     monkeypatch.setenv("OPENROUTER_API_KEY", "test-private-key")
     monkeypatch.setenv("LITELLM_LOCAL_MODEL_COST_MAP", "True")
     monkeypatch.setenv("OTEL_SDK_DISABLED", "true")
@@ -52,14 +56,19 @@ def test_full_crew_uses_text_completion_and_validates_json_locally(
 
     def complete(**kwargs):
         requests.append(kwargs)
-        assert kwargs["model"] == "openrouter/openrouter/free"
-        assert kwargs["api_key"] == "test-private-key"
+        model, key_name = thread_interpreter.get_model_settings()
+        assert kwargs["model"] == model
+        expected_key = (
+            "test-private-key" if key_name == "OPENROUTER_API_KEY"
+            else "test-openai-private-key"
+        )
+        assert kwargs["api_key"] == expected_key
         assert not kwargs.get("response_format")
         assert not kwargs.get("response_model")
         assert not kwargs.get("tools")
         assert "authority_evidence_message_ids" in json.dumps(kwargs["messages"])
         return litellm.ModelResponse(
-            model="openrouter/free",
+            model=model,
             choices=[{
                 "message": {
                     "role": "assistant",
@@ -85,16 +94,19 @@ def test_http_400_is_not_retried_and_error_redacts_key(monkeypatch, configured_t
     def reject(**kwargs):
         calls.append(kwargs)
         raise litellm.BadRequestError(
-            message="Rejected request containing test-private-key",
+            message=f"Rejected request containing {kwargs['api_key']}",
             model=kwargs["model"],
-            llm_provider="openrouter",
+            llm_provider=kwargs["model"].split("/")[0],
         )
 
     monkeypatch.setattr(litellm, "completion", reject)
-    with pytest.raises(RuntimeError, match="OpenRouter request failed.*HTTP 400") as exc:
+    _, key_name = thread_interpreter.get_model_settings()
+    provider = "OpenRouter" if key_name == "OPENROUTER_API_KEY" else "OpenAI"
+    with pytest.raises(RuntimeError, match=f"{provider} request failed.*HTTP 400") as exc:
         thread_interpreter.interpret_thread(configured_thread)
 
     assert "test-private-key" not in str(exc.value)
+    assert "test-openai-private-key" not in str(exc.value)
     assert "[redacted]" in str(exc.value)
     assert len(calls) == 1
 
