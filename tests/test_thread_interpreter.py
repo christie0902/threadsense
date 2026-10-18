@@ -1,0 +1,154 @@
+import json
+from pathlib import Path
+from types import SimpleNamespace
+
+import pytest
+
+from threadsense.adapters.mock_slack import MockSlackAdapter
+from threadsense.agents import thread_interpreter
+
+
+@pytest.fixture(params=[None, "openai/gpt-4o-mini", "openrouter/openrouter/free"])
+def configured_thread(monkeypatch, tmp_path, request):
+    if request.param is None:
+        monkeypatch.delenv("THREADSENSE_MODEL", raising=False)
+    else:
+        monkeypatch.setenv("THREADSENSE_MODEL", request.param)
+    monkeypatch.setenv("OPENAI_API_KEY", "test-openai-private-key")
+    monkeypatch.setenv("OPENROUTER_API_KEY", "test-private-key")
+    monkeypatch.setenv("LITELLM_LOCAL_MODEL_COST_MAP", "True")
+    monkeypatch.setenv("OTEL_SDK_DISABLED", "true")
+    monkeypatch.setenv("CREWAI_TELEMETRY_ENABLED", "false")
+    monkeypatch.setattr(
+        "crewai.memory.storage.kickoff_task_outputs_storage.db_storage_path",
+        lambda: str(tmp_path),
+    )
+    root = Path(__file__).resolve().parents[1] / "data" / "fixtures" / "slack"
+    return MockSlackAdapter(
+        fixture_dir=str(root / "channels"), users_file=str(root / "users.json")
+    ).get_threads("C_AUDIO_GENERAL")[0]
+
+
+@pytest.fixture
+def valid_output(configured_thread):
+    return {
+        "thread_id": configured_thread.thread_id,
+        "summary": "Test response for the fixture thread.",
+        "central_question": None,
+        "resolution_state": "UNRESOLVED",
+        "authoritative_response_present": False,
+        "authority_evidence_message_ids": [],
+        "resolution_rationale": "Test rationale.",
+        "confidence": 0.5,
+    }
+
+
+@pytest.mark.parametrize("fenced", [False, True])
+def test_full_crew_uses_text_completion_and_validates_json_locally(
+    monkeypatch, configured_thread, valid_output, fenced
+):
+    import litellm
+
+    requests = []
+    raw = json.dumps(valid_output)
+    if fenced:
+        raw = f"```json\n{raw}\n```"
+
+    def complete(**kwargs):
+        requests.append(kwargs)
+        model, key_name = thread_interpreter.get_model_settings()
+        assert kwargs["model"] == model
+        expected_key = (
+            "test-private-key" if key_name == "OPENROUTER_API_KEY"
+            else "test-openai-private-key"
+        )
+        assert kwargs["api_key"] == expected_key
+        assert not kwargs.get("response_format")
+        assert not kwargs.get("response_model")
+        assert not kwargs.get("tools")
+        assert "authority_evidence_message_ids" in json.dumps(kwargs["messages"])
+        return litellm.ModelResponse(
+            model=model,
+            choices=[{
+                "message": {
+                    "role": "assistant",
+                    "content": f"Thought: I can return the result.\nFinal Answer: {raw}",
+                },
+                "finish_reason": "stop",
+            }],
+            usage={"prompt_tokens": 10, "completion_tokens": 10, "total_tokens": 20},
+        )
+
+    monkeypatch.setattr(litellm, "completion", complete)
+    result = thread_interpreter.interpret_thread(configured_thread)
+
+    assert result.model_dump(mode="json") == valid_output
+    assert len(requests) == 1
+
+
+def test_http_400_is_not_retried_and_error_redacts_key(monkeypatch, configured_thread):
+    import litellm
+
+    calls = []
+
+    def reject(**kwargs):
+        calls.append(kwargs)
+        raise litellm.BadRequestError(
+            message=f"Rejected request containing {kwargs['api_key']}",
+            model=kwargs["model"],
+            llm_provider=kwargs["model"].split("/")[0],
+        )
+
+    monkeypatch.setattr(litellm, "completion", reject)
+    _, key_name = thread_interpreter.get_model_settings()
+    provider = "OpenRouter" if key_name == "OPENROUTER_API_KEY" else "OpenAI"
+    with pytest.raises(RuntimeError, match=f"{provider} request failed.*HTTP 400") as exc:
+        thread_interpreter.interpret_thread(configured_thread)
+
+    assert "test-private-key" not in str(exc.value)
+    assert "test-openai-private-key" not in str(exc.value)
+    assert "[redacted]" in str(exc.value)
+    assert len(calls) == 1
+
+
+@pytest.mark.parametrize(("changes", "message"), [
+    ({"thread_id": "wrong-thread"}, "thread_id does not match"),
+    ({"authority_evidence_message_ids": ["unknown"], "authoritative_response_present": True},
+     "unknown message IDs"),
+    ({"confidence": 2}, "valid ThreadInterpretation JSON"),
+])
+def test_local_validation_rejects_invalid_output(
+    monkeypatch, configured_thread, valid_output, changes, message
+):
+    raw = json.dumps({**valid_output, **changes})
+    monkeypatch.setattr(thread_interpreter, "Crew", lambda **kwargs: SimpleNamespace(
+        kickoff=lambda **inputs: SimpleNamespace(raw=raw)
+    ))
+
+    with pytest.raises((ValueError, RuntimeError), match=message):
+        thread_interpreter.interpret_thread(configured_thread)
+
+
+def test_model_authority_flag_is_derived_from_evidence(
+    monkeypatch, configured_thread, valid_output
+):
+    raw = json.dumps({**valid_output, "authoritative_response_present": True})
+    monkeypatch.setattr(thread_interpreter, "Crew", lambda **kwargs: SimpleNamespace(
+        kickoff=lambda **inputs: SimpleNamespace(raw=raw)
+    ))
+
+    result = thread_interpreter.interpret_thread(configured_thread)
+
+    assert result.model_dump(mode="json") == valid_output
+
+
+def test_invalid_json_requires_review(monkeypatch, configured_thread):
+    monkeypatch.setattr(thread_interpreter, "Crew", lambda **kwargs: SimpleNamespace(
+        kickoff=lambda **inputs: SimpleNamespace(raw="I could not interpret the thread.")
+    ))
+
+    with pytest.raises(
+        RuntimeError,
+        match=r"valid ThreadInterpretation JSON\. The output requires review\.",
+    ):
+        thread_interpreter.interpret_thread(configured_thread)
