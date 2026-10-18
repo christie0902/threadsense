@@ -4,6 +4,7 @@ import json
 import os
 from pathlib import Path
 from getpass import getpass
+from threadsense.agents.severity import SeverityLevel
 
 from crewai import Crew, Process
 
@@ -68,7 +69,7 @@ def validate_output(payload, analysis: TopicAnalysis):
 
     # 3. Check severity and Slack evidence references.
     for topic in analysis.topics:
-        if topic.severity not in ("LOW", "MEDIUM", "HIGH"):
+        if not isinstance(topic.severity, SeverityLevel):
             raise ValueError("Invalid severity")
 
         valid_messages = {
