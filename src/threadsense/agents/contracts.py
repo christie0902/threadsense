@@ -1,4 +1,4 @@
-
+from threadsense.agents.severity import SeverityLevel
 from enum import Enum
 from pydantic import BaseModel, Field
 
@@ -36,7 +36,7 @@ class TopicRollup(BaseModel):
     thread_ids: list[str] = Field(min_length=1)
     evidence_message_ids: list[str] = Field(default_factory=list)
 
-    severity: str
+    severity: SeverityLevel
     severity_rationale: str
 
     actionable: bool
