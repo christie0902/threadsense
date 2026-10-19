@@ -7,7 +7,7 @@ from pathlib import Path
 from threadsense.adapters.mock_slack import MockSlackAdapter
 
 ROOT = Path(__file__).resolve().parents[1]
-CLUSTER_ID = "cluster_5ac8046a34862c06"
+CLUSTER_ID = "cluster_cf778ff3cdf90934"
 
 # 1. Load the existing cluster
 path = ROOT / "data/processed/grouping/clusters.json"
