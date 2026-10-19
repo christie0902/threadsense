@@ -4,6 +4,7 @@ import os
 from crewai import Agent, Crew, LLM, Process, Task
 from pydantic import ValidationError
 
+from threadsense.config import get_api_key, get_model_settings
 from threadsense.agents.contracts import ThreadInterpretation
 from threadsense.models import Role, Thread
 
@@ -205,28 +206,10 @@ def parse_interpretation_response(thread: Thread, raw: str) -> ThreadInterpretat
     return result
 
 
-def get_model_settings() -> tuple[str, str]:
-    """Select the model and its provider's credential variable."""
-    # gpt-4o-mini is the default for reliable development and evaluation;
-    # the free OpenRouter route remains available through THREADSENSE_MODEL.
-    model = os.getenv(
-        "THREADSENSE_MODEL",
-        "openai/gpt-4o-mini",
-    ).strip()
-
-    if not model:
-        raise ValueError("THREADSENSE_MODEL must not be empty.")
-
-    key_name = "OPENROUTER_API_KEY" if model.startswith("openrouter/") else "OPENAI_API_KEY"
-    return model, key_name
-
-
 def create_llm() -> LLM:
     """Configure the selected provider without making a model request."""
     model, key_name = get_model_settings()
-    api_key = os.getenv(key_name, "").strip()
-    if not api_key:
-        raise RuntimeError(f"{key_name} is not configured.")
+    api_key = get_api_key(key_name)
 
     return LLM(
         model=model,

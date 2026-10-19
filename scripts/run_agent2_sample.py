@@ -1,9 +1,7 @@
 
 import argparse
 import json
-import os
 from pathlib import Path
-from getpass import getpass
 from threadsense.agents.severity import SeverityLevel
 
 from crewai import Crew, Process
@@ -129,17 +127,10 @@ def main():
             "Agent 2 output already exists. Inspect it before rerunning."
         )
 
-    
-    if not os.getenv("OPENAI_API_KEY", "").strip():
-        key = getpass("OPENAI_API_KEY (input hidden): ").strip()
-
-        if not key:
-            raise RuntimeError("OPENAI_API_KEY is required")
-
-        os.environ["OPENAI_API_KEY"] = key
-
-
-    agent = create_topic_analyst()
+    try:
+        agent = create_topic_analyst()
+    except (ValueError, RuntimeError) as exc:
+        parser.error(str(exc))
     task = create_topic_task(agent)
 
     crew = Crew(

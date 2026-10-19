@@ -11,7 +11,6 @@ import hashlib
 import json
 import os
 from datetime import datetime, timezone
-from getpass import getpass
 from importlib.metadata import PackageNotFoundError, version
 from pathlib import Path
 import time
@@ -189,11 +188,11 @@ def main(argv: list[str] | None = None) -> int:
     if rejected:
         action = "retrying once" if args.retry_failed else "keeping for review"
         print(f"Previously rejected: {len(rejected)} ({action})")
-    if pending and not os.getenv(key_name, "").strip():
-        key = getpass(f"{key_name} (input hidden): ").strip()
-        if not key:
-            parser.error(f"{key_name} is required")
-        os.environ[key_name] = key
+    if pending:
+        try:
+            ti.get_api_key(key_name)
+        except RuntimeError as exc:
+            parser.error(str(exc))
 
     write_json(manifest_path, config)
     export_path = output_dir / "interpretations.json"

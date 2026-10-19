@@ -30,7 +30,7 @@ for thread in threads:
 
         if message.reactions:
             print(
-                f"Reactions: {', '.join(message.reactions)}"
+                f"Reactions: {', '.join(reaction.name for reaction in message.reactions)}"
             )
 
         print()

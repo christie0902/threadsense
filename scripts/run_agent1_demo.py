@@ -1,6 +1,4 @@
 import argparse
-import os
-from getpass import getpass
 from pathlib import Path
 
 from threadsense.adapters.mock_slack import MockSlackAdapter
@@ -65,15 +63,9 @@ def main() -> None:
     )
 
     try:
-        model, key_name = get_model_settings()
+        model, _ = get_model_settings()
     except ValueError as exc:
         parser.error(str(exc))
-
-    if not os.getenv(key_name, "").strip():
-        api_key = getpass("OpenRouter API key (input hidden): ").strip()
-        if not api_key:
-            raise ValueError("An OpenRouter API key is required.")
-        os.environ[key_name] = api_key
 
     print(f"Interpreting with {model}...")
 

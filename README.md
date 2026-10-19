@@ -91,41 +91,46 @@ Use `uv add package-name` to add future dependencies so they are recorded in
 `pyproject.toml` and `uv.lock` for both computers. Avoid a bare `pip install`,
 which can target a different interpreter and does not update the shared lockfile.
 
-### OpenRouter through LiteLLM
+### API keys for both agents
 
-The `crewai[litellm]` extra is included in the project dependencies. To add
-this integration to another uv project, use `uv add "crewai[litellm]"`.
+Create `.env` in the repository root by copying `.env.example`, then paste your
+OpenAI API key after `OPENAI_API_KEY=`. Both the interpreter and topic analyst
+automatically read this file, including when launched from another directory.
 
-For this project, select a free OpenRouter model and run the demo. It prompts for
-your OpenRouter key with hidden input if `OPENROUTER_API_KEY` is not set.
+```dotenv
+OPENAI_API_KEY=your-key-here
+THREADSENSE_MODEL=openai/gpt-4o-mini
+```
 
-Windows PowerShell:
+Save the file and run the interpreter as usual:
 
-```powershell
-$env:THREADSENSE_MODEL = "openrouter/openrouter/free"
+```sh
 uv run python scripts/run_agent1_demo.py
 ```
 
-macOS:
+The batch interpreter uses the same configuration:
 
 ```sh
-THREADSENSE_MODEL=openrouter/openrouter/free uv run python scripts/run_agent1_demo.py
+uv run python scripts/run_agent1_batch.py
 ```
 
-Alternatively, copy `.env.example` to `.env`, fill in your key locally, and run:
+Check the analyst's input with `uv run python scripts/run_agent2_sample.py`.
+Add `--run` to call the model. The analyst refuses to overwrite an existing
+`data/processed/agent2_sample/topic_analysis.json`; review and move that result
+before intentionally rerunning the sample.
 
-```sh
-uv run --env-file .env python scripts/run_agent1_demo.py
-```
+You do not need `--env-file` or terminal key prompts. If the selected key is
+missing, the runner stops with a message pointing to `.env`. Variables already
+set in the terminal take precedence over `.env`; start a fresh terminal if
+old settings are overriding your saved configuration.
 
-`.env` is ignored by Git. Each computer needs its own credentials. Development
-mode defaults to `openrouter/openrouter/free` and also accepts explicit
-`openrouter/<provider>/<model>:free` routes. Model prefixes are described in the
-[LiteLLM OpenRouter guide](https://docs.litellm.ai/docs/providers/openrouter).
-The demo validates the model before asking for a key. If a previous shell
-command set a paid model, reset `THREADSENSE_MODEL` with the command above.
-Running interpretation sends the selected thread to the configured model
-using your OpenRouter account.
+`.env` is ignored by Git and stays on this computer. Create and fill in a local
+`.env` on your Mac as well. Commit `.env.example` with blank key fields only.
+
+To use OpenRouter instead, set `THREADSENSE_MODEL=openrouter/openrouter/free`
+and fill in `OPENROUTER_API_KEY` in the same `.env` file. Both agents select the
+key for the configured provider. The `crewai[litellm]` integration is already
+included in this project's dependencies.
 
 The demo uses LiteLLM with ordinary text completions. It asks for a JSON object
 and validates the result locally with Pydantic, including the thread ID and
