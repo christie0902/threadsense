@@ -59,7 +59,22 @@ Instructions:
 3. Split only when substantively different problems require
    separate investigation. Explain why a split is justified.
 
-4. Assign every input thread to exactly one topic.
+4. Create a mutually exclusive topic partition:
+   - Every input thread must belong to exactly ONE topic.
+   - Never repeat a thread_id across topics.
+   - Never omit or invent thread IDs.
+   - Do not create overlapping, synonymous, or umbrella topics
+     when their member threads are already assigned elsewhere.
+   - Different questions about the same underlying issue
+     should normally remain within one topic.
+   - Set is_coherent=True only when the entire candidate
+     group represents one underlying issue and produces
+     exactly one topic.
+   - Set is_coherent=False when distinct issues justify
+     multiple topics.
+
+   Before returning, verify that all input thread IDs
+   appear exactly once across all topics.
 
 5. Provide a concise topic name, summary, and central question.
 
