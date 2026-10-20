@@ -1,6 +1,6 @@
 from threadsense.agents.severity import SeverityLevel
 from enum import Enum
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, model_validator
 
 
 class ResolutionState(str, Enum):
@@ -58,3 +58,64 @@ class TopicAnalysis(BaseModel):
 
     needs_human_review: bool = False
     review_reason: str | None = None
+
+
+class VerificationStatus(str, Enum):
+    PASS = "PASS"
+    CORRECTION_PROPOSED = "CORRECTION_PROPOSED"
+    NEEDS_REVIEW = "NEEDS_REVIEW"
+
+
+class VerificationCategory(str, Enum):
+    SUMMARY = "SUMMARY"
+    CENTRAL_QUESTION = "CENTRAL_QUESTION"
+    RESOLUTION = "RESOLUTION"
+    AUTHORITY = "AUTHORITY"
+    TERMINOLOGY = "TERMINOLOGY"
+    EVIDENCE = "EVIDENCE"
+    OTHER = "OTHER"
+
+
+class VerificationFinding(BaseModel):
+    category: VerificationCategory
+    explanation: str = Field(min_length=1)
+    evidence_message_ids: list[str] = Field(default_factory=list)
+
+
+class InterpretationVerification(BaseModel):
+    thread_id: str
+    status: VerificationStatus
+
+    findings: list[VerificationFinding] = Field(
+        default_factory=list
+    )
+
+    proposed_interpretation: ThreadInterpretation | None = None
+
+    rationale: str = Field(min_length=1)
+
+    @model_validator(mode="after")
+    def check_consistency(self):
+        if self.status == VerificationStatus.PASS:
+            if self.findings or self.proposed_interpretation:
+                raise ValueError(
+                    "PASS must not contain findings or corrections"
+                )
+
+        if self.status == VerificationStatus.CORRECTION_PROPOSED:
+            if not self.findings:
+                raise ValueError(
+                    "A correction requires documented findings"
+                )
+            if self.proposed_interpretation is None:
+                raise ValueError(
+                    "A correction requires a proposed interpretation"
+                )
+
+        if self.proposed_interpretation is not None:
+            if self.proposed_interpretation.thread_id != self.thread_id:
+                raise ValueError(
+                    "Corrected interpretation has a different thread_id"
+                )
+
+        return self
