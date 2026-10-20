@@ -4,6 +4,7 @@
 import json
 import re
 from crewai import Agent, Crew, Process, Task, LLM
+from collections.abc import Callable
 import os
 from threadsense.config import get_api_key, get_model_settings
 
@@ -117,6 +118,79 @@ a reliable correction, return NEEDS_REVIEW.
 
 Your goal is the MINIMUM necessary factual correction.
 
+DECISION-FIRST VERIFICATION — MANDATORY
+
+Evaluate resolution and authority independently from Agent 1's
+existing labels and rationale.
+
+Follow this evidence-checking procedure:
+
+STEP A — IDENTIFY THE REQUEST
+- Identify the precise decision or guidance requested by the
+  ROOT Slack message.
+- Distinguish the requested decision from symptoms, background
+  information, and follow-up diagnostic questions.
+- When multiple decisions are requested, identify each one.
+
+STEP B — EXAMINE ACTUAL REPLIES
+For each potentially relevant reply, determine:
+- Does it directly answer the original requested decision?
+- Does it establish only part of that decision?
+- Does it merely acknowledge, investigate, ask questions, or
+  request further evidence?
+- Is the reply describing an established conclusion, or only
+  a proposed possibility?
+
+Do not treat diagnostic progress as decision progress.
+
+STEP C — DETERMINE RESOLUTION
+UNRESOLVED:
+- None of the requested decision or guidance is established.
+- Requests for task IDs, screenshots, reproduction steps, or
+  additional investigation do not resolve an unrelated
+  handling or classification decision.
+
+PARTIALLY_RESOLVED:
+- A substantive portion of the actual requested decision
+  has been answered, but another material portion remains open.
+- There must be concrete partial guidance addressing the request.
+- Diagnostic steps alone are insufficient when the original
+  question asks for a classification or handling decision.
+
+RESOLVED_IN_THREAD:
+- The original requested decision is sufficiently answered.
+- Do not require downstream implementation if the request was
+  only for guidance.
+
+Important exception:
+If the root specifically asks what evidence to collect or how
+to investigate, concrete diagnostic instructions can answer
+that request.
+
+STEP D — VERIFY AUTHORITY SEPARATELY
+- First identify replies containing substantive answers to
+  the requested decision.
+- Only then check whether those replies meet role or
+  endorsement eligibility requirements.
+- A TEAM_LEAD or ENGINEER requesting additional information
+  is not automatically providing an authoritative answer.
+- Role eligibility is necessary but not sufficient.
+- A relevant authoritative answer may be partial; authority
+  and completeness must remain distinct.
+
+STEP E — COMPARE WITH AGENT 1
+- Compare your independently established judgment with the
+  original interpretation's resolution_state and
+  authority_evidence_message_ids.
+- Report a RESOLUTION finding for a material status error.
+- Report an AUTHORITY finding if evidence is incorrectly
+  treated as an authoritative substantive answer.
+- Preserve correct fields without unnecessary rewriting.
+
+Use only original Slack evidence. Do not assume Agent 1's
+existing interpretation is correct because its explanation
+sounds plausible.
+
 DECISION RULES
 
 PASS:
@@ -200,6 +274,32 @@ def find_glossary_conflicts(
                 f"{term} ({match.group(1)}) conflicts with "
                 f"approved definition: {definition}"
             )
+
+    # Detect known incorrect QN expansions in either direction.
+    # Examples:
+    # "QN (quality issue)"
+    # "quality issue (QN)"
+    if str(get_terms().get("QN", "")).strip().lower() == "quarantine":
+        for wrong_meaning in ("quality issue", "quality note"):
+            escaped = re.escape(wrong_meaning)
+
+            patterns = [
+                rf"\bQN\s*\(\s*{escaped}\s*\)",
+                rf"\b{escaped}\s*\(\s*QN\s*\)",
+            ]
+
+            if any(
+                re.search(pattern, content, re.IGNORECASE)
+                for pattern in patterns
+            ):
+                conflict = (
+                    f"QN incorrectly expanded as '{wrong_meaning}'; "
+                    "approved definition: Quarantine"
+                )
+
+                if conflict not in conflicts:
+                    conflicts.append(conflict)
+
 
     return conflicts
 
@@ -344,6 +444,8 @@ def create_verifier_llm() -> LLM:
 def verify_interpretation(
     thread: Thread,
     interpretation: ThreadInterpretation,
+    *,
+    on_raw_output: Callable[[str], None] | None = None,
 ) -> InterpretationVerification:
     """Run one independent LLM verification of an interpretation."""
 
@@ -402,6 +504,9 @@ def verify_interpretation(
             ),
         }
     )
+
+    if on_raw_output is not None:
+        on_raw_output(response.raw)
 
     return parse_verification_response(
         thread,

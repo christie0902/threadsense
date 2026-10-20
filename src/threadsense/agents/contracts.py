@@ -119,3 +119,36 @@ class InterpretationVerification(BaseModel):
                 )
 
         return self
+
+
+class ReplyContribution(str, Enum):
+    COMPLETE_ANSWER = "COMPLETE_ANSWER"
+    PARTIAL_ANSWER = "PARTIAL_ANSWER"
+    DIAGNOSTIC_ONLY = "DIAGNOSTIC_ONLY"
+    ACKNOWLEDGMENT = "ACKNOWLEDGMENT"
+    OTHER = "OTHER"
+
+
+class ReplyEvidenceAssessment(BaseModel):
+    message_id: str
+    contribution: ReplyContribution
+
+    # Exact excerpt from this Slack reply.
+    evidence_quote: str = Field(min_length=1)
+
+    # Explain the relationship to the original request.
+    explanation: str = Field(min_length=1)
+
+
+class DecisionEvidenceAudit(BaseModel):
+    thread_id: str
+
+    # Empty for an announcement without a requested decision.
+    requested_decisions: list[str] = Field(
+        default_factory=list
+    )
+
+    # Analyze replies independently of Agent 1's labels.
+    reply_assessments: list[ReplyEvidenceAssessment] = Field(
+        default_factory=list
+    )

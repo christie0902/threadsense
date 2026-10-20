@@ -15,13 +15,15 @@ from threadsense.topic_inputs import load_candidate_payloads
 
 
 ROOT = Path(__file__).resolve().parents[1]
-TARGET_THREAD_ID = "1790915374.000127"
+TARGET_THREAD_ID = "1790882197.000111"
 
 OUTPUT = (
     ROOT
     / "data/processed/agent1_verifier_sample"
-    / f"{TARGET_THREAD_ID}.verifier_v2.json"
+    / f"{TARGET_THREAD_ID}.verifier_v3.json"
 )
+
+RAW_OUTPUT = OUTPUT.with_suffix(".raw.txt")
 
 
 def main():
@@ -79,9 +81,10 @@ def main():
         return
 
     # Never overwrite a completed verification.
-    if OUTPUT.exists():
+    if OUTPUT.exists() or RAW_OUTPUT.exists():
         raise FileExistsError(
-            f"Verification result already exists: {OUTPUT}"
+            "A v3 result or raw response already exists. "
+            "Inspect the saved files before rerunning."
         )
 
     if not os.getenv(key_name, "").strip():
@@ -94,14 +97,31 @@ def main():
 
     print("\nRunning independent verification...")
 
-    result = verify_interpretation(thread, interpretation)
+    def preserve_raw(raw: str) -> None:
+        RAW_OUTPUT.parent.mkdir(parents=True, exist_ok=True)
+
+        with RAW_OUTPUT.open("x", encoding="utf-8") as file:
+            file.write(raw)
+
+
+    try:
+        result = verify_interpretation(
+            thread,
+            interpretation,
+            on_raw_output=preserve_raw,
+        )
+    except Exception:
+        if RAW_OUTPUT.exists():
+            print(f"Raw response preserved: {RAW_OUTPUT}")
+        raise
 
     record = {
         "thread_id": thread.thread_id,
         "candidate_group_id": payload["candidate_group_id"],
         "model": verifier_model,
         "interpreter_model": model,
-        "verification_version": "v2",
+        "verification_version": "v3",
+        "raw_output_file": RAW_OUTPUT.name,
         "original_thread": thread.model_dump(mode="json"),
         "original_interpretation": interpretation.model_dump(
             mode="json"
