@@ -2,8 +2,10 @@
 """Verify Agent 1 interpretations against original Slack evidence."""
 
 import json
-
-from crewai import Agent, Crew, Process, Task
+import re
+from crewai import Agent, Crew, Process, Task, LLM
+import os
+from threadsense.config import get_api_key, get_model_settings
 
 from threadsense.agents.contracts import (
     InterpretationVerification,
@@ -11,7 +13,6 @@ from threadsense.agents.contracts import (
     VerificationStatus,
 )
 from threadsense.agents.thread_interpreter import (
-    create_llm,
     get_authority_eligible_message_ids,
     validate_interpretation_references,
 )
@@ -74,6 +75,48 @@ Check:
 - Do not invent alternative expansions for abbreviations.
 - If Agent 1 misinterprets a term, identify the discrepancy.
 
+
+MATERIAL ACCURACY STANDARD — MANDATORY
+
+Your purpose is ERROR DETECTION, not rewriting.
+
+Only report a finding when the existing interpretation contains
+a demonstrable factual error, unsupported conclusion, incorrect
+terminology, materially omitted context, or incorrect resolution
+or authority judgment.
+
+- If an interpretation is correct but could be worded better,
+  mark PASS. Do not rewrite it.
+- Do not report a RESOLUTION finding when the existing resolution
+  is correct and its rationale is substantively accurate.
+- Do not report a CENTRAL_QUESTION finding merely because the
+  question can be expressed differently.
+- Short forms such as "QN or quality score?" are genuine questions.
+  Do not claim they are not questions because of their wording.
+- Follow-up diagnostic questions do not replace the root question.
+- Do not invent uncertainty absent from the original discussion.
+- Every finding must identify a specific material discrepancy
+  supported by original Slack evidence.
+- Do not create findings merely to justify producing a correction.
+
+MANDATORY TERMINOLOGY CHECK
+
+Before deciding PASS, explicitly compare the interpretation's
+use of each recognized abbreviation against the approved glossary.
+
+Example: If the glossary defines QN as Quarantine,
+"QN (quality note)" is incorrect.
+
+- A wrong expansion requires a TERMINOLOGY finding.
+- A proposed correction must remove or correct that expansion.
+- Check the complete proposed interpretation before returning.
+- Preserve all otherwise-correct interpretation fields.
+
+When a material error exists but the evidence cannot establish
+a reliable correction, return NEEDS_REVIEW.
+
+Your goal is the MINIMUM necessary factual correction.
+
 DECISION RULES
 
 PASS:
@@ -119,6 +162,46 @@ ORIGINAL SLACK THREAD:
 AGENT 1 INTERPRETATION TO VERIFY:
 {interpretation_json}
 """
+
+
+def find_glossary_conflicts(
+    interpretation: ThreadInterpretation,
+) -> list[str]:
+    """Detect conflicting explicit acronym expansions."""
+
+    content = "\n".join([
+        interpretation.summary,
+        interpretation.central_question or "",
+        interpretation.resolution_rationale,
+    ])
+
+    conflicts = []
+
+    for term, definition in get_terms().items():
+        # Only check acronym-like glossary entries.
+        if not term.isalpha() or not term.isupper():
+            continue
+
+        pattern = rf"\b{re.escape(term)}\s*\(([^()]{{1,80}})\)"
+
+        for match in re.finditer(pattern, content, re.IGNORECASE):
+            claimed = " ".join(match.group(1).lower().split())
+            approved = " ".join(str(definition).lower().split())
+
+            # Accept the official definition and explanatory extensions.
+            if (
+                claimed == approved
+                or approved.startswith(claimed + " ")
+                or claimed.startswith(approved + " ")
+            ):
+                continue
+
+            conflicts.append(
+                f"{term} ({match.group(1)}) conflicts with "
+                f"approved definition: {definition}"
+            )
+
+    return conflicts
 
 
 def parse_verification_response(
@@ -191,7 +274,71 @@ def parse_verification_response(
                 "Verifier proposed an unchanged interpretation."
             )
 
+
+    original_conflicts = find_glossary_conflicts(original)
+
+    if result.status == VerificationStatus.PASS:
+        if original_conflicts:
+            raise ValueError(
+                "Verifier approved an interpretation with glossary "
+                f"conflicts: {original_conflicts}"
+            )
+
+    if result.status == VerificationStatus.CORRECTION_PROPOSED:
+        corrected = result.proposed_interpretation
+
+        correction_conflicts = find_glossary_conflicts(corrected)
+
+        if correction_conflicts:
+            raise ValueError(
+                "Proposed correction still contains glossary "
+                f"conflicts: {correction_conflicts}"
+            )
+
+        if original_conflicts and not any(
+            finding.category.value == "TERMINOLOGY"
+            for finding in result.findings
+        ):
+            raise ValueError(
+                "Verifier overlooked known terminology errors: "
+                f"{original_conflicts}"
+            )
+
     return result
+
+
+def create_verifier_llm() -> LLM:
+    """Configure the verifier independently of Agent 1."""
+
+    default_model, _ = get_model_settings()
+
+    model = (
+        os.getenv("THREADSENSE_VERIFIER_MODEL", "").strip()
+        or default_model
+    )
+
+    is_openrouter = model.startswith("openrouter/")
+
+    key_name = (
+        "OPENROUTER_API_KEY"
+        if is_openrouter
+        else "OPENAI_API_KEY"
+    )
+
+    return LLM(
+        model=model,
+        is_litellm=True,
+        base_url=(
+            "https://openrouter.ai/api/v1"
+            if is_openrouter
+            else "https://api.openai.com/v1"
+        ),
+        api_key=get_api_key(key_name),
+        temperature=0,
+        max_tokens=4096,
+        timeout=120,
+    )
+
 
 
 def verify_interpretation(
@@ -213,7 +360,7 @@ def verify_interpretation(
             "You are an independent quality reviewer for AI-labeling "
             "operations. You favor evidence over confident assumptions."
         ),
-        llm=create_llm(),
+        llm=create_verifier_llm(),
         tools=[],
         allow_delegation=False,
         verbose=False,
