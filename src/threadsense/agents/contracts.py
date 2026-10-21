@@ -153,6 +153,13 @@ class DecisionEvidenceAudit(BaseModel):
     reply_assessments: list[ReplyEvidenceAssessment]
     # Coverage is part of this one audit, never a separate model call.
     decision_coverage: list[DecisionCoverageItem]
-    uncertainties: list[str]
+    uncertainties: list[str] = Field(
+        description=(
+            "Ambiguities that prevent reliable interpretation of the conversation. "
+            "An unanswered operational decision is not interpretation uncertainty; "
+            "record it in decision_coverage and explain it in the rationale. "
+            "Return [] when the absence of an answer is clear."
+        )
+    )  
     # Required even when empty: a source-only audit cannot certify candidate prose.
     interpretation_findings: list[VerificationFinding]

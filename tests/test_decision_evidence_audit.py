@@ -158,7 +158,7 @@ def test_no_reply_announcement_requires_explicit_audit_lists(thread, missing_fie
 
 @pytest.mark.parametrize("corruption", [
     "missing_ids", "missing_quotes", "invented_quote", "unknown_id", "wrong_quote_count",
-    "missing_fields", "structured_field", "unknown_field",
+    "missing_fields", "identity_field", "unknown_field",
 ])
 def test_candidate_comparison_findings_require_exact_source_quotes_and_prose_fields(thread, payload, corruption):
     finding = {
@@ -178,8 +178,8 @@ def test_candidate_comparison_findings_require_exact_source_quotes_and_prose_fie
         finding["evidence_quotes"] *= 2
     elif corruption == "missing_fields":
         finding["disputed_fields"] = []
-    elif corruption == "structured_field":
-        finding["disputed_fields"] = ["resolution_state"]
+    elif corruption == "identity_field":
+        finding["disputed_fields"] = ["thread_id"]
     elif corruption == "unknown_field":
         finding["disputed_fields"] = ["invented_field"]
     payload["interpretation_findings"] = [finding]
@@ -236,3 +236,28 @@ def test_auditor_compares_current_candidate_with_original_thread_and_preserves_i
     assert agent_config["max_retry_limit"] == 0
     assert agent_config["tools"] == []
     assert agent_config["allow_delegation"] is False
+
+@pytest.mark.parametrize("field", [
+    "resolution_state",
+    "authoritative_response_present",
+    "authority_evidence_message_ids",
+])
+def test_audit_accepts_structured_content_findings(thread, payload, field):
+    payload["interpretation_findings"] = [{
+        "category": (
+            "RESOLUTION" if field == "resolution_state" else "AUTHORITY"
+        ),
+        "explanation": (
+            "The reply requests evidence without answering "
+            "the quarantine question."
+        ),
+        "evidence_message_ids": ["reply"],
+        "evidence_quotes": [thread.messages[1].text],
+        "disputed_fields": [field],
+    }]
+
+    audit = auditor_module.parse_audit_response(
+        thread, json.dumps(payload)
+    )
+
+    assert audit.interpretation_findings[0].disputed_fields == [field]

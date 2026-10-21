@@ -107,8 +107,19 @@ from COMPLETE_ANSWER or PARTIAL_ANSWER replies. UNANSWERED must cite no answers.
 Several partial replies may collectively answer all decisions. A reply called
 COMPLETE_ANSWER must settle the entire original request, not only one subpart.
 For no requested decisions, return empty decision_coverage.
-Document contradictions or material uncertainty in uncertainties, rather than
-inventing policy, historical outcomes, or technical resolutions.
+Use uncertainties ONLY for ambiguity that prevents reliably interpreting
+the conversation, such as conflicting answers with no clear supersession,
+unclear references, or uncertain answer coverage.
+
+An unanswered operational question is NOT interpretation uncertainty.
+If replies only request diagnostics and clearly leave the decision open:
+- Set decision_coverage.status to UNANSWERED.
+- Explain the missing answer in decision_coverage.rationale.
+- Return uncertainties=[] unless a separate interpretation ambiguity exists.
+
+An unknown technical cause or unconfirmed historical workaround does not
+by itself make an accurately UNRESOLVED interpretation uncertain.
+Do not invent guidance or historical outcomes to fill those gaps.
 
 STEP 5 — DOMAIN TERMINOLOGY
 
@@ -141,7 +152,8 @@ Check particularly:
 
 Every interpretation finding must explain a concrete discrepancy or ambiguity,
 provide nonempty disputed_fields drawn ONLY from summary, central_question,
-resolution_rationale, and cite original evidence_message_ids plus parallel
+resolution_rationale, resolution_state, authoritative_response_present,
+authority_evidence_message_ids, and cite original evidence_message_ids plus parallel
 evidence_quotes (one short exact quote for each ID). The quote must actually
 support the explanation; do not cite an unrelated true quote. Never quote the
 candidate as original evidence. Use the appropriate finding category, normally
@@ -253,20 +265,45 @@ def validate_decision_evidence_audit(
         raise ValueError("Audit uncertainties must not be blank.")
 
     messages = {message.message_id: message for message in thread.messages}
-    prose_fields = {"summary", "central_question", "resolution_rationale"}
+
+    content_fields = {
+        "summary",
+        "central_question",
+        "resolution_rationale",
+        "resolution_state",
+        "authoritative_response_present",
+        "authority_evidence_message_ids",
+    }
+
     for finding in audit.interpretation_findings:
-        if not finding.disputed_fields or set(finding.disputed_fields) - prose_fields:
-            raise ValueError("Interpretation findings must identify only candidate prose fields.")
+        if (
+            not finding.disputed_fields
+            or set(finding.disputed_fields) - content_fields
+        ):
+            raise ValueError(
+                "Interpretation findings must identify only supported "
+                "candidate content fields."
+            )
+
         if not finding.explanation.strip():
             raise ValueError("Interpretation findings require an explanation.")
+
         cited_ids = finding.evidence_message_ids
         if not cited_ids or len(cited_ids) != len(finding.evidence_quotes):
-            raise ValueError("Interpretation findings require matching evidence IDs and quotations.")
+            raise ValueError(
+                "Interpretation findings require matching evidence IDs "
+                "and quotations."
+            )
+
         for message_id, quote in zip(cited_ids, finding.evidence_quotes):
             if message_id not in messages:
                 raise ValueError("Interpretation finding cites an unknown message.")
+
             if not quote.strip() or quote not in messages[message_id].text:
-                raise ValueError("Interpretation finding quotation is not verbatim source evidence.")
+                raise ValueError(
+                    "Interpretation finding quotation is not verbatim "
+                    "source evidence."
+                )
 
 
 def parse_audit_response(
