@@ -60,9 +60,9 @@ class TopicAnalysis(BaseModel):
     review_reason: str | None = None
 
 
-class VerificationStatus(str, Enum):
-    PASS = "PASS"
-    CORRECTION_PROPOSED = "CORRECTION_PROPOSED"
+class VerificationOutcome(str, Enum):
+    VERIFIED = "VERIFIED"
+    CORRECTED = "CORRECTED"
     NEEDS_REVIEW = "NEEDS_REVIEW"
 
 
@@ -80,45 +80,8 @@ class VerificationFinding(BaseModel):
     category: VerificationCategory
     explanation: str = Field(min_length=1)
     evidence_message_ids: list[str] = Field(default_factory=list)
-
-
-class InterpretationVerification(BaseModel):
-    thread_id: str
-    status: VerificationStatus
-
-    findings: list[VerificationFinding] = Field(
-        default_factory=list
-    )
-
-    proposed_interpretation: ThreadInterpretation | None = None
-
-    rationale: str = Field(min_length=1)
-
-    @model_validator(mode="after")
-    def check_consistency(self):
-        if self.status == VerificationStatus.PASS:
-            if self.findings or self.proposed_interpretation:
-                raise ValueError(
-                    "PASS must not contain findings or corrections"
-                )
-
-        if self.status == VerificationStatus.CORRECTION_PROPOSED:
-            if not self.findings:
-                raise ValueError(
-                    "A correction requires documented findings"
-                )
-            if self.proposed_interpretation is None:
-                raise ValueError(
-                    "A correction requires a proposed interpretation"
-                )
-
-        if self.proposed_interpretation is not None:
-            if self.proposed_interpretation.thread_id != self.thread_id:
-                raise ValueError(
-                    "Corrected interpretation has a different thread_id"
-                )
-
-        return self
+    evidence_quotes: list[str] = Field(default_factory=list)
+    disputed_fields: list[str] = Field(default_factory=list)
 
 
 class ReplyContribution(str, Enum):
@@ -127,6 +90,7 @@ class ReplyContribution(str, Enum):
     DIAGNOSTIC_ONLY = "DIAGNOSTIC_ONLY"
     ACKNOWLEDGMENT = "ACKNOWLEDGMENT"
     OTHER = "OTHER"
+    UNCERTAIN = "UNCERTAIN"
 
 
 class ReplyEvidenceAssessment(BaseModel):
@@ -138,17 +102,57 @@ class ReplyEvidenceAssessment(BaseModel):
 
     # Explain the relationship to the original request.
     explanation: str = Field(min_length=1)
+    # The auditor establishes technical relevance, independently of role eligibility.
+    technical_scope: bool | None = None
+
+
+class DecisionCoverageStatus(str, Enum):
+    ANSWERED = "ANSWERED"
+    PARTIALLY_ANSWERED = "PARTIALLY_ANSWERED"
+    UNANSWERED = "UNANSWERED"
+    UNCERTAIN = "UNCERTAIN"
+
+
+class DecisionCoverageItem(BaseModel):
+    requested_decision: str = Field(min_length=1)
+    status: DecisionCoverageStatus
+
+    answer_message_ids: list[str] = Field(default_factory=list)
+    rationale: str = Field(min_length=1)
+
+    @model_validator(mode="after")
+    def validate_coverage(self):
+        if len(self.answer_message_ids) != len(
+            set(self.answer_message_ids)
+        ):
+            raise ValueError("Duplicate answer message IDs.")
+
+        if self.status in {
+            DecisionCoverageStatus.ANSWERED,
+            DecisionCoverageStatus.PARTIALLY_ANSWERED,
+        } and not self.answer_message_ids:
+            raise ValueError(
+                "Answered decisions require answer evidence."
+            )
+
+        if (
+            self.status == DecisionCoverageStatus.UNANSWERED
+            and self.answer_message_ids
+        ):
+            raise ValueError(
+                "Unanswered decisions cannot cite answer evidence."
+            )
+
+        return self
 
 
 class DecisionEvidenceAudit(BaseModel):
     thread_id: str
-
-    # Empty for an announcement without a requested decision.
-    requested_decisions: list[str] = Field(
-        default_factory=list
-    )
-
-    # Analyze replies independently of Agent 1's labels.
-    reply_assessments: list[ReplyEvidenceAssessment] = Field(
-        default_factory=list
-    )
+    root_request_quote: str = Field(min_length=1)
+    requested_decisions: list[str]
+    reply_assessments: list[ReplyEvidenceAssessment]
+    # Coverage is part of this one audit, never a separate model call.
+    decision_coverage: list[DecisionCoverageItem]
+    uncertainties: list[str]
+    # Required even when empty: a source-only audit cannot certify candidate prose.
+    interpretation_findings: list[VerificationFinding]

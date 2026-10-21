@@ -144,6 +144,29 @@ To inspect the fixture without a key or model request:
 uv run python scripts/run_agent1_demo.py --inspect
 ```
 
+## Agent 1 verification and bounded correction
+
+The active verification workflow checks saved Agent 1 interpretations against
+their original Slack threads, makes at most one targeted revision, and checks
+that revision once more. Results are `VERIFIED`, `CORRECTED`, or `NEEDS_REVIEW`;
+every selected thread is retained, including provisional results.
+
+Run the offline preflight from the project root:
+
+```powershell
+$env:PYTHONPATH = (Resolve-Path .\src).Path
+uv run python scripts/run_agent1_verification.py --dry-run --limit 1
+```
+
+No credentials, model calls, or output writes are needed for this preflight.
+The separate `--run` flag authorizes paid calls. The original
+`run_agent1_batch.py` remains the baseline interpretation runner.
+
+See [Agent 1 verification](docs/agent1-verification.md) for the active modules,
+one-thread paid pilot command, output format, resume behavior, tests, and
+superseded experiments. The frozen 200-thread baseline and 91 clusters remain
+historical inputs; Agent 2's current contracts and runners are still supported.
+
 ## Troubleshooting
 
 - `No module named pip`: uv-created environments do not include pip by default.
