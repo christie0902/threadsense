@@ -43,123 +43,72 @@ Review anchors in the actual saved messages:
 - `1790915374.000127` asks “QN or quality score?” The approved glossary defines
   QN as Quarantine. That glossary definition is supplied equally to every case.
 
-## Requests, validation, and call limits
+## Retained comparator and evidence
 
-The implementation is in `src/threadsense/experiments/prose_comparison.py`, with
-the entry point `scripts/run_prose_comparison_experiment.py`. It reuses
-`ProseEvidenceAssessment` and `get_auditor_model_settings()`; production modules
-remain unchanged. `THREADSENSE_VERIFIER_MODEL` overrides `THREADSENSE_MODEL`
-exactly as in the existing verifier configuration. Credentials come from the
-existing local `.env` and are never saved in request files.
+This focused benchmark remains in use by offline tests and saved-response replay.
+Its comparator is `src/threadsense/experiments/prose_comparison.py`, with entry
+point `scripts/run_prose_comparison_experiment.py`. It uses the existing verifier
+model configuration and `ProseEvidenceAssessment` contract. Production v3's
+batched comparison is a separate workflow; see the
+[current handoff guide](../../docs/agent1-nonblocking-handoff.md).
 
-Each request has a fresh system/user message pair and a single neutral `unit_1`.
-There is no conversation history, case label, paired candidate, or expectation.
-The only user-message inputs are the original conversation (including metadata),
-approved glossary, and candidate unit. No reply categorization, decision coverage,
-or resolution classification task is included.
+Each case has an independent system/user request containing only the conversation,
+approved glossary, and one neutral `unit_1`. Expected verdicts, paired candidates,
+prior reasoning, reply classifications, and resolution tasks are excluded.
+Validation requires exact candidate identity/text, nonblank explanation, unique
+source message IDs, and corresponding exact quotations. Valid quotes alone do
+not prove the model's factual verdict is correct.
 
-The comparator returns the existing `ProseEvidenceAssessment`. Validation requires
-the exact unit ID and candidate text, a recognized verdict, nonblank explanation,
-nonempty unique source IDs, and parallel exact quotations from those messages.
-Quotation validation checks that evidence exists; the experiment measures the
-model's factual judgment rather than assuming a valid quotation proves that judgment.
+The runner accepts only a new output directory, at most eight requests (one per
+case), zero automatic retries, and no fallback calls. It retains failures and
+raw responses. Persistence failure stops further calls; interrupted/unattempted
+cases remain visible. Credentials come from the local environment and are not
+saved in request files.
 
-The live runner makes at most eight requests, one per case. It sends the saved
-UTF-8 JSON bytes through a single-attempt standard-library HTTPS transport.
-There are no CrewAI stages, automatic retries, fallback requests, or redirect
-following. A rate limit, timeout, malformed response, or invalid citation is
-retained as a failure; it does not cause another call for that case.
+## Saved results and scoring
 
-Only a new output directory is accepted. Runs cannot silently overwrite or resume
-earlier paid work. An intentional new experiment requires a new directory.
-Interruption retains all eight rows; unattempted cases remain `NOT_RUN`. Durable
-stage markers identify initiated calls. If output persistence fails, execution
-stops rather than starting another request.
+The completed eight-call experiment is preserved in
+[data/experiments/prose_comparison_live_v2/](../../data/experiments/prose_comparison_live_v2/).
+Its [report](../../data/experiments/prose_comparison_live_v2/report.json) records:
+
+- Faithful acceptance: **4/4**, using SUPPORTED on faithful cases.
+- Incorrect rejection: **4/4**, using CONTRADICTED or UNSUPPORTED on incorrect cases.
+- Exact verdict agreement: **6/8**. Cases 02 and 07 returned CONTRADICTED against
+  the reviewed UNSUPPORTED labels; both still rejected incorrect prose.
+
+UNCERTAIN, invalid evidence, and request failures do not count as successful
+rejection. Reports list every mismatch/failure by case ID. Four cases per class
+are a diagnostic benchmark, not a general accuracy estimate. Replay tests adapt
+only the envelope/unit ID in memory; saved requests, raw responses, and labels
+remain unchanged. Replay does not establish the accuracy of production batching.
+
+`manifest.json` retains configuration, inputs, and request hashes;
+`expected_verdicts.json` is a separate answer key never transmitted to the model.
+`results.json` keeps all eight cases. Each case directory retains `request.json`,
+its started marker, available `response.raw.bin`, and extracted
+`assessment.raw.txt`. Earlier dry/preview outputs are historical provenance.
 
 ## Commands
 
-From the repository root, prepare exact requests without credentials or paid calls:
+Offline checks (mocked model responses):
 
-An initial offline preview is already saved in
-`data/experiments/prose_comparison_preview_v1/`. Its eight request bodies were
-checked for label/history exclusion and its report records zero model calls.
-The command below creates a separate, new preview directory.
-
-```powershell
-$env:PYTHONPATH = (Resolve-Path .\src).Path
-uv run --locked python scripts/run_prose_comparison_experiment.py --dry-run --output-dir data/experiments/prose_comparison_dry_v1
+```sh
+uv run --locked --extra dev python -m pytest tests/test_prose_comparison_experiment.py tests/test_verification_integration.py -q --tb=short --basetemp .cache/pytest-benchmark-current
 ```
 
-The dry run writes requests and provenance for inspection. It does not claim any
-acceptance/rejection rate. Omit both mode flags and the default is still dry run.
-If this preview directory already exists, choose a new name such as `_dry_v2`.
+Prepare requests in a new directory without credentials or model calls:
 
-To authorize the eight independent model requests later:
-
-```powershell
-$env:PYTHONPATH = (Resolve-Path .\src).Path
-uv run --locked python scripts/run_prose_comparison_experiment.py --run --output-dir data/experiments/prose_comparison_live_v1
+```sh
+uv run --locked python scripts/run_prose_comparison_experiment.py --dry-run --output-dir data/experiments/prose_comparison_preview_v3
 ```
 
-The live command has **not** been executed during implementation. A completed
-experiment may have failures or mismatches; all are included in its report.
+The dry run writes requests and NOT_RUN results with no measured accuracy.
+The explicit `--run` flag makes paid calls; any separately authorized future
+experiment must choose an unused directory and keep expected labels outside
+requests. No new experiment was executed during repository cleanup.
 
-Run offline tests:
-
-```powershell
-uv run --locked --extra dev python -m pytest -q --tb=short --basetemp .cache/pytest-prose-experiment-suite
-```
-
-## Output and scoring
-
-```text
-prose_comparison_live_v1/
-    manifest.json             # model, endpoint, input/code/request hashes, retry count
-    expected_verdicts.json    # separate answer key, never transmitted
-    results.json              # exactly eight rows, including failures/unattempted cases
-    report.json               # separate metrics and every exact-verdict mismatch
-    case_01/                  # analogous directories for case_02 ... case_08
-        request.json          # exact JSON body sent; authorization is not part of this file
-        started.json          # written before this case's single HTTP attempt
-        response.raw.bin      # unmodified HTTP response body, before parsing
-        assessment.raw.txt    # exact returned content when available, before validation
-```
-
-The manifest identifies the endpoint; each result records its HTTP status.
-A connection failure before any response leaves an empty raw-response file and
-an explicit error. A truncated HTTP response retains the partial bytes and is
-recorded as a request failure without retry. A dry run creates only requests, the answer key, manifest,
-results marked NOT_RUN, and a report with `metrics: null`.
-
-Metrics use the full reviewed denominators:
-
-- **Faithful acceptance:** SUPPORTED on a faithful case, out of four.
-- **Incorrect rejection:** CONTRADICTED or UNSUPPORTED on an incorrect case,
-  out of four. UNCERTAIN, invalid evidence, and request failures do not count
-  as successful rejection.
-- **Exact verdict agreement:** agreement with the reviewed verdict, out of eight.
-  CONTRADICTED versus UNSUPPORTED is listed as an exact-verdict mismatch even
-  when it correctly rejects an incorrect candidate. This distinction is useful
-  for the acknowledgment/approval case, where the unsupported-versus-contradicted
-  boundary can depend on how the claim is read.
-
-Every disagreement or failure is listed by case ID with expected/observed verdicts
-and error details. `results.json` links that ID to the source thread and candidate.
-Exit codes are 0 for dry run or exact agreement on all eight, 2 for mismatches or
-invalid CLI/input, and 130 for keyboard interruption. Four cases per class form
-a focused diagnostic benchmark, not a general accuracy estimate.
-
-## Offline validation (2026-10-22)
-
-The complete suite passed **218 tests, 0 failures**, including 39 new experiment
-tests. The suite reported 191 existing dependency deprecation warnings. The exact
-full-suite command is listed above. Tests cover independent requests, label
-exclusion, candidate identity, exact evidence, both provider routes, separate
-metrics, every mismatch, raw failure retention, partial responses, interruptions,
-no overwrite/resume, and the eight-attempt/no-retry limit. HTTP calls are mocked.
-
-SHA-256 comparisons confirmed that all 423 pre-existing files covered by the
-preservation checkpoint remained unchanged, including production code, existing
-tests, original Slack/frozen data, Agent 2, and every saved v5 pilot artifact.
-No live comparator call or full-batch rerun was executed. Live faithful acceptance
-and incorrect rejection rates remain unmeasured.
+The initial implementation had 218 passing offline tests, including 39 benchmark
+checks. Current full-suite validation is in the
+[cleanup report](../../docs/repository-cleanup.md). The tests retain label/history
+exclusion, candidate/evidence validation, separate scoring, raw failures, partial
+responses, interruptions, overwrite protection, and strict call limits.

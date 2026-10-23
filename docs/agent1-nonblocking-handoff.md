@@ -1,287 +1,165 @@
-# Agent 1 nonblocking handoff completion report — 2026-10-22
+# Agent 1 workflow and downstream handoff
 
-The nonblocking export and offline pilot reconciliation are complete. No paid
-calls were made in this milestone. Full Agent 1 validation remains pending the
-actual 200-thread run, integrity checks, and predefined content sample review.
+Version 3 is complete: **200 unique inputs, zero unprocessed, 81 VERIFIED,
+70 CORRECTED, 49 NEEDS_REVIEW** after applicable source reviews. All records remain
+available downstream. See [the full-batch report](agent1-full-batch-results.md)
+for automated versus effective counts, all twelve reviewed cases, and limitations;
+see [the README](../README.md) for setup and entry points.
 
-This is the current workflow and command reference. Earlier version 1/2 reports
-remain historical records; their blocking review gate, old exit codes, separate
-content-dispute lookup, and 196-thread/784-call continuation guidance are superseded.
+## Verification contract
 
-## Checkpoint and evidence
+1. Analyze original Slack and the approved glossary once: root evidence, replies,
+   decisions, coverage, and uncertainties.
+2. Compare every current summary/question/rationale prose unit against Slack and
+   the glossary in one separate request. Previous audit reasoning and evaluation
+   labels are excluded. Validate exact candidate identity, quotes, and message IDs.
+3. Apply deterministic schema, role, reaction, terminology, coverage, authority,
+   and evidence checks. Non-SUPPORTED prose produces explicit findings.
+4. If needed, make **one targeted revision maximum** and run one fresh prose
+   comparison, reusing only the validated source analysis. A passing fresh check
+   produces CORRECTED; first-pass findings stay in history without forcing review.
 
-The starting checkpoint was checked against local files, not inferred from the
-earlier report. Before editing, the full offline suite passed again: **257 passed,
-0 failed**, 162 dependency warnings, 41.81 seconds, using:
+There are **at most four request attempts per thread, zero retries, and no fallback
+calls**. Invalid source analysis stops that record at review. Remaining errors,
+uncertainty, malformed evidence, or recoverable failures retain NEEDS_REVIEW and
+later threads continue. Verification reliability is separate from Slack resolution:
+an accurately summarized unanswered question can be VERIFIED.
 
-```powershell
-.venv\Scripts\python.exe -m pytest -q --disable-warnings --tb=short --basetemp .cache/pytest-review-baseline
-```
+QN means Quarantine; LT means Label Tool. Eyes is acknowledgment. Substantive
+endorsement requires actual eligible reactor/author metadata and relevant answer
+evidence. Diagnostic requests do not settle a decision. An announcement without a
+question keeps `central_question: null`; the legacy resolution enum has no N/A.
 
-The v6 evidence contains **12 saved request attempts, 11 completed responses,
-and one request without a saved response**. Completion and billing of that last
-request at the provider remain unknown. Real parsers, candidate/quotation/ID
-validators, and deterministic verification were used for offline replay. No
-missing response was reconstructed. Available local manifests do not contain a
-completed 200-thread verification run.
+The controller prefers a structurally usable candidate, then fewer disputed fields;
+ties retain the original. An unusable original can retain an actual saved revision
+or explicit provisional placeholder. Missing revision text is never reconstructed.
+Confidence is not a calibrated score or a substitute for source evidence.
 
-| Thread | Historical automated status | Effective handoff status | Retained evidence and limitation |
-| --- | --- | --- | --- |
-| `1790903186.000110` | VERIFIED | VERIFIED | Original unchanged; diagnostics and TL eyes do not establish an answer or approval. |
-| `1790882197.000111` | CORRECTED | NEEDS_REVIEW | Revision still claims a previous workaround “seems to have failed.” Actual source establishes a possible workaround and recurrence, not an attempt or failure. |
-| `1790909920.000138` | CORRECTED | CORRECTED | Revision correctly places the missing sentence in the recording. Supported TL endorsement and resolution remain intact. |
-| `1790915374.000127` | NEEDS_REVIEW | NEEDS_REVIEW | First prose request was interrupted; retained original still incorrectly expands QN as quality note. |
+## Persistence and completion
 
-The false acceptance on 111 is a semantic model/revision failure, not a test
-fixture failure. Routing its dispute does not fix its prose or establish model
-accuracy. Historical machine counts remain 1 VERIFIED, 2 CORRECTED, 1 NEEDS_REVIEW;
-effective counts are **1 VERIFIED, 1 CORRECTED, 2 NEEDS_REVIEW**.
+Each thread retains its source snapshot, frozen original, available revision,
+source analysis, candidate-specific passes/findings, effective candidate, and lineage.
+Stages are `source_analysis`, `prose_1`, `revision_1`, and `prose_2`.
 
-## Current workflow and completion semantics
+| Artifact suffix | Meaning |
+| --- | --- |
+| `.started.json` | Stage entered; does not prove a request reached the provider |
+| `.request.json`, `.call.json` | Exact request body and single-attempt marker, without credentials |
+| `.response.raw.bin`, `.response.json` | Available original HTTP bytes and response metadata |
+| `.raw.txt`, `.failure.json` | Available model text or transport failure |
+| `result.json` | Parsed candidates, checks, findings, outcome, and artifact checksums |
 
-The model flow and prompts are unchanged: one source-only analysis, one batched
-prose comparison and deterministic check, optionally one targeted Agent 1 revision,
-then one fresh prose comparison reusing the validated source analysis. There are
-at most **four request attempts per thread, zero retries, and no fallback calls**.
+Started/interrupted records are terminal and never retried automatically. A marker
+without a response has unknown provider completion. Subset/resume aggregation keeps
+previously retained records; only genuinely unstarted inputs may make new calls.
+Only one process may own an output directory. A stale lock requires checking for a
+running process before removal.
 
-An original passing candidate is VERIFIED. A revised candidate passing its fresh
-check is CORRECTED automatically; first-pass findings remain in history without
-creating a permanent review flag. Remaining errors, uncertainty, invalid/missing
-evidence, and recoverable request failures retain one provisional NEEDS_REVIEW
-record. Later threads continue. An accurately interpreted unanswered discussion
-can be VERIFIED: Slack resolution and interpretation reliability are separate.
+Exit 0 means valid preflight or completed batch, including `complete_with_review`.
+Exit 1 means interruption, fatal failure, or unprocessed inputs; invalid CLI/input/
+cache checks use exit 2. Persistence failures can raise directly. NEEDS_REVIEW does
+not stop the overnight pipeline; fatal configuration/persistence failures do.
+Always inspect coverage and `unprocessed`, not just the exit code.
 
-The existing controller selects a structurally valid candidate, then fewer
-disputed fields; ties retain the original. Recovery also preserves an actual
-saved revision and uses it if the original is unusable. An interrupted revision
-is never inferred from missing text. Invalid originals retain explicit placeholders
-when no usable candidate exists. Raw evidence and candidate lineage remain accessible.
-
-NEEDS_REVIEW is terminal for that run. Cached flagged or interrupted records are
-never automatically retried. Human review occurs after the overnight run, with
-no approval step between threads or agents. Exit 0 means a valid preflight or a
-completed batch, including `complete_with_review`; exit 1 signals interruption,
-fatal failure, or retained unprocessed inputs. Invalid CLI/input/cache checks use
-exit 2. Fatal configuration and persistence failures stop further calls and cannot
-be reported as successful completion. Persistence errors may raise directly when
-the filesystem cannot save a failure report. Inspect manifest coverage and
-`unprocessed` as well as the exit code before treating a subset as a full batch.
-
-## Canonical handoff and generic content-review binding
-
-Normal and flagged records share one canonical `interpretations.json`, preserving
-the nested `ThreadInterpretation` schema. Sibling fields include:
-
-- `verification_status` (effective), `automated_verification_status`, `review_required`.
-- `provisional_fields`, `review_reason`, `review_reasons`, `review_findings`.
-- Full project/batch/channel/thread identity, source message IDs, exact review
-  evidence IDs/quotes, source and candidate SHA-256 fingerprints.
-- Revision count, effective attempt, baseline provenance, original/revised/effective
-  candidate hashes, and references into saved candidates and both audit passes.
-- `content_reviews` with original review type, review file/hash/JSON pointer,
-  referenced source/result hashes, and explicit application diagnostics.
-
-The review queue contains the **same complete records** filtered by
-`review_required`. It is not a separate classification or competing status list.
-Source/result references in `lineage` resolve relative to the export directory;
-original review evidence references resolve relative to the repository.
-
-`--content-review` accepts repeatable explicit review documents, defaulting to
-`docs/agent1-pilot-content-review.json`. Production logic contains no pilot IDs.
-Reviews bind to all four identity fields plus the exact actual source and retained
-candidate from their referenced result. Result checksums, source IDs, quotations,
-disputed fields, and any supplied binding hashes are validated. Applicable open
-disputes override automated acceptance. Positive reviews never erase a dispute
-or imply human approval. Evaluation data is excluded from runtime review inputs.
-
-The older review file has no reviewer identity, review timestamp, or supplied
-binding hashes. Its identity and timestamp remain null. Hashes are computed from
-the actual referenced files and explicitly marked `computed_from_referenced_evidence;
-not reviewer-attested`. Every imported review has `human_approval: false`.
-No human approval or missing historical metadata was invented.
-
-`content_review_report.json` reports APPLIED_DISPUTE, MATCHED_NONAPPROVAL,
-UNMATCHED_IDENTITY, STALE_SOURCE, STALE_CANDIDATE, or INVALID_REVIEW. Matching records
-also carry applicability diagnostics. Invalid or stale reviews cannot silently
-change status. Exact binding intentionally does not transfer a semantic judgment
-to a newly worded candidate; that requires a new content review. Review documents
-are export inputs, never model-request context or evaluation answers.
-
-## Saved derived outputs
-
-The new directory is explicitly an **offline reconciliation**, not new live
-verification or a resumable verification cache:
-
-- [Canonical export](../data/processed/agent1_handoff_reconciled_v1/interpretations.json): all four records.
-- [Matching review queue](../data/processed/agent1_handoff_reconciled_v1/review_queue.json): 111 and 127.
-- [Review applicability/provenance](../data/processed/agent1_handoff_reconciled_v1/content_review_report.json).
-- [Real saved-response replay checks](../data/processed/agent1_handoff_reconciled_v1/replay_report.json).
-- [Derived manifest and historical artifact hashes](../data/processed/agent1_handoff_reconciled_v1/manifest.json).
-
-Exact command executed to write these derived files (zero model calls):
-
-```powershell
-.venv\Scripts\python.exe scripts/reconcile_agent1_handoff.py --write --evidence-dir data/processed/agent1_verified_pilot_v6 --output-dir data/processed/agent1_handoff_reconciled_v1 --content-review docs/agent1-pilot-content-review.json
-```
-
-The reconciler defaults to read-only `--dry-run` and requires a new separate
-versioned output directory, even for preflight. To repeat its checks after the
-above directory exists, select another unused destination, for example
-`--dry-run --output-dir .cache/handoff_inspection_v1`. No historical source,
-request, response, or candidate text is repaired or overwritten.
-
-Representative flagged record, selected fields copied from canonical record
-`/1` (the full record includes its unchanged nested interpretation and evidence):
-
-```json
-{
-  "project_id": "audio_multimodal",
-  "batch_id": "audio_batch_06",
-  "channel_id": "C_AUDIO_GENERAL",
-  "thread_id": "1790882197.000111",
-  "verification_origin": "offline_reconciliation",
-  "automated_verification_status": "CORRECTED",
-  "verification_status": "NEEDS_REVIEW",
-  "review_required": true,
-  "revision_count": 1,
-  "provisional_fields": ["summary"],
-  "review_reason": "Recurrence and belief in a possible historical workaround establish neither an attempted workaround nor a failure. First comparison correctly rejected this claim; the revision retained it and the second comparison wrongly accepted it.",
-  "input_sha256": "a31ce82a0c8540f826509060d3eed8fe5f0b9af35166fc2a123f69a671a726fe",
-  "candidate_sha256": "b3e7e711f6bf0559231b31e8c1fda9c1fdf640a61d63db95065037fa279093fa"
-}
-```
-
-Its content finding quotes root `1790882197.000111` and TL diagnostic reply
-`1790882343.000339`, identifies the disputed substring “recalling a previous
-workaround that seems to have failed,” and references both historical candidates
-and audits. The provenance points to `/reviews/1` in the original review JSON.
-
-## Downstream obligations (documented, not implemented here)
-
-Agent 2 must consume effective status from the canonical export and preserve flags,
-disputed fields, reasons, full identity, source/candidate hashes, and lineage
-through consolidation. Provisional claims may inform tentative grouping and
-question discovery; they cannot become confirmed answers, authoritative policy,
-or resolved conclusions. Group-level summaries must not erase constituent flags.
-Consumers should not need the documentation review registry to discover disputes.
-
-Planned Agent 3 retrieval uses both current knowledge and project memory. Preserve
-retrieved citations, publication/effective dates where known, project scope, and
-source authority. Resolve temporal and authority conflicts only when the evidence
-supports an ordering; missing or unorderable sources create review cards and
-retain uncertainty while the pipeline continues. Retrieval does not retroactively
-approve disputed Slack claims merely because a related external fact is found.
-
-All remaining flagged items must reach the morning briefing's **Needs Review**
-section, even when no ordinary recommendation is warranted. Cards should explain
-the uncertainty, affected claim/fields, source references, and unresolved conflict.
-These are future consumer obligations. Agent 2 behavior, Agent 3, RAG, and dashboard
-code were not implemented or changed in this milestone.
-
-## Full-batch preflight and prepared paid run
-
-The following read-only preflight was executed successfully against the current
-version 3 code: **200 inputs, 0 compatible caches, 200 unstarted records, maximum
-800 additional request attempts**. Four valid review records loaded; none invalid.
-The destination did not exist before or after preflight. This makes no API calls
-and requires no key. The model pins match the historical requested models; local
-model defaults and credentials were not changed.
+## Read-only finalized-v3 preflight
 
 ```powershell
 $env:THREADSENSE_MODEL = 'openai/gpt-4o-mini-2024-07-18'
 $env:THREADSENSE_VERIFIER_MODEL = 'openai/gpt-4.1'
-uv run --locked python scripts/run_agent1_verification.py --dry-run --limit 0 --content-review docs/agent1-pilot-content-review.json --output-dir data/processed/agent1_verified_v3
+uv run --locked python scripts/run_agent1_verification.py --dry-run --limit 0 --content-review docs/agent1-pilot-content-review.json --content-review data/processed/agent1_full_batch_review_v3/content_review.json --output-dir data/processed/agent1_verified_v3
 ```
 
-Prepared paid command, **not executed**; use the same model settings above:
+Expected: **200 compatible cached records, zero unstarted, zero remaining model
+tasks; 16 valid review records, zero invalid**. This command makes no model calls
+or output writes. Do not rerun the completed batch to refresh its interpretation.
 
-```powershell
-uv run --locked python scripts/run_agent1_verification.py --run --limit 0 --content-review docs/agent1-pilot-content-review.json --output-dir data/processed/agent1_verified_v3
-```
+The live-cache fingerprint includes fourteen code files listed by
+`run_configuration()` in `scripts/run_agent1_verification.py`, original source and
+baseline content, glossary bytes, model pins, pipeline version, and package
+versions. Per-record checks also validate candidate, request/response, marker, and
+result checksums. Changes can invalidate reuse even when interfaces look unchanged.
+Never edit historical metadata to force compatibility or treat historical v2 or
+offline-reconciliation outputs as a current live cache.
 
-Version 3 fingerprints the changed runner/export code and retains the existing
-source, baseline, glossary, model, schema/prompt, and package checks. Version 2
-pilot caches are incompatible with this live run. Offline reconciliation checks
-the saved version 2 contract explicitly without claiming changed code produced
-those results. Neither the historical pilot directory nor the derived handoff is
-a replacement for the new version 3 destination. Compatible terminal records in
-the new destination can later be reused; flagged records will not make new calls.
-The dry run always reports the current remaining bound. A changed code/input/model
-fingerprint requires another new versioned destination.
+## Canonical export and reviews
 
-Only the paid execution boundary remains for the next run. Once that run is
-authorized, individual NEEDS_REVIEW outcomes must never wait for human responses.
-After the run, check 200 unique full identities, counts summing to 200, zero
-unprocessed inputs, complete source/candidate/evidence lineage, review queue
-agreement, four-call caps, and review provenance. Then perform the unchanged
-predefined sample in `docs/agent1-review-sample.json` (four pilot regressions plus
-two non-pilot threads per project), recording semantic failures honestly. These
-steps are still pending; passing offline orchestration tests is not live accuracy.
+Consume [interpretations.json](../data/processed/agent1_verified_v3/interpretations.json).
+The nested `ThreadInterpretation` is accompanied by:
 
-## Validation performed in this milestone
+- Effective `verification_status`, original `automated_verification_status`,
+  `review_required`, disputed `provisional_fields`, reasons, and findings.
+- Full project/batch/channel/thread identity, original message IDs, exact review
+  evidence quotes, source/candidate hashes, and baseline provenance.
+- Revision count, effective attempt, original/revised/effective candidate lineage,
+  source/result paths, and review provenance/application diagnostics.
 
-Focused development checks passed: **36 passed, 0 failed**, 74.53 seconds:
+[review_queue.json](../data/processed/agent1_verified_v3/review_queue.json) is exactly
+the same complete records filtered by `review_required`: **49 of 200**. Lineage
+source/result paths resolve relative to the export directory; review evidence paths
+resolve relative to the repository. The manifest describes coverage and accounting.
 
-```powershell
-.venv\Scripts\python.exe -m pytest tests/test_verification_handoff.py tests/test_agent1_verification_batch.py -q --disable-warnings --tb=short --basetemp .cache/pytest-review-focused2
-```
+Every future export refresh must explicitly load **both**
+[the historical pilot registry](agent1-pilot-content-review.json) and
+[the full-batch review file](../data/processed/agent1_full_batch_review_v3/content_review.json).
+The runner's default includes only the historical registry; omitting the second
+file can lose current disputes from an export. Use the existing v3 `write_reports()`
+interface with validated cached results and model calls disabled, as recorded in
+the [completed milestone report](agent1-full-batch-results.md). The historical
+reconciler writes a separate derived directory, not the finalized live export.
 
-The final full suite, including the subsequent interruption-recovery assertions,
-passed: **277 passed, 0 failed, 0 skipped**, 162 dependency warnings, 91.87 seconds:
+Reviews bind to all four identity fields and exact source/candidate content in
+their referenced results. Validate file checksums, IDs, quotes, and disputed fields.
+Applicable unresolved disputes force effective NEEDS_REVIEW without editing prose,
+automated outcomes, or raw evidence. A new candidate requires a new review;
+historical hashes are not transferable. Positive reviews never erase a dispute or
+imply human approval. Reports expose applied, matched, stale, unmatched, or invalid
+bindings. Reviews and evaluation labels never enter model requests.
 
-```powershell
-uv run --locked --extra dev python -m pytest -q --disable-warnings --tb=short --basetemp .cache/pytest-agent1-nonblocking-final
-```
+The twelve new reviews are **Codex-assisted source reviews, not human approval or
+independent ground truth**: seven passes within scope, four errors, one uncertainty.
+The selected sample cannot estimate full-batch accuracy. Historical reviews lacking
+reviewer/timestamp metadata retain null values and explicitly computed bindings.
 
-The uv invocation required access to its existing Windows dependency cache after
-the sandbox denied that directory. It made no model calls. No dependencies,
-prompts, models, or original prose tests were changed to obtain these results.
+## Next milestone: connect Agent 2
 
-The new tests cover matching and stale review bindings across every identity
-field, exact quotations and candidate references, provenance without invented
-human approval, invalid/evaluation review inputs, real historical replay and
-cache incompatibility, successful correction clearing first-pass flags, failed
-middle records, fatal configuration/persistence errors, and saved-revision recovery.
-The synthetic 200-thread mixed run produces **50 VERIFIED, 50 CORRECTED, 100
-NEEDS_REVIEW**, with 200 unique identities, later records completed after failures,
-matching queue/export, retained lineage, bounded stages, and no retries on resume.
-Those are mocked orchestration outcomes, distinct from the four historical live
-records above. Existing real-input failure-retention, strict transport/call-cap,
-fresh-candidate, glossary, and evaluation-isolation tests also passed.
+The existing Agent 2 loaders still use frozen groups. The next connection must
+consume all 200 finalized canonical records and preserve effective/automated
+statuses, flags, disputed fields/reasons, exact evidence, full identity,
+source/candidate hashes, and original/revised lineage through consolidation.
+Group summaries must keep constituent flags. Provisional claims can support
+tentative grouping or question discovery, without becoming confirmed answers,
+policy, authoritative decisions, or resolved conclusions.
 
-The final artifact check confirmed four unique canonical identities, exactly two
-identical flagged queue records, resolvable lineage references, two applied
-disputes, two matching nonapproval reviews, and no live output directory created.
-Comparison against the task's initial 594-file snapshot found no missing files;
-only the six existing code/test/documentation files listed below changed. All
-preexisting data and experiment artifacts, frozen interpretations/grouping, Slack,
-evaluation data, saved review JSON, predefined review sample, model/prompt code,
-and Agent 2 code remained unchanged. Existing uncommitted changes were preserved.
-`git diff --check` passed.
+Later Agent 3 retrieval should preserve citations, known publication/effective
+dates, project scope, and authority. Unresolved temporal/authority conflicts remain
+review cards. All flags must reach a future briefing's Needs Review section, even
+without a recommendation. These consumer/retrieval/briefing obligations are planned;
+they were not implemented by the Agent 1 milestone or repository cleanup.
 
-## Changes delivered and remaining limitations
+## Historical evidence retained
 
-| File or directory | Change in this milestone |
-| --- | --- |
-| `src/threadsense/agents/verification_handoff.py` (new) | Shared canonical exporter and generic evidence-bound content-review import; effective status, queue agreement, and lineage/provenance. |
-| `scripts/run_agent1_verification.py` | Version 3 fingerprint, shared exports, terminal nonblocking flags, continuation after recoverable per-thread exceptions, honest fatal/incomplete exit codes, and preservation of saved revisions during recovery. |
-| `scripts/reconcile_agent1_handoff.py` (new) | Explicit offline replay of actual archived requests/responses through real validators; writes separate derived results and rejects cache impersonation. |
-| `tests/test_verification_handoff.py` (new) | Historical replay, binding/provenance/negative cases, read-only reconciliation, and cache boundaries. |
-| `tests/test_agent1_verification_batch.py` | Mixed 200-record and fatal/recovery coverage; expected exit codes updated to the nonblocking completion contract without weakening retention or evidence assertions. |
-| `data/processed/agent1_handoff_reconciled_v1/` (new) | Five derived files: canonical records, matching queue, review report, replay report, and manifest. |
-| `docs/agent1-nonblocking-handoff.md` (new) | This current completion report, downstream obligations, tested preflight, and prepared live command. |
-| `README.md`, `docs/agent1-verification.md` | Link current version 3 behavior and guidance. |
-| `docs/agent1-integration-readiness.md`, `docs/agent1-integration-results.md` | Supersession notices; historical reports and observed results retained below them. |
+The early combined-audit workflow could incur CrewAI retries despite a stage cap;
+the current transport makes one POST per stage. Old-schema responses remain raw
+evidence and correctly fail the new required-prose parser. Pilot v5 falsely
+accepted a recording/reference reversal. The v6 revised workaround summary still
+claimed a failed workaround unsupported by the source, and its interrupted QN
+request has unknown provider completion (12 attempts, 11 responses). The later
+v3 run fixed some candidates but still falsely accepted that workaround claim and
+a denial of a supplied example; their effective review flags remain visible.
 
-Two production integration defects were addressed: review outcomes previously
-returned a failure exit code that could block downstream execution, and the known
-semantic dispute was visible only in a separate review document while the canonical
-record appeared accepted. Recoverable exceptions now continue, while fatal and
-incomplete runs remain visibly unsuccessful. This was workflow/export work, not
-test-fixture migration or a change to model judgments.
+- `data/processed/agent1_verified_pilot_v1/`: real old-schema parser regression.
+- `data/processed/agent1_verified_pilot_v5/` and
+  `experiments/prose_comparison_v1/`: saved sources and eight synthetic benchmark
+  inputs; saved live experiment v2 responses support real-parser replay.
+- `data/processed/agent1_verified_pilot_v6/`: exact historical review bindings and
+  interrupted evidence. `data/processed/agent1_handoff_reconciled_v1/` contains
+  separate offline replay/export evidence (1 VERIFIED, 1 CORRECTED, 2 NEEDS_REVIEW).
+- `.cache/agent1_full_batch_20261022/`: original local audit tools and snapshot.
+  Their closed-milestone preservation checks refer to the pre-cleanup tree; use
+  Git commit `053d3144f735597c0d3976db3e830690dfcc3afc` to recover that tree.
+- Earlier `.cache/agent1_*`, `prose_experiment_20261022`, and
+  `prose_fixture_migration` snapshots retain uncommitted recovery/history evidence.
 
-The known false acceptance on 111 remains, 127's interrupted request still has
-unknown provider completion, and no new live accuracy has been measured. Exact
-content-review bindings cannot assess differently worded future candidates. The
-full 200-record live run and fixed sample review are the next milestone; the
-Agent 2/3/briefing flag-preservation obligations remain future implementation work.
+The historical integrity ledgers remain unchanged observations of their original
+milestones. Documentation consolidation is tracked separately in the
+[cleanup record](repository-cleanup.md); it does not rewrite those ledgers.

@@ -1,198 +1,135 @@
-# threadsense
+# ThreadSense
 
-## Set up on Windows or macOS
+ThreadSense interprets Slack discussions and groups related questions for topic
+analysis. Agent 1's finalized v3 handoff contains all **200 records: 81 VERIFIED,
+70 CORRECTED, and 49 NEEDS_REVIEW**. The next milestone connects the existing
+Agent 2 implementation to this canonical export while preserving review metadata.
+Agent 3 retrieval and the briefing interface remain planned work.
 
-Install [uv](https://docs.astral.sh/uv/getting-started/installation/), then run
-these commands from the repository root on either computer:
+## Maintained documentation
+
+- [Setup and commands](#setup-and-configuration): this page.
+- [Agent 1 workflow and downstream contract](docs/agent1-nonblocking-handoff.md):
+  current behavior, read-only preflight, evidence, and next milestone.
+- [Final Agent 1 results](docs/agent1-full-batch-results.md): request accounting,
+  all twelve source-review outcomes, limitations, and artifact links.
+- [Prose benchmark](experiments/prose_comparison_v1/README.md): retained synthetic
+  cases, request isolation, scoring, and saved-response regression evidence.
+- [Repository cleanup record](docs/repository-cleanup.md): removals, recovery,
+  preservation checks, and validation results.
+
+## Current architecture
+
+The Slack adapter loads message text, authors, roles, and actual reaction users
+and targets. Runtime terminology comes from `data/knowledge/domain_lexicon.json`;
+`data/evaluation/` contains separate evaluation material, not model-request inputs.
+
+Agent 1 verification joins the frozen interpretations to original Slack, analyzes
+the source once, compares the current candidate's prose, and applies deterministic
+checks. It permits **one revision maximum**, followed by a fresh candidate check;
+a successful revision becomes CORRECTED. The bound is **four request attempts per
+thread, zero retries and no fallback calls**. NEEDS_REVIEW retains the candidate
+and evidence and does not interrupt subsequent threads.
+
+The baseline lives in `data/processed/agent1_authority_fix/`; the 91 frozen
+groups live in `data/processed/grouping/`. Existing Agent 2 loaders still use
+those historical groups. Their connection to the finalized canonical export is
+not implemented yet. All 200 verified/provisional records are available for that
+connection in `data/processed/agent1_verified_v3/interpretations.json`.
+
+## Setup and configuration
+
+From this checkout's root on Windows or macOS:
 
 ```sh
 uv sync --locked --extra dev
-uv run --locked --extra dev python -m pytest -q
+uv run --locked --extra dev python -m pytest -q --disable-warnings --tb=short --basetemp .cache/pytest-current
 ```
 
-uv creates a local `.venv`, installs the project in editable mode, and installs
-the versions recorded in `uv.lock`. It can download Python automatically if
-needed. `.python-version` selects Python 3.13. CrewAI currently requires Python
-below 3.14, so the project's supported version is 3.13.
-No virtual environment activation or `PYTHONPATH` setting is needed.
+Install [uv](https://docs.astral.sh/uv/getting-started/installation/) if needed.
+The project selects Python 3.13 and installs the locked dependencies plus the
+editable local package. No environment activation or PYTHONPATH setting is needed.
+Use a dedicated pytest temporary directory: pytest clears `--basetemp` at startup.
+The offline tests mock model requests and isolate saved credentials.
 
-For everyday testing, the shorter command is sufficient:
+Select `.venv\Scripts\python.exe` in a Windows editor, or `.venv/bin/python` on
+macOS. After pulling on another computer, repeat `uv sync --locked --extra dev`.
+Keep each computer's environment local; do not copy `.venv` or its executable
+launchers between Windows and macOS. Dependency changes belong together in
+`pyproject.toml` and `uv.lock`.
+
+If using pip, create a Python 3.13 virtual environment and run its interpreter
+with `-m pip install -r requirements.txt`. That installs the declared ranges;
+uv provides the versions recorded in the lockfile.
+
+Create a local `.env` from `.env.example` only if it does not already exist, then
+fill in `OPENAI_API_KEY=` there. Both agent factories read this file; you do not
+need to paste keys into the terminal. Existing terminal variables take precedence.
+The ignored `.env` stays local to each computer; never commit real credentials.
+
+`THREADSENSE_MODEL` selects the interpreter/analyst model.
+`THREADSENSE_VERIFIER_MODEL` selects the verifier, falling back to that model when
+unset. OpenRouter routes use `OPENROUTER_API_KEY`. The finalized v3 fingerprints
+require the original pins shown below, regardless of local defaults.
+
+## Safe inspection commands
+
+These commands inspect existing inputs without paid model calls:
 
 ```sh
-uv run --extra dev pytest -q
+uv run --locked python scripts/run_agent1_demo.py --inspect
+uv run --locked python scripts/run_agent1_batch.py --dry-run --limit 1
+uv run --locked python scripts/run_thread_grouping.py --check-input
+uv run --locked python scripts/run_agent2_sample.py
+uv run --locked python scripts/run_agent2_batch.py --limit 1
 ```
 
-`--locked` is optional for local work. It checks that `uv.lock` agrees with
-`pyproject.toml`; without it, uv can update the lockfile when dependencies change.
-
-Run one test file with:
-
-```sh
-uv run --locked --extra dev python -m pytest -q tests/test_mock_slack_adapter.py
-```
-
-In your editor, select the interpreter inside this checkout's `.venv`:
-
-- Windows: `.venv\Scripts\python.exe`
-- macOS: `.venv/bin/python`
-
-In a terminal with `.venv` activated, `python -m pytest` and `pytest` also work.
-The pytest configuration adds `src` to the import path, discovers tests under
-`tests`, and keeps its cache in `.cache/pytest`. Test fixture paths are resolved
-from the test files, so running tests from an editor or the `tests` directory
-does not depend on the current working directory.
-
-## Moving between computers
-
-Commit source changes together with `pyproject.toml`, `.python-version`, and
-`uv.lock`. On the other computer, pull and run `uv sync --locked --extra dev`
-again. Each checkout gets its own environment; never copy or commit `.venv`,
-`venv`, `Lib`, executable launchers, or Python caches. Virtual environments
-contain paths to a local interpreter and cannot be shared between Windows
-and macOS.
-
-When intentionally changing dependencies, update `pyproject.toml`, run
-`uv lock`, and commit both files. `--locked` reports an outdated lockfile
-instead of silently choosing different versions on another computer.
-
-## Using pip instead
-
-With a working Python 3.13 installation, create a new environment:
-
-Windows PowerShell:
+Read-only verification of the completed handoff, in PowerShell:
 
 ```powershell
-py -3.13 -m venv .venv
-.\.venv\Scripts\python.exe -m pip install -r requirements.txt
-.\.venv\Scripts\python.exe -m pytest -q
+$env:THREADSENSE_MODEL = 'openai/gpt-4o-mini-2024-07-18'
+$env:THREADSENSE_VERIFIER_MODEL = 'openai/gpt-4.1'
+uv run --locked python scripts/run_agent1_verification.py --dry-run --limit 0 --content-review docs/agent1-pilot-content-review.json --content-review data/processed/agent1_full_batch_review_v3/content_review.json --output-dir data/processed/agent1_verified_v3
 ```
 
-macOS:
+On macOS, set the same two variables with `export NAME='value'` before running
+the identical uv command. Expected state: **200 compatible caches, zero unstarted
+records, zero remaining model tasks**. Every future export refresh must load
+**both review files**, including the full-batch disputes.
 
-```sh
-python3.13 -m venv .venv
-.venv/bin/python -m pip install -r requirements.txt
-.venv/bin/python -m pytest -q
-```
+The verification and Agent 2 runners require `--run` for live calls. The original
+Agent 1 demo and baseline runner have different defaults: omit `--inspect` or
+`--dry-run` only when intentionally requesting model work. Grouping without
+`--check-input` can load/download an embedding model and write outputs. Preserve
+the frozen baselines when preparing any future run.
 
-The pip setup reads dependency ranges from `pyproject.toml`; use uv for the
-exact dependency versions in `uv.lock`.
+## Retained entry points
 
-## CrewAI
+| Purpose | Entry points |
+| --- | --- |
+| Inspect fixtures | `main.py`, `scripts/run_agent1_demo.py --inspect` |
+| Baseline interpretation | `scripts/run_agent1_batch.py` |
+| Verification / canonical handoff | `scripts/run_agent1_verification.py` |
+| Historical offline reconciliation | `scripts/reconcile_agent1_handoff.py` |
+| Grouping | `scripts/run_thread_grouping.py` |
+| Existing Agent 2 | `scripts/prepare_agent2_input.py`, `scripts/run_agent2_sample.py`, `scripts/run_agent2_batch.py`, `scripts/repair_agent2_sample.py` |
+| Retained benchmark | `scripts/run_prose_comparison_experiment.py` |
+| Dataset authoring | `scripts/generate_thread_blueprint.py`, `scripts/generate_slack_fixtures.py` |
+| Dataset checks | `scripts/validate_topic_catalog.py`, `scripts/validate_slack_fixtures.py`, `scripts/validate_threadsense_dataset.py` |
 
-CrewAI is included in the project dependencies and installed by `uv sync`.
-Verify the installation without calling a model:
-
-```sh
-uv run python -c "from crewai import Agent; print('CrewAI is ready')"
-```
-
-Use `uv add package-name` to add future dependencies so they are recorded in
-`pyproject.toml` and `uv.lock` for both computers. Avoid a bare `pip install`,
-which can target a different interpreter and does not update the shared lockfile.
-
-### API keys for both agents
-
-Create `.env` in the repository root by copying `.env.example`, then paste your
-OpenAI API key after `OPENAI_API_KEY=`. Both the interpreter and topic analyst
-automatically read this file, including when launched from another directory.
-
-```dotenv
-OPENAI_API_KEY=your-key-here
-THREADSENSE_MODEL=openai/gpt-4o-mini
-```
-
-Save the file and run the interpreter as usual:
-
-```sh
-uv run python scripts/run_agent1_demo.py
-```
-
-The batch interpreter uses the same configuration:
-
-```sh
-uv run python scripts/run_agent1_batch.py
-```
-
-Check the analyst's input with `uv run python scripts/run_agent2_sample.py`.
-Add `--run` to call the model. The analyst refuses to overwrite an existing
-`data/processed/agent2_sample/topic_analysis.json`; review and move that result
-before intentionally rerunning the sample.
-
-You do not need `--env-file` or terminal key prompts. If the selected key is
-missing, the runner stops with a message pointing to `.env`. Variables already
-set in the terminal take precedence over `.env`; start a fresh terminal if
-old settings are overriding your saved configuration.
-
-`.env` is ignored by Git and stays on this computer. Create and fill in a local
-`.env` on your Mac as well. Commit `.env.example` with blank key fields only.
-
-To use OpenRouter instead, set `THREADSENSE_MODEL=openrouter/openrouter/free`
-and fill in `OPENROUTER_API_KEY` in the same `.env` file. Both agents select the
-key for the configured provider. The `crewai[litellm]` integration is already
-included in this project's dependencies.
-
-The demo uses LiteLLM with ordinary text completions. It asks for a JSON object
-and validates the result locally with Pydantic, including the thread ID and
-authority evidence references. It does not require a free provider to implement
-OpenAI's strict JSON-schema response format. Provider errors report the HTTP
-status and available error details without repeating a failed agent run.
-
-To inspect the fixture without a key or model request:
-
-```sh
-uv run python scripts/run_agent1_demo.py --inspect
-```
-
-## Agent 1 verification and bounded correction
-
-The active verification workflow checks saved Agent 1 interpretations against
-their original Slack threads, makes at most one targeted revision, and checks
-that revision once more. Source analysis runs once per thread; prose is checked
-in a separate batch for each candidate. There are at most four model calls per
-thread, with no automatic retries. Results are `VERIFIED`, `CORRECTED`, or `NEEDS_REVIEW`;
-every selected thread is retained, including provisional results.
-Successful revisions clear first-pass findings automatically. Review flags are
-terminal outcomes and do not pause the overnight run. The canonical export
-includes matching content disputes, original automated status, and provenance.
-
-Run the offline preflight from the project root:
-
-```powershell
-uv run --locked python scripts/run_agent1_verification.py --dry-run --limit 1
-```
-
-No credentials, model calls, or output writes are needed for this preflight.
-The separate `--run` flag authorizes paid calls. The original
-`run_agent1_batch.py` remains the baseline interpretation runner.
-
-See [Agent 1 nonblocking handoff](docs/agent1-nonblocking-handoff.md)
-for the current workflow, offline results, reconciled pilot, batch commands,
-and downstream obligations. The frozen 200-thread baseline and 91 clusters remain
-historical inputs; Agent 2's current contracts and runners are still supported.
+The preparation and authoring scripts write files; they are not read-only checks.
+Their presence supports reproducibility, not regeneration of the frozen corpus.
 
 ## Troubleshooting
 
-- `No module named pip`: uv-created environments do not include pip by default.
-  Use `uv add package-name` to install and record a project dependency, or
-  `uv sync --locked --extra dev` to restore the checked-in dependencies.
-- Rust compiler or wheel-build errors for `tiktoken` or `regex` while installing
-  CrewAI: check the Python version and use this project's Python 3.13 environment.
-  Python 3.14 is outside [CrewAI's supported range](https://pypi.org/project/crewai/).
-  Older dependency versions may lack wheels for newer Python versions, causing
-  an installer to attempt a source build.
-- `ModuleNotFoundError: No module named 'threadsense'`: use the project
-  environment and run pytest inside this checkout. The editable installation
-  also makes `threadsense` available to other Python scripts.
-- `Fatal Python error: Failed to import encodings module`: the underlying
-  Python installation is incomplete or broken. Use the uv commands above to
-  use a managed interpreter, or repair that Python installation before
-  recreating any environments that depend on it.
-- Tests from `Lib/site-packages` appearing in collection: use the checked-in
-  pytest configuration, which limits default collection to `tests`.
-- Errors accessing an old `.pytest_cache`: this project uses `.cache/pytest`;
-  the old directory is no longer needed by these tests.
-- An existing `.venv` points to another computer or an unavailable Python:
-  rename it to `.venv-backup`, then run `uv sync --locked --extra dev` to create
-  a fresh environment.
-
+- Missing `crewai`, `pydantic`, or `threadsense`: run the locked sync and use
+  `uv run --locked python ...` or this checkout's editor interpreter.
+- Missing pip inside `.venv`: uv environments need not include pip; use uv sync.
+- A copied/broken environment or `encodings` startup failure: use a local Python
+  3.13 installation and recreate the environment with uv. Keep the old environment
+  separately until the replacement works.
+- Windows pytest temporary-directory access errors: choose a new dedicated
+  `--basetemp .cache/pytest-...` directory. Do not put project evidence there.
+- Unexpected model or credential choice: terminal variables override `.env`.
+- Incompatible v3 preflight: inspect the original model pins and code/input/package
+  fingerprints. Do not alter saved metadata to force compatibility.

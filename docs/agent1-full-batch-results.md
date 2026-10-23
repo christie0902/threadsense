@@ -1,10 +1,16 @@
 # Agent 1 full-batch evaluation and finalized handoff — version 3
 
+For current commands and the downstream contract, see the
+[handoff guide](agent1-nonblocking-handoff.md). This report records the completed
+evaluation; earlier execution commands below are historical, not export-refresh
+instructions. Any future refresh must load both review registries.
+
 The authorized version 3 batch completed with exit code 0: **200 unique full
 project/batch/channel/thread identities, exactly matching the frozen input set,
 and zero unprocessed inputs**. Its state is `complete_with_review`. The predefined
-12-candidate source review and offline export refresh are also complete. Agent 2
-and Agent 3 were not implemented or changed.
+12-candidate source review and offline export refresh are also complete. Existing
+Agent 2 code was unchanged; its canonical-export connection and Agent 3 remain
+future work.
 
 This completes the requested execution, integrity, sample-review, and handoff
 milestone. It does not establish that the model is fully accurate. The review
@@ -176,7 +182,12 @@ The local, model-disabled evaluation commands were:
 .venv\Scripts\python.exe .cache/agent1_full_batch_20261022/audit_handoff.py --apply-review
 ```
 
-These helpers are task-local audit tools, not changes to the production verifier.
+These helpers are retained task-local audit tools, not changes to the production verifier.
+The commands above record the original milestone, not a repeatable refresh recipe:
+the review file already exists and the preservation checks expect the original
+pre-cleanup tree (Git commit `053d3144f735597c0d3976db3e830690dfcc3afc`).
+Use the read-only preflight below for current cache validation. Cleanup checks
+are recorded separately in [the cleanup report](repository-cleanup.md).
 The durable check results and request/file hash ledger are saved in
 [integrity_report.json](../data/processed/agent1_full_batch_review_v3/integrity_report.json).
 
