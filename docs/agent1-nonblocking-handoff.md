@@ -120,21 +120,22 @@ independent ground truth**: seven passes within scope, four errors, one uncertai
 The selected sample cannot estimate full-batch accuracy. Historical reviews lacking
 reviewer/timestamp metadata retain null values and explicitly computed bindings.
 
-## Next milestone: connect Agent 2
+## Agent 2 connection and remaining downstream obligations
 
-The existing Agent 2 loaders still use frozen groups. The next connection must
-consume all 200 finalized canonical records and preserve effective/automated
+The [Agent 2 offline integration](agent2-offline-integration.md) now consumes all
+200 finalized canonical records with 90 refreshed tentative groups. It preserves effective/automated
 statuses, flags, disputed fields/reasons, exact evidence, full identity,
 source/candidate hashes, and original/revised lineage through consolidation.
-Group summaries must keep constituent flags. Provisional claims can support
+Its four-group live pilot is prepared but has not run. Group summaries must keep
+constituent flags. Provisional claims can support
 tentative grouping or question discovery, without becoming confirmed answers,
 policy, authoritative decisions, or resolved conclusions.
 
 Later Agent 3 retrieval should preserve citations, known publication/effective
 dates, project scope, and authority. Unresolved temporal/authority conflicts remain
 review cards. All flags must reach a future briefing's Needs Review section, even
-without a recommendation. These consumer/retrieval/briefing obligations are planned;
-they were not implemented by the Agent 1 milestone or repository cleanup.
+without a recommendation. Retrieval and briefing remain planned; offline Agent 2
+integration does not establish live semantic accuracy or implement Agent 3.
 
 ## Historical evidence retained
 

@@ -2,8 +2,9 @@
 
 ThreadSense interprets Slack discussions and groups related questions for topic
 analysis. Agent 1's finalized v3 handoff contains all **200 records: 81 VERIFIED,
-70 CORRECTED, and 49 NEEDS_REVIEW**. The next milestone connects the existing
-Agent 2 implementation to this canonical export while preserving review metadata.
+70 CORRECTED, and 49 NEEDS_REVIEW**. Agent 2 now consumes this canonical export,
+with 90 refreshed tentative groups and member-level review metadata. Its offline
+integration is complete; live consolidation accuracy has not yet been evaluated.
 Agent 3 retrieval and the briefing interface remain planned work.
 
 ## Maintained documentation
@@ -13,6 +14,8 @@ Agent 3 retrieval and the briefing interface remain planned work.
   current behavior, read-only preflight, evidence, and next milestone.
 - [Final Agent 1 results](docs/agent1-full-batch-results.md): request accounting,
   all twelve source-review outcomes, limitations, and artifact links.
+- [Agent 2 offline integration](docs/agent2-offline-integration.md): factual contract,
+  grouping comparison, retained review obligations, tests, and the bounded pilot.
 - [Prose benchmark](experiments/prose_comparison_v1/README.md): retained synthetic
   cases, request isolation, scoring, and saved-response regression evidence.
 - [Repository cleanup record](docs/repository-cleanup.md): removals, recovery,
@@ -32,10 +35,12 @@ thread, zero retries and no fallback calls**. NEEDS_REVIEW retains the candidate
 and evidence and does not interrupt subsequent threads.
 
 The baseline lives in `data/processed/agent1_authority_fix/`; the 91 frozen
-groups live in `data/processed/grouping/`. Existing Agent 2 loaders still use
-those historical groups. Their connection to the finalized canonical export is
-not implemented yet. All 200 verified/provisional records are available for that
-connection in `data/processed/agent1_verified_v3/interpretations.json`.
+groups live in `data/processed/grouping/` as historical evidence. Agent 2 reads
+`data/processed/agent1_verified_v3/interpretations.json` directly and uses the new
+90 candidates in `data/processed/grouping_agent1_v3/`. It preserves all 49 inherited
+review obligations through merging. Source-cited answers from disputed topics stay
+provisional. Severity, actionability, policy research, and recommendations belong
+to future Agent 3 work, not the active Agent 2 schema.
 
 ## Setup and configuration
 
@@ -80,8 +85,9 @@ These commands inspect existing inputs without paid model calls:
 uv run --locked python scripts/run_agent1_demo.py --inspect
 uv run --locked python scripts/run_agent1_batch.py --dry-run --limit 1
 uv run --locked python scripts/run_thread_grouping.py --check-input
+uv run --locked python scripts/prepare_agent2_grouping.py
 uv run --locked python scripts/run_agent2_sample.py
-uv run --locked python scripts/run_agent2_batch.py --limit 1
+uv run --locked python scripts/run_agent2_batch.py --dry-run --limit 0
 ```
 
 Read-only verification of the completed handoff, in PowerShell:
@@ -97,7 +103,9 @@ the identical uv command. Expected state: **200 compatible caches, zero unstarte
 records, zero remaining model tasks**. Every future export refresh must load
 **both review files**, including the full-batch disputes.
 
-The verification and Agent 2 runners require `--run` for live calls. The original
+The verification and Agent 2 runners require `--run` for live calls. Agent 2's
+batch runner additionally requires the prepared pilot and explicit request ceiling;
+each group gets one request, zero retries, and zero repairs. The original
 Agent 1 demo and baseline runner have different defaults: omit `--inspect` or
 `--dry-run` only when intentionally requesting model work. Grouping without
 `--check-input` can load/download an embedding model and write outputs. Preserve
@@ -111,14 +119,16 @@ the frozen baselines when preparing any future run.
 | Baseline interpretation | `scripts/run_agent1_batch.py` |
 | Verification / canonical handoff | `scripts/run_agent1_verification.py` |
 | Historical offline reconciliation | `scripts/reconcile_agent1_handoff.py` |
-| Grouping | `scripts/run_thread_grouping.py` |
-| Existing Agent 2 | `scripts/prepare_agent2_input.py`, `scripts/run_agent2_sample.py`, `scripts/run_agent2_batch.py`, `scripts/repair_agent2_sample.py` |
+| Historical grouping / canonical refresh | `scripts/run_thread_grouping.py`, `scripts/prepare_agent2_grouping.py` |
+| Factual Agent 2 | `scripts/prepare_agent2_input.py`, `scripts/run_agent2_sample.py`, `scripts/run_agent2_batch.py` |
+| Retired compatibility command | `scripts/repair_agent2_sample.py` explains the v1-to-v2 migration and makes no calls |
 | Retained benchmark | `scripts/run_prose_comparison_experiment.py` |
 | Dataset authoring | `scripts/generate_thread_blueprint.py`, `scripts/generate_slack_fixtures.py` |
 | Dataset checks | `scripts/validate_topic_catalog.py`, `scripts/validate_slack_fixtures.py`, `scripts/validate_threadsense_dataset.py` |
 
-The preparation and authoring scripts write files; they are not read-only checks.
-Their presence supports reproducibility, not regeneration of the frozen corpus.
+Agent 2 preparation is read-only unless `--write` or `--prepare` is supplied.
+Dataset authoring writes files; it supports reproducibility, not regeneration of
+the frozen corpus. New output directories keep historical results untouched.
 
 ## Troubleshooting
 

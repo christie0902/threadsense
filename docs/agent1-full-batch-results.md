@@ -5,6 +5,10 @@ For current commands and the downstream contract, see the
 evaluation; earlier execution commands below are historical, not export-refresh
 instructions. Any future refresh must load both review registries.
 
+Subsequent milestone: [Agent 2 offline integration](agent2-offline-integration.md)
+now connects this unchanged canonical handoff. The execution and review findings
+below remain the original Agent 1 milestone record.
+
 The authorized version 3 batch completed with exit code 0: **200 unique full
 project/batch/channel/thread identities, exactly matching the frozen input set,
 and zero unprocessed inputs**. Its state is `complete_with_review`. The predefined
