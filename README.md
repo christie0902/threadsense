@@ -148,23 +148,27 @@ uv run python scripts/run_agent1_demo.py --inspect
 
 The active verification workflow checks saved Agent 1 interpretations against
 their original Slack threads, makes at most one targeted revision, and checks
-that revision once more. Results are `VERIFIED`, `CORRECTED`, or `NEEDS_REVIEW`;
+that revision once more. Source analysis runs once per thread; prose is checked
+in a separate batch for each candidate. There are at most four model calls per
+thread, with no automatic retries. Results are `VERIFIED`, `CORRECTED`, or `NEEDS_REVIEW`;
 every selected thread is retained, including provisional results.
+Successful revisions clear first-pass findings automatically. Review flags are
+terminal outcomes and do not pause the overnight run. The canonical export
+includes matching content disputes, original automated status, and provenance.
 
 Run the offline preflight from the project root:
 
 ```powershell
-$env:PYTHONPATH = (Resolve-Path .\src).Path
-uv run python scripts/run_agent1_verification.py --dry-run --limit 1
+uv run --locked python scripts/run_agent1_verification.py --dry-run --limit 1
 ```
 
 No credentials, model calls, or output writes are needed for this preflight.
 The separate `--run` flag authorizes paid calls. The original
 `run_agent1_batch.py` remains the baseline interpretation runner.
 
-See [Agent 1 verification](docs/agent1-verification.md) for the active modules,
-one-thread paid pilot command, output format, resume behavior, tests, and
-superseded experiments. The frozen 200-thread baseline and 91 clusters remain
+See [Agent 1 nonblocking handoff](docs/agent1-nonblocking-handoff.md)
+for the current workflow, offline results, reconciled pilot, batch commands,
+and downstream obligations. The frozen 200-thread baseline and 91 clusters remain
 historical inputs; Agent 2's current contracts and runners are still supported.
 
 ## Troubleshooting

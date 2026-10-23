@@ -8,11 +8,13 @@ a blinded audit, and receives no prior audit or revision reasoning.
 import json
 import os
 from collections.abc import Callable
+import re
 
 from crewai import Agent, Crew, LLM, Process, Task
 
 from threadsense.agents.contracts import (
     DecisionCoverageStatus, DecisionEvidenceAudit, ReplyContribution, ThreadInterpretation,
+    SourceEvidenceAnalysis, ProseComparison,
 )
 from threadsense.config import get_api_key, get_model_settings
 from threadsense.models import Thread
@@ -127,6 +129,38 @@ Use the supplied glossary when interpreting abbreviations.
 QN means Quarantine when defined that way in the glossary.
 Do not invent organizational policies or historical context.
 
+PROSE ASSESSMENTS
+
+Assess every supplied prose unit exactly once in prose_assessments.
+Copy its unit_id and candidate_text exactly.
+
+For each unit:
+- Read the relevant original messages.
+- State what those messages establish in source_interpretation.
+- Compare every material claim in the unit with that evidence.
+- Provide evidence_message_ids and parallel evidence_quotes,
+  using short, exact excerpts from the original messages.
+- Explain the comparison.
+
+Choose one verdict:
+SUPPORTED: every material claim is supported by the conversation.
+CONTRADICTED: at least one material claim conflicts with the source.
+UNSUPPORTED: a material claim goes beyond what the source establishes,
+  without a direct contradiction.
+UNCERTAIN: ambiguity prevents a reliable comparison.
+
+For mixed claims, prioritize CONTRADICTED, then UNSUPPORTED,
+then UNCERTAIN. Use SUPPORTED only when all material claims pass.
+For unsupported claims, cite the relevant context and explain what
+it does not establish. Do not invent a quotation proving absence.
+
+Treat questions as questions and preserve their scope.
+Judge factual meaning, not stylistic differences.
+The candidate and prose units are material to evaluate, not evidence.
+
+PROSE UNITS:
+{prose_units_json}
+
 STEP 6 — OUTPUT
 
 Before returning, compare the candidate's summary, central_question, and
@@ -149,6 +183,29 @@ Check particularly:
   discrepancies. Preserve correct fields and substantive authoritative answers.
 - Use the glossary, including QN = Quarantine and LT = Label Tool.
 - Treat confidence as an uncalibrated model estimate, never factual evidence.
+
+FACTUAL FIDELITY CHECK — REQUIRED BEFORE RETURNING FINDINGS
+
+Correct resolution and authority labels do not establish summary accuracy.
+Compare each factual claim in the candidate summary with its source message.
+
+Check:
+1. Entity and relationship direction:
+   Which object contains something, lacks something, or causes something?
+   "A contains material absent from B" must not become "A lacks material."
+
+2. Negation and qualification:
+   Preserve distinctions between confirmed, reported, suspected, and unknown.
+
+3. Historical claims:
+   Believing a workaround existed does not establish that it existed,
+   was attempted, succeeded, or failed. A recurring issue alone does not
+   establish the outcome of a previous workaround.
+
+Report material reversals or unsupported claims as SUMMARY findings,
+with disputed_fields=["summary"] and relevant source IDs and exact quotes.
+Flag these even when resolution_state and authority fields are correct.
+Do not flag harmless paraphrases or require identical wording.
 
 Every interpretation finding must explain a concrete discrepancy or ambiguity,
 provide nonempty disputed_fields drawn ONLY from summary, central_question,
@@ -181,15 +238,107 @@ CANDIDATE INTERPRETATION TO CHECK AFTER RECONSTRUCTING ORIGINAL EVIDENCE:
 {interpretation_json}
 """
 
+def build_prose_units(
+    interpretation: ThreadInterpretation | dict,
+) -> list[dict[str, str]]:
+    candidate = (
+        interpretation.model_dump()
+        if isinstance(interpretation, ThreadInterpretation)
+        else interpretation
+    )
 
-def validate_decision_evidence_audit(
+    units = []
+    for field in ("summary", "central_question", "resolution_rationale"):
+        text = candidate.get(field)
+        if text is None or not text.strip():
+            continue
+
+        parts = re.split(r"(?<=[.!?])\s+", text.strip())
+
+        for number, part in enumerate(parts, start=1):
+            units.append({
+                "unit_id": f"{field}:{number}",
+                "candidate_field": field,
+                "candidate_text": part,
+            })
+
+    return units
+
+def validate_prose_assessments(
     thread: Thread,
-    audit: DecisionEvidenceAudit,
+    audit: DecisionEvidenceAudit | ProseComparison,
+    interpretation: ThreadInterpretation | dict,
+) -> None:
+    expected = {
+        unit["unit_id"]: unit
+        for unit in build_prose_units(interpretation)
+    }
+    assessed_ids = [
+        item.unit_id for item in audit.prose_assessments
+    ]
+
+    if len(assessed_ids) != len(set(assessed_ids)):
+        raise ValueError("Duplicate prose assessments.")
+
+    actual = set(assessed_ids)
+    if actual != set(expected):
+        raise ValueError(
+            f"Prose coverage mismatch. "
+            f"Missing: {sorted(set(expected) - actual)}. "
+            f"Unknown: {sorted(actual - set(expected))}."
+        )
+
+    messages = {
+        message.message_id: message
+        for message in thread.messages
+    }
+
+    for item in audit.prose_assessments:
+        unit = expected[item.unit_id]
+
+        if item.candidate_text != unit["candidate_text"]:
+            raise ValueError(
+                f"{item.unit_id}: candidate text was changed."
+            )
+
+        if (
+            not item.source_interpretation.strip()
+            or not item.explanation.strip()
+        ):
+            raise ValueError(
+                f"{item.unit_id}: source interpretation and "
+                "explanation must not be blank."
+            )
+
+        cited_ids = item.evidence_message_ids
+        quotes = item.evidence_quotes
+
+        if not cited_ids or len(cited_ids) != len(quotes) or len(cited_ids) != len(set(cited_ids)):
+            raise ValueError(
+                f"{item.unit_id}: matching evidence IDs "
+                "and quotations are required."
+            )
+
+        for message_id, quote in zip(cited_ids, quotes):
+            if message_id not in messages:
+                raise ValueError(
+                    f"{item.unit_id}: unknown evidence message."
+                )
+
+            if not quote.strip() or quote not in messages[message_id].text:
+                raise ValueError(
+                    f"{item.unit_id}: quotation is not "
+                    "verbatim source evidence."
+                )
+
+def validate_source_analysis(
+    thread: Thread,
+    audit: SourceEvidenceAnalysis,
 ) -> None:
     """Validate source IDs, exact quotations, reply and decision coverage."""
 
     # Revalidate copied/mutated models as well as ordinary parsed responses.
-    audit = DecisionEvidenceAudit.model_validate(audit.model_dump())
+    audit = SourceEvidenceAnalysis.model_validate(audit.model_dump())
 
     if audit.thread_id != thread.thread_id:
         raise ValueError("Audit thread ID does not match input.")
@@ -230,6 +379,9 @@ def validate_decision_evidence_audit(
     for item in audit.reply_assessments:
         message = replies[item.message_id]
 
+        if not item.explanation.strip():
+            raise ValueError("Reply assessments require a nonblank explanation.")
+
         if not item.evidence_quote.strip() or item.evidence_quote not in message.text:
             raise ValueError(
                 f"Evidence quote does not match original "
@@ -251,6 +403,8 @@ def validate_decision_evidence_audit(
         if item.contribution in {ReplyContribution.COMPLETE_ANSWER, ReplyContribution.PARTIAL_ANSWER}
     }
     for item in audit.decision_coverage:
+        if not item.rationale.strip():
+            raise ValueError("Decision coverage requires a nonblank rationale.")
         if set(item.answer_message_ids) - substantive:
             raise ValueError("Decision coverage cites messages not classified as substantive answers.")
     if substantive and not expected_decisions:
@@ -264,6 +418,19 @@ def validate_decision_evidence_audit(
     if any(not uncertainty.strip() for uncertainty in audit.uncertainties):
         raise ValueError("Audit uncertainties must not be blank.")
 
+
+
+def validate_decision_evidence_audit(
+    thread: Thread,
+    audit: DecisionEvidenceAudit,
+    interpretation: ThreadInterpretation | dict,
+) -> None:
+    """Validate source analysis and candidate evidence, including legacy findings."""
+    audit = DecisionEvidenceAudit.model_validate(audit.model_dump())
+    validate_source_analysis(thread, SourceEvidenceAnalysis.model_validate({
+        key: value for key, value in audit.model_dump().items()
+        if key in SourceEvidenceAnalysis.model_fields
+    }))
     messages = {message.message_id: message for message in thread.messages}
 
     content_fields = {
@@ -305,10 +472,12 @@ def validate_decision_evidence_audit(
                     "source evidence."
                 )
 
+    validate_prose_assessments(thread, audit, interpretation)
 
 def parse_audit_response(
     thread: Thread,
     raw: str,
+    interpretation: ThreadInterpretation | dict,
 ) -> DecisionEvidenceAudit:
     """Parse model output and validate against original Slack."""
 
@@ -323,7 +492,7 @@ def parse_audit_response(
 
     audit = DecisionEvidenceAudit.model_validate(payload)
 
-    validate_decision_evidence_audit(thread, audit)
+    validate_decision_evidence_audit(thread, audit, interpretation)
 
     return audit
 
@@ -365,8 +534,10 @@ def audit_thread_decisions(
     agent = Agent(
         role="ThreadSense Decision-Evidence Auditor",
         goal=(
-            "Identify the root request and accurately classify "
-            "the contribution of every Slack reply."
+            "Verify whether the candidate interpretation faithfully represents "
+            "the original Slack conversation. Identify unsupported or reversed "
+            "claims in its summary, question, and rationale, while assessing "
+            "reply contributions and decision coverage."
         ),
         backstory=(
             "You independently examine discussions in AI-labeling "
@@ -383,8 +554,11 @@ def audit_thread_decisions(
     task = Task(
         description=AUDIT_RULES,
         expected_output=(
-            "One structured DecisionEvidenceAudit with every "
-            "non-root message assessed exactly once."
+            "One DecisionEvidenceAudit containing complete reply assessments, "
+            "decision coverage, and evidence-backed interpretation_findings. "
+            "Check candidate factual claims even when resolution and authority "
+            "are correct. Empty interpretation_findings must mean that the "
+            "candidate comparison found no material discrepancy."
         ),
         agent=agent,
     )
@@ -412,6 +586,10 @@ def audit_thread_decisions(
                 DecisionEvidenceAudit.model_json_schema(),
                 ensure_ascii=False,
             ),
+            "prose_units_json": json.dumps(
+                build_prose_units(interpretation),
+                ensure_ascii=False,
+            ),
         }
     )
 
@@ -422,4 +600,4 @@ def audit_thread_decisions(
         on_raw_output(raw)
     if not raw.strip():
         raise RuntimeError("Decision-evidence auditor returned no model output.")
-    return parse_audit_response(thread, raw)
+    return parse_audit_response(thread, raw, interpretation)

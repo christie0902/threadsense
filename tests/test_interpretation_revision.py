@@ -1,4 +1,4 @@
-"""Exercise the actual CrewAI revision path with a mocked provider boundary."""
+"""Exercise the actual single-attempt revision path with a mocked provider boundary."""
 
 import json
 from types import SimpleNamespace
@@ -48,30 +48,27 @@ def revision_case(monkeypatch, tmp_path):
 def test_revision_reuses_interpreter_model_once_and_preserves_raw_before_validation(
     monkeypatch, revision_case, invalid,
 ):
-    import litellm
+    from threadsense.agents import verification_requests as transport
 
     thread, original, findings = revision_case
     corrected = original.model_copy(update={"summary": "The author asks whether to use Quarantine (QN)."})
     raw = "not valid JSON" if invalid else corrected.model_dump_json()
     calls, saved = [], []
 
-    def complete(**kwargs):
+    def complete(endpoint, body, api_key):
+        kwargs = json.loads(body)
         calls.append(kwargs)
-        assert kwargs["model"] == "openai/gpt-4o-mini"
-        assert kwargs["api_key"] == "offline-revision-key"
+        assert kwargs["model"] == "gpt-4o-mini"
+        assert endpoint == "https://api.openai.com/v1/chat/completions"
+        assert api_key == "offline-revision-key"
         prompt = json.dumps(kwargs["messages"])
         assert "Quarantine" in prompt and "Label Tool" in prompt
         assert "quality note" in prompt
         assert "SPECIFIC VERIFICATION FINDINGS" in prompt
         assert "authority_eligible_message_ids" not in prompt  # All placeholders resolved.
-        return litellm.ModelResponse(
-            model=kwargs["model"],
-            choices=[{"message": {"role": "assistant", "content": f"Final Answer: {raw}"},
-                      "finish_reason": "stop"}],
-            usage={"prompt_tokens": 10, "completion_tokens": 10, "total_tokens": 20},
-        )
+        return 200, json.dumps({"choices": [{"message": {"content": raw}, "finish_reason": "stop"}]}).encode(), None
 
-    monkeypatch.setattr(litellm, "completion", complete)
+    monkeypatch.setattr(transport, "send_once", complete)
     if invalid:
         with pytest.raises(RuntimeError, match="valid ThreadInterpretation JSON"):
             revision.revise_interpretation(thread, original, findings, None, on_raw_output=saved.append)
@@ -84,8 +81,9 @@ def test_revision_reuses_interpreter_model_once_and_preserves_raw_before_validat
 
 def test_missing_revision_text_is_retained_and_rejected(monkeypatch, revision_case):
     thread, original, findings = revision_case
-    monkeypatch.setattr(revision, "Crew", lambda **kwargs: SimpleNamespace(
-        kickoff=lambda **kwargs: SimpleNamespace(raw=None),
+    from threadsense.agents import verification_requests as transport
+    monkeypatch.setattr(transport, "send_once", lambda *args: (
+        200, b'{"choices":[{"message":{"content":null},"finish_reason":"stop"}]}', None,
     ))
     saved = []
     with pytest.raises(ValueError, match="no text output"):

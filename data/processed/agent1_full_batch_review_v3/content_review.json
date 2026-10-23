@@ -1,0 +1,944 @@
+{
+  "review_type": "Codex-assisted source review of actual version 3 candidates; not human approval or independent ground truth",
+  "human_approval": false,
+  "review_finalized_at": "2026-10-23T03:15:44.304755+00:00",
+  "sample_selection_file": "docs/agent1-review-sample.json",
+  "sample_selection_sha256": "7e36c82963e62c22dde9f2f117816cffcd410d3c0cee93197121cf00a0a61479",
+  "selection_rule": "Four pilot regressions plus first two non-pilot threads per project sorted by full identity; selected before 200-thread outcomes.",
+  "glossary_sha256": "1bd40ba6d9e10f5dbba54ce645a43d598c94623145a81c1a46bf5418c27f6470",
+  "scope": "All 12 predetermined candidates compared against actual Slack text, speaker roles, reaction users/targets, and approved glossary. No evaluation labels or external policy documents used.",
+  "limitations": [
+    "Assisted judgment is fallible; this is neither human sign-off nor independent ground truth.",
+    "Twelve deliberately selected cases, including eight announcement-channel records, do not estimate full-batch accuracy.",
+    "The frozen schema has no N/A resolution value for announcements; labels alone are not treated as factual errors.",
+    "Confidence values are uncalibrated. External documents and actual incident outcomes were not retrieved.",
+    "Positive source reviews do not clear automated failures or imply human approval."
+  ],
+  "reviews": [
+    {
+      "project_id": "audio_multimodal",
+      "batch_id": "audio_batch_06",
+      "channel_id": "C_AUDIO_QA",
+      "thread_id": "1790903186.000110",
+      "reviewer_identity": "Codex assistant",
+      "reviewed_at": "2026-10-23T03:15:44.304755+00:00",
+      "source_review_outcome": "PASS_SOURCE_REVIEW",
+      "machine_status_preserved": "VERIFIED",
+      "needs_review": false,
+      "disputed_fields": [],
+      "review_reason": null,
+      "findings": [],
+      "review_notes": "The candidate accurately retains the playback problem, Mina's diagnostic requests, and the absence of a substantive answer. UNRESOLVED, false authority, and an empty authority evidence list match the source. Actual TL U006 eyes is on the root message and does not endorse Mina's reply.",
+      "limitations": "The thread does not establish underlying audio content, a cause, or a handling decision; none is supplied by the candidate.",
+      "source_file": "data/processed/agent1_verified_v3/sources/af9809969ded77dc4035a0e2132cb336c61b574b51ad5cc6263e547439f93f03.json",
+      "verification_file": "data/processed/agent1_verified_v3/records/4abea928556627bd39ebcad8231737d0331b30f22a51b46129f37c296d057836/result.json",
+      "source_sha256": "af9809969ded77dc4035a0e2132cb336c61b574b51ad5cc6263e547439f93f03",
+      "candidate_sha256": "dbf96d1f6c53d0b460ca594402577dc2b1c5c5abeff2431959af769b82e5c7a5",
+      "source_file_sha256": "1d28a02e4a4baacf31d7f511d5b31cda1964a5788fe2ddf10985281f6fd33a7b",
+      "verification_file_sha256": "993722701cc7237f25a8b2d09edd29d0f1f71de1c70110414e49ccbd064391e5",
+      "reviewed_candidate": {
+        "thread_id": "1790903186.000110",
+        "summary": "Leo, a QA Tutor, asks for clarification on a case where the waveform loads but the play button does not start the recording. Mina, another QA Tutor, responds by requesting additional information, including the task reference, browser state, and whether the audio element loads, noting that a spinning player does not provide insight into the audio's content.",
+        "central_question": "Could QA clarify this case: Waveform loads but play button never starts the recording?",
+        "resolution_state": "UNRESOLVED",
+        "authoritative_response_present": false,
+        "authority_evidence_message_ids": [],
+        "resolution_rationale": "The thread does not establish a substantive answer to Leo's request for clarification. Mina's response seeks more information rather than providing a resolution to the issue raised.",
+        "confidence": 0.8
+      },
+      "source_evidence": [
+        {
+          "message_id": "1790903186.000110",
+          "author_id": "U007",
+          "author_name": "Leo",
+          "author_role": "QA_TUTOR",
+          "timestamp": "2026-10-02T01:06:26.000110Z",
+          "text": "Could QA clarify this case: Waveform loads but play button never starts the recording.",
+          "source": "USER",
+          "reactions": [
+            {
+              "name": "eyes",
+              "users": [
+                "U006"
+              ],
+              "count": 1,
+              "reactor_roles": {
+                "U006": "TEAM_LEAD"
+              }
+            }
+          ]
+        },
+        {
+          "message_id": "1790903244.000113",
+          "author_id": "U002",
+          "author_name": "Mina",
+          "author_role": "QA_TUTOR",
+          "timestamp": "2026-10-02T01:07:24.000113Z",
+          "text": "Can you record the task reference, browser state, and whether the audio element loads? A spinning player does not tell us what the underlying audio contains.",
+          "source": "USER",
+          "reactions": []
+        }
+      ],
+      "raw_slack_file": "data/fixtures/slack_generated/channels/C_AUDIO_QA.json",
+      "user_role_file": "data/fixtures/slack_generated/users.json",
+      "glossary_file": "data/knowledge/domain_lexicon.json"
+    },
+    {
+      "project_id": "audio_multimodal",
+      "batch_id": "audio_batch_06",
+      "channel_id": "C_AUDIO_GENERAL",
+      "thread_id": "1790882197.000111",
+      "reviewer_identity": "Codex assistant",
+      "reviewed_at": "2026-10-23T03:15:44.304755+00:00",
+      "source_review_outcome": "FAIL_CONTENT",
+      "machine_status_preserved": "CORRECTED",
+      "needs_review": true,
+      "disputed_fields": [
+        "summary"
+      ],
+      "review_reason": "Yuki only thought a workaround existed in the previous queue and reports that the problem is happening again. Priya still asks for task IDs and a reproduction attempt before deciding whether it applies. Recurrence is not evidence that the workaround was attempted or failed; the summary's failed-workaround claim remains unsupported.",
+      "findings": [
+        {
+          "category": "SUMMARY",
+          "disputed_fields": [
+            "summary"
+          ],
+          "candidate_text": "recalling a previous workaround that seems to have failed",
+          "explanation": "Yuki only thought a workaround existed in the previous queue and reports that the problem is happening again. Priya still asks for task IDs and a reproduction attempt before deciding whether it applies. Recurrence is not evidence that the workaround was attempted or failed; the summary's failed-workaround claim remains unsupported.",
+          "evidence_message_ids": [
+            "1790882197.000111",
+            "1790882343.000339"
+          ],
+          "evidence_quotes": [
+            "Player never loads, should I QN? I thought a workaround existed in the previous queue, but it is happening again.",
+            "We need task IDs and a reproduction attempt before deciding whether the old workaround applies. If another clip plays, keep both task references when reporting the incident."
+          ]
+        }
+      ],
+      "review_notes": "The new retained candidate correctly expands QN as Quarantine, keeps the quarantine decision unresolved, and treats QA, engineer and TL replies as diagnostics rather than approval. Its summary nevertheless says the possible old workaround seems to have failed. The source establishes neither that it was attempted nor that it failed. U018 thumbsup on Mina's reply is a tutor reaction, not TL endorsement.",
+      "limitations": "This judgment is based on the actual v3 retained candidate and source. Its wording happens to match the historical v6 retained candidate, but new bindings are computed from the v3 source/result files. The repeated error does not establish a general model failure rate.",
+      "source_file": "data/processed/agent1_verified_v3/sources/a31ce82a0c8540f826509060d3eed8fe5f0b9af35166fc2a123f69a671a726fe.json",
+      "verification_file": "data/processed/agent1_verified_v3/records/64b1fa303985b0aabec75d2d73bceb1e3b77e0fe222b4ed395a0496c67428024/result.json",
+      "source_sha256": "a31ce82a0c8540f826509060d3eed8fe5f0b9af35166fc2a123f69a671a726fe",
+      "candidate_sha256": "b3e7e711f6bf0559231b31e8c1fda9c1fdf640a61d63db95065037fa279093fa",
+      "source_file_sha256": "4b01202fd11a492f8187ef54fefb4bc16f51f963f4729b8ca8b427cacfb25517",
+      "verification_file_sha256": "060036fe1a05e7661c0adbbc2a25005f79a747cd8aba526921ba7129e6071627",
+      "reviewed_candidate": {
+        "thread_id": "1790882197.000111",
+        "summary": "Yuki reports that the player never loads and questions whether to quarantine (QN) it, recalling a previous workaround that seems to have failed. Mina asks if another clip in the same queue plays normally, noting that a spinning player does not indicate the audio's content. Tariq requests capturing the LT error state and time for task AUDIO-2197, indicating that the wider cause is not confirmed. Priya, the team lead, states that task IDs and a reproduction attempt are needed before deciding if the old workaround applies, advising to keep both task references if another clip plays.",
+        "central_question": "Should I QN (Quarantine) when the player never loads, given that a workaround was thought to exist previously but the issue is recurring?",
+        "resolution_state": "UNRESOLVED",
+        "authoritative_response_present": false,
+        "authority_evidence_message_ids": [],
+        "resolution_rationale": "The thread discusses the issue of the player not loading and suggests steps to gather more information, such as checking if another clip plays normally and capturing error states. However, the original question about whether to quarantine it remains unresolved as further information is required before making that decision.",
+        "confidence": 0.8
+      },
+      "source_evidence": [
+        {
+          "message_id": "1790882197.000111",
+          "author_id": "U019",
+          "author_name": "Yuki",
+          "author_role": "QA_TUTOR",
+          "timestamp": "2026-10-01T19:16:37.000111Z",
+          "text": "Player never loads, should I QN? I thought a workaround existed in the previous queue, but it is happening again.",
+          "source": "USER",
+          "reactions": []
+        },
+        {
+          "message_id": "1790882245.000113",
+          "author_id": "U002",
+          "author_name": "Mina",
+          "author_role": "QA_TUTOR",
+          "timestamp": "2026-10-01T19:17:25.000113Z",
+          "text": "Does another clip in the same queue play normally? A spinning player does not tell us what the underlying audio contains.",
+          "source": "USER",
+          "reactions": [
+            {
+              "name": "thumbsup",
+              "users": [
+                "U018"
+              ],
+              "count": 1,
+              "reactor_roles": {
+                "U018": "TUTOR"
+              }
+            }
+          ]
+        },
+        {
+          "message_id": "1790882287.000226",
+          "author_id": "U016",
+          "author_name": "Tariq",
+          "author_role": "ENGINEER",
+          "timestamp": "2026-10-01T19:18:07.000226Z",
+          "text": "On task AUDIO-2197, please capture the LT error state and time; the wider cause is not confirmed here.",
+          "source": "USER",
+          "reactions": []
+        },
+        {
+          "message_id": "1790882343.000339",
+          "author_id": "U006",
+          "author_name": "Priya",
+          "author_role": "TEAM_LEAD",
+          "timestamp": "2026-10-01T19:19:03.000339Z",
+          "text": "We need task IDs and a reproduction attempt before deciding whether the old workaround applies. If another clip plays, keep both task references when reporting the incident.",
+          "source": "USER",
+          "reactions": []
+        }
+      ],
+      "raw_slack_file": "data/fixtures/slack_generated/channels/C_AUDIO_GENERAL.json",
+      "user_role_file": "data/fixtures/slack_generated/users.json",
+      "glossary_file": "data/knowledge/domain_lexicon.json"
+    },
+    {
+      "project_id": "audio_multimodal",
+      "batch_id": "audio_batch_06",
+      "channel_id": "C_AUDIO_GENERAL",
+      "thread_id": "1790909920.000138",
+      "reviewer_identity": "Codex assistant",
+      "reviewed_at": "2026-10-23T03:15:44.304755+00:00",
+      "source_review_outcome": "PASS_SOURCE_REVIEW",
+      "machine_status_preserved": "CORRECTED",
+      "needs_review": false,
+      "disputed_fields": [],
+      "review_reason": null,
+      "findings": [],
+      "review_notes": "The new summary correctly preserves that the reference text contains a sentence missing from the recording, not the reverse. It retains Hana's item-specific transcript/audio correspondence guidance and avoids inventing a playback failure or scoring penalty. The original question is preserved. Actual TL U006 uses this on Hana's reply 1790910023.000226, supporting its authority citation and the stated resolution. Tutor U013 thinking_face on Jordan's reply is not counted as endorsement.",
+      "limitations": "The source supports classification guidance for this item, not a general scoring severity or policy beyond the thread. The positive assisted review is not human approval.",
+      "source_file": "data/processed/agent1_verified_v3/sources/ea8fe627d958bef7692e31034c8e8e753383c0e2a749c920288282e1bde6da40.json",
+      "verification_file": "data/processed/agent1_verified_v3/records/223199126bcb7586dc4bb8416d72f5f470cc97fbeffe52ac5478aeab3f19b1ad/result.json",
+      "source_sha256": "ea8fe627d958bef7692e31034c8e8e753383c0e2a749c920288282e1bde6da40",
+      "candidate_sha256": "24c4459a1163a0318899c5eb69c46d017f173da83309edc8c5b1684f008e53e3",
+      "source_file_sha256": "f7986a2dc815d22c3cad1aadb0abf340885700214ba5f58a28ec7906c8ee03b4",
+      "verification_file_sha256": "60b29071b881b2a3a8c67485a16c953d9aec7d48295c0010b08b757eeed55617",
+      "reviewed_candidate": {
+        "thread_id": "1790909920.000138",
+        "summary": "Avery asks whether omissions in the audio or errors in the transcript field should be scored. Jordan responds that the reference text has a sentence missing from the recording, identifying it as a correspondence problem. Hana clarifies that for this specific item, a transcript/audio correspondence error should be recorded instead of classifying it as a playback failure.",
+        "central_question": "Should we score omissions in the audio or errors in the transcript field?",
+        "resolution_state": "RESOLVED_IN_THREAD",
+        "authoritative_response_present": true,
+        "authority_evidence_message_ids": [
+          "1790910023.000226"
+        ],
+        "resolution_rationale": "Hana provides a clear directive on how to classify the issue, stating that a transcript/audio correspondence error should be recorded. This sufficiently answers the original question posed by Avery, leaving no material part of the request open.",
+        "confidence": 1.0
+      },
+      "source_evidence": [
+        {
+          "message_id": "1790909920.000138",
+          "author_id": "U010",
+          "author_name": "Avery",
+          "author_role": "TUTOR",
+          "timestamp": "2026-10-02T02:58:40.000138Z",
+          "text": "Should we score omissions in the audio or errors in the transcript field?",
+          "source": "USER",
+          "reactions": []
+        },
+        {
+          "message_id": "1790909965.000113",
+          "author_id": "U003",
+          "author_name": "Jordan",
+          "author_role": "TUTOR",
+          "timestamp": "2026-10-02T02:59:25.000113Z",
+          "text": "The reference text has a sentence missing from the recording; that is a correspondence problem.",
+          "source": "USER",
+          "reactions": [
+            {
+              "name": "thinking_face",
+              "users": [
+                "U013"
+              ],
+              "count": 1,
+              "reactor_roles": {
+                "U013": "TUTOR"
+              }
+            }
+          ]
+        },
+        {
+          "message_id": "1790910023.000226",
+          "author_id": "U008",
+          "author_name": "Hana",
+          "author_role": "QA_TUTOR",
+          "timestamp": "2026-10-02T03:00:23.000226Z",
+          "text": "For this item, record a transcript/audio correspondence error, rather than classifying the recording as a playback failure.",
+          "source": "USER",
+          "reactions": [
+            {
+              "name": "this",
+              "users": [
+                "U006"
+              ],
+              "count": 1,
+              "reactor_roles": {
+                "U006": "TEAM_LEAD"
+              }
+            }
+          ]
+        }
+      ],
+      "raw_slack_file": "data/fixtures/slack_generated/channels/C_AUDIO_GENERAL.json",
+      "user_role_file": "data/fixtures/slack_generated/users.json",
+      "glossary_file": "data/knowledge/domain_lexicon.json"
+    },
+    {
+      "project_id": "audio_multimodal",
+      "batch_id": "audio_batch_06",
+      "channel_id": "C_AUDIO_GENERAL",
+      "thread_id": "1790915374.000127",
+      "reviewer_identity": "Codex assistant",
+      "reviewed_at": "2026-10-23T03:15:44.304755+00:00",
+      "source_review_outcome": "PASS_SOURCE_REVIEW",
+      "machine_status_preserved": "CORRECTED",
+      "needs_review": false,
+      "disputed_fields": [],
+      "review_reason": null,
+      "findings": [],
+      "review_notes": "The new candidate correctly expands QN as Quarantine and preserves the choice between quarantine and a quality score. It reports Carla's empty-sounding-file observation and Linh's diagnostic checks without claiming those checks were performed or that a handling decision was made. UNRESOLVED, no authoritative reply, and no authority evidence IDs match the source. No reactions or endorsements are present.",
+      "limitations": "A waveform and reported silence do not establish the cause or correct handling. The new candidate preserves that uncertainty. This completed v3 correction does not invent completion of the historical v6 interrupted request.",
+      "source_file": "data/processed/agent1_verified_v3/sources/b2d27fe441a5d7f32ac0e5be853a3ae774c5a729c1f44deb529b0fb2c2de1afd.json",
+      "verification_file": "data/processed/agent1_verified_v3/records/7b480a21450bc1ea52b6b4f890f71c3dc5e3226ffdb1ddea181ff0294237b25f/result.json",
+      "source_sha256": "b2d27fe441a5d7f32ac0e5be853a3ae774c5a729c1f44deb529b0fb2c2de1afd",
+      "candidate_sha256": "fa9450a2178fb10cb83173116ea9085d6361f5910357deca5fee6c2a8ff7e79d",
+      "source_file_sha256": "7ba4b61bbf86819bf6d31f1d9075f7cc01c7a1d75c5a169186c9fc3031f77ad0",
+      "verification_file_sha256": "cdd66e132813783ba1e42f786ab9d3634603421c4be863c399533ee231f5ceb5",
+      "reviewed_candidate": {
+        "thread_id": "1790915374.000127",
+        "summary": "Avery raises a task check regarding a clip that is completely silent despite having a waveform, asking whether to assign a quality score or a QN (Quarantine). Carla notes that several prompts expecting speech return an empty sounding file. Linh questions whether the output is truly silent after checking the volume and a second clip.",
+        "central_question": "Should a clip that is completely silent but has a waveform be marked as Quarantine (QN) or assigned a quality score?",
+        "resolution_state": "UNRESOLVED",
+        "authoritative_response_present": false,
+        "authority_evidence_message_ids": [],
+        "resolution_rationale": "The thread does not establish a substantive answer to the question of whether to assign a quality score or a QN. The responses provide additional context but do not resolve the original inquiry.",
+        "confidence": 0.8
+      },
+      "source_evidence": [
+        {
+          "message_id": "1790915374.000127",
+          "author_id": "U010",
+          "author_name": "Avery",
+          "author_role": "TUTOR",
+          "timestamp": "2026-10-02T04:29:34.000127Z",
+          "text": "Task check: Clip is completely silent, but the waveform exists. QN or quality score? (task ref AUDIO-5374)",
+          "source": "USER",
+          "reactions": []
+        },
+        {
+          "message_id": "1790915422.000113",
+          "author_id": "U015",
+          "author_name": "Carla",
+          "author_role": "TUTOR",
+          "timestamp": "2026-10-02T04:30:22.000113Z",
+          "text": "Several prompts expecting speech return an empty sounding file.",
+          "source": "USER",
+          "reactions": []
+        },
+        {
+          "message_id": "1790915470.000226",
+          "author_id": "U014",
+          "author_name": "Linh",
+          "author_role": "QA_TUTOR",
+          "timestamp": "2026-10-02T04:31:10.000226Z",
+          "text": "Is the output truly silent after checking volume and a second clip?",
+          "source": "USER",
+          "reactions": []
+        }
+      ],
+      "raw_slack_file": "data/fixtures/slack_generated/channels/C_AUDIO_GENERAL.json",
+      "user_role_file": "data/fixtures/slack_generated/users.json",
+      "glossary_file": "data/knowledge/domain_lexicon.json"
+    },
+    {
+      "project_id": "audio_multimodal",
+      "batch_id": "audio_batch_06",
+      "channel_id": "C_AUDIO_ANNOUNCEMENTS",
+      "thread_id": "1790857839.000141",
+      "reviewer_identity": "Codex assistant",
+      "reviewed_at": "2026-10-23T03:15:44.304755+00:00",
+      "source_review_outcome": "FAIL_CONTENT",
+      "machine_status_preserved": "NEEDS_REVIEW",
+      "needs_review": true,
+      "disputed_fields": [
+        "central_question",
+        "resolution_rationale"
+      ],
+      "review_reason": "The root announces that calibration is on the calendar; it does not ask whether it is scheduled. The candidate invents that question and says the announcement answered it. Preserve the announcement without converting it into a resolved inquiry.",
+      "findings": [
+        {
+          "category": "CENTRAL_QUESTION",
+          "disputed_fields": [
+            "central_question",
+            "resolution_rationale"
+          ],
+          "candidate_text": "Is the audio review calibration on the calendar this afternoon?",
+          "explanation": "The root announces that calibration is on the calendar; it does not ask whether it is scheduled. The candidate invents that question and says the announcement answered it. Preserve the announcement without converting it into a resolved inquiry.",
+          "evidence_message_ids": [
+            "1790857839.000141",
+            "1790857892.000113"
+          ],
+          "evidence_quotes": [
+            "Audio review calibration is on the calendar this afternoon.",
+            "Thanks, I’ll double-check the calendar before the session."
+          ]
+        }
+      ],
+      "review_notes": "Summary accurately reports Priya's calibration announcement and Jordan's acknowledgment. The root is a statement, not a scheduling question. No reply supplies an authoritative answer; the only reaction is tutor U009 thumbsup on the root.",
+      "limitations": "RESOLVED_IN_THREAD alone is not treated as an error for an announcement because the unchanged schema has no N/A resolution value. The error is the invented question and answer framing.",
+      "source_file": "data/processed/agent1_verified_v3/sources/69a86b24b6bbc9ac030f648255f0b1010a4736fd53eb96404ce8f4a646580f99.json",
+      "verification_file": "data/processed/agent1_verified_v3/records/67f8459711278b48ba7e1bb57280e95eedcf96dba821ef2399ce629b98b9af69/result.json",
+      "source_sha256": "69a86b24b6bbc9ac030f648255f0b1010a4736fd53eb96404ce8f4a646580f99",
+      "candidate_sha256": "9c19bd15e9f414deaee15119c728bf6efa1c6a7aa4bfaa176c02a522ce2d2f62",
+      "source_file_sha256": "c1a250b1e42acca55481d1df67a0252b7e60458dbde36cb11f12a882a172308f",
+      "verification_file_sha256": "25b032b109f451820bb4163e0cee4a3298502785e5cb8ff144277ab623089d11",
+      "reviewed_candidate": {
+        "thread_id": "1790857839.000141",
+        "summary": "Priya, a TEAM_LEAD, announced that audio review calibration is scheduled for this afternoon. Jordan, a TUTOR, acknowledged the message and stated he would double-check the calendar before the session.",
+        "central_question": "Is the audio review calibration on the calendar this afternoon?",
+        "resolution_state": "RESOLVED_IN_THREAD",
+        "authoritative_response_present": false,
+        "authority_evidence_message_ids": [],
+        "resolution_rationale": "The announcement by Priya confirms the scheduling of the audio review calibration, thus answering the central question. There are no remaining uncertainties regarding the scheduled event.",
+        "confidence": 1.0
+      },
+      "source_evidence": [
+        {
+          "message_id": "1790857839.000141",
+          "author_id": "U006",
+          "author_name": "Priya",
+          "author_role": "TEAM_LEAD",
+          "timestamp": "2026-10-01T12:30:39.000141Z",
+          "text": "Audio review calibration is on the calendar this afternoon.",
+          "source": "USER",
+          "reactions": [
+            {
+              "name": "thumbsup",
+              "users": [
+                "U009"
+              ],
+              "count": 1,
+              "reactor_roles": {
+                "U009": "TUTOR"
+              }
+            }
+          ]
+        },
+        {
+          "message_id": "1790857892.000113",
+          "author_id": "U003",
+          "author_name": "Jordan",
+          "author_role": "TUTOR",
+          "timestamp": "2026-10-01T12:31:32.000113Z",
+          "text": "Thanks, I’ll double-check the calendar before the session.",
+          "source": "USER",
+          "reactions": []
+        }
+      ],
+      "raw_slack_file": "data/fixtures/slack_generated/channels/C_AUDIO_ANNOUNCEMENTS.json",
+      "user_role_file": "data/fixtures/slack_generated/users.json",
+      "glossary_file": "data/knowledge/domain_lexicon.json"
+    },
+    {
+      "project_id": "audio_multimodal",
+      "batch_id": "audio_batch_06",
+      "channel_id": "C_AUDIO_ANNOUNCEMENTS",
+      "thread_id": "1790868080.000142",
+      "reviewer_identity": "Codex assistant",
+      "reviewed_at": "2026-10-23T03:15:44.304755+00:00",
+      "source_review_outcome": "FAIL_CONTENT",
+      "machine_status_preserved": "NEEDS_REVIEW",
+      "needs_review": true,
+      "disputed_fields": [
+        "central_question",
+        "resolution_rationale"
+      ],
+      "review_reason": "Priya states when the queue closes and Avery acknowledges it. Neither asks the candidate's yes/no question. The rationale's claim that this question is resolved therefore adds an inquiry absent from the conversation.",
+      "findings": [
+        {
+          "category": "CENTRAL_QUESTION",
+          "disputed_fields": [
+            "central_question",
+            "resolution_rationale"
+          ],
+          "candidate_text": "Will the audio queue close at the end of the shift?",
+          "explanation": "Priya states when the queue closes and Avery acknowledges it. Neither asks the candidate's yes/no question. The rationale's claim that this question is resolved therefore adds an inquiry absent from the conversation.",
+          "evidence_message_ids": [
+            "1790868080.000142",
+            "1790868130.000113"
+          ],
+          "evidence_quotes": [
+            "Today's audio queue closes at the end of shift.",
+            "Got it. I’ll finish the open tasks before the queue closes."
+          ]
+        }
+      ],
+      "review_notes": "The summary accurately preserves end-of-shift closure and Avery's intention to finish tasks. The root has tutor U013 thumbsup, not TL endorsement of an answer. The retained question and claim of answering it are unsupported announcement framing.",
+      "limitations": "The legacy resolution enum lacks N/A; the bare RESOLVED_IN_THREAD label is not independently counted as an error for this announcement.",
+      "source_file": "data/processed/agent1_verified_v3/sources/53d3026154f52d55cdd671e9bfda1e6715df697b9c91bfb82b01b5ba2e29d8cb.json",
+      "verification_file": "data/processed/agent1_verified_v3/records/eb061fccb680ea5620038562efedb722231445fa291f67dd37c5d98047e97146/result.json",
+      "source_sha256": "53d3026154f52d55cdd671e9bfda1e6715df697b9c91bfb82b01b5ba2e29d8cb",
+      "candidate_sha256": "a125d2f3cce068cd4514234c9187326036ac64142e5fc7454276bec0625d1573",
+      "source_file_sha256": "dd70042274facd36d1d081757a655484c2e17cf9b2eac6b3d1ab6c9ff0d5bd93",
+      "verification_file_sha256": "36c188652bb085ff0730477f8f108a9422264728c79118de5e377c3fd8285290",
+      "reviewed_candidate": {
+        "thread_id": "1790868080.000142",
+        "summary": "Priya, a TEAM_LEAD, announced that the audio queue will close at the end of the shift. Avery, a TUTOR, acknowledged the message and stated they would complete the open tasks before the queue closes.",
+        "central_question": "Will the audio queue close at the end of the shift?",
+        "resolution_state": "RESOLVED_IN_THREAD",
+        "authoritative_response_present": false,
+        "authority_evidence_message_ids": [],
+        "resolution_rationale": "The announcement by Priya clearly states that the audio queue closes at the end of the shift, and Avery's response confirms understanding and intent to complete tasks before the closure, establishing that the question is resolved.",
+        "confidence": 1.0
+      },
+      "source_evidence": [
+        {
+          "message_id": "1790868080.000142",
+          "author_id": "U006",
+          "author_name": "Priya",
+          "author_role": "TEAM_LEAD",
+          "timestamp": "2026-10-01T15:21:20.000142Z",
+          "text": "Today's audio queue closes at the end of shift.",
+          "source": "USER",
+          "reactions": [
+            {
+              "name": "thumbsup",
+              "users": [
+                "U013"
+              ],
+              "count": 1,
+              "reactor_roles": {
+                "U013": "TUTOR"
+              }
+            }
+          ]
+        },
+        {
+          "message_id": "1790868130.000113",
+          "author_id": "U010",
+          "author_name": "Avery",
+          "author_role": "TUTOR",
+          "timestamp": "2026-10-01T15:22:10.000113Z",
+          "text": "Got it. I’ll finish the open tasks before the queue closes.",
+          "source": "USER",
+          "reactions": []
+        }
+      ],
+      "raw_slack_file": "data/fixtures/slack_generated/channels/C_AUDIO_ANNOUNCEMENTS.json",
+      "user_role_file": "data/fixtures/slack_generated/users.json",
+      "glossary_file": "data/knowledge/domain_lexicon.json"
+    },
+    {
+      "project_id": "multilingual_eval",
+      "batch_id": "multi_batch_11",
+      "channel_id": "C_MULTI_ANNOUNCEMENTS",
+      "thread_id": "1790861853.000153",
+      "reviewer_identity": "Codex assistant",
+      "reviewed_at": "2026-10-23T03:15:44.304755+00:00",
+      "source_review_outcome": "PASS_SOURCE_REVIEW",
+      "machine_status_preserved": "CORRECTED",
+      "needs_review": false,
+      "disputed_fields": [],
+      "review_reason": null,
+      "findings": [],
+      "review_notes": "The candidate preserves the tracking request, explicit absence of a policy change, and TL Alex's narrowly scoped monolingual-prompt guidance including the ordinary-loanword exception. It does not generalize that rule to all invited code switching. No affected task references are supplied. The root eyes reactor is U011, a tutor; no reaction endorses the reply.",
+      "limitations": "The substantive monolingual statement does not settle the broader invited-code-switching tracking topic. The candidate retains that scope and incompleteness. No external language policy was retrieved or certified.",
+      "source_file": "data/processed/agent1_verified_v3/sources/c432b96d03b4ad61bcb7d655ba4a8c88bfecedfcc306d0ad3629922865472b6f.json",
+      "verification_file": "data/processed/agent1_verified_v3/records/f5667497b6e82b77f4c1196a502fe2eabc18759a0d7f0b06df0a1cf3058496a5/result.json",
+      "source_sha256": "c432b96d03b4ad61bcb7d655ba4a8c88bfecedfcc306d0ad3629922865472b6f",
+      "candidate_sha256": "4395ceb5d0fb9412825b48391ff916cd616c10c6c6a52c72c6e2fdfc3dc38575",
+      "source_file_sha256": "ba51755571653fcc3f49611f7130319137445460bc05c41edf358748e348a65d",
+      "verification_file_sha256": "3e59f0af37e9fe3784e5298116440f847917ed834c3509bd6b2767f1e46709da",
+      "reviewed_candidate": {
+        "thread_id": "1790861853.000153",
+        "summary": "Alex, a TEAM_LEAD, discusses QA tracking for scoring mixed-language responses in the context of code switching. He requests affected task references to be added but notes that no policy change has been announced. He further clarifies that for a specified monolingual prompt, any unexplained paragraph in another language will count against language adherence, while ordinary loanwords do not.",
+        "central_question": null,
+        "resolution_state": "UNRESOLVED",
+        "authoritative_response_present": false,
+        "authority_evidence_message_ids": [],
+        "resolution_rationale": "The thread establishes that there is a need to track QA for mixed-language responses and provides a specific guideline regarding language adherence. However, the request for affected task references remains incomplete as no specific tasks have been listed in the responses.",
+        "confidence": 0.8
+      },
+      "source_evidence": [
+        {
+          "message_id": "1790861853.000153",
+          "author_id": "U001",
+          "author_name": "Alex",
+          "author_role": "TEAM_LEAD",
+          "timestamp": "2026-10-01T13:37:33.000153Z",
+          "text": "QA tracking (MULTI-1853): Scoring mixed-language responses when prompts or context invite code switching. Add affected task references here; no policy change has been announced.",
+          "source": "USER",
+          "reactions": [
+            {
+              "name": "eyes",
+              "users": [
+                "U011"
+              ],
+              "count": 1,
+              "reactor_roles": {
+                "U011": "TUTOR"
+              }
+            }
+          ]
+        },
+        {
+          "message_id": "1790861911.000113",
+          "author_id": "U001",
+          "author_name": "Alex",
+          "author_role": "TEAM_LEAD",
+          "timestamp": "2026-10-01T13:38:31.000113Z",
+          "text": "For the specified monolingual prompt, an unexplained paragraph in another language counts against language adherence; ordinary loanwords alone do not.",
+          "source": "USER",
+          "reactions": []
+        }
+      ],
+      "raw_slack_file": "data/fixtures/slack_generated/channels/C_MULTI_ANNOUNCEMENTS.json",
+      "user_role_file": "data/fixtures/slack_generated/users.json",
+      "glossary_file": "data/knowledge/domain_lexicon.json"
+    },
+    {
+      "project_id": "multilingual_eval",
+      "batch_id": "multi_batch_11",
+      "channel_id": "C_MULTI_ANNOUNCEMENTS",
+      "thread_id": "1790862733.000190",
+      "reviewer_identity": "Codex assistant",
+      "reviewed_at": "2026-10-23T03:15:44.304755+00:00",
+      "source_review_outcome": "PASS_SOURCE_REVIEW",
+      "machine_status_preserved": "CORRECTED",
+      "needs_review": false,
+      "disputed_fields": [],
+      "review_reason": null,
+      "findings": [],
+      "review_notes": "Queue reopening is tied to the routine deployment window, Bea's reply is acknowledgment, and central_question is null. U018 thumbsup is a tutor reaction on the root. No authoritative answer, decision, or invented reopening time is asserted.",
+      "limitations": "The resolution label is a legacy announcement convention, not evidence of an unresolved operational incident or a promised exact reopening time.",
+      "source_file": "data/processed/agent1_verified_v3/sources/98f0ff512c219351bf5b9bb4a6b32a8b59399ef409f8b48cadb1b377891cc077.json",
+      "verification_file": "data/processed/agent1_verified_v3/records/de2186f9e08036c6ff16fdd03fd0be74ecb058b64b99b0498c3d3d67c963f22f/result.json",
+      "source_sha256": "98f0ff512c219351bf5b9bb4a6b32a8b59399ef409f8b48cadb1b377891cc077",
+      "candidate_sha256": "5a066168fd85ebe6c05ca58aa3f5c8d433a6633412464f2a72aa786fb49d81c6",
+      "source_file_sha256": "4606eefc4b43c11428357f81382c1d207e986b1ed19a0ae3240d4dbedcac4521",
+      "verification_file_sha256": "5a3ce9376d2144e885226ee0e524264536cf7a9d3394a120ac3baf4c5dd6f360",
+      "reviewed_candidate": {
+        "thread_id": "1790862733.000190",
+        "summary": "Alex announced that the multilingual queue will reopen after the routine deployment window. Bea acknowledged the announcement with thanks.",
+        "central_question": null,
+        "resolution_state": "UNRESOLVED",
+        "authoritative_response_present": false,
+        "authority_evidence_message_ids": [],
+        "resolution_rationale": "The thread contains an announcement but does not include a specific decision request or substantive guidance. The acknowledgment from Bea does not contribute to resolving any decision.",
+        "confidence": 0.8
+      },
+      "source_evidence": [
+        {
+          "message_id": "1790862733.000190",
+          "author_id": "U001",
+          "author_name": "Alex",
+          "author_role": "TEAM_LEAD",
+          "timestamp": "2026-10-01T13:52:13.000190Z",
+          "text": "Multilingual queue will reopen after the routine deployment window.",
+          "source": "USER",
+          "reactions": [
+            {
+              "name": "thumbsup",
+              "users": [
+                "U018"
+              ],
+              "count": 1,
+              "reactor_roles": {
+                "U018": "TUTOR"
+              }
+            }
+          ]
+        },
+        {
+          "message_id": "1790862788.000113",
+          "author_id": "U017",
+          "author_name": "Bea",
+          "author_role": "TUTOR",
+          "timestamp": "2026-10-01T13:53:08.000113Z",
+          "text": "Thanks for the heads-up about the reopen window.",
+          "source": "USER",
+          "reactions": []
+        }
+      ],
+      "raw_slack_file": "data/fixtures/slack_generated/channels/C_MULTI_ANNOUNCEMENTS.json",
+      "user_role_file": "data/fixtures/slack_generated/users.json",
+      "glossary_file": "data/knowledge/domain_lexicon.json"
+    },
+    {
+      "project_id": "response_preference",
+      "batch_id": "rp_batch_15",
+      "channel_id": "C_RP_ANNOUNCEMENTS",
+      "thread_id": "1790871613.000001",
+      "reviewer_identity": "Codex assistant",
+      "reviewed_at": "2026-10-23T03:15:44.304755+00:00",
+      "source_review_outcome": "FAIL_CONTENT",
+      "machine_status_preserved": "VERIFIED",
+      "needs_review": true,
+      "disputed_fields": [
+        "resolution_rationale"
+      ],
+      "review_reason": "It is correct that no scoring method is supplied, but Avery does provide an example of misleading citation support: the source exists while its quoted paragraph addresses another claim. The rationale incorrectly says no examples were provided.",
+      "findings": [
+        {
+          "category": "RESOLUTION",
+          "disputed_fields": [
+            "resolution_rationale"
+          ],
+          "candidate_text": "does not address the scoring method or provide examples as requested by Alex",
+          "explanation": "It is correct that no scoring method is supplied, but Avery does provide an example of misleading citation support: the source exists while its quoted paragraph addresses another claim. The rationale incorrectly says no examples were provided.",
+          "evidence_message_ids": [
+            "1790871613.000001",
+            "1790871661.000113"
+          ],
+          "evidence_quotes": [
+            "Batch status note — How to score responses with weak, missing, or misleading citations. Please keep examples in this thread while we check the scope.",
+            "The source is real, but the quoted paragraph is about a different claim."
+          ]
+        }
+      ],
+      "review_notes": "The summary and open scoring question are faithful, and there is no authoritative reply or scoring rule. However, the rationale denies an example that Avery actually provides: a real source whose quoted paragraph concerns another claim.",
+      "limitations": "Avery's example does not establish the scoring method, severity, or penalty. UNRESOLVED and absence of an authoritative answer remain supported; the dispute concerns only the denial of an example.",
+      "source_file": "data/processed/agent1_verified_v3/sources/f64e736f8a6f0f2e847f300887fe6c5cf7f89e300d845f54f1063e7dad5a9bfd.json",
+      "verification_file": "data/processed/agent1_verified_v3/records/19d08467075b3cc09fc5a8c9338b9ecacbbeb09c9d624d6ef8d7bfc7a997cb72/result.json",
+      "source_sha256": "f64e736f8a6f0f2e847f300887fe6c5cf7f89e300d845f54f1063e7dad5a9bfd",
+      "candidate_sha256": "de08bc0cd76cb9efbab3f5b51ce39b63944aa4b78dfc7e761653fef1e0bcd8f5",
+      "source_file_sha256": "2ef1b0f2a416c81a4afc5801a4ec9fca6e19fe12711dffe98e40df7e346e1ada",
+      "verification_file_sha256": "b8dbe1fe53495ec6a211c723ceedc026b11592dce0a99a5ce297f4bac8ee0cd4",
+      "reviewed_candidate": {
+        "thread_id": "1790871613.000001",
+        "summary": "Alex, a TEAM_LEAD, initiated a discussion regarding how to score responses that have weak, missing, or misleading citations, asking for examples to be shared in the thread. Avery, a TUTOR, responded by noting that while the source is real, the quoted paragraph pertains to a different claim.",
+        "central_question": "How to score responses with weak, missing, or misleading citations?",
+        "resolution_state": "UNRESOLVED",
+        "authoritative_response_present": false,
+        "authority_evidence_message_ids": [],
+        "resolution_rationale": "The thread does not establish a substantive answer or relevant conclusion regarding the scoring of responses with weak, missing, or misleading citations. Avery's response does not address the scoring method or provide examples as requested by Alex, leaving the original question unanswered.",
+        "confidence": 0.8
+      },
+      "source_evidence": [
+        {
+          "message_id": "1790871613.000001",
+          "author_id": "U001",
+          "author_name": "Alex",
+          "author_role": "TEAM_LEAD",
+          "timestamp": "2026-10-01T16:20:13.000001Z",
+          "text": "Batch status note — How to score responses with weak, missing, or misleading citations. Please keep examples in this thread while we check the scope.",
+          "source": "USER",
+          "reactions": []
+        },
+        {
+          "message_id": "1790871661.000113",
+          "author_id": "U010",
+          "author_name": "Avery",
+          "author_role": "TUTOR",
+          "timestamp": "2026-10-01T16:21:01.000113Z",
+          "text": "The source is real, but the quoted paragraph is about a different claim.",
+          "source": "USER",
+          "reactions": []
+        }
+      ],
+      "raw_slack_file": "data/fixtures/slack_generated/channels/C_RP_ANNOUNCEMENTS.json",
+      "user_role_file": "data/fixtures/slack_generated/users.json",
+      "glossary_file": "data/knowledge/domain_lexicon.json"
+    },
+    {
+      "project_id": "response_preference",
+      "batch_id": "rp_batch_15",
+      "channel_id": "C_RP_ANNOUNCEMENTS",
+      "thread_id": "1790883558.000028",
+      "reviewer_identity": "Codex assistant",
+      "reviewed_at": "2026-10-23T03:15:44.304755+00:00",
+      "source_review_outcome": "UNCERTAIN_REQUEST_FRAMING",
+      "machine_status_preserved": "NEEDS_REVIEW",
+      "needs_review": true,
+      "disputed_fields": [
+        "central_question",
+        "resolution_rationale"
+      ],
+      "review_reason": "The only message instructs participants to add affected task references while tracking an issue. The candidate calls this a requested decision about which references should be added. An information-collection request and a request for a selection rule are different; the one-message source does not resolve that framing ambiguity. Keep these fields provisional rather than claiming a definite contradiction or an answered policy question.",
+      "findings": [
+        {
+          "category": "CENTRAL_QUESTION",
+          "disputed_fields": [
+            "central_question",
+            "resolution_rationale"
+          ],
+          "candidate_text": "requested decision about which affected task references should be added",
+          "explanation": "The only message instructs participants to add affected task references while tracking an issue. The candidate calls this a requested decision about which references should be added. An information-collection request and a request for a selection rule are different; the one-message source does not resolve that framing ambiguity. Keep these fields provisional rather than claiming a definite contradiction or an answered policy question.",
+          "evidence_message_ids": [
+            "1790883558.000028"
+          ],
+          "evidence_quotes": [
+            "QA tracking (RP-3558): Model/task connection drops during preference evaluation. Add affected task references here; no policy change has been announced."
+          ]
+        }
+      ],
+      "review_notes": "Summary preserves connection drops, collection of affected references, no policy change, and the lack of a substantive reply. The sole eyes reaction is by tutor U018 on the root, not TL approval. The central question/rationale describe a decision about which references should be added.",
+      "limitations": "A collection instruction can be paraphrased as an information question. This finding identifies a framing ambiguity, not an established factual contradiction or an independently adjudicated error.",
+      "source_file": "data/processed/agent1_verified_v3/sources/b1a5ba397ffd271f36213863e09522d33e392bf88b9d50fd318d9ddabbd80289.json",
+      "verification_file": "data/processed/agent1_verified_v3/records/88605f3bfdeb57af8548e0b4357e6bcbbadd3e751ede3f71d76aed6f20aaf952/result.json",
+      "source_sha256": "b1a5ba397ffd271f36213863e09522d33e392bf88b9d50fd318d9ddabbd80289",
+      "candidate_sha256": "9c00b18a5f83c0cfab1d19d69ba5389a36c1357cd90db436bb7c828b53051ce0",
+      "source_file_sha256": "1b8a9f0ce97c4a931b7e27180598495cbabe4e8392c60a85da8eee28cc130810",
+      "verification_file_sha256": "2ae6e002c081779eb3aee4e234f6d3c18e91cf51e9b45dc7e48edaf5fb87f56b",
+      "reviewed_candidate": {
+        "thread_id": "1790883558.000028",
+        "summary": "Alex, a TEAM_LEAD, reported an issue regarding model/task connection drops during preference evaluation and requested affected task references to be added. No policy change has been announced. A TUTOR reacted with acknowledgment but did not provide any substantive response.",
+        "central_question": "What affected task references should be added regarding the model/task connection drops during preference evaluation?",
+        "resolution_state": "UNRESOLVED",
+        "authoritative_response_present": false,
+        "authority_evidence_message_ids": [],
+        "resolution_rationale": "The thread does not provide any substantive answers or relevant conclusions regarding the requested decision about which affected task references should be added. The acknowledgment from the TUTOR does not establish a resolution to the question posed by Alex.",
+        "confidence": 0.8
+      },
+      "source_evidence": [
+        {
+          "message_id": "1790883558.000028",
+          "author_id": "U001",
+          "author_name": "Alex",
+          "author_role": "TEAM_LEAD",
+          "timestamp": "2026-10-01T19:39:18.000028Z",
+          "text": "QA tracking (RP-3558): Model/task connection drops during preference evaluation. Add affected task references here; no policy change has been announced.",
+          "source": "USER",
+          "reactions": [
+            {
+              "name": "eyes",
+              "users": [
+                "U018"
+              ],
+              "count": 1,
+              "reactor_roles": {
+                "U018": "TUTOR"
+              }
+            }
+          ]
+        }
+      ],
+      "raw_slack_file": "data/fixtures/slack_generated/channels/C_RP_ANNOUNCEMENTS.json",
+      "user_role_file": "data/fixtures/slack_generated/users.json",
+      "glossary_file": "data/knowledge/domain_lexicon.json"
+    },
+    {
+      "project_id": "safety_classification",
+      "batch_id": "safety_batch_08",
+      "channel_id": "C_SAFETY_ANNOUNCEMENTS",
+      "thread_id": "1790869444.000077",
+      "reviewer_identity": "Codex assistant",
+      "reviewed_at": "2026-10-23T03:15:44.304755+00:00",
+      "source_review_outcome": "PASS_SOURCE_REVIEW",
+      "machine_status_preserved": "CORRECTED",
+      "needs_review": false,
+      "disputed_fields": [],
+      "review_reason": null,
+      "findings": [],
+      "review_notes": "The candidate attributes the old-QN/help-page and revised-TL-announcement conflict to Priya, preserves Jun's report that the flowchart and onboarding PDF differ, and claims no settled rule or authoritative reply. QN is retained without the incorrect quality-note expansion. No reactions or endorsements are present.",
+      "limitations": "The actual help page, TL announcement, flowchart and PDF are not supplied. Their precedence, current validity, and conflict resolution cannot be established from this conversation; the candidate leaves them unresolved.",
+      "source_file": "data/processed/agent1_verified_v3/sources/9723bf438ea79181aacaadb87157e38390914a2fc47000ea1e77d6261c76c7c6.json",
+      "verification_file": "data/processed/agent1_verified_v3/records/cd4868dfce0c9391e93285a4537a2999ae00a8ea49fc399c6be4242b5c346871/result.json",
+      "source_sha256": "9723bf438ea79181aacaadb87157e38390914a2fc47000ea1e77d6261c76c7c6",
+      "candidate_sha256": "1f528e13a37cba82edd6fada94a01883c1cd94a41adc6a484d679ca600b61282",
+      "source_file_sha256": "252d998a52b8fe8a74f413e6259231a91411e319c4cc3b3f501197d50ded6e28",
+      "verification_file_sha256": "57761c61efcc597d9e2b80e5e443fcc0ff7ebc6ce19649c25a0e554dc7a2a4a0",
+      "reviewed_candidate": {
+        "thread_id": "1790869444.000077",
+        "summary": "Priya, a TEAM_LEAD, notes that the old QN criteria are still present on a help page despite a revised TL announcement and requests that examples be kept in the thread while they check the scope. Jun, a TUTOR, points out that the pinned flowchart and the onboarding PDF diverge on this case.",
+        "central_question": null,
+        "resolution_state": "UNRESOLVED",
+        "authoritative_response_present": false,
+        "authority_evidence_message_ids": [],
+        "resolution_rationale": "The thread does not establish a substantive answer regarding the status of the old QN criteria or how it relates to the revised TL announcement. The discussion includes acknowledgment of the issue and a request for examples, but no conclusions or decisions are made.",
+        "confidence": 0.8
+      },
+      "source_evidence": [
+        {
+          "message_id": "1790869444.000077",
+          "author_id": "U006",
+          "author_name": "Priya",
+          "author_role": "TEAM_LEAD",
+          "timestamp": "2026-10-01T15:44:04.000077Z",
+          "text": "Batch status note — Old QN criteria remain in a help page despite revised TL announcement. Please keep examples in this thread while we check the scope.",
+          "source": "USER",
+          "reactions": []
+        },
+        {
+          "message_id": "1790869492.000113",
+          "author_id": "U013",
+          "author_name": "Jun",
+          "author_role": "TUTOR",
+          "timestamp": "2026-10-01T15:44:52.000113Z",
+          "text": "The pinned flowchart and the onboarding PDF branch differently on this case.",
+          "source": "USER",
+          "reactions": []
+        }
+      ],
+      "raw_slack_file": "data/fixtures/slack_generated/channels/C_SAFETY_ANNOUNCEMENTS.json",
+      "user_role_file": "data/fixtures/slack_generated/users.json",
+      "glossary_file": "data/knowledge/domain_lexicon.json"
+    },
+    {
+      "project_id": "safety_classification",
+      "batch_id": "safety_batch_08",
+      "channel_id": "C_SAFETY_ANNOUNCEMENTS",
+      "thread_id": "1790882550.000099",
+      "reviewer_identity": "Codex assistant",
+      "reviewed_at": "2026-10-23T03:15:44.304755+00:00",
+      "source_review_outcome": "PASS_SOURCE_REVIEW",
+      "machine_status_preserved": "CORRECTED",
+      "needs_review": false,
+      "disputed_fields": [],
+      "review_reason": null,
+      "findings": [],
+      "review_notes": "The reminder that the weekly safety QA schedule is pinned and Omar's acknowledgment are preserved. central_question is null; no substantive answer or authority claim is invented. U020 thumbsup is a tutor reaction on the root.",
+      "limitations": "The pinned schedule itself was not inspected. This validates the reported reminder, not actual staffing coverage; the legacy resolution label does not establish an operational incident.",
+      "source_file": "data/processed/agent1_verified_v3/sources/13c2ab236ab182770e2b6b7b1b0196304f3f7fead1cc151ca923d4c7b45d2df5.json",
+      "verification_file": "data/processed/agent1_verified_v3/records/27aa6da46c5968fe2d57cc18bcfc95f07a73eb13d1d4d5b13cda4bd0fabd56d5/result.json",
+      "source_sha256": "13c2ab236ab182770e2b6b7b1b0196304f3f7fead1cc151ca923d4c7b45d2df5",
+      "candidate_sha256": "e0e0ef7f1aa85bdb7c919d749d074d130a4e6d51acb797aeec1e66d3d468c243",
+      "source_file_sha256": "2ca571c73a69699860d3f0717bf80ccf1fad74f2809cf30f14e1f3d42391ceba",
+      "verification_file_sha256": "d54b0501ffed5a88502e7d1f9a85e0c161b3b78bba677fc2fe185b31b5b818c8",
+      "reviewed_candidate": {
+        "thread_id": "1790882550.000099",
+        "summary": "Priya, a TEAM_LEAD, reminds the team that the weekly safety QA schedule is pinned in the channel. Omar, a TUTOR, acknowledges the reminder and states he will check the current QA coverage schedule.",
+        "central_question": null,
+        "resolution_state": "UNRESOLVED",
+        "authoritative_response_present": false,
+        "authority_evidence_message_ids": [],
+        "resolution_rationale": "The thread contains a reminder about the weekly safety QA schedule being pinned, but does not establish a specific decision or question that requires resolution. Omar's acknowledgment does not provide any substantive guidance or answer.",
+        "confidence": 1.0
+      },
+      "source_evidence": [
+        {
+          "message_id": "1790882550.000099",
+          "author_id": "U006",
+          "author_name": "Priya",
+          "author_role": "TEAM_LEAD",
+          "timestamp": "2026-10-01T19:22:30.000099Z",
+          "text": "Reminder: weekly safety QA schedule is pinned in this channel.",
+          "source": "USER",
+          "reactions": [
+            {
+              "name": "thumbsup",
+              "users": [
+                "U020"
+              ],
+              "count": 1,
+              "reactor_roles": {
+                "U020": "TUTOR"
+              }
+            }
+          ]
+        },
+        {
+          "message_id": "1790882602.000113",
+          "author_id": "U018",
+          "author_name": "Omar",
+          "author_role": "TUTOR",
+          "timestamp": "2026-10-01T19:23:22.000113Z",
+          "text": "Thanks, I’ll check the current QA coverage schedule.",
+          "source": "USER",
+          "reactions": []
+        }
+      ],
+      "raw_slack_file": "data/fixtures/slack_generated/channels/C_SAFETY_ANNOUNCEMENTS.json",
+      "user_role_file": "data/fixtures/slack_generated/users.json",
+      "glossary_file": "data/knowledge/domain_lexicon.json"
+    }
+  ]
+}

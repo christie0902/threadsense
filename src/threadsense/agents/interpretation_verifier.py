@@ -1,7 +1,7 @@
-"""Deterministic checks against source metadata and one source-first audit.
+"""Deterministic checks against source metadata and validated evidence.
 
-Prose comparison comes from the same auditor task and is supported by validated
-source quotations. This module never calls a model or rewrites an interpretation.
+The controller combines source-only analysis with fresh prose assessments.
+This module never calls a model or rewrites an interpretation.
 """
 
 import re
@@ -135,12 +135,45 @@ def verify_interpretation(
         return findings
     try:
         audit = DecisionEvidenceAudit.model_validate(audit.model_dump())
-        validate_decision_evidence_audit(thread, audit)
+        validate_decision_evidence_audit(thread, audit, interpretation)
     except (ValueError, TypeError) as exc:
         add(VerificationCategory.EVIDENCE, f"Decision-evidence audit is invalid: {exc}",
             fields=("central_question", "resolution_state", "authority_evidence_message_ids"))
         return findings
     findings.extend(audit.interpretation_findings)
+
+    prose_categories = {
+        "summary": VerificationCategory.SUMMARY,
+        "central_question": VerificationCategory.CENTRAL_QUESTION,
+        "resolution_rationale": VerificationCategory.RESOLUTION,
+    }
+
+    for assessment in audit.prose_assessments:
+        if assessment.verdict == "SUPPORTED":
+            continue
+
+        field = assessment.unit_id.split(":", 1)[0]
+
+        findings.append(
+            VerificationFinding(
+                category=prose_categories[field],
+                explanation=(
+                    f"Prose unit {assessment.unit_id}: "
+                    f"{assessment.verdict}.\n"
+                    f"Candidate: {assessment.candidate_text}\n"
+                    f"Source establishes: "
+                    f"{assessment.source_interpretation}\n"
+                    f"Reason: {assessment.explanation}"
+                ),
+                evidence_message_ids=list(
+                    assessment.evidence_message_ids
+                ),
+                evidence_quotes=list(
+                    assessment.evidence_quotes
+                ),
+                disputed_fields=[field],
+            )
+        )
 
     root_ids = (thread.thread_id,)
     if audit.requested_decisions and not (interpretation.central_question or "").strip():

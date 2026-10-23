@@ -1,5 +1,19 @@
 # Agent 1 verification and bounded correction
 
+The active runner is version 3. See
+[Nonblocking handoff and completion report](agent1-nonblocking-handoff.md) for
+the unchanged four-call verification flow, terminal review flags, effective
+content disputes, current commands, and downstream obligations. Version 2
+integration reports remain historical evidence; their blocking gate, exit
+codes, and 196-thread/784-call continuation guidance are superseded.
+
+The following version 1 design and validation record is retained as historical
+context. Its combined audits, three-stage budget, and CrewAI retry behavior no
+longer describe the active runner. Do not reuse its old pilot directories.
+
+## Historical version 1 design
+
+
 The verification runner starts from the 200 saved Agent 1 interpretations and
 joins each to its original Slack thread. The saved interpretation counts as the
 first interpretation attempt. It does not rerun the baseline interpreter or

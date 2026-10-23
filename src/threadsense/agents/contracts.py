@@ -1,6 +1,7 @@
 from threadsense.agents.severity import SeverityLevel
 from enum import Enum
 from pydantic import BaseModel, Field, model_validator
+from typing import Literal
 
 
 class ResolutionState(str, Enum):
@@ -145,13 +146,31 @@ class DecisionCoverageItem(BaseModel):
 
         return self
 
+class ProseEvidenceAssessment(BaseModel):
+    unit_id: str = Field(min_length=1)
+    candidate_text: str = Field(min_length=1)
+    source_interpretation: str = Field(min_length=1)
 
-class DecisionEvidenceAudit(BaseModel):
+    verdict: Literal[
+        "SUPPORTED",
+        "CONTRADICTED",
+        "UNSUPPORTED",
+        "UNCERTAIN",
+    ]
+
+    evidence_message_ids: list[str]
+    evidence_quotes: list[str]
+    explanation: str = Field(min_length=1)
+
+class SourceEvidenceAnalysis(BaseModel):
+    """Candidate-independent evidence, shared by both verification passes."""
+
+    model_config = {"extra": "forbid"}
     thread_id: str
     root_request_quote: str = Field(min_length=1)
     requested_decisions: list[str]
     reply_assessments: list[ReplyEvidenceAssessment]
-    # Coverage is part of this one audit, never a separate model call.
+    # Coverage is established once from the source, never from a candidate.
     decision_coverage: list[DecisionCoverageItem]
     uncertainties: list[str] = Field(
         description=(
@@ -160,6 +179,22 @@ class DecisionEvidenceAudit(BaseModel):
             "record it in decision_coverage and explain it in the rationale. "
             "Return [] when the absence of an answer is clear."
         )
-    )  
+    )
+
+
+class ProseComparison(BaseModel):
+    """One complete batch of assessments for the current candidate only."""
+
+    model_config = {"extra": "forbid"}
+    prose_assessments: list[ProseEvidenceAssessment]
+
+
+class DecisionEvidenceAudit(SourceEvidenceAnalysis):
+    """Validated source analysis combined with fresh candidate assessments.
+
+    Also retains the explicit finding field used by historical audit callers.
+    The split production workflow derives findings deterministically instead.
+    """
     # Required even when empty: a source-only audit cannot certify candidate prose.
+    prose_assessments: list[ProseEvidenceAssessment]
     interpretation_findings: list[VerificationFinding]

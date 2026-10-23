@@ -5,8 +5,25 @@ from datetime import datetime, timezone
 import pytest
 
 from threadsense.agents.contracts import DecisionEvidenceAudit, ResolutionState, ThreadInterpretation
+from threadsense.agents.decision_evidence_audit import build_prose_units, validate_decision_evidence_audit
 from threadsense.agents.interpretation_verifier import verify_interpretation
 from threadsense.models import Message, Reaction, Role, Thread
+
+
+def stub_prose_assessments_for_rule_tests(thread, candidate, *, summary_verdict="SUPPORTED"):
+    """Test-only structural stub for metadata/coverage rules, not a fidelity oracle.
+
+    The glossary cases explicitly reject their incorrect summary. Prose-fidelity
+    tests use reviewed assessments in test_decision_evidence_audit.py instead.
+    """
+    return [{
+        "unit_id": unit["unit_id"], "candidate_text": unit["candidate_text"],
+        "verdict": summary_verdict if unit["candidate_field"] == "summary" else "SUPPORTED",
+        "source_interpretation": "Synthetic prose stub; this test exercises a deterministic rule.",
+        "explanation": "Synthetic test assessment, not a claim of independently reviewed prose fidelity.",
+        "evidence_message_ids": [message.message_id for message in thread.messages],
+        "evidence_quotes": [message.text for message in thread.messages],
+    } for unit in build_prose_units(candidate)]
 
 
 def scenario(*, second_answered=False):
@@ -24,7 +41,7 @@ def scenario(*, second_answered=False):
         ],
     )
     decisions = ["Should the task be quarantined?", "Which issue category should be reported?"]
-    audit = DecisionEvidenceAudit.model_validate({
+    audit_payload = {
         "thread_id": "root", "root_request_quote": root_text,
         "requested_decisions": decisions,
         "reply_assessments": [{
@@ -41,7 +58,7 @@ def scenario(*, second_answered=False):
         } for index, decision in enumerate(decisions)],
         "interpretation_findings": [],
         "uncertainties": [],
-    })
+    }
     interpretation = ThreadInterpretation(
         thread_id="root", summary="The lead directs quarantine and discusses the reporting category.",
         central_question=root_text,
@@ -51,6 +68,9 @@ def scenario(*, second_answered=False):
         resolution_rationale="Both decisions are answered." if second_answered else "Quarantine is decided; the reporting category remains open.",
         confidence=0.7,
     )
+    audit_payload["prose_assessments"] = stub_prose_assessments_for_rule_tests(thread, interpretation)
+    audit = DecisionEvidenceAudit.model_validate(audit_payload)
+    validate_decision_evidence_audit(thread, audit, interpretation)
     return thread, interpretation, audit
 
 
@@ -82,7 +102,7 @@ def test_diagnostic_instructions_can_fully_answer_a_request_for_diagnostics():
     thread.messages[0].text = "Which evidence should I collect before reporting the problem?"
     thread.messages[1].text = "Collect the task ID, browser error, and reproduction steps."
     question = "Which evidence should be collected?"
-    audit = DecisionEvidenceAudit.model_validate({
+    audit_payload = {
         "thread_id": "root", "root_request_quote": thread.messages[0].text,
         "requested_decisions": [question],
         "reply_assessments": [{
@@ -96,13 +116,15 @@ def test_diagnostic_instructions_can_fully_answer_a_request_for_diagnostics():
         }],
         "interpretation_findings": [],
         "uncertainties": [],
-    })
+    }
     interpretation = ThreadInterpretation(
         thread_id="root", summary="The lead lists the required evidence.",
         central_question=thread.messages[0].text, resolution_state="RESOLVED_IN_THREAD",
         authoritative_response_present=True, authority_evidence_message_ids=["first"],
         resolution_rationale="The evidence-collection question is fully answered.", confidence=0.7,
     )
+    audit_payload["prose_assessments"] = stub_prose_assessments_for_rule_tests(thread, interpretation)
+    audit = DecisionEvidenceAudit.model_validate(audit_payload)
     assert verify_interpretation(thread, interpretation, audit) == []
 
 
@@ -155,6 +177,12 @@ def test_engineer_authority_requires_explicit_technical_scope(scope):
 def test_known_glossary_conflicts_cannot_pass_even_with_matching_decisions(text):
     thread, interpretation, audit = scenario()
     interpretation = interpretation.model_copy(update={"summary": text})
+    payload = audit.model_dump()
+    payload["prose_assessments"] = stub_prose_assessments_for_rule_tests(
+        thread, interpretation, summary_verdict="UNSUPPORTED",
+    )
+    audit = DecisionEvidenceAudit.model_validate(payload)
+    validate_decision_evidence_audit(thread, audit, interpretation)
     assert "TERMINOLOGY" in {
         finding.category.value for finding in verify_interpretation(thread, interpretation, audit)
     }

@@ -1,4 +1,4 @@
-"""One evidence audit, at most one Agent 1 revision, and one independent recheck."""
+"""One source analysis, two prose comparisons at most, and one Agent 1 revision."""
 
 from collections.abc import Callable
 import os
@@ -7,12 +7,14 @@ from typing import Any, Literal
 from pydantic import BaseModel, Field, model_validator
 
 from threadsense.agents.contracts import (
-    DecisionEvidenceAudit, ResolutionState, ThreadInterpretation,
+    DecisionEvidenceAudit, SourceEvidenceAnalysis, ProseComparison, ResolutionState, ThreadInterpretation,
     VerificationCategory, VerificationFinding, VerificationOutcome,
 )
 from threadsense.agents.decision_evidence_audit import (
-    audit_thread_decisions, validate_decision_evidence_audit,
+    validate_decision_evidence_audit, validate_source_analysis,
 )
+from threadsense.agents.prose_comparison import analyze_source, compare_prose
+from threadsense.agents.verification_requests import EvidencePersistenceError, VerificationConfigurationError
 from threadsense.agents.interpretation_verifier import verify_interpretation
 from threadsense.agents.interpretation_revision import revise_interpretation
 from threadsense.agents.thread_interpreter import validate_interpretation_references
@@ -39,6 +41,7 @@ class VerificationPass(BaseModel):
 
 class VerificationResult(BaseModel):
     status: VerificationOutcome
+    source_analysis: SourceEvidenceAnalysis | None = None
     interpretation: ThreadInterpretation
     original_interpretation: dict[str, Any]
     revised_interpretation: ThreadInterpretation | None = None
@@ -56,10 +59,18 @@ class VerificationResult(BaseModel):
             if not self.review_reason or not self.provisional_fields:
                 raise ValueError("NEEDS_REVIEW requires a reason and provisional fields.")
         else:
+            if self.source_analysis is None:
+                raise ValueError("Passing outcomes require validated source analysis.")
             if self.findings or self.review_reason or self.provisional_fields:
                 raise ValueError("Passing outcomes cannot contain unresolved findings.")
             if not self.passes or not self.passes[-1].passed:
                 raise ValueError("Passing outcomes require a validated passing audit.")
+            for attempt in self.passes:
+                if attempt.audit is not None and any(
+                    getattr(attempt.audit, key) != getattr(self.source_analysis, key)
+                    for key in SourceEvidenceAnalysis.model_fields
+                ):
+                    raise ValueError("Both passes must reuse the same source analysis.")
             if self.status == VerificationOutcome.VERIFIED:
                 if self.revision_count or len(self.passes) != 1 or self.effective_attempt != "original":
                     raise ValueError("VERIFIED must retain the original after one pass.")
@@ -67,10 +78,6 @@ class VerificationResult(BaseModel):
                   or self.revised_interpretation is None or self.effective_attempt != "revision"):
                 raise ValueError("CORRECTED requires one revision and two passes.")
         return self
-
-
-class EvidencePersistenceError(RuntimeError):
-    """Stop paid work when its raw evidence cannot be durably recorded."""
 
 
 def _error_text(error: Exception) -> str:
@@ -137,18 +144,16 @@ def verify_and_revise(
     thread: Thread,
     original: ThreadInterpretation | dict,
     *,
-    auditor: Callable | None = None,
+    source_analyzer: Callable | None = None,
+    comparator: Callable | None = None,
     reviser: Callable | None = None,
     on_raw_output: Callable[[str, str], None] | None = None,
     on_stage_start: Callable[[str], None] | None = None,
+    on_artifact: Callable[[str, str, bytes], None] | None = None,
 ) -> VerificationResult:
-    """Verify a saved original and attempt at most one targeted correction.
-
-    The saved baseline is interpretation attempt one. Each audit reconstructs
-    original Slack evidence before comparing the current candidate. It never
-    receives the earlier audit or the revision's reasoning.
-    """
-    auditor = auditor or audit_thread_decisions
+    """Reuse source evidence and check every current prose unit afresh; <=4 calls."""
+    source_analyzer = source_analyzer or analyze_source
+    comparator = comparator or compare_prose
     reviser = reviser or revise_interpretation
     original_data = _raw_dict(original)
 
@@ -168,6 +173,31 @@ def verify_and_revise(
                     raise EvidencePersistenceError(_error_text(error)) from error
         return preserve
 
+    def artifact_callback(stage):
+        def preserve(name, body):
+            if on_artifact is not None:
+                try:
+                    on_artifact(stage, name, body)
+                except Exception as error:
+                    raise EvidencePersistenceError(_error_text(error)) from error
+        return preserve
+
+    def callbacks(stage):
+        return {"on_raw_output": raw_callback(stage), "on_artifact": artifact_callback(stage)}
+
+    try:
+        start_stage("source_analysis")
+        generated = source_analyzer(thread, **callbacks("source_analysis"))
+        source = SourceEvidenceAnalysis.model_validate(
+            generated.model_dump() if isinstance(generated, SourceEvidenceAnalysis) else generated
+        )
+        validate_source_analysis(thread, source)
+    except (EvidencePersistenceError, VerificationConfigurationError):
+        raise
+    except Exception as exc:
+        # The unchanged source cannot be repaired by rewriting a candidate.
+        return retain_for_review(thread, original_data, "Source analysis unavailable or invalid: " + _error_text(exc))
+
     def check(candidate: dict, number: int) -> VerificationPass:
         findings = []
         interpretation = None
@@ -178,16 +208,16 @@ def verify_and_revise(
         except (ValueError, TypeError) as exc:
             findings.append(_problem("Invalid interpretation schema: " + _error_text(exc)))
         try:
-            start_stage(f"audit_{number}")
-            generated = auditor(
-                thread, interpretation=candidate,
-                on_raw_output=raw_callback(f"audit_{number}"),
+            start_stage(f"prose_{number}")
+            generated = comparator(thread, interpretation=candidate, **callbacks(f"prose_{number}"))
+            comparison = ProseComparison.model_validate(
+                generated.model_dump() if isinstance(generated, ProseComparison) else generated
             )
-            audit = DecisionEvidenceAudit.model_validate(
-                generated.model_dump() if isinstance(generated, DecisionEvidenceAudit) else generated
+            audit = DecisionEvidenceAudit(
+                **source.model_dump(), **comparison.model_dump(), interpretation_findings=[],
             )
-            validate_decision_evidence_audit(thread, audit)
-        except EvidencePersistenceError:
+            validate_decision_evidence_audit(thread, audit, candidate)
+        except (EvidencePersistenceError, VerificationConfigurationError):
             raise
         except Exception as exc:
             audit = None
@@ -206,7 +236,7 @@ def verify_and_revise(
     first = check(original_data, 1)
     if first.passed:
         return VerificationResult(
-            status=VerificationOutcome.VERIFIED,
+            status=VerificationOutcome.VERIFIED, source_analysis=source,
             interpretation=ThreadInterpretation.model_validate(original_data),
             original_interpretation=original_data,
             passes=[first],
@@ -219,13 +249,13 @@ def verify_and_revise(
     try:
         start_stage("revision_1")
         revised = reviser(
-            thread, previous, first.findings, first.audit,
-            on_raw_output=raw_callback("revision_1"),
+            thread, previous, first.findings, source.model_copy(deep=True),
+            **callbacks("revision_1"),
         )
         revised = ThreadInterpretation.model_validate(
             revised.model_dump() if isinstance(revised, ThreadInterpretation) else revised
         )
-    except EvidencePersistenceError:
+    except (EvidencePersistenceError, VerificationConfigurationError):
         raise
     except Exception as exc:
         error = _error_text(exc)
@@ -233,6 +263,7 @@ def verify_and_revise(
             thread, original_data, "The single targeted revision failed: " + error,
             revision_count=1,
         )
+        result.source_analysis = source
         result.passes = [first]
         result.findings = [*first.findings, *result.findings]
         result.revision_error = error
@@ -241,7 +272,7 @@ def verify_and_revise(
     second = check(revised.model_dump(mode="json"), 2)
     if second.passed:
         return VerificationResult(
-            status=VerificationOutcome.CORRECTED,
+            status=VerificationOutcome.CORRECTED, source_analysis=source,
             interpretation=revised,
             original_interpretation=original_data,
             revised_interpretation=revised,
@@ -270,11 +301,12 @@ def verify_and_revise(
     )
     if chosen is None:
         result = retain_for_review(thread, original_data, reason, revision_count=1)
+        result.source_analysis = source
         result.passes = [first, second]
         result.revised_interpretation = revised
         return result
     return VerificationResult(
-        status=VerificationOutcome.NEEDS_REVIEW,
+        status=VerificationOutcome.NEEDS_REVIEW, source_analysis=source,
         interpretation=chosen,
         original_interpretation=original_data,
         revised_interpretation=revised,

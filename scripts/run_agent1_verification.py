@@ -3,7 +3,8 @@
 Offline preflight is the default. Paid calls require --run. Run one process per
 output directory. Completed results (including NEEDS_REVIEW) are never retried;
 an interrupted started attempt is retained for review without repeating calls.
-Exit codes: 0 successful/preflight, 1 interrupted, 2 review needed/input error.
+Exit codes: 0 completed/preflight (including review flags), 1 fatal/interrupted/incomplete,
+2 invalid CLI/input/cache. Review flags never request a human-approval pause.
 """
 
 import argparse
@@ -18,19 +19,19 @@ from pathlib import Path
 from threadsense.adapters.mock_slack import MockSlackAdapter
 from threadsense.agents.contracts import ThreadInterpretation
 from threadsense.config import get_api_key, get_model_settings
+from threadsense.agents.verification_handoff import (
+    build_handoff, digest, identity, load_content_reviews,
+)
+from threadsense.agents.verification_requests import EvidencePersistenceError, VerificationConfigurationError
 
 
 ROOT = Path(__file__).resolve().parents[1]
 BASELINE = ROOT / "data/processed/agent1_authority_fix/interpretations.json"
 FIXTURES = ROOT / "data/fixtures/slack_generated"
-STAGES = ("audit_1", "revision_1", "audit_2")
-PIPELINE_VERSION = 1
-
-
-def digest(value: object) -> str:
-    return hashlib.sha256(json.dumps(
-        value, sort_keys=True, ensure_ascii=False, allow_nan=False,
-    ).encode("utf-8")).hexdigest()
+STAGES = ("source_analysis", "prose_1", "revision_1", "prose_2")
+ARTIFACTS = ("request.json", "call.json", "response.raw.bin", "response.json", "failure.json")
+PIPELINE_VERSION = 3
+DEFAULT_CONTENT_REVIEW = ROOT / "docs/agent1-pilot-content-review.json"
 
 
 def read_json(path: Path):
@@ -47,12 +48,6 @@ def write_json(path: Path, value: object, *, exclusive: bool = False) -> None:
         temporary = path.with_suffix(path.suffix + ".tmp")
         temporary.write_text(text, encoding="utf-8")
         temporary.replace(path)
-
-
-def identity(record) -> tuple:
-    return tuple(record.get(key) for key in (
-        "project_id", "batch_id", "channel_id", "thread_id",
-    ))
 
 
 def load_inputs() -> list[dict]:
@@ -101,10 +96,12 @@ def run_configuration(entries: list[dict]) -> dict:
         *[f"src/threadsense/agents/{name}.py" for name in (
             "contracts", "thread_interpreter", "decision_evidence_audit",
             "interpretation_verifier", "interpretation_revision", "verification_pipeline",
+            "prose_comparison", "verification_requests", "verification_handoff",
         )],
     ]
     return {
         "pipeline_version": PIPELINE_VERSION,
+        "maximum_calls_per_thread": 4, "automatic_retries": 0,
         "interpreter_model": model,
         "auditor_model": auditor_model,
         "baseline_sha256": digest(read_json(BASELINE)),
@@ -132,9 +129,9 @@ def check_output_directory(output: Path) -> None:
         raise ValueError("Output directory overlaps protected inputs or historical artifacts.")
 
 
-def metadata(entry: dict, config_hash: str) -> dict:
+def metadata(entry: dict, config_hash: str, *, pipeline_version=PIPELINE_VERSION) -> dict:
     return {
-        "pipeline_version": PIPELINE_VERSION, "run_config_sha256": config_hash,
+        "pipeline_version": pipeline_version, "run_config_sha256": config_hash,
         "source_sha256": entry["source_sha256"],
         "baseline_sha256": entry["baseline_sha256"], "key": entry["key"],
     }
@@ -147,6 +144,14 @@ def raw_files(directory: Path) -> dict[str, str]:
     }
 
 
+def artifact_files(directory: Path) -> dict[str, str]:
+    return {
+        path.name: hashlib.sha256(path.read_bytes()).hexdigest()
+        for stage in STAGES for suffix in ARTIFACTS
+        if (path := directory / f"{stage}.{suffix}").exists()
+    }
+
+
 def stage_files(directory: Path) -> dict[str, str]:
     return {
         path.name: hashlib.sha256(path.read_bytes()).hexdigest()
@@ -156,6 +161,8 @@ def stage_files(directory: Path) -> dict[str, str]:
 
 def validate_result(entry: dict, payload: dict):
     from threadsense.agents.verification_pipeline import VerificationResult
+    from threadsense.agents.decision_evidence_audit import validate_source_analysis, validate_decision_evidence_audit
+    from threadsense.agents.interpretation_verifier import verify_interpretation
 
     result = VerificationResult.model_validate(payload)
     if result.interpretation.thread_id != entry["thread"].thread_id:
@@ -164,10 +171,21 @@ def validate_result(entry: dict, payload: dict):
         raise ValueError("Cached original interpretation does not match the baseline.")
     if result.revision_count not in (0, 1) or len(result.passes) > 2:
         raise ValueError("Cached result exceeds the bounded verification workflow.")
+    if result.source_analysis is not None:
+        validate_source_analysis(entry["thread"], result.source_analysis)
+    for attempt in result.passes:
+        if attempt.audit is not None:
+            validate_decision_evidence_audit(entry["thread"], attempt.audit, attempt.interpretation)
+        if attempt.passed and verify_interpretation(
+            entry["thread"], ThreadInterpretation.model_validate(attempt.interpretation), attempt.audit,
+        ):
+            raise ValueError("Cached passing audit fails deterministic verification.")
+    if result.status.value != "NEEDS_REVIEW" and result.interpretation.model_dump(mode="json") != result.passes[-1].interpretation:
+        raise ValueError("Cached passing interpretation does not match its assessed candidate.")
     return result
 
 
-def inspect_cache(output: Path, entries: list[dict], config: dict) -> dict:
+def inspect_cache(output: Path, entries: list[dict], config: dict, *, historical=False) -> dict:
     """Check every cached record before any paid request, including unselected rows."""
     manifest = output / "manifest.json"
     if not output.exists():
@@ -177,6 +195,10 @@ def inspect_cache(output: Path, entries: list[dict], config: dict) -> dict:
             raise ValueError("Output contains files without this pipeline's manifest. Choose a new directory.")
         return {}
     saved = read_json(manifest)
+    if saved.get("kind") == "offline_reconciliation":
+        raise ValueError("Offline handoff reconciliation is not a live verification cache.")
+    if historical and config.get("pipeline_version") not in (2, 3):
+        raise ValueError("Unsupported historical evidence contract.")
     config_hash = digest(config)
     if saved.get("config") != config or saved.get("run_config_sha256") != config_hash:
         raise ValueError("Inputs, models, glossary, code, or packages changed. Choose a new output directory.")
@@ -186,7 +208,7 @@ def inspect_cache(output: Path, entries: list[dict], config: dict) -> dict:
             or len(selection) != len(set(selection)) or set(selection) - by_key.keys()):
         raise ValueError("Cached manifest contains an invalid thread selection.")
     allowed_output = {"manifest.json", "interpretations.json", "review_queue.json",
-                      "sources", "records", ".running.lock",
+                      "sources", "records", ".running.lock", "content_review_report.json", "content_review_report.json.tmp",
                       "manifest.json.tmp", "interpretations.json.tmp", "review_queue.json.tmp"}
     if any(path.name not in allowed_output for path in output.iterdir()):
         raise ValueError("Output directory contains files from another workflow.")
@@ -196,10 +218,11 @@ def inspect_cache(output: Path, entries: list[dict], config: dict) -> dict:
         if not directory.is_dir() or directory.name not in by_key:
             raise ValueError(f"Unknown cache record: {directory.name}")
         entry = by_key[directory.name]
-        expected = metadata(entry, config_hash)
+        expected = metadata(entry, config_hash, pipeline_version=config["pipeline_version"] if historical else PIPELINE_VERSION)
         started = directory / "started.json"
         allowed = {"started.json", "result.json", "result.json.tmp",
-                   *[f"{s}.raw.txt" for s in STAGES], *[f"{s}.started.json" for s in STAGES]}
+                   *[f"{s}.raw.txt" for s in STAGES], *[f"{s}.started.json" for s in STAGES],
+                   *[f"{s}.{suffix}" for s in STAGES for suffix in ARTIFACTS]}
         if any(path.name not in allowed for path in directory.iterdir()):
             raise ValueError(f"Unexpected cache files: {directory.name}")
         if not started.exists() or read_json(started).get("metadata") != expected:
@@ -218,17 +241,35 @@ def inspect_cache(output: Path, entries: list[dict], config: dict) -> dict:
             raise ValueError(f"Cached raw response is missing or modified: {directory.name}")
         if record.get("stage_files") != stage_files(directory):
             raise ValueError(f"Cached stage marker is missing or modified: {directory.name}")
+        if record.get("artifact_files") != artifact_files(directory):
+            raise ValueError(f"Cached request/response artifact is missing or modified: {directory.name}")
         cached[directory.name] = validate_result(entry, record["result"])
     return cached
 
 
-def provisional_result(entry: dict, reason: str, *, revision_attempted: bool = False):
+def provisional_result(entry: dict, reason: str, *, revision_attempted: bool = False, directory: Path | None = None):
     from threadsense.agents.verification_pipeline import retain_for_review
 
-    return retain_for_review(
+    result = retain_for_review(
         entry["thread"], entry["baseline"]["interpretation"], reason,
         revision_count=int(revision_attempted),
     )
+    if directory is not None:
+        # Preserve an actual saved revision even if interruption prevented its
+        # final check. Never reconstruct missing model output or retry a call.
+        from threadsense.agents.thread_interpreter import parse_interpretation_response
+        path = directory / "revision_1.raw.txt"
+        if path.exists():
+            try:
+                revision = parse_interpretation_response(entry["thread"], path.read_text(encoding="utf-8"))
+                result.revised_interpretation = revision
+                result.revision_count = 1
+                if result.effective_attempt == "fallback":
+                    result.interpretation = revision
+                    result.effective_attempt = "revision"
+            except (ValueError, RuntimeError, TypeError) as error:
+                result.revision_error = redact_error(error)
+    return result
 
 
 def save_result(output: Path, entry: dict, config_hash: str, result) -> None:
@@ -238,61 +279,30 @@ def save_result(output: Path, entry: dict, config_hash: str, result) -> None:
     write_json(directory / "result.json", {
         "metadata": metadata(entry, config_hash), "result": payload,
         "result_sha256": digest(payload), "raw_files": raw_files(directory),
-        "stage_files": stage_files(directory),
+        "stage_files": stage_files(directory), "artifact_files": artifact_files(directory),
     })
 
 
-def write_reports(output, retained, config, results, *, selected, state, attempted, unprocessed):
+def write_reports(output, retained, config, results, *, selected, state, attempted, unprocessed,
+                  reviews=(), review_diagnostics=()):
+    records, queue, counts, review_report = build_handoff(
+        output, output, retained, results, config, BASELINE,
+        reviews=reviews, diagnostics=review_diagnostics,
+    )
+    if state == "complete" and counts["NEEDS_REVIEW"]:
+        state = "complete_with_review"
     config_hash = digest(config)
-    records, queue = [], []
-    counts = {status: 0 for status in ("VERIFIED", "CORRECTED", "NEEDS_REVIEW")}
-    for entry in retained:
-        result = results[entry["key"]]
-        status = result.status.value
-        counts[status] += 1
-        baseline = entry["baseline"]
-        record = {
-            key: baseline.get(key) for key in (
-                "thread_id", "channel_id", "project_id", "batch_id", "language",
-            )
-        }
-        record.update({
-            "model": config["interpreter_model"], "run_config_sha256": config_hash,
-            "input_sha256": entry["source_sha256"],
-            "interpretation": result.interpretation.model_dump(mode="json"),
-            "verification_status": status, "revision_count": result.revision_count,
-            "provisional_fields": result.provisional_fields,
-            "review_reason": result.review_reason,
-            "lineage": {
-                "baseline_file": str(BASELINE), "baseline_record_sha256": entry["baseline_sha256"],
-                "baseline_run_config_sha256": baseline.get("run_config_sha256"),
-                "baseline_model": baseline.get("model"),
-                "baseline_created_at": baseline.get("created_at"),
-                "source_file": f"sources/{entry['source_sha256']}.json",
-                "verification_file": (
-                    f"records/{entry['key']}/result.json"
-                    if (output / "records" / entry["key"] / "result.json").exists() else None
-                ),
-                "effective_attempt": result.effective_attempt,
-            },
-        })
-        records.append(record)
-        if status == "NEEDS_REVIEW":
-            queue.append({
-                "thread_id": baseline["thread_id"], "channel_id": baseline["channel_id"],
-                "reason": result.review_reason, "provisional_fields": result.provisional_fields,
-                "findings": [item.model_dump(mode="json") for item in result.findings],
-                "source_file": record["lineage"]["source_file"],
-                "verification_file": record["lineage"]["verification_file"],
-            })
     write_json(output / "interpretations.json", records)
     write_json(output / "review_queue.json", queue)
+    write_json(output / "content_review_report.json", review_report)
     write_json(output / "manifest.json", {
         "config": config, "run_config_sha256": config_hash,
+        "handoff_config_sha256": review_report["config_sha256"],
         "updated_at": datetime.now(timezone.utc).isoformat(), "state": state,
         "selected": len(selected), "counts": counts,
         "retained": len(retained),
         "attempted_this_run": attempted, "unprocessed": unprocessed,
+        "model_calls_recorded": sum(1 for _ in (output / "records").glob("*/*.call.json")),
         "selection": [entry["key"] for entry in retained],
         "requested_selection": [entry["key"] for entry in selected],
         "coverage": "all_source_threads" if len(retained) == config["source_count"] else "selected_subset",
@@ -300,10 +310,10 @@ def write_reports(output, retained, config, results, *, selected, state, attempt
     return counts
 
 
-def verify_thread(thread, original, *, on_raw_output, on_stage_start):
+def verify_thread(thread, original, *, on_raw_output, on_stage_start, on_artifact):
     from threadsense.agents.verification_pipeline import verify_and_revise
 
-    return verify_and_revise(thread, original, on_raw_output=on_raw_output, on_stage_start=on_stage_start)
+    return verify_and_revise(thread, original, on_raw_output=on_raw_output, on_stage_start=on_stage_start, on_artifact=on_artifact)
 
 
 def redact_error(error: BaseException) -> str:
@@ -321,7 +331,9 @@ def main(argv: list[str] | None = None) -> int:
     mode.add_argument("--run", action="store_true", help="Authorize paid audit/revision calls for this selection.")
     parser.add_argument("--limit", type=int, default=1, help="Small pilot by default; 0 selects all.")
     parser.add_argument("--thread-id", action="append", help="Select specific thread IDs (repeatable).")
-    parser.add_argument("--output-dir", type=Path, default=ROOT / "data/processed/agent1_verified_v1")
+    parser.add_argument("--output-dir", type=Path, default=ROOT / "data/processed/agent1_verified_v3")
+    parser.add_argument("--content-review", type=Path, action="append",
+                        help="Source/candidate-bound content reviews; repeatable. Defaults to the saved review registry.")
     args = parser.parse_args(argv)
     if args.limit < 0:
         parser.error("--limit must be zero or positive")
@@ -341,6 +353,7 @@ def main(argv: list[str] | None = None) -> int:
         config = run_configuration(entries)
         config["source_count"] = len(entries)
         cached = inspect_cache(output, entries, config)
+        reviews, review_diagnostics = load_content_reviews(args.content_review or [DEFAULT_CONTENT_REVIEW], ROOT)
     except (ValueError, OSError, KeyError) as error:
         parser.error(str(error))
     print(f"Selected {len(selected)} of {len(entries)} source threads.")
@@ -348,7 +361,11 @@ def main(argv: list[str] | None = None) -> int:
         state = "cached" if cached.get(entry["key"]) is not None else "interrupted; review" if entry["key"] in cached else "new"
         print(f"  {entry['thread'].channel_id}/{entry['thread'].thread_id}: {state}")
     pending = [entry for entry in selected if entry["key"] not in cached]
-    print(f"Maximum new model tasks: {3 * len(pending)} (audit, optional revision, second audit).")
+    print(f"Compatible cached records: {len(selected) - len(pending)}; unstarted records: {len(pending)}.")
+    print(f"Content reviews loaded: {len(reviews)}; invalid reviews: {len(review_diagnostics)}.")
+    for diagnostic in review_diagnostics:
+        print(f"  INVALID_REVIEW: {diagnostic['reason']}")
+    print(f"Maximum new model tasks: {4 * len(pending)} (source analysis, prose, optional revision and fresh prose).")
     if not args.run:
         print("Dry run: no API calls, credentials required, or output files written.")
         return 0
@@ -370,6 +387,7 @@ def main(argv: list[str] | None = None) -> int:
     results = {}
     attempted = 0
     interrupted = False
+    fatal = False
     try:
         # Recheck under the lock in case another process finished after preflight.
         cached = inspect_cache(output, entries, config)
@@ -393,11 +411,12 @@ def main(argv: list[str] | None = None) -> int:
                     "Not processed in this run yet; original interpretation is provisional."
                 )
                 directory = output / "records" / entry["key"]
-                result = provisional_result(entry, reason, revision_attempted=(directory / "revision_1.started.json").exists())
+                result = provisional_result(entry, reason, revision_attempted=(directory / "revision_1.started.json").exists(), directory=directory)
                 if entry["key"] in cached:
                     save_result(output, entry, config_hash, result)
             results[entry["key"]] = result
-        write_reports(output, retained, config, results, selected=selected, state="running", attempted=0, unprocessed=unprocessed)
+        write_reports(output, retained, config, results, selected=selected, state="running", attempted=0, unprocessed=unprocessed,
+                      reviews=reviews, review_diagnostics=review_diagnostics)
         for entry in pending:
             directory = output / "records" / entry["key"]
             write_json(directory / "started.json", {
@@ -419,32 +438,42 @@ def main(argv: list[str] | None = None) -> int:
                 with (directory / f"{stage}.raw.txt").open("x", encoding="utf-8") as handle:
                     handle.write(raw)
 
+            def preserve_artifact(stage: str, name: str, body: bytes) -> None:
+                if stage not in STAGES or name not in ARTIFACTS:
+                    raise ValueError("Unknown verification artifact.")
+                with (directory / f"{stage}.{name}").open("xb") as handle:
+                    handle.write(body)
+
             try:
                 result = verify_thread(entry["thread"], entry["baseline"]["interpretation"],
-                                       on_raw_output=preserve_raw, on_stage_start=preserve_stage)
+                                       on_raw_output=preserve_raw, on_stage_start=preserve_stage,
+                                       on_artifact=preserve_artifact)
             except (Exception, KeyboardInterrupt) as error:
                 result = provisional_result(
                     entry, f"Verification interrupted: {redact_error(error)}. Preserved outputs require review; calls will not repeat.",
-                    revision_attempted=(directory / "revision_1.started.json").exists(),
+                    revision_attempted=(directory / "revision_1.started.json").exists(), directory=directory,
                 )
-                interrupted = True
+                fatal = isinstance(error, (EvidencePersistenceError, VerificationConfigurationError))
+                interrupted = fatal or isinstance(error, KeyboardInterrupt)
             save_result(output, entry, config_hash, result)
             results[entry["key"]] = result
             unprocessed -= 1
             write_reports(output, retained, config, results, selected=selected,
-                          state="interrupted" if interrupted else "running",
-                          attempted=attempted, unprocessed=unprocessed)
+                          state="failed" if fatal else "interrupted" if interrupted else "running",
+                          attempted=attempted, unprocessed=unprocessed,
+                          reviews=reviews, review_diagnostics=review_diagnostics)
             print(f"{entry['thread'].thread_id}: {result.status.value}")
             if interrupted:
                 break
         counts = write_reports(output, retained, config, results, selected=selected,
-                               state="interrupted" if interrupted else "incomplete" if unprocessed else "complete_with_review" if any(r.status.value == "NEEDS_REVIEW" for r in results.values()) else "complete",
-                               attempted=attempted, unprocessed=unprocessed)
+                               state="failed" if fatal else "interrupted" if interrupted else "incomplete" if unprocessed else "complete_with_review" if any(r.status.value == "NEEDS_REVIEW" for r in results.values()) else "complete",
+                               attempted=attempted, unprocessed=unprocessed,
+                          reviews=reviews, review_diagnostics=review_diagnostics)
     finally:
         lock.unlink(missing_ok=True)
     print(" | ".join(f"{status}: {count}" for status, count in counts.items()))
     print(f"Unprocessed: {unprocessed}. Results: {output / 'interpretations.json'}")
-    return 1 if interrupted else 2 if counts["NEEDS_REVIEW"] else 0
+    return 1 if interrupted or unprocessed else 0
 
 
 if __name__ == "__main__":
