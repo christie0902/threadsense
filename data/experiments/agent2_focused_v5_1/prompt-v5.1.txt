@@ -1,0 +1,89 @@
+Prompt version: agent2-inventory-v5.1
+Consolidate factual topics from original Slack messages and the approved glossary.
+Assign every member alias exactly once; split unrelated topics. Cite only exact
+topic-local evidence IDs. Traceable IDs alone do not establish support for a claim.
+Keep a concise shared issue and supported differences; invent no causal explanation,
+policy precedence, attempted/failed workaround, impact, or harmful-content contrast.
+
+Record substantive content ONCE in inventory. Each item has a topic-local item_id
+and one evidence_id. Do not copy source quotations into inventory: Python supplies
+the full original message and its qualifiers, identities, authors and reactions.
+Only synthesis, differences and impact observations require generated prose.
+A message may supply multiple items, e.g. diagnostic request and submission condition.
+Distinguish QUESTION (actual handling/information question), DIAGNOSTIC_REQUEST
+(request for checks/details, not an answer), ANSWER (scoped substantive reply),
+INSTRUCTION, FACT (reported, not independently confirmed), ANNOUNCEMENT and CONTEXT.
+An actual request for handling or a decision is QUESTION, not FACT or a request
+for diagnostics. A diagnostic asks for checks/details; retain the original handling
+question independently. Context describing the task is not an ANSWER about handling.
+ANSWER requires an explicit substantive response. Set answer_status=TENTATIVE for
+unconfirmed advice or DIRECT for an explicit scoped answer; all other kinds use null.
+Question links to tentative advice remain PARTIAL, never ANSWERED.
+Quoted or rhetorical questions are not automatically genuine questions. Never invent
+questions from a factual incident or diagnostic. Announcements can contain instructions
+without questions. Do not repeat items in independent answer/guidance/question lists.
+Classify announced information as ANNOUNCEMENT from its content, not its channel.
+Record an announced instruction as an additional INSTRUCTION item on that source.
+One message can report a fact, issue an instruction and state its condition.
+Do not make a reply question into a root question.
+
+Every member needs substantive inventory content, not just context or raw retention.
+Account for every message with one or more items OR an explicit NON_SUBSTANTIVE or
+UNCERTAIN disposition with reason. Uncertain meaning must remain visible, never default
+to NONE. Preserve all actual unanswered questions and scoped TL instructions, including
+those in replies. Question items require OPEN with no answer links, or PARTIAL/ANSWERED
+with answer_item_ids pointing to ANSWER items in that SAME member conversation.
+Diagnostics cannot close questions. An answer to a narrower task cannot resolve a
+broader question in another thread. Tentative advice must remain tentative and PARTIAL.
+For every PARTIAL/ANSWERED link, check the target item_id, its ANSWER kind, its
+original member conversation and the substance of its reply. FACT, CONTEXT,
+DIAGNOSTIC_REQUEST and INSTRUCTION items cannot satisfy an answer link. One source
+message may have several roles: link its substantive ANSWER item, not another item
+that happens to reference the same message. Never relabel an item ANSWER solely to
+make a link pass. Diagnostics may coexist with a valid partial answer; retain both
+without letting diagnostic requests supply the answer. A related answer in another
+thread may be relevant context but cannot establish that this thread was answered.
+When no eligible answer supports resolution, keep the question OPEN with no links
+and retain useful guidance separately. Do not delete an unanswered handling question.
+Retain relevant differences between reported symptoms, and distinguish task labels
+from operational impact. Use glossary meanings consistently.
+
+Do not generate authority labels. Python supplies author roles and eligible TL reaction
+users/targets. Endorsement applies only to that reply with its conditions; eyes is not
+approval. Inherited disputes remain provisional; repeated claims cannot clear them.
+
+Provide preliminary impact in the SAME response. Cite each applicable rubric criterion
+and its observation once; Python derives the level, rubric version and provisional
+metadata. Criteria must imply one unambiguous level. Retain affected_scope only where
+evidenced, otherwise null. REPORTED_RISK differs from OBSERVED_OUTCOME; actual scope
+must not expand to all users. limited_demonstrated_consequence requires OBSERVED_OUTCOME
+of limited OPERATIONAL impact, not harmless task content. insufficient_impact_evidence
+uses INSUFFICIENT_EVIDENCE and explains what is unknown; non_operational uses
+NON_OPERATIONAL, only for clearly non-operational content. Neither is an empty list.
+Use impact=null for an explicitly unassessed section. A reported conflict or request
+for clarification does not establish an observed operational outcome.
+For substantial_blockage cite inability to perform/submit work; quality/safety risk
+requires actual operational evidence beyond task vocabulary. Review flags, unanswered
+questions, number of members and minor/major task categories do not set severity.
+Before selecting a lower-impact criterion, evaluate explicit inability to perform
+or complete assigned work against substantial_blockage. Unknown root cause or
+unknown extent does not erase an explicitly reported blockage. Use only the actual
+reported scope; isolated keywords do not establish HIGH, and do not invent broader
+scope or quality/safety consequences. Distinguish attributed reports of impact from
+independently confirmed outcomes: OBSERVED_OUTCOME requires a concrete effect the
+source describes as having occurred, with attribution preserved. REPORTED_RISK
+requires an evidenced prospective risk, not a speculative hypothetical consequence.
+A handling question or reported document disagreement does not automatically
+establish operational impact. Missing impact evidence may yield UNKNOWN with
+insufficient_impact_evidence; never fill the gap with speculative harm.
+Select the controlling rubric level supported by the source, then include only
+supported criteria consistent with that one level. Do not combine levels to express
+uncertainty about cause, extent or lesser observations. Preserve relevant lesser
+observations in shared_issue or relevant_differences where supported, and describe
+unknown cause/scope in the observation or affected_scope=null without erasing known
+impact. If no operational level is supported, use UNKNOWN rather than guessing.
+HIGH routes to nonblocking review; LOW/N/A cannot clear flags. Agent 3 may later record
+a separate researched assessment. No research, actionability or recommendations.
+One independent request, no tools, verifier, retries or repair. Return JSON matching
+the API response_format. Do not output schema_version or other fixed metadata;
+Python supplies version 5 from trusted configuration.

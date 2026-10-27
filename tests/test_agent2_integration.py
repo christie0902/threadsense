@@ -6,6 +6,9 @@ from pathlib import Path
 
 import numpy as np
 import pytest
+
+# Historical semantic-contract regressions; active taxonomy has separate coverage.
+pytestmark = pytest.mark.usefixtures("legacy_agent2_v6")
 from pydantic import ValidationError
 
 from threadsense import handoff_inputs as inputs
@@ -13,9 +16,11 @@ from threadsense.topic_inputs import load_candidate_payloads
 from threadsense.topic_grouping import approved_grouping, group_members
 from threadsense.agents import topic_pipeline as pipeline
 from threadsense.agents import verification_requests as transport
-from threadsense.agents.topic_consolidation import build_request, parse_response, export_result
-from threadsense.agents.topic_contracts import TopicConsolidation
+from threadsense.agents.topic_consolidation_v3 import build_request, parse_response, export_result
+from threadsense.agents.topic_contracts_v3 import TopicConsolidation
 from threadsense.terminology import get_terms
+from threadsense.agents.topic_evidence import evidence_catalog
+from tests.agent2_fixtures import membership_only_draft, guidance
 
 @pytest.fixture(scope='module')
 def payloads():
@@ -26,17 +31,7 @@ def _find(payloads, thread_id):
 
 def _membership_only_draft(payload):
     """Synthetic stub for wiring tests, explicitly not a reviewed factual summary."""
-    evidence = [{'member_id':m['member_id'], 'message_id':m['original_thread']['messages'][0]['message_id'],
-                 'quote':m['original_thread']['messages'][0]['text']} for m in payload['members']]
-    return {'schema_version':2, 'candidate_group_id':payload['candidate_group_id'],
-            'project_id':payload['project_id'], 'batch_id':payload['batch_id'],
-            'is_coherent':True, 'coherence_rationale':'Synthetic membership-only test fixture.',
-            'needs_review':False, 'review_reasons':[], 'topics':[{
-                'topic_name':'Synthetic fixture', 'member_ids':[m['member_id'] for m in payload['members']],
-                'conversation_kind':'DISCUSSION',
-                'shared_issue':{'text':'Synthetic offline structure-only result; not a factual conclusion.', 'evidence':evidence},
-                'representative_question':None, 'relevant_differences':[], 'open_questions':[],
-                'supported_answers':[], 'uncertainties':[]}]}
+    return membership_only_draft(payload)
 
 def _http(draft):
     return 200, json.dumps({'choices':[{'finish_reason':'stop','message':{'content':json.dumps(draft)}}]}).encode(), None
@@ -117,11 +112,12 @@ def test_request_is_factual_has_flags_and_no_review_labels_or_agent3_fields(payl
     data=json.loads(request['messages'][1]['content'])
     flagged=next(m for m in data['members'] if m['thread_id']=='1790882197.000111')
     assert flagged['review_required'] and 'summary' in flagged['disputed_fields']
-    assert flagged['original_conversation']['messages']
+    assert any(e['member_id']==flagged['member_id'] and e['quote'] for e in data['evidence_catalog'])
     assert data['approved_glossary']['QN']=='Quarantine'
     assert not any(word in request['messages'][1]['content'] for word in ('source_review_outcome','human_approval','expected_verdict','ground_truth'))
     schema=TopicConsolidation.model_json_schema()
-    for forbidden in ('severity','actionable','research_needs','recommendations','actionability_rationale'):
+    assert 'preliminary_severity' in json.dumps(schema)
+    for forbidden in ('actionable','research_needs','recommendations','actionability_rationale'):
         assert forbidden not in json.dumps(schema)
 
 @pytest.mark.parametrize('mutation', ['missing','duplicate','unknown','quote','message','candidate','member_evidence','legacy_field'])
@@ -131,10 +127,10 @@ def test_real_parser_rejects_bad_assignments_evidence_and_legacy_schema(payloads
     if mutation=='missing': topic['member_ids'].pop()
     elif mutation=='duplicate': topic['member_ids'].append(topic['member_ids'][0])
     elif mutation=='unknown': topic['member_ids'][0]='invented'
-    elif mutation=='quote': topic['shared_issue']['evidence'][0]['quote']='Fabricated quote.'
-    elif mutation=='message': topic['shared_issue']['evidence'][0]['message_id']='invented'
+    elif mutation=='quote': topic['shared_issue']['quote']='Fabricated quote.'
+    elif mutation=='message': topic['shared_issue']['evidence_ids'][0]='invented'
     elif mutation=='candidate': draft['candidate_group_id']='wrong'
-    elif mutation=='member_evidence': topic['shared_issue']['evidence'].pop()
+    elif mutation=='member_evidence': topic['shared_issue']['evidence_ids'].pop()
     else: topic['severity']='HIGH'
     with pytest.raises(ValueError): parse_response(payload,json.dumps(draft))
 
@@ -143,7 +139,7 @@ def test_citations_cannot_cross_topic_boundaries(payloads):
     first=draft['topics'][0]; second=deepcopy(first)
     second['member_ids']=[first['member_ids'].pop()]
     # Leave the removed member's citation in topic one: source quote is real but misplaced.
-    second['shared_issue']['evidence']=[first['shared_issue']['evidence'][-1]]
+    second['shared_issue']['evidence_ids']=[first['shared_issue']['evidence_ids'][-1]]
     draft['topics'].append(second); draft['is_coherent']=False
     with pytest.raises(ValueError,match='crosses topic'): parse_response(payload,json.dumps(draft))
 
@@ -172,16 +168,18 @@ def test_announcements_keep_null_question_and_no_invented_answer(payloads):
     with pytest.raises(ValueError,match='announcements'): parse_response(payload,json.dumps(draft))
 
 def test_reviewed_synthetic_example_preserves_flags_and_qualified_answers(payloads):
-    fixture=inputs.read_json(Path(__file__).parent/'fixtures/agent2_flagged_example_v2.json')
-    assert fixture['origin']=='synthetic_offline_example'
+    fixture=inputs.read_json(Path(__file__).parent/'fixtures/agent2_hardening_v3.json')
+    assert fixture['origin']=='synthetic_offline_regressions'
     payload=_find(payloads,'1790882197.000111')
-    analysis=parse_response(payload,json.dumps(fixture['draft']))
+    draft=next(c['draft'] for c in fixture['cases'] if c['candidate_group_id']==payload['candidate_group_id'])
+    analysis=parse_response(payload,json.dumps(draft))
     result=export_result(payload,analysis,state='CONSOLIDATED')
     assert len(result['members'])==6 and len(result['topics'])==2
     assert {o['thread_id'] for o in result['inherited_review_obligations']}=={'1790882197.000111','1790920171.000109'}
     topic=result['topics'][0]
     assert topic['shared_issue']['reliability']=='PROVISIONAL'
-    assert topic['supported_answers']==[] and len(topic['provisional_answers'])==1
+    assert topic['supported_answers']==[] and len(topic['provisional_answers'])==2
+    assert {a['evidence'][0]['message_id'] for a in topic['provisional_answers']}=={'1790920220.000113','1790934431.000339'}
     assert topic['provisional_answers'][0]['evidence']
     for member in result['members']:
         original=next(m for m in payload['members'] if m['member_id']==member['member_id'])
@@ -193,8 +191,10 @@ def test_model_cannot_clear_flags_by_merging_or_claiming_supported_answer(payloa
     member=next(m for m in payload['members'] if m['thread_id']=='1790882197.000111')
     reply=member['original_thread']['messages'][-1]
     # Intentionally incorrect model prose with real quotes must never enter an accepted-answer slot.
-    draft['topics'][0]['supported_answers']=[{'text':'The old workaround was attempted and failed.',
-        'evidence':[{'member_id':member['member_id'],'message_id':reply['message_id'],'quote':reply['text']}]}]
+    _, catalog=evidence_catalog(payload)
+    eid=next(k for k,e in catalog.items() if e['message_id']==reply['message_id'] and e['canonical_member_id']==member['member_id'])
+    draft['topics'][0]['supported_answers']=[guidance('The old workaround was attempted and failed.', [eid],
+        scope='Deliberately incorrect model prose for a flag-preservation test.')]
     result=export_result(payload,parse_response(payload,json.dumps(draft)),state='CONSOLIDATED')
     assert result['review_required'] and len(result['inherited_review_obligations'])==2
     assert result['topics'][0]['supported_answers']==[]
@@ -208,7 +208,8 @@ def test_all_200_continue_after_timeout_and_invalid_response(monkeypatch,tmp_pat
         attempts.append(data['candidate_group_id'])
         if len(attempts)==2: raise TimeoutError('synthetic timeout')
         if len(attempts)==3: return _http({'bad':'schema'})
-        return _http(_membership_only_draft(by_group[data['candidate_group_id']]))
+        from tests.agent2_structured_fixtures import wiring_draft
+        return _http(wiring_draft(by_group[data['candidate_group_id']]))
     monkeypatch.setattr(transport,'send_once',send)
     out=tmp_path/'mock_full'
     manifest=pipeline.execute_batch(payloads,out,run=True,maximum_requests=90)
@@ -237,7 +238,8 @@ def test_fatal_and_interrupted_runs_keep_unprocessed_visible(monkeypatch,tmp_pat
         calls.append(1)
         if kind=='configuration': return 401,b'{}',None
         if kind=='interruption': raise KeyboardInterrupt()
-        return _http(_membership_only_draft(payloads[0]))
+        from tests.agent2_structured_fixtures import wiring_draft
+        return _http(wiring_draft(payloads[0]))
     monkeypatch.setattr(transport,'send_once',send)
     if kind=='persistence':
         original=pipeline.write_bytes

@@ -1,0 +1,1986 @@
+{
+  "origin": "Codex-assisted source review; not human approval, independent ground truth or unbiased accuracy benchmark",
+  "review_date": "2026-10-25",
+  "reviewed_at": "2026-10-25T14:03:27.594205+00:00",
+  "run": "data/processed/agent2_contrastive_v5_3",
+  "rubric_version": "provisional-operational-severity-v2",
+  "pre_run_review_sha256": "7d74716641f07d92370c529e723b0044f88cbdc9f6e8132c9833784c10bd11e3",
+  "source_evidence_file": "data/experiments/agent2_contrastive_v5_3/reviewed_sources.json",
+  "source_evidence_sha256": "8aef7ca94860f39eaf622e02a70d7e1012863c9f9896e69eef74ad16e33e9945",
+  "source_file_bindings_sha256": "19bb24545afdfa7b668a75a3bfbe12ca111ca9a853fb7474acea7605d5fb2388",
+  "method": "Reviewed every actual new inventory, summary, difference, severity and derived export against the frozen source-based criteria, original messages and actual reactions. Expectations never entered runtime requests.",
+  "limitations": [
+    "Diagnostic three-case sample, not accuracy or causal estimate. Two controls selected by source characteristics; no old control Agent 2 outputs consulted.",
+    "One observation per case; low reasoning remains configuration under evaluation, not proven production winner.",
+    "M06 handling and positive M01 qualitative-threshold scope admit reasonable interpretation differences, retained as uncertainty rather than predetermined OPEN/PARTIAL labels.",
+    "No multilingual, non-operational, eyes, transport failure, refusal, truncation or interruption case in this live run."
+  ],
+  "entries": [
+    {
+      "candidate_group_id": "cluster_6b59d13144282285",
+      "binding": {
+        "input_file_sha256": "2bcb4d5bd06bb9bf2e8ceb30168970a68a65ac88cdc05996982603a7e04732bd",
+        "raw_draft_sha256": "c04f3cb2f50f09c7aee3ed75a6b5066e10fc4c8ccfa26a5732a3453cfc1ff85c",
+        "export_result_sha256": "5f96f59fa5117fb5b99e43cafb841b24e3e37aaae4171c2d86dd55587324ebf7"
+      },
+      "assisted_content_review_required": true,
+      "findings": [
+        {
+          "finding_id": "v5.3-cluster_6b59d13144282285-OVERSTATED_QUARANTINE_RESOLUTION",
+          "category": "OVERSTATED_QUARANTINE_RESOLUTION",
+          "materiality": "material",
+          "explanation": "M05/E014 asks whether to Quarantine. E015 establishes non-evaluability during playback failure and gives task-ID reporting/do-not-score-as-model-quality guidance, but never decides Quarantine eligibility or says reporting replaces Quarantine. The model still marks I10 fully ANSWERED via I11, excluding M05 from open_questions. This repeats the historical scope failure despite the new contrast. Preserve useful guidance and the exact unanswered decision; do not infer that reporting and Quarantine are mutually exclusive. OPEN/PARTIAL can be assessed by the substantive components actually answered, but full closure is unsupported. This is semantic failure after valid schema/linking, not a parser defect.",
+          "affected_raw_fields": [
+            {
+              "path": [
+                "topics",
+                1,
+                "inventory",
+                9
+              ],
+              "value": {
+                "item_id": "I10",
+                "evidence_id": "E014",
+                "kind": "QUESTION",
+                "answer_status": null,
+                "question": {
+                  "status": "ANSWERED",
+                  "answer_item_ids": [
+                    "I11"
+                  ]
+                }
+              }
+            },
+            {
+              "path": [
+                "topics",
+                1,
+                "inventory",
+                10
+              ],
+              "value": {
+                "item_id": "I11",
+                "evidence_id": "E015",
+                "kind": "ANSWER",
+                "answer_status": "DIRECT",
+                "question": null
+              }
+            }
+          ],
+          "affected_export_fields": [
+            {
+              "path": [
+                "topics",
+                1,
+                "open_questions"
+              ],
+              "value": [
+                {
+                  "item_id": "I1",
+                  "evidence_id": "E004",
+                  "kind": "QUESTION",
+                  "answer_status": null,
+                  "question": {
+                    "status": "OPEN",
+                    "answer_item_ids": []
+                  },
+                  "text": "Player never loads, should I QN? I thought a workaround existed in the previous queue, but it is happening again.",
+                  "text_origin": "python_original_message",
+                  "evidence_ids": [
+                    "E004"
+                  ],
+                  "evidence": [
+                    {
+                      "evidence_id": "E004",
+                      "member_id": "member_8ce5853bbd6b1a416c28b76f",
+                      "project_id": "audio_multimodal",
+                      "batch_id": "audio_batch_06",
+                      "channel_id": "C_AUDIO_GENERAL",
+                      "thread_id": "1790882197.000111",
+                      "message_id": "1790882197.000111",
+                      "quote": "Player never loads, should I QN? I thought a workaround existed in the previous queue, but it is happening again.",
+                      "quotation_scope": "entire_original_message",
+                      "author_id": "U019",
+                      "author_role": "QA_TUTOR",
+                      "reactions": [],
+                      "tl_endorsements": []
+                    }
+                  ],
+                  "reliability": "PROVISIONAL"
+                },
+                {
+                  "item_id": "I6",
+                  "evidence_id": "E008",
+                  "kind": "QUESTION",
+                  "answer_status": null,
+                  "question": {
+                    "status": "OPEN",
+                    "answer_item_ids": []
+                  },
+                  "text": "Audio won't play in LT; is this QN or a player issue? I thought a workaround existed in the previous queue, but it is happening again. (task ref AUDIO-6012)",
+                  "text_origin": "python_original_message",
+                  "evidence_ids": [
+                    "E008"
+                  ],
+                  "evidence": [
+                    {
+                      "evidence_id": "E008",
+                      "member_id": "member_e0275e7d53c557361ca40bd1",
+                      "project_id": "audio_multimodal",
+                      "batch_id": "audio_batch_06",
+                      "channel_id": "C_AUDIO_GENERAL",
+                      "thread_id": "1790896012.001900",
+                      "message_id": "1790896012.001900",
+                      "quote": "Audio won't play in LT; is this QN or a player issue? I thought a workaround existed in the previous queue, but it is happening again. (task ref AUDIO-6012)",
+                      "quotation_scope": "entire_original_message",
+                      "author_id": "U018",
+                      "author_role": "TUTOR",
+                      "reactions": [],
+                      "tl_endorsements": []
+                    }
+                  ],
+                  "reliability": "PROVISIONAL"
+                }
+              ]
+            },
+            {
+              "path": [
+                "topics",
+                1,
+                "inventory",
+                9
+              ],
+              "value": {
+                "item_id": "I10",
+                "evidence_id": "E014",
+                "kind": "QUESTION",
+                "answer_status": null,
+                "question": {
+                  "status": "ANSWERED",
+                  "answer_item_ids": [
+                    "I11"
+                  ]
+                },
+                "text": "Anyone else seeing this? Player never loads, should I QN? I thought a workaround existed in the previous queue, but it is happening again.",
+                "text_origin": "python_original_message",
+                "evidence_ids": [
+                  "E014"
+                ],
+                "evidence": [
+                  {
+                    "evidence_id": "E014",
+                    "member_id": "member_943da52557c55ff31ee76f89",
+                    "project_id": "audio_multimodal",
+                    "batch_id": "audio_batch_06",
+                    "channel_id": "C_AUDIO_GENERAL",
+                    "thread_id": "1790920171.000109",
+                    "message_id": "1790920171.000109",
+                    "quote": "Anyone else seeing this? Player never loads, should I QN? I thought a workaround existed in the previous queue, but it is happening again.",
+                    "quotation_scope": "entire_original_message",
+                    "author_id": "U020",
+                    "author_role": "TUTOR",
+                    "reactions": [],
+                    "tl_endorsements": []
+                  }
+                ],
+                "reliability": "PROVISIONAL"
+              }
+            },
+            {
+              "path": [
+                "topics",
+                1,
+                "provisional_answers"
+              ],
+              "value": [
+                {
+                  "item_id": "I11",
+                  "evidence_id": "E015",
+                  "kind": "SCOPED_ANSWER",
+                  "answer_status": "DIRECT",
+                  "question": null,
+                  "text": "This affected task cannot be evaluated while the player fails to load. Report the playback incident with its task ID; do not mark the recording as a model-quality failure. A spinning player does not tell us what the underlying audio contains.",
+                  "text_origin": "python_original_message",
+                  "evidence_ids": [
+                    "E015"
+                  ],
+                  "evidence": [
+                    {
+                      "evidence_id": "E015",
+                      "member_id": "member_943da52557c55ff31ee76f89",
+                      "project_id": "audio_multimodal",
+                      "batch_id": "audio_batch_06",
+                      "channel_id": "C_AUDIO_GENERAL",
+                      "thread_id": "1790920171.000109",
+                      "message_id": "1790920220.000113",
+                      "quote": "This affected task cannot be evaluated while the player fails to load. Report the playback incident with its task ID; do not mark the recording as a model-quality failure. A spinning player does not tell us what the underlying audio contains.",
+                      "quotation_scope": "entire_original_message",
+                      "author_id": "U006",
+                      "author_role": "TEAM_LEAD",
+                      "reactions": [],
+                      "tl_endorsements": []
+                    }
+                  ],
+                  "authority": "TEAM_LEAD",
+                  "scope": {
+                    "text": "This affected task cannot be evaluated while the player fails to load. Report the playback incident with its task ID; do not mark the recording as a model-quality failure. A spinning player does not tell us what the underlying audio contains.",
+                    "evidence_ids": [
+                      "E015"
+                    ],
+                    "evidence": [
+                      {
+                        "evidence_id": "E015",
+                        "member_id": "member_943da52557c55ff31ee76f89",
+                        "project_id": "audio_multimodal",
+                        "batch_id": "audio_batch_06",
+                        "channel_id": "C_AUDIO_GENERAL",
+                        "thread_id": "1790920171.000109",
+                        "message_id": "1790920220.000113",
+                        "quote": "This affected task cannot be evaluated while the player fails to load. Report the playback incident with its task ID; do not mark the recording as a model-quality failure. A spinning player does not tell us what the underlying audio contains.",
+                        "quotation_scope": "entire_original_message",
+                        "author_id": "U006",
+                        "author_role": "TEAM_LEAD",
+                        "reactions": [],
+                        "tl_endorsements": []
+                      }
+                    ],
+                    "reliability": "PROVISIONAL"
+                  },
+                  "limitations": [],
+                  "conditions_representation": "verbatim_full_message_in_scope_not_extracted",
+                  "reliability": "PROVISIONAL"
+                },
+                {
+                  "item_id": "I17",
+                  "evidence_id": "E019",
+                  "kind": "SCOPED_ANSWER",
+                  "answer_status": "DIRECT",
+                  "question": null,
+                  "text": "This affected task cannot be evaluated while the player fails to load. Report the playback incident with its task ID; do not mark the recording as a model-quality failure.",
+                  "text_origin": "python_original_message",
+                  "evidence_ids": [
+                    "E019"
+                  ],
+                  "evidence": [
+                    {
+                      "evidence_id": "E019",
+                      "member_id": "member_61f4987d5eb6b1ccb2894091",
+                      "project_id": "audio_multimodal",
+                      "batch_id": "audio_batch_06",
+                      "channel_id": "C_AUDIO_GENERAL",
+                      "thread_id": "1790934294.000106",
+                      "message_id": "1790934431.000339",
+                      "quote": "This affected task cannot be evaluated while the player fails to load. Report the playback incident with its task ID; do not mark the recording as a model-quality failure.",
+                      "quotation_scope": "entire_original_message",
+                      "author_id": "U006",
+                      "author_role": "TEAM_LEAD",
+                      "reactions": [],
+                      "tl_endorsements": []
+                    }
+                  ],
+                  "authority": "TEAM_LEAD",
+                  "scope": {
+                    "text": "This affected task cannot be evaluated while the player fails to load. Report the playback incident with its task ID; do not mark the recording as a model-quality failure.",
+                    "evidence_ids": [
+                      "E019"
+                    ],
+                    "evidence": [
+                      {
+                        "evidence_id": "E019",
+                        "member_id": "member_61f4987d5eb6b1ccb2894091",
+                        "project_id": "audio_multimodal",
+                        "batch_id": "audio_batch_06",
+                        "channel_id": "C_AUDIO_GENERAL",
+                        "thread_id": "1790934294.000106",
+                        "message_id": "1790934431.000339",
+                        "quote": "This affected task cannot be evaluated while the player fails to load. Report the playback incident with its task ID; do not mark the recording as a model-quality failure.",
+                        "quotation_scope": "entire_original_message",
+                        "author_id": "U006",
+                        "author_role": "TEAM_LEAD",
+                        "reactions": [],
+                        "tl_endorsements": []
+                      }
+                    ],
+                    "reliability": "PROVISIONAL"
+                  },
+                  "limitations": [],
+                  "conditions_representation": "verbatim_full_message_in_scope_not_extracted",
+                  "reliability": "PROVISIONAL"
+                }
+              ]
+            }
+          ],
+          "source_evidence": [
+            {
+              "evidence_id": "E014",
+              "member_id": "member_943da52557c55ff31ee76f89",
+              "project_id": "audio_multimodal",
+              "batch_id": "audio_batch_06",
+              "channel_id": "C_AUDIO_GENERAL",
+              "thread_id": "1790920171.000109",
+              "message_id": "1790920171.000109",
+              "quote": "Anyone else seeing this? Player never loads, should I QN? I thought a workaround existed in the previous queue, but it is happening again.",
+              "quotation_scope": "entire_original_message",
+              "author_id": "U020",
+              "author_role": "TUTOR",
+              "reactions": [],
+              "tl_endorsements": []
+            },
+            {
+              "evidence_id": "E015",
+              "member_id": "member_943da52557c55ff31ee76f89",
+              "project_id": "audio_multimodal",
+              "batch_id": "audio_batch_06",
+              "channel_id": "C_AUDIO_GENERAL",
+              "thread_id": "1790920171.000109",
+              "message_id": "1790920220.000113",
+              "quote": "This affected task cannot be evaluated while the player fails to load. Report the playback incident with its task ID; do not mark the recording as a model-quality failure. A spinning player does not tell us what the underlying audio contains.",
+              "quotation_scope": "entire_original_message",
+              "author_id": "U006",
+              "author_role": "TEAM_LEAD",
+              "reactions": [],
+              "tl_endorsements": []
+            }
+          ]
+        },
+        {
+          "finding_id": "v5.3-cluster_6b59d13144282285-M06_HANDLING_ANSWER_SCOPE_LIMITATION",
+          "category": "M06_HANDLING_ANSWER_SCOPE_LIMITATION",
+          "materiality": "uncertainty",
+          "explanation": "M06/E016 asks QN or a player issue, unlike M05 asking should I QN. E019 directly instructs playback-incident handling and rejects model-quality-failure scoring. Recognizing that scoped handling answer is defensible; it must not become a general prohibition on Quarantine or a confirmed underlying cause. This is a scope limitation rather than a second demonstrated material error or a requirement to reopen every answered question.",
+          "affected_raw_fields": [
+            {
+              "path": [
+                "topics",
+                1,
+                "inventory",
+                12
+              ],
+              "value": {
+                "item_id": "I13",
+                "evidence_id": "E016",
+                "kind": "QUESTION",
+                "answer_status": null,
+                "question": {
+                  "status": "ANSWERED",
+                  "answer_item_ids": [
+                    "I17"
+                  ]
+                }
+              }
+            },
+            {
+              "path": [
+                "topics",
+                1,
+                "inventory",
+                16
+              ],
+              "value": {
+                "item_id": "I17",
+                "evidence_id": "E019",
+                "kind": "ANSWER",
+                "answer_status": "DIRECT",
+                "question": null
+              }
+            }
+          ],
+          "affected_export_fields": [
+            {
+              "path": [
+                "topics",
+                1,
+                "inventory",
+                12
+              ],
+              "value": {
+                "item_id": "I13",
+                "evidence_id": "E016",
+                "kind": "QUESTION",
+                "answer_status": null,
+                "question": {
+                  "status": "ANSWERED",
+                  "answer_item_ids": [
+                    "I17"
+                  ]
+                },
+                "text": "Audio won't play in LT; is this QN or a player issue? I thought a workaround existed in the previous queue, but it is happening again. (task ref AUDIO-4294)",
+                "text_origin": "python_original_message",
+                "evidence_ids": [
+                  "E016"
+                ],
+                "evidence": [
+                  {
+                    "evidence_id": "E016",
+                    "member_id": "member_61f4987d5eb6b1ccb2894091",
+                    "project_id": "audio_multimodal",
+                    "batch_id": "audio_batch_06",
+                    "channel_id": "C_AUDIO_GENERAL",
+                    "thread_id": "1790934294.000106",
+                    "message_id": "1790934294.000106",
+                    "quote": "Audio won't play in LT; is this QN or a player issue? I thought a workaround existed in the previous queue, but it is happening again. (task ref AUDIO-4294)",
+                    "quotation_scope": "entire_original_message",
+                    "author_id": "U013",
+                    "author_role": "TUTOR",
+                    "reactions": [],
+                    "tl_endorsements": []
+                  }
+                ],
+                "reliability": "PROVISIONAL"
+              }
+            },
+            {
+              "path": [
+                "topics",
+                1,
+                "provisional_answers"
+              ],
+              "value": [
+                {
+                  "item_id": "I11",
+                  "evidence_id": "E015",
+                  "kind": "SCOPED_ANSWER",
+                  "answer_status": "DIRECT",
+                  "question": null,
+                  "text": "This affected task cannot be evaluated while the player fails to load. Report the playback incident with its task ID; do not mark the recording as a model-quality failure. A spinning player does not tell us what the underlying audio contains.",
+                  "text_origin": "python_original_message",
+                  "evidence_ids": [
+                    "E015"
+                  ],
+                  "evidence": [
+                    {
+                      "evidence_id": "E015",
+                      "member_id": "member_943da52557c55ff31ee76f89",
+                      "project_id": "audio_multimodal",
+                      "batch_id": "audio_batch_06",
+                      "channel_id": "C_AUDIO_GENERAL",
+                      "thread_id": "1790920171.000109",
+                      "message_id": "1790920220.000113",
+                      "quote": "This affected task cannot be evaluated while the player fails to load. Report the playback incident with its task ID; do not mark the recording as a model-quality failure. A spinning player does not tell us what the underlying audio contains.",
+                      "quotation_scope": "entire_original_message",
+                      "author_id": "U006",
+                      "author_role": "TEAM_LEAD",
+                      "reactions": [],
+                      "tl_endorsements": []
+                    }
+                  ],
+                  "authority": "TEAM_LEAD",
+                  "scope": {
+                    "text": "This affected task cannot be evaluated while the player fails to load. Report the playback incident with its task ID; do not mark the recording as a model-quality failure. A spinning player does not tell us what the underlying audio contains.",
+                    "evidence_ids": [
+                      "E015"
+                    ],
+                    "evidence": [
+                      {
+                        "evidence_id": "E015",
+                        "member_id": "member_943da52557c55ff31ee76f89",
+                        "project_id": "audio_multimodal",
+                        "batch_id": "audio_batch_06",
+                        "channel_id": "C_AUDIO_GENERAL",
+                        "thread_id": "1790920171.000109",
+                        "message_id": "1790920220.000113",
+                        "quote": "This affected task cannot be evaluated while the player fails to load. Report the playback incident with its task ID; do not mark the recording as a model-quality failure. A spinning player does not tell us what the underlying audio contains.",
+                        "quotation_scope": "entire_original_message",
+                        "author_id": "U006",
+                        "author_role": "TEAM_LEAD",
+                        "reactions": [],
+                        "tl_endorsements": []
+                      }
+                    ],
+                    "reliability": "PROVISIONAL"
+                  },
+                  "limitations": [],
+                  "conditions_representation": "verbatim_full_message_in_scope_not_extracted",
+                  "reliability": "PROVISIONAL"
+                },
+                {
+                  "item_id": "I17",
+                  "evidence_id": "E019",
+                  "kind": "SCOPED_ANSWER",
+                  "answer_status": "DIRECT",
+                  "question": null,
+                  "text": "This affected task cannot be evaluated while the player fails to load. Report the playback incident with its task ID; do not mark the recording as a model-quality failure.",
+                  "text_origin": "python_original_message",
+                  "evidence_ids": [
+                    "E019"
+                  ],
+                  "evidence": [
+                    {
+                      "evidence_id": "E019",
+                      "member_id": "member_61f4987d5eb6b1ccb2894091",
+                      "project_id": "audio_multimodal",
+                      "batch_id": "audio_batch_06",
+                      "channel_id": "C_AUDIO_GENERAL",
+                      "thread_id": "1790934294.000106",
+                      "message_id": "1790934431.000339",
+                      "quote": "This affected task cannot be evaluated while the player fails to load. Report the playback incident with its task ID; do not mark the recording as a model-quality failure.",
+                      "quotation_scope": "entire_original_message",
+                      "author_id": "U006",
+                      "author_role": "TEAM_LEAD",
+                      "reactions": [],
+                      "tl_endorsements": []
+                    }
+                  ],
+                  "authority": "TEAM_LEAD",
+                  "scope": {
+                    "text": "This affected task cannot be evaluated while the player fails to load. Report the playback incident with its task ID; do not mark the recording as a model-quality failure.",
+                    "evidence_ids": [
+                      "E019"
+                    ],
+                    "evidence": [
+                      {
+                        "evidence_id": "E019",
+                        "member_id": "member_61f4987d5eb6b1ccb2894091",
+                        "project_id": "audio_multimodal",
+                        "batch_id": "audio_batch_06",
+                        "channel_id": "C_AUDIO_GENERAL",
+                        "thread_id": "1790934294.000106",
+                        "message_id": "1790934431.000339",
+                        "quote": "This affected task cannot be evaluated while the player fails to load. Report the playback incident with its task ID; do not mark the recording as a model-quality failure.",
+                        "quotation_scope": "entire_original_message",
+                        "author_id": "U006",
+                        "author_role": "TEAM_LEAD",
+                        "reactions": [],
+                        "tl_endorsements": []
+                      }
+                    ],
+                    "reliability": "PROVISIONAL"
+                  },
+                  "limitations": [],
+                  "conditions_representation": "verbatim_full_message_in_scope_not_extracted",
+                  "reliability": "PROVISIONAL"
+                }
+              ]
+            }
+          ],
+          "source_evidence": [
+            {
+              "evidence_id": "E016",
+              "member_id": "member_61f4987d5eb6b1ccb2894091",
+              "project_id": "audio_multimodal",
+              "batch_id": "audio_batch_06",
+              "channel_id": "C_AUDIO_GENERAL",
+              "thread_id": "1790934294.000106",
+              "message_id": "1790934294.000106",
+              "quote": "Audio won't play in LT; is this QN or a player issue? I thought a workaround existed in the previous queue, but it is happening again. (task ref AUDIO-4294)",
+              "quotation_scope": "entire_original_message",
+              "author_id": "U013",
+              "author_role": "TUTOR",
+              "reactions": [],
+              "tl_endorsements": []
+            },
+            {
+              "evidence_id": "E017",
+              "member_id": "member_61f4987d5eb6b1ccb2894091",
+              "project_id": "audio_multimodal",
+              "batch_id": "audio_batch_06",
+              "channel_id": "C_AUDIO_GENERAL",
+              "thread_id": "1790934294.000106",
+              "message_id": "1790934351.000113",
+              "quote": "On task AUDIO-4294, please capture the LT error state and time; the wider cause is not confirmed here.",
+              "quotation_scope": "entire_original_message",
+              "author_id": "U016",
+              "author_role": "ENGINEER",
+              "reactions": [],
+              "tl_endorsements": []
+            },
+            {
+              "evidence_id": "E019",
+              "member_id": "member_61f4987d5eb6b1ccb2894091",
+              "project_id": "audio_multimodal",
+              "batch_id": "audio_batch_06",
+              "channel_id": "C_AUDIO_GENERAL",
+              "thread_id": "1790934294.000106",
+              "message_id": "1790934431.000339",
+              "quote": "This affected task cannot be evaluated while the player fails to load. Report the playback incident with its task ID; do not mark the recording as a model-quality failure.",
+              "quotation_scope": "entire_original_message",
+              "author_id": "U006",
+              "author_role": "TEAM_LEAD",
+              "reactions": [],
+              "tl_endorsements": []
+            }
+          ]
+        },
+        {
+          "finding_id": "v5.3-cluster_6b59d13144282285-AMBIGUOUS_DIAGNOSTIC_ONLY_CITATION_SCOPE",
+          "category": "AMBIGUOUS_DIAGNOSTIC_ONLY_CITATION_SCOPE",
+          "materiality": "uncertainty",
+          "explanation": "The difference says some threads only receive diagnostic/reproduction requests and remain unresolved, but cites E017/E018 from M06, which also has E019 substantive playback guidance. M02/M03 support the some-threads statement; the extra M06 citations make its exclusive only scope ambiguous. This is not evidence that every cited thread lacks guidance. Preserve the distinction at original-member scope and inspect these references; do not treat this wording as a count or erase M06 guidance.",
+          "affected_raw_fields": [
+            {
+              "path": [
+                "topics",
+                1,
+                "relevant_differences",
+                1
+              ],
+              "value": {
+                "text": "Some threads only receive requests for reproduction details, task IDs, or error-state capture before deciding whether an old workaround applies, leaving the handling question unresolved there.",
+                "evidence_ids": [
+                  "E006",
+                  "E007",
+                  "E009",
+                  "E010",
+                  "E017",
+                  "E018"
+                ]
+              }
+            }
+          ],
+          "affected_export_fields": [
+            {
+              "path": [
+                "topics",
+                1,
+                "relevant_differences",
+                1
+              ],
+              "value": {
+                "text": "Some threads only receive requests for reproduction details, task IDs, or error-state capture before deciding whether an old workaround applies, leaving the handling question unresolved there.",
+                "evidence_ids": [
+                  "E006",
+                  "E007",
+                  "E009",
+                  "E010",
+                  "E017",
+                  "E018"
+                ],
+                "evidence": [
+                  {
+                    "evidence_id": "E006",
+                    "member_id": "member_8ce5853bbd6b1a416c28b76f",
+                    "project_id": "audio_multimodal",
+                    "batch_id": "audio_batch_06",
+                    "channel_id": "C_AUDIO_GENERAL",
+                    "thread_id": "1790882197.000111",
+                    "message_id": "1790882287.000226",
+                    "quote": "On task AUDIO-2197, please capture the LT error state and time; the wider cause is not confirmed here.",
+                    "quotation_scope": "entire_original_message",
+                    "author_id": "U016",
+                    "author_role": "ENGINEER",
+                    "reactions": [],
+                    "tl_endorsements": []
+                  },
+                  {
+                    "evidence_id": "E007",
+                    "member_id": "member_8ce5853bbd6b1a416c28b76f",
+                    "project_id": "audio_multimodal",
+                    "batch_id": "audio_batch_06",
+                    "channel_id": "C_AUDIO_GENERAL",
+                    "thread_id": "1790882197.000111",
+                    "message_id": "1790882343.000339",
+                    "quote": "We need task IDs and a reproduction attempt before deciding whether the old workaround applies. If another clip plays, keep both task references when reporting the incident.",
+                    "quotation_scope": "entire_original_message",
+                    "author_id": "U006",
+                    "author_role": "TEAM_LEAD",
+                    "reactions": [],
+                    "tl_endorsements": []
+                  },
+                  {
+                    "evidence_id": "E009",
+                    "member_id": "member_e0275e7d53c557361ca40bd1",
+                    "project_id": "audio_multimodal",
+                    "batch_id": "audio_batch_06",
+                    "channel_id": "C_AUDIO_GENERAL",
+                    "thread_id": "1790896012.001900",
+                    "message_id": "1790896062.000113",
+                    "quote": "Does another clip in the same queue play normally?",
+                    "quotation_scope": "entire_original_message",
+                    "author_id": "U008",
+                    "author_role": "QA_TUTOR",
+                    "reactions": [],
+                    "tl_endorsements": []
+                  },
+                  {
+                    "evidence_id": "E010",
+                    "member_id": "member_e0275e7d53c557361ca40bd1",
+                    "project_id": "audio_multimodal",
+                    "batch_id": "audio_batch_06",
+                    "channel_id": "C_AUDIO_GENERAL",
+                    "thread_id": "1790896012.001900",
+                    "message_id": "1790896106.000226",
+                    "quote": "We need task IDs and a reproduction attempt before deciding whether the old workaround applies. Could you note whether the waveform loads but the playhead stays at zero?",
+                    "quotation_scope": "entire_original_message",
+                    "author_id": "U006",
+                    "author_role": "TEAM_LEAD",
+                    "reactions": [],
+                    "tl_endorsements": []
+                  },
+                  {
+                    "evidence_id": "E017",
+                    "member_id": "member_61f4987d5eb6b1ccb2894091",
+                    "project_id": "audio_multimodal",
+                    "batch_id": "audio_batch_06",
+                    "channel_id": "C_AUDIO_GENERAL",
+                    "thread_id": "1790934294.000106",
+                    "message_id": "1790934351.000113",
+                    "quote": "On task AUDIO-4294, please capture the LT error state and time; the wider cause is not confirmed here.",
+                    "quotation_scope": "entire_original_message",
+                    "author_id": "U016",
+                    "author_role": "ENGINEER",
+                    "reactions": [],
+                    "tl_endorsements": []
+                  },
+                  {
+                    "evidence_id": "E018",
+                    "member_id": "member_61f4987d5eb6b1ccb2894091",
+                    "project_id": "audio_multimodal",
+                    "batch_id": "audio_batch_06",
+                    "channel_id": "C_AUDIO_GENERAL",
+                    "thread_id": "1790934294.000106",
+                    "message_id": "1790934394.000226",
+                    "quote": "The waveform loads but pressing Play never starts sound. Could you note whether the waveform loads but the playhead stays at zero?",
+                    "quotation_scope": "entire_original_message",
+                    "author_id": "U018",
+                    "author_role": "TUTOR",
+                    "reactions": [],
+                    "tl_endorsements": []
+                  }
+                ],
+                "reliability": "PROVISIONAL"
+              }
+            }
+          ],
+          "source_evidence": [
+            {
+              "evidence_id": "E006",
+              "member_id": "member_8ce5853bbd6b1a416c28b76f",
+              "project_id": "audio_multimodal",
+              "batch_id": "audio_batch_06",
+              "channel_id": "C_AUDIO_GENERAL",
+              "thread_id": "1790882197.000111",
+              "message_id": "1790882287.000226",
+              "quote": "On task AUDIO-2197, please capture the LT error state and time; the wider cause is not confirmed here.",
+              "quotation_scope": "entire_original_message",
+              "author_id": "U016",
+              "author_role": "ENGINEER",
+              "reactions": [],
+              "tl_endorsements": []
+            },
+            {
+              "evidence_id": "E007",
+              "member_id": "member_8ce5853bbd6b1a416c28b76f",
+              "project_id": "audio_multimodal",
+              "batch_id": "audio_batch_06",
+              "channel_id": "C_AUDIO_GENERAL",
+              "thread_id": "1790882197.000111",
+              "message_id": "1790882343.000339",
+              "quote": "We need task IDs and a reproduction attempt before deciding whether the old workaround applies. If another clip plays, keep both task references when reporting the incident.",
+              "quotation_scope": "entire_original_message",
+              "author_id": "U006",
+              "author_role": "TEAM_LEAD",
+              "reactions": [],
+              "tl_endorsements": []
+            },
+            {
+              "evidence_id": "E009",
+              "member_id": "member_e0275e7d53c557361ca40bd1",
+              "project_id": "audio_multimodal",
+              "batch_id": "audio_batch_06",
+              "channel_id": "C_AUDIO_GENERAL",
+              "thread_id": "1790896012.001900",
+              "message_id": "1790896062.000113",
+              "quote": "Does another clip in the same queue play normally?",
+              "quotation_scope": "entire_original_message",
+              "author_id": "U008",
+              "author_role": "QA_TUTOR",
+              "reactions": [],
+              "tl_endorsements": []
+            },
+            {
+              "evidence_id": "E010",
+              "member_id": "member_e0275e7d53c557361ca40bd1",
+              "project_id": "audio_multimodal",
+              "batch_id": "audio_batch_06",
+              "channel_id": "C_AUDIO_GENERAL",
+              "thread_id": "1790896012.001900",
+              "message_id": "1790896106.000226",
+              "quote": "We need task IDs and a reproduction attempt before deciding whether the old workaround applies. Could you note whether the waveform loads but the playhead stays at zero?",
+              "quotation_scope": "entire_original_message",
+              "author_id": "U006",
+              "author_role": "TEAM_LEAD",
+              "reactions": [],
+              "tl_endorsements": []
+            },
+            {
+              "evidence_id": "E017",
+              "member_id": "member_61f4987d5eb6b1ccb2894091",
+              "project_id": "audio_multimodal",
+              "batch_id": "audio_batch_06",
+              "channel_id": "C_AUDIO_GENERAL",
+              "thread_id": "1790934294.000106",
+              "message_id": "1790934351.000113",
+              "quote": "On task AUDIO-4294, please capture the LT error state and time; the wider cause is not confirmed here.",
+              "quotation_scope": "entire_original_message",
+              "author_id": "U016",
+              "author_role": "ENGINEER",
+              "reactions": [],
+              "tl_endorsements": []
+            },
+            {
+              "evidence_id": "E018",
+              "member_id": "member_61f4987d5eb6b1ccb2894091",
+              "project_id": "audio_multimodal",
+              "batch_id": "audio_batch_06",
+              "channel_id": "C_AUDIO_GENERAL",
+              "thread_id": "1790934294.000106",
+              "message_id": "1790934394.000226",
+              "quote": "The waveform loads but pressing Play never starts sound. Could you note whether the waveform loads but the playhead stays at zero?",
+              "quotation_scope": "entire_original_message",
+              "author_id": "U018",
+              "author_role": "TUTOR",
+              "reactions": [],
+              "tl_endorsements": []
+            },
+            {
+              "evidence_id": "E019",
+              "member_id": "member_61f4987d5eb6b1ccb2894091",
+              "project_id": "audio_multimodal",
+              "batch_id": "audio_batch_06",
+              "channel_id": "C_AUDIO_GENERAL",
+              "thread_id": "1790934294.000106",
+              "message_id": "1790934431.000339",
+              "quote": "This affected task cannot be evaluated while the player fails to load. Report the playback incident with its task ID; do not mark the recording as a model-quality failure.",
+              "quotation_scope": "entire_original_message",
+              "author_id": "U006",
+              "author_role": "TEAM_LEAD",
+              "reactions": [],
+              "tl_endorsements": []
+            }
+          ]
+        }
+      ],
+      "assessment": {
+        "diagnostic_result": "M05 regression target not corrected; M06 assessed separately.",
+        "coverage": "6/6 identities, 19/19 messages; silence M01/M04 and playback M02/M03/M05/M06 remain distinct; no dispositions, omitted members or fabricated evidence.",
+        "resolution": "M01-M04 questions remain OPEN. M05/M06 remain ANSWERED; M05 full Quarantine closure unsupported, M06 playback-handling answer more defensible with limitation. M05 appears in the exact inventory/source and new effective obligation but not original open_questions.",
+        "guidance": "E007 task-ID/reproduction prerequisite and conditional both-task-IDs instruction retained; E010 reproduction/waveform checks retained; E003 intended-silence/plays-elsewhere checks retained. E015/E019 preserve task non-evaluability, report with task ID and do-not-mark-model-quality-failure. No guidance condition disappears.",
+        "summary": "Silent-versus-player-failure difference remains supported. No attempted/failed old workaround, supersession rule, underlying cause or queue-wide impact invented. The diagnostic-only difference has ambiguous overbroad citations, separately retained as uncertainty.",
+        "authority": "E005 thumbsup from U018 TUTOR remains unendorsed; U006 TL guidance is scoped. QN = Quarantine. No eyes reactions in this group.",
+        "severity": "Silence UNKNOWN: no demonstrated operational impact. Playback HIGH / substantial_blockage / OBSERVED_OUTCOME: E015/E019 expressly cannot evaluate affected tasks, wider extent unconfirmed. The scope also cites contextual playback roots but does not assert a queue-wide outage. HIGH review nonblocking.",
+        "obligations": "Both inherited M02/M05 obligations preserve exact evidence, Agent 1 records, source/candidate hashes and lineage. Two directive-cue warnings are conservative handling-question warnings, not validation failures."
+      }
+    },
+    {
+      "candidate_group_id": "cluster_f944891544b06f79",
+      "binding": {
+        "input_file_sha256": "87c20e727ee0e4c706ef7cbb2bece57be1aaf41a007d3f33e0f2a7178fb50f63",
+        "raw_draft_sha256": "e4c573e20cf850a264706c36ee2c8c47226e0f91c55b32d62e8a1f6fca2a3a94",
+        "export_result_sha256": "9f78da755440b1980ad85de6e9dd452e700b8814d6fd5da26f83a3d22b468e33"
+      },
+      "assisted_content_review_required": true,
+      "findings": [
+        {
+          "finding_id": "v5.3-cluster_f944891544b06f79-TASK_CONTEXT_AS_TENTATIVE_ANSWER",
+          "category": "TASK_CONTEXT_AS_TENTATIVE_ANSWER",
+          "materiality": "material",
+          "explanation": "E002 says B has nicer wording but identical information/coverage. It describes the pair; it does not say which improvement is sufficient to avoid a tie, choose a rating, or offer tentative handling advice. I02 nevertheless labels it ANSWER/TENTATIVE and the export includes it as a provisional answer. E003 supplies the actual scoped TL judgment. The distinction is semantic, not failure of the source ID. The existing unlinked-answer warning mitigates exposure but does not make E002 a supported answer. No saved response is relabeled.",
+          "affected_raw_fields": [
+            {
+              "path": [
+                "topics",
+                0,
+                "inventory",
+                1
+              ],
+              "value": {
+                "item_id": "I02",
+                "evidence_id": "E002",
+                "kind": "ANSWER",
+                "answer_status": "TENTATIVE",
+                "question": null
+              }
+            }
+          ],
+          "affected_export_fields": [
+            {
+              "path": [
+                "topics",
+                0,
+                "provisional_answers"
+              ],
+              "value": [
+                {
+                  "item_id": "I02",
+                  "evidence_id": "E002",
+                  "kind": "SCOPED_ANSWER",
+                  "answer_status": "TENTATIVE",
+                  "question": null,
+                  "text": "B uses nicer wording, but the information and coverage are identical.",
+                  "text_origin": "python_original_message",
+                  "evidence_ids": [
+                    "E002"
+                  ],
+                  "evidence": [
+                    {
+                      "evidence_id": "E002",
+                      "member_id": "member_4ae1700632c4a55ae1a24a4d",
+                      "project_id": "response_preference",
+                      "batch_id": "rp_batch_15",
+                      "channel_id": "C_RP_GENERAL",
+                      "thread_id": "1790896509.000047",
+                      "message_id": "1790896559.000113",
+                      "quote": "B uses nicer wording, but the information and coverage are identical.",
+                      "quotation_scope": "entire_original_message",
+                      "author_id": "U003",
+                      "author_role": "TUTOR",
+                      "reactions": [
+                        {
+                          "name": "thumbsup",
+                          "users": [
+                            "U017"
+                          ],
+                          "count": 1,
+                          "reactor_roles": {
+                            "U017": "TUTOR"
+                          }
+                        }
+                      ],
+                      "tl_endorsements": []
+                    }
+                  ],
+                  "authority": "SOURCE_REPLY",
+                  "scope": {
+                    "text": "B uses nicer wording, but the information and coverage are identical.",
+                    "evidence_ids": [
+                      "E002"
+                    ],
+                    "evidence": [
+                      {
+                        "evidence_id": "E002",
+                        "member_id": "member_4ae1700632c4a55ae1a24a4d",
+                        "project_id": "response_preference",
+                        "batch_id": "rp_batch_15",
+                        "channel_id": "C_RP_GENERAL",
+                        "thread_id": "1790896509.000047",
+                        "message_id": "1790896559.000113",
+                        "quote": "B uses nicer wording, but the information and coverage are identical.",
+                        "quotation_scope": "entire_original_message",
+                        "author_id": "U003",
+                        "author_role": "TUTOR",
+                        "reactions": [
+                          {
+                            "name": "thumbsup",
+                            "users": [
+                              "U017"
+                            ],
+                            "count": 1,
+                            "reactor_roles": {
+                              "U017": "TUTOR"
+                            }
+                          }
+                        ],
+                        "tl_endorsements": []
+                      }
+                    ],
+                    "reliability": "PROVISIONAL"
+                  },
+                  "limitations": [],
+                  "conditions_representation": "verbatim_full_message_in_scope_not_extracted",
+                  "reliability": "PROVISIONAL"
+                },
+                {
+                  "item_id": "I03",
+                  "evidence_id": "E003",
+                  "kind": "SCOPED_ANSWER",
+                  "answer_status": "DIRECT",
+                  "question": null,
+                  "text": "For these two responses, cosmetic phrasing alone does not establish a meaningful quality difference; choose a tie for this example. The difference might be cosmetic; the exact user task should decide.",
+                  "text_origin": "python_original_message",
+                  "evidence_ids": [
+                    "E003"
+                  ],
+                  "evidence": [
+                    {
+                      "evidence_id": "E003",
+                      "member_id": "member_4ae1700632c4a55ae1a24a4d",
+                      "project_id": "response_preference",
+                      "batch_id": "rp_batch_15",
+                      "channel_id": "C_RP_GENERAL",
+                      "thread_id": "1790896509.000047",
+                      "message_id": "1790896608.000226",
+                      "quote": "For these two responses, cosmetic phrasing alone does not establish a meaningful quality difference; choose a tie for this example. The difference might be cosmetic; the exact user task should decide.",
+                      "quotation_scope": "entire_original_message",
+                      "author_id": "U001",
+                      "author_role": "TEAM_LEAD",
+                      "reactions": [],
+                      "tl_endorsements": []
+                    }
+                  ],
+                  "authority": "TEAM_LEAD",
+                  "scope": {
+                    "text": "For these two responses, cosmetic phrasing alone does not establish a meaningful quality difference; choose a tie for this example. The difference might be cosmetic; the exact user task should decide.",
+                    "evidence_ids": [
+                      "E003"
+                    ],
+                    "evidence": [
+                      {
+                        "evidence_id": "E003",
+                        "member_id": "member_4ae1700632c4a55ae1a24a4d",
+                        "project_id": "response_preference",
+                        "batch_id": "rp_batch_15",
+                        "channel_id": "C_RP_GENERAL",
+                        "thread_id": "1790896509.000047",
+                        "message_id": "1790896608.000226",
+                        "quote": "For these two responses, cosmetic phrasing alone does not establish a meaningful quality difference; choose a tie for this example. The difference might be cosmetic; the exact user task should decide.",
+                        "quotation_scope": "entire_original_message",
+                        "author_id": "U001",
+                        "author_role": "TEAM_LEAD",
+                        "reactions": [],
+                        "tl_endorsements": []
+                      }
+                    ],
+                    "reliability": "PROVISIONAL"
+                  },
+                  "limitations": [],
+                  "conditions_representation": "verbatim_full_message_in_scope_not_extracted",
+                  "reliability": "PROVISIONAL"
+                },
+                {
+                  "item_id": "I05",
+                  "evidence_id": "E005",
+                  "kind": "SCOPED_ANSWER",
+                  "answer_status": "DIRECT",
+                  "question": null,
+                  "text": "For these two responses, cosmetic phrasing alone does not establish a meaningful quality difference; choose a tie for this example.",
+                  "text_origin": "python_original_message",
+                  "evidence_ids": [
+                    "E005"
+                  ],
+                  "evidence": [
+                    {
+                      "evidence_id": "E005",
+                      "member_id": "member_cbc21f1a0a95a7a98a8daec4",
+                      "project_id": "response_preference",
+                      "batch_id": "rp_batch_15",
+                      "channel_id": "C_RP_GENERAL",
+                      "thread_id": "1790931693.000046",
+                      "message_id": "1790931744.000113",
+                      "quote": "For these two responses, cosmetic phrasing alone does not establish a meaningful quality difference; choose a tie for this example.",
+                      "quotation_scope": "entire_original_message",
+                      "author_id": "U008",
+                      "author_role": "QA_TUTOR",
+                      "reactions": [
+                        {
+                          "name": "agree",
+                          "users": [
+                            "U001"
+                          ],
+                          "count": 1,
+                          "reactor_roles": {
+                            "U001": "TEAM_LEAD"
+                          }
+                        }
+                      ],
+                      "tl_endorsements": [
+                        {
+                          "reaction": "agree",
+                          "user_id": "U001",
+                          "target_message_id": "1790931744.000113"
+                        }
+                      ]
+                    }
+                  ],
+                  "authority": "TL_ENDORSED",
+                  "scope": {
+                    "text": "For these two responses, cosmetic phrasing alone does not establish a meaningful quality difference; choose a tie for this example.",
+                    "evidence_ids": [
+                      "E005"
+                    ],
+                    "evidence": [
+                      {
+                        "evidence_id": "E005",
+                        "member_id": "member_cbc21f1a0a95a7a98a8daec4",
+                        "project_id": "response_preference",
+                        "batch_id": "rp_batch_15",
+                        "channel_id": "C_RP_GENERAL",
+                        "thread_id": "1790931693.000046",
+                        "message_id": "1790931744.000113",
+                        "quote": "For these two responses, cosmetic phrasing alone does not establish a meaningful quality difference; choose a tie for this example.",
+                        "quotation_scope": "entire_original_message",
+                        "author_id": "U008",
+                        "author_role": "QA_TUTOR",
+                        "reactions": [
+                          {
+                            "name": "agree",
+                            "users": [
+                              "U001"
+                            ],
+                            "count": 1,
+                            "reactor_roles": {
+                              "U001": "TEAM_LEAD"
+                            }
+                          }
+                        ],
+                        "tl_endorsements": [
+                          {
+                            "reaction": "agree",
+                            "user_id": "U001",
+                            "target_message_id": "1790931744.000113"
+                          }
+                        ]
+                      }
+                    ],
+                    "reliability": "PROVISIONAL"
+                  },
+                  "limitations": [],
+                  "conditions_representation": "verbatim_full_message_in_scope_not_extracted",
+                  "reliability": "PROVISIONAL"
+                },
+                {
+                  "item_id": "I12",
+                  "evidence_id": "E011",
+                  "kind": "SCOPED_ANSWER",
+                  "answer_status": "DIRECT",
+                  "question": null,
+                  "text": "For the pair discussed here, neither response has a meaningful quality advantage. A tie is justified; use the same criterion for comparable pairs. Two disputed tasks are worth a calibration check, not a policy rewrite by themselves.",
+                  "text_origin": "python_original_message",
+                  "evidence_ids": [
+                    "E011"
+                  ],
+                  "evidence": [
+                    {
+                      "evidence_id": "E011",
+                      "member_id": "member_cb06b7a6847122af7e6b8e4b",
+                      "project_id": "response_preference",
+                      "batch_id": "rp_batch_15",
+                      "channel_id": "C_RP_QA",
+                      "thread_id": "1790866003.000036",
+                      "message_id": "1790866050.000113",
+                      "quote": "For the pair discussed here, neither response has a meaningful quality advantage. A tie is justified; use the same criterion for comparable pairs. Two disputed tasks are worth a calibration check, not a policy rewrite by themselves.",
+                      "quotation_scope": "entire_original_message",
+                      "author_id": "U007",
+                      "author_role": "QA_TUTOR",
+                      "reactions": [
+                        {
+                          "name": "this",
+                          "users": [
+                            "U001"
+                          ],
+                          "count": 1,
+                          "reactor_roles": {
+                            "U001": "TEAM_LEAD"
+                          }
+                        }
+                      ],
+                      "tl_endorsements": [
+                        {
+                          "reaction": "this",
+                          "user_id": "U001",
+                          "target_message_id": "1790866050.000113"
+                        }
+                      ]
+                    }
+                  ],
+                  "authority": "TL_ENDORSED",
+                  "scope": {
+                    "text": "For the pair discussed here, neither response has a meaningful quality advantage. A tie is justified; use the same criterion for comparable pairs. Two disputed tasks are worth a calibration check, not a policy rewrite by themselves.",
+                    "evidence_ids": [
+                      "E011"
+                    ],
+                    "evidence": [
+                      {
+                        "evidence_id": "E011",
+                        "member_id": "member_cb06b7a6847122af7e6b8e4b",
+                        "project_id": "response_preference",
+                        "batch_id": "rp_batch_15",
+                        "channel_id": "C_RP_QA",
+                        "thread_id": "1790866003.000036",
+                        "message_id": "1790866050.000113",
+                        "quote": "For the pair discussed here, neither response has a meaningful quality advantage. A tie is justified; use the same criterion for comparable pairs. Two disputed tasks are worth a calibration check, not a policy rewrite by themselves.",
+                        "quotation_scope": "entire_original_message",
+                        "author_id": "U007",
+                        "author_role": "QA_TUTOR",
+                        "reactions": [
+                          {
+                            "name": "this",
+                            "users": [
+                              "U001"
+                            ],
+                            "count": 1,
+                            "reactor_roles": {
+                              "U001": "TEAM_LEAD"
+                            }
+                          }
+                        ],
+                        "tl_endorsements": [
+                          {
+                            "reaction": "this",
+                            "user_id": "U001",
+                            "target_message_id": "1790866050.000113"
+                          }
+                        ]
+                      }
+                    ],
+                    "reliability": "PROVISIONAL"
+                  },
+                  "limitations": [],
+                  "conditions_representation": "verbatim_full_message_in_scope_not_extracted",
+                  "reliability": "PROVISIONAL"
+                },
+                {
+                  "item_id": "I17",
+                  "evidence_id": "E013",
+                  "kind": "SCOPED_ANSWER",
+                  "answer_status": "DIRECT",
+                  "question": null,
+                  "text": "For the pair discussed here, neither response has a meaningful quality advantage. A tie is justified; use the same criterion for comparable pairs.",
+                  "text_origin": "python_original_message",
+                  "evidence_ids": [
+                    "E013"
+                  ],
+                  "evidence": [
+                    {
+                      "evidence_id": "E013",
+                      "member_id": "member_42af0c53b9dee102697caa09",
+                      "project_id": "response_preference",
+                      "batch_id": "rp_batch_15",
+                      "channel_id": "C_RP_QA",
+                      "thread_id": "1790926534.000040",
+                      "message_id": "1790926584.000113",
+                      "quote": "For the pair discussed here, neither response has a meaningful quality advantage. A tie is justified; use the same criterion for comparable pairs.",
+                      "quotation_scope": "entire_original_message",
+                      "author_id": "U002",
+                      "author_role": "QA_TUTOR",
+                      "reactions": [
+                        {
+                          "name": "white_check_mark",
+                          "users": [
+                            "U001"
+                          ],
+                          "count": 1,
+                          "reactor_roles": {
+                            "U001": "TEAM_LEAD"
+                          }
+                        }
+                      ],
+                      "tl_endorsements": [
+                        {
+                          "reaction": "white_check_mark",
+                          "user_id": "U001",
+                          "target_message_id": "1790926584.000113"
+                        }
+                      ]
+                    }
+                  ],
+                  "authority": "TL_ENDORSED",
+                  "scope": {
+                    "text": "For the pair discussed here, neither response has a meaningful quality advantage. A tie is justified; use the same criterion for comparable pairs.",
+                    "evidence_ids": [
+                      "E013"
+                    ],
+                    "evidence": [
+                      {
+                        "evidence_id": "E013",
+                        "member_id": "member_42af0c53b9dee102697caa09",
+                        "project_id": "response_preference",
+                        "batch_id": "rp_batch_15",
+                        "channel_id": "C_RP_QA",
+                        "thread_id": "1790926534.000040",
+                        "message_id": "1790926584.000113",
+                        "quote": "For the pair discussed here, neither response has a meaningful quality advantage. A tie is justified; use the same criterion for comparable pairs.",
+                        "quotation_scope": "entire_original_message",
+                        "author_id": "U002",
+                        "author_role": "QA_TUTOR",
+                        "reactions": [
+                          {
+                            "name": "white_check_mark",
+                            "users": [
+                              "U001"
+                            ],
+                            "count": 1,
+                            "reactor_roles": {
+                              "U001": "TEAM_LEAD"
+                            }
+                          }
+                        ],
+                        "tl_endorsements": [
+                          {
+                            "reaction": "white_check_mark",
+                            "user_id": "U001",
+                            "target_message_id": "1790926584.000113"
+                          }
+                        ]
+                      }
+                    ],
+                    "reliability": "PROVISIONAL"
+                  },
+                  "limitations": [],
+                  "conditions_representation": "verbatim_full_message_in_scope_not_extracted",
+                  "reliability": "PROVISIONAL"
+                }
+              ]
+            }
+          ],
+          "source_evidence": [
+            {
+              "evidence_id": "E001",
+              "member_id": "member_4ae1700632c4a55ae1a24a4d",
+              "project_id": "response_preference",
+              "batch_id": "rp_batch_15",
+              "channel_id": "C_RP_GENERAL",
+              "thread_id": "1790896509.000047",
+              "message_id": "1790896509.000047",
+              "quote": "How much improvement do we need to avoid a tie?",
+              "quotation_scope": "entire_original_message",
+              "author_id": "U011",
+              "author_role": "TUTOR",
+              "reactions": [],
+              "tl_endorsements": []
+            },
+            {
+              "evidence_id": "E002",
+              "member_id": "member_4ae1700632c4a55ae1a24a4d",
+              "project_id": "response_preference",
+              "batch_id": "rp_batch_15",
+              "channel_id": "C_RP_GENERAL",
+              "thread_id": "1790896509.000047",
+              "message_id": "1790896559.000113",
+              "quote": "B uses nicer wording, but the information and coverage are identical.",
+              "quotation_scope": "entire_original_message",
+              "author_id": "U003",
+              "author_role": "TUTOR",
+              "reactions": [
+                {
+                  "name": "thumbsup",
+                  "users": [
+                    "U017"
+                  ],
+                  "count": 1,
+                  "reactor_roles": {
+                    "U017": "TUTOR"
+                  }
+                }
+              ],
+              "tl_endorsements": []
+            },
+            {
+              "evidence_id": "E003",
+              "member_id": "member_4ae1700632c4a55ae1a24a4d",
+              "project_id": "response_preference",
+              "batch_id": "rp_batch_15",
+              "channel_id": "C_RP_GENERAL",
+              "thread_id": "1790896509.000047",
+              "message_id": "1790896608.000226",
+              "quote": "For these two responses, cosmetic phrasing alone does not establish a meaningful quality difference; choose a tie for this example. The difference might be cosmetic; the exact user task should decide.",
+              "quotation_scope": "entire_original_message",
+              "author_id": "U001",
+              "author_role": "TEAM_LEAD",
+              "reactions": [],
+              "tl_endorsements": []
+            }
+          ]
+        },
+        {
+          "finding_id": "v5.3-cluster_f944891544b06f79-M01_THRESHOLD_VERSUS_LOCAL_EXAMPLE_SCOPE",
+          "category": "M01_THRESHOLD_VERSUS_LOCAL_EXAMPLE_SCOPE",
+          "materiality": "uncertainty",
+          "explanation": "M01 asks how much improvement avoids a tie. E003 establishes that cosmetic phrasing alone is insufficient and chooses a tie for this example, conditioned on the exact user task. This can be a contextual qualitative answer, but it is not a numeric/global threshold or a decision for all comparable cases. ANSWERED I01 is therefore interpretation-dependent: retain the legitimate local answer and its conditions rather than mechanically forcing OPEN, while preserving the limitation for broader threshold consumers. This was an explicit pre-run review uncertainty, not a newly invented expected label.",
+          "affected_raw_fields": [
+            {
+              "path": [
+                "topics",
+                0,
+                "inventory",
+                0
+              ],
+              "value": {
+                "item_id": "I01",
+                "evidence_id": "E001",
+                "kind": "QUESTION",
+                "answer_status": null,
+                "question": {
+                  "status": "ANSWERED",
+                  "answer_item_ids": [
+                    "I03"
+                  ]
+                }
+              }
+            },
+            {
+              "path": [
+                "topics",
+                0,
+                "inventory",
+                2
+              ],
+              "value": {
+                "item_id": "I03",
+                "evidence_id": "E003",
+                "kind": "ANSWER",
+                "answer_status": "DIRECT",
+                "question": null
+              }
+            },
+            {
+              "path": [
+                "topics",
+                0,
+                "relevant_differences",
+                0
+              ],
+              "value": {
+                "text": "Some threads were direct tie-versus-preference questions about pairs with only cosmetic or small relevance differences, and those received explicit guidance to choose a tie for the specific example.",
+                "evidence_ids": [
+                  "E001",
+                  "E003",
+                  "E004",
+                  "E005"
+                ]
+              }
+            }
+          ],
+          "affected_export_fields": [
+            {
+              "path": [
+                "topics",
+                0,
+                "representative_question"
+              ],
+              "value": {
+                "item_id": "I01",
+                "evidence_id": "E001",
+                "kind": "QUESTION",
+                "answer_status": null,
+                "question": {
+                  "status": "ANSWERED",
+                  "answer_item_ids": [
+                    "I03"
+                  ]
+                },
+                "text": "How much improvement do we need to avoid a tie?",
+                "text_origin": "python_original_message",
+                "evidence_ids": [
+                  "E001"
+                ],
+                "evidence": [
+                  {
+                    "evidence_id": "E001",
+                    "member_id": "member_4ae1700632c4a55ae1a24a4d",
+                    "project_id": "response_preference",
+                    "batch_id": "rp_batch_15",
+                    "channel_id": "C_RP_GENERAL",
+                    "thread_id": "1790896509.000047",
+                    "message_id": "1790896509.000047",
+                    "quote": "How much improvement do we need to avoid a tie?",
+                    "quotation_scope": "entire_original_message",
+                    "author_id": "U011",
+                    "author_role": "TUTOR",
+                    "reactions": [],
+                    "tl_endorsements": []
+                  }
+                ],
+                "reliability": "PROVISIONAL"
+              }
+            },
+            {
+              "path": [
+                "topics",
+                0,
+                "provisional_answers"
+              ],
+              "value": [
+                {
+                  "item_id": "I02",
+                  "evidence_id": "E002",
+                  "kind": "SCOPED_ANSWER",
+                  "answer_status": "TENTATIVE",
+                  "question": null,
+                  "text": "B uses nicer wording, but the information and coverage are identical.",
+                  "text_origin": "python_original_message",
+                  "evidence_ids": [
+                    "E002"
+                  ],
+                  "evidence": [
+                    {
+                      "evidence_id": "E002",
+                      "member_id": "member_4ae1700632c4a55ae1a24a4d",
+                      "project_id": "response_preference",
+                      "batch_id": "rp_batch_15",
+                      "channel_id": "C_RP_GENERAL",
+                      "thread_id": "1790896509.000047",
+                      "message_id": "1790896559.000113",
+                      "quote": "B uses nicer wording, but the information and coverage are identical.",
+                      "quotation_scope": "entire_original_message",
+                      "author_id": "U003",
+                      "author_role": "TUTOR",
+                      "reactions": [
+                        {
+                          "name": "thumbsup",
+                          "users": [
+                            "U017"
+                          ],
+                          "count": 1,
+                          "reactor_roles": {
+                            "U017": "TUTOR"
+                          }
+                        }
+                      ],
+                      "tl_endorsements": []
+                    }
+                  ],
+                  "authority": "SOURCE_REPLY",
+                  "scope": {
+                    "text": "B uses nicer wording, but the information and coverage are identical.",
+                    "evidence_ids": [
+                      "E002"
+                    ],
+                    "evidence": [
+                      {
+                        "evidence_id": "E002",
+                        "member_id": "member_4ae1700632c4a55ae1a24a4d",
+                        "project_id": "response_preference",
+                        "batch_id": "rp_batch_15",
+                        "channel_id": "C_RP_GENERAL",
+                        "thread_id": "1790896509.000047",
+                        "message_id": "1790896559.000113",
+                        "quote": "B uses nicer wording, but the information and coverage are identical.",
+                        "quotation_scope": "entire_original_message",
+                        "author_id": "U003",
+                        "author_role": "TUTOR",
+                        "reactions": [
+                          {
+                            "name": "thumbsup",
+                            "users": [
+                              "U017"
+                            ],
+                            "count": 1,
+                            "reactor_roles": {
+                              "U017": "TUTOR"
+                            }
+                          }
+                        ],
+                        "tl_endorsements": []
+                      }
+                    ],
+                    "reliability": "PROVISIONAL"
+                  },
+                  "limitations": [],
+                  "conditions_representation": "verbatim_full_message_in_scope_not_extracted",
+                  "reliability": "PROVISIONAL"
+                },
+                {
+                  "item_id": "I03",
+                  "evidence_id": "E003",
+                  "kind": "SCOPED_ANSWER",
+                  "answer_status": "DIRECT",
+                  "question": null,
+                  "text": "For these two responses, cosmetic phrasing alone does not establish a meaningful quality difference; choose a tie for this example. The difference might be cosmetic; the exact user task should decide.",
+                  "text_origin": "python_original_message",
+                  "evidence_ids": [
+                    "E003"
+                  ],
+                  "evidence": [
+                    {
+                      "evidence_id": "E003",
+                      "member_id": "member_4ae1700632c4a55ae1a24a4d",
+                      "project_id": "response_preference",
+                      "batch_id": "rp_batch_15",
+                      "channel_id": "C_RP_GENERAL",
+                      "thread_id": "1790896509.000047",
+                      "message_id": "1790896608.000226",
+                      "quote": "For these two responses, cosmetic phrasing alone does not establish a meaningful quality difference; choose a tie for this example. The difference might be cosmetic; the exact user task should decide.",
+                      "quotation_scope": "entire_original_message",
+                      "author_id": "U001",
+                      "author_role": "TEAM_LEAD",
+                      "reactions": [],
+                      "tl_endorsements": []
+                    }
+                  ],
+                  "authority": "TEAM_LEAD",
+                  "scope": {
+                    "text": "For these two responses, cosmetic phrasing alone does not establish a meaningful quality difference; choose a tie for this example. The difference might be cosmetic; the exact user task should decide.",
+                    "evidence_ids": [
+                      "E003"
+                    ],
+                    "evidence": [
+                      {
+                        "evidence_id": "E003",
+                        "member_id": "member_4ae1700632c4a55ae1a24a4d",
+                        "project_id": "response_preference",
+                        "batch_id": "rp_batch_15",
+                        "channel_id": "C_RP_GENERAL",
+                        "thread_id": "1790896509.000047",
+                        "message_id": "1790896608.000226",
+                        "quote": "For these two responses, cosmetic phrasing alone does not establish a meaningful quality difference; choose a tie for this example. The difference might be cosmetic; the exact user task should decide.",
+                        "quotation_scope": "entire_original_message",
+                        "author_id": "U001",
+                        "author_role": "TEAM_LEAD",
+                        "reactions": [],
+                        "tl_endorsements": []
+                      }
+                    ],
+                    "reliability": "PROVISIONAL"
+                  },
+                  "limitations": [],
+                  "conditions_representation": "verbatim_full_message_in_scope_not_extracted",
+                  "reliability": "PROVISIONAL"
+                },
+                {
+                  "item_id": "I05",
+                  "evidence_id": "E005",
+                  "kind": "SCOPED_ANSWER",
+                  "answer_status": "DIRECT",
+                  "question": null,
+                  "text": "For these two responses, cosmetic phrasing alone does not establish a meaningful quality difference; choose a tie for this example.",
+                  "text_origin": "python_original_message",
+                  "evidence_ids": [
+                    "E005"
+                  ],
+                  "evidence": [
+                    {
+                      "evidence_id": "E005",
+                      "member_id": "member_cbc21f1a0a95a7a98a8daec4",
+                      "project_id": "response_preference",
+                      "batch_id": "rp_batch_15",
+                      "channel_id": "C_RP_GENERAL",
+                      "thread_id": "1790931693.000046",
+                      "message_id": "1790931744.000113",
+                      "quote": "For these two responses, cosmetic phrasing alone does not establish a meaningful quality difference; choose a tie for this example.",
+                      "quotation_scope": "entire_original_message",
+                      "author_id": "U008",
+                      "author_role": "QA_TUTOR",
+                      "reactions": [
+                        {
+                          "name": "agree",
+                          "users": [
+                            "U001"
+                          ],
+                          "count": 1,
+                          "reactor_roles": {
+                            "U001": "TEAM_LEAD"
+                          }
+                        }
+                      ],
+                      "tl_endorsements": [
+                        {
+                          "reaction": "agree",
+                          "user_id": "U001",
+                          "target_message_id": "1790931744.000113"
+                        }
+                      ]
+                    }
+                  ],
+                  "authority": "TL_ENDORSED",
+                  "scope": {
+                    "text": "For these two responses, cosmetic phrasing alone does not establish a meaningful quality difference; choose a tie for this example.",
+                    "evidence_ids": [
+                      "E005"
+                    ],
+                    "evidence": [
+                      {
+                        "evidence_id": "E005",
+                        "member_id": "member_cbc21f1a0a95a7a98a8daec4",
+                        "project_id": "response_preference",
+                        "batch_id": "rp_batch_15",
+                        "channel_id": "C_RP_GENERAL",
+                        "thread_id": "1790931693.000046",
+                        "message_id": "1790931744.000113",
+                        "quote": "For these two responses, cosmetic phrasing alone does not establish a meaningful quality difference; choose a tie for this example.",
+                        "quotation_scope": "entire_original_message",
+                        "author_id": "U008",
+                        "author_role": "QA_TUTOR",
+                        "reactions": [
+                          {
+                            "name": "agree",
+                            "users": [
+                              "U001"
+                            ],
+                            "count": 1,
+                            "reactor_roles": {
+                              "U001": "TEAM_LEAD"
+                            }
+                          }
+                        ],
+                        "tl_endorsements": [
+                          {
+                            "reaction": "agree",
+                            "user_id": "U001",
+                            "target_message_id": "1790931744.000113"
+                          }
+                        ]
+                      }
+                    ],
+                    "reliability": "PROVISIONAL"
+                  },
+                  "limitations": [],
+                  "conditions_representation": "verbatim_full_message_in_scope_not_extracted",
+                  "reliability": "PROVISIONAL"
+                },
+                {
+                  "item_id": "I12",
+                  "evidence_id": "E011",
+                  "kind": "SCOPED_ANSWER",
+                  "answer_status": "DIRECT",
+                  "question": null,
+                  "text": "For the pair discussed here, neither response has a meaningful quality advantage. A tie is justified; use the same criterion for comparable pairs. Two disputed tasks are worth a calibration check, not a policy rewrite by themselves.",
+                  "text_origin": "python_original_message",
+                  "evidence_ids": [
+                    "E011"
+                  ],
+                  "evidence": [
+                    {
+                      "evidence_id": "E011",
+                      "member_id": "member_cb06b7a6847122af7e6b8e4b",
+                      "project_id": "response_preference",
+                      "batch_id": "rp_batch_15",
+                      "channel_id": "C_RP_QA",
+                      "thread_id": "1790866003.000036",
+                      "message_id": "1790866050.000113",
+                      "quote": "For the pair discussed here, neither response has a meaningful quality advantage. A tie is justified; use the same criterion for comparable pairs. Two disputed tasks are worth a calibration check, not a policy rewrite by themselves.",
+                      "quotation_scope": "entire_original_message",
+                      "author_id": "U007",
+                      "author_role": "QA_TUTOR",
+                      "reactions": [
+                        {
+                          "name": "this",
+                          "users": [
+                            "U001"
+                          ],
+                          "count": 1,
+                          "reactor_roles": {
+                            "U001": "TEAM_LEAD"
+                          }
+                        }
+                      ],
+                      "tl_endorsements": [
+                        {
+                          "reaction": "this",
+                          "user_id": "U001",
+                          "target_message_id": "1790866050.000113"
+                        }
+                      ]
+                    }
+                  ],
+                  "authority": "TL_ENDORSED",
+                  "scope": {
+                    "text": "For the pair discussed here, neither response has a meaningful quality advantage. A tie is justified; use the same criterion for comparable pairs. Two disputed tasks are worth a calibration check, not a policy rewrite by themselves.",
+                    "evidence_ids": [
+                      "E011"
+                    ],
+                    "evidence": [
+                      {
+                        "evidence_id": "E011",
+                        "member_id": "member_cb06b7a6847122af7e6b8e4b",
+                        "project_id": "response_preference",
+                        "batch_id": "rp_batch_15",
+                        "channel_id": "C_RP_QA",
+                        "thread_id": "1790866003.000036",
+                        "message_id": "1790866050.000113",
+                        "quote": "For the pair discussed here, neither response has a meaningful quality advantage. A tie is justified; use the same criterion for comparable pairs. Two disputed tasks are worth a calibration check, not a policy rewrite by themselves.",
+                        "quotation_scope": "entire_original_message",
+                        "author_id": "U007",
+                        "author_role": "QA_TUTOR",
+                        "reactions": [
+                          {
+                            "name": "this",
+                            "users": [
+                              "U001"
+                            ],
+                            "count": 1,
+                            "reactor_roles": {
+                              "U001": "TEAM_LEAD"
+                            }
+                          }
+                        ],
+                        "tl_endorsements": [
+                          {
+                            "reaction": "this",
+                            "user_id": "U001",
+                            "target_message_id": "1790866050.000113"
+                          }
+                        ]
+                      }
+                    ],
+                    "reliability": "PROVISIONAL"
+                  },
+                  "limitations": [],
+                  "conditions_representation": "verbatim_full_message_in_scope_not_extracted",
+                  "reliability": "PROVISIONAL"
+                },
+                {
+                  "item_id": "I17",
+                  "evidence_id": "E013",
+                  "kind": "SCOPED_ANSWER",
+                  "answer_status": "DIRECT",
+                  "question": null,
+                  "text": "For the pair discussed here, neither response has a meaningful quality advantage. A tie is justified; use the same criterion for comparable pairs.",
+                  "text_origin": "python_original_message",
+                  "evidence_ids": [
+                    "E013"
+                  ],
+                  "evidence": [
+                    {
+                      "evidence_id": "E013",
+                      "member_id": "member_42af0c53b9dee102697caa09",
+                      "project_id": "response_preference",
+                      "batch_id": "rp_batch_15",
+                      "channel_id": "C_RP_QA",
+                      "thread_id": "1790926534.000040",
+                      "message_id": "1790926584.000113",
+                      "quote": "For the pair discussed here, neither response has a meaningful quality advantage. A tie is justified; use the same criterion for comparable pairs.",
+                      "quotation_scope": "entire_original_message",
+                      "author_id": "U002",
+                      "author_role": "QA_TUTOR",
+                      "reactions": [
+                        {
+                          "name": "white_check_mark",
+                          "users": [
+                            "U001"
+                          ],
+                          "count": 1,
+                          "reactor_roles": {
+                            "U001": "TEAM_LEAD"
+                          }
+                        }
+                      ],
+                      "tl_endorsements": [
+                        {
+                          "reaction": "white_check_mark",
+                          "user_id": "U001",
+                          "target_message_id": "1790926584.000113"
+                        }
+                      ]
+                    }
+                  ],
+                  "authority": "TL_ENDORSED",
+                  "scope": {
+                    "text": "For the pair discussed here, neither response has a meaningful quality advantage. A tie is justified; use the same criterion for comparable pairs.",
+                    "evidence_ids": [
+                      "E013"
+                    ],
+                    "evidence": [
+                      {
+                        "evidence_id": "E013",
+                        "member_id": "member_42af0c53b9dee102697caa09",
+                        "project_id": "response_preference",
+                        "batch_id": "rp_batch_15",
+                        "channel_id": "C_RP_QA",
+                        "thread_id": "1790926534.000040",
+                        "message_id": "1790926584.000113",
+                        "quote": "For the pair discussed here, neither response has a meaningful quality advantage. A tie is justified; use the same criterion for comparable pairs.",
+                        "quotation_scope": "entire_original_message",
+                        "author_id": "U002",
+                        "author_role": "QA_TUTOR",
+                        "reactions": [
+                          {
+                            "name": "white_check_mark",
+                            "users": [
+                              "U001"
+                            ],
+                            "count": 1,
+                            "reactor_roles": {
+                              "U001": "TEAM_LEAD"
+                            }
+                          }
+                        ],
+                        "tl_endorsements": [
+                          {
+                            "reaction": "white_check_mark",
+                            "user_id": "U001",
+                            "target_message_id": "1790926584.000113"
+                          }
+                        ]
+                      }
+                    ],
+                    "reliability": "PROVISIONAL"
+                  },
+                  "limitations": [],
+                  "conditions_representation": "verbatim_full_message_in_scope_not_extracted",
+                  "reliability": "PROVISIONAL"
+                }
+              ]
+            }
+          ],
+          "source_evidence": [
+            {
+              "evidence_id": "E001",
+              "member_id": "member_4ae1700632c4a55ae1a24a4d",
+              "project_id": "response_preference",
+              "batch_id": "rp_batch_15",
+              "channel_id": "C_RP_GENERAL",
+              "thread_id": "1790896509.000047",
+              "message_id": "1790896509.000047",
+              "quote": "How much improvement do we need to avoid a tie?",
+              "quotation_scope": "entire_original_message",
+              "author_id": "U011",
+              "author_role": "TUTOR",
+              "reactions": [],
+              "tl_endorsements": []
+            },
+            {
+              "evidence_id": "E002",
+              "member_id": "member_4ae1700632c4a55ae1a24a4d",
+              "project_id": "response_preference",
+              "batch_id": "rp_batch_15",
+              "channel_id": "C_RP_GENERAL",
+              "thread_id": "1790896509.000047",
+              "message_id": "1790896559.000113",
+              "quote": "B uses nicer wording, but the information and coverage are identical.",
+              "quotation_scope": "entire_original_message",
+              "author_id": "U003",
+              "author_role": "TUTOR",
+              "reactions": [
+                {
+                  "name": "thumbsup",
+                  "users": [
+                    "U017"
+                  ],
+                  "count": 1,
+                  "reactor_roles": {
+                    "U017": "TUTOR"
+                  }
+                }
+              ],
+              "tl_endorsements": []
+            },
+            {
+              "evidence_id": "E003",
+              "member_id": "member_4ae1700632c4a55ae1a24a4d",
+              "project_id": "response_preference",
+              "batch_id": "rp_batch_15",
+              "channel_id": "C_RP_GENERAL",
+              "thread_id": "1790896509.000047",
+              "message_id": "1790896608.000226",
+              "quote": "For these two responses, cosmetic phrasing alone does not establish a meaningful quality difference; choose a tie for this example. The difference might be cosmetic; the exact user task should decide.",
+              "quotation_scope": "entire_original_message",
+              "author_id": "U001",
+              "author_role": "TEAM_LEAD",
+              "reactions": [],
+              "tl_endorsements": []
+            }
+          ]
+        }
+      ],
+      "assessment": {
+        "diagnostic_result": "Positive target retained: M02 E004 ANSWERED through E005, with actual TL endorsement and local-pair scope. Additional context-as-answer error and threshold scope uncertainty remain.",
+        "coverage": "5/5 identities, 13/13 messages, one factual topic; every source represented, no filler or dispositions.",
+        "resolution": "M02 tie/preference decision remains correctly answered; exact E005 quote limits it to this example. M01 qualitative/local answer retained but cannot become a general threshold. M05 anyone-else query stays OPEN while E013 useful local tie guidance remains available. Bare M03/M04 reports are FACT, not invented root questions.",
+        "guidance": "E003 exact-user-task condition retained. E009 asks both rationales/calibration before changing threshold; it is FACT + INSTRUCTION, not an invented policy change. E011 two-disputed-tasks caveat and E013 comparable-pair guidance remain exact, local and provisional.",
+        "summary": "Shared issue and differences support tie questions versus QA-feedback reports; no policy rewrite, broad threshold or invented remediation. E008 QA rationale-comparison request and E009 TL calibration request are combined in a cited summary; exact roles remain available.",
+        "authority": "E005 agree, E011 this and E013 white_check_mark are actual TL U001 endorsements on those replies. E002 thumbsup is tutor U017, not TL. Authority and review reliability remain separate.",
+        "severity": "UNKNOWN / insufficient_impact_evidence / INSUFFICIENT_EVIDENCE is supported. No blocked work, required rework or demonstrated quality harm established. Task label major does not affect severity.",
+        "obligations": "Both inherited M03/M05 obligations retained. Automatic unlinked-answer warnings retain context concern E002 and legitimate unsolicited scoped guidance E011/E013; warning alone does not invalidate every answer. All processing remains nonblocking."
+      }
+    },
+    {
+      "candidate_group_id": "cluster_1f272d7fa384df0c",
+      "binding": {
+        "input_file_sha256": "889ff1458b893e8256a358897cd84f8f3305de4304d841c8096bcebc0986e9e1",
+        "raw_draft_sha256": "9c498b87079f7db47973200b91781503e89352aa7267834aa3908a04e9d7d280",
+        "export_result_sha256": "e21485c295c4d9c1735339cce84ebcbbfd685eac112a12e0a10b8cf23767313f"
+      },
+      "assisted_content_review_required": false,
+      "findings": [],
+      "assessment": {
+        "diagnostic_result": "Negative target retained: M02 category selection OPEN with useful diagnostics/instructions. No material semantic blocker found in this assisted review.",
+        "coverage": "3/3 identities, 10/10 messages; one MIXED topic. E001 ANNOUNCEMENT + INSTRUCTION with null question; the representative question comes from actual M02 E004, not an invented announcement question.",
+        "resolution": "M01 reply E003 asks which object is being classified and remains OPEN; M02 category and M03 full handling questions remain OPEN. M03 procedure indicates keyword wording alone is insufficient, but no final category is supplied. Keeping the full handling question open is reasonable and the substantive procedure remains visible; the positive control separately guards against blanket reopening.",
+        "guidance": "Preserves no-final-decision collection notice, requested task reference, actual-output versus self-description distinction, separation before choosing category and harmful-content diagnostic. No substantive reply is discarded merely because it is procedural.",
+        "authority": "TL U006 statement remains procedure and withheld category selection. No reactions/endorsements to infer; task safety vocabulary is not evidence of operational harm.",
+        "severity": "UNKNOWN / insufficient_impact_evidence supported; no operational consequence or source-supported risk mechanism. Announcement does not become N/A automatically.",
+        "obligations": "Inherited M01 announcement obligation preserved in full despite no new source-review finding. Original uncertainty is not cleared by consolidation."
+      }
+    }
+  ]
+}

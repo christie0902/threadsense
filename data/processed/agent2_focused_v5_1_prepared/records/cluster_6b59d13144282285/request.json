@@ -1,0 +1,287 @@
+{
+  "model": "gpt-5.4-2026-03-05",
+  "messages": [
+    {
+      "role": "system",
+      "content": "Prompt version: agent2-inventory-v5.1\nConsolidate factual topics from original Slack messages and the approved glossary.\nAssign every member alias exactly once; split unrelated topics. Cite only exact\ntopic-local evidence IDs. Traceable IDs alone do not establish support for a claim.\nKeep a concise shared issue and supported differences; invent no causal explanation,\npolicy precedence, attempted/failed workaround, impact, or harmful-content contrast.\n\nRecord substantive content ONCE in inventory. Each item has a topic-local item_id\nand one evidence_id. Do not copy source quotations into inventory: Python supplies\nthe full original message and its qualifiers, identities, authors and reactions.\nOnly synthesis, differences and impact observations require generated prose.\nA message may supply multiple items, e.g. diagnostic request and submission condition.\nDistinguish QUESTION (actual handling/information question), DIAGNOSTIC_REQUEST\n(request for checks/details, not an answer), ANSWER (scoped substantive reply),\nINSTRUCTION, FACT (reported, not independently confirmed), ANNOUNCEMENT and CONTEXT.\nAn actual request for handling or a decision is QUESTION, not FACT or a request\nfor diagnostics. A diagnostic asks for checks/details; retain the original handling\nquestion independently. Context describing the task is not an ANSWER about handling.\nANSWER requires an explicit substantive response. Set answer_status=TENTATIVE for\nunconfirmed advice or DIRECT for an explicit scoped answer; all other kinds use null.\nQuestion links to tentative advice remain PARTIAL, never ANSWERED.\nQuoted or rhetorical questions are not automatically genuine questions. Never invent\nquestions from a factual incident or diagnostic. Announcements can contain instructions\nwithout questions. Do not repeat items in independent answer/guidance/question lists.\nClassify announced information as ANNOUNCEMENT from its content, not its channel.\nRecord an announced instruction as an additional INSTRUCTION item on that source.\nOne message can report a fact, issue an instruction and state its condition.\nDo not make a reply question into a root question.\n\nEvery member needs substantive inventory content, not just context or raw retention.\nAccount for every message with one or more items OR an explicit NON_SUBSTANTIVE or\nUNCERTAIN disposition with reason. Uncertain meaning must remain visible, never default\nto NONE. Preserve all actual unanswered questions and scoped TL instructions, including\nthose in replies. Question items require OPEN with no answer links, or PARTIAL/ANSWERED\nwith answer_item_ids pointing to ANSWER items in that SAME member conversation.\nDiagnostics cannot close questions. An answer to a narrower task cannot resolve a\nbroader question in another thread. Tentative advice must remain tentative and PARTIAL.\nFor every PARTIAL/ANSWERED link, check the target item_id, its ANSWER kind, its\noriginal member conversation and the substance of its reply. FACT, CONTEXT,\nDIAGNOSTIC_REQUEST and INSTRUCTION items cannot satisfy an answer link. One source\nmessage may have several roles: link its substantive ANSWER item, not another item\nthat happens to reference the same message. Never relabel an item ANSWER solely to\nmake a link pass. Diagnostics may coexist with a valid partial answer; retain both\nwithout letting diagnostic requests supply the answer. A related answer in another\nthread may be relevant context but cannot establish that this thread was answered.\nWhen no eligible answer supports resolution, keep the question OPEN with no links\nand retain useful guidance separately. Do not delete an unanswered handling question.\nRetain relevant differences between reported symptoms, and distinguish task labels\nfrom operational impact. Use glossary meanings consistently.\n\nDo not generate authority labels. Python supplies author roles and eligible TL reaction\nusers/targets. Endorsement applies only to that reply with its conditions; eyes is not\napproval. Inherited disputes remain provisional; repeated claims cannot clear them.\n\nProvide preliminary impact in the SAME response. Cite each applicable rubric criterion\nand its observation once; Python derives the level, rubric version and provisional\nmetadata. Criteria must imply one unambiguous level. Retain affected_scope only where\nevidenced, otherwise null. REPORTED_RISK differs from OBSERVED_OUTCOME; actual scope\nmust not expand to all users. limited_demonstrated_consequence requires OBSERVED_OUTCOME\nof limited OPERATIONAL impact, not harmless task content. insufficient_impact_evidence\nuses INSUFFICIENT_EVIDENCE and explains what is unknown; non_operational uses\nNON_OPERATIONAL, only for clearly non-operational content. Neither is an empty list.\nUse impact=null for an explicitly unassessed section. A reported conflict or request\nfor clarification does not establish an observed operational outcome.\nFor substantial_blockage cite inability to perform/submit work; quality/safety risk\nrequires actual operational evidence beyond task vocabulary. Review flags, unanswered\nquestions, number of members and minor/major task categories do not set severity.\nBefore selecting a lower-impact criterion, evaluate explicit inability to perform\nor complete assigned work against substantial_blockage. Unknown root cause or\nunknown extent does not erase an explicitly reported blockage. Use only the actual\nreported scope; isolated keywords do not establish HIGH, and do not invent broader\nscope or quality/safety consequences. Distinguish attributed reports of impact from\nindependently confirmed outcomes: OBSERVED_OUTCOME requires a concrete effect the\nsource describes as having occurred, with attribution preserved. REPORTED_RISK\nrequires an evidenced prospective risk, not a speculative hypothetical consequence.\nA handling question or reported document disagreement does not automatically\nestablish operational impact. Missing impact evidence may yield UNKNOWN with\ninsufficient_impact_evidence; never fill the gap with speculative harm.\nSelect the controlling rubric level supported by the source, then include only\nsupported criteria consistent with that one level. Do not combine levels to express\nuncertainty about cause, extent or lesser observations. Preserve relevant lesser\nobservations in shared_issue or relevant_differences where supported, and describe\nunknown cause/scope in the observation or affected_scope=null without erasing known\nimpact. If no operational level is supported, use UNKNOWN rather than guessing.\nHIGH routes to nonblocking review; LOW/N/A cannot clear flags. Agent 3 may later record\na separate researched assessment. No research, actionability or recommendations.\nOne independent request, no tools, verifier, retries or repair. Return JSON matching\nthe API response_format. Do not output schema_version or other fixed metadata;\nPython supplies version 5 from trusted configuration.\n"
+    },
+    {
+      "role": "user",
+      "content": "{\"schema_version\": 5, \"candidate_group_id\": \"cluster_6b59d13144282285\", \"project_id\": \"audio_multimodal\", \"batch_id\": \"audio_batch_06\", \"approved_glossary\": {\"LT\": \"Label Tool, the internal labeling platform\", \"QN\": \"Quarantine\", \"TL\": \"Team Lead\", \"QA\": \"Quality Assurance or QA Tutor depending on context\", \"L0\": \"Initial labeling layer / first-pass labelers\", \"queue\": \"Batch of assigned labeling tasks\", \"tasking\": \"Actively completing labeling tasks\", \"align\": \"Clarify a rule so labeling behavior becomes consistent\", \"flag\": \"Raise an issue for review\", \"rubric\": \"Evaluation or scoring criteria\"}, \"provisional_operational_severity_rubric\": {\"version\": \"provisional-operational-severity-v1\", \"status\": \"provisional_not_approved_organizational_policy\", \"criteria\": {\"substantial_blockage\": {\"level\": \"HIGH\", \"definition\": \"Evidence indicates substantial inability to perform or submit work; retain actual affected scope.\"}, \"material_quality_risk\": {\"level\": \"HIGH\", \"definition\": \"Evidence indicates material risk to labeling/data quality; distinguish reported risk from observed harm.\"}, \"material_safety_risk\": {\"level\": \"HIGH\", \"definition\": \"Evidence indicates material operational safety risk, beyond safety-related task vocabulary.\"}, \"bounded_operational_issue\": {\"level\": \"MEDIUM\", \"definition\": \"Meaningful but limited operational issue requiring clarification or coordination.\"}, \"limited_demonstrated_consequence\": {\"level\": \"LOW\", \"definition\": \"An operational issue with limited demonstrated consequences.\"}, \"non_operational\": {\"level\": \"N/A\", \"definition\": \"Clearly non-operational content such as routine social chatter; announcements are not automatically non-operational.\"}, \"insufficient_impact_evidence\": {\"level\": \"UNKNOWN\", \"definition\": \"Insufficient evidence of operational impact. Missing information is not evidence of low impact.\"}}, \"rules\": [\"Assess work blockage, affected scope, and potential quality/safety consequences from Slack evidence.\", \"Do not derive severity from review flags, member count, safety vocabulary, or an unanswered question alone.\", \"Task labeling categories minor/major are not operational severity.\", \"Distinguish reported risks from confirmed outcomes. Announcements can describe serious incidents.\", \"UNKNOWN is required when impact cannot be assessed; unsuccessful processing remains unassessed.\", \"No retrieval, policy-precedence decisions, or intervention recommendations. Agent 3 may separately revise this assessment.\"]}, \"members\": [{\"member_id\": \"M01\", \"project_id\": \"audio_multimodal\", \"batch_id\": \"audio_batch_06\", \"channel_id\": \"C_AUDIO_GENERAL\", \"thread_id\": \"1790879994.000128\", \"interpretation_reliability\": \"CORRECTED\", \"review_required\": false, \"disputed_fields\": []}, {\"member_id\": \"M02\", \"project_id\": \"audio_multimodal\", \"batch_id\": \"audio_batch_06\", \"channel_id\": \"C_AUDIO_GENERAL\", \"thread_id\": \"1790882197.000111\", \"interpretation_reliability\": \"NEEDS_REVIEW\", \"review_required\": true, \"disputed_fields\": [\"summary\"]}, {\"member_id\": \"M03\", \"project_id\": \"audio_multimodal\", \"batch_id\": \"audio_batch_06\", \"channel_id\": \"C_AUDIO_GENERAL\", \"thread_id\": \"1790896012.001900\", \"interpretation_reliability\": \"CORRECTED\", \"review_required\": false, \"disputed_fields\": []}, {\"member_id\": \"M04\", \"project_id\": \"audio_multimodal\", \"batch_id\": \"audio_batch_06\", \"channel_id\": \"C_AUDIO_GENERAL\", \"thread_id\": \"1790915374.000127\", \"interpretation_reliability\": \"CORRECTED\", \"review_required\": false, \"disputed_fields\": []}, {\"member_id\": \"M05\", \"project_id\": \"audio_multimodal\", \"batch_id\": \"audio_batch_06\", \"channel_id\": \"C_AUDIO_GENERAL\", \"thread_id\": \"1790920171.000109\", \"interpretation_reliability\": \"NEEDS_REVIEW\", \"review_required\": true, \"disputed_fields\": [\"authoritative_response_present\", \"authority_evidence_message_ids\", \"central_question\", \"confidence\", \"resolution_rationale\", \"resolution_state\", \"summary\"]}, {\"member_id\": \"M06\", \"project_id\": \"audio_multimodal\", \"batch_id\": \"audio_batch_06\", \"channel_id\": \"C_AUDIO_GENERAL\", \"thread_id\": \"1790934294.000106\", \"interpretation_reliability\": \"CORRECTED\", \"review_required\": false, \"disputed_fields\": []}], \"evidence_catalog\": [{\"evidence_id\": \"E001\", \"member_id\": \"M01\", \"project_id\": \"audio_multimodal\", \"batch_id\": \"audio_batch_06\", \"channel_id\": \"C_AUDIO_GENERAL\", \"thread_id\": \"1790879994.000128\", \"message_id\": \"1790879994.000128\", \"quote\": \"[Task review]\\nIssue: No audio at all — QN or bad score?\\nQuestion: what is the correct handling for this task?\", \"is_reply\": false, \"author_id\": \"U007\", \"author_name\": \"Leo\", \"author_role\": \"QA_TUTOR\", \"reactions\": [], \"eligible_tl_endorsements\": []}, {\"evidence_id\": \"E002\", \"member_id\": \"M01\", \"project_id\": \"audio_multimodal\", \"batch_id\": \"audio_batch_06\", \"channel_id\": \"C_AUDIO_GENERAL\", \"thread_id\": \"1790879994.000128\", \"message_id\": \"1790880048.000113\", \"quote\": \"Is the output truly silent after checking volume and a second clip? Silent playback in one browser does not establish the exported file is silent.\", \"is_reply\": true, \"author_id\": \"U019\", \"author_name\": \"Yuki\", \"author_role\": \"QA_TUTOR\", \"reactions\": [], \"eligible_tl_endorsements\": []}, {\"evidence_id\": \"E003\", \"member_id\": \"M01\", \"project_id\": \"audio_multimodal\", \"batch_id\": \"audio_batch_06\", \"channel_id\": \"C_AUDIO_GENERAL\", \"thread_id\": \"1790879994.000128\", \"message_id\": \"1790880088.000226\", \"quote\": \"We need to verify whether the silence is intended and whether the file plays elsewhere.\", \"is_reply\": true, \"author_id\": \"U006\", \"author_name\": \"Priya\", \"author_role\": \"TEAM_LEAD\", \"reactions\": [], \"eligible_tl_endorsements\": []}, {\"evidence_id\": \"E004\", \"member_id\": \"M02\", \"project_id\": \"audio_multimodal\", \"batch_id\": \"audio_batch_06\", \"channel_id\": \"C_AUDIO_GENERAL\", \"thread_id\": \"1790882197.000111\", \"message_id\": \"1790882197.000111\", \"quote\": \"Player never loads, should I QN? I thought a workaround existed in the previous queue, but it is happening again.\", \"is_reply\": false, \"author_id\": \"U019\", \"author_name\": \"Yuki\", \"author_role\": \"QA_TUTOR\", \"reactions\": [], \"eligible_tl_endorsements\": []}, {\"evidence_id\": \"E005\", \"member_id\": \"M02\", \"project_id\": \"audio_multimodal\", \"batch_id\": \"audio_batch_06\", \"channel_id\": \"C_AUDIO_GENERAL\", \"thread_id\": \"1790882197.000111\", \"message_id\": \"1790882245.000113\", \"quote\": \"Does another clip in the same queue play normally? A spinning player does not tell us what the underlying audio contains.\", \"is_reply\": true, \"author_id\": \"U002\", \"author_name\": \"Mina\", \"author_role\": \"QA_TUTOR\", \"reactions\": [{\"name\": \"thumbsup\", \"users\": [\"U018\"], \"count\": 1, \"reactor_roles\": {\"U018\": \"TUTOR\"}}], \"eligible_tl_endorsements\": []}, {\"evidence_id\": \"E006\", \"member_id\": \"M02\", \"project_id\": \"audio_multimodal\", \"batch_id\": \"audio_batch_06\", \"channel_id\": \"C_AUDIO_GENERAL\", \"thread_id\": \"1790882197.000111\", \"message_id\": \"1790882287.000226\", \"quote\": \"On task AUDIO-2197, please capture the LT error state and time; the wider cause is not confirmed here.\", \"is_reply\": true, \"author_id\": \"U016\", \"author_name\": \"Tariq\", \"author_role\": \"ENGINEER\", \"reactions\": [], \"eligible_tl_endorsements\": []}, {\"evidence_id\": \"E007\", \"member_id\": \"M02\", \"project_id\": \"audio_multimodal\", \"batch_id\": \"audio_batch_06\", \"channel_id\": \"C_AUDIO_GENERAL\", \"thread_id\": \"1790882197.000111\", \"message_id\": \"1790882343.000339\", \"quote\": \"We need task IDs and a reproduction attempt before deciding whether the old workaround applies. If another clip plays, keep both task references when reporting the incident.\", \"is_reply\": true, \"author_id\": \"U006\", \"author_name\": \"Priya\", \"author_role\": \"TEAM_LEAD\", \"reactions\": [], \"eligible_tl_endorsements\": []}, {\"evidence_id\": \"E008\", \"member_id\": \"M03\", \"project_id\": \"audio_multimodal\", \"batch_id\": \"audio_batch_06\", \"channel_id\": \"C_AUDIO_GENERAL\", \"thread_id\": \"1790896012.001900\", \"message_id\": \"1790896012.001900\", \"quote\": \"Audio won't play in LT; is this QN or a player issue? I thought a workaround existed in the previous queue, but it is happening again. (task ref AUDIO-6012)\", \"is_reply\": false, \"author_id\": \"U018\", \"author_name\": \"Omar\", \"author_role\": \"TUTOR\", \"reactions\": [], \"eligible_tl_endorsements\": []}, {\"evidence_id\": \"E009\", \"member_id\": \"M03\", \"project_id\": \"audio_multimodal\", \"batch_id\": \"audio_batch_06\", \"channel_id\": \"C_AUDIO_GENERAL\", \"thread_id\": \"1790896012.001900\", \"message_id\": \"1790896062.000113\", \"quote\": \"Does another clip in the same queue play normally?\", \"is_reply\": true, \"author_id\": \"U008\", \"author_name\": \"Hana\", \"author_role\": \"QA_TUTOR\", \"reactions\": [], \"eligible_tl_endorsements\": []}, {\"evidence_id\": \"E010\", \"member_id\": \"M03\", \"project_id\": \"audio_multimodal\", \"batch_id\": \"audio_batch_06\", \"channel_id\": \"C_AUDIO_GENERAL\", \"thread_id\": \"1790896012.001900\", \"message_id\": \"1790896106.000226\", \"quote\": \"We need task IDs and a reproduction attempt before deciding whether the old workaround applies. Could you note whether the waveform loads but the playhead stays at zero?\", \"is_reply\": true, \"author_id\": \"U006\", \"author_name\": \"Priya\", \"author_role\": \"TEAM_LEAD\", \"reactions\": [], \"eligible_tl_endorsements\": []}, {\"evidence_id\": \"E011\", \"member_id\": \"M04\", \"project_id\": \"audio_multimodal\", \"batch_id\": \"audio_batch_06\", \"channel_id\": \"C_AUDIO_GENERAL\", \"thread_id\": \"1790915374.000127\", \"message_id\": \"1790915374.000127\", \"quote\": \"Task check: Clip is completely silent, but the waveform exists. QN or quality score? (task ref AUDIO-5374)\", \"is_reply\": false, \"author_id\": \"U010\", \"author_name\": \"Avery\", \"author_role\": \"TUTOR\", \"reactions\": [], \"eligible_tl_endorsements\": []}, {\"evidence_id\": \"E012\", \"member_id\": \"M04\", \"project_id\": \"audio_multimodal\", \"batch_id\": \"audio_batch_06\", \"channel_id\": \"C_AUDIO_GENERAL\", \"thread_id\": \"1790915374.000127\", \"message_id\": \"1790915422.000113\", \"quote\": \"Several prompts expecting speech return an empty sounding file.\", \"is_reply\": true, \"author_id\": \"U015\", \"author_name\": \"Carla\", \"author_role\": \"TUTOR\", \"reactions\": [], \"eligible_tl_endorsements\": []}, {\"evidence_id\": \"E013\", \"member_id\": \"M04\", \"project_id\": \"audio_multimodal\", \"batch_id\": \"audio_batch_06\", \"channel_id\": \"C_AUDIO_GENERAL\", \"thread_id\": \"1790915374.000127\", \"message_id\": \"1790915470.000226\", \"quote\": \"Is the output truly silent after checking volume and a second clip?\", \"is_reply\": true, \"author_id\": \"U014\", \"author_name\": \"Linh\", \"author_role\": \"QA_TUTOR\", \"reactions\": [], \"eligible_tl_endorsements\": []}, {\"evidence_id\": \"E014\", \"member_id\": \"M05\", \"project_id\": \"audio_multimodal\", \"batch_id\": \"audio_batch_06\", \"channel_id\": \"C_AUDIO_GENERAL\", \"thread_id\": \"1790920171.000109\", \"message_id\": \"1790920171.000109\", \"quote\": \"Anyone else seeing this? Player never loads, should I QN? I thought a workaround existed in the previous queue, but it is happening again.\", \"is_reply\": false, \"author_id\": \"U020\", \"author_name\": \"Theo\", \"author_role\": \"TUTOR\", \"reactions\": [], \"eligible_tl_endorsements\": []}, {\"evidence_id\": \"E015\", \"member_id\": \"M05\", \"project_id\": \"audio_multimodal\", \"batch_id\": \"audio_batch_06\", \"channel_id\": \"C_AUDIO_GENERAL\", \"thread_id\": \"1790920171.000109\", \"message_id\": \"1790920220.000113\", \"quote\": \"This affected task cannot be evaluated while the player fails to load. Report the playback incident with its task ID; do not mark the recording as a model-quality failure. A spinning player does not tell us what the underlying audio contains.\", \"is_reply\": true, \"author_id\": \"U006\", \"author_name\": \"Priya\", \"author_role\": \"TEAM_LEAD\", \"reactions\": [], \"eligible_tl_endorsements\": []}, {\"evidence_id\": \"E016\", \"member_id\": \"M06\", \"project_id\": \"audio_multimodal\", \"batch_id\": \"audio_batch_06\", \"channel_id\": \"C_AUDIO_GENERAL\", \"thread_id\": \"1790934294.000106\", \"message_id\": \"1790934294.000106\", \"quote\": \"Audio won't play in LT; is this QN or a player issue? I thought a workaround existed in the previous queue, but it is happening again. (task ref AUDIO-4294)\", \"is_reply\": false, \"author_id\": \"U013\", \"author_name\": \"Jun\", \"author_role\": \"TUTOR\", \"reactions\": [], \"eligible_tl_endorsements\": []}, {\"evidence_id\": \"E017\", \"member_id\": \"M06\", \"project_id\": \"audio_multimodal\", \"batch_id\": \"audio_batch_06\", \"channel_id\": \"C_AUDIO_GENERAL\", \"thread_id\": \"1790934294.000106\", \"message_id\": \"1790934351.000113\", \"quote\": \"On task AUDIO-4294, please capture the LT error state and time; the wider cause is not confirmed here.\", \"is_reply\": true, \"author_id\": \"U016\", \"author_name\": \"Tariq\", \"author_role\": \"ENGINEER\", \"reactions\": [], \"eligible_tl_endorsements\": []}, {\"evidence_id\": \"E018\", \"member_id\": \"M06\", \"project_id\": \"audio_multimodal\", \"batch_id\": \"audio_batch_06\", \"channel_id\": \"C_AUDIO_GENERAL\", \"thread_id\": \"1790934294.000106\", \"message_id\": \"1790934394.000226\", \"quote\": \"The waveform loads but pressing Play never starts sound. Could you note whether the waveform loads but the playhead stays at zero?\", \"is_reply\": true, \"author_id\": \"U018\", \"author_name\": \"Omar\", \"author_role\": \"TUTOR\", \"reactions\": [], \"eligible_tl_endorsements\": []}, {\"evidence_id\": \"E019\", \"member_id\": \"M06\", \"project_id\": \"audio_multimodal\", \"batch_id\": \"audio_batch_06\", \"channel_id\": \"C_AUDIO_GENERAL\", \"thread_id\": \"1790934294.000106\", \"message_id\": \"1790934431.000339\", \"quote\": \"This affected task cannot be evaluated while the player fails to load. Report the playback incident with its task ID; do not mark the recording as a model-quality failure.\", \"is_reply\": true, \"author_id\": \"U006\", \"author_name\": \"Priya\", \"author_role\": \"TEAM_LEAD\", \"reactions\": [], \"eligible_tl_endorsements\": []}]}"
+    }
+  ],
+  "temperature": 0,
+  "max_completion_tokens": 8192,
+  "reasoning_effort": "none",
+  "response_format": {
+    "type": "json_schema",
+    "json_schema": {
+      "name": "threadsense_agent2_inventory_v5",
+      "strict": true,
+      "schema": {
+        "$defs": {
+          "CitedText": {
+            "additionalProperties": false,
+            "properties": {
+              "text": {
+                "type": "string"
+              },
+              "evidence_ids": {
+                "items": {
+                  "type": "string"
+                },
+                "minItems": 1,
+                "type": "array"
+              }
+            },
+            "required": [
+              "text",
+              "evidence_ids"
+            ],
+            "type": "object"
+          },
+          "ImpactCriterion": {
+            "additionalProperties": false,
+            "properties": {
+              "criterion": {
+                "enum": [
+                  "substantial_blockage",
+                  "material_quality_risk",
+                  "material_safety_risk",
+                  "bounded_operational_issue",
+                  "limited_demonstrated_consequence",
+                  "non_operational",
+                  "insufficient_impact_evidence"
+                ],
+                "type": "string"
+              },
+              "basis": {
+                "enum": [
+                  "REPORTED_RISK",
+                  "OBSERVED_OUTCOME",
+                  "INSUFFICIENT_EVIDENCE",
+                  "NON_OPERATIONAL"
+                ],
+                "type": "string"
+              },
+              "observation": {
+                "$ref": "#/$defs/CitedText"
+              }
+            },
+            "required": [
+              "criterion",
+              "basis",
+              "observation"
+            ],
+            "type": "object"
+          },
+          "ImpactProposal": {
+            "additionalProperties": false,
+            "properties": {
+              "criteria": {
+                "items": {
+                  "$ref": "#/$defs/ImpactCriterion"
+                },
+                "minItems": 1,
+                "type": "array"
+              },
+              "affected_scope": {
+                "anyOf": [
+                  {
+                    "$ref": "#/$defs/CitedText"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              }
+            },
+            "required": [
+              "criteria",
+              "affected_scope"
+            ],
+            "type": "object"
+          },
+          "QuestionState": {
+            "additionalProperties": false,
+            "properties": {
+              "status": {
+                "enum": [
+                  "OPEN",
+                  "PARTIAL",
+                  "ANSWERED"
+                ],
+                "type": "string"
+              },
+              "answer_item_ids": {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              }
+            },
+            "required": [
+              "status",
+              "answer_item_ids"
+            ],
+            "type": "object"
+          },
+          "ResponseTopic": {
+            "additionalProperties": false,
+            "properties": {
+              "topic_name": {
+                "type": "string"
+              },
+              "member_ids": {
+                "items": {
+                  "type": "string"
+                },
+                "minItems": 1,
+                "type": "array"
+              },
+              "shared_issue": {
+                "$ref": "#/$defs/CitedText"
+              },
+              "relevant_differences": {
+                "items": {
+                  "$ref": "#/$defs/CitedText"
+                },
+                "type": "array"
+              },
+              "inventory": {
+                "items": {
+                  "$ref": "#/$defs/SourceItem"
+                },
+                "minItems": 1,
+                "type": "array"
+              },
+              "dispositions": {
+                "description": "Only messages without inventory items. Account for every message explicitly; missing treatment never defaults to NONE.",
+                "items": {
+                  "$ref": "#/$defs/SourceDisposition"
+                },
+                "type": "array"
+              },
+              "impact": {
+                "anyOf": [
+                  {
+                    "$ref": "#/$defs/ImpactProposal"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "description": "Null when unassessed; never invent impact to fill the schema."
+              }
+            },
+            "required": [
+              "topic_name",
+              "member_ids",
+              "shared_issue",
+              "relevant_differences",
+              "inventory",
+              "dispositions",
+              "impact"
+            ],
+            "type": "object"
+          },
+          "SourceDisposition": {
+            "additionalProperties": false,
+            "properties": {
+              "evidence_id": {
+                "type": "string"
+              },
+              "disposition": {
+                "enum": [
+                  "NON_SUBSTANTIVE",
+                  "UNCERTAIN"
+                ],
+                "type": "string"
+              },
+              "reason": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "evidence_id",
+              "disposition",
+              "reason"
+            ],
+            "type": "object"
+          },
+          "SourceItem": {
+            "additionalProperties": false,
+            "properties": {
+              "item_id": {
+                "type": "string"
+              },
+              "evidence_id": {
+                "type": "string"
+              },
+              "kind": {
+                "enum": [
+                  "QUESTION",
+                  "DIAGNOSTIC_REQUEST",
+                  "ANSWER",
+                  "INSTRUCTION",
+                  "FACT",
+                  "ANNOUNCEMENT",
+                  "CONTEXT"
+                ],
+                "type": "string"
+              },
+              "answer_status": {
+                "anyOf": [
+                  {
+                    "enum": [
+                      "TENTATIVE",
+                      "DIRECT"
+                    ],
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "description": "Only ANSWER items: TENTATIVE for unconfirmed advice, DIRECT for an explicit scoped answer. Context alone is not an answer. Python supplies the full original quotation."
+              },
+              "question": {
+                "anyOf": [
+                  {
+                    "$ref": "#/$defs/QuestionState"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "description": "Required only for QUESTION. Link ANSWER items in the same member conversation, never diagnostics or another thread."
+              }
+            },
+            "required": [
+              "item_id",
+              "evidence_id",
+              "kind",
+              "answer_status",
+              "question"
+            ],
+            "type": "object"
+          }
+        },
+        "additionalProperties": false,
+        "properties": {
+          "topics": {
+            "items": {
+              "$ref": "#/$defs/ResponseTopic"
+            },
+            "minItems": 1,
+            "type": "array"
+          }
+        },
+        "required": [
+          "topics"
+        ],
+        "type": "object"
+      }
+    }
+  }
+}

@@ -1,0 +1,1956 @@
+{
+  "origin": "Codex-assisted source review; not human approval, independent ground truth or unbiased accuracy benchmark",
+  "reviewed_at": "2026-10-25T18:49:34.148582+00:00",
+  "run": "data/processed/agent2_uncertainty_v6",
+  "acceptance_policy": "docs/agent2-provisional-acceptance-v1.md",
+  "policy_sha256": "41c6b26b36d5ffff229bc9abb009a978ea632d24707313f57dccb4bf45d640ac",
+  "pre_run_review_sha256": "ba4ba1da6cb7048964db036894dd9d2405a2fdc68526d89c8f8e85c44aef2aca",
+  "source_evidence_sha256": "3ee5b661c7b004abd246f700a17e2da2118416cd5549c32b9e7f5b4a0c62662b",
+  "pre_assisted_effective_snapshot_sha256": "5b3f2d5c9415d98129f6a56c0966e39370a2baa80a6914e3870a964f96eb00cb",
+  "method": "Reviewed every raw inventory item, question, synthesis, difference, impact observation and actual reaction against all 61 original messages. Model/automatic detection is read from the immutable pre-assisted effective snapshot, not inferred from post-review routing.",
+  "limitations": [
+    "Selected eight-case regression validation, not an accuracy benchmark or causal comparison.",
+    "Multilingual coverage is Japanese forms and locale discussions, mostly in English; no broad translation-quality claim.",
+    "No refusal, truncation, interruption or recoverable failure occurred live; those behaviors remain mocked-test evidence.",
+    "Live severity was HIGH or UNKNOWN only; N/A, LOW and MEDIUM branches were not demonstrated.",
+    "Confidence is uncalibrated and did not flag every scope limitation; it must not gate away source or review access.",
+    "Complete exported question inventory is not a guarantee that all implicit source questions were recognized."
+  ],
+  "entries": [
+    {
+      "candidate_group_id": "cluster_aa0548b34bd2cbdc",
+      "binding": {
+        "input_file_sha256": "669ea861241e06d05bd31cbef130d14b2d00edd951ede005ce547cbac752376d",
+        "raw_draft_sha256": "45a446d3bfd137e857f02dc98efec53dfc03fe2b8a203788b9909a21f1c99e69",
+        "export_result_sha256": "9ca9829a3d4da485bd92e30984670f7405371c11fff03fdbb4da56efd3d0d2e9"
+      },
+      "assisted_content_review_required": false,
+      "findings": [],
+      "assessment": {
+        "classification": "supported_with_severity_boundary_uncertainty",
+        "summary": "Both messages retained as reported facts about a quieter room and clip-review difficulty; no question invented and no invented operational consequence.",
+        "severity": "UNKNOWN is a defensible conservative reading because work difficulty is mentioned without a concrete effect. Routine social chatter could alternatively justify N/A; this benign boundary uncertainty was considered during assisted review, not identified as such by the model. Do not claim this run validated the N/A branch.",
+        "authority_and_conditions": "No authority or reaction inference. No inherited obligations.",
+        "limitations": "A short social exchange is a weak non-operational stress test; UNKNOWN does not mean a demonstrated incident."
+      },
+      "model_uncertainty_observations": [
+        {
+          "category": "model_impact_uncertainty",
+          "detection_timing": "before_assisted_review",
+          "surfaced_by": [
+            "model",
+            "automatic_severity_export"
+          ],
+          "field_path": [
+            "topics",
+            0,
+            "impact",
+            "criteria",
+            0
+          ],
+          "raw_assessment": {
+            "criterion": "insufficient_impact_evidence",
+            "basis": "INSUFFICIENT_EVIDENCE",
+            "observation": {
+              "text": "The messages indicate that noise conditions can affect reviewing clips, but they do not describe a concrete operational outcome such as blocked work, submission failure, rework, or a demonstrated quality issue in this thread.",
+              "evidence_ids": [
+                "E001",
+                "E002"
+              ]
+            }
+          },
+          "source_evidence": [
+            {
+              "evidence_id": "E001",
+              "member_id": "member_1b1df511a1b31b6c48167cb7",
+              "project_id": "audio_multimodal",
+              "batch_id": "audio_batch_06",
+              "channel_id": "C_AUDIO_GENERAL",
+              "thread_id": "1790856028.000143",
+              "message_id": "1790856028.000143",
+              "quote": "Finally got a quieter room to work from — what a difference 😄",
+              "quotation_scope": "entire_original_message",
+              "author_id": "U008",
+              "author_role": "QA_TUTOR",
+              "reactions": [],
+              "tl_endorsements": []
+            },
+            {
+              "evidence_id": "E002",
+              "member_id": "member_1b1df511a1b31b6c48167cb7",
+              "project_id": "audio_multimodal",
+              "batch_id": "audio_batch_06",
+              "channel_id": "C_AUDIO_GENERAL",
+              "thread_id": "1790856028.000143",
+              "message_id": "1790856074.000113",
+              "quote": "Nice! Background noise makes reviewing clips a lot harder.",
+              "quotation_scope": "entire_original_message",
+              "author_id": "U003",
+              "author_role": "TUTOR",
+              "reactions": [],
+              "tl_endorsements": []
+            }
+          ]
+        }
+      ],
+      "coverage": {
+        "members": 1,
+        "messages": 2,
+        "inherited_obligations": 0
+      }
+    },
+    {
+      "candidate_group_id": "cluster_6042d88a3d171626",
+      "binding": {
+        "input_file_sha256": "ad849a635b3f428309a385047793116a3f72a555a71c313584bf2e13d2acfe5e",
+        "raw_draft_sha256": "8425f499549bab7f34b60848025cb2eef48a9c701c4dc6c548e1e1ad4a4a7c0b",
+        "export_result_sha256": "b82b95340a05a951e355fd68108c72099f4d5028cfd6ada046aa662cb758c416"
+      },
+      "assisted_content_review_required": true,
+      "findings": [
+        {
+          "finding_id": "v6-cluster_6042d88a3d171626-RESOLUTION_SCOPE_UNCERTAINTY",
+          "category": "RESOLUTION_SCOPE_UNCERTAINTY",
+          "materiality": "plausible_interpretation_with_missing_scope_note",
+          "explanation": "M02 E004 asks audio omissions versus transcript-field errors. E006 gives a useful local disposition: record a transcript/audio correspondence error, not a playback failure, with actual TL endorsement. Treating this as the most plausible practical handling answer is defensible under the new acceptance policy. However, it does not expressly allocate the score to one of the two rubric fields. The fully ANSWERED judgment at 0.95 has no note acknowledging that narrower field-allocation uncertainty. Preserve the local answer while asking Agent 3 to check whether an exact field choice is needed. This is a bounded scope limitation, not a demonstrated invented decision or a requirement to force OPEN.",
+          "affected_raw_fields": [
+            {
+              "path": [
+                "topics",
+                0,
+                "inventory",
+                4
+              ],
+              "value": {
+                "item_id": "T1_I5",
+                "evidence_id": "E004",
+                "kind": "QUESTION",
+                "answer_status": null,
+                "question": {
+                  "status": "ANSWERED",
+                  "answer_item_ids": [
+                    "T1_I7"
+                  ],
+                  "resolution_confidence": 0.95,
+                  "uncertainty_note": null
+                }
+              }
+            },
+            {
+              "path": [
+                "topics",
+                0,
+                "inventory",
+                6
+              ],
+              "value": {
+                "item_id": "T1_I7",
+                "evidence_id": "E006",
+                "kind": "ANSWER",
+                "answer_status": "DIRECT",
+                "question": null
+              }
+            }
+          ],
+          "source_evidence": [
+            {
+              "evidence_id": "E004",
+              "member_id": "member_c43a2b77b3b033180f00376e",
+              "project_id": "audio_multimodal",
+              "batch_id": "audio_batch_06",
+              "channel_id": "C_AUDIO_GENERAL",
+              "thread_id": "1790909920.000138",
+              "message_id": "1790909920.000138",
+              "quote": "Should we score omissions in the audio or errors in the transcript field?",
+              "quotation_scope": "entire_original_message",
+              "author_id": "U010",
+              "author_role": "TUTOR",
+              "reactions": [],
+              "tl_endorsements": []
+            },
+            {
+              "evidence_id": "E005",
+              "member_id": "member_c43a2b77b3b033180f00376e",
+              "project_id": "audio_multimodal",
+              "batch_id": "audio_batch_06",
+              "channel_id": "C_AUDIO_GENERAL",
+              "thread_id": "1790909920.000138",
+              "message_id": "1790909965.000113",
+              "quote": "The reference text has a sentence missing from the recording; that is a correspondence problem.",
+              "quotation_scope": "entire_original_message",
+              "author_id": "U003",
+              "author_role": "TUTOR",
+              "reactions": [
+                {
+                  "name": "thinking_face",
+                  "users": [
+                    "U013"
+                  ],
+                  "count": 1,
+                  "reactor_roles": {
+                    "U013": "TUTOR"
+                  }
+                }
+              ],
+              "tl_endorsements": []
+            },
+            {
+              "evidence_id": "E006",
+              "member_id": "member_c43a2b77b3b033180f00376e",
+              "project_id": "audio_multimodal",
+              "batch_id": "audio_batch_06",
+              "channel_id": "C_AUDIO_GENERAL",
+              "thread_id": "1790909920.000138",
+              "message_id": "1790910023.000226",
+              "quote": "For this item, record a transcript/audio correspondence error, rather than classifying the recording as a playback failure.",
+              "quotation_scope": "entire_original_message",
+              "author_id": "U008",
+              "author_role": "QA_TUTOR",
+              "reactions": [
+                {
+                  "name": "this",
+                  "users": [
+                    "U006"
+                  ],
+                  "count": 1,
+                  "reactor_roles": {
+                    "U006": "TEAM_LEAD"
+                  }
+                }
+              ],
+              "tl_endorsements": [
+                {
+                  "reaction": "this",
+                  "user_id": "U006",
+                  "target_message_id": "1790910023.000226"
+                }
+              ]
+            }
+          ],
+          "detection_timing": "discovered_during_assisted_source_review",
+          "specific_concern_surfaced_by_model_before_review": false,
+          "specific_concern_surfaced_by_automatic_handoff_before_review": false,
+          "pre_review_containment": {
+            "question_research_required": true,
+            "group_review_required": true,
+            "answer_already_provisional": true,
+            "reason": "Inherited topic dispute and a directive-cue warning already caused broad review routing; neither identified this exact scope uncertainty."
+          },
+          "post_review_supplement_is_not_model_self_detection": true
+        },
+        {
+          "finding_id": "v6-cluster_6042d88a3d171626-OVEREXCLUSIVE_FOLLOWUP_DESCRIPTION",
+          "category": "OVEREXCLUSIVE_FOLLOWUP_DESCRIPTION",
+          "materiality": "minor_error_limited_downstream_effect",
+          "explanation": "The M01 uncertainty note says the only follow-up is a clarification request. E002 is also a factual reply explaining the sentence is absent from the recording and that this need not be a broken player. The note overstates only, although E002 is correctly retained as FACT and represented in relevant_differences. The main unresolved-handling judgment remains supported and no source, useful distinction or condition is lost. Agent 3 should consult the full member inventory, not treat this note as an exhaustive transcript.",
+          "affected_raw_fields": [
+            {
+              "path": [
+                "topics",
+                0,
+                "inventory",
+                1,
+                "question",
+                "uncertainty_note"
+              ],
+              "value": {
+                "text": "The thread asks for correct handling, but the only follow-up is a clarification request about whether the mismatch is between the audio and the reference transcript; no substantive handling answer appears in this conversation.",
+                "evidence_ids": [
+                  "E003"
+                ]
+              }
+            }
+          ],
+          "source_evidence": [
+            {
+              "evidence_id": "E001",
+              "member_id": "member_955fe180d0d74ec7dfe0310c",
+              "project_id": "audio_multimodal",
+              "batch_id": "audio_batch_06",
+              "channel_id": "C_AUDIO_GENERAL",
+              "thread_id": "1790881507.000137",
+              "message_id": "1790881507.000137",
+              "quote": "[Task review]\nIssue: Transcript shows a sentence that never appears in the recording.\nQuestion: what is the correct handling for this task? (task ref AUDIO-1507)",
+              "quotation_scope": "entire_original_message",
+              "author_id": "U015",
+              "author_role": "TUTOR",
+              "reactions": [],
+              "tl_endorsements": []
+            },
+            {
+              "evidence_id": "E002",
+              "member_id": "member_955fe180d0d74ec7dfe0310c",
+              "project_id": "audio_multimodal",
+              "batch_id": "audio_batch_06",
+              "channel_id": "C_AUDIO_GENERAL",
+              "thread_id": "1790881507.000137",
+              "message_id": "1790881557.000113",
+              "quote": "The text contains a sentence that is absent from the recording. This is not necessarily a broken audio player; the recording itself may play correctly.",
+              "quotation_scope": "entire_original_message",
+              "author_id": "U009",
+              "author_role": "TUTOR",
+              "reactions": [],
+              "tl_endorsements": []
+            },
+            {
+              "evidence_id": "E003",
+              "member_id": "member_955fe180d0d74ec7dfe0310c",
+              "project_id": "audio_multimodal",
+              "batch_id": "audio_batch_06",
+              "channel_id": "C_AUDIO_GENERAL",
+              "thread_id": "1790881507.000137",
+              "message_id": "1790881599.000226",
+              "quote": "Is the mismatch between the actual audio and the reference transcript?",
+              "quotation_scope": "entire_original_message",
+              "author_id": "U002",
+              "author_role": "QA_TUTOR",
+              "reactions": [],
+              "tl_endorsements": []
+            }
+          ],
+          "detection_timing": "discovered_during_assisted_source_review",
+          "specific_concern_surfaced_by_model_before_review": false,
+          "specific_concern_surfaced_by_automatic_handoff_before_review": false,
+          "pre_review_containment": {
+            "question_research_required": true,
+            "group_review_required": true,
+            "original_fact_retained": true,
+            "reason": "The model marked the handling question OPEN and retained E002; the automatic handoff preserved the full inventory but did not detect the note wording error."
+          },
+          "post_review_supplement_is_not_model_self_detection": true
+        }
+      ],
+      "assessment": {
+        "classification": "useful_provisional_with_one_scope_uncertainty_and_one_minor_note_error",
+        "summary": "All four members and nine messages retained; mismatch M01-M03 correctly separated from silent-track M04. Sentence is missing from recording, not reference text. No playback-failure invention.",
+        "question_scope": "M01/M04 remain OPEN with notes. M02 retains actual local TL-endorsed correspondence guidance as ANSWERED; the exact rubric-field allocation remains a review-discovered limitation. The note-only exclusivity error does not delete E002.",
+        "authority_and_conditions": "E006 this by TL U006 on that actual reply is TL_ENDORSED. E008 eyes by TL U006 is acknowledgment, not an answer or approval. E005 thinking_face is by a tutor.",
+        "severity": "Both topics UNKNOWN with insufficient-impact evidence; no invented inability, rework, or broader harm.",
+        "obligations": "One inherited obligation preserved; one automatic directive-cue review obligation is broad and not evidence of detection of the two new findings."
+      },
+      "model_uncertainty_observations": [
+        {
+          "category": "model_question_uncertainty",
+          "detection_timing": "before_assisted_review",
+          "surfaced_by": [
+            "model",
+            "automatic_complete_question_handoff"
+          ],
+          "field_path": [
+            "topics",
+            0,
+            "inventory",
+            1,
+            "question"
+          ],
+          "raw_judgment": {
+            "status": "OPEN",
+            "answer_item_ids": [],
+            "resolution_confidence": 0.42,
+            "uncertainty_note": {
+              "text": "The thread asks for correct handling, but the only follow-up is a clarification request about whether the mismatch is between the audio and the reference transcript; no substantive handling answer appears in this conversation.",
+              "evidence_ids": [
+                "E003"
+              ]
+            }
+          },
+          "source_evidence": [
+            {
+              "evidence_id": "E003",
+              "member_id": "member_955fe180d0d74ec7dfe0310c",
+              "project_id": "audio_multimodal",
+              "batch_id": "audio_batch_06",
+              "channel_id": "C_AUDIO_GENERAL",
+              "thread_id": "1790881507.000137",
+              "message_id": "1790881599.000226",
+              "quote": "Is the mismatch between the actual audio and the reference transcript?",
+              "quotation_scope": "entire_original_message",
+              "author_id": "U002",
+              "author_role": "QA_TUTOR",
+              "reactions": [],
+              "tl_endorsements": []
+            }
+          ],
+          "note_is_not_itself_proof_of_correctness": true
+        },
+        {
+          "category": "model_impact_uncertainty",
+          "detection_timing": "before_assisted_review",
+          "surfaced_by": [
+            "model",
+            "automatic_severity_export"
+          ],
+          "field_path": [
+            "topics",
+            0,
+            "impact",
+            "criteria",
+            0
+          ],
+          "raw_assessment": {
+            "criterion": "insufficient_impact_evidence",
+            "basis": "INSUFFICIENT_EVIDENCE",
+            "observation": {
+              "text": "The evidence shows a content mismatch and related handling/classification questions, including one answered classification direction, but it does not establish blocked work, completed rework, submission failure, or a demonstrated broader operational consequence.",
+              "evidence_ids": [
+                "E001",
+                "E004",
+                "E006",
+                "E007"
+              ]
+            }
+          },
+          "source_evidence": [
+            {
+              "evidence_id": "E001",
+              "member_id": "member_955fe180d0d74ec7dfe0310c",
+              "project_id": "audio_multimodal",
+              "batch_id": "audio_batch_06",
+              "channel_id": "C_AUDIO_GENERAL",
+              "thread_id": "1790881507.000137",
+              "message_id": "1790881507.000137",
+              "quote": "[Task review]\nIssue: Transcript shows a sentence that never appears in the recording.\nQuestion: what is the correct handling for this task? (task ref AUDIO-1507)",
+              "quotation_scope": "entire_original_message",
+              "author_id": "U015",
+              "author_role": "TUTOR",
+              "reactions": [],
+              "tl_endorsements": []
+            },
+            {
+              "evidence_id": "E004",
+              "member_id": "member_c43a2b77b3b033180f00376e",
+              "project_id": "audio_multimodal",
+              "batch_id": "audio_batch_06",
+              "channel_id": "C_AUDIO_GENERAL",
+              "thread_id": "1790909920.000138",
+              "message_id": "1790909920.000138",
+              "quote": "Should we score omissions in the audio or errors in the transcript field?",
+              "quotation_scope": "entire_original_message",
+              "author_id": "U010",
+              "author_role": "TUTOR",
+              "reactions": [],
+              "tl_endorsements": []
+            },
+            {
+              "evidence_id": "E006",
+              "member_id": "member_c43a2b77b3b033180f00376e",
+              "project_id": "audio_multimodal",
+              "batch_id": "audio_batch_06",
+              "channel_id": "C_AUDIO_GENERAL",
+              "thread_id": "1790909920.000138",
+              "message_id": "1790910023.000226",
+              "quote": "For this item, record a transcript/audio correspondence error, rather than classifying the recording as a playback failure.",
+              "quotation_scope": "entire_original_message",
+              "author_id": "U008",
+              "author_role": "QA_TUTOR",
+              "reactions": [
+                {
+                  "name": "this",
+                  "users": [
+                    "U006"
+                  ],
+                  "count": 1,
+                  "reactor_roles": {
+                    "U006": "TEAM_LEAD"
+                  }
+                }
+              ],
+              "tl_endorsements": [
+                {
+                  "reaction": "this",
+                  "user_id": "U006",
+                  "target_message_id": "1790910023.000226"
+                }
+              ]
+            },
+            {
+              "evidence_id": "E007",
+              "member_id": "member_32274372042260e5a26c1466",
+              "project_id": "audio_multimodal",
+              "batch_id": "audio_batch_06",
+              "channel_id": "C_AUDIO_QA",
+              "thread_id": "1790868669.000136",
+              "message_id": "1790868669.000136",
+              "quote": "Transcript includes words the voice never said.",
+              "quotation_scope": "entire_original_message",
+              "author_id": "U002",
+              "author_role": "QA_TUTOR",
+              "reactions": [],
+              "tl_endorsements": []
+            }
+          ]
+        },
+        {
+          "category": "model_question_uncertainty",
+          "detection_timing": "before_assisted_review",
+          "surfaced_by": [
+            "model",
+            "automatic_complete_question_handoff"
+          ],
+          "field_path": [
+            "topics",
+            1,
+            "inventory",
+            1,
+            "question"
+          ],
+          "raw_judgment": {
+            "status": "OPEN",
+            "answer_item_ids": [],
+            "resolution_confidence": 0.41,
+            "uncertainty_note": {
+              "text": "The follow-up suggests handling depends on whether silence was requested or spoken output was required, but no substantive handling answer is given in the thread.",
+              "evidence_ids": [
+                "E009"
+              ]
+            }
+          },
+          "source_evidence": [
+            {
+              "evidence_id": "E009",
+              "member_id": "member_45b305f64bc9ac187066f07c",
+              "project_id": "audio_multimodal",
+              "batch_id": "audio_batch_06",
+              "channel_id": "C_AUDIO_QA",
+              "thread_id": "1790918811.000130",
+              "message_id": "1790918869.000113",
+              "quote": "Was silence requested, or was spoken output required by the task?",
+              "quotation_scope": "entire_original_message",
+              "author_id": "U008",
+              "author_role": "QA_TUTOR",
+              "reactions": [],
+              "tl_endorsements": []
+            }
+          ],
+          "note_is_not_itself_proof_of_correctness": true
+        },
+        {
+          "category": "model_impact_uncertainty",
+          "detection_timing": "before_assisted_review",
+          "surfaced_by": [
+            "model",
+            "automatic_severity_export"
+          ],
+          "field_path": [
+            "topics",
+            1,
+            "impact",
+            "criteria",
+            0
+          ],
+          "raw_assessment": {
+            "criterion": "insufficient_impact_evidence",
+            "basis": "INSUFFICIENT_EVIDENCE",
+            "observation": {
+              "text": "The thread documents uncertainty about how to handle a silent track, but does not show inability to complete work, incorrect completed output, or another demonstrated operational consequence.",
+              "evidence_ids": [
+                "E008",
+                "E009"
+              ]
+            }
+          },
+          "source_evidence": [
+            {
+              "evidence_id": "E008",
+              "member_id": "member_45b305f64bc9ac187066f07c",
+              "project_id": "audio_multimodal",
+              "batch_id": "audio_batch_06",
+              "channel_id": "C_AUDIO_QA",
+              "thread_id": "1790918811.000130",
+              "message_id": "1790918811.000130",
+              "quote": "[QA clarification]\nIssue: Zero sound on the track. Can't tell whether it's intentionally silent.\nQuestion: what is the correct handling for this task?",
+              "quotation_scope": "entire_original_message",
+              "author_id": "U002",
+              "author_role": "QA_TUTOR",
+              "reactions": [
+                {
+                  "name": "eyes",
+                  "users": [
+                    "U006"
+                  ],
+                  "count": 1,
+                  "reactor_roles": {
+                    "U006": "TEAM_LEAD"
+                  }
+                }
+              ],
+              "tl_endorsements": []
+            },
+            {
+              "evidence_id": "E009",
+              "member_id": "member_45b305f64bc9ac187066f07c",
+              "project_id": "audio_multimodal",
+              "batch_id": "audio_batch_06",
+              "channel_id": "C_AUDIO_QA",
+              "thread_id": "1790918811.000130",
+              "message_id": "1790918869.000113",
+              "quote": "Was silence requested, or was spoken output required by the task?",
+              "quotation_scope": "entire_original_message",
+              "author_id": "U008",
+              "author_role": "QA_TUTOR",
+              "reactions": [],
+              "tl_endorsements": []
+            }
+          ]
+        }
+      ],
+      "coverage": {
+        "members": 4,
+        "messages": 9,
+        "inherited_obligations": 1
+      }
+    },
+    {
+      "candidate_group_id": "cluster_db20d884110726af",
+      "binding": {
+        "input_file_sha256": "1278e8f10708629a084d456f0a01b7b1fea192a416de50208dfb0a3855106d4a",
+        "raw_draft_sha256": "91349a0997ef3ad1fef23bfc21ea218143b8374bbf10de7d1c93a5f2696657eb",
+        "export_result_sha256": "081166bd48f618e85c62a3c0e3654a91d3f3ad3ed0e750f200455b6199b88d50"
+      },
+      "assisted_content_review_required": false,
+      "findings": [],
+      "assessment": {
+        "classification": "supported_with_useful_model_uncertainty",
+        "summary": "Three members/nine messages retained, including actual Japanese forms. Register-shift reports, context and scoring questions remain distinct.",
+        "question_scope": "M01 broader-recurrence question OPEN at 0.66; M02/M03 penalty/scoring questions OPEN at 0.94/0.95. Notes accurately explain the missing discourse context and beginning/ending forms. High confidence here concerns recognition of nonresolution, not confidence in a scoring answer.",
+        "authority_and_conditions": "TL U001 requests boundary forms before determining stylistic versus erroneous shift; retained as diagnostic guidance with entire conditions. E005 eyes is a tutor acknowledgment, not approval.",
+        "severity": "UNKNOWN; no operational consequence inferred from keigo correctness or review flags.",
+        "obligations": "Both inherited obligations retained; no new material source-review concern."
+      },
+      "model_uncertainty_observations": [
+        {
+          "category": "model_question_uncertainty",
+          "detection_timing": "before_assisted_review",
+          "surfaced_by": [
+            "model",
+            "automatic_complete_question_handoff"
+          ],
+          "field_path": [
+            "topics",
+            0,
+            "inventory",
+            1,
+            "question"
+          ],
+          "raw_judgment": {
+            "status": "OPEN",
+            "answer_item_ids": [],
+            "resolution_confidence": 0.66,
+            "uncertainty_note": {
+              "text": "The message asks whether others are seeing the issue, but the thread replies focus on interpreting the register shift rather than confirming broader recurrence.",
+              "evidence_ids": [
+                "E001",
+                "E003"
+              ]
+            }
+          },
+          "source_evidence": [
+            {
+              "evidence_id": "E001",
+              "member_id": "member_c0e209a71f0bd7157b85d5f4",
+              "project_id": "multilingual_eval",
+              "batch_id": "multi_batch_11",
+              "channel_id": "C_MULTI_GENERAL",
+              "thread_id": "1790902834.000157",
+              "message_id": "1790902834.000157",
+              "quote": "Anyone else seeing this? Japanese response starts with です/ます then shifts to plain style abruptly. (task ref MULTI-2834)",
+              "quotation_scope": "entire_original_message",
+              "author_id": "U011",
+              "author_role": "TUTOR",
+              "reactions": [],
+              "tl_endorsements": []
+            },
+            {
+              "evidence_id": "E003",
+              "member_id": "member_c0e209a71f0bd7157b85d5f4",
+              "project_id": "multilingual_eval",
+              "batch_id": "multi_batch_11",
+              "channel_id": "C_MULTI_GENERAL",
+              "thread_id": "1790902834.000157",
+              "message_id": "1790902925.000226",
+              "quote": "Is there a discourse reason to switch speech level? A purposeful switch between speakers differs from accidental keigo inconsistency.",
+              "quotation_scope": "entire_original_message",
+              "author_id": "U007",
+              "author_role": "QA_TUTOR",
+              "reactions": [],
+              "tl_endorsements": []
+            }
+          ],
+          "note_is_not_itself_proof_of_correctness": true
+        },
+        {
+          "category": "model_question_uncertainty",
+          "detection_timing": "before_assisted_review",
+          "surfaced_by": [
+            "model",
+            "automatic_complete_question_handoff"
+          ],
+          "field_path": [
+            "topics",
+            0,
+            "inventory",
+            4,
+            "question"
+          ],
+          "raw_judgment": {
+            "status": "OPEN",
+            "answer_item_ids": [],
+            "resolution_confidence": 0.94,
+            "uncertainty_note": {
+              "text": "The handling question remains unresolved because the replies request more context about the discourse reason and boundary forms instead of giving a scoring or penalty decision.",
+              "evidence_ids": [
+                "E004",
+                "E005",
+                "E006"
+              ]
+            }
+          },
+          "source_evidence": [
+            {
+              "evidence_id": "E004",
+              "member_id": "member_312342420c2338d5fbce8532",
+              "project_id": "multilingual_eval",
+              "batch_id": "multi_batch_11",
+              "channel_id": "C_MULTI_GENERAL",
+              "thread_id": "1790939293.000156",
+              "message_id": "1790939293.000156",
+              "quote": "[Task review]\nIssue: Keigo is correct at the start, but the closing feels too casual. Penalty?\nQuestion: what is the correct handling for this task?",
+              "quotation_scope": "entire_original_message",
+              "author_id": "U004",
+              "author_role": "TUTOR",
+              "reactions": [],
+              "tl_endorsements": []
+            },
+            {
+              "evidence_id": "E005",
+              "member_id": "member_312342420c2338d5fbce8532",
+              "project_id": "multilingual_eval",
+              "batch_id": "multi_batch_11",
+              "channel_id": "C_MULTI_GENERAL",
+              "thread_id": "1790939293.000156",
+              "message_id": "1790939349.000113",
+              "quote": "Is there a discourse reason to switch speech level?",
+              "quotation_scope": "entire_original_message",
+              "author_id": "U014",
+              "author_role": "QA_TUTOR",
+              "reactions": [
+                {
+                  "name": "eyes",
+                  "users": [
+                    "U013"
+                  ],
+                  "count": 1,
+                  "reactor_roles": {
+                    "U013": "TUTOR"
+                  }
+                }
+              ],
+              "tl_endorsements": []
+            },
+            {
+              "evidence_id": "E006",
+              "member_id": "member_312342420c2338d5fbce8532",
+              "project_id": "multilingual_eval",
+              "batch_id": "multi_batch_11",
+              "channel_id": "C_MULTI_GENERAL",
+              "thread_id": "1790939293.000156",
+              "message_id": "1790939387.000226",
+              "quote": "Japanese QA needs the beginning and ending forms to determine whether the shift is stylistic or erroneous.",
+              "quotation_scope": "entire_original_message",
+              "author_id": "U001",
+              "author_role": "TEAM_LEAD",
+              "reactions": [],
+              "tl_endorsements": []
+            }
+          ],
+          "note_is_not_itself_proof_of_correctness": true
+        },
+        {
+          "category": "model_question_uncertainty",
+          "detection_timing": "before_assisted_review",
+          "surfaced_by": [
+            "model",
+            "automatic_complete_question_handoff"
+          ],
+          "field_path": [
+            "topics",
+            0,
+            "inventory",
+            8,
+            "question"
+          ],
+          "raw_judgment": {
+            "status": "OPEN",
+            "answer_item_ids": [],
+            "resolution_confidence": 0.95,
+            "uncertainty_note": {
+              "text": "The request asks how to score the case, but the replies only state what additional context is needed to determine whether the shift is stylistic or erroneous.",
+              "evidence_ids": [
+                "E007",
+                "E008",
+                "E009"
+              ]
+            }
+          },
+          "source_evidence": [
+            {
+              "evidence_id": "E007",
+              "member_id": "member_dc26e975ca3fa5cce7ea30e5",
+              "project_id": "multilingual_eval",
+              "batch_id": "multi_batch_11",
+              "channel_id": "C_MULTI_QA",
+              "thread_id": "1790876285.000158",
+              "message_id": "1790876285.000158",
+              "quote": "Could QA clarify this case: Keigo suddenly becomes casual — how to score?",
+              "quotation_scope": "entire_original_message",
+              "author_id": "U007",
+              "author_role": "QA_TUTOR",
+              "reactions": [],
+              "tl_endorsements": []
+            },
+            {
+              "evidence_id": "E008",
+              "member_id": "member_dc26e975ca3fa5cce7ea30e5",
+              "project_id": "multilingual_eval",
+              "batch_id": "multi_batch_11",
+              "channel_id": "C_MULTI_QA",
+              "thread_id": "1790876285.000158",
+              "message_id": "1790876339.000113",
+              "quote": "Is there a discourse reason to switch speech level? A purposeful switch between speakers differs from accidental keigo inconsistency.",
+              "quotation_scope": "entire_original_message",
+              "author_id": "U019",
+              "author_role": "QA_TUTOR",
+              "reactions": [],
+              "tl_endorsements": []
+            },
+            {
+              "evidence_id": "E009",
+              "member_id": "member_dc26e975ca3fa5cce7ea30e5",
+              "project_id": "multilingual_eval",
+              "batch_id": "multi_batch_11",
+              "channel_id": "C_MULTI_QA",
+              "thread_id": "1790876285.000158",
+              "message_id": "1790876384.000226",
+              "quote": "Japanese QA needs the beginning and ending forms to determine whether the shift is stylistic or erroneous. A purposeful switch between speakers differs from accidental keigo inconsistency.",
+              "quotation_scope": "entire_original_message",
+              "author_id": "U001",
+              "author_role": "TEAM_LEAD",
+              "reactions": [],
+              "tl_endorsements": []
+            }
+          ],
+          "note_is_not_itself_proof_of_correctness": true
+        },
+        {
+          "category": "model_impact_uncertainty",
+          "detection_timing": "before_assisted_review",
+          "surfaced_by": [
+            "model",
+            "automatic_severity_export"
+          ],
+          "field_path": [
+            "topics",
+            0,
+            "impact",
+            "criteria",
+            0
+          ],
+          "raw_assessment": {
+            "criterion": "insufficient_impact_evidence",
+            "basis": "INSUFFICIENT_EVIDENCE",
+            "observation": {
+              "text": "The evidence shows clarification requests about how to score mixed-register Japanese responses and requests for more context, but it does not show blocked work, submission failure, rework, or confirmed incorrect outcomes.",
+              "evidence_ids": [
+                "E001",
+                "E004",
+                "E006",
+                "E007",
+                "E009"
+              ]
+            }
+          },
+          "source_evidence": [
+            {
+              "evidence_id": "E001",
+              "member_id": "member_c0e209a71f0bd7157b85d5f4",
+              "project_id": "multilingual_eval",
+              "batch_id": "multi_batch_11",
+              "channel_id": "C_MULTI_GENERAL",
+              "thread_id": "1790902834.000157",
+              "message_id": "1790902834.000157",
+              "quote": "Anyone else seeing this? Japanese response starts with です/ます then shifts to plain style abruptly. (task ref MULTI-2834)",
+              "quotation_scope": "entire_original_message",
+              "author_id": "U011",
+              "author_role": "TUTOR",
+              "reactions": [],
+              "tl_endorsements": []
+            },
+            {
+              "evidence_id": "E004",
+              "member_id": "member_312342420c2338d5fbce8532",
+              "project_id": "multilingual_eval",
+              "batch_id": "multi_batch_11",
+              "channel_id": "C_MULTI_GENERAL",
+              "thread_id": "1790939293.000156",
+              "message_id": "1790939293.000156",
+              "quote": "[Task review]\nIssue: Keigo is correct at the start, but the closing feels too casual. Penalty?\nQuestion: what is the correct handling for this task?",
+              "quotation_scope": "entire_original_message",
+              "author_id": "U004",
+              "author_role": "TUTOR",
+              "reactions": [],
+              "tl_endorsements": []
+            },
+            {
+              "evidence_id": "E006",
+              "member_id": "member_312342420c2338d5fbce8532",
+              "project_id": "multilingual_eval",
+              "batch_id": "multi_batch_11",
+              "channel_id": "C_MULTI_GENERAL",
+              "thread_id": "1790939293.000156",
+              "message_id": "1790939387.000226",
+              "quote": "Japanese QA needs the beginning and ending forms to determine whether the shift is stylistic or erroneous.",
+              "quotation_scope": "entire_original_message",
+              "author_id": "U001",
+              "author_role": "TEAM_LEAD",
+              "reactions": [],
+              "tl_endorsements": []
+            },
+            {
+              "evidence_id": "E007",
+              "member_id": "member_dc26e975ca3fa5cce7ea30e5",
+              "project_id": "multilingual_eval",
+              "batch_id": "multi_batch_11",
+              "channel_id": "C_MULTI_QA",
+              "thread_id": "1790876285.000158",
+              "message_id": "1790876285.000158",
+              "quote": "Could QA clarify this case: Keigo suddenly becomes casual — how to score?",
+              "quotation_scope": "entire_original_message",
+              "author_id": "U007",
+              "author_role": "QA_TUTOR",
+              "reactions": [],
+              "tl_endorsements": []
+            },
+            {
+              "evidence_id": "E009",
+              "member_id": "member_dc26e975ca3fa5cce7ea30e5",
+              "project_id": "multilingual_eval",
+              "batch_id": "multi_batch_11",
+              "channel_id": "C_MULTI_QA",
+              "thread_id": "1790876285.000158",
+              "message_id": "1790876384.000226",
+              "quote": "Japanese QA needs the beginning and ending forms to determine whether the shift is stylistic or erroneous. A purposeful switch between speakers differs from accidental keigo inconsistency.",
+              "quotation_scope": "entire_original_message",
+              "author_id": "U001",
+              "author_role": "TEAM_LEAD",
+              "reactions": [],
+              "tl_endorsements": []
+            }
+          ]
+        }
+      ],
+      "coverage": {
+        "members": 3,
+        "messages": 9,
+        "inherited_obligations": 2
+      }
+    },
+    {
+      "candidate_group_id": "cluster_6ac8dcc3e5d75776",
+      "binding": {
+        "input_file_sha256": "5cdc9068f0385f4870bea20246ed5adb0bd9026eeb2510a2733a236d311482fa",
+        "raw_draft_sha256": "3d245b584df34c14c08cdf3dc514283d368b458c1e1179ad217f878916f13749",
+        "export_result_sha256": "829929c5536394be91995017c52876035437755c3f8cbe932165c200fa86bce5"
+      },
+      "assisted_content_review_required": false,
+      "findings": [],
+      "assessment": {
+        "classification": "supported_with_useful_model_uncertainty",
+        "summary": "Four members/ten messages retained. Northern-wording-for-southern-users questions and the reverse reported QA preference pattern remain explicitly distinct.",
+        "question_scope": "M02/M03 acceptability questions OPEN at 0.88/0.95 with locale-specific notes; no answer imported from another conversation.",
+        "authority_and_conditions": "E003 keeps both target-locale prerequisite and do-not-dismiss-Southern-usage solely on Northern preference. E007 prerequisite and E010 request for both reviewers locale assumptions remain. E002 thumbsup comes from tutor U018, not TL endorsement.",
+        "severity": "UNKNOWN with no invented delay, rework or labeling harm.",
+        "obligations": "One inherited obligation retained."
+      },
+      "model_uncertainty_observations": [
+        {
+          "category": "model_question_uncertainty",
+          "detection_timing": "before_assisted_review",
+          "surfaced_by": [
+            "model",
+            "automatic_complete_question_handoff"
+          ],
+          "field_path": [
+            "topics",
+            0,
+            "inventory",
+            3,
+            "question"
+          ],
+          "raw_judgment": {
+            "status": "OPEN",
+            "answer_item_ids": [],
+            "resolution_confidence": 0.88,
+            "uncertainty_note": {
+              "text": "The thread raises acceptability for southern users, but the reply only asks to confirm whether the target is general Vietnamese or a specified region before setting scoring guidance, so the acceptability question is not resolved here.",
+              "evidence_ids": [
+                "E004",
+                "E007"
+              ]
+            }
+          },
+          "source_evidence": [
+            {
+              "evidence_id": "E004",
+              "member_id": "member_19a98c7ed9854e63bbe246ea",
+              "project_id": "multilingual_eval",
+              "batch_id": "multi_batch_11",
+              "channel_id": "C_MULTI_GENERAL",
+              "thread_id": "1790924170.000183",
+              "message_id": "1790924170.000183",
+              "quote": "Anyone else seeing this? Is this northern wording acceptable for southern users? (task ref MULTI-4170)",
+              "quotation_scope": "entire_original_message",
+              "author_id": "U002",
+              "author_role": "QA_TUTOR",
+              "reactions": [],
+              "tl_endorsements": []
+            },
+            {
+              "evidence_id": "E007",
+              "member_id": "member_19a98c7ed9854e63bbe246ea",
+              "project_id": "multilingual_eval",
+              "batch_id": "multi_batch_11",
+              "channel_id": "C_MULTI_GENERAL",
+              "thread_id": "1790924170.000183",
+              "message_id": "1790924313.000339",
+              "quote": "Please confirm whether the target is general Vietnamese or a specified region before setting scoring guidance.",
+              "quotation_scope": "entire_original_message",
+              "author_id": "U001",
+              "author_role": "TEAM_LEAD",
+              "reactions": [],
+              "tl_endorsements": []
+            }
+          ],
+          "note_is_not_itself_proof_of_correctness": true
+        },
+        {
+          "category": "model_question_uncertainty",
+          "detection_timing": "before_assisted_review",
+          "surfaced_by": [
+            "model",
+            "automatic_complete_question_handoff"
+          ],
+          "field_path": [
+            "topics",
+            0,
+            "inventory",
+            7,
+            "question"
+          ],
+          "raw_judgment": {
+            "status": "OPEN",
+            "answer_item_ids": [],
+            "resolution_confidence": 0.95,
+            "uncertainty_note": {
+              "text": "The question specifies southern users, but this conversation provides no reply clarifying the intended locale standard or whether region-specific wording is allowed.",
+              "evidence_ids": [
+                "E008"
+              ]
+            }
+          },
+          "source_evidence": [
+            {
+              "evidence_id": "E008",
+              "member_id": "member_63b6316b5be79f145f9aa8dc",
+              "project_id": "multilingual_eval",
+              "batch_id": "multi_batch_11",
+              "channel_id": "C_MULTI_QA",
+              "thread_id": "1790857852.000186",
+              "message_id": "1790857852.000186",
+              "quote": "Is this northern wording acceptable for southern users?",
+              "quotation_scope": "entire_original_message",
+              "author_id": "U007",
+              "author_role": "QA_TUTOR",
+              "reactions": [],
+              "tl_endorsements": []
+            }
+          ],
+          "note_is_not_itself_proof_of_correctness": true
+        },
+        {
+          "category": "model_impact_uncertainty",
+          "detection_timing": "before_assisted_review",
+          "surfaced_by": [
+            "model",
+            "automatic_severity_export"
+          ],
+          "field_path": [
+            "topics",
+            0,
+            "impact",
+            "criteria",
+            0
+          ],
+          "raw_assessment": {
+            "criterion": "insufficient_impact_evidence",
+            "basis": "INSUFFICIENT_EVIDENCE",
+            "observation": {
+              "text": "The evidence shows disagreement about Vietnamese locale assumptions in QA scoring and requests for clarification, but it does not report inability to complete work, submission blockage, rework, or a confirmed operational consequence beyond the scoring disagreement itself.",
+              "evidence_ids": [
+                "E001",
+                "E003",
+                "E004",
+                "E007",
+                "E008",
+                "E009",
+                "E010"
+              ]
+            }
+          },
+          "source_evidence": [
+            {
+              "evidence_id": "E001",
+              "member_id": "member_c3707719bca997c3dd94c00a",
+              "project_id": "multilingual_eval",
+              "batch_id": "multi_batch_11",
+              "channel_id": "C_MULTI_GENERAL",
+              "thread_id": "1790905292.000185",
+              "message_id": "1790905292.000185",
+              "quote": "Vietnamese wording is natural in the south, but QA reviewer is from the north.",
+              "quotation_scope": "entire_original_message",
+              "author_id": "U020",
+              "author_role": "TUTOR",
+              "reactions": [],
+              "tl_endorsements": []
+            },
+            {
+              "evidence_id": "E003",
+              "member_id": "member_c3707719bca997c3dd94c00a",
+              "project_id": "multilingual_eval",
+              "batch_id": "multi_batch_11",
+              "channel_id": "C_MULTI_GENERAL",
+              "thread_id": "1790905292.000185",
+              "message_id": "1790905384.000226",
+              "quote": "Please confirm whether the target is general Vietnamese or a specified region before setting scoring guidance. A Southern usage should not be dismissed solely because a Northern reviewer prefers another term.",
+              "quotation_scope": "entire_original_message",
+              "author_id": "U001",
+              "author_role": "TEAM_LEAD",
+              "reactions": [],
+              "tl_endorsements": []
+            },
+            {
+              "evidence_id": "E004",
+              "member_id": "member_19a98c7ed9854e63bbe246ea",
+              "project_id": "multilingual_eval",
+              "batch_id": "multi_batch_11",
+              "channel_id": "C_MULTI_GENERAL",
+              "thread_id": "1790924170.000183",
+              "message_id": "1790924170.000183",
+              "quote": "Anyone else seeing this? Is this northern wording acceptable for southern users? (task ref MULTI-4170)",
+              "quotation_scope": "entire_original_message",
+              "author_id": "U002",
+              "author_role": "QA_TUTOR",
+              "reactions": [],
+              "tl_endorsements": []
+            },
+            {
+              "evidence_id": "E007",
+              "member_id": "member_19a98c7ed9854e63bbe246ea",
+              "project_id": "multilingual_eval",
+              "batch_id": "multi_batch_11",
+              "channel_id": "C_MULTI_GENERAL",
+              "thread_id": "1790924170.000183",
+              "message_id": "1790924313.000339",
+              "quote": "Please confirm whether the target is general Vietnamese or a specified region before setting scoring guidance.",
+              "quotation_scope": "entire_original_message",
+              "author_id": "U001",
+              "author_role": "TEAM_LEAD",
+              "reactions": [],
+              "tl_endorsements": []
+            },
+            {
+              "evidence_id": "E008",
+              "member_id": "member_63b6316b5be79f145f9aa8dc",
+              "project_id": "multilingual_eval",
+              "batch_id": "multi_batch_11",
+              "channel_id": "C_MULTI_QA",
+              "thread_id": "1790857852.000186",
+              "message_id": "1790857852.000186",
+              "quote": "Is this northern wording acceptable for southern users?",
+              "quotation_scope": "entire_original_message",
+              "author_id": "U007",
+              "author_role": "QA_TUTOR",
+              "reactions": [],
+              "tl_endorsements": []
+            },
+            {
+              "evidence_id": "E009",
+              "member_id": "member_5d8a6d979476b72e39ea05e8",
+              "project_id": "multilingual_eval",
+              "batch_id": "multi_batch_11",
+              "channel_id": "C_MULTI_QA",
+              "thread_id": "1790869911.000187",
+              "message_id": "1790869911.000187",
+              "quote": "Regional phrase sounds fine in VN but QA flags it.",
+              "quotation_scope": "entire_original_message",
+              "author_id": "U008",
+              "author_role": "QA_TUTOR",
+              "reactions": [],
+              "tl_endorsements": []
+            },
+            {
+              "evidence_id": "E010",
+              "member_id": "member_5d8a6d979476b72e39ea05e8",
+              "project_id": "multilingual_eval",
+              "batch_id": "multi_batch_11",
+              "channel_id": "C_MULTI_QA",
+              "thread_id": "1790869911.000187",
+              "message_id": "1790869967.000113",
+              "quote": "The word is common in the south but QA seems to expect northern usage. Can both reviewers indicate the locale assumptions behind their scores?",
+              "quotation_scope": "entire_original_message",
+              "author_id": "U018",
+              "author_role": "TUTOR",
+              "reactions": [],
+              "tl_endorsements": []
+            }
+          ]
+        }
+      ],
+      "coverage": {
+        "members": 4,
+        "messages": 10,
+        "inherited_obligations": 1
+      }
+    },
+    {
+      "candidate_group_id": "cluster_608d1e987c058c11",
+      "binding": {
+        "input_file_sha256": "479634a45784f6a08481df5809a41177dde6204e8104b97087045e1c3adf5c17",
+        "raw_draft_sha256": "b811f71cd2ff18d7409a65144bf7f0558c1694df9e5c74ae8cb0c2d1ddd92eae",
+        "export_result_sha256": "39679301f0b469fb12edd62370d77a70cda83980a29c0cfd469a4e71b59b9ad7"
+      },
+      "assisted_content_review_required": false,
+      "findings": [],
+      "assessment": {
+        "classification": "plausible_interpretation_with_useful_model_uncertainty",
+        "summary": "Four members/13 messages retained with disabled-button, saved-rating, Korean-review and Spanish-loop distinctions. No root cause, successful submission or broader outage invented.",
+        "question_scope": "The vague M02 request to QA is OPEN at 0.73 with a note explicitly distinguishing cause from handling. This is plausible; the handling component could be viewed as partially answered, but the useful E006 instructions remain accessible and the model surfaces that ambiguity itself.",
+        "authority_and_conditions": "Retains TL do-not-count-complete without confirmation, task reference and flag instruction, reload-not-proof caution, requested field/button details and engineer cause-unconfirmed condition.",
+        "severity": "HIGH / substantial_blockage / OBSERVED_OUTCOME supported by reported inability to submit; actual tasks only, extent unknown. HIGH generated a nonblocking review obligation without inherited flags.",
+        "obligations": "Zero inherited obligations, one preserved HIGH obligation."
+      },
+      "model_uncertainty_observations": [
+        {
+          "category": "model_question_uncertainty",
+          "detection_timing": "before_assisted_review",
+          "surfaced_by": [
+            "model",
+            "automatic_complete_question_handoff"
+          ],
+          "field_path": [
+            "topics",
+            0,
+            "inventory",
+            7,
+            "question"
+          ],
+          "raw_judgment": {
+            "status": "OPEN",
+            "answer_item_ids": [],
+            "resolution_confidence": 0.73,
+            "uncertainty_note": {
+              "text": "The message asks QA to clarify the case but does not specify whether the requested clarification is expected to explain the cause, confirm submission handling, or both.",
+              "evidence_ids": [
+                "E005"
+              ]
+            }
+          },
+          "source_evidence": [
+            {
+              "evidence_id": "E005",
+              "member_id": "member_a0e8e21fd079b3167031c525",
+              "project_id": "multilingual_eval",
+              "batch_id": "multi_batch_11",
+              "channel_id": "C_MULTI_GENERAL",
+              "thread_id": "1790934407.000170",
+              "message_id": "1790934407.000170",
+              "quote": "Could QA clarify this case: Cannot finalize this multilingual review even though the rating saved.",
+              "quotation_scope": "entire_original_message",
+              "author_id": "U017",
+              "author_role": "TUTOR",
+              "reactions": [],
+              "tl_endorsements": []
+            }
+          ],
+          "note_is_not_itself_proof_of_correctness": true
+        }
+      ],
+      "coverage": {
+        "members": 4,
+        "messages": 13,
+        "inherited_obligations": 0
+      }
+    },
+    {
+      "candidate_group_id": "cluster_7a710abcd893e0a6",
+      "binding": {
+        "input_file_sha256": "6c30e96a6658d709ff712a35b74a1a110a50faa6306b133dfeee5f189e324c35",
+        "raw_draft_sha256": "c76ac2546f166a58592af5c4b97b984655567c0b72c2ac86df741f0e6daff29c",
+        "export_result_sha256": "1a7c9ef161feecae8a4e1bf26983f4eab305b87954c025736277ebf03d7479a0"
+      },
+      "assisted_content_review_required": false,
+      "findings": [],
+      "assessment": {
+        "classification": "plausible_interpretations_with_useful_model_uncertainty",
+        "summary": "Four members/11 messages retained. M01 context-needed question is OPEN; M04 is a report plus diagnostic without an invented handling question.",
+        "question_scope": "M02 is ANSWERED at 0.90 with an explicit note that warning/supportive interpretation is indirect and no class label is stated verbatim. E005/E006 do support an indirect distinction from unsafe instructions in this question scope; this is not the old tie-context error. M03 is PARTIAL at 0.64 with final label uncertainty retained. Both notes were in the model response before review.",
+        "authority_and_conditions": "E006 this by TL U006 attaches to that actual QA reply. E005 thinking_face is tutor U010; E010 TL eyes does not settle a classification. No general safe-content policy invented.",
+        "severity": "UNKNOWN; harmful-word vocabulary is not operational safety impact.",
+        "obligations": "One inherited obligation remains; chosen interpretations stay provisional."
+      },
+      "model_uncertainty_observations": [
+        {
+          "category": "model_question_uncertainty",
+          "detection_timing": "before_assisted_review",
+          "surfaced_by": [
+            "model",
+            "automatic_complete_question_handoff"
+          ],
+          "field_path": [
+            "topics",
+            0,
+            "inventory",
+            0,
+            "question"
+          ],
+          "raw_judgment": {
+            "status": "OPEN",
+            "answer_item_ids": [],
+            "resolution_confidence": 0.89,
+            "uncertainty_note": {
+              "text": "Replies ask for surrounding context before classification, so the handling question is not substantively resolved in this thread.",
+              "evidence_ids": [
+                "E002",
+                "E003"
+              ]
+            }
+          },
+          "source_evidence": [
+            {
+              "evidence_id": "E002",
+              "member_id": "member_7dbe2e6f5959641764abf183",
+              "project_id": "safety_classification",
+              "batch_id": "safety_batch_08",
+              "channel_id": "C_SAFETY_GENERAL",
+              "thread_id": "1790896329.000092",
+              "message_id": "1790896377.000113",
+              "quote": "What is the purpose of the quoted content in its surrounding context? The surrounding supportive wording determines what the passage is doing.",
+              "quotation_scope": "entire_original_message",
+              "author_id": "U008",
+              "author_role": "QA_TUTOR",
+              "reactions": [],
+              "tl_endorsements": []
+            },
+            {
+              "evidence_id": "E003",
+              "member_id": "member_7dbe2e6f5959641764abf183",
+              "project_id": "safety_classification",
+              "batch_id": "safety_batch_08",
+              "channel_id": "C_SAFETY_GENERAL",
+              "thread_id": "1790896329.000092",
+              "message_id": "1790896431.000226",
+              "quote": "We need the surrounding sentences before classifying an isolated alarming term.",
+              "quotation_scope": "entire_original_message",
+              "author_id": "U006",
+              "author_role": "TEAM_LEAD",
+              "reactions": [],
+              "tl_endorsements": []
+            }
+          ],
+          "note_is_not_itself_proof_of_correctness": true
+        },
+        {
+          "category": "model_question_uncertainty",
+          "detection_timing": "before_assisted_review",
+          "surfaced_by": [
+            "model",
+            "automatic_complete_question_handoff"
+          ],
+          "field_path": [
+            "topics",
+            0,
+            "inventory",
+            3,
+            "question"
+          ],
+          "raw_judgment": {
+            "status": "ANSWERED",
+            "answer_item_ids": [
+              "I005",
+              "I006"
+            ],
+            "resolution_confidence": 0.9,
+            "uncertainty_note": {
+              "text": "The replies resolve the example by treating it as warning/supportive context rather than unsafe instructions, but they answer through contextual interpretation rather than naming a class label verbatim.",
+              "evidence_ids": [
+                "E005",
+                "E006"
+              ]
+            }
+          },
+          "source_evidence": [
+            {
+              "evidence_id": "E005",
+              "member_id": "member_fbdab211201a6f8ea0028b30",
+              "project_id": "safety_classification",
+              "batch_id": "safety_batch_08",
+              "channel_id": "C_SAFETY_GENERAL",
+              "thread_id": "1790918778.000096",
+              "message_id": "1790918831.000113",
+              "quote": "The quoted phrase occurs inside a warning, not a set of instructions.",
+              "quotation_scope": "entire_original_message",
+              "author_id": "U012",
+              "author_role": "TUTOR",
+              "reactions": [
+                {
+                  "name": "thinking_face",
+                  "users": [
+                    "U010"
+                  ],
+                  "count": 1,
+                  "reactor_roles": {
+                    "U010": "TUTOR"
+                  }
+                }
+              ],
+              "tl_endorsements": []
+            },
+            {
+              "evidence_id": "E006",
+              "member_id": "member_fbdab211201a6f8ea0028b30",
+              "project_id": "safety_classification",
+              "batch_id": "safety_batch_08",
+              "channel_id": "C_SAFETY_GENERAL",
+              "thread_id": "1790918778.000096",
+              "message_id": "1790918870.000226",
+              "quote": "In this example, the passage discourages harm and provides supportive context. Evaluate intent and surrounding meaning, not keyword presence alone.",
+              "quotation_scope": "entire_original_message",
+              "author_id": "U002",
+              "author_role": "QA_TUTOR",
+              "reactions": [
+                {
+                  "name": "this",
+                  "users": [
+                    "U006"
+                  ],
+                  "count": 1,
+                  "reactor_roles": {
+                    "U006": "TEAM_LEAD"
+                  }
+                }
+              ],
+              "tl_endorsements": [
+                {
+                  "reaction": "this",
+                  "user_id": "U006",
+                  "target_message_id": "1790918870.000226"
+                }
+              ]
+            }
+          ],
+          "note_is_not_itself_proof_of_correctness": true
+        },
+        {
+          "category": "model_question_uncertainty",
+          "detection_timing": "before_assisted_review",
+          "surfaced_by": [
+            "model",
+            "automatic_complete_question_handoff"
+          ],
+          "field_path": [
+            "topics",
+            0,
+            "inventory",
+            6,
+            "question"
+          ],
+          "raw_judgment": {
+            "status": "PARTIAL",
+            "answer_item_ids": [
+              "I008"
+            ],
+            "resolution_confidence": 0.64,
+            "uncertainty_note": {
+              "text": "A reply says the content directs the user to support resources rather than endorsing risky action, but another reply still asks for the quoted content's purpose in context, leaving the final labeling decision not fully settled in-thread.",
+              "evidence_ids": [
+                "E008",
+                "E009"
+              ]
+            }
+          },
+          "source_evidence": [
+            {
+              "evidence_id": "E008",
+              "member_id": "member_2cb4e85621f681b2b99f3367",
+              "project_id": "safety_classification",
+              "batch_id": "safety_batch_08",
+              "channel_id": "C_SAFETY_GENERAL",
+              "thread_id": "1790921793.000095",
+              "message_id": "1790921838.000113",
+              "quote": "The assistant is directing the user to support resources, not endorsing risky action.",
+              "quotation_scope": "entire_original_message",
+              "author_id": "U013",
+              "author_role": "TUTOR",
+              "reactions": [],
+              "tl_endorsements": []
+            },
+            {
+              "evidence_id": "E009",
+              "member_id": "member_2cb4e85621f681b2b99f3367",
+              "project_id": "safety_classification",
+              "batch_id": "safety_batch_08",
+              "channel_id": "C_SAFETY_GENERAL",
+              "thread_id": "1790921793.000095",
+              "message_id": "1790921888.000226",
+              "quote": "What is the purpose of the quoted content in its surrounding context?",
+              "quotation_scope": "entire_original_message",
+              "author_id": "U008",
+              "author_role": "QA_TUTOR",
+              "reactions": [],
+              "tl_endorsements": []
+            }
+          ],
+          "note_is_not_itself_proof_of_correctness": true
+        },
+        {
+          "category": "model_impact_uncertainty",
+          "detection_timing": "before_assisted_review",
+          "surfaced_by": [
+            "model",
+            "automatic_severity_export"
+          ],
+          "field_path": [
+            "topics",
+            0,
+            "impact",
+            "criteria",
+            0
+          ],
+          "raw_assessment": {
+            "criterion": "insufficient_impact_evidence",
+            "basis": "INSUFFICIENT_EVIDENCE",
+            "observation": {
+              "text": "The evidence shows classification uncertainty and context-checking about quoted harmful wording, but does not report blocked tasking, submission failure, demonstrated rework, or another concrete operational consequence.",
+              "evidence_ids": [
+                "E001",
+                "E004",
+                "E007",
+                "E010"
+              ]
+            }
+          },
+          "source_evidence": [
+            {
+              "evidence_id": "E001",
+              "member_id": "member_7dbe2e6f5959641764abf183",
+              "project_id": "safety_classification",
+              "batch_id": "safety_batch_08",
+              "channel_id": "C_SAFETY_GENERAL",
+              "thread_id": "1790896329.000092",
+              "message_id": "1790896329.000092",
+              "quote": "[Task review]\nIssue: Quoted safety warning contains prohibited wording — label?\nQuestion: what is the correct handling for this task?",
+              "quotation_scope": "entire_original_message",
+              "author_id": "U002",
+              "author_role": "QA_TUTOR",
+              "reactions": [],
+              "tl_endorsements": []
+            },
+            {
+              "evidence_id": "E004",
+              "member_id": "member_fbdab211201a6f8ea0028b30",
+              "project_id": "safety_classification",
+              "batch_id": "safety_batch_08",
+              "channel_id": "C_SAFETY_GENERAL",
+              "thread_id": "1790918778.000096",
+              "message_id": "1790918778.000096",
+              "quote": "Educational discussion versus unsafe advice: which class?",
+              "quotation_scope": "entire_original_message",
+              "author_id": "U011",
+              "author_role": "TUTOR",
+              "reactions": [],
+              "tl_endorsements": []
+            },
+            {
+              "evidence_id": "E007",
+              "member_id": "member_2cb4e85621f681b2b99f3367",
+              "project_id": "safety_classification",
+              "batch_id": "safety_batch_08",
+              "channel_id": "C_SAFETY_GENERAL",
+              "thread_id": "1790921793.000095",
+              "message_id": "1790921793.000095",
+              "quote": "Anyone else seeing this? A safety resource quotes a harmful phrase only to warn against it. Label? (task ref SAFETY-1793)",
+              "quotation_scope": "entire_original_message",
+              "author_id": "U011",
+              "author_role": "TUTOR",
+              "reactions": [],
+              "tl_endorsements": []
+            },
+            {
+              "evidence_id": "E010",
+              "member_id": "member_b2d76c026c23482cf615d242",
+              "project_id": "safety_classification",
+              "batch_id": "safety_batch_08",
+              "channel_id": "C_SAFETY_QA",
+              "thread_id": "1790927855.000093",
+              "message_id": "1790927855.000093",
+              "quote": "Supportive crisis response contains prohibited keywords in a quotation.",
+              "quotation_scope": "entire_original_message",
+              "author_id": "U014",
+              "author_role": "QA_TUTOR",
+              "reactions": [
+                {
+                  "name": "eyes",
+                  "users": [
+                    "U006"
+                  ],
+                  "count": 1,
+                  "reactor_roles": {
+                    "U006": "TEAM_LEAD"
+                  }
+                }
+              ],
+              "tl_endorsements": []
+            }
+          ]
+        }
+      ],
+      "coverage": {
+        "members": 4,
+        "messages": 11,
+        "inherited_obligations": 1
+      }
+    },
+    {
+      "candidate_group_id": "cluster_098a12c005ecf00b",
+      "binding": {
+        "input_file_sha256": "74e0aecc44a39dcfbeafe79f9df326d76aa6cc82bc20d5fde949299c12bea488",
+        "raw_draft_sha256": "d8251d9c7841b1314f84282cc54acedb775dbacf0925ac314a2efff783640af7",
+        "export_result_sha256": "c9712344b08e3a03df0835b51bd90b3e97933a4deac074469d95bfc81ce9a77d"
+      },
+      "assisted_content_review_required": false,
+      "findings": [],
+      "assessment": {
+        "classification": "supported",
+        "summary": "Two members/four messages split into resource and deadline announcement topics. Both have null representative questions and no invented questions; replies remain plans, not completed actions.",
+        "authority_and_conditions": "Resource announced by TL; tutor thumbs-up is not TL endorsement. Deadline remains the source-relative 6 PM that day, not a new current deadline.",
+        "severity": "Both UNKNOWN: routine operational announcements provide no demonstrated consequence. They are not automatically N/A merely because they are announcements.",
+        "obligations": "Zero inherited obligations; no new finding."
+      },
+      "model_uncertainty_observations": [
+        {
+          "category": "model_impact_uncertainty",
+          "detection_timing": "before_assisted_review",
+          "surfaced_by": [
+            "model",
+            "automatic_severity_export"
+          ],
+          "field_path": [
+            "topics",
+            0,
+            "impact",
+            "criteria",
+            0
+          ],
+          "raw_assessment": {
+            "criterion": "insufficient_impact_evidence",
+            "basis": "INSUFFICIENT_EVIDENCE",
+            "observation": {
+              "text": "The thread shares an onboarding resource and an acknowledgment of planned review, but it does not describe any operational problem, blockage, or demonstrated consequence to work.",
+              "evidence_ids": [
+                "E001",
+                "E002"
+              ]
+            }
+          },
+          "source_evidence": [
+            {
+              "evidence_id": "E001",
+              "member_id": "member_6bf358759c640a5ffe1cea79",
+              "project_id": "response_preference",
+              "batch_id": "rp_batch_15",
+              "channel_id": "C_RP_ANNOUNCEMENTS",
+              "thread_id": "1790916442.000051",
+              "message_id": "1790916442.000051",
+              "quote": "Here's the onboarding resource link for new preference reviewers: internal training hub.",
+              "quotation_scope": "entire_original_message",
+              "author_id": "U001",
+              "author_role": "TEAM_LEAD",
+              "reactions": [
+                {
+                  "name": "thumbsup",
+                  "users": [
+                    "U017"
+                  ],
+                  "count": 1,
+                  "reactor_roles": {
+                    "U017": "TUTOR"
+                  }
+                }
+              ],
+              "tl_endorsements": []
+            },
+            {
+              "evidence_id": "E002",
+              "member_id": "member_6bf358759c640a5ffe1cea79",
+              "project_id": "response_preference",
+              "batch_id": "rp_batch_15",
+              "channel_id": "C_RP_ANNOUNCEMENTS",
+              "thread_id": "1790916442.000051",
+              "message_id": "1790916495.000113",
+              "quote": "Thanks for sharing. I’ll check the resource before the next queue.",
+              "quotation_scope": "entire_original_message",
+              "author_id": "U011",
+              "author_role": "TUTOR",
+              "reactions": [],
+              "tl_endorsements": []
+            }
+          ]
+        },
+        {
+          "category": "model_impact_uncertainty",
+          "detection_timing": "before_assisted_review",
+          "surfaced_by": [
+            "model",
+            "automatic_severity_export"
+          ],
+          "field_path": [
+            "topics",
+            1,
+            "impact",
+            "criteria",
+            0
+          ],
+          "raw_assessment": {
+            "criterion": "insufficient_impact_evidence",
+            "basis": "INSUFFICIENT_EVIDENCE",
+            "observation": {
+              "text": "The thread contains a deadline reminder and a statement of intended task completion, but no reported operational issue or observed consequence from the queue timing is described.",
+              "evidence_ids": [
+                "E003",
+                "E004"
+              ]
+            }
+          },
+          "source_evidence": [
+            {
+              "evidence_id": "E003",
+              "member_id": "member_809df2faae873ed0419f1574",
+              "project_id": "response_preference",
+              "batch_id": "rp_batch_15",
+              "channel_id": "C_RP_GENERAL",
+              "thread_id": "1790880012.001400",
+              "message_id": "1790880012.001400",
+              "quote": "Reminder: the response preference queue closes at 6 PM today.",
+              "quotation_scope": "entire_original_message",
+              "author_id": "U019",
+              "author_role": "QA_TUTOR",
+              "reactions": [],
+              "tl_endorsements": []
+            },
+            {
+              "evidence_id": "E004",
+              "member_id": "member_809df2faae873ed0419f1574",
+              "project_id": "response_preference",
+              "batch_id": "rp_batch_15",
+              "channel_id": "C_RP_GENERAL",
+              "thread_id": "1790880012.001400",
+              "message_id": "1790880064.000113",
+              "quote": "Got it. I’ll finish the open tasks before the queue closes.",
+              "quotation_scope": "entire_original_message",
+              "author_id": "U010",
+              "author_role": "TUTOR",
+              "reactions": [],
+              "tl_endorsements": []
+            }
+          ]
+        }
+      ],
+      "coverage": {
+        "members": 2,
+        "messages": 4,
+        "inherited_obligations": 0
+      }
+    },
+    {
+      "candidate_group_id": "cluster_e849ac33e11b49fe",
+      "binding": {
+        "input_file_sha256": "409ae61728450d8310e4a1608f88c7441fa973fb9d66e324f93874dcd6e821f4",
+        "raw_draft_sha256": "2a8a7bb98257429e3de63782bbebec0e1651c97f8bd289087cd62a554f89948b",
+        "export_result_sha256": "fe95d1efd67dbfaf44aade0c08a16dba48894cefdcc333cf7428396aefe62faa"
+      },
+      "assisted_content_review_required": false,
+      "findings": [],
+      "assessment": {
+        "classification": "supported_partial_resolution_with_useful_model_uncertainty",
+        "summary": "One member/three messages retained. E002 remains FACT, while E003 substantive instruction-following guidance is ANSWER plus INSTRUCTION.",
+        "question_scope": "PARTIAL at 0.70 explicitly preserves the unresolved major/minor question while recognizing the TL distinction between missing requested structure and factuality. This limitation appears both in differences and the question note before assisted review.",
+        "authority_and_conditions": "TL guidance stays scoped to this requested table. E002 thumbs-up is a tutor reaction and gives no authority.",
+        "severity": "UNKNOWN operational severity, correctly independent of the task major/minor question.",
+        "obligations": "Zero inherited obligations. research_required=true before review even though the group is absent from the review_queue. Agent 3 must consume all effective records, not only that queue."
+      },
+      "model_uncertainty_observations": [
+        {
+          "category": "model_question_uncertainty",
+          "detection_timing": "before_assisted_review",
+          "surfaced_by": [
+            "model",
+            "automatic_complete_question_handoff"
+          ],
+          "field_path": [
+            "topics",
+            0,
+            "inventory",
+            0,
+            "question"
+          ],
+          "raw_judgment": {
+            "status": "PARTIAL",
+            "answer_item_ids": [
+              "I03"
+            ],
+            "resolution_confidence": 0.7,
+            "uncertainty_note": {
+              "text": "The original question asks for a major-or-minor classification, but the reply clarifies that the omission fails the instruction and that factual content is separate without explicitly stating major or minor.",
+              "evidence_ids": [
+                "E001",
+                "E003"
+              ]
+            }
+          },
+          "source_evidence": [
+            {
+              "evidence_id": "E001",
+              "member_id": "member_ea802da9b334651c0c4c14b0",
+              "project_id": "response_preference",
+              "batch_id": "rp_batch_15",
+              "channel_id": "C_RP_QA",
+              "thread_id": "1790887453.000017",
+              "message_id": "1790887453.000017",
+              "quote": "Is missing a requested table major or minor?",
+              "quotation_scope": "entire_original_message",
+              "author_id": "U014",
+              "author_role": "QA_TUTOR",
+              "reactions": [],
+              "tl_endorsements": []
+            },
+            {
+              "evidence_id": "E003",
+              "member_id": "member_ea802da9b334651c0c4c14b0",
+              "project_id": "response_preference",
+              "batch_id": "rp_batch_15",
+              "channel_id": "C_RP_QA",
+              "thread_id": "1790887453.000017",
+              "message_id": "1790887547.000226",
+              "quote": "Here the user explicitly requested a table. The answer that omits it fails that instruction; assess its factual content on a separate axis.",
+              "quotation_scope": "entire_original_message",
+              "author_id": "U001",
+              "author_role": "TEAM_LEAD",
+              "reactions": [],
+              "tl_endorsements": []
+            }
+          ],
+          "note_is_not_itself_proof_of_correctness": true
+        },
+        {
+          "category": "model_impact_uncertainty",
+          "detection_timing": "before_assisted_review",
+          "surfaced_by": [
+            "model",
+            "automatic_severity_export"
+          ],
+          "field_path": [
+            "topics",
+            0,
+            "impact",
+            "criteria",
+            0
+          ],
+          "raw_assessment": {
+            "criterion": "insufficient_impact_evidence",
+            "basis": "INSUFFICIENT_EVIDENCE",
+            "observation": {
+              "text": "The thread shows a request for evaluation guidance and a distinction between a missing requested table and factual correctness, but it does not describe any concrete work blockage, submission failure, rework, or other operational consequence.",
+              "evidence_ids": [
+                "E001",
+                "E002",
+                "E003"
+              ]
+            }
+          },
+          "source_evidence": [
+            {
+              "evidence_id": "E001",
+              "member_id": "member_ea802da9b334651c0c4c14b0",
+              "project_id": "response_preference",
+              "batch_id": "rp_batch_15",
+              "channel_id": "C_RP_QA",
+              "thread_id": "1790887453.000017",
+              "message_id": "1790887453.000017",
+              "quote": "Is missing a requested table major or minor?",
+              "quotation_scope": "entire_original_message",
+              "author_id": "U014",
+              "author_role": "QA_TUTOR",
+              "reactions": [],
+              "tl_endorsements": []
+            },
+            {
+              "evidence_id": "E002",
+              "member_id": "member_ea802da9b334651c0c4c14b0",
+              "project_id": "response_preference",
+              "batch_id": "rp_batch_15",
+              "channel_id": "C_RP_QA",
+              "thread_id": "1790887453.000017",
+              "message_id": "1790887506.000113",
+              "quote": "The requested table is absent even though the facts in the prose appear sound.",
+              "quotation_scope": "entire_original_message",
+              "author_id": "U011",
+              "author_role": "TUTOR",
+              "reactions": [
+                {
+                  "name": "thumbsup",
+                  "users": [
+                    "U012"
+                  ],
+                  "count": 1,
+                  "reactor_roles": {
+                    "U012": "TUTOR"
+                  }
+                }
+              ],
+              "tl_endorsements": []
+            },
+            {
+              "evidence_id": "E003",
+              "member_id": "member_ea802da9b334651c0c4c14b0",
+              "project_id": "response_preference",
+              "batch_id": "rp_batch_15",
+              "channel_id": "C_RP_QA",
+              "thread_id": "1790887453.000017",
+              "message_id": "1790887547.000226",
+              "quote": "Here the user explicitly requested a table. The answer that omits it fails that instruction; assess its factual content on a separate axis.",
+              "quotation_scope": "entire_original_message",
+              "author_id": "U001",
+              "author_role": "TEAM_LEAD",
+              "reactions": [],
+              "tl_endorsements": []
+            }
+          ]
+        }
+      ],
+      "coverage": {
+        "members": 1,
+        "messages": 3,
+        "inherited_obligations": 0
+      }
+    }
+  ]
+}

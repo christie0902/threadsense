@@ -1,11 +1,25 @@
 # ThreadSense
 
-ThreadSense interprets Slack discussions and groups related questions for topic
-analysis. Agent 1's finalized v3 handoff contains all **200 records: 81 VERIFIED,
-70 CORRECTED, and 49 NEEDS_REVIEW**. Agent 2 now consumes this canonical export,
-with 90 refreshed tentative groups and member-level review metadata. Its offline
-integration is complete; live consolidation accuracy has not yet been evaluated.
-Agent 3 retrieval and the briefing interface remain planned work.
+ThreadSense interprets Slack discussions and organizes canonical interpretations into
+related topics. Agent 1's finalized v3 handoff contains **200 records: 81 VERIFIED,
+70 CORRECTED and 49 NEEDS_REVIEW**, in 90 candidate groups.
+
+Agent 2's corrected **v7 scope is taxonomy and cluster hygiene**: coherence,
+splitting, concise reusable topic names and explicit outliers. It consumes Agent 1
+summaries/questions, preserves full canonical records and all 49 inherited review
+obligations passively, and uses one strict request per group without retries.
+Independent deterministic severity is UNKNOWN because the canonical inputs lack
+structured operational-impact signals. Agent 3 will own research, answer/policy
+reassessment, final severity and recommendations.
+
+Agent 2 v7 is **complete with nonblocking review**: 90 CONSOLIDATED groups,
+97 topics and all 200 identities/49 inherited obligations retained. The accepted
+four-group pilot was reused; 86 new requests completed, with no failed, interrupted
+or unprocessed groups. Three naming cautions remain in the reviewed effective view.
+See the [completion report](docs/agent2-taxonomy-refactor.md),
+[operational guide](docs/agent2-offline-integration.md) and
+[Agent 3 discussion handoff](docs/agent3-strategy-handoff.md). Historical v6 outputs
+remain preserved. Agent 3 and the dashboard remain planned work.
 
 ## Maintained documentation
 
@@ -14,8 +28,14 @@ Agent 3 retrieval and the briefing interface remain planned work.
   current behavior, read-only preflight, evidence, and next milestone.
 - [Final Agent 1 results](docs/agent1-full-batch-results.md): request accounting,
   all twelve source-review outcomes, limitations, and artifact links.
-- [Agent 2 offline integration](docs/agent2-offline-integration.md): factual contract,
-  grouping comparison, retained review obligations, tests, and the bounded pilot.
+- [Agent 2 taxonomy completion](docs/agent2-taxonomy-refactor.md): final coverage,
+  request accounting, assisted taxonomy review, retained obligations and test limits.
+- [Historical Agent 2 v6 results](docs/agent2-milestone-results.md): preserved prior
+  dataset and review evidence; superseded readiness conclusion.
+- [Agent 2 run guide](docs/agent2-offline-integration.md): current inspection,
+  reviewed effective export and completed execution provenance.
+- [Agent 3 strategy handoff](docs/agent3-strategy-handoff.md): discussion inputs and
+  remaining decisions; no Agent 3 implementation or live-call authorization.
 - [Prose benchmark](experiments/prose_comparison_v1/README.md): retained synthetic
   cases, request isolation, scoring, and saved-response regression evidence.
 - [Repository cleanup record](docs/repository-cleanup.md): removals, recovery,
@@ -38,9 +58,16 @@ The baseline lives in `data/processed/agent1_authority_fix/`; the 91 frozen
 groups live in `data/processed/grouping/` as historical evidence. Agent 2 reads
 `data/processed/agent1_verified_v3/interpretations.json` directly and uses the new
 90 candidates in `data/processed/grouping_agent1_v3/`. It preserves all 49 inherited
-review obligations through merging. Source-cited answers from disputed topics stay
-provisional. Severity, actionability, policy research, and recommendations belong
-to future Agent 3 work, not the active Agent 2 schema.
+review obligations through taxonomy assignments, rejection and recoverable failure.
+Agent 2's model sees canonical summaries/questions and the approved glossary; original
+Slack and evidence remain in the passive export. It does not generate another
+interpretation, question inventory, answer judgment or research narrative.
+The finalized dataset is `data/processed/agent2_taxonomy_final_v7/`. Use its
+`release_manifest.json` and `effective_output_reviewed.json`, or the mandatory
+effective loader. Per-record `taxonomy_handoff` replaces the historical semantic
+`research_handoff`. All 49 inherited obligations and three naming cautions remain
+visible across 41 effective review groups. Preserve future unassigned/rejected
+members for later work as well.
 
 ## Setup and configuration
 
@@ -120,7 +147,7 @@ the frozen baselines when preparing any future run.
 | Verification / canonical handoff | `scripts/run_agent1_verification.py` |
 | Historical offline reconciliation | `scripts/reconcile_agent1_handoff.py` |
 | Historical grouping / canonical refresh | `scripts/run_thread_grouping.py`, `scripts/prepare_agent2_grouping.py` |
-| Factual Agent 2 | `scripts/prepare_agent2_input.py`, `scripts/run_agent2_sample.py`, `scripts/run_agent2_batch.py` |
+| Taxonomy Agent 2 | `scripts/prepare_agent2_input.py`, `scripts/run_agent2_sample.py`, `scripts/run_agent2_batch.py` |
 | Retired compatibility command | `scripts/repair_agent2_sample.py` explains the v1-to-v2 migration and makes no calls |
 | Retained benchmark | `scripts/run_prose_comparison_experiment.py` |
 | Dataset authoring | `scripts/generate_thread_blueprint.py`, `scripts/generate_slack_fixtures.py` |

@@ -1,213 +1,142 @@
-# Agent 2 offline integration — 2026-10-23
+# Agent 2 operational guide ? completed taxonomy v7
 
-The offline connection is complete. Agent 2 reads the finalized Agent 1 v3
-canonical export directly: **200 unique full identities, 81 VERIFIED,
-70 CORRECTED, 49 NEEDS_REVIEW**. All 49 inherited review obligations survive
-grouping, model-response validation, and consolidation exports. No paid model
-calls were made. The saved full preparation contains **90 NOT_RUN candidates**;
-it is not a claim that 200 threads have received live Agent 2 analysis.
+Agent 2 taxonomy is **closed, complete with nonblocking review**: 90 CONSOLIDATED
+groups, 97 topics, 200 unique identities, 516 retained source messages and all 49
+inherited obligations. Exactly 86 new requests completed; four accepted pilot
+results were reused. Zero failures, interruptions, unprocessed groups or unknown
+completions. No further run is needed or authorized by this guide. See the
+[completion report](agent2-taxonomy-refactor.md).
 
-## Implemented behavior
+## Scope and frozen producer
 
-`handoff_inputs.py` validates canonical coverage, queue agreement, candidate/source
-hashes, source message identities, and saved-result lineage. For the finalized
-v3 input it also checks the original completion receipt's artifact hashes.
-`topic_inputs.py` joins refreshed groups back to the canonical export and rejects
-stale inputs, changed member metadata, duplicate/missing assignments, or crossed
-project/batch scope. It no longer reads interpretations from the old 91 groups.
+Agent 1 interprets Slack. Agent 2 organizes canonical summaries/questions into
+coherent topics, splits candidates when useful, names topics and accounts for
+outliers. Names/rationales are grouping metadata, not policy or verified answers.
+Future Agent 3 owns research, answer/policy reassessment, final severity and
+recommendations. It is not implemented here.
 
-Each member retains its entire original canonical row under `agent1_record`, its
-original source snapshot, full project/batch/channel/thread identity, stable
-`member_id`, export path/hash, and lineage base. Effective and automated status,
-disputed fields, reasons/findings, review evidence, candidate/source hashes, and
-original/revised lineage remain intact. Model responses cannot supply or clear
-these fields: Python copies them after validation.
+Accepted producer: `openai/gpt-5.4-2026-03-05`, low reasoning, 8192 completion tokens,
+no temperature/top_p/logprobs, prompt `agent2-taxonomy-v7`, strict response schema 7,
+adapter `taxonomy-to-canonical-v1`. One POST/group; no SDK retry, repair, fallback
+or verifier. Code, model, prompt, glossary and grouping remained unchanged.
 
-The new schema v2 `TopicConsolidation` partitions all supplied member IDs exactly
-once. It describes a shared issue, optional question, relevant differences,
-unresolved questions, source-cited answers, and uncertainties. Factual prose
-requires exact quotations and member-qualified message IDs from the assigned
-topic. Every assigned member needs citation coverage. Pure announcements have
-no invented question, open-question list, or question/answer resolution.
+Requests contain project/batch, stable member IDs, canonical summary/question and
+approved glossary. Raw Slack, evidence inventories, prior Agent 2 narratives,
+reviews, severity instructions and evaluation labels are excluded. Full canonical
+records/sources survive passively. Assigned/rejected IDs must partition input
+exactly; failures retain explicit unassigned members. Singleton, social and
+announcement topics are permitted. Same names do not merge groups or projects.
 
-For any topic with inherited flags or new uncertainty, exported prose carries
-`reliability: PROVISIONAL`. Its source-cited answers are retained under
-`provisional_answers`, with `supported_answers` empty. Even repeated or confidently
-worded model claims cannot clear upstream obligations or enter the supported-answer
-slot through merging. Unflagged source-cited prose is explicitly labeled
-`SOURCE_CITED_NOT_INDEPENDENTLY_VERIFIED`, not independent ground truth.
+Separate deterministic severity uses `provisional-operational-severity-v2` and
+`canonical-impact-availability-v1`. All 97 actual topics remain UNKNOWN/UNASSESSED:
+no approved structured operational-impact signals exist in these inputs. Prose,
+flags and task-labeling major/minor do not determine severity. Synthetic tests
+cover nonblocking HIGH routing; this run does not show real HIGH detection.
 
-Review is nonblocking. One request per candidate is followed by deterministic
-membership/evidence checks: **zero retries, zero repairs, no additional verifier
-agent or model calls**. Recoverable timeouts, HTTP failures, malformed output, and
-validation failures retain the entire candidate and continue with later groups.
-Fatal configuration/persistence failures stop; interruption leaves later candidates
-NOT_RUN and records unknown provider completion when no response was saved.
-Existing output directories are never silently overwritten or resumed.
+## Current canonical handoff
 
-The group review queue includes inherited and newly arising consolidation flags.
-The separate member review queue preserves inherited obligations individually,
-independent of recommendations or topic count. Slack resolution stays inside the
-unchanged member interpretation and is not used as interpretation reliability.
-
-## Compatibility changes
-
-| Previous behavior | Active v2 behavior |
+| Artifact | Purpose |
 | --- | --- |
-| Load frozen grouping interpretations; require 91 groups | Load all 200 canonical rows directly; validate refreshed membership without a fixed group-count assumption |
-| Bare `thread_ids` / message IDs | Stable member IDs bound to full identities; each citation names member, message, and exact quote |
-| `TopicAnalysis` / `TopicRollup` with severity, actionability, research needs | Strict factual `TopicConsolidation` / `FactualTopic` in `topic_contracts.py`; Agent 3 fields are rejected |
-| CrewAI execution and validation-guided repair scripts | One existing single-POST transport call, deterministic checks, retained failure, no correction loop |
-| Human-review screening tied to severity/repair | Nonblocking inherited and new review obligations, independent of recommendations |
-| Sample preparation overwrites the historical input | Read-only by default; `--write` creates a new file exclusively |
+| `data/processed/agent1_verified_v3/interpretations.json` | Unchanged 200 inputs: 81 VERIFIED, 70 CORRECTED, 49 NEEDS_REVIEW |
+| `data/processed/grouping_agent1_v3/clusters.json` | Unchanged 90 candidates; no embedding/parameter refresh |
+| `data/processed/agent2_taxonomy_final_v7/consolidations.json` | Final automated taxonomy records |
+| `data/processed/agent2_taxonomy_final_v7/effective_output_reviewed.json` | Current effective snapshot; use this or the loader |
+| `data/processed/agent2_taxonomy_final_v7/effective_review_queue.json` | 41 groups requiring effective review |
+| `data/processed/agent2_taxonomy_final_v7/member_review_queue.json` | 49 original inherited obligations with evidence/lineage |
+| `data/processed/agent2_taxonomy_final_v7/review_queue.json` | Preserved automated 40-group queue |
+| `data/processed/agent2_taxonomy_final_v7/release_manifest.json` | Current reviewed release pointers, hashes and counts |
+| `data/processed/agent2_taxonomy_final_v7/manifest.json` | Assembly receipt, original run/file provenance |
+| `data/experiments/agent2_taxonomy_final_v7/taxonomy_review.json` | All-group assisted review and three naming cautions |
+| `data/experiments/agent2_taxonomy_final_v7/request_ledger.json` | 86 new + four reused attempts, tokens, latency and hashes |
 
-Legacy classes remain unchanged in `contracts.py` for historical decoding and
-Agent 1 fingerprint compatibility. Old Agent 2 outputs, inputs, repair evidence,
-and severity/review utilities remain historical assets; the active v2 runner does
-not invoke their decision rules. `repair_agent2_sample.py` now explains retirement
-and exits without calls. The sample runner uses v2 and allows at most one explicit
-`--run` request; the prepared batch pilot below is the evaluation entry point.
-The compatibility CrewAI factories use the factual responsibility, but active
-batch/sample execution uses the bounded transport directly.
+The reviewed view adds three nonblocking naming cautions. Two affect groups
+already carrying inherited flags; one adds a review group. No automated result
+or member was rewritten. Assembly-time `effective_output.json` and its manifest
+hash remain preserved snapshots with 40 review groups; `release_manifest.json`
+points to the later reviewed view with 41. Use the current pointer or loader.
 
-## Refreshed grouping
+The mandatory `docs/agent2-review-supplements.json` retains historical reviews and
+adds the new exact-output review. Findings bind to input/raw/result file hashes;
+stale findings never migrate to new outputs. Agent 1's pilot registry and full-batch
+review evidence remain in the payloads. No v6 semantic findings were transferred.
 
-The approved `scripts/run_thread_grouping.py` is byte-identical to the frozen
-baseline's script hash. The new wrapper reuses its embedding and clustering
-functions per project/batch, then attaches full canonical metadata and checks
-complete identity coverage. It uses the existing cached local MiniLM model with
-offline mode enabled; no download or paid embedding service was used.
+## Inspect or export without model calls
 
-Unchanged configuration: `sentence-transformers/all-MiniLM-L6-v2`, revision
-`b9db1e8a0d3a51769172ba8546f282a73f066e47`, CPU, normalized embeddings, original
-question/summary text format, complete-linkage agglomerative clustering with
-cosine distance, **threshold 0.50**, project/batch scope, and identical package
-versions. The historical script's CLI default of 0.35 was not used.
-
-| Project | Old groups | New groups | Old singletons | New singletons | Review members |
-| --- | ---: | ---: | ---: | ---: | ---: |
-| Audio/multimodal | 20 | 18 | 9 | 6 | 12 |
-| Multilingual | 24 | 22 | 10 | 7 | 13 |
-| Response preference | 23 | 25 | 6 | 9 | 16 |
-| Safety classification | 24 | 25 | 7 | 9 | 8 |
-| Total | **91** | **90** | **32** | **31** | **49** |
-
-There are 61 unchanged membership groups containing 132 threads; 68 threads have
-different group memberships. Thirty old memberships are replaced by 29 new
-memberships. Forty refreshed groups contain the 49 flagged members. No embedding
-inputs were truncated. Candidates remain tentative: a grouping change does not
-prove improved semantic accuracy, and a representative summary is not an established
-fact. The frozen baseline remains unchanged in `data/processed/grouping/`.
-
-Commands used for local preparation (already completed; do not overwrite them):
+From the repository root:
 
 ```powershell
-.venv\Scripts\python.exe scripts/prepare_agent2_grouping.py --write
-.venv\Scripts\python.exe .cache/agent2_integration_20261022/prepare_offline_artifacts.py
+uv run --locked python -c "from threadsense.agents.topic_effective import load_effective_output; v=load_effective_output('data/processed/agent2_taxonomy_final_v7'); print(len(v['records']), len(v['review_queue']), len(v['member_review_queue']), len(v['applied_content_obligations']), v['review_binding_status'])"
 ```
 
-The second helper explicitly disables network, credential retrieval, and model
-completion while saving the offline requests, pilot selection, and synthetic
-example. For later fresh preparation, use `run_agent2_batch.py --prepare` with a
-new output directory. Inspection alone is read-only:
+Expected: **`90 41 49 3 VALID`**. No API key/model call is needed. To export another
+view, use a fresh file; the exporter refuses overwrite:
 
 ```powershell
-uv run --locked python scripts/prepare_agent2_grouping.py
-uv run --locked python scripts/run_agent2_batch.py --dry-run --limit 0
+uv run --locked python scripts/export_agent2_effective.py --run-dir data/processed/agent2_taxonomy_final_v7 --output data/processed/agent2_taxonomy_final_v7/effective_output_inspection_01.json
 ```
 
-## Offline validation and representative output
+Per-record `taxonomy_handoff` has contract `agent2-taxonomy-handoff-v1`:
 
-The focused suite passed **48 tests**. The complete suite passed **308 tests,
-0 failures, 0 skips**, with 162 dependency warnings in 104.67 seconds:
+- Group identity and processing state; `nonblocking=true`.
+- Topics, stable assignments, grouping rationales and separate severity metadata.
+- Full canonical members/sources, identity, automated/effective Agent 1 status,
+  disputed fields, evidence, source/candidate hashes and lineage.
+- Member dispositions, rejected and unassigned IDs, including failure cases.
+- Effective review obligations, review evidence and grouping file/hash provenance.
+
+Retain every member and obligation even without a question, topic or recommendation.
+Group acceptance, LOW/N/A or repeated claims cannot clear an inherited dispute.
+There is no regenerated answer inventory or v7 `research_handoff`; the historical
+v6 narrative contract is superseded.
+
+## Completed execution record ? do not rerun
+
+The [freeze](../data/experiments/agent2_taxonomy_final_v7/freeze.json) records code,
+parameters, glossary, source/grouping hashes, exact 86 requests, original pilot
+hashes and preflight cost estimate. Selection was canonical 90 minus accepted four:
+**86 groups / 189 identities / 46 flags**. The four pilot calls were not repeated.
+The existing locked environment was used directly:
 
 ```powershell
-uv run --locked --extra dev python -m pytest -q --disable-warnings --tb=short --basetemp .cache/pytest-agent2-integration-final -o cache_dir=.cache/agent2_integration_20261022/pytest-cache
+$env:THREADSENSE_MODEL = 'openai/gpt-5.4-2026-03-05'
+$env:THREADSENSE_AGENT2_REASONING_EFFORT = 'low'
+.venv\Scripts\python.exe -X utf8 scripts/run_agent2_batch.py --dry-run --pilot docs/agent2-taxonomy-remaining-v7.json --max-requests 86 --output-dir data/processed/agent2_taxonomy_remaining_v7
+.venv\Scripts\python.exe -X utf8 scripts/run_agent2_batch.py --run --pilot docs/agent2-taxonomy-remaining-v7.json --max-requests 86 --output-dir data/processed/agent2_taxonomy_remaining_v7
+.venv\Scripts\python.exe -X utf8 scripts/assemble_agent2_dataset.py --reused-run data/processed/agent2_taxonomy_pilot_v7 --new-run data/processed/agent2_taxonomy_remaining_v7 --output-dir data/processed/agent2_taxonomy_final_v7
 ```
 
-Thirty-one new tests cover canonical loading/corruption, all 200 identities and 49
-flags, exact full-scope membership, stale groups, approved grouping parameters,
-request isolation, exact quotes and topic-local evidence, legacy-field rejection,
-announcements, qualified answer export, and failure continuation. A mocked run over
-all 90 candidates makes exactly 90 mocked attempts: 88 structurally valid results,
-one timeout, one malformed response, zero unprocessed groups, and all 49 inherited
-obligations retained. The timeout remains visible with unknown completion. Fatal
-configuration/persistence and interruption tests retain unprocessed groups honestly.
-These outcomes establish integration behavior, not live semantic accuracy.
+These are completed-command provenance, not pending instructions. Output paths
+already exist. The review registry was extended after execution, so old selection
+fingerprints intentionally differ from the current registry. Do not bypass this
+check, edit freezes or rerun accepted groups. The release is an assembled dataset,
+not a resumable batch directory.
 
-The [representative export](../data/processed/agent2_offline_v2/examples/flagged_consolidation.json)
-is a **synthetic offline example constructed with Codex assistance from actual
-saved Slack**, not a model response, human approval, or independent ground truth.
-It partitions the six-member playback/silence candidate into two topics. Its
-playback summary says members recall only a possible workaround; attempts/failure
-are not established. Exact Priya replies supply limited task-reporting guidance,
-retained as provisional because the topic has unresolved member disputes.
-Threads `1790882197.000111` and `1790920171.000109` keep their complete review
-obligations. Silent-clip diagnostics do not become a quarantine/scoring answer.
-The reviewed input fixture is in `tests/fixtures/agent2_flagged_example_v2.json`.
+Preflight estimated $1.633503 at 1,000 completion tokens/group or $10.911183 at all
+output allowances with estimated input. Actual new usage was 65,807 input + 11,280
+output tokens (including 1,466 reasoning), no cached tokens; standard-rate estimate
+**$0.333718**, not an invoice. No separate local dollar cap was found; provider
+limits remained unchanged. The report/ledger give rates, source and latency.
 
-## Prepared live pilot — not executed
+## Validation and limitations
 
-The [selection](agent2-pilot-v2.json) binds exact canonical/grouping/configuration
-hashes and the existing configured model **`openai/gpt-4o-mini`**. Selection notes
-stay outside model requests. Each case is an independent request with no history.
+The actual-artifact audit passed coverage, exact-request/replay, preservation,
+partitions, ledger, queue, review binding and effective-loader checks. No producer
+or assembly/export code changed, so existing receipts were reused: **294 Agent 2
+checks passed** (254 historical + 40 taxonomy). Exact commands are saved in
+`data/experiments/agent2_taxonomy_v7/validation.json`.
 
-| Case | Candidate group | Members / inherited flags | Focus |
-| --- | --- | ---: | --- |
-| 01 | `cluster_6b59d13144282285` | 6 / 2 | Possible workaround versus failed attempt; QN; loading versus silent-clip membership |
-| 02 | `cluster_6042d88a3d171626` | 4 / 1 | Recording/reference distinction and evidence-supported answer scope |
-| 03 | `cluster_08694739f8f88214` | 2 / 1 | Announcements without invented questions |
-| 04 | `cluster_430237353843237f` | 3 / 1 | Citation mismatch example, unresolved scoring, membership differences |
+There was **no single green full-suite run**. Final workspace run: 569 passed /
+1 failed due to Windows atomic replacement in unchanged Agent 1 stress testing.
+C: temporary-directory run: 568 passed / 2 failed due to legacy cross-drive
+reconciliation. Agent 1 was not changed and the suite was not repeatedly rerun.
+Active Agent 2 persistence and assembly passed in this milestone.
 
-Total: **4 groups, 15 threads, 5 inherited review obligations, at most 4 new request
-attempts**. There are no repair, retry, fallback, or separate verifier calls.
-Exact prepared requests are in `data/processed/agent2_pilot_prepared_v2/records/`.
-No call markers or raw responses exist because no requests have been attempted.
+All 90 groups were reviewed against canonical summaries/questions. Three naming
+cautions are not policy verification or failed membership partitions. No live
+rejected, failed or interrupted group occurred; those paths retain offline coverage.
+Taxonomy does not certify Agent 1 truth. Keep inherited flags, UNKNOWN severity
+and the grouping-metadata boundary visible downstream.
 
-Read-only pilot preflight:
-
-```powershell
-$env:THREADSENSE_MODEL = 'openai/gpt-4o-mini'
-uv run --locked python scripts/run_agent2_batch.py --dry-run --pilot docs/agent2-pilot-v2.json
-```
-
-Prepared live command, **not executed in this milestone**:
-
-```powershell
-$env:THREADSENSE_MODEL = 'openai/gpt-4o-mini'
-uv run --locked python scripts/run_agent2_batch.py --run --pilot docs/agent2-pilot-v2.json --max-requests 4 --output-dir data/processed/agent2_pilot_v2
-```
-
-Keys come from the existing local `.env`. Use a new output directory; existing
-attempts are never retried. The live runner saves exact request bytes, call/start
-markers, available raw responses, parsed/failed results, group and member review
-queues, and a manifest. A validly completed run with review items exits successfully;
-fatal/incomplete work does not. Future live source review must assess actual
-responses, including topic boundaries and factual entailment.
-
-## Handoff artifacts and limits
-
-- [Refreshed candidates](../data/processed/grouping_agent1_v3/clusters.json).
-- [Grouping comparison](../data/processed/agent2_offline_v2/grouping_comparison.json).
-- [All 90 pending candidate records / 200 members](../data/processed/agent2_offline_v2/consolidations.json).
-- [49 inherited member obligations](../data/processed/agent2_offline_v2/member_review_queue.json).
-- [40 pending candidate groups requiring review](../data/processed/agent2_offline_v2/review_queue.json).
-- [Offline preparation manifest](../data/processed/agent2_offline_v2/manifest.json).
-- [Offline validation receipt](../data/processed/agent2_offline_v2/offline_validation.json).
-- [Prepared pilot manifest](../data/processed/agent2_pilot_prepared_v2/manifest.json).
-
-Exact quotation checks establish that evidence exists, not that a paraphrase is
-entailed or a reply is substantive. A model can still invent questions, conflate
-incidents, miss uncertainty, or misread an answer. The conservative export prevents
-known flagged claims from becoming accepted answers; it cannot discover every
-previously missed semantic error. Consolidation can split within a candidate; it
-does not recursively merge across candidates. Live accuracy remains unmeasured.
-
-Agent 1's candidates, all fourteen fingerprinted code files, completed v3 outputs,
-historical evidence, both review registries, frozen grouping, evaluation data,
-dependency declarations/lockfile, and local environment are preserved. No Agent 1
-verification/report refresh was run. Future refreshes still require both review
-registries. Remaining work is the bounded live Agent 2 pilot and source review,
-then separately authorized downstream work. Agent 3, RAG, and the dashboard were
-not implemented; future briefing consumers must preserve both inherited member
-obligations and new Agent 2 group-level flags, including items with no recommendation.
+Next: [Agent 3 strategy discussion](agent3-strategy-handoff.md). No Agent 3, RAG,
+dashboard, further prompt experiment or broader run was implemented or scheduled.
+Historical v6 reports and the pre-closure v7 guide remain preserved.

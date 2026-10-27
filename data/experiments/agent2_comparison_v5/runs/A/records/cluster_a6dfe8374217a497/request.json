@@ -1,0 +1,286 @@
+{
+  "model": "gpt-4o-mini-2024-07-18",
+  "messages": [
+    {
+      "role": "system",
+      "content": "Prompt version: agent2-inventory-v5.0\nConsolidate factual topics from original Slack messages and the approved glossary.\nAssign every member alias exactly once; split unrelated topics. Cite only exact\ntopic-local evidence IDs. Traceable IDs alone do not establish support for a claim.\nKeep a concise shared issue and supported differences; invent no causal explanation,\npolicy precedence, attempted/failed workaround, impact, or harmful-content contrast.\n\nRecord substantive content ONCE in inventory. Each item has a topic-local item_id\nand one evidence_id. Do not copy source quotations into inventory: Python supplies\nthe full original message and its qualifiers, identities, authors and reactions.\nOnly synthesis, differences and impact observations require generated prose.\nA message may supply multiple items, e.g. diagnostic request and submission condition.\nDistinguish QUESTION (actual handling/information question), DIAGNOSTIC_REQUEST\n(request for checks/details, not an answer), ANSWER (scoped substantive reply),\nINSTRUCTION, FACT (reported, not independently confirmed), ANNOUNCEMENT and CONTEXT.\nAn actual request for handling or a decision is QUESTION, not FACT or a request\nfor diagnostics. A diagnostic asks for checks/details; retain the original handling\nquestion independently. Context describing the task is not an ANSWER about handling.\nANSWER requires an explicit substantive response. Set answer_status=TENTATIVE for\nunconfirmed advice or DIRECT for an explicit scoped answer; all other kinds use null.\nQuestion links to tentative advice remain PARTIAL, never ANSWERED.\nQuoted or rhetorical questions are not automatically genuine questions. Never invent\nquestions from a factual incident or diagnostic. Announcements can contain instructions\nwithout questions. Do not repeat items in independent answer/guidance/question lists.\nClassify announced information as ANNOUNCEMENT from its content, not its channel.\nRecord an announced instruction as an additional INSTRUCTION item on that source.\nOne message can report a fact, issue an instruction and state its condition.\nDo not make a reply question into a root question.\n\nEvery member needs substantive inventory content, not just context or raw retention.\nAccount for every message with one or more items OR an explicit NON_SUBSTANTIVE or\nUNCERTAIN disposition with reason. Uncertain meaning must remain visible, never default\nto NONE. Preserve all actual unanswered questions and scoped TL instructions, including\nthose in replies. Question items require OPEN with no answer links, or PARTIAL/ANSWERED\nwith answer_item_ids pointing to ANSWER items in that SAME member conversation.\nDiagnostics cannot close questions. An answer to a narrower task cannot resolve a\nbroader question in another thread. Tentative advice must remain tentative and PARTIAL.\nRetain relevant differences between reported symptoms, and distinguish task labels\nfrom operational impact. Use glossary meanings consistently.\n\nDo not generate authority labels. Python supplies author roles and eligible TL reaction\nusers/targets. Endorsement applies only to that reply with its conditions; eyes is not\napproval. Inherited disputes remain provisional; repeated claims cannot clear them.\n\nProvide preliminary impact in the SAME response. Cite each applicable rubric criterion\nand its observation once; Python derives the level, rubric version and provisional\nmetadata. Criteria must imply one unambiguous level. Retain affected_scope only where\nevidenced, otherwise null. REPORTED_RISK differs from OBSERVED_OUTCOME; actual scope\nmust not expand to all users. limited_demonstrated_consequence requires OBSERVED_OUTCOME\nof limited OPERATIONAL impact, not harmless task content. insufficient_impact_evidence\nuses INSUFFICIENT_EVIDENCE and explains what is unknown; non_operational uses\nNON_OPERATIONAL, only for clearly non-operational content. Neither is an empty list.\nUse impact=null for an explicitly unassessed section. A reported conflict or request\nfor clarification does not establish an observed operational outcome.\nFor substantial_blockage cite inability to perform/submit work; quality/safety risk\nrequires actual operational evidence beyond task vocabulary. Review flags, unanswered\nquestions, number of members and minor/major task categories do not set severity.\nHIGH routes to nonblocking review; LOW/N/A cannot clear flags. Agent 3 may later record\na separate researched assessment. No research, actionability or recommendations.\nOne independent request, no tools, verifier, retries or repair. Return JSON matching\nthe API response_format. Do not output schema_version or other fixed metadata;\nPython supplies version 5 from trusted configuration.\n"
+    },
+    {
+      "role": "user",
+      "content": "{\"schema_version\": 5, \"candidate_group_id\": \"cluster_a6dfe8374217a497\", \"project_id\": \"safety_classification\", \"batch_id\": \"safety_batch_08\", \"approved_glossary\": {\"LT\": \"Label Tool, the internal labeling platform\", \"QN\": \"Quarantine\", \"TL\": \"Team Lead\", \"QA\": \"Quality Assurance or QA Tutor depending on context\", \"L0\": \"Initial labeling layer / first-pass labelers\", \"queue\": \"Batch of assigned labeling tasks\", \"tasking\": \"Actively completing labeling tasks\", \"align\": \"Clarify a rule so labeling behavior becomes consistent\", \"flag\": \"Raise an issue for review\", \"rubric\": \"Evaluation or scoring criteria\"}, \"provisional_operational_severity_rubric\": {\"version\": \"provisional-operational-severity-v1\", \"status\": \"provisional_not_approved_organizational_policy\", \"criteria\": {\"substantial_blockage\": {\"level\": \"HIGH\", \"definition\": \"Evidence indicates substantial inability to perform or submit work; retain actual affected scope.\"}, \"material_quality_risk\": {\"level\": \"HIGH\", \"definition\": \"Evidence indicates material risk to labeling/data quality; distinguish reported risk from observed harm.\"}, \"material_safety_risk\": {\"level\": \"HIGH\", \"definition\": \"Evidence indicates material operational safety risk, beyond safety-related task vocabulary.\"}, \"bounded_operational_issue\": {\"level\": \"MEDIUM\", \"definition\": \"Meaningful but limited operational issue requiring clarification or coordination.\"}, \"limited_demonstrated_consequence\": {\"level\": \"LOW\", \"definition\": \"An operational issue with limited demonstrated consequences.\"}, \"non_operational\": {\"level\": \"N/A\", \"definition\": \"Clearly non-operational content such as routine social chatter; announcements are not automatically non-operational.\"}, \"insufficient_impact_evidence\": {\"level\": \"UNKNOWN\", \"definition\": \"Insufficient evidence of operational impact. Missing information is not evidence of low impact.\"}}, \"rules\": [\"Assess work blockage, affected scope, and potential quality/safety consequences from Slack evidence.\", \"Do not derive severity from review flags, member count, safety vocabulary, or an unanswered question alone.\", \"Task labeling categories minor/major are not operational severity.\", \"Distinguish reported risks from confirmed outcomes. Announcements can describe serious incidents.\", \"UNKNOWN is required when impact cannot be assessed; unsuccessful processing remains unassessed.\", \"No retrieval, policy-precedence decisions, or intervention recommendations. Agent 3 may separately revise this assessment.\"]}, \"members\": [{\"member_id\": \"M01\", \"project_id\": \"safety_classification\", \"batch_id\": \"safety_batch_08\", \"channel_id\": \"C_SAFETY_GENERAL\", \"thread_id\": \"1790893012.001800\", \"interpretation_reliability\": \"VERIFIED\", \"review_required\": false, \"disputed_fields\": []}, {\"member_id\": \"M02\", \"project_id\": \"safety_classification\", \"batch_id\": \"safety_batch_08\", \"channel_id\": \"C_SAFETY_GENERAL\", \"thread_id\": \"1790918817.000068\", \"interpretation_reliability\": \"CORRECTED\", \"review_required\": false, \"disputed_fields\": []}, {\"member_id\": \"M03\", \"project_id\": \"safety_classification\", \"batch_id\": \"safety_batch_08\", \"channel_id\": \"C_SAFETY_QA\", \"thread_id\": \"1790923242.000069\", \"interpretation_reliability\": \"VERIFIED\", \"review_required\": false, \"disputed_fields\": []}], \"evidence_catalog\": [{\"evidence_id\": \"E001\", \"member_id\": \"M01\", \"project_id\": \"safety_classification\", \"batch_id\": \"safety_batch_08\", \"channel_id\": \"C_SAFETY_GENERAL\", \"thread_id\": \"1790893012.001800\", \"message_id\": \"1790893012.001800\", \"quote\": \"A kid is mentioned in a harmless story; QN?\", \"is_reply\": false, \"author_id\": \"U002\", \"author_name\": \"Mina\", \"author_role\": \"QA_TUTOR\", \"reactions\": [], \"eligible_tl_endorsements\": []}, {\"evidence_id\": \"E002\", \"member_id\": \"M01\", \"project_id\": \"safety_classification\", \"batch_id\": \"safety_batch_08\", \"channel_id\": \"C_SAFETY_GENERAL\", \"thread_id\": \"1790893012.001800\", \"message_id\": \"1790893058.000113\", \"quote\": \"A benign mention of a minor in this school-context example does not on its own require quarantine. Check the remaining context for independent flags.\", \"is_reply\": true, \"author_id\": \"U008\", \"author_name\": \"Hana\", \"author_role\": \"QA_TUTOR\", \"reactions\": [{\"name\": \"agree\", \"users\": [\"U006\"], \"count\": 1, \"reactor_roles\": {\"U006\": \"TEAM_LEAD\"}}], \"eligible_tl_endorsements\": [{\"reaction\": \"agree\", \"user_id\": \"U006\", \"target_message_id\": \"1790893058.000113\"}]}, {\"evidence_id\": \"E003\", \"member_id\": \"M02\", \"project_id\": \"safety_classification\", \"batch_id\": \"safety_batch_08\", \"channel_id\": \"C_SAFETY_GENERAL\", \"thread_id\": \"1790918817.000068\", \"message_id\": \"1790918817.000068\", \"quote\": \"Anyone else seeing this? Does every mention of a minor trigger quarantine?\", \"is_reply\": false, \"author_id\": \"U013\", \"author_name\": \"Jun\", \"author_role\": \"TUTOR\", \"reactions\": [], \"eligible_tl_endorsements\": []}, {\"evidence_id\": \"E004\", \"member_id\": \"M02\", \"project_id\": \"safety_classification\", \"batch_id\": \"safety_batch_08\", \"channel_id\": \"C_SAFETY_GENERAL\", \"thread_id\": \"1790918817.000068\", \"message_id\": \"1790918865.000113\", \"quote\": \"The child is mentioned in a school schedule with no harmful content.\", \"is_reply\": true, \"author_id\": \"U010\", \"author_name\": \"Avery\", \"author_role\": \"TUTOR\", \"reactions\": [], \"eligible_tl_endorsements\": []}, {\"evidence_id\": \"E005\", \"member_id\": \"M03\", \"project_id\": \"safety_classification\", \"batch_id\": \"safety_batch_08\", \"channel_id\": \"C_SAFETY_QA\", \"thread_id\": \"1790923242.000069\", \"message_id\": \"1790923242.000069\", \"quote\": \"[QA clarification]\\nIssue: A child is mentioned in a normal school story. Does that alone need QN?\\nQuestion: what is the correct handling for this task? (task ref SAFETY-3242)\", \"is_reply\": false, \"author_id\": \"U002\", \"author_name\": \"Mina\", \"author_role\": \"QA_TUTOR\", \"reactions\": [], \"eligible_tl_endorsements\": []}, {\"evidence_id\": \"E006\", \"member_id\": \"M03\", \"project_id\": \"safety_classification\", \"batch_id\": \"safety_batch_08\", \"channel_id\": \"C_SAFETY_QA\", \"thread_id\": \"1790923242.000069\", \"message_id\": \"1790923288.000113\", \"quote\": \"The age appears in a harmless family anecdote.\", \"is_reply\": true, \"author_id\": \"U018\", \"author_name\": \"Omar\", \"author_role\": \"TUTOR\", \"reactions\": [], \"eligible_tl_endorsements\": []}, {\"evidence_id\": \"E007\", \"member_id\": \"M03\", \"project_id\": \"safety_classification\", \"batch_id\": \"safety_batch_08\", \"channel_id\": \"C_SAFETY_QA\", \"thread_id\": \"1790923242.000069\", \"message_id\": \"1790923344.000226\", \"quote\": \"Does anything besides the person’s age meet quarantine criteria?\", \"is_reply\": true, \"author_id\": \"U014\", \"author_name\": \"Linh\", \"author_role\": \"QA_TUTOR\", \"reactions\": [], \"eligible_tl_endorsements\": []}]}"
+    }
+  ],
+  "temperature": 0,
+  "max_completion_tokens": 8192,
+  "response_format": {
+    "type": "json_schema",
+    "json_schema": {
+      "name": "threadsense_agent2_inventory_v5",
+      "strict": true,
+      "schema": {
+        "$defs": {
+          "CitedText": {
+            "additionalProperties": false,
+            "properties": {
+              "text": {
+                "type": "string"
+              },
+              "evidence_ids": {
+                "items": {
+                  "type": "string"
+                },
+                "minItems": 1,
+                "type": "array"
+              }
+            },
+            "required": [
+              "text",
+              "evidence_ids"
+            ],
+            "type": "object"
+          },
+          "ImpactCriterion": {
+            "additionalProperties": false,
+            "properties": {
+              "criterion": {
+                "enum": [
+                  "substantial_blockage",
+                  "material_quality_risk",
+                  "material_safety_risk",
+                  "bounded_operational_issue",
+                  "limited_demonstrated_consequence",
+                  "non_operational",
+                  "insufficient_impact_evidence"
+                ],
+                "type": "string"
+              },
+              "basis": {
+                "enum": [
+                  "REPORTED_RISK",
+                  "OBSERVED_OUTCOME",
+                  "INSUFFICIENT_EVIDENCE",
+                  "NON_OPERATIONAL"
+                ],
+                "type": "string"
+              },
+              "observation": {
+                "$ref": "#/$defs/CitedText"
+              }
+            },
+            "required": [
+              "criterion",
+              "basis",
+              "observation"
+            ],
+            "type": "object"
+          },
+          "ImpactProposal": {
+            "additionalProperties": false,
+            "properties": {
+              "criteria": {
+                "items": {
+                  "$ref": "#/$defs/ImpactCriterion"
+                },
+                "minItems": 1,
+                "type": "array"
+              },
+              "affected_scope": {
+                "anyOf": [
+                  {
+                    "$ref": "#/$defs/CitedText"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              }
+            },
+            "required": [
+              "criteria",
+              "affected_scope"
+            ],
+            "type": "object"
+          },
+          "QuestionState": {
+            "additionalProperties": false,
+            "properties": {
+              "status": {
+                "enum": [
+                  "OPEN",
+                  "PARTIAL",
+                  "ANSWERED"
+                ],
+                "type": "string"
+              },
+              "answer_item_ids": {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              }
+            },
+            "required": [
+              "status",
+              "answer_item_ids"
+            ],
+            "type": "object"
+          },
+          "ResponseTopic": {
+            "additionalProperties": false,
+            "properties": {
+              "topic_name": {
+                "type": "string"
+              },
+              "member_ids": {
+                "items": {
+                  "type": "string"
+                },
+                "minItems": 1,
+                "type": "array"
+              },
+              "shared_issue": {
+                "$ref": "#/$defs/CitedText"
+              },
+              "relevant_differences": {
+                "items": {
+                  "$ref": "#/$defs/CitedText"
+                },
+                "type": "array"
+              },
+              "inventory": {
+                "items": {
+                  "$ref": "#/$defs/SourceItem"
+                },
+                "minItems": 1,
+                "type": "array"
+              },
+              "dispositions": {
+                "description": "Only messages without inventory items. Account for every message explicitly; missing treatment never defaults to NONE.",
+                "items": {
+                  "$ref": "#/$defs/SourceDisposition"
+                },
+                "type": "array"
+              },
+              "impact": {
+                "anyOf": [
+                  {
+                    "$ref": "#/$defs/ImpactProposal"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "description": "Null when unassessed; never invent impact to fill the schema."
+              }
+            },
+            "required": [
+              "topic_name",
+              "member_ids",
+              "shared_issue",
+              "relevant_differences",
+              "inventory",
+              "dispositions",
+              "impact"
+            ],
+            "type": "object"
+          },
+          "SourceDisposition": {
+            "additionalProperties": false,
+            "properties": {
+              "evidence_id": {
+                "type": "string"
+              },
+              "disposition": {
+                "enum": [
+                  "NON_SUBSTANTIVE",
+                  "UNCERTAIN"
+                ],
+                "type": "string"
+              },
+              "reason": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "evidence_id",
+              "disposition",
+              "reason"
+            ],
+            "type": "object"
+          },
+          "SourceItem": {
+            "additionalProperties": false,
+            "properties": {
+              "item_id": {
+                "type": "string"
+              },
+              "evidence_id": {
+                "type": "string"
+              },
+              "kind": {
+                "enum": [
+                  "QUESTION",
+                  "DIAGNOSTIC_REQUEST",
+                  "ANSWER",
+                  "INSTRUCTION",
+                  "FACT",
+                  "ANNOUNCEMENT",
+                  "CONTEXT"
+                ],
+                "type": "string"
+              },
+              "answer_status": {
+                "anyOf": [
+                  {
+                    "enum": [
+                      "TENTATIVE",
+                      "DIRECT"
+                    ],
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "description": "Only ANSWER items: TENTATIVE for unconfirmed advice, DIRECT for an explicit scoped answer. Context alone is not an answer. Python supplies the full original quotation."
+              },
+              "question": {
+                "anyOf": [
+                  {
+                    "$ref": "#/$defs/QuestionState"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "description": "Required only for QUESTION. Link ANSWER items in the same member conversation, never diagnostics or another thread."
+              }
+            },
+            "required": [
+              "item_id",
+              "evidence_id",
+              "kind",
+              "answer_status",
+              "question"
+            ],
+            "type": "object"
+          }
+        },
+        "additionalProperties": false,
+        "properties": {
+          "topics": {
+            "items": {
+              "$ref": "#/$defs/ResponseTopic"
+            },
+            "minItems": 1,
+            "type": "array"
+          }
+        },
+        "required": [
+          "topics"
+        ],
+        "type": "object"
+      }
+    }
+  }
+}

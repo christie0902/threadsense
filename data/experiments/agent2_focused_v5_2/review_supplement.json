@@ -1,0 +1,496 @@
+{
+  "origin": "Codex-assisted source review; not human approval, independent ground truth or unbiased accuracy benchmark",
+  "reviewed_at": "2026-10-24T23:50:22.916251+00:00",
+  "run": "data/processed/agent2_focused_v5_2",
+  "rubric_version": "provisional-operational-severity-v2",
+  "source_evidence_file": "data/experiments/agent2_focused_v5_2/reviewed_sources.json",
+  "source_evidence_sha256": "6b1f6d02d7f10ba3295ae747451da33d3cc05927308b0c366857ae3e6a135b6f",
+  "source_file_bindings_sha256": "e164a6001ca9ad9bf09e7d5dd3e672f0378be46192666c02dc7c09e32cc67de6",
+  "method": "Review all new output fields against original Slack roots/replies, actual reactions, glossary, and rubric v2. Judge actual scope rather than requiring predetermined labels. Findings are post-execution only.",
+  "limitations": [
+    "Two repeatedly examined regression groups, not an accuracy benchmark.",
+    "Rubric and source interpretation remain provisional; independent source review may disagree.",
+    "No live non-operational, multilingual, announcement, refusal, interruption or transport-failure case in this two-group run.",
+    "Exact IDs and deterministic counts cannot prove semantic classification or evidence support."
+  ],
+  "entries": [
+    {
+      "candidate_group_id": "cluster_1ba596334ad5cde7",
+      "binding": {
+        "input_file_sha256": "662fedd9cc45c2eaa44f9124c9b4d626052c38c204d9370ef5e99e0af27ade8d",
+        "raw_draft_sha256": "654fd5bf23c2585e85195424a809b4f2bab255eb6cb8be71464fa967874a3bac",
+        "export_result_sha256": "c1c3ec9e0c58d27df9b69c6536de51a2007f2778d2e8e08af3436110b4770bd2"
+      },
+      "assisted_content_review_required": true,
+      "findings": [
+        {
+          "finding_id": "focused-v5.2-cluster_1ba596334ad5cde7-PROCEDURAL_GUIDANCE_AS_ANSWER",
+          "category": "PROCEDURAL_GUIDANCE_AS_ANSWER",
+          "materiality": "material",
+          "explanation": "Both original questions ask whether a later announcement replaces the older note. E004 asks for versions/dates and explicitly withholds a supersession determination pending verification. It supplies procedure and decision status, not a substantive answer to the precedence question. The model correctly includes an INSTRUCTION but also adds unlinked DIRECT ANSWER I007; the exporter consequently lists it as a provisional answer and counts a member with an ANSWER item. That classification remains unsupported under the clarified question-scope instructions. The exact quote, both OPEN questions and existing unlinked-answer review mitigate the risk; no policy precedence is invented and the canonical text must not be rewritten. The count is mechanically correct for the returned inventory, not proof that its classification is semantically correct.",
+          "affected_raw_fields": [
+            {
+              "path": [
+                "topics",
+                0,
+                "inventory",
+                5
+              ],
+              "value": {
+                "item_id": "I006",
+                "evidence_id": "E004",
+                "kind": "INSTRUCTION",
+                "answer_status": null,
+                "question": null
+              }
+            },
+            {
+              "path": [
+                "topics",
+                0,
+                "inventory",
+                6
+              ],
+              "value": {
+                "item_id": "I007",
+                "evidence_id": "E004",
+                "kind": "ANSWER",
+                "answer_status": "DIRECT",
+                "question": null
+              }
+            }
+          ],
+          "affected_export_fields": [
+            {
+              "path": [
+                "topics",
+                0,
+                "provisional_answers"
+              ],
+              "value": [
+                {
+                  "item_id": "I007",
+                  "evidence_id": "E004",
+                  "kind": "SCOPED_ANSWER",
+                  "answer_status": "DIRECT",
+                  "question": null,
+                  "text": "Please attach both versions and their dates. I am not declaring either document superseded until we verify the change history.",
+                  "text_origin": "python_original_message",
+                  "evidence_ids": [
+                    "E004"
+                  ],
+                  "evidence": [
+                    {
+                      "evidence_id": "E004",
+                      "member_id": "member_c55df1c33b1835f1c0d3d4a2",
+                      "project_id": "response_preference",
+                      "batch_id": "rp_batch_15",
+                      "channel_id": "C_RP_GENERAL",
+                      "thread_id": "1790894295.000041",
+                      "message_id": "1790894390.000226",
+                      "quote": "Please attach both versions and their dates. I am not declaring either document superseded until we verify the change history.",
+                      "quotation_scope": "entire_original_message",
+                      "author_id": "U001",
+                      "author_role": "TEAM_LEAD",
+                      "reactions": [],
+                      "tl_endorsements": []
+                    }
+                  ],
+                  "authority": "TEAM_LEAD",
+                  "scope": {
+                    "text": "Please attach both versions and their dates. I am not declaring either document superseded until we verify the change history.",
+                    "evidence_ids": [
+                      "E004"
+                    ],
+                    "evidence": [
+                      {
+                        "evidence_id": "E004",
+                        "member_id": "member_c55df1c33b1835f1c0d3d4a2",
+                        "project_id": "response_preference",
+                        "batch_id": "rp_batch_15",
+                        "channel_id": "C_RP_GENERAL",
+                        "thread_id": "1790894295.000041",
+                        "message_id": "1790894390.000226",
+                        "quote": "Please attach both versions and their dates. I am not declaring either document superseded until we verify the change history.",
+                        "quotation_scope": "entire_original_message",
+                        "author_id": "U001",
+                        "author_role": "TEAM_LEAD",
+                        "reactions": [],
+                        "tl_endorsements": []
+                      }
+                    ],
+                    "reliability": "PROVISIONAL"
+                  },
+                  "limitations": [],
+                  "conditions_representation": "verbatim_full_message_in_scope_not_extracted",
+                  "reliability": "PROVISIONAL"
+                }
+              ]
+            },
+            {
+              "path": [
+                "topics",
+                0,
+                "inventory_counts",
+                "answers"
+              ],
+              "value": {
+                "kinds": [
+                  "ANSWER"
+                ],
+                "member_count": 1,
+                "member_ids": [
+                  "member_c55df1c33b1835f1c0d3d4a2"
+                ],
+                "evidence_ids": [
+                  "E004"
+                ],
+                "reliability": "PROVISIONAL"
+              }
+            }
+          ],
+          "source_evidence": [
+            {
+              "evidence_id": "E001",
+              "member_id": "member_4339357fd56b8213e42628c8",
+              "project_id": "response_preference",
+              "batch_id": "rp_batch_15",
+              "channel_id": "C_RP_GENERAL",
+              "thread_id": "1790874467.000044",
+              "message_id": "1790874467.000044",
+              "quote": "The guide example contradicts last Friday’s alignment. Can we check whether the later announcement replaces the older note?",
+              "quotation_scope": "entire_original_message",
+              "author_id": "U008",
+              "author_role": "QA_TUTOR",
+              "reactions": [],
+              "tl_endorsements": []
+            },
+            {
+              "evidence_id": "E002",
+              "member_id": "member_c55df1c33b1835f1c0d3d4a2",
+              "project_id": "response_preference",
+              "batch_id": "rp_batch_15",
+              "channel_id": "C_RP_GENERAL",
+              "thread_id": "1790894295.000041",
+              "message_id": "1790894295.000041",
+              "quote": "Task check: The example in the rubric says one thing, but Friday's alignment says another. Can we check whether the later announcement replaces the older note? (task ref RP-4295)",
+              "quotation_scope": "entire_original_message",
+              "author_id": "U020",
+              "author_role": "TUTOR",
+              "reactions": [],
+              "tl_endorsements": []
+            },
+            {
+              "evidence_id": "E003",
+              "member_id": "member_c55df1c33b1835f1c0d3d4a2",
+              "project_id": "response_preference",
+              "batch_id": "rp_batch_15",
+              "channel_id": "C_RP_GENERAL",
+              "thread_id": "1790894295.000041",
+              "message_id": "1790894342.000113",
+              "quote": "Which wording appears in the current pinned message and which in the archived screenshot?",
+              "quotation_scope": "entire_original_message",
+              "author_id": "U002",
+              "author_role": "QA_TUTOR",
+              "reactions": [],
+              "tl_endorsements": []
+            },
+            {
+              "evidence_id": "E004",
+              "member_id": "member_c55df1c33b1835f1c0d3d4a2",
+              "project_id": "response_preference",
+              "batch_id": "rp_batch_15",
+              "channel_id": "C_RP_GENERAL",
+              "thread_id": "1790894295.000041",
+              "message_id": "1790894390.000226",
+              "quote": "Please attach both versions and their dates. I am not declaring either document superseded until we verify the change history.",
+              "quotation_scope": "entire_original_message",
+              "author_id": "U001",
+              "author_role": "TEAM_LEAD",
+              "reactions": [],
+              "tl_endorsements": []
+            }
+          ]
+        }
+      ],
+      "assessment": {
+        "outcome": "MATERIAL_CLASSIFICATION_FINDING",
+        "source_accounting": "2/2 members and 4/4 messages; exact evidence identities, quotations and authors retained.",
+        "severity": "UNKNOWN / insufficient_impact_evidence / INSUFFICIENT_EVIDENCE is now supported: no operational consequence or risk mechanism is established. No invented delay, rework or impact.",
+        "resolution": "Both original precedence questions remain OPEN. Current/pinned versus archived wording diagnostics and attach-both-versions-with-dates instruction retain the withholding condition. The additional DIRECT ANSWER item is procedural guidance, as recorded in the new finding.",
+        "summary": "The one-thread follow-up description is factually supported by M02. No inconsistent count was found. Export counts one guidance member and one model-classified answer member; the latter inherits the classification concern.",
+        "authority": "U001 is the actual TEAM_LEAD; there are no reactions or endorsements to infer.",
+        "routing": "Existing unlinked-answer coverage review and new assisted dispute remain nonblocking. No inherited obligations in this group."
+      }
+    },
+    {
+      "candidate_group_id": "cluster_6b59d13144282285",
+      "binding": {
+        "input_file_sha256": "2bcb4d5bd06bb9bf2e8ceb30168970a68a65ac88cdc05996982603a7e04732bd",
+        "raw_draft_sha256": "4ead9bc9c55d3b2156de830fb151cef6faa87b52cd20265d9906e664fc268885",
+        "export_result_sha256": "b3ac2bb96ab96f66c52ca70a69615be62973f6342177605b2a377ace40f72a40"
+      },
+      "assisted_content_review_required": true,
+      "findings": [
+        {
+          "finding_id": "focused-v5.2-cluster_6b59d13144282285-OVERSTATED_QUESTION_RESOLUTION",
+          "category": "OVERSTATED_QUESTION_RESOLUTION",
+          "materiality": "material",
+          "explanation": "M05/E014 asks whether to Quarantine. E015 establishes inability to evaluate during the playback failure and gives reporting/do-not-score-as-model-quality guidance, but never decides Quarantine eligibility or whether reporting replaces Quarantine. Those actions are not established as mutually exclusive. The same-member ANSWER link is structurally valid and its useful guidance must be retained, but ANSWERED I016 overstates full settlement of the actual question and excludes M05 from open_questions. Depending on which substantive component is judged answered, OPEN or PARTIAL may be defensible; the finding does not require a predetermined replacement label or repair the response. M06 asks a broader Quarantine-versus-player-issue alternative, for which the playback-incident reply is a more defensible answer; no blanket relabeling of both conversations is proposed.",
+          "affected_raw_fields": [
+            {
+              "path": [
+                "topics",
+                0,
+                "inventory",
+                15
+              ],
+              "value": {
+                "item_id": "I016",
+                "evidence_id": "E014",
+                "kind": "QUESTION",
+                "answer_status": null,
+                "question": {
+                  "status": "ANSWERED",
+                  "answer_item_ids": [
+                    "I017"
+                  ]
+                }
+              }
+            },
+            {
+              "path": [
+                "topics",
+                0,
+                "inventory",
+                16
+              ],
+              "value": {
+                "item_id": "I017",
+                "evidence_id": "E015",
+                "kind": "ANSWER",
+                "answer_status": "DIRECT",
+                "question": null
+              }
+            }
+          ],
+          "affected_export_fields": [
+            {
+              "path": [
+                "topics",
+                0,
+                "open_questions"
+              ],
+              "value": [
+                {
+                  "item_id": "I001",
+                  "evidence_id": "E001",
+                  "kind": "QUESTION",
+                  "answer_status": null,
+                  "question": {
+                    "status": "OPEN",
+                    "answer_item_ids": []
+                  },
+                  "text": "[Task review]\nIssue: No audio at all — QN or bad score?\nQuestion: what is the correct handling for this task?",
+                  "text_origin": "python_original_message",
+                  "evidence_ids": [
+                    "E001"
+                  ],
+                  "evidence": [
+                    {
+                      "evidence_id": "E001",
+                      "member_id": "member_22fa96f8f37e7ea4f79fd6fb",
+                      "project_id": "audio_multimodal",
+                      "batch_id": "audio_batch_06",
+                      "channel_id": "C_AUDIO_GENERAL",
+                      "thread_id": "1790879994.000128",
+                      "message_id": "1790879994.000128",
+                      "quote": "[Task review]\nIssue: No audio at all — QN or bad score?\nQuestion: what is the correct handling for this task?",
+                      "quotation_scope": "entire_original_message",
+                      "author_id": "U007",
+                      "author_role": "QA_TUTOR",
+                      "reactions": [],
+                      "tl_endorsements": []
+                    }
+                  ],
+                  "reliability": "PROVISIONAL"
+                },
+                {
+                  "item_id": "I004",
+                  "evidence_id": "E004",
+                  "kind": "QUESTION",
+                  "answer_status": null,
+                  "question": {
+                    "status": "OPEN",
+                    "answer_item_ids": []
+                  },
+                  "text": "Player never loads, should I QN? I thought a workaround existed in the previous queue, but it is happening again.",
+                  "text_origin": "python_original_message",
+                  "evidence_ids": [
+                    "E004"
+                  ],
+                  "evidence": [
+                    {
+                      "evidence_id": "E004",
+                      "member_id": "member_8ce5853bbd6b1a416c28b76f",
+                      "project_id": "audio_multimodal",
+                      "batch_id": "audio_batch_06",
+                      "channel_id": "C_AUDIO_GENERAL",
+                      "thread_id": "1790882197.000111",
+                      "message_id": "1790882197.000111",
+                      "quote": "Player never loads, should I QN? I thought a workaround existed in the previous queue, but it is happening again.",
+                      "quotation_scope": "entire_original_message",
+                      "author_id": "U019",
+                      "author_role": "QA_TUTOR",
+                      "reactions": [],
+                      "tl_endorsements": []
+                    }
+                  ],
+                  "reliability": "PROVISIONAL"
+                },
+                {
+                  "item_id": "I009",
+                  "evidence_id": "E008",
+                  "kind": "QUESTION",
+                  "answer_status": null,
+                  "question": {
+                    "status": "OPEN",
+                    "answer_item_ids": []
+                  },
+                  "text": "Audio won't play in LT; is this QN or a player issue? I thought a workaround existed in the previous queue, but it is happening again. (task ref AUDIO-6012)",
+                  "text_origin": "python_original_message",
+                  "evidence_ids": [
+                    "E008"
+                  ],
+                  "evidence": [
+                    {
+                      "evidence_id": "E008",
+                      "member_id": "member_e0275e7d53c557361ca40bd1",
+                      "project_id": "audio_multimodal",
+                      "batch_id": "audio_batch_06",
+                      "channel_id": "C_AUDIO_GENERAL",
+                      "thread_id": "1790896012.001900",
+                      "message_id": "1790896012.001900",
+                      "quote": "Audio won't play in LT; is this QN or a player issue? I thought a workaround existed in the previous queue, but it is happening again. (task ref AUDIO-6012)",
+                      "quotation_scope": "entire_original_message",
+                      "author_id": "U018",
+                      "author_role": "TUTOR",
+                      "reactions": [],
+                      "tl_endorsements": []
+                    }
+                  ],
+                  "reliability": "PROVISIONAL"
+                },
+                {
+                  "item_id": "I013",
+                  "evidence_id": "E011",
+                  "kind": "QUESTION",
+                  "answer_status": null,
+                  "question": {
+                    "status": "OPEN",
+                    "answer_item_ids": []
+                  },
+                  "text": "Task check: Clip is completely silent, but the waveform exists. QN or quality score? (task ref AUDIO-5374)",
+                  "text_origin": "python_original_message",
+                  "evidence_ids": [
+                    "E011"
+                  ],
+                  "evidence": [
+                    {
+                      "evidence_id": "E011",
+                      "member_id": "member_4e743fb698f42bc160fb10b9",
+                      "project_id": "audio_multimodal",
+                      "batch_id": "audio_batch_06",
+                      "channel_id": "C_AUDIO_GENERAL",
+                      "thread_id": "1790915374.000127",
+                      "message_id": "1790915374.000127",
+                      "quote": "Task check: Clip is completely silent, but the waveform exists. QN or quality score? (task ref AUDIO-5374)",
+                      "quotation_scope": "entire_original_message",
+                      "author_id": "U010",
+                      "author_role": "TUTOR",
+                      "reactions": [],
+                      "tl_endorsements": []
+                    }
+                  ],
+                  "reliability": "PROVISIONAL"
+                }
+              ]
+            }
+          ],
+          "source_evidence": [
+            {
+              "evidence_id": "E014",
+              "member_id": "member_943da52557c55ff31ee76f89",
+              "project_id": "audio_multimodal",
+              "batch_id": "audio_batch_06",
+              "channel_id": "C_AUDIO_GENERAL",
+              "thread_id": "1790920171.000109",
+              "message_id": "1790920171.000109",
+              "quote": "Anyone else seeing this? Player never loads, should I QN? I thought a workaround existed in the previous queue, but it is happening again.",
+              "quotation_scope": "entire_original_message",
+              "author_id": "U020",
+              "author_role": "TUTOR",
+              "reactions": [],
+              "tl_endorsements": []
+            },
+            {
+              "evidence_id": "E015",
+              "member_id": "member_943da52557c55ff31ee76f89",
+              "project_id": "audio_multimodal",
+              "batch_id": "audio_batch_06",
+              "channel_id": "C_AUDIO_GENERAL",
+              "thread_id": "1790920171.000109",
+              "message_id": "1790920220.000113",
+              "quote": "This affected task cannot be evaluated while the player fails to load. Report the playback incident with its task ID; do not mark the recording as a model-quality failure. A spinning player does not tell us what the underlying audio contains.",
+              "quotation_scope": "entire_original_message",
+              "author_id": "U006",
+              "author_role": "TEAM_LEAD",
+              "reactions": [],
+              "tl_endorsements": []
+            },
+            {
+              "evidence_id": "E016",
+              "member_id": "member_61f4987d5eb6b1ccb2894091",
+              "project_id": "audio_multimodal",
+              "batch_id": "audio_batch_06",
+              "channel_id": "C_AUDIO_GENERAL",
+              "thread_id": "1790934294.000106",
+              "message_id": "1790934294.000106",
+              "quote": "Audio won't play in LT; is this QN or a player issue? I thought a workaround existed in the previous queue, but it is happening again. (task ref AUDIO-4294)",
+              "quotation_scope": "entire_original_message",
+              "author_id": "U013",
+              "author_role": "TUTOR",
+              "reactions": [],
+              "tl_endorsements": []
+            },
+            {
+              "evidence_id": "E019",
+              "member_id": "member_61f4987d5eb6b1ccb2894091",
+              "project_id": "audio_multimodal",
+              "batch_id": "audio_batch_06",
+              "channel_id": "C_AUDIO_GENERAL",
+              "thread_id": "1790934294.000106",
+              "message_id": "1790934431.000339",
+              "quote": "This affected task cannot be evaluated while the player fails to load. Report the playback incident with its task ID; do not mark the recording as a model-quality failure.",
+              "quotation_scope": "entire_original_message",
+              "author_id": "U006",
+              "author_role": "TEAM_LEAD",
+              "reactions": [],
+              "tl_endorsements": []
+            }
+          ]
+        }
+      ],
+      "assessment": {
+        "outcome": "MATERIAL_RESOLUTION_FINDING",
+        "source_accounting": "6/6 members and 19/19 messages. Same-member ANSWER links and topic membership remain valid; no filler dispositions or omitted members.",
+        "severity": "HIGH / substantial_blockage / OBSERVED_OUTCOME is supported by the reported inability to evaluate E015. Affected scope cites both E015 and E019; unknown cause/extent does not erase blockage. No broader harm or cause invented.",
+        "resolution": "Four questions remain OPEN; M05/M06 remain ANSWERED. M05 full Quarantine resolution is not established. M06 player-issue alternative is more defensibly addressed. Both scoped reporting replies remain provisional, with the exact do-not-score condition.",
+        "summary": "The old one-versus-two thread contrast is gone. Generated differences use some threads; export counts two distinct members with ANSWER items and six with guidance (answers/instructions/diagnostics combined). Multiple roles/messages in one member do not inflate counts.",
+        "guidance": "E007 retains reproduction-before-old-workaround and conditional keep-both-task-references guidance. E010 retains its reproduction/waveform diagnostic. E015/E019 retain incident reporting and do-not-mark-model-quality-failure. Silence diagnostics remain diagnostics. No attempted/failed workaround, policy precedence or causal explanation is invented.",
+        "authority": "U006 TL guidance retains its original scope. E005 thumbsup is tutor U018, not TL endorsement. QN remains Quarantine.",
+        "routing": "Both inherited Agent 1 obligations, their complete evidence/hashes/lineage, conservative directive-cue warnings, HIGH morning review and new assisted dispute remain. Counts do not clear flags or prove reliability."
+      }
+    }
+  ]
+}

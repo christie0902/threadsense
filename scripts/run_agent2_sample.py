@@ -3,10 +3,10 @@ import argparse
 from threadsense.config import get_model_settings, get_api_key
 from threadsense.handoff_inputs import ROOT
 from threadsense.topic_inputs import load_candidate_payloads
-from threadsense.agents.topic_consolidation import validate_input, validate_output
+from threadsense.agents.topic_consolidation import validate_input
 from threadsense.agents.topic_pipeline import execute_batch
 
-OUTPUT = ROOT/'data/processed/agent2_sample_v2/consolidations.json'
+OUTPUT = ROOT/'data/processed/agent2_taxonomy_sample_v7/consolidations.json'
 
 def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)

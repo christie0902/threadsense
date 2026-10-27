@@ -1,0 +1,286 @@
+{
+  "model": "gpt-5.4-2026-03-05",
+  "messages": [
+    {
+      "role": "system",
+      "content": "Prompt version: agent2-inventory-v5.3\nConsolidate factual topics from original Slack messages and the approved glossary.\nAssign every member alias exactly once; split unrelated topics. Cite only exact\ntopic-local evidence IDs. Traceable IDs alone do not establish support for a claim.\nKeep a concise shared issue and supported differences; invent no causal explanation,\npolicy precedence, attempted/failed workaround, impact, or harmful-content contrast.\nOmit exact counts of threads with answers or guidance from generated synthesis and\ndifferences. Python derives these counts from distinct original member identities\nin the validated inventory, not the number of items or messages. Describe the actual\nsupported difference and preserve its conditions without an unnecessary exact count.\n\nRecord substantive content ONCE in inventory. Each item has a topic-local item_id\nand one evidence_id. Do not copy source quotations into inventory: Python supplies\nthe full original message and its qualifiers, identities, authors and reactions.\nOnly synthesis, differences and impact observations require generated prose.\nA message may supply multiple items, e.g. diagnostic request and submission condition.\nDistinguish QUESTION (actual handling/information question), DIAGNOSTIC_REQUEST\n(request for checks/details, not an answer), ANSWER (scoped substantive reply),\nINSTRUCTION, FACT (reported, not independently confirmed), ANNOUNCEMENT and CONTEXT.\nAn actual request for handling or a decision is QUESTION, not FACT or a request\nfor diagnostics. A diagnostic asks for checks/details; retain the original handling\nquestion independently. Context describing the task is not an ANSWER about handling.\nANSWER requires an explicit substantive response. Set answer_status=TENTATIVE for\nunconfirmed advice or DIRECT for an explicit scoped answer; all other kinds use null.\nQuestion links to tentative advice remain PARTIAL, never ANSWERED.\nQuoted or rhetorical questions are not automatically genuine questions. Never invent\nquestions from a factual incident or diagnostic. Announcements can contain instructions\nwithout questions. Do not repeat items in independent answer/guidance/question lists.\nClassify announced information as ANNOUNCEMENT from its content, not its channel.\nRecord an announced instruction as an additional INSTRUCTION item on that source.\nOne message can report a fact, issue an instruction and state its condition.\nDo not make a reply question into a root question.\n\nEvery member needs substantive inventory content, not just context or raw retention.\nAccount for every message with one or more items OR an explicit NON_SUBSTANTIVE or\nUNCERTAIN disposition with reason. Uncertain meaning must remain visible, never default\nto NONE. Preserve all actual unanswered questions and scoped TL instructions, including\nthose in replies. Question items require OPEN with no answer links, or PARTIAL/ANSWERED\nwith answer_item_ids pointing to ANSWER items in that SAME member conversation.\nDiagnostics cannot close questions. An answer to a narrower task cannot resolve a\nbroader question in another thread. Tentative advice must remain tentative and PARTIAL.\nFor every PARTIAL/ANSWERED link, check the target item_id, its ANSWER kind, its\noriginal member conversation and the substance of its reply. FACT, CONTEXT,\nDIAGNOSTIC_REQUEST and INSTRUCTION items cannot satisfy an answer link. One source\nmessage may have several roles: link its substantive ANSWER item, not another item\nthat happens to reference the same message. Never relabel an item ANSWER solely to\nmake a link pass. Diagnostics may coexist with a valid partial answer; retain both\nwithout letting diagnostic requests supply the answer. A related answer in another\nthread may be relevant context but cannot establish that this thread was answered.\nWhen no eligible answer supports resolution, keep the question OPEN with no links\nand retain useful guidance separately. Do not delete an unanswered handling question.\nCompare the full scope of each question with what the reply actually settles.\nANSWERED requires an explicit substantive answer covering the complete question\nwithin the reply's stated conditions. PARTIAL requires a substantive component\nanswered while another remains unresolved; OPEN applies when no substantive\ncomponent is answered. Reporting instructions or troubleshooting may be useful\nguidance without deciding the requested handling or policy choice. A request to\ncollect information or a statement withholding a decision is procedural guidance,\nnot itself an ANSWER to that decision. Do not treat a related next step as implicit\npermission or a completed decision. Retain genuine scoped answers, tentative advice,\nTL endorsements and conditions; a reply can contain both guidance and an answer.\nRetain relevant differences between reported symptoms, and distinguish task labels\nfrom operational impact. Use glossary meanings consistently.\n\nBEGIN SYNTHETIC QUESTION-SCOPE CONTRAST (illustration only, not source evidence)\nThe SYNTH_* references below are fictional and must never appear in your response;\nuse only evidence IDs from the actual input evidence_catalog.\nSame reply in two separate hypothetical conversations: \"Send the task ID and error\nscreenshot to the tool-support queue.\"\nA. Question: \"Where should I report an export failure?\" The reply settles the\nrequested reporting location. Existing inventory representation:\n[{\"item_id\":\"SYNTH_Q\",\"evidence_id\":\"SYNTH_E_Q\",\"kind\":\"QUESTION\",\"answer_status\":null,\"question\":{\"status\":\"ANSWERED\",\"answer_item_ids\":[\"SYNTH_A\"]}},\n {\"item_id\":\"SYNTH_A\",\"evidence_id\":\"SYNTH_E_R\",\"kind\":\"ANSWER\",\"answer_status\":\"DIRECT\",\"question\":null}]\nB. Question: \"May I submit the incomplete export?\" The same reply gives reporting\nguidance but no submission decision; no substantive component of this question is\nanswered. Existing inventory representation:\n[{\"item_id\":\"SYNTH_Q\",\"evidence_id\":\"SYNTH_E_Q\",\"kind\":\"QUESTION\",\"answer_status\":null,\"question\":{\"status\":\"OPEN\",\"answer_item_ids\":[]}},\n {\"item_id\":\"SYNTH_G\",\"evidence_id\":\"SYNTH_E_R\",\"kind\":\"INSTRUCTION\",\"answer_status\":null,\"question\":null}]\nPARTIAL requires an actual substantive component of the question to be answered,\nnot merely helpful procedure. ANSWERED requires the complete requested decision or\ninformation to be settled within the reply's conditions. An indirect but unambiguous\nanswer can suffice; exact keyword repetition is unnecessary. Guidance and authority\nalone do not establish complete resolution. Do not reopen genuinely complete answers.\nEND SYNTHETIC QUESTION-SCOPE CONTRAST\n\nDo not generate authority labels. Python supplies author roles and eligible TL reaction\nusers/targets. Endorsement applies only to that reply with its conditions; eyes is not\napproval. Inherited disputes remain provisional; repeated claims cannot clear them.\n\nProvide preliminary impact in the SAME response. Cite each applicable rubric criterion\nand its observation once; Python derives the level, rubric version and provisional\nmetadata. Criteria must imply one unambiguous level. Retain affected_scope only where\nevidenced, otherwise null. REPORTED_RISK differs from OBSERVED_OUTCOME; actual scope\nmust not expand to all users. limited_demonstrated_consequence requires OBSERVED_OUTCOME\nof limited OPERATIONAL impact, not harmless task content. insufficient_impact_evidence\nuses INSUFFICIENT_EVIDENCE and explains what is unknown; non_operational uses\nNON_OPERATIONAL, only for clearly non-operational content. Neither is an empty list.\nUse impact=null for an explicitly unassessed section. A reported conflict or request\nfor clarification does not establish an observed operational outcome.\nFor substantial_blockage cite inability to perform/submit work; quality/safety risk\nrequires actual operational evidence beyond task vocabulary. Review flags, unanswered\nquestions, number of members and minor/major task categories do not set severity.\nBefore selecting a lower-impact criterion, evaluate explicit inability to perform\nor complete assigned work against substantial_blockage. Unknown root cause or\nunknown extent does not erase an explicitly reported blockage. Use only the actual\nreported scope; isolated keywords do not establish HIGH, and do not invent broader\nscope or quality/safety consequences. Distinguish attributed reports of impact from\nindependently confirmed outcomes: OBSERVED_OUTCOME requires a concrete effect the\nsource describes as having occurred, with attribution preserved. REPORTED_RISK\nrequires an evidenced prospective risk, not a speculative hypothetical consequence.\nA handling question or reported document disagreement does not automatically\nestablish operational impact. Missing impact evidence may yield UNKNOWN with\ninsufficient_impact_evidence; never fill the gap with speculative harm.\nSelect the controlling rubric level supported by the source, then include only\nsupported criteria consistent with that one level. Do not combine levels to express\nuncertainty about cause, extent or lesser observations. Preserve relevant lesser\nobservations in shared_issue or relevant_differences where supported, and describe\nunknown cause/scope in the observation or affected_scope=null without erasing known\nimpact. If no operational level is supported, use UNKNOWN rather than guessing.\nIn each criterion's existing observation.text, identify the operational consequence\nor supported risk, cite the original evidence_ids, and explain how that effect and\nits scope meet the selected criterion. Do not merely restate the topic or that\nclarification is requested. Document disagreement, an open question, or a request\nto check versions does not by itself establish delay, rework, incorrect labeling or\nblocked work. If the source does not establish sufficient impact, preserve UNKNOWN.\nFor prospective risk, state the source-supported mechanism connecting the issue to\nthe operational consequence; observed harm is not required, but a plausible invented\nmechanism is not evidence. Preserve HIGH for explicit substantial blockage even if\ncause, volume or broader extent is unknown. These are semantic judgments: valid\ncitations and consistent criteria do not prove the quoted evidence supports them.\nHIGH routes to nonblocking review; LOW/N/A cannot clear flags. Agent 3 may later record\na separate researched assessment. No research, actionability or recommendations.\nOne independent request, no tools, verifier, retries or repair. Return JSON matching\nthe API response_format. Do not output schema_version or other fixed metadata;\nPython supplies version 5 from trusted configuration.\n"
+    },
+    {
+      "role": "user",
+      "content": "{\"schema_version\": 5, \"candidate_group_id\": \"cluster_1f272d7fa384df0c\", \"project_id\": \"safety_classification\", \"batch_id\": \"safety_batch_08\", \"approved_glossary\": {\"LT\": \"Label Tool, the internal labeling platform\", \"QN\": \"Quarantine\", \"TL\": \"Team Lead\", \"QA\": \"Quality Assurance or QA Tutor depending on context\", \"L0\": \"Initial labeling layer / first-pass labelers\", \"queue\": \"Batch of assigned labeling tasks\", \"tasking\": \"Actively completing labeling tasks\", \"align\": \"Clarify a rule so labeling behavior becomes consistent\", \"flag\": \"Raise an issue for review\", \"rubric\": \"Evaluation or scoring criteria\"}, \"provisional_operational_severity_rubric\": {\"version\": \"provisional-operational-severity-v2\", \"status\": \"provisional_not_approved_organizational_policy\", \"criteria\": {\"substantial_blockage\": {\"level\": \"HIGH\", \"definition\": \"Evidence indicates substantial inability to perform or submit work; retain actual affected scope.\"}, \"material_quality_risk\": {\"level\": \"HIGH\", \"definition\": \"Evidence indicates material risk to labeling/data quality; distinguish reported risk from observed harm.\"}, \"material_safety_risk\": {\"level\": \"HIGH\", \"definition\": \"Evidence indicates material operational safety risk, beyond safety-related task vocabulary.\"}, \"bounded_operational_issue\": {\"level\": \"MEDIUM\", \"definition\": \"Meaningful but limited operational consequence, or prospective operational risk with a source-supported mechanism, requiring clarification or coordination. Identify the consequence or risk and explain why its evidenced scope meets this criterion. Document disagreement, an open question, or a request to check versions alone does not establish delay, rework, incorrect labeling or blocked work. Without sufficient impact evidence use insufficient_impact_evidence. Reported risk does not require harm to have already occurred.\"}, \"limited_demonstrated_consequence\": {\"level\": \"LOW\", \"definition\": \"An operational issue with limited demonstrated consequences.\"}, \"non_operational\": {\"level\": \"N/A\", \"definition\": \"Clearly non-operational content such as routine social chatter; announcements are not automatically non-operational.\"}, \"insufficient_impact_evidence\": {\"level\": \"UNKNOWN\", \"definition\": \"Insufficient evidence of operational impact. Missing information is not evidence of low impact.\"}}, \"rules\": [\"Assess work blockage, affected scope, and potential quality/safety consequences from Slack evidence.\", \"Do not derive severity from review flags, member count, safety vocabulary, or an unanswered question alone.\", \"Task labeling categories minor/major are not operational severity.\", \"Distinguish reported risks from confirmed outcomes. Announcements can describe serious incidents.\", \"UNKNOWN is required when impact cannot be assessed; unsuccessful processing remains unassessed.\", \"No retrieval, policy-precedence decisions, or intervention recommendations. Agent 3 may separately revise this assessment.\"]}, \"members\": [{\"member_id\": \"M01\", \"project_id\": \"safety_classification\", \"batch_id\": \"safety_batch_08\", \"channel_id\": \"C_SAFETY_ANNOUNCEMENTS\", \"thread_id\": \"1790924776.000064\", \"interpretation_reliability\": \"NEEDS_REVIEW\", \"review_required\": true, \"disputed_fields\": [\"central_question\"]}, {\"member_id\": \"M02\", \"project_id\": \"safety_classification\", \"batch_id\": \"safety_batch_08\", \"channel_id\": \"C_SAFETY_GENERAL\", \"thread_id\": \"1790889905.000065\", \"interpretation_reliability\": \"CORRECTED\", \"review_required\": false, \"disputed_fields\": []}, {\"member_id\": \"M03\", \"project_id\": \"safety_classification\", \"batch_id\": \"safety_batch_08\", \"channel_id\": \"C_SAFETY_GENERAL\", \"thread_id\": \"1790911054.000066\", \"interpretation_reliability\": \"VERIFIED\", \"review_required\": false, \"disputed_fields\": []}], \"evidence_catalog\": [{\"evidence_id\": \"E001\", \"member_id\": \"M01\", \"project_id\": \"safety_classification\", \"batch_id\": \"safety_batch_08\", \"channel_id\": \"C_SAFETY_ANNOUNCEMENTS\", \"thread_id\": \"1790924776.000064\", \"message_id\": \"1790924776.000064\", \"quote\": \"Collecting examples for model outputs that resemble jailbreak attempts create uncertain labeling. Share a task reference if you see this; no final decision yet.\", \"is_reply\": false, \"author_id\": \"U006\", \"author_name\": \"Priya\", \"author_role\": \"TEAM_LEAD\", \"reactions\": [], \"eligible_tl_endorsements\": []}, {\"evidence_id\": \"E002\", \"member_id\": \"M01\", \"project_id\": \"safety_classification\", \"batch_id\": \"safety_batch_08\", \"channel_id\": \"C_SAFETY_ANNOUNCEMENTS\", \"thread_id\": \"1790924776.000064\", \"message_id\": \"1790924826.000113\", \"quote\": \"The phrase looks like a jailbreak attempt; the answer itself is harmless.\", \"is_reply\": true, \"author_id\": \"U003\", \"author_name\": \"Jordan\", \"author_role\": \"TUTOR\", \"reactions\": [], \"eligible_tl_endorsements\": []}, {\"evidence_id\": \"E003\", \"member_id\": \"M01\", \"project_id\": \"safety_classification\", \"batch_id\": \"safety_batch_08\", \"channel_id\": \"C_SAFETY_ANNOUNCEMENTS\", \"thread_id\": \"1790924776.000064\", \"message_id\": \"1790924876.000226\", \"quote\": \"Are we classifying an attempted override prompt or the actual model output?\", \"is_reply\": true, \"author_id\": \"U008\", \"author_name\": \"Hana\", \"author_role\": \"QA_TUTOR\", \"reactions\": [], \"eligible_tl_endorsements\": []}, {\"evidence_id\": \"E004\", \"member_id\": \"M02\", \"project_id\": \"safety_classification\", \"batch_id\": \"safety_batch_08\", \"channel_id\": \"C_SAFETY_GENERAL\", \"thread_id\": \"1790889905.000065\", \"message_id\": \"1790889905.000065\", \"quote\": \"Output pretends to ignore policies — category?\", \"is_reply\": false, \"author_id\": \"U002\", \"author_name\": \"Mina\", \"author_role\": \"QA_TUTOR\", \"reactions\": [], \"eligible_tl_endorsements\": []}, {\"evidence_id\": \"E005\", \"member_id\": \"M02\", \"project_id\": \"safety_classification\", \"batch_id\": \"safety_batch_08\", \"channel_id\": \"C_SAFETY_GENERAL\", \"thread_id\": \"1790889905.000065\", \"message_id\": \"1790889960.000113\", \"quote\": \"Are we classifying an attempted override prompt or the actual model output? We should inspect the actual response content instead of trusting its self-description.\", \"is_reply\": true, \"author_id\": \"U014\", \"author_name\": \"Linh\", \"author_role\": \"QA_TUTOR\", \"reactions\": [], \"eligible_tl_endorsements\": []}, {\"evidence_id\": \"E006\", \"member_id\": \"M02\", \"project_id\": \"safety_classification\", \"batch_id\": \"safety_batch_08\", \"channel_id\": \"C_SAFETY_GENERAL\", \"thread_id\": \"1790889905.000065\", \"message_id\": \"1790890002.000226\", \"quote\": \"We need to separate the prompt-injection language from the actual output content before choosing a safety category. Is there harmful instruction content here, or merely a boast about an override?\", \"is_reply\": true, \"author_id\": \"U006\", \"author_name\": \"Priya\", \"author_role\": \"TEAM_LEAD\", \"reactions\": [], \"eligible_tl_endorsements\": []}, {\"evidence_id\": \"E007\", \"member_id\": \"M03\", \"project_id\": \"safety_classification\", \"batch_id\": \"safety_batch_08\", \"channel_id\": \"C_SAFETY_GENERAL\", \"thread_id\": \"1790911054.000066\", \"message_id\": \"1790911054.000066\", \"quote\": \"[Task review]\\nIssue: Is roleplay jailbreak wording automatically unsafe?\\nQuestion: what is the correct handling for this task?\", \"is_reply\": false, \"author_id\": \"U011\", \"author_name\": \"Rina\", \"author_role\": \"TUTOR\", \"reactions\": [], \"eligible_tl_endorsements\": []}, {\"evidence_id\": \"E008\", \"member_id\": \"M03\", \"project_id\": \"safety_classification\", \"batch_id\": \"safety_batch_08\", \"channel_id\": \"C_SAFETY_GENERAL\", \"thread_id\": \"1790911054.000066\", \"message_id\": \"1790911101.000113\", \"quote\": \"The model boasts about ignoring safeguards but gives no procedural details.\", \"is_reply\": true, \"author_id\": \"U010\", \"author_name\": \"Avery\", \"author_role\": \"TUTOR\", \"reactions\": [], \"eligible_tl_endorsements\": []}, {\"evidence_id\": \"E009\", \"member_id\": \"M03\", \"project_id\": \"safety_classification\", \"batch_id\": \"safety_batch_08\", \"channel_id\": \"C_SAFETY_GENERAL\", \"thread_id\": \"1790911054.000066\", \"message_id\": \"1790911148.000226\", \"quote\": \"What harmful content, if any, is present beyond a claim of bypassing a rule?\", \"is_reply\": true, \"author_id\": \"U008\", \"author_name\": \"Hana\", \"author_role\": \"QA_TUTOR\", \"reactions\": [], \"eligible_tl_endorsements\": []}, {\"evidence_id\": \"E010\", \"member_id\": \"M03\", \"project_id\": \"safety_classification\", \"batch_id\": \"safety_batch_08\", \"channel_id\": \"C_SAFETY_GENERAL\", \"thread_id\": \"1790911054.000066\", \"message_id\": \"1790911193.000339\", \"quote\": \"We need to separate the prompt-injection language from the actual output content before choosing a safety category.\", \"is_reply\": true, \"author_id\": \"U006\", \"author_name\": \"Priya\", \"author_role\": \"TEAM_LEAD\", \"reactions\": [], \"eligible_tl_endorsements\": []}]}"
+    }
+  ],
+  "max_completion_tokens": 8192,
+  "reasoning_effort": "low",
+  "response_format": {
+    "type": "json_schema",
+    "json_schema": {
+      "name": "threadsense_agent2_inventory_v5",
+      "strict": true,
+      "schema": {
+        "$defs": {
+          "CitedText": {
+            "additionalProperties": false,
+            "properties": {
+              "text": {
+                "type": "string"
+              },
+              "evidence_ids": {
+                "items": {
+                  "type": "string"
+                },
+                "minItems": 1,
+                "type": "array"
+              }
+            },
+            "required": [
+              "text",
+              "evidence_ids"
+            ],
+            "type": "object"
+          },
+          "ImpactCriterion": {
+            "additionalProperties": false,
+            "properties": {
+              "criterion": {
+                "enum": [
+                  "substantial_blockage",
+                  "material_quality_risk",
+                  "material_safety_risk",
+                  "bounded_operational_issue",
+                  "limited_demonstrated_consequence",
+                  "non_operational",
+                  "insufficient_impact_evidence"
+                ],
+                "type": "string"
+              },
+              "basis": {
+                "enum": [
+                  "REPORTED_RISK",
+                  "OBSERVED_OUTCOME",
+                  "INSUFFICIENT_EVIDENCE",
+                  "NON_OPERATIONAL"
+                ],
+                "type": "string"
+              },
+              "observation": {
+                "$ref": "#/$defs/CitedText"
+              }
+            },
+            "required": [
+              "criterion",
+              "basis",
+              "observation"
+            ],
+            "type": "object"
+          },
+          "ImpactProposal": {
+            "additionalProperties": false,
+            "properties": {
+              "criteria": {
+                "items": {
+                  "$ref": "#/$defs/ImpactCriterion"
+                },
+                "minItems": 1,
+                "type": "array"
+              },
+              "affected_scope": {
+                "anyOf": [
+                  {
+                    "$ref": "#/$defs/CitedText"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              }
+            },
+            "required": [
+              "criteria",
+              "affected_scope"
+            ],
+            "type": "object"
+          },
+          "QuestionState": {
+            "additionalProperties": false,
+            "properties": {
+              "status": {
+                "enum": [
+                  "OPEN",
+                  "PARTIAL",
+                  "ANSWERED"
+                ],
+                "type": "string"
+              },
+              "answer_item_ids": {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              }
+            },
+            "required": [
+              "status",
+              "answer_item_ids"
+            ],
+            "type": "object"
+          },
+          "ResponseTopic": {
+            "additionalProperties": false,
+            "properties": {
+              "topic_name": {
+                "type": "string"
+              },
+              "member_ids": {
+                "items": {
+                  "type": "string"
+                },
+                "minItems": 1,
+                "type": "array"
+              },
+              "shared_issue": {
+                "$ref": "#/$defs/CitedText"
+              },
+              "relevant_differences": {
+                "items": {
+                  "$ref": "#/$defs/CitedText"
+                },
+                "type": "array"
+              },
+              "inventory": {
+                "items": {
+                  "$ref": "#/$defs/SourceItem"
+                },
+                "minItems": 1,
+                "type": "array"
+              },
+              "dispositions": {
+                "description": "Only messages without inventory items. Account for every message explicitly; missing treatment never defaults to NONE.",
+                "items": {
+                  "$ref": "#/$defs/SourceDisposition"
+                },
+                "type": "array"
+              },
+              "impact": {
+                "anyOf": [
+                  {
+                    "$ref": "#/$defs/ImpactProposal"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "description": "Null when unassessed; never invent impact to fill the schema."
+              }
+            },
+            "required": [
+              "topic_name",
+              "member_ids",
+              "shared_issue",
+              "relevant_differences",
+              "inventory",
+              "dispositions",
+              "impact"
+            ],
+            "type": "object"
+          },
+          "SourceDisposition": {
+            "additionalProperties": false,
+            "properties": {
+              "evidence_id": {
+                "type": "string"
+              },
+              "disposition": {
+                "enum": [
+                  "NON_SUBSTANTIVE",
+                  "UNCERTAIN"
+                ],
+                "type": "string"
+              },
+              "reason": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "evidence_id",
+              "disposition",
+              "reason"
+            ],
+            "type": "object"
+          },
+          "SourceItem": {
+            "additionalProperties": false,
+            "properties": {
+              "item_id": {
+                "type": "string"
+              },
+              "evidence_id": {
+                "type": "string"
+              },
+              "kind": {
+                "enum": [
+                  "QUESTION",
+                  "DIAGNOSTIC_REQUEST",
+                  "ANSWER",
+                  "INSTRUCTION",
+                  "FACT",
+                  "ANNOUNCEMENT",
+                  "CONTEXT"
+                ],
+                "type": "string"
+              },
+              "answer_status": {
+                "anyOf": [
+                  {
+                    "enum": [
+                      "TENTATIVE",
+                      "DIRECT"
+                    ],
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "description": "Only ANSWER items: TENTATIVE for unconfirmed advice, DIRECT for an explicit scoped answer. Context alone is not an answer. Python supplies the full original quotation."
+              },
+              "question": {
+                "anyOf": [
+                  {
+                    "$ref": "#/$defs/QuestionState"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "description": "Required only for QUESTION. Link ANSWER items in the same member conversation, never diagnostics or another thread."
+              }
+            },
+            "required": [
+              "item_id",
+              "evidence_id",
+              "kind",
+              "answer_status",
+              "question"
+            ],
+            "type": "object"
+          }
+        },
+        "additionalProperties": false,
+        "properties": {
+          "topics": {
+            "items": {
+              "$ref": "#/$defs/ResponseTopic"
+            },
+            "minItems": 1,
+            "type": "array"
+          }
+        },
+        "required": [
+          "topics"
+        ],
+        "type": "object"
+      }
+    }
+  }
+}

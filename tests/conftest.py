@@ -9,3 +9,10 @@ def isolate_local_credentials(monkeypatch, tmp_path):
     monkeypatch.setattr(config, "ENV_FILE", tmp_path / ".env")
     for name in ("OPENAI_API_KEY", "OPENROUTER_API_KEY", "THREADSENSE_MODEL", "THREADSENSE_VERIFIER_MODEL"):
         monkeypatch.delenv(name, raising=False)
+
+
+@pytest.fixture
+def legacy_agent2_v6(monkeypatch):
+    """Opt-in only: historical semantic contracts on the unchanged shared runner."""
+    from tests.legacy_agent2 import bind_v6
+    bind_v6(monkeypatch)

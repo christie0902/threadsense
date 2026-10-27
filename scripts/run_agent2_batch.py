@@ -24,7 +24,9 @@ def select_pilot(payloads, path, model):
     if not selected or len(selected) != pilot['maximum_request_attempts']:
         raise ValueError('Pilot request bound differs from selection.')
     if pilot['configuration_sha256'] != digest(configuration(selected, model)):
-        raise ValueError('Pilot code/configuration changed; prepare a newly reviewed pilot explicitly.')
+        raise ValueError('Pilot code/configuration changed; inspect the changes, then use '
+                         'scripts/prepare_agent2_pilot.py to prepare a new offline pilot. '
+                         'Keep the original pilot and use new output paths.')
     return selected, pilot['maximum_request_attempts']
 
 def main(argv=None):
@@ -36,7 +38,7 @@ def main(argv=None):
     parser.add_argument('--limit', type=int, default=0, help='Offline selection size; 0 means all.')
     parser.add_argument('--pilot', type=Path, help='Evidence-bound prepared pilot selection.')
     parser.add_argument('--max-requests', type=int, help='Explicit live request ceiling; must match the pilot.')
-    parser.add_argument('--output-dir', type=Path, default=ROOT/'data/processed/agent2_offline_v2')
+    parser.add_argument('--output-dir', type=Path, default=ROOT/'data/processed/agent2_taxonomy_v7_offline')
     args = parser.parse_args(argv)
     if args.limit < 0 or (args.pilot and args.limit):
         parser.error('Use a nonnegative limit, or a pilot selection, not both.')
@@ -64,6 +66,10 @@ def main(argv=None):
     except (ValueError, RuntimeError, OSError, KeyError) as error:
         parser.error(str(error))
     print(f"State: {result['state']}; attempts: {result['new_request_attempts']}; unprocessed groups: {result['unprocessed_groups']}")
+    counts = result['processing_counts']
+    print('Processing outcomes: ' + ', '.join(
+        f"{state}={counts.get(state, 0)}" for state in ('CONSOLIDATED', 'FAILED', 'INTERRUPTED', 'NOT_RUN')))
+    print(f"Saved responses: {result['available_response_records']}; unknown completions: {len(result['unknown_completion_requests'])}")
     return 1 if result['state'] in {'failed', 'interrupted'} else 0
 
 if __name__ == '__main__':
