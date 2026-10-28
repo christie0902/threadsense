@@ -18,7 +18,7 @@ uv run --locked --extra dev python -m pytest tests/test_x.py   # single file
 ```
 
 - Always pass a **fresh** `--basetemp .cache/pytest-<name>`: pytest wipes it at start.
-- Full suite: 614 tests, ~5 min. **25 fail on this Windows checkout before any change** (see Known issues); compare against that baseline, don't chase them blindly.
+- Full suite: 614 tests, ~5 min, all expected to pass. Intermittent `WinError 5` on `os.replace` is a Windows file lock (see Known issues), not a code failure.
 - No linter/formatter configured. No build step beyond the editable install.
 - Zero-call checks: `--dry-run`, `--inspect`, `--check-input` flags (list in README). Anything with `--run`, or Agent 1 without `--dry-run`/`--inspect`, makes **paid model calls** — never run those without asking.
 - Dependency changes go in `pyproject.toml` and `uv.lock` together.
@@ -48,11 +48,12 @@ uv run --locked --extra dev python -m pytest tests/test_x.py   # single file
 - `data/processed/**`, `data/experiments/**`, `data/metadata/**` — frozen, fingerprinted evidence. Never rewrite, re-hash or bypass fingerprint failures.
 - `src/threadsense/legacy/**` and the 14 fingerprinted runner files (changing bytes invalidates historical preflights). `legacy/grouping_v1.py` and `data/metadata/historical/*.json` are byte-exact (`-text` in .gitattributes).
 - `.env` (real keys; never print or commit). `uv.lock` except via `uv`. `.venv/`.
+- `.gitattributes` EOL rules for `data/`: they reproduce the exact bytes each fingerprint was recorded on. Don't simplify them, and never `git add --renormalize` while working copies have stale line endings (refresh with `git checkout-index -f` first).
 
 ## Environment quirks
 
 - Windows + PowerShell primary; README also targets macOS. Don't copy `.venv` between machines.
-- System Git sets `core.autocrlf=true` + repo `* text=auto` → JSON checked out as CRLF. This is the root cause of the 25 baseline failures.
+- System Git sets `core.autocrlf=true`. Frozen data was hashed with mixed line endings (Agent 1/fixtures/evaluation CRLF; Agent 2/metadata/experiments LF); per-path `eol` rules in `.gitattributes` override autocrlf so checkouts reproduce exact bytes on any OS.
 - Long paths: `data/processed/*/records/<sha256>/…` exceed MAX_PATH in deep directories; create worktrees/temp copies at a short path (e.g. `D:\tsb`).
 - `.cache/` holds old audit helpers and 32 access-denied pytest dirs; leave them.
 - `.env` vars: `OPENAI_API_KEY`, `THREADSENSE_MODEL` (default `openai/gpt-4o-mini`), `THREADSENSE_VERIFIER_MODEL`, `OPENROUTER_API_KEY`. Terminal vars override `.env`. Frozen v3 preflight needs `gpt-4o-mini-2024-07-18` + verifier `gpt-4.1`.
@@ -61,16 +62,16 @@ uv run --locked --extra dev python -m pytest tests/test_x.py   # single file
 
 - Branch `agent3`. Agent 1 v3 and Agent 2 v7 closed. Announcement routing integrated (schema 8 / handoff v2 for new exports).
 - **Next: Agent 3 milestone 1** — audit knowledge + fixtures against the 8–9 demo cases, produce a coverage matrix, no data edits yet. Full plan: [docs/agent3-plan.md](docs/agent3-plan.md).
-- Agent 3 input: `data/processed/agent2_taxonomy_final_v7/` via `topic_effective.load_effective_output` (currently fails on Windows, see below).
+- Agent 3 input: `data/processed/agent2_taxonomy_final_v7/` via `topic_effective.load_effective_output` (90 groups / 97 topics / 49 obligations / 3 cautions / 41 review groups).
 - Planned stack not yet installed: Chroma/FAISS + BM25, LangGraph, FastAPI, React (Vite/Tailwind).
 - 2026-10-28 cleanup archived superseded runs to `D:\Christie\2026_AgenticAI\threadsense-archive-20261028\` (also local tag `pre-cleanup-20261028`).
 
 ## Known issues
 
-- **Mixed line-ending fingerprints.** Agent 2 review registries hash LF bytes; Agent 1 evidence/fixtures were hashed as CRLF. On this checkout 25 tests fail (`Registered review supplement changed`, `Pilot inputs changed`, hash mismatches) and README's `load_effective_output(...final_v7)` check raises. Fix needs a deliberate decision (e.g. `data/** -text` + re-recording registry hashes), not a silent rewrite.
-- Frozen results are intact modulo EOL: hashing with CRLF→LF, `load_effective_output` gives v7 = 90 groups / 97 topics / 49 obligations / 3 cautions / 41 review groups, and Agent 1 v3 = 81 / 70 / 49 (verified 2026-10-28).
+- Frozen results verified 2026-10-28 with real loaders: Agent 2 v7 = 90 / 97 / 49 / 3 / 41; v6 = 90 groups, 10 applied obligations; Agent 1 v3 effective 81 VERIFIED / 70 CORRECTED / 49 NEEDS_REVIEW (automated 82 / 71 / 47).
+- `data/processed/agent2_final_v6/combined_review_supplement.json` records its run as an absolute `D:/Christie/...` path, so v6 review findings only apply in this exact checkout location. Several legacy tests likewise fail in a clone at another path.
 - Agent 1 v3 preflight (`run_agent1_verification.py --dry-run --output-dir data/processed/agent1_verified_v3`) refuses with "code ... changed": expected since the routing integration; never retarget frozen dirs.
-- Intermittent `PermissionError: [WinError 5]` on `os.replace` in `topic_pipeline.write_bytes` during the full suite (AV/indexer lock on fresh temp files); a different test each run, passes on rerun.
+- Intermittent `PermissionError: [WinError 5]` on `os.replace` (atomic writes in `topic_pipeline` / Agent 1 verification) when pytest's `--basetemp` is inside this VS Code-watched repo: an AV/indexer/watcher lock on fresh temp files. Worst after mass file changes. Verify by rerunning, or with `--basetemp` outside the repo.
 - `scripts/validate_threadsense_dataset.py` fails: thread `1790941015.000132` is unresolved in the blueprint but has a TL reply/approval. Relevant to the Agent 3 milestone 1 data audit.
 - `docs/repository-cleanup.md` (2026-10-22 section) links to deleted docs; `agent1-pilot-content-review.json` now lives in `data/metadata/historical/`.
 - `severity_rubric.py`: `get_rubric_for_project` returns only the default; its LOW default conflicts with UNKNOWN when evidence is insufficient.

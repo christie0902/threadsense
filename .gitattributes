@@ -4,3 +4,44 @@
 # Byte-bound historical metadata/algorithm copies must retain original line endings.
 /data/metadata/historical/*.json -text
 /src/threadsense/legacy/grouping_v1.py -text
+
+# Frozen evidence is fingerprinted by exact bytes. These rules reproduce the line
+# endings each file had when its hash was recorded, on every OS and regardless of
+# core.autocrlf. Later rules win. New run directories fall under -text, so Git
+# keeps their exact bytes.
+/data/processed/** -text
+/data/experiments/** -text
+/data/metadata/** -text
+
+# Agent 1 outputs, fixtures and evaluation files were written in Windows text mode.
+/data/processed/agent1/** text eol=crlf
+/data/processed/agent1_authority_fix/** text eol=crlf
+/data/processed/agent1_decision_audit_sample/** text eol=crlf
+/data/processed/agent1_full_batch_review_v3/** text eol=crlf
+/data/processed/agent1_handoff_reconciled_v1/** text eol=crlf
+/data/processed/agent1_semantic_check_sample/** text eol=crlf
+/data/processed/agent1_verified_pilot_v1/** text eol=crlf
+/data/processed/agent1_verified_pilot_v2/** text eol=crlf
+/data/processed/agent1_verified_pilot_v3/** text eol=crlf
+/data/processed/agent1_verified_pilot_v4/** text eol=crlf
+/data/processed/agent1_verified_pilot_v5/** text eol=crlf
+/data/processed/agent1_verified_pilot_v6/** text eol=crlf
+/data/processed/agent1_verified_v3/** text eol=crlf
+/data/processed/agent1_verifier_sample/** text eol=crlf
+/data/processed/agent2_batch/** text eol=crlf
+/data/processed/agent2_sample/** text eol=crlf
+/data/processed/grouping/*.csv text eol=crlf
+/data/processed/grouping_agent1_v3/*.csv text eol=crlf
+/data/fixtures/** text eol=crlf
+/data/evaluation/** text eol=crlf
+/data/evaluation/thread_blueprint_200.json -text
+/data/knowledge/domain_lexicon.json text eol=crlf
+
+# Raw provider request/response bytes inside Agent 1 records stay LF.
+/data/processed/agent1*/records/**/*.request.json -text
+/data/processed/agent1*/records/**/*.response.raw.bin -text
+
+# Exceptions inside LF experiment snapshots.
+/data/experiments/agent2_revalidation_v3_2/**/severity.py text eol=crlf
+/data/experiments/agent2_revalidation_v3_2/**/terminology.py text eol=crlf
+/data/experiments/agent2_taxonomy_final_v7/previous_docs/*.md text eol=crlf
