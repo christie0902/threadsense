@@ -24,7 +24,7 @@ from tests.agent2_fixtures import membership_only_draft, guidance
 
 @pytest.fixture(scope='module')
 def payloads():
-    return load_candidate_payloads()
+    return load_candidate_payloads(historical=True)
 
 def _find(payloads, thread_id):
     return deepcopy(next(p for p in payloads if any(m['thread_id']==thread_id for m in p['members'])))
@@ -101,7 +101,7 @@ def test_grouping_keeps_approved_parameters_and_full_scope_identity(payloads):
     member = deepcopy(payloads[0]['members'][0])
     other = deepcopy(member)
     other['project_id'] = other['agent1_record']['project_id'] = 'other_project'
-    groups = group_members([member,other],np.asarray([[1,0],[1,0]],dtype=np.float32),implementation,.50)
+    groups = group_members([member,other],np.asarray([[1,0],[1,0]],dtype=np.float32),implementation,.50,historical=True)
     assert len(groups)==2
     assert len({inputs.identity(r) for g in groups for r in g['threads']})==2
 

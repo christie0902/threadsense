@@ -3,7 +3,7 @@ from dataclasses import dataclass
 from enum import Enum
 
 from threadsense.agents.contracts import TopicAnalysis
-from threadsense.agents.severity import SeverityLevel
+from threadsense.legacy.severity_types import SeverityLevel
 
 
 class ReviewStatus(str, Enum):

@@ -1,4 +1,4 @@
-"""Active v7 offline contract tests; synthetic assignments are not quality evidence."""
+"""Historical v7 offline contract tests; synthetic assignments are not quality evidence."""
 from collections import Counter
 from copy import deepcopy
 import json
@@ -9,7 +9,9 @@ from pydantic import ValidationError
 
 from threadsense.agents import topic_pipeline as pipeline, verification_requests as transport
 from threadsense.agents import topic_consolidation as contract, topic_consolidation_v6 as legacy
-from threadsense.agents import severity, topic_comparison
+from threadsense.agents import topic_comparison
+from threadsense.legacy import taxonomy_severity_v7 as severity
+from tests.legacy_agent2 import bind_v7
 from threadsense.agents.topic_contracts import TopicTaxonomy, TopicConsolidation
 from threadsense.agents.topic_effective import load_effective_output
 from threadsense.agents.topic_diagnostics import ConsolidationValidationError, describe_exception
@@ -22,11 +24,12 @@ MODEL = 'openai/gpt-5.4-2026-03-05'
 
 @pytest.fixture(scope='module')
 def payloads():
-    return load_candidate_payloads()
+    return load_candidate_payloads(historical=True)
 
 
 @pytest.fixture(autouse=True)
 def offline_only(monkeypatch):
+    bind_v7(monkeypatch)
     monkeypatch.setenv('THREADSENSE_MODEL', MODEL)
     monkeypatch.setenv('THREADSENSE_AGENT2_REASONING_EFFORT', 'low')
     monkeypatch.setenv('OPENAI_API_KEY', 'synthetic-offline-key')
@@ -46,7 +49,7 @@ def draft(p, *, partitions=None, rejected=()):
 
 
 def exported(p, d):
-    return contract.export_result(p, contract.parse_response(p, json.dumps(d)), state='CONSOLIDATED')
+    return contract.export_result(p, contract.parse_response(p, json.dumps(d)), state='CONSOLIDATED', export_adapter_version='taxonomy-to-canonical-v1')
 
 
 def http_response(d):
@@ -124,7 +127,7 @@ def test_all_200_members_49_obligations_survive_assignment_rejection_and_failure
     rows=[]
     for p in payloads:
         gid = p['candidate_group_id']
-        if gid == flagged_groups[0]: row = contract.export_result(p, state='FAILED', error='Synthetic failure.')
+        if gid == flagged_groups[0]: row = contract.export_result(p, state='FAILED', error='Synthetic failure.', export_adapter_version='taxonomy-to-canonical-v1')
         elif gid == flagged_groups[1]: row = exported(p, draft(p, partitions=[], rejected=[m['member_id'] for m in p['members']]))
         else: row = exported(p, draft(p))
         rows.append(row)
@@ -292,7 +295,7 @@ def test_historical_comparison_cannot_launch_taxonomy_experiment(tmp_path):
 def test_compatibility_task_requires_and_minimizes_canonical_payload(payloads, monkeypatch):
     from threadsense.agents import topic_analyst
     monkeypatch.setattr(topic_analyst, 'Task', lambda **kwargs: kwargs)
-    p=payloads[0]
+    p=next(p for p in payloads if all(m['original_thread']['channel_type']=='GENERAL' for m in p['members']))
     with pytest.raises(TypeError): topic_analyst.create_topic_task(object())
     task=topic_analyst.create_topic_task(object(),payload=p)
     data=json.loads(task['description'].split('\nCandidate:\n')[1].replace('{{','{').replace('}}','}'))
@@ -301,7 +304,7 @@ def test_compatibility_task_requires_and_minimizes_canonical_payload(payloads, m
     assert 'original_thread' not in data and 'evidence_catalog' not in data
 
 
-def test_explicit_v6_to_v7_pilot_refresh_preserves_selection_and_originals(payloads, tmp_path):
+def test_explicit_v6_to_v7_pilot_refresh_preserves_selection_and_originals(payloads, tmp_path, monkeypatch):
     from tests.legacy_agent2 import bind_v6
     from threadsense.handoff_inputs import CANONICAL, GROUPING
     p=payloads[0]; source=tmp_path/'source.json'; old_dir=tmp_path/'old'
@@ -317,6 +320,7 @@ def test_explicit_v6_to_v7_pilot_refresh_preserves_selection_and_originals(paylo
             'inherited_review_count':sum(m['agent1_record']['review_required'] for m in p['members'])}]})
     before={path:file_hash(path) for path in old_dir.rglob('*') if path.is_file()}
     prepare=runpy.run_path(str(ROOT/'scripts/prepare_agent2_pilot.py'))['prepare_pilot']
+    monkeypatch.setitem(prepare.__globals__, 'load_candidate_payloads', lambda: payloads)
     args=(source,old_dir,tmp_path/'new.json',tmp_path/'new','Synthetic explicit scope review.')
     with pytest.raises(ValueError,match='Non-code configuration changed'): prepare(*args)
     pilot,manifest=prepare(*args,allow_contract_upgrade=True)
@@ -337,6 +341,8 @@ def test_all_group_dry_run_builds_requests_without_keys_calls_or_evaluation_data
     def forbidden(*args,**kwargs): raise AssertionError('Dry run cannot access credentials.')
     monkeypatch.setattr(pipeline.config,'get_api_key',forbidden)
     cli=runpy.run_path(str(ROOT/'scripts/run_agent2_batch.py'))['main']
+    monkeypatch.setitem(cli.__globals__, 'load_candidate_payloads', lambda: payloads)
+    monkeypatch.setitem(cli.__globals__, 'build_request', pipeline.build_request)
     assert cli(['--dry-run','--limit','0']) == 0
     output=capsys.readouterr().out
     assert '200 inputs in 90 groups' in output and '49 inherited review obligations' in output

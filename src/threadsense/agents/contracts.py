@@ -1,4 +1,4 @@
-from threadsense.agents.severity import SeverityLevel
+from threadsense.legacy.severity_types import SeverityLevel
 from enum import Enum
 from pydantic import BaseModel, Field, model_validator
 from typing import Literal

@@ -210,6 +210,10 @@ def inspect_cache(output: Path, entries: list[dict], config: dict, *, historical
     allowed_output = {"manifest.json", "interpretations.json", "review_queue.json",
                       "sources", "records", ".running.lock", "content_review_report.json", "content_review_report.json.tmp",
                       "manifest.json.tmp", "interpretations.json.tmp", "review_queue.json.tmp"}
+    if config.get('routing_manifest_sha256'):
+        if digest(read_json(output/'routing_manifest.json')) != config['routing_manifest_sha256']:
+            raise ValueError('Routing manifest differs from its configured source partition.')
+        allowed_output.add('routing_manifest.json')
     if any(path.name not in allowed_output for path in output.iterdir()):
         raise ValueError("Output directory contains files from another workflow.")
     cached = {}
@@ -339,6 +343,10 @@ def main(argv: list[str] | None = None) -> int:
         parser.error("--limit must be zero or positive")
     try:
         entries = load_inputs()
+        from threadsense.routing import partition, digest as routing_digest
+        discussion, announcements, routing = partition([entry['source'] for entry in entries])
+        allowed={identity(source) for source in discussion}
+        entries=[entry for entry in entries if identity(entry['source']) in allowed]
         selected = entries
         if args.thread_id:
             requested = set(args.thread_id)
@@ -351,12 +359,14 @@ def main(argv: list[str] | None = None) -> int:
         output = args.output_dir.resolve()
         check_output_directory(output)
         config = run_configuration(entries)
+        config['routing_manifest_sha256']=routing_digest(routing)
         config["source_count"] = len(entries)
         cached = inspect_cache(output, entries, config)
         reviews, review_diagnostics = load_content_reviews(args.content_review or [DEFAULT_CONTENT_REVIEW], ROOT)
     except (ValueError, OSError, KeyError) as error:
         parser.error(str(error))
     print(f"Selected {len(selected)} of {len(entries)} source threads.")
+    print(f"Routing: {routing['input_threads']} source threads; {len(announcements)} announcements excluded and retained for knowledge extraction.")
     for entry in selected:
         state = "cached" if cached.get(entry["key"]) is not None else "interrupted; review" if entry["key"] in cached else "new"
         print(f"  {entry['thread'].channel_id}/{entry['thread'].thread_id}: {state}")
@@ -391,6 +401,7 @@ def main(argv: list[str] | None = None) -> int:
     try:
         # Recheck under the lock in case another process finished after preflight.
         cached = inspect_cache(output, entries, config)
+        write_json(output/'routing_manifest.json', routing)
         pending = [entry for entry in selected if entry["key"] not in cached]
         prior_selection = read_json(output / "manifest.json")["selection"] if (output / "manifest.json").exists() else []
         retained_keys = {entry["key"] for entry in selected} | set(cached) | set(prior_selection)

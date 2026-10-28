@@ -38,6 +38,10 @@ def _records(rows, payloads):
 def inspect_run(source, payloads, model):
     """Use per-request evidence even when a hard stop left aggregate reports stale."""
     source = Path(source).resolve()
+    from threadsense.topic_inputs import routing_manifest_for_payloads
+    routing = routing_manifest_for_payloads(payloads)
+    if routing is not None and read_json(source/'routing_manifest.json') != routing:
+        raise ValueError('Source routing manifest changed or lost announcement obligations.')
     manifest = read_json(source / 'manifest.json')
     expected = pipeline.configuration(payloads, model)
     if manifest['config'] != expected or manifest['config_sha256'] != digest(expected):
@@ -146,6 +150,10 @@ def continue_batch(payloads, source, output, *, run=False, maximum_requests=None
     if run:
         config.get_api_key(key_name)
     output.mkdir(parents=True, exist_ok=False)
+    from threadsense.topic_inputs import routing_manifest_for_payloads
+    routing = routing_manifest_for_payloads(payloads)
+    if routing is not None:
+        pipeline.write_json(output/'routing_manifest.json', routing, exclusive=True)
     _copy_evidence(info, output)
     if tree_hashes(source) != source_snapshot:
         raise ValueError('Source run changed during inspection. Stop its process before continuing.')

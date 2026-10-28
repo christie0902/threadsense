@@ -380,6 +380,8 @@ def test_supplements_deduplicate_and_stale_candidate_is_exposed_without_applicat
 
 def test_explicit_contract_upgrade_requires_same_inputs_model_and_bound(tmp_path, monkeypatch):
     prepare = runpy.run_path(str(ROOT / 'scripts/prepare_agent2_pilot.py'))['prepare_pilot']
+    from threadsense.topic_inputs import load_candidate_payloads
+    monkeypatch.setitem(prepare.__globals__, 'load_candidate_payloads', lambda: load_candidate_payloads(historical=True))
     source = ROOT / 'docs/agent2-revalidation-v3-2.json'
     prepared = ROOT / 'data/processed/agent2_revalidation_v3_2_prepared'
     with pytest.raises(ValueError, match='Non-code configuration'):

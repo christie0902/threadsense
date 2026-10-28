@@ -42,26 +42,10 @@ def write_json(path: Path, value: object) -> None:
             time.sleep(0.5 * (attempt + 1))
 
 
-def load_threads(fixture_root: Path, channels: list[str] | None) -> list:
-    from threadsense.adapters.mock_slack import MockSlackAdapter
-
-    channel_dir = fixture_root / "channels"
-    channel_ids = channels or sorted(p.stem for p in channel_dir.glob("C_*.json"))
-    if not channel_ids:
-        raise ValueError(f"No channel files found in {channel_dir}")
-    adapter = MockSlackAdapter(
-        fixture_dir=str(channel_dir),
-        users_file=str(fixture_root / "users.json"),
-    )
-    # Round-robin selection spreads a small --limit across available channels.
-    groups = [list(adapter.get_threads(channel)) for channel in dict.fromkeys(channel_ids)]
-    threads = []
-    for index in range(max((len(group) for group in groups), default=0)):
-        threads.extend(group[index] for group in groups if index < len(group))
-    identities = [(thread.channel_id, thread.thread_id) for thread in threads]
-    if len(identities) != len(set(identities)):
-        raise ValueError("Duplicate channel/thread identity in adapter output.")
-    return threads
+def load_threads(fixture_root: Path, channels: list[str] | None, *, cutoff=None, with_routing=False):
+    from threadsense.source_ingestion import interpretation_threads
+    result=interpretation_threads(fixture_root,cutoff=cutoff,channels=channels)
+    return result if with_routing else result[0]
 
 
 def package_versions() -> dict:
@@ -104,6 +88,7 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--thread-id", action="append", help="Repeat to select threads.")
     parser.add_argument("--limit", type=int, default=10, help="Selected threads; 0 means all.")
     parser.add_argument("--dry-run", action="store_true", help="List selection; no API calls or writes.")
+    parser.add_argument('--cutoff',help='Timezone-aware end of the daily window; required for live processing.')
     parser.add_argument(
         "--retry-failed", action="store_true",
         help="Retry each previously rejected output once; completed results stay cached.",
@@ -117,7 +102,14 @@ def main(argv: list[str] | None = None) -> int:
         parser.error("--limit must be zero or positive")
 
     fixture_root = PROJECT_ROOT / "data" / "fixtures" / "slack_generated"
-    threads = load_threads(fixture_root, args.channel)
+    if not args.dry_run and not args.cutoff:
+        parser.error('Live processing requires an explicit timezone-aware --cutoff.')
+    threads, announcements, routing = load_threads(fixture_root, args.channel, cutoff=args.cutoff, with_routing=True)
+    from threadsense.source_ingestion import extraction_report, existing_canonical_members
+    routed_threads=list(threads)
+    existing_members=existing_canonical_members()
+    extraction = extraction_report(routed_threads, announcements, routing,canonical_members=existing_members)
+    print(f"Routing: {routing['input_threads']} threads; {routing['eligible_threads']} eligible; {len(announcements)} announcements; {routing['source_messages_in_window']} activity messages.")
     if args.thread_id:
         requested = set(args.thread_id)
         missing = requested - {thread.thread_id for thread in threads}
@@ -126,15 +118,16 @@ def main(argv: list[str] | None = None) -> int:
         threads = [thread for thread in threads if thread.thread_id in requested]
     if args.limit:
         threads = threads[:args.limit]
-    if not threads:
-        parser.error("No threads selected")
+    if not threads and args.dry_run:
+        print('No eligible interpretation threads. Announcements remain on the extraction route.')
+        return int(extraction['state']=='complete_with_failures')
 
     print(f"Selected {len(threads)} thread(s).")
     if args.dry_run:
         for thread in threads:
             print(f"  {thread.channel_id}: {thread.thread_id}")
         print("Dry run: no API calls and no output files written.")
-        return 0
+        return int(extraction['state']=='complete_with_failures')
 
     from threadsense.agents import thread_interpreter as ti
 
@@ -145,6 +138,9 @@ def main(argv: list[str] | None = None) -> int:
     manifest_path = output_dir / "run_config.json"
     config = {
         "format_version": 1,
+        "routing_version":routing['routing_version'],
+        "routing_rules_sha256":routing['rules_sha256'],
+        "extraction_window":routing['window'],
         "model": model,
         "interpreter_sha256": fingerprint(Path(ti.__file__).read_text(encoding="utf-8")),
         "contract_sha256": fingerprint(ti.ThreadInterpretation.model_json_schema()),
@@ -195,6 +191,10 @@ def main(argv: list[str] | None = None) -> int:
             parser.error(str(exc))
 
     write_json(manifest_path, config)
+    # Persist the separate source route before interpreting eligible discussions.
+    extraction = extraction_report(routed_threads, announcements, routing,
+        destination=PROJECT_ROOT/'data/knowledge/decisions',canonical_members=existing_members)
+    write_json(output_dir/'routing_manifest.json', extraction)
     export_path = output_dir / "interpretations.json"
     review_path = output_dir / "review_required.json"
     status_path = output_dir / "batch_status.json"
@@ -281,7 +281,7 @@ def main(argv: list[str] | None = None) -> int:
         print(f"Rejected threads: {review_path}")
         print("Coverage is partial. Rejected threads have no accepted interpretation.")
         print("To retry them once, rerun with --retry-failed.")
-    return 2 if rejected else 0
+    return 2 if rejected or extraction['state']=='complete_with_failures' else 0
 
 
 if __name__ == "__main__":

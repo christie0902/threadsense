@@ -8,38 +8,28 @@ Agent 2's corrected **v7 scope is taxonomy and cluster hygiene**: coherence,
 splitting, concise reusable topic names and explicit outliers. It consumes Agent 1
 summaries/questions, preserves full canonical records and all 49 inherited review
 obligations passively, and uses one strict request per group without retries.
-Independent deterministic severity is UNKNOWN because the canonical inputs lack
-structured operational-impact signals. Agent 3 will own research, answer/policy
+Prospective exports leave severity UNKNOWN/UNASSESSED and defer assessment to Agent 3.
+The frozen v7 release retains its historical deterministic metadata. Agent 3 will own research, answer/policy
 reassessment, final severity and recommendations.
 
 Agent 2 v7 is **complete with nonblocking review**: 90 CONSOLIDATED groups,
 97 topics and all 200 identities/49 inherited obligations retained. The accepted
 four-group pilot was reused; 86 new requests completed, with no failed, interrupted
 or unprocessed groups. Three naming cautions remain in the reviewed effective view.
-See the [completion report](docs/agent2-taxonomy-refactor.md),
-[operational guide](docs/agent2-offline-integration.md) and
-[Agent 3 discussion handoff](docs/agent3-strategy-handoff.md). Historical v6 outputs
-remain preserved. Agent 3 and the dashboard remain planned work.
+See the [Agent 2 summary](docs/Agent2_Summary.md) and the
+[current routing and knowledge-source guide](docs/announcement-routing.md).
+Historical v6/v7 outputs remain preserved. Agent 3 and the dashboard remain planned.
 
 ## Maintained documentation
 
 - [Setup and commands](#setup-and-configuration): this page.
-- [Agent 1 workflow and downstream contract](docs/agent1-nonblocking-handoff.md):
-  current behavior, read-only preflight, evidence, and next milestone.
-- [Final Agent 1 results](docs/agent1-full-batch-results.md): request accounting,
-  all twelve source-review outcomes, limitations, and artifact links.
-- [Agent 2 taxonomy completion](docs/agent2-taxonomy-refactor.md): final coverage,
-  request accounting, assisted taxonomy review, retained obligations and test limits.
-- [Historical Agent 2 v6 results](docs/agent2-milestone-results.md): preserved prior
-  dataset and review evidence; superseded readiness conclusion.
-- [Agent 2 run guide](docs/agent2-offline-integration.md): current inspection,
-  reviewed effective export and completed execution provenance.
-- [Agent 3 strategy handoff](docs/agent3-strategy-handoff.md): discussion inputs and
-  remaining decisions; no Agent 3 implementation or live-call authorization.
-- [Prose benchmark](experiments/prose_comparison_v1/README.md): retained synthetic
-  cases, request isolation, scoring, and saved-response regression evidence.
-- [Repository cleanup record](docs/repository-cleanup.md): removals, recovery,
-  preservation checks, and validation results.
+- [Agent 1 summary](docs/Agent1_Summary.md): historical workflow and results.
+- [Agent 2 summary](docs/Agent2_Summary.md): completed taxonomy milestone.
+- [Announcement routing and knowledge sources](docs/announcement-routing.md):
+  current input boundary, daily commands, manual source format and severity migration.
+- [Source JSON Schema](docs/knowledge-source.schema.json).
+- [Prose benchmark](experiments/prose_comparison_v1/README.md).
+- [Repository cleanup record](docs/repository-cleanup.md).
 
 ## Current architecture
 
@@ -55,8 +45,8 @@ thread, zero retries and no fallback calls**. NEEDS_REVIEW retains the candidate
 and evidence and does not interrupt subsequent threads.
 
 The baseline lives in `data/processed/agent1_authority_fix/`; the 91 frozen
-groups live in `data/processed/grouping/` as historical evidence. Agent 2 reads
-`data/processed/agent1_verified_v3/interpretations.json` directly and uses the new
+groups live in `data/processed/grouping/` as historical evidence. The historical Agent 2 release read
+`data/processed/agent1_verified_v3/interpretations.json` directly and used the
 90 candidates in `data/processed/grouping_agent1_v3/`. It preserves all 49 inherited
 review obligations through taxonomy assignments, rejection and recoverable failure.
 Agent 2's model sees canonical summaries/questions and the approved glossary; original
@@ -68,6 +58,14 @@ effective loader. Per-record `taxonomy_handoff` replaces the historical semantic
 `research_handoff`. All 49 inherited obligations and three naming cautions remain
 visible across 41 effective review groups. Preserve future unassigned/rejected
 members for later work as well.
+
+Prospective ingestion now routes announcement channels into durable knowledge
+sources before interpretation. Discussions keep the existing path. The canonical
+200 records partition into **178 discussions with 41 review obligations** and
+**22 announcements with eight obligations**, all preserved. Projecting historical
+groups yields 81 discussion candidates without computing embeddings. The prompt
+and model response schema remain taxonomy v7; new unassessed-severity exports use
+schema 8 / handoff v2. Historical release bytes and handoff v1 are unchanged.
 
 ## Setup and configuration
 
@@ -117,24 +115,24 @@ uv run --locked python scripts/run_agent2_sample.py
 uv run --locked python scripts/run_agent2_batch.py --dry-run --limit 0
 ```
 
-Read-only verification of the completed handoff, in PowerShell:
+Inspect the historical effective handoff without regenerating it:
 
 ```powershell
-$env:THREADSENSE_MODEL = 'openai/gpt-4o-mini-2024-07-18'
-$env:THREADSENSE_VERIFIER_MODEL = 'openai/gpt-4.1'
-uv run --locked python scripts/run_agent1_verification.py --dry-run --limit 0 --content-review docs/agent1-pilot-content-review.json --content-review data/processed/agent1_full_batch_review_v3/content_review.json --output-dir data/processed/agent1_verified_v3
+uv run --locked python -c "from threadsense.agents.topic_effective import load_effective_output; v=load_effective_output('data/processed/agent2_taxonomy_final_v7'); print(len(v['records']), len(v['member_review_queue']), len(v['applied_content_obligations']))"
 ```
 
-On macOS, set the same two variables with `export NAME='value'` before running
-the identical uv command. Expected state: **200 compatible caches, zero unstarted
-records, zero remaining model tasks**. Every future export refresh must load
-**both review files**, including the full-batch disputes.
+Expected: **90 groups, 49 inherited obligations, three naming cautions**. The new
+routing code intentionally changes prospective input/configuration fingerprints.
+Do not run a new producer against the frozen v3/v7 output directories or bypass
+fingerprint failures. Historical metadata registries resolve through the verified
+archive described in the current guide.
 
 The verification and Agent 2 runners require `--run` for live calls. Agent 2's
 batch runner additionally requires the prepared pilot and explicit request ceiling;
 each group gets one request, zero retries, and zero repairs. The original
 Agent 1 demo and baseline runner have different defaults: omit `--inspect` or
-`--dry-run` only when intentionally requesting model work. Grouping without
+`--dry-run` only when intentionally requesting model work, and supply an explicit
+timezone-aware `--cutoff`. Announcement-only extraction is always zero-call. Grouping without
 `--check-input` can load/download an embedding model and write outputs. Preserve
 the frozen baselines when preparing any future run.
 

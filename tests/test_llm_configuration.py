@@ -83,7 +83,7 @@ def test_invalid_model_reports_expected_format(monkeypatch, model):
 def test_empty_model_is_rejected_before_the_demo_asks_for_a_key(monkeypatch, capsys):
     monkeypatch.setenv("THREADSENSE_MODEL", "")
     monkeypatch.delenv("OPENROUTER_API_KEY", raising=False)
-    monkeypatch.setattr("sys.argv", ["run_agent1_demo.py"])
+    monkeypatch.setattr("sys.argv", ["run_agent1_demo.py", "--cutoff", "2026-10-02T12:00:00Z"])
     prompt = Mock(side_effect=AssertionError("A key should not be requested"))
     monkeypatch.setattr("getpass.getpass", prompt)
     script = Path(__file__).resolve().parents[1] / "scripts" / "run_agent1_demo.py"
@@ -143,8 +143,8 @@ def test_terminal_settings_take_precedence_over_saved_settings(monkeypatch):
 @pytest.mark.parametrize(
     ("script_name", "arguments", "exit_code"),
     [
-        ("run_agent1_demo.py", [], 1),
-        ("run_agent1_batch.py", ["--limit", "1"], 2),
+        ("run_agent1_demo.py", ["--cutoff", "2026-10-02T12:00:00Z"], 1),
+        ("run_agent1_batch.py", ["--limit", "1", "--cutoff", "2026-10-02T12:00:00Z"], 2),
         ("run_agent2_sample.py", ["--run"], 2),
     ],
 )

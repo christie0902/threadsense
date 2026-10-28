@@ -26,6 +26,8 @@ def assemble_dataset(sources, output, payloads, *, registry=REGISTRY):
     output = Path(output).resolve()
     if output.exists():
         raise FileExistsError('Use a fresh final dataset directory.')
+    from threadsense.topic_inputs import routing_manifest_for_payloads
+    routing = routing_manifest_for_payloads(payloads)
     expected = {p['candidate_group_id']: p for p in payloads}
     if len(expected) != len(payloads):
         raise ValueError('Duplicate expected group identities.')
@@ -39,11 +41,13 @@ def assemble_dataset(sources, output, payloads, *, registry=REGISTRY):
             raise ValueError('Invalid provenance or overlapping output/source directories.')
         manifest = read_json(source/'manifest.json')
         config = manifest['config']
+        if routing is not None and read_json(source/'routing_manifest.json') != routing:
+            raise ValueError('Source routing manifest changed or lost announcement obligations.')
         version = config['response_schema_version']
         if digest(config) != manifest['config_sha256']:
             raise ValueError('Source configuration fingerprint mismatch.')
         semantic = {k: config[k] for k in SEMANTIC_CONFIG}
-        code = {k:v for k,v in config['code_sha256'].items() if k != 'docs/agent2-review-supplements.json'}
+        code = {k:v for k,v in config['code_sha256'].items() if k not in {'docs/agent2-review-supplements.json', 'data/metadata/agent2-review-supplements.json'}}
         if accepted is None:
             accepted, producer_code = semantic, code
         if semantic != accepted or code != producer_code:
@@ -61,15 +65,15 @@ def assemble_dataset(sources, output, payloads, *, registry=REGISTRY):
             p = expected[gid]; d = source/'records'/gid
             if read_json(d/'input.json') != p or row['members'] != p['members']:
                 raise ValueError('Source input or full member lineage changed.')
-            if read_json(d/'request.json') != build_request(p, get_terms(), config['model'], response_schema_version=version):
+            if read_json(d/'request.json') != build_request(p, get_terms(), config['model'], response_schema_version=version, export_adapter_version=config['export_adapter_version']):
                 raise ValueError('Source request is incompatible with accepted construction.')
             if read_json(d/'result.json') != row:
                 raise ValueError('Aggregate and per-group result differ.')
-            if row['inherited_review_obligations'] != export_result(p, response_schema_version=version)['inherited_review_obligations']:
+            if row['inherited_review_obligations'] != export_result(p, response_schema_version=version, export_adapter_version=config['export_adapter_version'])['inherited_review_obligations']:
                 raise ValueError('Inherited obligations differ from canonical input.')
             if row['processing_state'] == 'CONSOLIDATED':
                 raw = (d/'analysis.raw.txt').read_text(encoding='utf-8')
-                if export_result(p, parse_response(p, raw, response_schema_version=version), state='CONSOLIDATED', response_schema_version=version) != row:
+                if export_result(p, parse_response(p, raw, response_schema_version=version), state='CONSOLIDATED', response_schema_version=version, export_adapter_version=config['export_adapter_version']) != row:
                     raise ValueError('Accepted producer no longer reproduces the saved export.')
             elif row['processing_state'] not in {'FAILED', 'INTERRUPTED', 'NOT_RUN'}:
                 raise ValueError('Unknown processing state.')
@@ -102,6 +106,8 @@ def assemble_dataset(sources, output, payloads, *, registry=REGISTRY):
     if len(identities) != len(set(identities)) or Counter(identities) != Counter(input_ids):
         raise ValueError('Final identities are missing or duplicated.')
     output.mkdir(parents=True)
+    if routing is not None:
+        write_json(output/'routing_manifest.json', routing, exclusive=True)
     for gid, origin in provenance.items():
         src = Path(origin['source_run'])/'records'/gid
         dest = output/'records'/gid
@@ -162,7 +168,8 @@ def main():
     parser.add_argument('--new-run', type=Path, required=True)
     parser.add_argument('--output-dir', type=Path, required=True)
     args=parser.parse_args()
-    result=assemble_dataset([(args.reused_run,'reused'),(args.new_run,'new')],args.output_dir,load_candidate_payloads())
+    historical=read_json(args.reused_run/'manifest.json')['config']['export_adapter_version']!='taxonomy-to-canonical-v2'
+    result=assemble_dataset([(args.reused_run,'reused'),(args.new_run,'new')],args.output_dir,load_candidate_payloads(historical=historical))
     print({k:result[k] for k in ('state','groups','identities','inherited_review_obligations','processing_counts','new_request_attempts','reused_original_attempts')})
     return 1 if result['unprocessed_groups'] else 0
 

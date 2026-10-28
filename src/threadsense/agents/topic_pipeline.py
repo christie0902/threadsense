@@ -25,11 +25,14 @@ CODE_FILES = (
     'src/threadsense/agents/topic_contracts.py', 'src/threadsense/agents/topic_consolidation.py',
     'src/threadsense/agents/topic_taxonomy.py', 'src/threadsense/agents/topic_consolidation_v6.py',
     'src/threadsense/agents/topic_contracts_v5.py',
-    'src/threadsense/agents/severity.py',
+    'src/threadsense/routing.py', 'data/config/channel_routes.json',
+    'src/threadsense/metadata_paths.py',
+    'src/threadsense/legacy/severity_types.py',
+    'src/threadsense/legacy/topic_taxonomy_v7.py', 'src/threadsense/legacy/taxonomy_severity_v7.py',
     'src/threadsense/agents/operational_severity.py', 'src/threadsense/agents/topic_evidence.py',
     'src/threadsense/agents/topic_diagnostics.py',
     'src/threadsense/agents/topic_requests.py',
-    'src/threadsense/agents/topic_effective.py', 'docs/agent2-review-supplements.json',
+    'src/threadsense/agents/topic_effective.py', 'data/metadata/agent2-review-supplements.json',
     'src/threadsense/agents/thread_interpreter.py',
     'src/threadsense/agents/topic_pipeline.py', 'src/threadsense/agents/verification_requests.py',
     'src/threadsense/config.py', 'src/threadsense/terminology.py',
@@ -37,7 +40,7 @@ CODE_FILES = (
 )
 
 def configuration(payloads, model):
-    return {'schema_version':RESPONSE_SCHEMA_VERSION, 'response_schema_version':RESPONSE_SCHEMA_VERSION, 'prompt_version':PROMPT_VERSION,
+    return {'schema_version':8 if EXPORT_ADAPTER_VERSION=='taxonomy-to-canonical-v2' else RESPONSE_SCHEMA_VERSION, 'response_schema_version':RESPONSE_SCHEMA_VERSION, 'prompt_version':PROMPT_VERSION,
             'rubric_version':RUBRIC_VERSION, 'export_adapter_version':EXPORT_ADAPTER_VERSION,
             'model':model, 'maximum_requests_per_group':1,
             'request_parameters': model_parameters(model), 'response_format_sha256': digest(response_format()),
@@ -117,12 +120,16 @@ def execute_batch(payloads, output, *, run=False, maximum_requests=None, model_o
         model_parameters(model)  # Explicit, reviewed OpenAI profiles only.
         key_name = 'OPENAI_API_KEY'
     requests = [build_request(p, get_terms(), model) for p in payloads]
+    from threadsense.topic_inputs import routing_manifest_for_payloads
+    routing = routing_manifest_for_payloads(payloads)
     if not payloads or (maximum_requests is not None and len(payloads) > maximum_requests):
         raise ValueError('Selection exceeds the explicit request bound, or is empty.')
     if run:
         config.get_api_key(key_name)  # Missing configuration must fail before writes/attempts.
     run_config = configuration(payloads, model)
     output.mkdir(parents=True, exist_ok=False)
+    if routing is not None:
+        write_json(output/'routing_manifest.json', routing, exclusive=True)
     records = [export_result(p) for p in payloads]
     for payload, request in zip(payloads, requests):
         directory = output/'records'/payload['candidate_group_id']

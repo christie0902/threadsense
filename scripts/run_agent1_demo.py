@@ -14,6 +14,7 @@ def main() -> None:
     parser.add_argument("--channel", default="C_AUDIO_GENERAL")
     parser.add_argument("--thread-id", default="1790921338.000134")
     parser.add_argument("--inspect", action="store_true")
+    parser.add_argument('--cutoff',help='Timezone-aware daily cutoff; required outside read-only inspection.')
     parser.add_argument(
         "--list",
         action="store_true",
@@ -29,7 +30,24 @@ def main() -> None:
         users_file=str(fixture_root / "users.json"),
     )
 
-    threads = adapter.get_threads(args.channel)
+    if not (args.inspect or args.list):
+        if not args.cutoff:
+            parser.error('Processing requires an explicit timezone-aware --cutoff.')
+        from threadsense.source_ingestion import fixture_routes, interpretation_threads, existing_canonical_members
+        from threadsense.knowledge_sources import extract_announcement, store_source
+        from threadsense.routing import IDENTITY
+        _, announcements, routing = fixture_routes(fixture_root, cutoff=args.cutoff, channels=[args.channel])
+        announcement = next((s for s in announcements if s['thread_id']==args.thread_id), None)
+        if announcement is not None:
+            member = next((m for m in existing_canonical_members()
+                if all(m[k]==announcement.get(k) for k in IDENTITY)), None)
+            print(store_source(extract_announcement(announcement, canonical_member=member),
+                PROJECT_ROOT/'data/knowledge/decisions'))
+            print('Announcement extracted; zero interpretation/model calls.')
+            return
+        threads, _, _ = interpretation_threads(fixture_root, cutoff=args.cutoff, channels=[args.channel])
+    else:
+        threads = adapter.get_threads(args.channel)
     if args.list:
         for item in threads:
             print(f"\nTHREAD: {item.thread_id}")

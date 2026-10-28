@@ -1,0 +1,330 @@
+{
+  "$defs": {
+    "SourceIdentity": {
+      "additionalProperties": false,
+      "properties": {
+        "system": {
+          "enum": [
+            "slack",
+            "manual"
+          ],
+          "title": "System",
+          "type": "string"
+        },
+        "workspace_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Workspace Id"
+        },
+        "project_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Project Id"
+        },
+        "batch_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Batch Id"
+        },
+        "channel_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Channel Id"
+        },
+        "thread_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Thread Id"
+        },
+        "message_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Message Id"
+        },
+        "manual_key": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Manual Key"
+        },
+        "reference": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Reference"
+        },
+        "permalink": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Permalink"
+        }
+      },
+      "required": [
+        "system"
+      ],
+      "title": "SourceIdentity",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "knowledge-source-v1",
+      "default": "knowledge-source-v1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "record_id": {
+      "default": "",
+      "title": "Record Id",
+      "type": "string"
+    },
+    "version_id": {
+      "default": "",
+      "title": "Version Id",
+      "type": "string"
+    },
+    "content_sha256": {
+      "default": "",
+      "title": "Content Sha256",
+      "type": "string"
+    },
+    "source": {
+      "$ref": "#/$defs/SourceIdentity"
+    },
+    "scope": {
+      "enum": [
+        "project",
+        "shared",
+        "unknown"
+      ],
+      "title": "Scope",
+      "type": "string"
+    },
+    "document_type": {
+      "enum": [
+        "announcement",
+        "decision",
+        "guideline",
+        "faq"
+      ],
+      "title": "Document Type",
+      "type": "string"
+    },
+    "record_kind": {
+      "enum": [
+        "announcement",
+        "status_update",
+        "decision",
+        "guideline",
+        "faq"
+      ],
+      "title": "Record Kind",
+      "type": "string"
+    },
+    "original_text": {
+      "title": "Original Text",
+      "type": "string"
+    },
+    "author": {
+      "additionalProperties": true,
+      "title": "Author",
+      "type": "object"
+    },
+    "replies": {
+      "items": {
+        "additionalProperties": true,
+        "type": "object"
+      },
+      "title": "Replies",
+      "type": "array"
+    },
+    "reactions": {
+      "items": {},
+      "title": "Reactions",
+      "type": "array"
+    },
+    "source_metadata": {
+      "additionalProperties": true,
+      "title": "Source Metadata",
+      "type": "object"
+    },
+    "authority": {
+      "additionalProperties": true,
+      "title": "Authority",
+      "type": "object"
+    },
+    "created_at": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Created At"
+    },
+    "edited_at": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Edited At"
+    },
+    "source_capture_at": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Source Capture At"
+    },
+    "captured_at": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Captured At"
+    },
+    "extraction_window": {
+      "anyOf": [
+        {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "type": "object"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Extraction Window"
+    },
+    "effective_at": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Effective At"
+    },
+    "supersedes": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Supersedes",
+      "type": "array"
+    },
+    "inherited_agent1": {
+      "anyOf": [
+        {
+          "additionalProperties": true,
+          "type": "object"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Inherited Agent1"
+    },
+    "previous_version_ids": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Previous Version Ids",
+      "type": "array"
+    }
+  },
+  "required": [
+    "source",
+    "scope",
+    "document_type",
+    "record_kind",
+    "original_text"
+  ],
+  "title": "SourceRecord",
+  "type": "object"
+}

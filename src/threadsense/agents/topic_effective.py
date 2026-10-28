@@ -9,7 +9,7 @@ from pathlib import Path
 
 from threadsense.handoff_inputs import ROOT, read_json, file_hash, digest
 
-REGISTRY = ROOT / 'docs/agent2-review-supplements.json'
+REGISTRY = ROOT / 'data/metadata/agent2-review-supplements.json'
 
 
 def _mark_provisional(value):
@@ -78,14 +78,15 @@ def research_handoff(row):
 
 def taxonomy_handoff(row):
     """Passive v7 assignments and canonical inputs; no regenerated question inventory."""
-    return {'contract_version':'agent2-taxonomy-handoff-v1',
+    return {'contract_version':'agent2-taxonomy-handoff-v2' if row.get('schema_version')==8 else 'agent2-taxonomy-handoff-v1',
         'candidate_group_id':row['candidate_group_id'], 'processing_state':row['processing_state'],
         'nonblocking':True, 'topics':deepcopy(row['topics']), 'members':deepcopy(row['members']),
         'member_dispositions':deepcopy(row['member_dispositions']),
         'rejected_member_ids':list(row['rejected_member_ids']), 'unassigned_member_ids':list(row['unassigned_member_ids']),
         'review_obligations':deepcopy(row['review_obligations']),
         'review_evidence':deepcopy(row['review_evidence']),
-        'grouping_file':row['grouping_file'],'grouping_sha256':row['grouping_sha256']}
+        'grouping_file':row['grouping_file'],'grouping_sha256':row['grouping_sha256'],
+        **({'routing_manifest':deepcopy(row.get('routing_manifest'))} if row.get('schema_version')==8 else {})}
 
 
 def load_effective_output(run_dir, *, additional_supplements=(), registry=REGISTRY):
@@ -166,7 +167,7 @@ def load_effective_output(run_dir, *, additional_supplements=(), registry=REGIST
             row['review_reasons'].append('Applicable assisted content-review findings remain open.')
             for topic in row['topics']:
                 topic['review_required'] = True
-                if row.get('schema_version') == 7:
+                if row.get('schema_version') in {7, 8}:
                     topic['assignment_reliability'] = 'PROVISIONAL'
                     topic['assignment_review_obligation_ids'] = [o['obligation_id'] for o in row['content_review_obligations']]
                     continue
@@ -180,7 +181,7 @@ def load_effective_output(run_dir, *, additional_supplements=(), registry=REGIST
                     _mark_provisional(topic.get(key))
         row['effective_review_required'] = row['review_required']
         row['effective_content_review_status'] = 'DISPUTED' if row['content_review_obligations'] else 'NO_APPLICABLE_CONTENT_FINDING'
-        if row.get('schema_version') == 7:
+        if row.get('schema_version') in {7, 8}:
             row['taxonomy_handoff'] = taxonomy_handoff(row)
         else:
             row['research_handoff'] = research_handoff(row)

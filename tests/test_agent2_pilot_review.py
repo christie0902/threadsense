@@ -55,6 +55,8 @@ def test_cli_replays_all_six_failures_without_calling_provider_and_reports_count
 
     monkeypatch.setattr(transport, 'send_once', send)
     main = runpy.run_path(str(ROOT / 'scripts/run_agent2_batch.py'))['main']
+    monkeypatch.setitem(main.__globals__, 'load_candidate_payloads', lambda: selected)
+    monkeypatch.setitem(main.__globals__, 'build_request', historical.build_request)
     out = tmp_path / 'replayed'
     code = main(['--run', '--pilot', str(path), '--max-requests', '6', '--output-dir', str(out)])
     assert code == 0  # Completed nonblocking processing, not semantic acceptance.

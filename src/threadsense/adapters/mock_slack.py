@@ -3,6 +3,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 from threadsense.adapters.base import DataAdapter
+from threadsense.routing import slack_datetime, slack_time
 from threadsense.models import (
     ChannelType,
     Message,
@@ -123,10 +124,7 @@ class MockSlackAdapter(DataAdapter):
             author_name=user["name"],
             author_role=Role(user["role"]),
 
-            timestamp=datetime.fromtimestamp(
-                float(raw["ts"]),
-                tz=timezone.utc,
-            ),
+            timestamp=slack_datetime(raw["ts"]),
 
             text=raw.get("text", ""),
 
@@ -228,10 +226,7 @@ class MockSlackAdapter(DataAdapter):
                     "language"
                 ),
 
-                created_at=datetime.fromtimestamp(
-                    float(thread_ts),
-                    tz=timezone.utc,
-                ),
+                created_at=slack_datetime(thread_ts),
 
                 messages=messages,
             )
@@ -243,6 +238,36 @@ class MockSlackAdapter(DataAdapter):
         )
 
         return threads
+
+    def get_source_threads(self, channel_id: str) -> list[dict]:
+        """Lossless fixture ingestion for deterministic routing/extraction.
+
+        Read exposed replies even when reply_count is stale; retain edit/approval
+        metadata and unknown authors without inventing a role. This adapter can
+        only expose the snapshot supplied by the caller, not Slack's edit history.
+        """
+        from copy import deepcopy
+        fixture = self._load_channel(channel_id)
+        channel = fixture['channel']
+        roots = {m['ts']:m for m in fixture['history']}
+        if len(roots)!=len(fixture['history']):
+            raise ValueError('Duplicate source parent IDs; refusing silent source loss.')
+        if set(fixture.get('replies',{}))-roots.keys():
+            raise ValueError('Reply collection has no source parent; context is unavailable.')
+        result=[]
+        for tid, root in roots.items():
+            messages={tid:deepcopy(root)}
+            for reply in fixture.get('replies',{}).get(tid,[]):
+                messages[reply['ts']]=deepcopy(reply)
+            ordered=sorted(messages.values(), key=lambda m:slack_time(m['ts']))
+            result.append({'workspace_id':fixture.get('workspace_id',channel.get('workspace_id')),
+                'project_id':channel.get('project_id'),'batch_id':channel.get('batch_id'),
+                'channel_id':channel['id'],'channel_type':channel.get('channel_type'),
+                'thread_id':tid,'channel_metadata':deepcopy(channel),
+                'messages':ordered,'users':{m.get('user'):deepcopy(self.users.get(m.get('user')))
+                                           for m in ordered},
+                'source_capture_at':fixture.get('captured_at')})
+        return result
 
     def _convert_reactions(self, raw_reactions):
         converted = []

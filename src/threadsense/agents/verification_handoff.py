@@ -7,6 +7,7 @@ from pathlib import Path
 
 from threadsense.agents.contracts import ThreadInterpretation, VerificationFinding
 from threadsense.models import Thread
+from threadsense.metadata_paths import resolve_metadata
 
 
 IDENTITY_FIELDS = ("project_id", "batch_id", "channel_id", "thread_id")
@@ -22,11 +23,11 @@ def identity(record):
 
 
 def file_hash(path):
-    return hashlib.sha256(path.read_bytes()).hexdigest()
+    return hashlib.sha256(resolve_metadata(path).read_bytes()).hexdigest()
 
 
 def read_json(path):
-    return json.loads(path.read_text(encoding="utf-8-sig"))
+    return json.loads(resolve_metadata(path).read_text(encoding="utf-8-sig"))
 
 
 def _reference(root, name):

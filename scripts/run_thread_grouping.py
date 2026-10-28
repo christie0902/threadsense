@@ -57,7 +57,7 @@ def write_json(path, value):
                                 allow_nan=False) + "\n")
 
 
-def load_records(path):
+def load_records(path, *, historical=False):
     records = json.loads(path.read_text(encoding="utf-8-sig"))
     if not isinstance(records, list) or not records:
         raise ValueError("Input must be a nonempty list of saved interpretations.")
@@ -68,7 +68,7 @@ def load_records(path):
                 raise ValueError(f"Missing/invalid record field: {key}")
         if r.get("batch_id") is not None and not isinstance(r["batch_id"], str):
             raise ValueError("batch_id must be a string or null.")
-        identity = (r["channel_id"], r["thread_id"])
+        identity = (r["project_id"], r.get("batch_id"), r["channel_id"], r["thread_id"])
         if identity in seen:
             raise ValueError(f"Duplicate thread: {identity}")
         seen.add(identity)
@@ -90,6 +90,9 @@ def load_records(path):
     if len(configs) != 1:
         raise ValueError("Input mixes Agent 1 configurations. Use one completed run.")
     # Stable input order avoids arbitrary changes from file ordering.
+    if not historical:
+        from threadsense.routing import partition
+        records, _, _ = partition(records)
     return sorted(records, key=lambda r: (r["project_id"], r.get("batch_id") or "",
                                           r["channel_id"], r["thread_id"]))
 
@@ -163,6 +166,9 @@ def get_embeddings(records, cache_dir, packages):
 
 
 def group_records(records, vectors, threshold):
+    from threadsense.routing import require_discussion
+    for record in records:
+        require_discussion(record)
     import numpy as np
     from sklearn.cluster import AgglomerativeClustering
     vectors = validate_vectors(vectors, len(records))
@@ -239,7 +245,9 @@ def main():
     if not math.isfinite(args.distance_threshold) or not 0 < args.distance_threshold < 2:
         parser.error("--distance-threshold must be between 0 and 2, exclusive.")
     source = args.input.resolve()
-    records = load_records(source)
+    from threadsense.routing import partition
+    records, announcements, routing = partition(load_records(source, historical=True))
+    print(f"Routing: {routing['input_threads']} source threads; {len(records)} discussions; {len(announcements)} announcements retained outside clustering.")
     print(f"Input: {len(records)} threads across {len({r['project_id'] for r in records})} projects.")
     if args.check_input:
         print("Input checks passed. No embeddings computed or files written.")
@@ -248,6 +256,8 @@ def main():
     if any(packages[k] == "not-installed" for k in packages):
         parser.error('Install dependencies: python -m pip install "sentence-transformers>=3" "scikit-learn>=1.2" numpy')
     output = args.output_dir.resolve()
+    if output.exists():
+        parser.error('Use a fresh grouping directory; historical inputs and results are immutable.')
     if source in {output / "clusters.json", output / "cluster_review.csv"}:
         parser.error("Choose an output directory that will not overwrite the input.")
     vectors, cache_key, truncated, embedding_config = get_embeddings(records, output / "embedding_cache", packages)
@@ -256,6 +266,7 @@ def main():
     groups = group_records(records, vectors, args.distance_threshold)
     report = {
         "format_version": 1, "created_at": datetime.now(timezone.utc).isoformat(),
+        "routing_manifest": routing,
         "input_path": str(source), "input_sha256": hashlib.sha256(source.read_bytes()).hexdigest(),
         "agent1_run_config_sha256": records[0]["run_config_sha256"],
         "script_sha256": hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),

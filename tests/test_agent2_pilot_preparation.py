@@ -7,6 +7,7 @@ import pytest
 
 from threadsense.handoff_inputs import ROOT, read_json, file_hash, identity
 from threadsense.topic_inputs import load_candidate_payloads
+from tests.legacy_agent2 import bind_v7
 from threadsense.agents import topic_pipeline as pipeline
 from threadsense.agents import verification_requests as transport
 from threadsense.agents.topic_consolidation_v3 import parse_response, export_result
@@ -19,11 +20,12 @@ PREPARED = ROOT / 'data/processed/agent2_pilot_prepared_v2'
 
 @pytest.fixture(scope='module')
 def payloads():
-    return load_candidate_payloads()
+    return load_candidate_payloads(historical=True)
 
 
 @pytest.fixture(autouse=True)
 def forbid_calls(monkeypatch, payloads, current_preparation):
+    bind_v7(monkeypatch)
     def forbidden(*args, **kwargs):
         raise AssertionError('Pilot preparation must not retrieve credentials or call a model.')
     monkeypatch.setenv('THREADSENSE_MODEL', 'openai/gpt-4o-mini')
@@ -35,7 +37,7 @@ def forbid_calls(monkeypatch, payloads, current_preparation):
 
 @pytest.fixture(scope='module')
 def current_preparation(tmp_path_factory, payloads):
-    """Fresh active-contract preparation for code-refresh tests; historical v2 data is never augmented."""
+    """Explicit historical v7-contract preparation for code-refresh tests; historical v2 data is never augmented."""
     global SOURCE, PREPARED
     old = read_json(ROOT / 'docs/agent2-pilot-v2.json')
     ids = [c['candidate_group_id'] for c in old['cases']]
@@ -43,6 +45,7 @@ def current_preparation(tmp_path_factory, payloads):
     target = tmp_path_factory.mktemp('agent2-v3-pilot')
     SOURCE, PREPARED = target / 'source.json', target / 'prepared'
     with pytest.MonkeyPatch.context() as patch:
+        bind_v7(patch)
         patch.setenv('THREADSENSE_MODEL', 'openai/gpt-4o-mini')
         manifest = pipeline.execute_batch(selected, PREPARED, run=False, maximum_requests=4)
     old['configuration_sha256'] = manifest['config_sha256']
@@ -66,7 +69,7 @@ def test_new_pilot_keeps_selection_requests_and_flags_and_rejects_later_code_cha
     assert manifest['new_request_attempts'] == 0
     assert manifest['config_sha256'] == pilot['configuration_sha256']
     assert pilot['preparation_review']['model_requests_changed'] == []
-    assert 'src/threadsense/agents/severity.py' in manifest['config']['code_sha256']
+    assert 'src/threadsense/routing.py' in manifest['config']['code_sha256']
     selected, bound = select_pilot(payloads, pilot_path, old['model'])
     assert len(selected) == bound == 4
     for payload in selected:
@@ -80,9 +83,9 @@ def test_new_pilot_keeps_selection_requests_and_flags_and_rejects_later_code_cha
     with pytest.raises(FileExistsError, match='new pilot and output paths'):
         prepare_pilot(SOURCE, PREPARED, pilot_path, output, 'Reviewed')
     assert (output / 'manifest.json').read_bytes() == before
-    # A later edit to the newly imported severity dependency must invalidate this pilot.
+    # A later edit to the routing dependency must invalidate this pilot.
     original_hash = pipeline.file_hash
-    monkeypatch.setattr(pipeline, 'file_hash', lambda p: 'changed' if p.name == 'severity.py' else original_hash(p))
+    monkeypatch.setattr(pipeline, 'file_hash', lambda p: 'changed' if p.name == 'routing.py' else original_hash(p))
     with pytest.raises(ValueError, match='Pilot code/configuration changed'):
         select_pilot(payloads, pilot_path, old['model'])
 

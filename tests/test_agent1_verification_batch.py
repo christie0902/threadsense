@@ -263,7 +263,8 @@ def test_real_subprocess_dry_run_needs_no_credentials_or_files(tmp_path):
         cwd=tmp_path, env=environment, capture_output=True, text=True, timeout=60,
     )
     assert result.returncode == 0, result.stdout + result.stderr
-    assert "Selected 1 of 200" in result.stdout
+    assert "Selected 1 of 178" in result.stdout
+    assert "200 source threads; 22 announcements excluded" in result.stdout
     assert "Dry run" in result.stdout
     assert not output.exists()
 
@@ -394,11 +395,14 @@ def test_all_200_real_threads_survive_mocked_model_failures_and_inputs_are_uncha
     flags = ["--run", "--limit", "0", "--output-dir", str(output)]
     assert runner.main(flags) == 0
     records = runner.read_json(output / "interpretations.json")
-    assert len(records) == len({runner.identity(record) for record in records}) == 200
-    assert {runner.identity(record) for record in records} == {runner.identity(entry["baseline"]) for entry in entries}
+    assert len(records) == len({runner.identity(record) for record in records}) == 178
+    routed = runner.read_json(output / "routing_manifest.json")
+    assert len(routed["announcement_sources"]) == 22
+    assert {runner.identity(record) for record in records}.isdisjoint({runner.identity(r) for r in routed["announcement_sources"]})
+    assert {runner.identity(record) for record in records} | {runner.identity(r) for r in routed["announcement_sources"]} == {runner.identity(entry["baseline"]) for entry in entries}
     assert all(row["verification_status"] == "NEEDS_REVIEW" and row["revision_count"] == 1 for row in records)
-    assert len(calls) == 600  # One source, failed prose, failed revision per thread; no second prose.
-    assert len(runner.read_json(output / "review_queue.json")) == 200
+    assert len(calls) == 534  # One source, failed prose, failed revision per thread; no second prose.
+    assert len(runner.read_json(output / "review_queue.json")) == 178
     assert runner.read_json(output / "manifest.json")["unprocessed"] == 0
     for row in records:
         assert (output / row["lineage"]["verification_file"]).is_file()

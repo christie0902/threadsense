@@ -6,11 +6,12 @@ from pathlib import Path
 
 from threadsense.handoff_inputs import (
     ROOT, CANONICAL, BASELINE_GROUPING, load_handoff, read_json, file_hash, identity,
-    review_provenance,
+    review_provenance, load_routed_handoff,
 )
 
 def approved_grouping():
-    path = ROOT / 'scripts/run_thread_grouping.py'
+    # Exact byte copy of the approved algorithm, isolated from the routed CLI.
+    path = ROOT / 'src/threadsense/legacy/grouping_v1.py'
     baseline = read_json(BASELINE_GROUPING)
     if file_hash(path) != baseline['script_sha256']:
         raise ValueError('Approved grouping implementation changed; inspect explicitly.')
@@ -27,8 +28,11 @@ def approved_grouping():
         raise ValueError('Grouping packages differ from the approved baseline; no silent change.')
     return module, baseline
 
-def group_members(members, vectors, implementation, threshold):
+def group_members(members, vectors, implementation, threshold, *, historical=False):
     """Use the original algorithm per scope; enforce full identity at the boundary."""
+    if not historical:
+        from threadsense.routing import require_discussion
+        for member in members:require_discussion(member)
     by_identity = {identity(m):m for m in members}
     if len(by_identity) != len(members):
         raise ValueError('Duplicate full member identity.')
@@ -61,7 +65,7 @@ def refresh_grouping(output, input_path=CANONICAL):
     output = Path(output).resolve()
     if output.exists():
         raise FileExistsError('Use a new grouping directory; frozen evidence is never overwritten.')
-    members = load_handoff(input_path)
+    members, announcements, routing = load_routed_handoff(input_path)
     implementation, baseline = approved_grouping()
     # Explicit offline mode: reuse the existing local model path, never download/fallback.
     import os
@@ -75,7 +79,8 @@ def refresh_grouping(output, input_path=CANONICAL):
         raise ValueError('Embedding configuration changed from frozen baseline.')
     groups = group_members(members, vectors, implementation, baseline['config']['distance_threshold'])
     report = {
-        'format_version':2, 'grouping_status':'TENTATIVE_CANDIDATES',
+        'format_version':3, 'grouping_status':'TENTATIVE_CANDIDATES',
+        'routing_manifest':routing,
         'input_path':str(Path(input_path).resolve()), 'input_sha256':file_hash(input_path),
         'baseline_grouping_path':str(BASELINE_GROUPING), 'baseline_grouping_sha256':file_hash(BASELINE_GROUPING),
         'approved_script_sha256':baseline['script_sha256'], 'config':deepcopy(baseline['config']),

@@ -48,3 +48,8 @@
 - Final dataset: `data/processed/agent2_taxonomy_final_v7/`
 - Effective view: `effective_output_reviewed.json` (41 review groups)
 - Handoff contract: `agent2-taxonomy-handoff-v1`
+
+
+## Prospective routing update (2026-10-27)
+
+The results above describe preserved historical releases. New source windows route announcement channels to durable knowledge-source JSON before interpretation. The canonical input partition is 178 discussions / 41 inherited obligations and 22 announcements / eight obligations. All 200 identities and 49 obligations remain accounted for. New Agent 2 exports use schema 8 with UNKNOWN/UNASSESSED severity deferred to Agent 3; the taxonomy prompt/response schema stays v7. Historical v7 loading keeps its original metadata. See [the current routing and knowledge-source guide](announcement-routing.md) for configuration, zero-call commands, schemas, manual file locations and actual validation results.

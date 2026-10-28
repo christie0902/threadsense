@@ -18,9 +18,12 @@ def _contract(version):
     raise ValueError('Unknown Agent 2 response schema version.')
 
 
-def build_request(payload, glossary, model, *, response_schema_version=7):
+def build_request(payload, glossary, model, *, response_schema_version=7, export_adapter_version=None):
     if response_schema_version == 5:
         raise ValueError('Use the saved v5 request for historical replay; do not reconstruct it as v6.')
+    if response_schema_version==7 and export_adapter_version=='taxonomy-to-canonical-v1':
+        from threadsense.legacy import topic_taxonomy_v7
+        return topic_taxonomy_v7.build_request(payload, glossary, model)
     return _contract(response_schema_version).build_request(payload, glossary, model)
 
 
@@ -31,5 +34,8 @@ def parse_response(payload, raw, *, response_schema_version=7):
     return module.parse_response(payload, raw)
 
 
-def export_result(payload, analysis=None, *, response_schema_version=7, **kwargs):
+def export_result(payload, analysis=None, *, response_schema_version=7, export_adapter_version=None, **kwargs):
+    if response_schema_version==7 and export_adapter_version=='taxonomy-to-canonical-v1':
+        from threadsense.legacy import topic_taxonomy_v7
+        return topic_taxonomy_v7.export_result(payload, analysis, **kwargs)
     return _contract(response_schema_version).export_result(payload, analysis, **kwargs)

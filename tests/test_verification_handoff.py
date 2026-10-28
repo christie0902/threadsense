@@ -14,7 +14,8 @@ from threadsense.agents.verification_handoff import (
 
 ROOT = Path(__file__).resolve().parents[1]
 PILOT = ROOT / "data/processed/agent1_verified_pilot_v6"
-REVIEW = ROOT / "docs/agent1-pilot-content-review.json"
+from threadsense.metadata_paths import resolve_metadata
+REVIEW = resolve_metadata(ROOT / "docs/agent1-pilot-content-review.json")
 
 
 @pytest.fixture

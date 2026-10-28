@@ -38,7 +38,7 @@ def main(argv=None):
     parser.add_argument('--limit', type=int, default=0, help='Offline selection size; 0 means all.')
     parser.add_argument('--pilot', type=Path, help='Evidence-bound prepared pilot selection.')
     parser.add_argument('--max-requests', type=int, help='Explicit live request ceiling; must match the pilot.')
-    parser.add_argument('--output-dir', type=Path, default=ROOT/'data/processed/agent2_taxonomy_v7_offline')
+    parser.add_argument('--output-dir', type=Path, default=ROOT/'data/processed/agent2_discussions_v8_offline')
     args = parser.parse_args(argv)
     if args.limit < 0 or (args.pilot and args.limit):
         parser.error('Use a nonnegative limit, or a pilot selection, not both.')

@@ -17,7 +17,7 @@ MODEL = 'openai/gpt-4o-mini'
 
 @pytest.fixture(scope='module')
 def payloads():
-    return load_candidate_payloads()
+    return load_candidate_payloads(historical=True)
 
 
 @pytest.fixture(autouse=True)

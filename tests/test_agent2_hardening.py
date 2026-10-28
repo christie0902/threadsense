@@ -26,7 +26,7 @@ REPLAY = runpy.run_path(str(ROOT / 'scripts/replay_agent2_responses.py'))['repla
 
 @pytest.fixture(scope='module')
 def payloads():
-    return {p['candidate_group_id']: p for p in load_candidate_payloads()}
+    return {p['candidate_group_id']: p for p in load_candidate_payloads(historical=True)}
 
 
 @pytest.fixture(scope='module')

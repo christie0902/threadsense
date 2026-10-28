@@ -228,6 +228,8 @@ def create_llm() -> LLM:
 
 def interpret_thread(thread: Thread) -> ThreadInterpretation:
     """Interpret one canonical thread and validate output references."""
+    from threadsense.routing import require_discussion
+    require_discussion(thread)
     if not thread.messages:
         raise ValueError("Cannot interpret a thread with no messages.")
 

@@ -80,7 +80,8 @@ def prepare_pilot(source_pilot, source_preparation, output_pilot, output_dir, re
         gid = payload['candidate_group_id']
         old_request = read_json(source_preparation / 'records' / gid / 'request.json')
         if old_request != build_request(payload, get_terms(), model,
-                                        response_schema_version=current['response_schema_version']):
+                                        response_schema_version=current['response_schema_version'],
+                                        export_adapter_version=current['export_adapter_version']):
             requests_changed.append(gid)
     revised = deepcopy(pilot)
     revised.update(

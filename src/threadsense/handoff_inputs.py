@@ -8,6 +8,7 @@ from pathlib import Path
 from threadsense.agents.contracts import ThreadInterpretation
 from threadsense.agents.verification_handoff import digest
 from threadsense.models import Thread
+from threadsense.metadata_paths import resolve_metadata
 
 ROOT = Path(__file__).resolve().parents[2]
 CANONICAL = ROOT / 'data/processed/agent1_verified_v3/interpretations.json'
@@ -18,10 +19,10 @@ REVIEW_FILES = (ROOT / 'docs/agent1-pilot-content-review.json',
                 ROOT / 'data/processed/agent1_full_batch_review_v3/content_review.json')
 
 def read_json(path):
-    return json.loads(Path(path).read_text(encoding='utf-8-sig'))
+    return json.loads(resolve_metadata(path).read_text(encoding='utf-8-sig'))
 
 def file_hash(path):
-    return hashlib.sha256(Path(path).read_bytes()).hexdigest()
+    return hashlib.sha256(resolve_metadata(path).read_bytes()).hexdigest()
 
 def identity(record):
     return tuple(record[k] for k in IDENTITY)
@@ -95,3 +96,13 @@ def load_handoff(path=CANONICAL):
 def review_provenance():
     """Retain both registries as evidence; never refresh/reinterpret the export."""
     return [{'path':p.relative_to(ROOT).as_posix(), 'sha256':file_hash(p)} for p in REVIEW_FILES]
+
+
+def load_routed_handoff(path=CANONICAL):
+    """Prospective boundary; historical load_handoff remains lossless/read-only.
+
+    The manifest retains complete excluded canonical members and obligations for
+    knowledge extraction. Coverage is checked against the full input partition.
+    """
+    from threadsense.routing import partition
+    return partition(load_handoff(path))

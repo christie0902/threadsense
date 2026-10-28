@@ -193,7 +193,7 @@ def export_result(payload, analysis=None, *, state='NOT_RUN', error=None):
         **severity,
     }
 
-from threadsense.agents.severity import SeverityLevel
+from threadsense.legacy.severity_types import SeverityLevel
 
 def preliminary_severity(record: dict) -> dict:
     """Deterministic provisional severity. Agent 3 may override after retrieval."""

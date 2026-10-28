@@ -16,6 +16,7 @@ class Role(str, Enum):
 class ChannelType(str, Enum):
     GENERAL = "GENERAL"
     QA = "QA"
+    TUTOR = "TUTOR"
     ANNOUNCEMENTS = "ANNOUNCEMENTS"
 
 

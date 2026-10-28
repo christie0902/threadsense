@@ -4,11 +4,11 @@ ThreadSense Severity Rubric (TL-editable)
 Place this file where project-specific standards live so Team Leads can
 edit it per project without touching agent code.
 
-Recommended location in the ThreadSense repo:
-    standards/severity_rubric.py
-    (or config/severity_rubric.py)
+Editable location in the ThreadSense repo:
+    data/knowledge/severity_rubric.py
 
-Agent 3 should load it at runtime. Keep a copy or import path stable.
+Future Agent 3 integration may load it at runtime; it is not integrated yet.
+Agent 1 and Agent 2 do not evaluate this rubric.
 """
 
 from enum import Enum
@@ -110,7 +110,8 @@ def get_rubric_for_project(project_id: str | None = None) -> dict:
     """
     Placeholder for future per-project loading.
     Currently returns the default rubric.
-    Later: load standards/{project_id}/severity_rubric.py if it exists.
+    Future project-specific loading is not implemented. The editable source is
+    data/knowledge/severity_rubric.py; project_id currently labels the response only.
     """
     return {
         "version": RUBRIC_VERSION,
