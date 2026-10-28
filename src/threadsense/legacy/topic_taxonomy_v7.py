@@ -2,11 +2,11 @@
 from copy import deepcopy
 
 from threadsense.agents.topic_contracts import TopicTaxonomy
-from threadsense.agents.topic_consolidation_v6 import validate_input  # Identity/hash integrity only.
+from threadsense.topic_inputs import validate_input  # Identity/hash integrity only.
 from threadsense.agents.topic_diagnostics import ConsolidationValidationError
 from threadsense.agents.topic_requests import request_body
 from threadsense.legacy.taxonomy_severity_v7 import attach_preliminary_severity
-from threadsense.agents.operational_severity import RUBRIC_VERSION_V2 as RUBRIC_VERSION
+from threadsense.legacy.agent2.operational_severity import RUBRIC_VERSION_V2 as RUBRIC_VERSION
 from threadsense.handoff_inputs import IDENTITY
 
 RESPONSE_SCHEMA_VERSION = 7

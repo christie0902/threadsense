@@ -4,7 +4,7 @@ from collections import Counter
 from pathlib import Path
 
 from threadsense.handoff_inputs import read_json, file_hash
-from threadsense.agents.topic_consolidation_v2 import parse_response
+from threadsense.legacy.agent2.topic_consolidation_v2 import parse_response
 from threadsense.agents.topic_diagnostics import legacy_diagnostics
 from threadsense.agents.topic_pipeline import write_json
 

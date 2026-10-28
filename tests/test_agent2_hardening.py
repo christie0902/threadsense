@@ -13,10 +13,10 @@ from threadsense.handoff_inputs import ROOT, read_json, digest, file_hash
 from threadsense.topic_inputs import load_candidate_payloads
 from threadsense.agents import topic_pipeline as pipeline
 from threadsense.agents import verification_requests as transport
-from threadsense.agents.topic_consolidation_v3 import build_request, parse_response, export_result
-from threadsense.agents.topic_consolidation_v2 import parse_response as parse_v2
+from threadsense.legacy.agent2.topic_consolidation_v3 import build_request, parse_response, export_result
+from threadsense.legacy.agent2.topic_consolidation_v2 import parse_response as parse_v2
 from threadsense.agents.topic_diagnostics import describe_exception, ConsolidationValidationError, legacy_diagnostics
-from threadsense.agents.topic_evidence import evidence_catalog
+from threadsense.legacy.agent2.topic_evidence import evidence_catalog
 from threadsense.terminology import get_terms
 from tests.agent2_fixtures import membership_only_draft, guidance, severity
 

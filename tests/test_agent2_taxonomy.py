@@ -8,11 +8,13 @@ import pytest
 from pydantic import ValidationError
 
 from threadsense.agents import topic_pipeline as pipeline, verification_requests as transport
-from threadsense.agents import topic_consolidation as contract, topic_consolidation_v6 as legacy
-from threadsense.agents import topic_comparison
+from threadsense.agents import topic_consolidation as contract
+from threadsense.legacy.agent2 import topic_consolidation_v6 as legacy
+from threadsense.legacy.agent2 import topic_comparison
 from threadsense.legacy import taxonomy_severity_v7 as severity
 from tests.legacy_agent2 import bind_v7
-from threadsense.agents.topic_contracts import TopicTaxonomy, TopicConsolidation
+from threadsense.agents.topic_contracts import TopicTaxonomy
+from threadsense.legacy.agent2.topic_contracts_v6 import TopicConsolidation
 from threadsense.agents.topic_effective import load_effective_output
 from threadsense.agents.topic_diagnostics import ConsolidationValidationError, describe_exception
 from threadsense.handoff_inputs import ROOT, IDENTITY, read_json, file_hash, identity, digest

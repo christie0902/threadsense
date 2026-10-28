@@ -1,6 +1,6 @@
 """Test-only schema builders. Membership stubs make no semantic-quality claim."""
-from threadsense.agents.topic_evidence import evidence_catalog
-from threadsense.agents.operational_severity import RUBRIC_VERSION
+from threadsense.legacy.agent2.topic_evidence import evidence_catalog
+from threadsense.legacy.agent2.operational_severity import RUBRIC_VERSION
 
 
 def cited(text, ids):

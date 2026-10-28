@@ -3,10 +3,10 @@ from collections import Counter
 from copy import deepcopy
 import json
 
-from threadsense.agents.topic_contracts_v3 import TopicConsolidation
+from threadsense.legacy.agent2.topic_contracts_v3 import TopicConsolidation
 from threadsense.agents.topic_diagnostics import ConsolidationValidationError
-from threadsense.agents.topic_evidence import evidence_catalog, resolve_cited_fields, tl_endorsements
-from threadsense.agents.operational_severity import RUBRIC, RUBRIC_VERSION
+from threadsense.legacy.agent2.topic_evidence import evidence_catalog, resolve_cited_fields, tl_endorsements
+from threadsense.legacy.agent2.operational_severity import RUBRIC, RUBRIC_VERSION
 from threadsense.agents.verification_requests import request_body
 from threadsense.handoff_inputs import IDENTITY, digest, identity, member_id
 from threadsense.models import Thread

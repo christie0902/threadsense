@@ -7,9 +7,9 @@ import pytest
 # Historical semantic-contract regressions; active taxonomy has separate coverage.
 pytestmark = pytest.mark.usefixtures("legacy_agent2_v6")
 
-from threadsense.agents.topic_consolidation_v6 import build_request, parse_response, export_result
+from threadsense.legacy.agent2.topic_consolidation_v6 import build_request, parse_response, export_result
 from threadsense.agents.topic_effective import load_effective_output, research_handoff
-from threadsense.agents.topic_evidence import evidence_catalog
+from threadsense.legacy.agent2.topic_evidence import evidence_catalog
 from threadsense.agents.topic_requests import COMPARISON_MODEL, provider_schema
 from threadsense.handoff_inputs import ROOT, read_json, file_hash
 from threadsense.terminology import get_terms

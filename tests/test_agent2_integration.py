@@ -16,10 +16,10 @@ from threadsense.topic_inputs import load_candidate_payloads
 from threadsense.topic_grouping import approved_grouping, group_members
 from threadsense.agents import topic_pipeline as pipeline
 from threadsense.agents import verification_requests as transport
-from threadsense.agents.topic_consolidation_v3 import build_request, parse_response, export_result
-from threadsense.agents.topic_contracts_v3 import TopicConsolidation
+from threadsense.legacy.agent2.topic_consolidation_v3 import build_request, parse_response, export_result
+from threadsense.legacy.agent2.topic_contracts_v3 import TopicConsolidation
 from threadsense.terminology import get_terms
-from threadsense.agents.topic_evidence import evidence_catalog
+from threadsense.legacy.agent2.topic_evidence import evidence_catalog
 from tests.agent2_fixtures import membership_only_draft, guidance
 
 @pytest.fixture(scope='module')

@@ -4,8 +4,9 @@ These tests retain v6 assertions; new taxonomy tests use the production defaults
 No historical response is augmented or validated under the taxonomy contract.
 """
 def bind_v6(monkeypatch):
-    from threadsense.agents import topic_pipeline, topic_requests, topic_continuation, topic_comparison
-    from threadsense.agents import topic_consolidation_v6 as legacy
+    from threadsense.agents import topic_pipeline, topic_requests, topic_continuation
+    from threadsense.legacy.agent2 import topic_comparison
+    from threadsense.legacy.agent2 import topic_consolidation_v6 as legacy
     from threadsense.topic_inputs import load_candidate_payloads
     monkeypatch.setattr(topic_comparison, 'load_candidate_payloads', lambda: load_candidate_payloads(historical=True))
 

@@ -8,7 +8,7 @@ import pytest
 pytestmark = pytest.mark.usefixtures("legacy_agent2_v6")
 
 from threadsense.agents import topic_pipeline as pipeline, verification_requests as transport
-from threadsense.agents.topic_consolidation_v6 import parse_response, export_result, PROMPT_VERSION
+from threadsense.legacy.agent2.topic_consolidation_v6 import parse_response, export_result, PROMPT_VERSION
 from threadsense.handoff_inputs import ROOT, read_json
 from tests.agent2_inventory_fixtures import GIDS, payload, impact
 from tests.agent2_structured_fixtures import reviewed_draft, wiring_draft, assert_only_versioned_rubric_changed, assert_only_question_uncertainty_schema_changed

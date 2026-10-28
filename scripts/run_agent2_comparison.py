@@ -1,7 +1,7 @@
 """Prepare/preflight a paired freeze; --run executes exactly one authorized arm."""
 import argparse
 from pathlib import Path
-from threadsense.agents.topic_comparison import prepare_comparison, preflight_comparison, run_arm
+from threadsense.legacy.agent2.topic_comparison import prepare_comparison, preflight_comparison, run_arm
 
 
 def main(argv=None):

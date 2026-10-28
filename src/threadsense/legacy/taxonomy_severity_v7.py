@@ -1,6 +1,6 @@
 """Frozen v7 export reproduction only. Never used by the active exporter."""
 from copy import deepcopy
-from threadsense.agents.operational_severity import RUBRIC_V2
+from threadsense.legacy.agent2.operational_severity import RUBRIC_V2
 
 DETERMINISTIC_RULE_VERSION = 'canonical-impact-availability-v1'
 

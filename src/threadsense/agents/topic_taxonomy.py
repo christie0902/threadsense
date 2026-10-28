@@ -2,7 +2,7 @@
 from copy import deepcopy
 
 from threadsense.agents.topic_contracts import TopicTaxonomy
-from threadsense.agents.topic_consolidation_v6 import validate_input  # Identity/hash integrity only.
+from threadsense.topic_inputs import validate_input  # Identity/hash integrity only.
 from threadsense.agents.topic_diagnostics import ConsolidationValidationError
 from threadsense.agents.topic_requests import request_body
 from threadsense.handoff_inputs import IDENTITY

@@ -82,7 +82,7 @@ def test_unknown_completion_and_failure_are_preserved_without_retry(runs,tmp_pat
     selected,paths,registry=runs
     d=paths[1]/'records'/GIDS[1]
     # Synthetic interrupted transport, retaining explicit request and diagnostics.
-    from threadsense.agents.topic_consolidation_v6 import export_result
+    from threadsense.legacy.agent2.topic_consolidation_v6 import export_result
     row=export_result(selected[1],state='INTERRUPTED',error='Synthetic unknown completion; do not retry.')
     pipeline.write_json(d/'result.json',row)
     pipeline.write_json(paths[1]/'consolidations.json',[row])

@@ -170,6 +170,14 @@ neutral historical enums live in `legacy/severity_types.py`; exact historical v7
 assessment/export behavior is isolated in `legacy/taxonomy_severity_v7.py` and
 `legacy/topic_taxonomy_v7.py`. This is not a duplicate of the editable rubric.
 
+The subsequent source-folder cleanup moved historical v2-v6 contracts,
+consolidation engines and their evidence/severity helpers into
+`src/threadsense/legacy/agent2/`. `agents/topic_contracts.py` now contains only the
+current taxonomy schema. The active taxonomy uses shared identity/hash validation
+from `topic_inputs.py` and no longer imports the v6 semantic engine. See the
+[source layout](../src/threadsense/agents/README.md). Saved output bytes and schema
+definitions remain unchanged; new code fingerprints include the relocated paths.
+
 Active Agent 2 performs no rubric evaluation. Its export is now **schema 8**,
 `taxonomy-to-canonical-v2`, with `agent2-taxonomy-handoff-v2`. Compatibility severity
 is only `UNKNOWN`, `UNASSESSED`, deferred to `AGENT3`, with no claimed assessor,

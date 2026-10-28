@@ -3,7 +3,7 @@ from pathlib import Path
 from datetime import datetime
 from zoneinfo import ZoneInfo
 
-from threadsense.agents.topic_consolidation_v6 import build_request, PROMPT_VERSION
+from threadsense.legacy.agent2.topic_consolidation_v6 import build_request, PROMPT_VERSION
 from threadsense.agents import topic_pipeline
 from threadsense.agents.topic_pipeline import execute_batch, configuration, write_json
 from threadsense.agents.topic_requests import BASELINE_MODEL, COMPARISON_MODEL, MAX_COMPLETION_TOKENS
@@ -14,7 +14,7 @@ from threadsense.terminology import get_terms
 MODELS = {'A': BASELINE_MODEL, 'B': COMPARISON_MODEL}
 SOURCE_RUN = ROOT / 'data/processed/agent2_inventory_pilot_v4'
 SOURCE_SELECTION = ROOT / 'docs/agent2-inventory-pilot-v4.json'
-CONTROLLER_FILES = ('src/threadsense/agents/topic_comparison.py', 'scripts/run_agent2_comparison.py')
+CONTROLLER_FILES = ('src/threadsense/legacy/agent2/topic_comparison.py', 'scripts/run_agent2_comparison.py')
 DOCS = {
     'structured_outputs': 'https://developers.openai.com/api/docs/guides/structured-outputs?api-mode=chat',
     'chat_parameters': 'https://developers.openai.com/api/reference/resources/chat/subresources/completions/methods/create',

@@ -1,8 +1,9 @@
 """Agent 2 candidates joined directly to the finalized canonical handoff."""
 from copy import deepcopy
 from pathlib import Path
+from threadsense.models import Thread
 from threadsense.handoff_inputs import (
-    CANONICAL, GROUPING, load_handoff, read_json, file_hash, identity, review_provenance,
+    CANONICAL, GROUPING, load_handoff, read_json, file_hash, identity, review_provenance, member_id, digest,
 )
 
 
@@ -91,3 +92,26 @@ def load_candidate_payloads(grouping_path=GROUPING, canonical_path=CANONICAL, *,
     if len(actual)!=len(set(actual)) or set(actual)!=eligible_ids:
         raise ValueError('Prospective groups do not match the routing manifest eligibility set.')
     return prospective
+
+
+def validate_input(payload):
+    if payload.get('schema_version') != 2 or not payload.get('members'):
+        raise ValueError('Expected a nonempty schema v2 canonical candidate.')
+    seen = set()
+    for member in payload['members']:
+        key = identity(member)
+        if key in seen or member['member_id'] != member_id(member):
+            raise ValueError('Duplicate or mismatched full member identity.')
+        seen.add(key)
+        record, source = member['agent1_record'], member['original_thread']
+        Thread.model_validate(source)
+        if identity(record) != key or identity(source) != key:
+            raise ValueError('Source/candidate/member identity mismatch.')
+        if key[:2] != (payload['project_id'], payload['batch_id']):
+            raise ValueError('Candidate crosses project/batch scope.')
+        if digest(record['interpretation']) != record['candidate_sha256'] or digest(source) != record['input_sha256']:
+            raise ValueError('Member candidate/source fingerprint mismatch.')
+        ids = [m['message_id'] for m in source['messages']]
+        if len(ids) != len(set(ids)):
+            raise ValueError('Duplicate source message identity.')
+    return payload['members']

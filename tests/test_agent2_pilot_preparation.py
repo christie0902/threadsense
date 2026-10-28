@@ -10,7 +10,7 @@ from threadsense.topic_inputs import load_candidate_payloads
 from tests.legacy_agent2 import bind_v7
 from threadsense.agents import topic_pipeline as pipeline
 from threadsense.agents import verification_requests as transport
-from threadsense.agents.topic_consolidation_v3 import parse_response, export_result
+from threadsense.legacy.agent2.topic_consolidation_v3 import parse_response, export_result
 
 prepare_pilot = runpy.run_path(str(ROOT / 'scripts/prepare_agent2_pilot.py'))['prepare_pilot']
 select_pilot = runpy.run_path(str(ROOT / 'scripts/run_agent2_batch.py'))['select_pilot']

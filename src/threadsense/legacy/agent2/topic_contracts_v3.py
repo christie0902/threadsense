@@ -5,7 +5,7 @@ That module is part of frozen Agent 1 fingerprints and is deliberately unchanged
 """
 from typing import Annotated, Literal
 from pydantic import BaseModel, Field, StringConstraints, model_validator
-from threadsense.agents.operational_severity import CRITERIA
+from threadsense.legacy.agent2.operational_severity import CRITERIA
 
 Text = Annotated[str, StringConstraints(strip_whitespace=True, min_length=1)]
 

@@ -14,11 +14,11 @@ pytestmark = pytest.mark.usefixtures("legacy_agent2_v6")
 
 from threadsense.agents import topic_pipeline as pipeline
 from threadsense.agents import verification_requests as transport
-from threadsense.agents.topic_consolidation_v4 import build_request, parse_response, export_result
-from threadsense.agents.topic_consolidation_v3 import parse_response as parse_v3
-from threadsense.agents.topic_contracts_v4 import TopicConsolidation
+from threadsense.legacy.agent2.topic_consolidation_v4 import build_request, parse_response, export_result
+from threadsense.legacy.agent2.topic_consolidation_v3 import parse_response as parse_v3
+from threadsense.legacy.agent2.topic_contracts_v4 import TopicConsolidation
 from threadsense.agents.topic_effective import load_effective_output, REGISTRY
-from threadsense.agents.topic_evidence import evidence_catalog
+from threadsense.legacy.agent2.topic_evidence import evidence_catalog
 from threadsense.handoff_inputs import ROOT, read_json, digest, file_hash
 from threadsense.terminology import get_terms
 from tests.agent2_inventory_fixtures import GIDS, FROZEN, payload, reviewed_draft, wiring_draft, impact

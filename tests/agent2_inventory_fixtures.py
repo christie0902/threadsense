@@ -4,7 +4,7 @@ Reviewed inventory assignments below use the six frozen sources. They are newly
 constructed expected outputs, NOT migrated/repaired historical model responses.
 """
 from threadsense.handoff_inputs import ROOT, read_json
-from threadsense.agents.topic_evidence import evidence_catalog
+from threadsense.legacy.agent2.topic_evidence import evidence_catalog
 
 FROZEN = ROOT / 'data/processed/agent2_revalidation_v3_2'
 GIDS = [c['candidate_group_id'] for c in read_json(ROOT / 'docs/agent2-revalidation-v3-2.json')['cases']]

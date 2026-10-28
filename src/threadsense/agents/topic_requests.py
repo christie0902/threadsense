@@ -9,7 +9,7 @@ import os
 import time
 
 from threadsense.agents import verification_requests as transport
-from threadsense.agents.topic_contracts import TopicConsolidation, TopicTaxonomy
+from threadsense.agents.topic_contracts import TopicTaxonomy
 from threadsense.agents.topic_diagnostics import ConsolidationValidationError
 
 BASELINE_MODEL = 'openai/gpt-4o-mini-2024-07-18'
@@ -43,7 +43,11 @@ def provider_schema(response_schema_version=None):
     version = RESPONSE_SCHEMA_VERSION if response_schema_version is None else response_schema_version
     if version not in {6, 7}:
         raise ValueError('Unsupported request schema version; historical parsers remain separate.')
-    schema = deepcopy((TopicTaxonomy if version == 7 else TopicConsolidation).model_json_schema())
+    contract = TopicTaxonomy
+    if version == 6:
+        from threadsense.legacy.agent2.topic_contracts_v6 import TopicConsolidation
+        contract = TopicConsolidation
+    schema = deepcopy(contract.model_json_schema())
     def visit(node):
         if not isinstance(node, dict):
             return

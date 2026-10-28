@@ -3,7 +3,7 @@ from collections import Counter
 from copy import deepcopy
 import json
 
-from threadsense.agents.topic_contracts_v2 import TopicConsolidation
+from threadsense.legacy.agent2.topic_contracts_v2 import TopicConsolidation
 from threadsense.agents.verification_requests import request_body
 from threadsense.handoff_inputs import IDENTITY, digest, identity, member_id
 from threadsense.models import Thread

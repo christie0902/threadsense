@@ -11,9 +11,9 @@ pytestmark = pytest.mark.usefixtures("legacy_agent2_v6")
 from threadsense.handoff_inputs import ROOT, digest, read_json, identity
 from threadsense.agents import topic_pipeline as pipeline
 from threadsense.agents import verification_requests as transport
-from threadsense.agents.topic_consolidation_v3 import build_request, parse_response
-from threadsense.agents.topic_consolidation_v3 import PROMPT_VERSION
-from threadsense.agents.topic_contracts_v3 import ProvisionalSeverity
+from threadsense.legacy.agent2.topic_consolidation_v3 import build_request, parse_response
+from threadsense.legacy.agent2.topic_consolidation_v3 import PROMPT_VERSION
+from threadsense.legacy.agent2.topic_contracts_v3 import ProvisionalSeverity
 from threadsense.agents.topic_diagnostics import describe_exception
 from threadsense.terminology import get_terms
 
@@ -33,7 +33,7 @@ def test_saved_pilot_failures_remain_failures_without_repair(case):
 
 def test_cli_replays_all_six_failures_without_calling_provider_and_reports_counts(monkeypatch, tmp_path, capsys):
     # Explicit historical replay under v3, never a v4 migration or live success.
-    from threadsense.agents import topic_consolidation_v3 as historical
+    from threadsense.legacy.agent2 import topic_consolidation_v3 as historical
     for name in ('build_request', 'parse_response', 'export_result'):
         monkeypatch.setattr(pipeline, name, getattr(historical, name))
     selected = [read_json(PILOT / 'records' / c['candidate_group_id'] / 'input.json') for c in CASES]

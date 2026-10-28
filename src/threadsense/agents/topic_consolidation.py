@@ -10,11 +10,11 @@ def _contract(version):
     if version == 7:
         return topic_taxonomy
     if version in {5, 6}:
-        from threadsense.agents import topic_consolidation_v6
+        from threadsense.legacy.agent2 import topic_consolidation_v6
         return topic_consolidation_v6
     if version in {2, 3, 4}:
         from importlib import import_module
-        return import_module(f'threadsense.agents.topic_consolidation_v{version}')
+        return import_module(f'threadsense.legacy.agent2.topic_consolidation_v{version}')
     raise ValueError('Unknown Agent 2 response schema version.')
 
 

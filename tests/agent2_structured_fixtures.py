@@ -27,7 +27,7 @@ def wiring_draft(payload):
 
 def assert_only_versioned_rubric_changed(current_message, historical_message):
     """Keep original source inputs exact while allowing the explicit v2 rubric."""
-    from threadsense.agents.operational_severity import RUBRIC, RUBRIC_V2
+    from threadsense.legacy.agent2.operational_severity import RUBRIC, RUBRIC_V2
     current = json.loads(current_message['content'])
     historical = json.loads(historical_message['content'])
     assert current_message['role'] == historical_message['role']
