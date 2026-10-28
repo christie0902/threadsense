@@ -138,3 +138,43 @@ from current commands; those instructions are corrected. Agent 2 still needs its
 planned canonical-export connection, retaining all 200 records, review flags and
 lineage. A successful fresh revision can remain CORRECTED; unresolved disputes
 remain effective NEEDS_REVIEW without blocking downstream availability.
+
+## Data archive — 2026-10-28
+
+Tracked size fell from about **395 MB / 13,383 files to 174 MB / 8,559 files**.
+Removed were superseded Agent 2 run, prepared, offline and experiment directories
+that no test, loader, script or metadata registry reads by path. Their paths still
+appear inside saved manifests as lineage strings only. Exact bytes remain in Git
+(local tag `pre-cleanup-20261028`, commit `c42fd4c`) and in a verified external
+archive with one ZIP per directory plus a per-file SHA-256 `manifest.json`:
+
+```text
+D:\Christie\2026_AgenticAI\threadsense-archive-20261028\
+```
+
+Restore one directory: `git checkout pre-cleanup-20261028 -- <path>`, or extract
+its ZIP at the repository root.
+
+| Removed (`data/processed/`) | Removed (`data/experiments/`) |
+| --- | --- |
+| `agent2_remaining_v6` (+`_prepared`), `agent2_full_v1`, `agent2_full_v1_run`, `agent2_full_v1_continuation_prepared`, `agent2_full_prepared_v1`, `agent2_taxonomy_v7_offline`, `agent2_hardening_offline_v3`, `agent2_offline_v2`, `agent2_uncertainty_v6_prepared`, `agent2_taxonomy_remaining_v7` (+`_prepared`), `agent2_taxonomy_pilot_v7` (+`_prepared`), `agent2_pilot_v2`, `agent2_pilot_v3`, `agent2_pilot_prepared_v3`, and the `_prepared` dirs for contrastive v5.3, focused v5.1/v5.2, reasoning-low v5.2, inventory pilot v4 | `agent2_taxonomy_v7`, `agent2_inventory_v4`, `agent2_pilot_v3_review_v1`, `agent2_hardening_v3`, `prose_comparison_dry_v1`, `prose_comparison_dry_v2`, `prose_comparison_preview_v1`; all files except the registry-bound review supplement in `agent2_final_v6`, `agent2_structured_v5`, `agent2_uncertainty_v6`, `agent2_focused_v5_1`, `agent2_focused_v5_2`, `agent2_reasoning_low_v5_2`, `agent2_contrastive_v5_3` |
+
+Kept: every directory a test or loader opens, including `agent2_taxonomy_final_v7`,
+`agent1_verified_v3`, `agent1_full_batch_review_v3`, `grouping*`, `agent1_authority_fix`,
+`agent2_final_v6`, `agent2_full_v1_continued`, and the registry-bound pilots.
+1,328 MB of untracked `.cache/pytest-*` temporary output was also deleted; 32 older
+pytest directories remain because Windows denies access to them.
+
+**Validation.** Full suite after removal: **25 failed / 589 passed**. A pristine
+worktree at the pre-cleanup tag fails the **same 25 tests**, so the archive adds no
+failures. All README zero-call commands exit 0, except the documented
+`load_effective_output('data/processed/agent2_taxonomy_final_v7')` check, which also
+fails before the cleanup.
+
+**Pre-existing cause (not fixed here).** The system Git config sets
+`core.autocrlf=true`, so checkouts on Windows write CRLF bytes. The Agent 2 review
+registries record LF hashes, so every bound supplement mismatches. Re-checking out
+with LF fixes those checks but breaks Agent 1 evidence and fixture fingerprints,
+which were recorded on CRLF bytes. Frozen evidence was hashed under mixed line
+endings; resolving this needs a deliberate decision (e.g. `data/** -text` plus
+re-recording the affected registry hashes), not a silent rewrite.

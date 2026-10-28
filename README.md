@@ -26,6 +26,7 @@ Historical v6/v7 outputs remain preserved. Agent 3 and the dashboard remain plan
 - [Setup and commands](#setup-and-configuration): this page.
 - [Agent 1 summary](docs/Agent1_Summary.md): historical workflow and results.
 - [Agent 2 summary](docs/Agent2_Summary.md): completed taxonomy milestone.
+- [Agent 3 plan](docs/agent3-plan.md): milestones for research, AdviceCards and dashboard.
 - [Announcement routing and knowledge sources](docs/announcement-routing.md):
   current input boundary, daily commands, manual source format and severity migration.
 - [Source JSON Schema](docs/knowledge-source.schema.json).
