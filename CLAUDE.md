@@ -18,7 +18,7 @@ uv run --locked --extra dev python -m pytest tests/test_x.py   # single file
 ```
 
 - Always pass a **fresh** `--basetemp .cache/pytest-<name>`: pytest wipes it at start.
-- Full suite: 653 tests, ~5 min, all expected to pass. Intermittent `WinError 5` on `os.replace` is a Windows file lock (see Known issues), not a code failure.
+- Full suite: 668 tests, ~5 min, all expected to pass. Intermittent `WinError 5` on `os.replace` is a Windows file lock (see Known issues), not a code failure.
 - No linter/formatter configured. No build step beyond the editable install.
 - Zero-call checks: `--dry-run`, `--inspect`, `--check-input` flags (list in README). Anything with `--run`, or Agent 1 without `--dry-run`/`--inspect`, makes **paid model calls** — never run those without asking.
 - Dependency changes go in `pyproject.toml` and `uv.lock` together.
@@ -62,10 +62,10 @@ uv run --locked --extra dev python -m pytest tests/test_x.py   # single file
 ## Current state (2026-10-28)
 
 - Branch `agent3`. Agent 1 v3 and Agent 2 v7 closed. Announcement routing integrated (schema 8 / handoff v2 for new exports).
-- Agent 3 milestone 2 done 2026-10-29: contracts, rubric binding, Markdown knowledge ingestion (40 files in `data/knowledge`, user-authored mock data; don't rewrite). **Next: milestone 3, shared retrieval.** Full plan and open items: [docs/agent3-plan.md](docs/agent3-plan.md).
+- Agent 3 milestones 2 and 3 done 2026-10-29: contracts, rubric binding, Markdown ingestion (40 files in `data/knowledge`, user-authored mock data; don't rewrite), and shared hybrid retrieval (`src/threadsense/retrieval/`, index in ignored `.index/retrieval/`, build with `scripts/build_retrieval_index.py`). **Next: milestone 4, Agent 3 pilot.** Retrieval defaults: MMR lambda 0.9, `version_mode='current'` (superseded revisions/sections withheld before ranking; `history` for conflict research). Full plan: [docs/agent3-plan.md](docs/agent3-plan.md).
 - Agent 3 input: `data/processed/agent2_handoff_v2_projection/` (schema 8 / handoff v2, a zero-call projection of the v7 release; load with `advice_inputs.load_effective_view`): 81 groups / 79 topics / 161 assigned + 17 unassigned / 41 + 8 announcement-route obligations / 3 carried cautions. The frozen v7 release (handoff v1: 90 / 97 / 49 / 3 / 41) is unchanged.
 - Demo Slack input: `data/fixtures/slack_generated_demo/` (201 threads / 517 messages, cutoff `2026-10-02T12:00:00Z`); the original `slack_generated/` (200 / 516) stays unchanged.
-- Planned stack not yet installed: Chroma/FAISS + BM25, LangGraph, FastAPI, React (Vite/Tailwind).
+- Planned stack not yet installed: LangGraph, FastAPI, React (Vite/Tailwind). Chroma is a direct dependency; BM25 is in-house.
 - 2026-10-28 cleanup archived superseded runs to `D:\Christie\2026_AgenticAI\threadsense-archive-20261028\` (also local tag `pre-cleanup-20261028`).
 
 ## Known issues
@@ -79,4 +79,5 @@ uv run --locked --extra dev python -m pytest tests/test_x.py   # single file
 - `data/knowledge/severity_rubric.py` (TL-owned; don't edit policy text): `severity-rubric-v3-semantic-signals`. `get_rubric_for_project` returns the shared default for every project (`rubric_scope: SHARED_DEFAULT`).
 - `data/evaluation/domain_lexicon.json` duplicates `data/knowledge/domain_lexicon.json` (evaluation copy is not a model input).
 - Agent 3 plan refers to `mock_knowledge/`; the repo uses `data/knowledge/`.
+- ChromaDB 1.5.9 HNSW queries intermittently fail ("Nothing found on disk"; cause unknown, not fixed); retrieval ranks dense results by exact cosine over Chroma-stored embeddings instead. Don't switch back to `collection.query` without retesting.
 - 8 projected Agent 2 groups have no reusable taxonomy (their saved v7 responses also covered announcement members); their 17 members stay unassigned until a new run or an approved projection rule.

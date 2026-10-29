@@ -123,6 +123,17 @@ severity rubric binding, demo Slack snapshot counts and the schema-8 Agent 2 han
 projection (`scripts/project_agent2_handoff.py`, zero calls). See the
 [Agent 3 plan](docs/agent3-plan.md#milestone-2-implemented).
 
+Shared retrieval (local embeddings and Chroma, no paid calls; index in ignored `.index/`):
+
+```sh
+uv run --locked python scripts/build_retrieval_index.py
+uv run --locked python scripts/evaluate_retrieval.py
+```
+
+The build is offline and needs the pinned `all-MiniLM-L6-v2` revision in the local
+Hugging Face cache; add `--allow-download` once to fetch it. See
+[Milestone 3](docs/agent3-plan.md#milestone-3-implemented-shared-hybrid-retrieval).
+
 Inspect the historical effective handoff without regenerating it:
 
 ```powershell

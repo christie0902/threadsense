@@ -1,0 +1,136 @@
+{
+  "version": "agent3-retrieval-cases-v1",
+  "purpose": "Retrieval evaluation only. Never indexed or given to agents. Relevance labels describe which sources a researcher needs, not the correct answer.",
+  "match": "A source is {authoring: document_id[, section]} or {slack: [channel_id, thread_id]}. 'context' sources are acceptable but not scored; 'distractors' are misleading near-matches.",
+  "cases": [
+    {
+      "id": "playback_waveform_guidance",
+      "query": "The waveform loads but pressing Play never starts the audio. How should I handle and score the task?",
+      "project": "audio_multimodal", "filters": {"as_of": "2026-10-02T12:00:00Z"},
+      "relevant": [
+        {"authoring": "audio-multimodal-instructions", "section": "Playback and unavailable content"},
+        {"slack": ["C_AUDIO_ANNOUNCEMENTS", "1790892000.000901"]}
+      ],
+      "context": [
+        {"authoring": "audio-multimodal-faq", "section": "Playback and tool issues"},
+        {"slack": ["C_AUDIO_ANNOUNCEMENTS", "1790890099.000112"]},
+        {"authoring": "audio-playback-trial-outcome"}, {"authoring": "audio-playback-trial-approval"}, {"authoring": "audio-playback-trial-post"}
+      ],
+      "distractors": [{"authoring": "audio-headset-check-outcome"}, {"authoring": "audio-headset-check-approval"}],
+      "answerable": true,
+      "note": "The FAQ covers general player failures but has no waveform-specific entry (intentional gap); the rule is in the instructions. The August batch-05 trial is expired history."
+    },
+    {
+      "id": "json_vs_prose_uncertainty",
+      "query": "The prompt required JSON but the other response is accurate prose. Which response should win?",
+      "project": "response_preference", "filters": {},
+      "relevant": [
+        {"authoring": "response-preference-faq", "section": "Instruction following"},
+        {"authoring": "response-preference-instructions", "section": "Instruction adherence versus accuracy"},
+        {"authoring": "rp-format-rule-rejected"}
+      ],
+      "context": [{"slack": ["C_RP_ANNOUNCEMENTS", "1790936513.000019"]}],
+      "distractors": [{"authoring": "rp-audit-manifest-approval"}, {"authoring": "rp-audit-manifest-post"}],
+      "answerable": true,
+      "note": "The JSON audit-manifest decision concerns export files, not response preference."
+    },
+    {
+      "id": "fictional_pii_and_stale_help_page",
+      "query": "Does a made-up placeholder phone number in a fictional story still require quarantine?",
+      "project": "safety_classification", "filters": {"version_mode": "history"},
+      "relevant": [
+        {"authoring": "safety-fictional-pii-clarification"},
+        {"authoring": "safety-classification-instructions", "section": "Quarantine and contact details"},
+        {"authoring": "safety-qn-help-page", "section": "Contact details"}
+      ],
+      "context": [
+        {"authoring": "safety-pii-clarification-post"}, {"authoring": "safety-classification-faq"},
+        {"authoring": "safety-doc-sync-approval"}, {"authoring": "safety-doc-sync-outcome"},
+        {"slack": ["C_SAFETY_ANNOUNCEMENTS", "1790920369.000062"]}, {"slack": ["C_SAFETY_ANNOUNCEMENTS", "1790937576.000078"]},
+        {"slack": ["C_SAFETY_ANNOUNCEMENTS", "1790869444.000077"]}
+      ],
+      "distractors": [{"authoring": "safety-benign-mention-override"}, {"authoring": "safety-audit-export-escape-approval"}],
+      "answerable": true,
+      "note": "The stale help-page branch is needed for conflict research and must carry its section-level supersession."
+    },
+    {
+      "id": "korean_historical_scope",
+      "query": "How was Korean honorific register inside quoted speech handled before?",
+      "project": "multilingual_eval", "filters": {"batch": "multi_batch_11", "batch_scope": "project"},
+      "relevant": [
+        {"authoring": "multi-korean-scoped-result"}, {"authoring": "multi-korean-referral"},
+        {"authoring": "multilingual-eval-instructions", "section": "Register and honorifics"}
+      ],
+      "context": [{"authoring": "multilingual-eval-faq", "section": "Register and honorifics"}],
+      "distractors": [{"authoring": "multi-japanese-review-pending"}, {"authoring": "multi-japanese-backup-assignment-deferred"}],
+      "answerable": true,
+      "note": "The Korean records are multi_batch_10 (earlier batch) and limited to one case; results must mark them other_batch."
+    },
+    {
+      "id": "current_submit_vs_resolved_zoom",
+      "query": "The Submit button stays disabled after all required fields are filled.",
+      "project": "response_preference", "filters": {"batch": "rp_batch_15"},
+      "relevant": [
+        {"authoring": "rp-submit-engineering-handoff"},
+        {"authoring": "response-preference-instructions", "section": "Tool incidents and submission"},
+        {"slack": ["C_RP_ANNOUNCEMENTS", "1790888971.000030"]}
+      ],
+      "context": [{"authoring": "response-preference-faq"}],
+      "distractors": [{"authoring": "rp-submit-zoom-generalization-rejected"}],
+      "answerable": true,
+      "note": "The browser-zoom case was a hidden (not disabled) button, resolved for two tasks; the TL rejected generalizing it."
+    },
+    {
+      "id": "playback_question_after_announcement",
+      "query": "Audio won't play in LT; is this QN or a player issue?",
+      "project": "audio_multimodal", "filters": {"as_of": "2026-10-01T23:06:52Z"},
+      "relevant": [
+        {"slack": ["C_AUDIO_ANNOUNCEMENTS", "1790892000.000901"]},
+        {"authoring": "audio-multimodal-instructions", "section": "Playback and unavailable content"}
+      ],
+      "context": [{"authoring": "audio-multimodal-faq", "section": "Playback and tool issues"}, {"slack": ["C_AUDIO_ANNOUNCEMENTS", "1790890099.000112"]}],
+      "distractors": [{"authoring": "audio-headset-check-outcome"}],
+      "answerable": true,
+      "note": "Asked at 23:06 UTC, after the 22:00 UTC handling announcement."
+    },
+    {
+      "id": "playback_question_before_announcement",
+      "query": "Audio won't play in LT; is this QN or a player issue?",
+      "project": "audio_multimodal", "filters": {"as_of": "2026-10-01T21:59:59Z"},
+      "relevant": [{"authoring": "audio-multimodal-instructions", "section": "Playback and unavailable content"}],
+      "must_exclude": [{"slack": ["C_AUDIO_ANNOUNCEMENTS", "1790892000.000901"]}],
+      "context": [{"authoring": "audio-multimodal-faq", "section": "Playback and tool issues"}, {"slack": ["C_AUDIO_ANNOUNCEMENTS", "1790890099.000112"]}],
+      "distractors": [{"authoring": "audio-headset-check-outcome"}],
+      "answerable": true,
+      "note": "Date control: the announcement did not exist yet and must be filtered out."
+    },
+    {
+      "id": "deferred_backup_assignment",
+      "query": "Can we assign a backup Japanese QA reviewer because their calendar has an open slot?",
+      "project": "multilingual_eval", "filters": {},
+      "relevant": [{"authoring": "multi-japanese-backup-assignment-deferred"}],
+      "context": [{"authoring": "multilingual-eval-instructions", "section": "Specialist routing"}, {"authoring": "multi-japanese-review-pending"}],
+      "distractors": [{"authoring": "multi-spanish-audit-schedule-approval"}],
+      "answerable": true,
+      "note": "Prior advice was deferred, not approved; it must stay retrievable."
+    },
+    {
+      "id": "rejected_zoom_faq_rule",
+      "query": "Should the browser zoom workaround become a general FAQ answer for submission problems?",
+      "project": "response_preference", "filters": {},
+      "relevant": [{"authoring": "rp-submit-zoom-generalization-rejected"}],
+      "context": [{"authoring": "rp-submit-engineering-handoff"}, {"authoring": "response-preference-instructions", "section": "Tool incidents and submission"}],
+      "distractors": [{"authoring": "rp-audit-manifest-approval"}],
+      "answerable": true,
+      "note": "Rejected prior advice must stay retrievable."
+    },
+    {
+      "id": "unsupported_payroll",
+      "query": "What is the payroll deadline for contractors this month?",
+      "project": "audio_multimodal", "filters": {},
+      "relevant": [], "context": [], "distractors": [],
+      "answerable": false,
+      "note": "No source answers this. Any returned chunk is a nearest neighbour, not evidence."
+    }
+  ]
+}

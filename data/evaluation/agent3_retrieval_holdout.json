@@ -1,0 +1,39 @@
+{
+  "version": "agent3-retrieval-holdout-v1",
+  "purpose": "Two paraphrased queries written and labelled on 2026-10-29 before any run, after the lambda decision. Report separately; never used for tuning.",
+  "match": "Same format as agent3_retrieval_cases.json.",
+  "cases": [
+    {
+      "id": "holdout_near_equal_pair",
+      "query": "Both answers seem about equally good with only cosmetic differences. When is it acceptable to call it a draw?",
+      "project": "response_preference", "filters": {},
+      "relevant": [
+        {"authoring": "response-preference-instructions", "section": "Ties"},
+        {"authoring": "response-preference-faq", "section": "Ties and preferences"},
+        {"authoring": "rp-tie-calibration-post"}
+      ],
+      "context": [
+        {"authoring": "rp-tie-calibration-approval"}, {"authoring": "rp-tie-calibration-outcome"},
+        {"authoring": "response-preference-instructions", "section": "Calibration"},
+        {"slack": ["C_RP_ANNOUNCEMENTS", "1790929075.000039"]}
+      ],
+      "distractors": [{"authoring": "rp-format-rule-rejected"}],
+      "answerable": true,
+      "note": "Paraphrase avoids the word 'tie'. The rejected JSON-first rule is a preference rule about a different question."
+    },
+    {
+      "id": "holdout_brief_distortion",
+      "query": "Two reviewers disagree on how much a brief distortion at the start of a recording should reduce its audio quality score.",
+      "project": "audio_multimodal", "filters": {},
+      "relevant": [
+        {"authoring": "audio-multimodal-instructions", "section": "Scoring audio quality"},
+        {"authoring": "audio-clipping-calibration-approval"},
+        {"authoring": "audio-multimodal-faq", "section": "Scoring"}
+      ],
+      "context": [{"authoring": "audio-multimodal-instructions", "section": "Content-quality rubric"}],
+      "distractors": [{"authoring": "audio-headset-check-outcome"}, {"authoring": "audio-headset-check-approval"}],
+      "answerable": true,
+      "note": "Paraphrase avoids the word 'clipping'. Headset output checks concern playback hardware, not scoring."
+    }
+  ]
+}
