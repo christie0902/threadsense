@@ -1,0 +1,179 @@
+{
+ "version": "agent3-live-v1-failures-v1",
+ "run": "data/experiments/agent3_pilot_live_v1",
+ "run_id": "agent3pilot_9a51e36efa66ac394e4a04661a5f6b5b",
+ "cases": {
+  "quotation": {
+   "source": {
+    "file": "results/fictional_pii.json",
+    "stage": "draft",
+    "raw_sha256": "d57fd7c0bfc904e865cfba26505e6be39a6bb645375c1ba119ec68be1bcab683"
+   },
+   "scenario": "fictional_pii",
+   "failure": "Paraphrase presented as a verbatim quote; in v1 it voided the whole draft.",
+   "claim": {
+    "claim_id": "guidance_1",
+    "evidence_ids": [
+     "k:safety-classification-faq@1.1:6025b955"
+    ],
+    "kind": "GUIDANCE",
+    "material": true,
+    "quote": "Verified fictional placeholders alone do not require QN.",
+    "text": "Verified fictional placeholders alone do not require quarantine if no real individual is identifiable."
+   },
+   "other_claims": [
+    {
+     "claim_id": "incident_fact_1",
+     "evidence_ids": [
+      "m:C_SAFETY_GENERAL:1790890012.001700"
+     ],
+     "kind": "INCIDENT_FACT",
+     "material": true,
+     "quote": null,
+     "text": "Nico asks whether a story containing a made-up phone number should be quarantined."
+    },
+    {
+     "claim_id": "incident_fact_2",
+     "evidence_ids": [
+      "m:C_SAFETY_GENERAL:1790890065.000113"
+     ],
+     "kind": "INCIDENT_FACT",
+     "material": true,
+     "quote": null,
+     "text": "Sofia responds that the phone number appears deliberately fictional and should be verified to ensure no real individual can be identified."
+    }
+   ]
+  },
+  "guidance_from_slack": {
+   "source": {
+    "file": "results/fictional_pii.json",
+    "stage": "draft",
+    "raw_sha256": "d57fd7c0bfc904e865cfba26505e6be39a6bb645375c1ba119ec68be1bcab683"
+   },
+   "scenario": "fictional_pii",
+   "failure": "A team lead Slack message cited as current guidance.",
+   "claim": {
+    "claim_id": "guidance_2",
+    "evidence_ids": [
+     "m:C_SAFETY_GENERAL:1790890151.000339"
+    ],
+    "kind": "GUIDANCE",
+    "material": true,
+    "quote": "The posted wording may conflict with older PII examples.",
+    "text": "The posted wording may conflict with older PII examples."
+   }
+  },
+  "attribution": {
+   "source": {
+    "file": "results/repeated_ending.json",
+    "stage": "draft",
+    "raw_sha256": "5bed677a34caf27bef76fe6c27178f9d9bbe64cbb06b5760f938b5a9dfb318cf"
+   },
+   "scenario": "repeated_ending",
+   "failure": "Affected reporter U017 cited with a message by U013; in v1 it voided the severity assessment.",
+   "severity": {
+    "affected_reporters": [
+     {
+      "author_id": "U007",
+      "evidence_id": "m:C_AUDIO_GENERAL:1790868894.000123"
+     },
+     {
+      "author_id": "U017",
+      "evidence_id": "m:C_AUDIO_GENERAL:1790889987.000113"
+     },
+     {
+      "author_id": "U018",
+      "evidence_id": "m:C_AUDIO_GENERAL:1790915994.000122"
+     }
+    ],
+    "level": "HIGH",
+    "rationale": "Multiple distinct people reporting a comparable problem suggests broader disruption or systemic labeling risk.",
+    "recurrence": "NOT_CHECKED",
+    "recurrence_evidence_ids": [],
+    "signals": [
+     {
+      "evidence_ids": [
+       "m:C_AUDIO_GENERAL:1790868894.000123",
+       "m:C_AUDIO_GENERAL:1790889930.000126",
+       "m:C_AUDIO_GENERAL:1790899012.002000",
+       "m:C_AUDIO_GENERAL:1790915994.000122"
+      ],
+      "level": "HIGH",
+      "signal_index": 3,
+      "signal_text": "Multiple distinct people or affected tasks reporting a comparable problem within the relevant project, batch, and time window, suggesting broader disruption or systemic labeling risk.",
+      "support": "Reports from multiple members indicate the same issue with audio output."
+     }
+    ]
+   }
+  },
+  "reported_symptom": {
+   "source": {
+    "file": "results/repeated_ending.json",
+    "stage": "draft",
+    "raw_sha256": "5bed677a34caf27bef76fe6c27178f9d9bbe64cbb06b5760f938b5a9dfb318cf"
+   },
+   "scenario": "repeated_ending",
+   "failure": "Members' claim that the repeat is in the exported audio, which the team lead asked to verify.",
+   "claim": {
+    "claim_id": "incident_fact_2",
+    "evidence_ids": [
+     "m:C_AUDIO_GENERAL:1790889987.000113",
+     "m:C_AUDIO_GENERAL:1790899060.000113"
+    ],
+    "kind": "INCIDENT_FACT",
+    "material": true,
+    "quote": null,
+    "text": "The final sentence repeats in the exported audio, not just during playback."
+   }
+  },
+  "partial_thread_resolution": {
+   "source": {
+    "file": "results/audio_playback.json",
+    "stage": "draft",
+    "raw_sha256": "c61f5738c8ccc93923874410c6d35a71b1215d632d36aee64415261e09665bfa"
+   },
+   "scenario": "audio_playback",
+   "failure": "Resolution citing part of the thread; the uncited team lead reply gives interim handling.",
+   "resolution": {
+    "basis": "The audio playback issue is still unresolved, requiring further information.",
+    "evidence_ids": [
+     "m:C_AUDIO_GENERAL:1790934294.000106",
+     "m:C_AUDIO_GENERAL:1790934351.000113"
+    ],
+    "member_id": "member_61f4987d5eb6b1ccb2894091",
+    "state": "UNRESOLVED"
+   }
+  },
+  "named_people": {
+   "source": {
+    "file": "results/json_vs_prose.json",
+    "stage": "draft",
+    "raw_sha256": "4e50df91efbfbca0cd662b2e9366ac37906a7d69c2dd5857e0b7100911bac0f1"
+   },
+   "scenario": "json_vs_prose",
+   "failure": "Claims name people; v1 evidence carried author IDs only, so names could not be checked.",
+   "claims": [
+    {
+     "claim_id": "incident_fact_1",
+     "evidence_ids": [
+      "m:C_RP_GENERAL:1790856332.000018"
+     ],
+     "kind": "INCIDENT_FACT",
+     "material": true,
+     "quote": null,
+     "text": "Yuki asks for clarification on whether to prioritize format adherence or factual accuracy."
+    },
+    {
+     "claim_id": "incident_fact_2",
+     "evidence_ids": [
+      "m:C_RP_QA:1790913824.000016"
+     ],
+     "kind": "INCIDENT_FACT",
+     "material": true,
+     "quote": null,
+     "text": "Leo questions which format is better: a JSON object or a prose explanation."
+    }
+   ]
+  }
+ }
+}

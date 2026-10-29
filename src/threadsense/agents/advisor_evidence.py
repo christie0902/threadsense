@@ -6,7 +6,10 @@ The status of superseded, expired or unresolved material is also written into th
 excerpt itself, so it cannot be read apart from the text. Retrieval runs only through
 ResearchTools, which charges every call to a finite budget.
 """
-from threadsense.retrieval.config import INDEX_DIR
+from functools import cache
+import json
+
+from threadsense.retrieval.config import FIXTURE_ROOT, INDEX_DIR
 from threadsense.retrieval.index import RetrievalIndexError
 
 REBUILD = 'uv run --locked python scripts/build_retrieval_index.py --rebuild'
@@ -160,17 +163,30 @@ def withheld_item(entry):
             'note': 'Withheld from current-guidance results before ranking; retrievable with version_mode=history.'}
 
 
-def member_messages(members):
-    """Member Slack messages are the only incident-fact evidence."""
-    items = []
+@cache
+def user_directory(path=FIXTURE_ROOT/'users.json'):
+    """Canonical user directory: ID -> {name, role}."""
+    data = json.loads(path.read_text(encoding='utf-8'))
+    return {u['id']: {'name': u['name'], 'role': u['role']} for u in (data['users'] if isinstance(data, dict) else data)}
+
+
+def member_messages(members, directory=None):
+    """Member Slack messages are the only incident-fact evidence. Display names come from the user directory."""
+    directory, items = user_directory() if directory is None else directory, []
+
+    def name(user_id):
+        return (directory.get(user_id) or {}).get('name')
     for member in members:
         thread = member['original_thread']
         for message in thread['messages']:
             items.append({'evidence_id': f"m:{thread['channel_id']}:{message['message_id']}", 'origin': 'member_message',
                           'use': 'MEMBER_REPORT', 'member_id': member['member_id'], 'channel_id': thread['channel_id'],
                           'thread_id': thread['thread_id'], 'message_id': message['message_id'],
-                          'author_id': message['author_id'], 'author_role': message['author_role'],
-                          'timestamp': message['timestamp'], 'excerpt': message['text']})
+                          'author_id': message['author_id'], 'author_name': name(message['author_id']),
+                          'author_role': message['author_role'], 'timestamp': message['timestamp'],
+                          'reactions': [{'name': r.get('name'), 'users': [{'id': u, 'name': name(u)} for u in r.get('users') or []]}
+                                        for r in message.get('reactions') or []],
+                          'excerpt': message['text']})
     return items
 
 

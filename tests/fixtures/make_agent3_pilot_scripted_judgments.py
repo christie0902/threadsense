@@ -47,6 +47,7 @@ def statement_ids(draft, alternatives=()):
         ids.append('action')
     ids += [f"announcement:{a['evidence_id']}" for a in draft.get('announcement_assessments', []) if a['relevant'] and a['directive']]
     ids += [f"resolution:{r['member_id']}" for r in draft.get('resolution', []) if r['state'] != 'UNKNOWN']
+    ids += ['open_question'] if draft['open_confirmation'] == 'OPEN' else []
     severity = draft['severity']
     ids += ['severity:rationale'] + [f"severity:signal:{s['level']}[{s['signal_index']}]" for s in severity.get('signals', [])]
     ids += [f'reporter:{a}' for a in dict.fromkeys(r['author_id'] for r in severity.get('affected_reporters', []))]
@@ -155,7 +156,8 @@ json_draft = {
                                                  'affects how pairs are scored.',
                  'signals': [sig('MEDIUM', 0, 'Three threads ask how to weigh a required format against accuracy.',
                                  [m(RPG, '1790856332.000018'), m(RPQ, '1790913824.000016'), m(RPG, '1790932885.000015')])]},
-    'confidence': 0.7, 'open_confirmation': 'OPEN', 'open_confirmation_detail': json_open,
+    'confidence': 0.7, 'open_confirmation': 'OPEN', 'open_question': json_open,
+    'open_question_evidence_ids': ['k:response-preference-faq@1.1:fa9b6a3d'],
     'resolution': resolution('json_vs_prose', {}, {'default': 'No answer in the thread; the TL asks for the exact formatting '
                                                               'instruction before weighing the responses.'})}
 json_revision = {**json_draft, 'gaps': [json_draft['gaps'][1]], 'claims': json_claims + [
@@ -373,6 +375,29 @@ control_draft = {
     'evidence_sufficiency': 'UNSUPPORTED', 'proposed_action': None,
     'severity': {'level': 'UNKNOWN', 'rationale': 'No incident evidence.'}, 'confidence': 0.9, 'open_confirmation': 'NONE'}
 
+def with_coverage(draft):
+    """Coverage derived from the prepared draft itself: COVERED by its own claims, MISSING where it requests a
+    follow-up for a prior decision, otherwise NOT_APPLICABLE."""
+    def cited(*kinds, prefix):
+        return [e for c in draft['claims'] if c['kind'] in kinds for e in c['evidence_ids'] if e.startswith(prefix)]
+    guidance, history = [e for e in cited('GUIDANCE', prefix='k:') if 'ANNOUNCEMENTS' not in e], cited('HISTORY', prefix='k:')
+    announced = [a['evidence_id'] for a in draft.get('announcement_assessments', []) if a['relevant'] and a['directive']]
+    asked = cited('INCIDENT_FACT', prefix='m:')
+    prior_gap = next((g for g in draft.get('gaps', []) if g['need'] == 'PRIOR_DECISION_OUTCOME' and g.get('follow_up')), None)
+
+    def item(need, ids, note):
+        return {'need': need, 'status': 'COVERED', 'evidence_ids': ids, 'note': note} if ids else \
+            {'need': need, 'status': 'NOT_APPLICABLE', 'note': 'Not needed for this advice.'}
+    prior = {'need': 'PRIOR_DECISIONS', 'status': 'MISSING', 'note': prior_gap['description'], 'gap_id': prior_gap['gap_id']} \
+        if prior_gap else item('PRIOR_DECISIONS', history, 'Earlier decisions and outcomes cited.')
+    return {**draft, 'coverage': [item('CURRENT_GUIDANCE', guidance, 'Current guidance cited.'),
+                                  item('ANNOUNCEMENTS', announced, 'Relevant directive announcements assessed.'), prior,
+                                  item('MEMBER_QUESTIONS', asked, 'Member reports and questions cited.')]}
+
+
+audio_draft, audio_revision, json_draft, json_revision, pii_draft, pii_revision, korean_draft, submit_draft, repeat_draft, \
+    control_draft = map(with_coverage, (audio_draft, audio_revision, json_draft, json_revision, pii_draft, pii_revision,
+                                        korean_draft, submit_draft, repeat_draft, control_draft))
 responses = {
     'audio_playback': {'draft': audio_draft, 'revision': audio_revision, 'grounding': judged(audio_revision)},
     'json_vs_prose': {'draft': json_draft, 'revision': json_revision, 'tot': json_tot, 'grounding': judged(
@@ -386,10 +411,10 @@ responses = {
     'control_unsupported_payroll': {'draft': control_draft},
 }
 out = ROOT/'tests/fixtures/agent3_pilot_scripted_judgments.json'
-payload = {'version': 'agent3-pilot-scripted-judgments-v2',
+payload = {'version': 'agent3-pilot-scripted-judgments-v3',
            'purpose': 'Prepared semantic responses (draft, revision, grounding, ToT) for the offline pilot run. They exercise '
                       'the deterministic checks and routing; they are not model output and say nothing about model quality. '
-                      'Evidence IDs refer to the knowledge-chunks-v2 index; contracts are advisor draft v2 and '
+                      'Evidence IDs refer to the knowledge-chunks-v2 index; contracts are advisor draft v3 and '
                       'grounding judgment v2.',
            'responses': responses}
 out.write_text(json.dumps(payload, ensure_ascii=False, indent=1) + '\n', encoding='utf-8')

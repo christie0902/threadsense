@@ -1,10 +1,12 @@
-"""Agent 3 Advisor pilot model I/O: draft (v2), grounding judgment (v2), shallow ToT comparison (v1).
+"""Agent 3 Advisor pilot model I/O: draft (v3), grounding judgment (v2), shallow ToT comparison (v1).
 
 These are what a model returns. They cite evidence only by the evidence_id values the
 pilot assigned in its evidence ledger; validators here are structural. Grounding,
 severity binding, temporal checks and card routing happen in advisor_checks.py.
 v2 adds per-member resolution, announcement assessments and documentation targets to the
-draft, and judges every statement that can reach a card (not only claims).
+draft, and judges every statement that can reach a card (not only claims). v3 marks quotes as
+verbatim or paraphrase, adds verified CAUSE claims, requires a specific open question with the
+evidence that leaves it open, and adds an evidence-coverage assessment.
 """
 from typing import Literal
 
@@ -15,9 +17,12 @@ from threadsense.agents.advice_contracts import ActionType, SeverityLevel, Stric
 SourceType = Literal['guideline', 'faq', 'decision', 'announcement']
 Need = Literal['APPLICABLE_INSTRUCTION', 'CURRENT_HANDLING', 'PRIOR_DECISION_OUTCOME', 'RECURRENCE',
                'SUPERSESSION_OR_CONFLICT', 'EXPERT_ROUTING', 'OTHER']
-# INCIDENT_FACT: what happened (member Slack messages only). GUIDANCE: what applies now
-# (current guideline/FAQ/announcement). HISTORY: what was decided or observed before.
-ClaimKind = Literal['INCIDENT_FACT', 'GUIDANCE', 'HISTORY', 'INFERENCE']
+# INCIDENT_FACT: what members report (member Slack messages only; a report, not a verified cause).
+# CAUSE: a verified cause (needs a retrieved record or a team lead/engineer message that verifies it).
+# GUIDANCE: what applies now (current guideline/FAQ/established announcement). HISTORY: what was
+# decided or observed before. INFERENCE: the Advisor's reasoning from cited evidence.
+ClaimKind = Literal['INCIDENT_FACT', 'CAUSE', 'GUIDANCE', 'HISTORY', 'INFERENCE']
+CoverageNeed = Literal['CURRENT_GUIDANCE', 'ANNOUNCEMENTS', 'PRIOR_DECISIONS', 'MEMBER_QUESTIONS']
 DOCUMENT_ACTIONS = ('UPDATE_DOCUMENTATION', 'UPDATE_FAQ')
 
 
@@ -45,7 +50,8 @@ class Claim(Strict):
     kind: ClaimKind
     text: Text
     evidence_ids: list[str] = Field(default_factory=list)
-    quote: str | None = None  # Optional verbatim excerpt from one cited item.
+    quote: str | None = None  # Optional excerpt from one cited item.
+    quote_kind: Literal['VERBATIM', 'PARAPHRASE'] = 'VERBATIM'  # VERBATIM must match the source exactly.
     material: bool = True
 
 
@@ -121,8 +127,23 @@ class SourceConflict(Strict):
     description: Text
 
 
+class CoverageItem(Strict):
+    """Whether the evidence needed for this need is present. MISSING names the gap that requests it."""
+    need: CoverageNeed
+    status: Literal['COVERED', 'NOT_APPLICABLE', 'MISSING']
+    evidence_ids: list[str] = Field(default_factory=list)
+    note: Text
+    gap_id: str | None = None
+
+    @model_validator(mode='after')
+    def consistent(self):
+        if self.status == 'COVERED' and not self.evidence_ids:
+            raise ValueError('COVERED cites the evidence that covers it.')
+        return self
+
+
 class AdvisorDraft(Strict):
-    contract_version: Literal['agent3-advisor-draft-v2'] = 'agent3-advisor-draft-v2'
+    contract_version: Literal['agent3-advisor-draft-v3'] = 'agent3-advisor-draft-v3'
     summary: Text
     reasoning: Text
     claims: list[Claim] = Field(default_factory=list)
@@ -131,11 +152,14 @@ class AdvisorDraft(Strict):
     proposed_action: ActionProposal | None = None
     severity: SeverityProposal
     confidence: float = Field(ge=0.0, le=1.0)
+    # OPEN only for a specific question the evidence leaves unsettled; a TL approving execution is not one.
     open_confirmation: Literal['OPEN', 'NONE']
-    open_confirmation_detail: str | None = None
+    open_question: str | None = None
+    open_question_evidence_ids: list[str] = Field(default_factory=list)
     source_conflicts: list[SourceConflict] = Field(default_factory=list)
     announcement_assessments: list[AnnouncementAssessment] = Field(default_factory=list)
     resolution: list[MemberResolution] = Field(default_factory=list)
+    coverage: list[CoverageItem] = Field(default_factory=list)
 
     @model_validator(mode='after')
     def consistent(self):
@@ -146,8 +170,10 @@ class AdvisorDraft(Strict):
         _distinct([r.member_id for r in self.resolution], 'Resolution member IDs')
         if self.proposed_action and set(self.proposed_action.support_claim_ids) - set(claims):
             raise ValueError('Action support must reference claims in this draft.')
-        if self.open_confirmation == 'OPEN' and not (self.open_confirmation_detail or '').strip():
-            raise ValueError('An open confirmation states what is waiting for confirmation.')
+        if self.open_confirmation == 'OPEN' and not ((self.open_question or '').strip() and self.open_question_evidence_ids):
+            raise ValueError('An open confirmation states the specific unresolved question and cites the evidence '
+                             'that leaves it open.')
+        _distinct([c.need for c in self.coverage], 'Coverage needs')
         return self
 
 

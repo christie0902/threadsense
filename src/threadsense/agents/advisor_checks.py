@@ -1,9 +1,11 @@
 """Deterministic Advisor checks; no model calls.
 
-- structural pre-checks: cited IDs exist, claim kinds use the right evidence (incident facts
-  from member messages, current guidance from current sources or established announcements),
-  quotes are verbatim, documentation targets are real and not already current, resolution
-  rests on the member's own thread;
+- structural pre-checks, per statement: cited IDs exist, claim kinds use the right evidence
+  (incident facts from member messages, verified causes from records or a team lead/engineer,
+  current guidance from current sources or established announcements), quotes marked verbatim
+  are verbatim, named people authored a cited message, documentation targets are real and not
+  already current, resolution rests on the member's own thread. A failure rejects only that
+  statement and the statements that depend on it; the rest still go to the semantic judge;
 - final statements: every statement that can reach a card (claims, summary, action,
   announcement handling, member resolution, severity rationale and signals, affected
   reporters) plus ToT alternatives, judged by ONE final semantic grounding call;
@@ -14,6 +16,7 @@
 Nothing runs after the final grounding call except this authorization, which only removes.
 """
 from collections import Counter
+import re
 
 from pydantic import ValidationError
 
@@ -29,6 +32,9 @@ STALE_USES = {'HISTORY_ONLY', 'UNRESOLVED_VERSION'}
 KNOWLEDGE_USES = CURRENT_USES | STALE_USES | {'ANNOUNCEMENT', 'PRIOR_DECISION'}
 BANNERED_USES = STALE_USES | {'ANNOUNCEMENT', 'PRIOR_DECISION'}
 RESOLUTION_STATES = ('UNRESOLVED', 'PARTIALLY_RESOLVED', 'RESOLVED_IN_THREAD')
+VERIFYING_ROLES = {'TEAM_LEAD', 'ENGINEER'}
+COVERAGE_USES = {'CURRENT_GUIDANCE': CURRENT_USES, 'ANNOUNCEMENTS': {'ANNOUNCEMENT'},
+                 'PRIOR_DECISIONS': {'PRIOR_DECISION', 'HISTORY_ONLY'}, 'MEMBER_QUESTIONS': {'MEMBER_REPORT'}}
 
 
 def _norm(text):
@@ -46,8 +52,17 @@ def _verbatim(quote, items):
     return any(_norm(quote) in _norm(source_text(item)) for item in items)
 
 
-def _issue(claim_id, code, detail):
-    return {'claim_id': claim_id, 'code': code, 'detail': detail}
+def _issue(claim_id, code, detail, statement_id=None):
+    return {'claim_id': claim_id, 'statement_id': statement_id or claim_id, 'code': code, 'detail': detail}
+
+
+def _names(ledger):
+    """Display name -> author IDs of topic participants (names come from the canonical user directory)."""
+    out = {}
+    for item in ledger.values():
+        if item['origin'] == 'member_message' and item.get('author_name'):
+            out.setdefault(item['author_name'], set()).add(item['author_id'])
+    return out
 
 
 def established(draft, ledger):
@@ -58,35 +73,48 @@ def established(draft, ledger):
 
 
 def claim_issues(draft, ledger):
-    """Structural grounding failures; any one makes grounding FAILED without a semantic call."""
-    issues, handling = [], established(draft, ledger)
+    """Structural failures per claim; each rejects that claim (and what depends on it), never the whole draft."""
+    issues, handling, names = [], established(draft, ledger), _names(ledger)
+
+    def issue(claim, code, detail):
+        issues.append(_issue(claim.claim_id, code, detail, f'claim:{claim.claim_id}'))
     for claim in draft.claims:
         unknown = [i for i in claim.evidence_ids if i not in ledger]
         if unknown:
-            issues.append(_issue(claim.claim_id, 'UNKNOWN_EVIDENCE', f'Cites evidence not in the ledger: {unknown}.'))
+            issue(claim, 'UNKNOWN_EVIDENCE', f'Cites evidence not in the ledger: {unknown}.')
             continue
         items = [ledger[i] for i in claim.evidence_ids]
         uses = {item['use'] for item in items}
         if claim.material and not items:
-            issues.append(_issue(claim.claim_id, 'NO_CITATION', 'Material claim cites no evidence.'))
+            issue(claim, 'NO_CITATION', 'Material claim cites no evidence.')
         if claim.kind == 'INCIDENT_FACT' and uses - {'MEMBER_REPORT'}:
-            issues.append(_issue(claim.claim_id, 'INCIDENT_FACT_NEEDS_MEMBER_EVIDENCE',
-                                 'Incident facts must come from member messages, not retrieved sources.'))
+            issue(claim, 'INCIDENT_FACT_NEEDS_MEMBER_EVIDENCE', 'Incident facts must come from member messages, not retrieved sources.')
+        if claim.kind == 'CAUSE' and not (uses & (CURRENT_USES | {'PRIOR_DECISION'}) or any(
+                i['use'] == 'MEMBER_REPORT' and i.get('author_role') in VERIFYING_ROLES for i in items)):
+            issue(claim, 'CAUSE_WITHOUT_VERIFICATION', 'A cause needs a retrieved record or a team lead/engineer message; '
+                                                       'member reports are symptoms.')
+        authors = {i['author_id'] for i in items if i['origin'] == 'member_message'}
+        named = sorted(n for n, ids in names.items() if re.search(rf'\b{re.escape(n)}\b', claim.text) and not ids & authors)
+        if named:
+            issue(claim, 'NAME_NOT_IN_CITED_EVIDENCE', f'Names {named} but cites no message they authored.')
         if claim.kind == 'GUIDANCE':
             if not (uses & CURRENT_USES or handling & set(claim.evidence_ids)):
                 announced = [i for i in claim.evidence_ids if ledger[i]['use'] == 'ANNOUNCEMENT']
-                issues.append(_issue(claim.claim_id, 'ANNOUNCEMENT_NOT_ESTABLISHED_AS_HANDLING', 'Cited announcements '
-                                     f'{announced} are not assessed as relevant directives for this topic.') if announced else
-                              _issue(claim.claim_id, 'GUIDANCE_WITHOUT_CURRENT_SOURCE',
-                                     'Guidance must cite a current guideline or FAQ, or an established announcement.'))
+                if announced:
+                    issue(claim, 'ANNOUNCEMENT_NOT_ESTABLISHED_AS_HANDLING',
+                          f'Cited announcements {announced} are not assessed as relevant directives for this topic.')
+                else:
+                    issue(claim, 'GUIDANCE_WITHOUT_CURRENT_SOURCE',
+                          'Guidance must cite a current guideline or FAQ, or an established announcement.')
             stale = [item['evidence_id'] for item in items if item['use'] in STALE_USES]
             if stale:
-                issues.append(_issue(claim.claim_id, 'HISTORICAL_SOURCE_AS_CURRENT_GUIDANCE',
-                                     f'Historical or unresolved sources cannot support current guidance: {stale}.'))
+                issue(claim, 'HISTORICAL_SOURCE_AS_CURRENT_GUIDANCE',
+                      f'Historical or unresolved sources cannot support current guidance: {stale}.')
         if claim.kind == 'HISTORY' and not uses & KNOWLEDGE_USES:
-            issues.append(_issue(claim.claim_id, 'HISTORY_WITHOUT_RECORD', 'History claims cite retrieved records.'))
-        if claim.quote and not _verbatim(claim.quote, items):
-            issues.append(_issue(claim.claim_id, 'QUOTE_NOT_VERBATIM', 'Quote is not verbatim in any cited excerpt.'))
+            issue(claim, 'HISTORY_WITHOUT_RECORD', 'History claims cite retrieved records.')
+        # A paraphrase is judged semantically; only a quote presented as verbatim must match exactly.
+        if claim.quote and claim.quote_kind == 'VERBATIM' and not _verbatim(claim.quote, items):
+            issue(claim, 'QUOTE_NOT_VERBATIM', 'Quote presented as verbatim is not in any cited excerpt.')
     return issues
 
 
@@ -100,6 +128,10 @@ def announcement_issues(draft, ledger):
             issues.append(_issue(sid, 'NOT_A_CURRENT_ANNOUNCEMENT', f"Assessed item is {item['use']}, not a current announcement."))
         elif a.relevant and a.directive and not _verbatim(a.directive_quote, [item]):
             issues.append(_issue(sid, 'QUOTE_NOT_VERBATIM', 'Directive quote is not verbatim in the announcement.'))
+    if draft.open_confirmation == 'OPEN':
+        unknown = [e for e in draft.open_question_evidence_ids if e not in ledger]
+        if unknown:
+            issues.append(_issue('open_question', 'UNKNOWN_EVIDENCE', f'Open question cites evidence not in the ledger: {unknown}.'))
     return issues
 
 
@@ -136,11 +168,8 @@ def action_issues(draft, ledger):
     support = [claims[i] for i in action.support_claim_ids]
     if not support:
         return ['ACTION_WITHOUT_SUPPORT_CLAIMS']
+    # Whether the premises make the action applicable is judged semantically; no source must prescribe it.
     issues = []
-    applicable = any(c.kind == 'GUIDANCE' or c.kind == 'HISTORY' and any(
-        ledger.get(e, {}).get('use') == 'PRIOR_DECISION' for e in c.evidence_ids) for c in support)
-    if not applicable:
-        issues.append('ACTION_WITHOUT_APPLICABLE_SOURCE')
     allowed = {'UPDATE_FAQ': {'faq'}, 'UPDATE_DOCUMENTATION': {'guideline', 'faq'}}.get(action.action_type)
     for t in action.targets:
         item = ledger.get(t.evidence_id)
@@ -159,6 +188,23 @@ def action_issues(draft, ledger):
 
 def structural_issues(draft, ledger, member_ids):
     return claim_issues(draft, ledger) + announcement_issues(draft, ledger) + resolution_issues(draft, ledger, member_ids)
+
+
+def coverage_issues(draft, ledger):
+    """The draft's evidence-coverage assessment: every need assessed, COVERED by evidence of the right use,
+    MISSING tied to a follow-up request. Reported on the card, never repaired."""
+    issues, assessed = [], {c.need: c for c in draft.coverage}
+    gaps = {g.gap_id: g for g in draft.gaps}
+    for need, uses in COVERAGE_USES.items():
+        item = assessed.get(need)
+        if item is None:
+            issues.append(f'{need}: not assessed')
+        elif item.status == 'COVERED' and not any(ledger.get(e, {}).get('use') in uses for e in item.evidence_ids):
+            issues.append(f'{need}: marked COVERED without evidence of that kind')
+        elif item.status == 'MISSING':
+            gap = gaps.get(item.gap_id or '')
+            issues.append(f'{need}: missing' + (' (follow-up requested)' if gap and gap.follow_up else ' and not researched'))
+    return issues
 
 
 def target_text(action, ledger):
@@ -192,8 +238,8 @@ def statements(draft, ledger, *, severity=None, alternatives=()):
         out.append({'statement_id': sid, 'kind': kind, 'text': text, 'blocking': blocking,
                     'evidence_ids': list(dict.fromkeys(i for i in ids if i in ledger))})
     for c in draft.claims:
-        add(f'claim:{c.claim_id}', f'CLAIM_{c.kind}', c.text + (f' Quote: "{c.quote}"' if c.quote else ''),
-            c.evidence_ids, c.material)
+        quote = (f' Verbatim quote: "{c.quote}"' if c.quote_kind == 'VERBATIM' else f' Paraphrase: "{c.quote}"') if c.quote else ''
+        add(f'claim:{c.claim_id}', f'CLAIM_{c.kind}', c.text + quote, c.evidence_ids, c.material)
     add('summary', 'SUMMARY', draft.summary, [e for c in draft.claims if c.material for e in c.evidence_ids])
     action = draft.proposed_action
     # A bare NO_ACTION (no text) states nothing to judge; anything with text or an operation is judged.
@@ -207,6 +253,9 @@ def statements(draft, ledger, *, severity=None, alternatives=()):
     for r in draft.resolution:
         if r.state != 'UNKNOWN':
             add(f'resolution:{r.member_id}', 'RESOLUTION', f'Member thread {r.member_id} is {r.state}: {r.basis}', r.evidence_ids)
+    if draft.open_confirmation == 'OPEN':
+        add('open_question', 'OPEN_QUESTION', f'The cited evidence leaves this specific question unsettled: {draft.open_question}',
+            draft.open_question_evidence_ids)
     if severity is not None and severity.assessment_status == 'ASSESSED':
         p = draft.severity
         incident = [e for c in draft.claims if c.kind == 'INCIDENT_FACT' for e in c.evidence_ids]
@@ -242,27 +291,47 @@ def _effective(draft, ledger, verdicts):
     return out
 
 
+def rejected_statements(draft, stmts, structural=(), actions=()):
+    """Statement ID -> structural rejection, including dependents: an action resting on a rejected claim."""
+    out = {}
+    for i in structural:
+        out.setdefault(i['statement_id'], f"REJECTED_{i['code']}")
+    if actions:
+        out.setdefault('action', 'REJECTED_' + actions[0].split(':')[0])
+    action = draft.proposed_action
+    if action and 'action' not in out and any(f'claim:{c}' in out for c in action.support_claim_ids):
+        out['action'] = 'REJECTED_DEPENDS_ON_REJECTED_CLAIM'
+    ids = {s['statement_id'] for s in stmts}
+    return {k: v for k, v in out.items() if k in ids}
+
+
+def sendable(stmts, rejected):
+    """Statements the semantic judge sees: cited and not structurally rejected."""
+    return [s for s in stmts if s['evidence_ids'] and s['statement_id'] not in rejected]
+
+
 def grounding_result(draft, ledger, stmts, *, structural=(), actions=(), judgment=None, ran=False, reason=None):
-    """PASSED only when structural checks pass and every blocking statement is SUPPORTED after dependencies.
-    Statements citing nothing are never sent and count as NO_EVIDENCE."""
+    """PASSED only when every blocking statement is SUPPORTED after structural rejection and dependencies.
+    Structurally rejected statements and statements citing nothing (NO_EVIDENCE) are never sent."""
+    rejected = rejected_statements(draft, stmts, structural, actions)
     result = {'structural_issues': list(structural), 'action_issues': list(actions), 'unsupported': [], 'unjudged': [],
-              'extraneous_verdicts': []}
-    if structural or actions:
-        return {**result, 'status': 'FAILED', 'basis': 'STRUCTURAL',
-                'statements': [{**s, 'verdict': 'NOT_JUDGED', 'rationale': None} for s in stmts]}
-    if not ran:
-        return {**result, 'status': 'NOT_RUN', 'basis': reason or 'SEMANTIC_JUDGMENT_UNAVAILABLE',
-                'statements': [{**s, 'verdict': 'NOT_JUDGED', 'rationale': None} for s in stmts]}
-    given = {v.statement_id: v for v in judgment.verdicts}
-    raw = {s['statement_id']: ('NO_EVIDENCE' if not s['evidence_ids'] else given[s['statement_id']].verdict
-                               if s['statement_id'] in given else 'NOT_JUDGED') for s in stmts}
+              'extraneous_verdicts': [], 'rejected': rejected}
+    given = {v.statement_id: v for v in judgment.verdicts} if ran else {}
+    raw = {s['statement_id']: rejected.get(s['statement_id']) or ('NO_EVIDENCE' if not s['evidence_ids'] else
+           given[s['statement_id']].verdict if s['statement_id'] in given else 'NOT_JUDGED') for s in stmts}
     effective = _effective(draft, ledger, raw)
     judged = [{**s, 'verdict': effective[s['statement_id']], 'model_verdict': raw[s['statement_id']],
                'rationale': given[s['statement_id']].rationale if s['statement_id'] in given else None} for s in stmts]
     blocking = [s for s in judged if s['blocking']]
     unjudged = [s['statement_id'] for s in blocking if s['verdict'] == 'NOT_JUDGED']
     unsupported = [s['statement_id'] for s in blocking if s['verdict'] not in ('SUPPORTED', 'NOT_JUDGED')]
-    return {**result, 'status': 'FAILED' if unjudged or unsupported else 'PASSED', 'basis': 'SEMANTIC',
+    if not ran:
+        failed = [s for s in unsupported if s in rejected]
+        return {**result, 'statements': judged, 'unsupported': failed, 'unjudged': unjudged,
+                'status': 'FAILED' if failed else 'NOT_RUN',
+                'basis': 'STRUCTURAL' if failed else reason or 'SEMANTIC_JUDGMENT_UNAVAILABLE'}
+    return {**result, 'status': 'FAILED' if unjudged or unsupported else 'PASSED',
+            'basis': 'STRUCTURAL+SEMANTIC' if rejected else 'SEMANTIC',
             'statements': judged, 'unsupported': unsupported, 'unjudged': unjudged,
             'extraneous_verdicts': sorted(set(given) - set(raw))}
 
@@ -325,9 +394,10 @@ def evidence_ref(item, packet, handling=()):
                        note=f"{item['evidence_id']} ({use}; {item['applicability']['state']})")
 
 
-def build_severity(proposal, ledger, packet, rubric):
-    """Bind a proposed severity to the rubric; any unsupported element leaves it UNASSESSED."""
-    issues, signals = [], []
+def build_severity(proposal, ledger, packet, rubric, notes=None):
+    """Bind a proposed severity to the rubric; an unsupported signal or recurrence leaves it UNASSESSED. A reporter
+    not backed by their own message is dropped from the lower-bound count and recorded in `notes`."""
+    issues, signals, notes = [], [], [] if notes is None else notes
     inherited = packet.get('preliminary_severity')
     if proposal is None:
         return unassessed_severity(inherited), ['NO_SEVERITY_PROPOSAL']
@@ -345,7 +415,8 @@ def build_severity(proposal, ledger, packet, rubric):
     for r in proposal.affected_reporters:
         item = ledger.get(r.evidence_id)
         if item is None or item['use'] != 'MEMBER_REPORT' or item['author_id'] != r.author_id:
-            issues.append(f'Affected reporter {r.author_id} is not supported by their own cited message.')
+            notes.append(f'Affected reporter {r.author_id} dropped: the cited message is '
+                         + (f"by {item['author_id']}." if item and item.get('author_id') else 'not a member message.'))
         elif r.author_id not in reporters:
             reporters.append(r.author_id)
             reporter_refs.append(evidence_ref(item, packet))
@@ -407,14 +478,14 @@ def _attributed_note(attributed):
             + (f'; {unverified} of {len(attributed)} unverified (Agent 1 NEEDS_REVIEW).' if unverified else '.'))
 
 
-def authorize(draft, grounding, ledger, packet, *, severity, severity_issues, rubric):
+def authorize(draft, grounding, ledger, packet, *, severity, severity_issues, rubric, severity_notes=()):
     """What the card may say: only statements whose final verdict is SUPPORTED. Removes, never adds."""
     verdict = {s['statement_id']: s['verdict'] for s in grounding['statements']}
     ok = lambda sid: verdict.get(sid) == 'SUPPORTED'  # noqa: E731
     claims = [c for c in draft.claims if ok(f'claim:{c.claim_id}')]
     handling = {e for e in established(draft, ledger) if ok(f'announcement:{e}')}
     action = draft.proposed_action if ok('action') else None
-    notes, issues = [], list(severity_issues)
+    notes, issues = list(severity_notes), list(severity_issues)
     if severity.assessment_status == 'ASSESSED':
         p = draft.severity
         failed = [sid for sid in ['severity:rationale', *(f'severity:signal:{s.level}[{s.signal_index}]' for s in p.signals)]
@@ -434,6 +505,7 @@ def authorize(draft, grounding, ledger, packet, *, severity, severity_issues, ru
     withheld = [s for s in grounding['statements'] if s['verdict'] != 'SUPPORTED']
     return {'claims': claims, 'action': action, 'handling': handling, 'severity': severity, 'severity_issues': issues,
             'severity_notes': notes, 'summary': draft.summary if ok('summary') else None, 'resolution': resolution,
+            'open_question_supported': ok('open_question') if draft.open_confirmation == 'OPEN' else None,
             'member_resolution': {m: states.get(m, 'UNKNOWN') for m in packet['member_ids']},
             'withheld': [{'statement_id': s['statement_id'], 'kind': s['kind'], 'text': s['text'], 'verdict': s['verdict'],
                           'rationale': s.get('rationale'), 'blocking': s['blocking']} for s in withheld]}
@@ -443,6 +515,7 @@ def unauthorized(packet, severity_issues=()):
     """Nothing authorized (no draft): the card carries members and obligations only."""
     return {'claims': [], 'action': None, 'handling': set(), 'severity': unassessed_severity(packet.get('preliminary_severity')),
             'severity_issues': list(severity_issues), 'severity_notes': [], 'summary': None, 'resolution': 'UNKNOWN',
+            'open_question_supported': None,
             'member_resolution': {m: 'UNKNOWN' for m in packet['member_ids']}, 'withheld': []}
 
 
@@ -477,7 +550,7 @@ def _reasoning(final, packet):
     parts = ['Grounded findings: ' + ' | '.join(lines) if lines else 'No Advisor finding passed grounding.',
              f"Resolution ({final['resolution']}) from grounded per-member states: "
              + ', '.join(f'{k} x{n}' for k, n in sorted(counts.items())) + '.',
-             _attributed_note(packet['agent1_resolution']), *final['severity_notes']]
+             _attributed_note(packet['agent1_resolution']), *final['severity_notes'], *final.get('action_notes', [])]
     blocked = [w['statement_id'] for w in final['withheld'] if w['kind'] != 'ALTERNATIVE']
     if blocked:
         parts.append(f'Withheld as not established by cited evidence (see diagnostics): {", ".join(blocked)}.')
@@ -503,14 +576,16 @@ def assemble_card(outcome, packet, *, run_id):
         reasons.append(_reason('TEMPORAL_CONFLICT', '; '.join(f"{f['code']}: {f['detail']}"[:300] for f in temporal['findings']
                                                          if f['status'] == 'DETECTED')))
     if grounding['status'] == 'FAILED':
-        detail = [f"{i['claim_id']}: {i['code']}" for i in grounding['structural_issues']] + grounding['action_issues'] + \
-            [f"{s['statement_id']}: {s['verdict']}" for s in grounding['statements']
-             if s['blocking'] and s['statement_id'] in grounding['unsupported'] + grounding['unjudged']]
+        detail = [f"{s['statement_id']}: {s['verdict']}" for s in grounding['statements']
+                  if s['blocking'] and s['statement_id'] in grounding['unsupported'] + grounding['unjudged']]
         reasons.append(_reason('GROUNDING_FAILURE', 'Withheld from this card: ' + ('; '.join(detail) or 'grounding failed.')))
     elif grounding['status'] == 'NOT_RUN':
         reasons.append(_reason('GROUNDING_NOT_RUN', f"Grounding not run: {grounding['basis']}; no Advisor statement is shown as established."))
-    if draft and draft.open_confirmation == 'OPEN':
-        reasons.append(_reason('OPEN_CONFIRMATION', draft.open_confirmation_detail))
+    if draft and draft.open_confirmation == 'OPEN':  # Kept even if unsupported: a model flag is never cleared.
+        reasons.append(_reason('OPEN_CONFIRMATION', draft.open_question + (
+            '' if final['open_question_supported'] else ' (this question was not supported by the evidence; see diagnostics)')))
+    if outcome.get('coverage_issues'):
+        reasons.append(_reason('OTHER', 'Evidence coverage incomplete: ' + '; '.join(outcome['coverage_issues'])[:900]))
     sufficiency = outcome.get('evidence_sufficiency')
     if sufficiency in {'INSUFFICIENT', 'UNSUPPORTED'}:
         gaps = [g.description for g in draft.gaps] if draft else []

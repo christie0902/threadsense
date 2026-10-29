@@ -144,7 +144,9 @@ uv run --locked python scripts/run_agent3_pilot.py --scripted tests/fixtures/age
 `--scripted` is offline: prepared semantic judgments exercise the deterministic checks and
 routing. `--run --write <new-dir>` makes **paid** model calls through CrewAI (bounded: at
 most 4 per topic, 28 per run, one HTTP request per call with no retries; the zero-call default
-prints the model and limits). See
+prints the model and limits). `scripts/run_agent3_model_comparison.py` runs the bounded
+two-model comparison (zero calls by default; `--run --write <new-dir>` is paid, with a $3 cost
+reservation ledger). See
 [Milestone 4](docs/agent3-plan.md#milestone-4-implemented-bounded-advisor-pilot).
 
 Inspect the historical effective handoff without regenerating it:

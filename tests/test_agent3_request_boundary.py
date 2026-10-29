@@ -76,7 +76,10 @@ def test_one_stage_sends_exactly_one_http_request(provider, reply, status, block
     stages('grounding', {'rules': 'Judge each statement.'}, GroundingJudgment)
     [entry] = stages.log
     assert entry['status'] == status and len(provider.requests) == 1
-    assert entry['http_requests'] == {'sent': 1, 'blocked': blocked, 'hosts': ['api.openai.com']}
+    stats = entry['http_requests']
+    assert (stats['sent'], stats['blocked'], stats['hosts']) == (1, blocked, ['api.openai.com']) and len(stats['responses']) == 1
+    if reply is reply_ok:  # Provider usage and returned model are recorded from the response.
+        assert stats['responses'][0]['model'] == 'gpt-4o-mini' and stats['responses'][0]['usage']['total_tokens'] == 8
     body = provider.requests[0]
     assert body['model'] == 'gpt-4o-mini' and body['temperature'] == 0 and 'tools' not in body
     assert body['max_tokens'] == advisor_pilot.MAX_COMPLETION_TOKENS and body['response_format'] == {'type': 'json_object'}
@@ -99,3 +102,78 @@ def test_a_response_that_bypasses_the_guarded_transport_stops_the_run(provider):
     client.llm = SimpleNamespace(call=lambda messages: VALID)
     with pytest.raises(BoundaryNotObserved):
         Stages(client, Budget({}), 'scenario')('draft', {'rules': 'r'}, GroundingJudgment)
+
+
+# ---- Comparison arms: parameters, cost reservation, resource limits (DETERMINISTIC) -----------------------
+
+def comparison_arms():
+    import importlib.util
+    from threadsense.handoff_inputs import ROOT
+    spec = importlib.util.spec_from_file_location('comparison', ROOT/'scripts/run_agent3_model_comparison.py')
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module.ARMS
+
+
+def arm_stage(arm, ledger=None, **overrides):
+    from threadsense.agents.advisor_pilot import live_settings
+    client = CrewAIClient({**live_settings(**comparison_arms()[arm]), **overrides}, ledger=ledger)
+    return Stages(client, Budget({}), 'scenario')
+
+
+def test_each_arm_sends_its_model_parameters(provider):
+    """The installed client sends temperature 0 and max_tokens for the baseline; for the reasoning model no
+    temperature, max_completion_tokens (reasoning included), reasoning_effort medium and the standard service tier."""
+    bodies = {}
+    for arm in comparison_arms():
+        provider.requests.clear()
+        arm_stage(arm)('grounding', {'rules': 'r'}, GroundingJudgment)
+        bodies[arm] = {k: v for k, v in provider.requests[0].items() if k != 'messages'}
+    assert bodies['gpt-4o-mini'] == {'model': 'gpt-4o-mini', 'max_tokens': 4096, 'temperature': 0.0,
+                                     'response_format': {'type': 'json_object'}}
+    assert bodies['gpt-6.1-sol'] == {'model': 'gpt-6.1-sol', 'max_completion_tokens': 16384, 'reasoning_effort': 'medium',
+                                     'service_tier': 'default', 'response_format': {'type': 'json_object'}}
+
+
+def test_cost_is_reserved_before_sending_and_unknown_usage_is_charged_in_full(provider):
+    """Each request reserves its maximum cost (input limit and output limit at list prices) first; a request whose
+    reservation would exceed the budget is not sent; a failed request with no reported usage is charged its full
+    reservation; a successful one is settled at the provider's usage."""
+    from threadsense.agents.advisor_pilot import CostLedger
+    ledger = CostLedger(0.30)  # Room for one gpt-6.1-sol reservation (~$0.204), not two.
+    stages = arm_stage('gpt-6.1-sol', ledger)
+    stages('draft', {'rules': 'r'}, GroundingJudgment)
+    provider.reply = reply_status(500)
+    stages = arm_stage('gpt-6.1-sol', ledger)
+    stages('revision', {'rules': 'r'}, GroundingJudgment)
+    [ok], [failed] = ledger.entries[:1], stages.log
+    assert ok['basis'] == 'provider usage' and ok['charged_usd'] < 0.001
+    assert failed['failure_class'] == 'PROVIDER' and ledger.entries[1]['charged_usd'] == ledger.entries[1]['reserved_usd']
+    sent = len(provider.requests)
+    stages('grounding', {'rules': 'r'}, GroundingJudgment)  # Spent ~$0.204 + ~$0; another reservation would exceed $0.30.
+    assert stages.log[-1]['failure_class'] == 'RESOURCE' and 'CostBudgetExceeded' in stages.log[-1]['error']
+    assert len(provider.requests) == sent and ledger.reserved_usd == 0
+
+
+def test_input_limit_and_output_exhaustion_are_resource_failures(provider):
+    """An input over the per-request limit is refused unsent; finish_reason length and timeouts are RESOURCE
+    failures (one request each), not schema or semantic results."""
+    stages = arm_stage('gpt-4o-mini', input_token_limit=50)
+    stages('draft', {'rules': 'r' * 400}, GroundingJudgment)
+    assert stages.log[0]['failure_class'] == 'RESOURCE' and 'InputLimitExceeded' in stages.log[0]['error'] and not provider.requests
+
+    def truncated(request):
+        body = completion('{"verdicts": [')
+        body['choices'][0]['finish_reason'] = 'length'
+        return httpx.Response(200, json=body, request=request)
+    provider.reply = truncated
+    stages = arm_stage('gpt-6.1-sol')
+    stages('draft', {'rules': 'r'}, GroundingJudgment)
+    assert stages.log[0]['failure_class'] == 'RESOURCE' and 'OutputLimitReached' in stages.log[0]['error']
+
+    def timeout(request):
+        raise httpx.ReadTimeout('offline timeout', request=request)
+    provider.reply = timeout
+    stages = arm_stage('gpt-6.1-sol')
+    stages('draft', {'rules': 'r'}, GroundingJudgment)
+    assert stages.log[0]['failure_class'] == 'RESOURCE' and len(provider.requests) == 2

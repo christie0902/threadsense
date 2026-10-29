@@ -88,8 +88,16 @@ def draft_for(payload, **overrides):
             'evidence_sufficiency': 'SUFFICIENT',
             'proposed_action': {'action_type': 'POST_ALIGNMENT', 'draft_text': 'Post a reminder.', 'support_claim_ids': ['c2']}
             if guide else None,
-            'severity': {'level': 'LOW', 'rationale': 'Contained.'}, 'confidence': 0.9, 'open_confirmation': 'NONE'}
+            'severity': {'level': 'LOW', 'rationale': 'Contained.'}, 'confidence': 0.9, 'open_confirmation': 'NONE',
+            'coverage': [{'need': n, 'status': 'NOT_APPLICABLE', 'note': 'Not needed for this test draft.'}
+                         for n in ('CURRENT_GUIDANCE', 'ANNOUNCEMENTS', 'PRIOR_DECISIONS', 'MEMBER_QUESTIONS')]}
     return {**base, **overrides}
+
+
+def open_q(payload, question='Which rule wins when the two current sources disagree?'):
+    """Open-confirmation fields: a specific question plus the evidence that leaves it open."""
+    return {'open_confirmation': 'OPEN', 'open_question': question,
+            'open_question_evidence_ids': [payload['member_evidence'][0]['evidence_id']]}
 
 
 def supported(payload, **overrides):
@@ -207,8 +215,9 @@ def test_history_mode_still_respects_the_as_of_cutoff(retriever):
 
 # ---- Grounding (DETERMINISTIC structure; MOCKED SEMANTIC verdicts) ----------------------------------
 
-def test_structural_grounding_failures_need_no_semantic_call(retriever, view):
-    """DETERMINISTIC. Incident facts from retrieved sources, unknown IDs and non-verbatim quotes fail before any judgment."""
+def test_structural_failures_reject_only_their_statements(retriever, view):
+    """DETERMINISTIC. Incident facts from retrieved sources, unknown IDs and non-verbatim quotes are rejected before any
+    judgment and never sent; unaffected statements still go to the one semantic call."""
     def bad(payload):
         claims = draft_for(payload)['claims']
         claims[0]['evidence_ids'] = [first(payload, 'CURRENT_GUIDANCE')]  # Incident fact from guidance.
@@ -216,12 +225,16 @@ def test_structural_grounding_failures_need_no_semantic_call(retriever, view):
             {'claim_id': 'c3', 'kind': 'HISTORY', 'text': 'Invented.', 'evidence_ids': ['k:not-in-ledger@1:00000000']},
             {'claim_id': 'c4', 'kind': 'GUIDANCE', 'text': 'Quoted.', 'evidence_ids': [first(payload, 'CURRENT_GUIDANCE')],
              'quote': 'HISTORICAL - NOT CURRENT GUIDANCE'}])
-    client = Fake(draft=bad)
+    sent = []
+    client = Fake(draft=bad, grounding=lambda p: sent.append(p) or supported(p))
     result = run('audio_playback', client, retriever, view)
-    assert client.stages_called() == ['draft']
-    assert result['grounding']['status'] == 'FAILED' and result['grounding']['basis'] == 'STRUCTURAL'
+    assert client.stages_called() == ['draft', 'grounding']
+    assert result['grounding']['status'] == 'FAILED' and result['grounding']['basis'] == 'STRUCTURAL+SEMANTIC'
     assert {i['code'] for i in result['grounding']['structural_issues']} == {
         'INCIDENT_FACT_NEEDS_MEMBER_EVIDENCE', 'UNKNOWN_EVIDENCE', 'QUOTE_NOT_VERBATIM'}
+    assert set(result['grounding']['rejected']) == {'claim:c1', 'claim:c3', 'claim:c4'}
+    judged = {s['statement_id'] for s in sent[0]['statements']}
+    assert not judged & {'claim:c1', 'claim:c3', 'claim:c4'} and {'claim:c2', 'summary', 'action'} <= judged
     assert result['card']['checks']['grounding'] == 'FAILED' and 'GROUNDING_FAILURE' in codes(result)
 
 
@@ -273,11 +286,16 @@ def test_severity_binds_to_member_evidence_and_rubric_text(view):
     for bad in (
             {'signals': [{'level': 'MEDIUM', 'signal_index': 2, 'signal_text': signal, 'support': 's', 'evidence_ids': ['k:guide']}]},
             {'signals': [{'level': 'MEDIUM', 'signal_index': 2, 'signal_text': 'paraphrased signal', 'support': 's', 'evidence_ids': [report]}]},
-            {'signals': [{'level': 'MEDIUM', 'signal_index': 2, 'signal_text': signal, 'support': 's', 'evidence_ids': [report]}],
-             'affected_reporters': [{'author_id': 'U006', 'evidence_id': report}]},  # Someone else's message.
             {'level': 'HIGH'}):  # HIGH without a HIGH signal.
         severity, issues = build_severity(proposal(**bad), ledger, packet, RUBRIC)
         assert issues and severity.assessment_status == 'UNASSESSED' and severity.level == 'UNKNOWN', bad
+    notes = []  # Someone else's message: that reporter is dropped and recorded; the assessment stands.
+    kept, issues = build_severity(proposal(
+        signals=[{'level': 'MEDIUM', 'signal_index': 2, 'signal_text': signal, 'support': 's', 'evidence_ids': [report]}],
+        affected_reporters=[{'author_id': 'U006', 'evidence_id': report}, {'author_id': 'U019', 'evidence_id': report}]),
+        ledger, packet, RUBRIC, notes=notes)
+    assert issues == [] and kept.occurrence.affected_reporters.ids == ['U019']
+    assert notes == ['Affected reporter U006 dropped: the cited message is by U019.']
 
 
 def test_severity_confidence_resolution_and_grounding_stay_separate(retriever, view):
@@ -387,7 +405,7 @@ def test_tot_runs_only_on_flagged_paths_and_never_clears_review(retriever, view)
     assert plain['tot']['status'] == 'NOT_TRIGGERED' and 'tot' not in ordinary.stages_called()
 
     def open_draft(payload):
-        return draft_for(payload, open_confirmation='OPEN', open_confirmation_detail='TL must confirm the case.')
+        return draft_for(payload, **open_q(payload))
     flagged = Fake(draft=open_draft, grounding=supported, tot=tot_response)
     result = run('json_vs_prose', flagged, retriever, view)
     assert flagged.stages_called().count('tot') == 1 and result['tot']['triggers'] == ['OPEN_CONFIRMATION']
@@ -538,7 +556,9 @@ def test_final_grounding_covers_every_card_statement_and_is_the_last_call(retrie
     assert client.stages_called()[-1] == 'grounding'
     assert {'SUMMARY', 'ACTION', 'CLAIM_INCIDENT_FACT', 'CLAIM_GUIDANCE', 'SEVERITY_RATIONALE', 'SEVERITY_SIGNAL',
             'AFFECTED_REPORTER', 'RESOLUTION'} <= {s['kind'] for s in sent[0]['statements']}
-    assert {e['evidence_id'] for e in sent[0]['evidence']} == {i for s in sent[0]['statements'] for i in s['evidence_ids']}
+    # The judge sees every member message and every retrieved source, not only what the draft cited.
+    context = {e['evidence_id'] for e in sent[0]['member_threads'] + sent[0]['retrieved_sources']}
+    assert context == set(result['evidence_ledger']) and context > {i for s in sent[0]['statements'] for i in s['evidence_ids']}
     card = result['card']
     assert result['grounding']['status'] == 'PASSED' and card['summary'] == 'Members report the issue.'
     assert card['severity']['occurrence']['affected_reporters']['ids'] == ['U019', 'U018']
@@ -570,7 +590,7 @@ def test_tot_alternatives_need_their_own_grounding_verdict(retriever, view):
     draft's statements cannot authorize it: unjudged or UNSUPPORTED, it is never preferred, never reaches the card,
     and is kept in diagnostics."""
     def open_draft(payload):
-        return draft_for(payload, open_confirmation='OPEN', open_confirmation_detail='TL must confirm the handling.')
+        return draft_for(payload, **open_q(payload))
 
     def tot(payload):
         member, known = payload['draft']['claims'][0]['evidence_ids'][0], payload['draft']['claims'][-1]['evidence_ids'][0]

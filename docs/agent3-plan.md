@@ -431,6 +431,95 @@ uv run --locked python scripts/run_agent3_pilot.py --run --write data/experiment
 - A failed stage is recorded, not retried; the topic still gets a card. Results are labelled
   `LIVE_MODEL`.
 
+**Live evaluation v1 (2026-10-29, `data/experiments/agent3_pilot_live_v1/`, `LIVE_MODEL`).** One run, no
+prompt or model changes, failures kept. `gpt-4o-mini` (returned `gpt-4o-mini-2024-07-18`); 15 stage calls =
+15 HTTP requests, none blocked or retried; all HTTP 200, `finish_reason: stop`, all schema-valid;
+120,207 input / 10,437 output tokens; 110.6 s model time, 136 s wall. The request guard now also
+records provider usage, returned model and latency per request (instrumentation only).
+Findings, checked against the cited passages:
+- **No research loop.** No draft named a follow-up gap, so 0 follow-ups and 0 revisions; relevant
+  records retrieved in the first pass (Korean batch-10 precedent, Submit engineering handoff, repeated-ending
+  observation review, rejected JSON-first rule not retrieved at all) were not cited.
+- **No actions.** No draft proposed an action; every draft (including the payroll control) set
+  `open_confirmation` OPEN, even where current guidance answers the question (audio: no QN solely
+  because playback fails). ToT therefore ran on 4 of 6 topics; it surfaced grounded options (audio
+  POST_ALIGNMENT, Submit ESCALATE_ENGINEERING) that never reach the card.
+- **Structural checks caught real defects.** PII: a paraphrased FAQ quote and a TL Slack message cited
+  as GUIDANCE; Korean: a paraphrased FAQ quote; repeated ending: an affected reporter (U017) cited
+  with U013's message; JSON: MEDIUM with no rubric signal. In PII and Korean one bad quote voided the
+  whole draft (nothing authorized), withholding accurate claims too.
+- **Grounding judge is lenient.** It passed claims naming people ("Yuki", "Linh") that appear only in
+  Agent 1 summaries, not the cited messages; passed audio HIGH[0] although the cited tutor messages
+  do not state the work cannot be evaluated (the uncited TL reply does); passed a ToT option to
+  "update documentation" on the strength of an instruction that does not call for it; and
+  rationales often restate the statement. Resolution: the model may cite part of a thread, and the
+  judge sees only what is cited (audio member 894091 marked UNRESOLVED and passed, though the
+  uncited TL reply gives the same interim handling as member e76f89, whose PARTIALLY_RESOLVED was
+  withheld).
+- **Cards stay safe but thin.** All six are NEEDS_REVIEW with no action; useful content is the
+  grounded incident summary, member threads and inherited flags; severity survives on audio and
+  Submit (HIGH) only. The payroll control stayed UNSUPPORTED with no card.
+
+**Correction pass (2026-10-29; pilot v3, draft contract v3).** Responses to live v1, with tests in
+`tests/test_agent3_corrections.py` (recorded live-v1 failures replayed from
+`tests/fixtures/agent3_live_v1_failures.json`) and `tests/test_agent3_request_boundary.py`:
+- Open confirmation needs a specific `open_question` and the evidence that leaves it open; it is
+  judged as an `open_question` statement and its flag is never cleared. A NEEDS_REVIEW card can carry
+  a supported action; approval by a team lead is not an open question.
+- The draft fills `coverage` (current guidance, announcements, prior decisions/outcomes, member
+  questions); MISSING ties to a follow-up gap. Unassessed or unresearched needs become an OTHER reason.
+- Validation is per statement: a quote marked VERBATIM must match; PARAPHRASE is judged semantically;
+  a structural failure rejects only that statement and its dependents (an action resting on it), and
+  everything else still goes to the judge. A mis-attributed reporter is dropped, not fatal.
+- The judge sees every message of every member thread (directory names, roles, reactions) and every
+  retrieved source. Names in claims must belong to a cited message's author; CAUSE claims need a
+  record or a team lead/engineer message. Recommendations are judged on premises, applicability and
+  rationale, not literal prescription (the deterministic "applicable source" rule was removed).
+- A clearly preferred, valid ToT candidate becomes the action when the draft has none (`adopt`), then
+  goes through final grounding; flags are untouched.
+- Live client: per-arm settings (reasoning models get no temperature, `max_completion_tokens`,
+  `reasoning_effort`, `service_tier`), a `CostLedger` reserving each request's maximum cost before
+  sending (unknown usage charged in full), a 20,000-token input cap checked before sending, and
+  RESOURCE / SCHEMA / PROVIDER failure classes. Verified offline against the installed LiteLLM 1.105.0.
+
+**Model comparison v1 (2026-10-29, `data/experiments/agent3_model_comparison_v1/`).** A small
+configuration comparison, not a benchmark: 3 cases × 2 arms, one run, no tuning or reruns.
+`scripts/run_agent3_model_comparison.py` (zero calls by default). Same prompts (v3 fingerprints in
+`experiment.json`), schemas, index `4da16f09…`, corpus `c72edb46…`, rubric and initial retrieval
+(verified identical).
+
+| | gpt-4o-mini (temp 0, 4,096 out) | gpt-6.1-sol (medium reasoning, standard tier, 16,384 out) |
+| --- | --- | --- |
+| Requests | 6 (draft + grounding ×3) | 9 (draft, revision or ToT, grounding ×3) |
+| Input / output / reasoning tokens | 57,803 / 4,996 / 0 | 102,026 / 18,621 / 925 |
+| Model time | 44 s | 222 s |
+| Cost (settled at reported usage) | $0.0117 | $0.3902 |
+| Schema / resource failures | 0 / 0 | 0 / 0 |
+| Follow-up research | none | 1 (audio: recovered batch-05 trial approval and outcome) |
+| Actions proposed / reaching a card | 0 / 0 | 3 / 1 (audio POST_ALIGNMENT) |
+| Open confirmation | never set | 2, both specific and judged supported |
+
+Experiment total: 15 requests (cap 24), $0.4019 of $3.00, every HTTP 200 / `finish_reason: stop`.
+
+Reviewed against the cited passages (neither model's grounding verdict is the reference):
+- **Baseline:** no actions, no follow-ups; JSON-vs-prose omitted coverage; audio marked prior decisions
+  NOT_APPLICABLE although members ask about the earlier workaround; repeated ending proposed MEDIUM
+  with no signal. Its judge passed "QN" glossed as "quality notification" (the lexicon defines QN as
+  Quarantine).
+- **Sol:** claims checked against sources were accurate (names, trial figures, calibration outcome
+  2→7 of 8 pairs). Audio: correct four reporters, MIXED resolution matching the threads (both team-lead
+  interim-handling threads PARTIALLY_RESOLVED), useful supported action on a NEEDS_REVIEW card. It
+  wrongly treated an example-collection note as a directive; the judge rejected it.
+- **Supported actions wrongly withheld (pipeline):** in JSON vs prose and repeated ending Sol's
+  POST_ALIGNMENT was rejected only because one premise was a team-lead Slack instruction labelled
+  GUIDANCE (correctly rejected); the all-premises dependency rule then dropped the action although
+  its FAQ/instruction premises were supported.
+- **Severity voided in 5 of 6 cases:** both models cited member "happening again" messages as historical
+  recurrence; the deterministic rule (records only) is right about the evidence but voids the whole
+  assessment instead of setting recurrence to NOT_CHECKED.
+- **ToT:** ran on Sol's two open-confirmation cases; never adopted (the drafts already had actions);
+  repeated-ending options were all PARTIALLY_SUPPORTED, so none was presented as grounded.
+
 **Needs a real model evaluation (not shown by these tests):**
 - whether the Advisor names the right gaps and follow-up queries unprompted;
 - whether it keeps incident facts and guidance apart and cites precisely;

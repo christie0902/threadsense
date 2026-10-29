@@ -20,6 +20,7 @@ from hashlib import sha256
 import json
 import os
 from pathlib import Path
+import time
 from urllib.parse import urlparse
 
 from pydantic import ValidationError
@@ -29,7 +30,8 @@ from threadsense.agents.advice_contracts import ModelReviewItem, stable_id
 from threadsense.agents.advice_inputs import coverage, load_effective_view, review_items_from_view
 from threadsense.agents.advisor_checks import (
     action_issues, agent1_resolution, announcement_issues, assemble_card, authorize, build_severity, claim_issues,
-    established, grounding_result, inherited_flags, statements, structural_issues, temporal_check, unauthorized,
+    coverage_issues, established, grounding_result, inherited_flags, rejected_statements, sendable, statements,
+    structural_issues, temporal_check, unauthorized,
 )
 from threadsense.agents.advisor_contracts import AdvisorDraft, GroundingJudgment
 from threadsense.agents.advisor_evidence import Budget, BudgetExhausted, ResearchTools, member_messages, open_retriever
@@ -37,7 +39,7 @@ from threadsense.handoff_inputs import ROOT, file_hash, read_json
 from threadsense.retrieval.config import DEFAULTS
 from threadsense.severity_rubric import load_rubric
 
-PILOT_VERSION = 'agent3-advisor-pilot-v2'
+PILOT_VERSION = 'agent3-advisor-pilot-v3'
 SCENARIOS = ROOT/'data/evaluation/agent3_pilot_scenarios.json'
 HANDOFF = ROOT/'data/processed/agent2_handoff_v2_projection'
 # Per topic: draft + one revision + one ToT + final grounding = 4 model calls at most, the last always
@@ -46,55 +48,71 @@ HANDOFF = ROOT/'data/processed/agent2_handoff_v2_projection'
 BUDGET = {'model_calls_per_topic': 4, 'model_calls_total': 28, 'retrieval_calls_per_topic': 6, 'retrieval_calls_total': 42}
 MAX_FOLLOW_UPS = 3
 TOP_K = 5
-# Live request limits (CrewAIClient): one HTTP request per stage, no SDK retries, bounded output.
+# Live request limits (CrewAIClient): one HTTP request per stage, no SDK retries, bounded input and output.
 MAX_COMPLETION_TOKENS = 4096
 REQUEST_TIMEOUT_SECONDS = 120
 HTTP_REQUESTS_PER_STAGE = 1
+INPUT_TOKEN_LIMIT = 20_000  # Checked before sending (o200k estimate); the provider's count is recorded after.
 # Set before CrewAI/LiteLLM import: no telemetry export, no remote model-price download.
 QUIET_ENV = {'CREWAI_DISABLE_TELEMETRY': 'true', 'OTEL_SDK_DISABLED': 'true', 'LITELLM_LOCAL_MODEL_COST_MAP': 'True'}
 
 DRAFT_RULES = (
     'You are the ThreadSense Advisor preparing one topic for a team lead\'s morning brief. Use only the evidence '
-    'provided and cite it by evidence_id. Member messages (origin member_message) are the only evidence for incident '
-    'facts: what happened and who reported being affected. Retrieved sources support guidance and history according to '
-    'their "use": CURRENT_GUIDANCE may support what applies now; PRIOR_DECISION and HISTORY_ONLY explain earlier '
-    'decisions or old rules and must not be presented as current guidance; UNRESOLVED_VERSION must not be resolved by '
-    'you. ANNOUNCEMENT items include routine reminders, schedules and example-collection notes: before a GUIDANCE claim '
-    'relies on one, list it in announcement_assessments as relevant (same project, batch and problem) and directive (it '
-    'tells people what to do), quoting the directing sentence verbatim; otherwise mark it not relevant or not directive. '
-    'Read each excerpt with its status line, dates, scope, authority and recorded states. A nonempty result list is not '
-    'sufficient evidence: in gaps, name any support your proposed action still lacks (an applicable instruction, current '
-    'handling, the outcome of a relevant prior decision, recurrence, supersession or conflict, expert routing). Give a '
-    'follow_up query (source_types; version_mode history for past decisions, recurrence or supersession) only when '
-    'retrieval could fill the gap. Do not invent causes, outcomes, approvals, counts or fixes. Severity: apply the rubric '
-    'unchanged; MEDIUM or HIGH must cite a rubric signal by level, index and exact text, supported by member messages; '
-    'affected_reporters lists only people whose own message reports being affected, not everyone who replied. '
-    'Resolution: give each member a state (UNRESOLVED, PARTIALLY_RESOLVED, RESOLVED_IN_THREAD or UNKNOWN) from that '
-    'member\'s own thread messages, citing them; Agent 1\'s resolution label is an attributed input, often unverified, '
-    'and is not evidence; one member\'s resolution says nothing about another member. UPDATE_DOCUMENTATION and '
-    'UPDATE_FAQ name targets (evidence_id, section, ADD for a missing entry, CORRECT or REMOVE for stale wording); target '
-    'only what the evidence shows is missing or stale, never a source the evidence shows is already updated. Severity, '
-    'confidence, resolution and evidence sufficiency are separate judgments. Set open_confirmation OPEN when the recorded '
-    'guidance or decisions leave the question for a team lead to confirm. List source_conflicts between evidence items '
-    'that disagree. If no evidence addresses the topic, set evidence_sufficiency UNSUPPORTED and propose no operational '
-    'action. Upstream review flags stay open; you cannot clear them. Everything that reaches the card is checked '
-    'statement by statement against the evidence it cites: the summary, each claim, the action, the severity rationale '
-    'and signals, each affected reporter, each member resolution and each announcement you establish.')
+    'provided and cite it by evidence_id. Member messages (origin member_message, with author_name from the user '
+    'directory, author_role and reactions) are the only evidence for what members report. INCIDENT_FACT claims state '
+    'what members report ("Yuki reports ..."), never a verified cause; a CAUSE claim needs a retrieved record or a team '
+    'lead or engineer message that verifies it. Name a person only when you cite a message they wrote. Retrieved sources '
+    'support guidance and history according to their "use": CURRENT_GUIDANCE may support what applies now; '
+    'PRIOR_DECISION and HISTORY_ONLY explain earlier decisions, outcomes or old rules and must not be presented as current '
+    'guidance; UNRESOLVED_VERSION must not be resolved by you. ANNOUNCEMENT items include routine reminders, schedules '
+    'and example-collection notes: before a GUIDANCE claim relies on one, list it in announcement_assessments as relevant '
+    '(same project, batch and problem) and directive (it tells people what to do), quoting the directing sentence '
+    'verbatim; otherwise mark it not relevant or not directive. Read each excerpt with its status line, dates, scope, '
+    'authority and recorded states. A quote with quote_kind VERBATIM must be copied exactly from one cited excerpt; '
+    'otherwise set quote_kind PARAPHRASE. '
+    'Coverage: before advising, fill coverage for CURRENT_GUIDANCE, ANNOUNCEMENTS, PRIOR_DECISIONS (earlier decisions, '
+    'trials and their outcomes) and MEMBER_QUESTIONS (what members asked, including references to earlier workarounds or '
+    'discussions). COVERED cites the evidence; NOT_APPLICABLE says why none is needed; MISSING names a gap whose '
+    'follow_up query (source_types; version_mode history for past decisions, outcomes, recurrence or supersession) '
+    'could find it. Request follow-ups only for support your advice actually needs; a nonempty result list is not '
+    'sufficient evidence. Do not invent causes, outcomes, approvals, counts or fixes. '
+    'Action: when the evidence supports a concrete step (post or align on current guidance, escalate, route to a '
+    'specialist, update documentation), propose it with support_claim_ids naming its premises; it may be proposed even '
+    'though the card will need team lead review. That a team lead approves or executes the action is not an open '
+    'question. Set open_confirmation OPEN only for a specific question that the cited guidance and decisions leave '
+    'unsettled, state it in open_question, and cite in open_question_evidence_ids the evidence showing it is unsettled; '
+    'otherwise NONE. Severity: apply the rubric unchanged; MEDIUM or HIGH must cite a rubric signal by level, index and '
+    'exact text, supported by member messages; affected_reporters lists only people whose own message (cite that '
+    'message) reports being affected, not everyone who replied. Resolution: give each member a state (UNRESOLVED, '
+    'PARTIALLY_RESOLVED, RESOLVED_IN_THREAD or UNKNOWN) from that member\'s own complete thread, citing the messages '
+    'that show it; Agent 1\'s resolution label is an attributed input, often unverified, and is not evidence; one '
+    'member\'s resolution says nothing about another member. UPDATE_DOCUMENTATION and UPDATE_FAQ name targets '
+    '(evidence_id, section, ADD for a missing entry, CORRECT or REMOVE for stale wording); target only what the evidence '
+    'shows is missing or stale. Severity, confidence, resolution and evidence sufficiency are separate judgments. List '
+    'source_conflicts between evidence items that disagree. If no evidence addresses the topic, set evidence_sufficiency '
+    'UNSUPPORTED and propose no operational action. Upstream review flags stay open; you cannot clear them. Everything '
+    'that reaches the card is checked statement by statement against the full topic context.')
 REVISION_RULES = (
     'Revise your previous draft once, using the follow-up retrieval results now included in the evidence. Keep every '
     'claim cited; weaken or remove claims the evidence does not support. No further retrieval will run: leave remaining '
     'gaps with follow_up null. ' + DRAFT_RULES)
 GROUNDING_RULES = (
-    'Judge each statement only against the excerpts of the evidence it cites (evidence_ids); that a citation exists is '
-    'not support. SUPPORTED only if the cited excerpts state or directly entail the whole statement; PARTIALLY_SUPPORTED '
-    'if any material part is missing; UNSUPPORTED otherwise. A status line marking an excerpt historical, unresolved or a '
-    'prior record means it cannot support a statement about what applies now. By kind: SUMMARY and SEVERITY_RATIONALE '
-    'must follow from the cited excerpts with no added cause, count or outcome; ACTION must follow from its cited support, '
-    'and its targets must be what the evidence shows is stale or missing; AFFECTED_REPORTER needs that person\'s own '
-    'message reporting that they are affected; RESOLUTION needs the thread messages to show that state; '
-    'ANNOUNCEMENT_HANDLING needs the announcement to give that directive and to apply to this topic\'s project, batch and '
-    'problem (a routine reminder, schedule or example-collection note does not); ALTERNATIVE is a candidate action: judge '
-    'whether its cited excerpts support it. Return exactly one verdict for every statement_id.')
+    'Judge each statement against the evidence it cites, read within the full context provided: every message of every '
+    'member thread (with author names, roles and reactions) and every retrieved source for this topic. Citing a source '
+    'is not support. A statement is SUPPORTED only if its cited evidence states or directly entails it and nothing in '
+    'the context contradicts it; PARTIALLY_SUPPORTED if a material part is missing or the context qualifies it; '
+    'UNSUPPORTED otherwise. A status line marking an excerpt historical, unresolved or a prior record means it cannot '
+    'support what applies now. By kind: CLAIM_INCIDENT_FACT is a report of what members say, not a verified cause; '
+    'CLAIM_CAUSE needs verification in the cited evidence; a Verbatim quote must match its source, a Paraphrase must '
+    'preserve the meaning; names must match the cited messages\' authors. SUMMARY and SEVERITY_RATIONALE must follow '
+    'from the evidence with no added cause, count or outcome. ACTION and ALTERNATIVE are recommendations: judge whether '
+    'their premises are supported, whether the action applies to this topic and whether the rationale follows; a source '
+    'need not literally prescribe the action. AFFECTED_REPORTER needs that person\'s own message reporting that they are '
+    'affected. RESOLUTION is judged against the member\'s complete thread, including messages the statement did not '
+    'cite. ANNOUNCEMENT_HANDLING needs the announcement to give that directive for this topic\'s project, batch and '
+    'problem (a routine reminder, schedule or example-collection note does not). OPEN_QUESTION is SUPPORTED only if the '
+    'guidance and decisions in the context really leave that specific question unsettled. Return exactly one verdict '
+    'for every statement_id.')
 
 
 class ScenarioError(ValueError):
@@ -109,12 +127,74 @@ class BoundaryNotObserved(RuntimeError):
     """A model call returned without any request passing the guarded transport; call accounting is unverified."""
 
 
+class InputLimitExceeded(RuntimeError):
+    """The request would exceed the per-request input-token limit; it was not sent."""
+
+
+class OutputLimitReached(RuntimeError):
+    """The provider stopped at the output-token limit (finish_reason length); the reply is not used."""
+
+
+class CostBudgetExceeded(RuntimeError):
+    """Reserving this request's maximum cost would exceed the application budget; it was not sent."""
+
+
+class CostLedger:
+    """Application budget across a whole experiment. Before each request its conservative maximum cost (input-token
+    limit and output limit at list prices) is reserved; after it, the reservation is settled at the provider-reported
+    usage, or kept in full when usage is unknown (failed request)."""
+
+    def __init__(self, limit_usd):
+        self.limit_usd, self.spent_usd, self.reserved_usd, self.entries = limit_usd, 0.0, 0.0, []
+
+    def reserve(self, prices, input_tokens, output_tokens, label):
+        maximum = input_tokens * prices['input'] + output_tokens * prices['output']
+        if self.spent_usd + self.reserved_usd + maximum > self.limit_usd + 1e-12:
+            raise CostBudgetExceeded(f'{label}: reserving ${maximum:.4f} would exceed ${self.limit_usd:.2f} '
+                                     f'(spent ${self.spent_usd:.4f}, reserved ${self.reserved_usd:.4f})')
+        self.reserved_usd += maximum
+        return maximum
+
+    def settle(self, reservation, prices, usage, label):
+        if usage:
+            cached = (usage.get('prompt_tokens_details') or {}).get('cached_tokens') or 0
+            cost = ((usage.get('prompt_tokens', 0) - cached) * prices['input'] + cached * prices.get('cached_input', prices['input'])
+                    + usage.get('completion_tokens', 0) * prices['output'])
+            basis = 'provider usage'
+        else:
+            cost, basis = reservation, 'usage unknown: full reservation charged'
+        self.reserved_usd -= reservation
+        self.spent_usd += cost
+        self.entries.append({'label': label, 'reserved_usd': round(reservation, 6), 'charged_usd': round(cost, 6), 'basis': basis})
+        return cost
+
+    def summary(self):
+        return {'limit_usd': self.limit_usd, 'spent_usd': round(self.spent_usd, 6), 'reserved_usd': round(self.reserved_usd, 6),
+                'requests': self.entries}
+
+
+def model_prices(model):
+    """List prices per token from LiteLLM's bundled (local) cost map; never fetched remotely."""
+    import litellm
+    entry = litellm.model_cost.get(model.split('/', 1)[-1]) or litellm.model_cost.get(model)
+    if not entry or entry.get('input_cost_per_token') is None:
+        raise ValueError(f'No local price for {model}; refusing to run without a cost bound.')
+    return {'input': entry['input_cost_per_token'], 'output': entry['output_cost_per_token'],
+            'cached_input': entry.get('cache_read_input_token_cost') or entry['input_cost_per_token'],
+            'source': f"litellm {__import__('importlib.metadata').metadata.version('litellm')} local model_cost map"}
+
+
+def estimate_tokens(text):
+    import tiktoken
+    return len(tiktoken.get_encoding('o200k_base').encode(text))
+
+
 class RequestGuard:
     """Count HTTP requests at the httpx transport for one stage and refuse any beyond `limit` before it is
     sent, whichever layer (CrewAI rate-limit retry, LiteLLM, provider SDK) attempts it. Single-threaded use."""
 
     def __init__(self, limit=HTTP_REQUESTS_PER_STAGE):
-        self.limit, self.sent, self.blocked = limit, [], []
+        self.limit, self.sent, self.blocked, self.responses = limit, [], [], []
 
     def __enter__(self):
         import httpx
@@ -125,7 +205,22 @@ class RequestGuard:
                 guard.blocked.append(str(request.url))
                 raise RequestCeilingExceeded(f'{guard.limit} HTTP request(s) per stage; {request.url} was not sent')
             guard.sent.append(str(request.url))
-            return guard._original(transport, request)
+            started = time.perf_counter()
+            try:
+                response = guard._original(transport, request)
+            except Exception as error:
+                guard.responses.append({'error': type(error).__name__, 'seconds': round(time.perf_counter() - started, 3)})
+                raise
+            response.read()  # Non-streaming: keep the body for the SDK and record the provider's usage and model.
+            record = {'status_code': response.status_code, 'seconds': round(time.perf_counter() - started, 3)}
+            try:
+                body = json.loads(response.content)
+                record.update(model=body.get('model'), usage=body.get('usage'),
+                              finish_reasons=[c.get('finish_reason') for c in body.get('choices') or []])
+            except (ValueError, AttributeError):
+                pass
+            guard.responses.append(record)
+            return response
         httpx.HTTPTransport.handle_request = handle
         return self
 
@@ -135,7 +230,8 @@ class RequestGuard:
         return False
 
     def stats(self):
-        return {'sent': len(self.sent), 'blocked': len(self.blocked), 'hosts': sorted({urlparse(u).netloc for u in self.sent})}
+        return {'sent': len(self.sent), 'blocked': len(self.blocked), 'hosts': sorted({urlparse(u).netloc for u in self.sent}),
+                'responses': self.responses}
 
 
 class ScriptedClient:
@@ -150,52 +246,92 @@ class ScriptedClient:
         return json.dumps(self.responses[payload['scenario_id']][stage], ensure_ascii=False)
 
 
-def live_settings():
-    """The configured live model and request limits (reads .env for the model name; never returns a key)."""
+def live_settings(model=None, *, temperature=0, max_completion_tokens=MAX_COMPLETION_TOKENS, reasoning_effort=None,
+                  service_tier=None, input_token_limit=INPUT_TOKEN_LIMIT):
+    """The live model and request limits (reads .env for the default model name; never returns a key).
+    temperature None means the parameter is not sent (reasoning models)."""
     from threadsense.config import get_model_settings
-    model, key_name = get_model_settings()
+    default, key_name = get_model_settings()
+    model = model or default
+    key_name = 'OPENROUTER_API_KEY' if model.startswith('openrouter/') else key_name
     return {'model': model, 'api_key_variable': key_name, 'interface': 'crewai.LLM.call via LiteLLM (no Agent/Crew loop, no tools)',
-            'temperature': 0, 'max_completion_tokens_per_call': MAX_COMPLETION_TOKENS, 'timeout_seconds': REQUEST_TIMEOUT_SECONDS,
-            'response_format': 'json_object', 'provider_sdk_max_retries': 0,
-            'http_requests_per_stage': HTTP_REQUESTS_PER_STAGE, 'quiet_env': QUIET_ENV}
+            'temperature': temperature, 'reasoning_effort': reasoning_effort, 'service_tier': service_tier,
+            'max_completion_tokens_per_call': max_completion_tokens, 'input_token_limit': input_token_limit,
+            'timeout_seconds': REQUEST_TIMEOUT_SECONDS, 'response_format': 'json_object', 'provider_sdk_max_retries': 0,
+            'model_fallback': None, 'http_requests_per_stage': HTTP_REQUESTS_PER_STAGE, 'quiet_env': QUIET_ENV}
 
 
 class CrewAIClient:
-    """Live model through CrewAI's LLM: one message, one HTTP request, no retries, no tools. Paid.
+    """Live model through CrewAI's LLM: one message, one HTTP request, no retries, no tools, no fallback. Paid.
 
     Measured offline (tests/test_agent3_request_boundary.py): the Agent/Crew executor sends a second
     request when output is not a final answer, the OpenAI SDK retries 5xx/connection errors twice by
     default, and CrewAI wraps every LLM.call in a fixed 3-attempt rate-limit retry. Hence a direct
-    LLM.call, max_retries=0, and RequestGuard, which blocks any second request before it is sent."""
+    LLM.call, max_retries=0, and RequestGuard, which blocks any second request before it is sent.
+    With a CostLedger, each request first reserves its maximum cost; an input over the limit is not sent."""
     label = 'LIVE_MODEL'
 
-    def __init__(self):
+    def __init__(self, settings=None, ledger=None):
         for name, value in QUIET_ENV.items():
             os.environ.setdefault(name, value)
         from crewai import LLM
         from threadsense.config import get_api_key
-        self.settings = live_settings()
-        model = self.settings['model']
-        self.llm = LLM(model=model, is_litellm=True,
-                       base_url='https://openrouter.ai/api/v1' if model.startswith('openrouter/') else 'https://api.openai.com/v1',
-                       api_key=get_api_key(self.settings['api_key_variable']), temperature=0,
-                       max_tokens=MAX_COMPLETION_TOKENS, timeout=REQUEST_TIMEOUT_SECONDS, max_retries=0,
-                       response_format={'type': 'json_object'})
-        self.fingerprint, self.last_requests = model, None
+        self.settings, self.ledger = settings or live_settings(), ledger
+        s = self.settings
+        model = s['model']
+        self.prices = model_prices(model) if ledger is not None else None
+        params = {'model': model, 'is_litellm': True, 'api_key': get_api_key(s['api_key_variable']),
+                  'base_url': 'https://openrouter.ai/api/v1' if model.startswith('openrouter/') else 'https://api.openai.com/v1',
+                  'timeout': REQUEST_TIMEOUT_SECONDS, 'max_retries': 0, 'response_format': {'type': 'json_object'}}
+        if s.get('reasoning_effort'):
+            params.update(reasoning_effort=s['reasoning_effort'], max_completion_tokens=s['max_completion_tokens_per_call'])
+        else:
+            params['max_tokens'] = s['max_completion_tokens_per_call']
+        if s.get('temperature') is not None:
+            params['temperature'] = s['temperature']
+        if s.get('service_tier'):
+            params['service_tier'] = s['service_tier']
+        self.llm = LLM(**params)
+        self.fingerprint, self.last_requests, self.last_input_estimate = model, None, None
 
     def complete(self, stage, payload, schema):
         messages = [{'role': 'system', 'content': 'You are the ThreadSense Advisor. You advise annotation team leads and '
                                                   'never go beyond the evidence provided. Reply with one JSON object.'},
                     {'role': 'user', 'content': task_description(payload, schema)}]
+        self.last_requests = None
+        estimate = self.last_input_estimate = sum(estimate_tokens(m['content']) + 8 for m in messages)
+        limit = self.settings.get('input_token_limit')
+        if limit and estimate > limit:
+            raise InputLimitExceeded(f'{estimate} estimated input tokens > {limit}; not sent')
+        label = f"{payload.get('scenario_id')}:{stage}"
+        reservation = self.ledger.reserve(self.prices, limit or estimate, self.settings['max_completion_tokens_per_call'],
+                                          label) if self.ledger is not None else None
         guard = RequestGuard()
         try:
             with guard:
                 raw = self.llm.call(messages)
         finally:
             self.last_requests = guard.stats()
+            if reservation is not None:
+                usage = next((r.get('usage') for r in guard.responses if r.get('usage')), None)
+                self.last_requests['charged_usd'] = self.ledger.settle(reservation, self.prices, usage, label)
         if not guard.sent:
             raise BoundaryNotObserved('The model response arrived without a request through the guarded transport.')
+        if any('length' in (r.get('finish_reasons') or []) for r in guard.responses):
+            raise OutputLimitReached(f"finish_reason length at {self.settings['max_completion_tokens_per_call']} output tokens")
         return str(raw)
+
+
+def failure_class(error):
+    """RESOURCE failures (input/output limit, budget, timeout, context window) are not semantic-quality results."""
+    if isinstance(error, (InputLimitExceeded, OutputLimitReached, CostBudgetExceeded)):
+        return 'RESOURCE'
+    text = f'{type(error).__name__} {error}'.lower()
+    if 'timeout' in text or 'timed out' in text or 'context_length' in text or 'contextwindow' in text or 'maximum context' in text:
+        return 'RESOURCE'
+    if isinstance(error, (ValueError, ValidationError)):  # json.JSONDecodeError and pydantic errors
+        return 'SCHEMA'
+    return 'PROVIDER'
 
 
 def task_description(payload, schema):
@@ -239,14 +375,17 @@ class Stages:
         except BoundaryNotObserved:
             raise  # Unverifiable call accounting stops the run.
         except Exception as error:  # Any provider, parsing or validation error: record it, never retry.
-            self.log.append({**entry, **self._requests(), 'status': 'FAILED', 'error': f'{type(error).__name__}: {str(error)[:400]}'})
+            self.log.append({**entry, **self._requests(), 'status': 'FAILED', 'failure_class': failure_class(error),
+                             'error': f'{type(error).__name__}: {str(error)[:400]}'})
             return None
         self.log.append({**entry, **self._requests(), 'status': 'OK'})
         return value
 
     def _requests(self):
         stats = getattr(self.client, 'last_requests', None)
-        return {'http_requests': stats} if stats is not None else {}
+        estimate = getattr(self.client, 'last_input_estimate', None)
+        return {**({'http_requests': stats} if stats is not None else {}),
+                **({'input_tokens_estimate': estimate} if estimate is not None else {})}
 
 
 def topic_packet(view, scenario):
@@ -328,23 +467,25 @@ def _research_payload(rules, topic, ledger, tools, rubric, interpretations):
             'limits': {'follow_up_queries': MAX_FOLLOW_UPS}}
 
 
-def grounding_payload(stmts, ledger, topic):
-    """Statements that cite evidence, plus each cited item once (statements citing nothing are never sent)."""
-    sent = [s for s in stmts if s['evidence_ids']]
-    cited = dict.fromkeys(e for s in sent for e in s['evidence_ids'])
+def grounding_payload(stmts, ledger, topic, rejected=None):
+    """Sendable statements plus the full topic context: every message of every member thread (names, roles,
+    reactions) and every retrieved source, so the draft's citations do not set the judge's evidence window."""
+    sent = sendable(stmts, rejected or {})
+    members, retrieved = _split(ledger)
     return {'rules': GROUNDING_RULES, 'topic': topic,
             'statements': [{k: s[k] for k in ('statement_id', 'kind', 'text', 'evidence_ids')} for s in sent],
-            'evidence': [ledger[e] for e in cited]}
+            'member_threads': members, 'retrieved_sources': retrieved}
 
 
 def _final_grounding(call, draft, ledger, topic, stmts, structural, actions):
-    if structural or actions:
-        return grounding_result(draft, ledger, stmts, structural=structural, actions=actions)
-    if not any(s['evidence_ids'] for s in stmts):
-        return grounding_result(draft, ledger, stmts, reason='NOTHING_CITED')
-    judgment = call('grounding', grounding_payload(stmts, ledger, topic), GroundingJudgment)
-    return grounding_result(draft, ledger, stmts, judgment=judgment, ran=judgment is not None,
-                            reason='GROUNDING_CALL_FAILED_OR_OVER_BUDGET')
+    """Structurally rejected statements are withheld; everything else still goes to the one semantic call."""
+    rejected = rejected_statements(draft, stmts, structural, actions)
+    if not sendable(stmts, rejected):
+        return grounding_result(draft, ledger, stmts, structural=structural, actions=actions,
+                                reason='NOTHING_CITED' if not rejected else 'ALL_STATEMENTS_REJECTED')
+    judgment = call('grounding', grounding_payload(stmts, ledger, topic, rejected), GroundingJudgment)
+    return grounding_result(draft, ledger, stmts, structural=structural, actions=actions, judgment=judgment,
+                            ran=judgment is not None, reason='GROUNDING_CALL_FAILED_OR_OVER_BUDGET')
 
 
 def _review_items(packet, card):
@@ -394,24 +535,30 @@ def advise(scenario, *, view, retriever, client, budget, rubric, run_id, as_of, 
             draft = revised or draft
         unfilled = [g.model_dump() for g in draft.gaps]
     flags = inherited_flags(packet['record'], packet['member_ids'], projection_gap=packet['projection_gap'])
-    tot, diagnostics, temporal_pre = {'status': 'NOT_TRIGGERED', 'triggers': []}, [], None
+    tot, diagnostics, temporal_pre, covered_issues, action_notes = {'status': 'NOT_TRIGGERED', 'triggers': []}, [], None, [], []
     if draft is None:
         grounding, temporal, final = {**NOT_RUN, 'status': 'NOT_RUN', 'basis': 'NO_DRAFT'}, None, unauthorized(packet)
     else:
-        structural, actions = structural_issues(draft, ledger, set(packet['member_ids'])), action_issues(draft, ledger)
-        severity, severity_issues = build_severity(draft.severity, ledger, packet, rubric)
+        structural = structural_issues(draft, ledger, set(packet['member_ids']))
+        covered_issues = coverage_issues(draft, ledger)
+        severity_notes = []
+        severity, severity_issues = build_severity(draft.severity, ledger, packet, rubric, notes=severity_notes)
         temporal_pre = temporal_check(draft, ledger)
         tot = advisor_tot.compare(call, draft=draft, temporal=temporal_pre, ledger=ledger, handling=established(draft, ledger),
-                                  skip='Structural grounding failed; alternatives could not be grounded.'
-                                  if structural or actions else None, payload={
+                                  skip=None, payload={
             'topic': topic, 'draft': draft.model_dump(), 'evidence': list(ledger.values()),
             'proposed_severity': {'level': severity.level, 'assessment_status': severity.assessment_status,
                                   'note': 'Bound to the rubric; not yet grounded.'},
             'rubric_levels': sorted(rubric['levels'])})
+        draft, adopted = advisor_tot.adopt(tot, draft)  # A selected candidate may become the action; flags untouched.
+        action_notes = [adopted] if adopted else []
+        actions = action_issues(draft, ledger)
         stmts = statements(draft, ledger, severity=severity, alternatives=advisor_tot.alternatives(tot))
         grounding = _final_grounding(call, draft, ledger, topic, stmts, structural, actions)
         tot = advisor_tot.finalize(tot, grounding)
-        final = authorize(draft, grounding, ledger, packet, severity=severity, severity_issues=severity_issues, rubric=rubric)
+        final = authorize(draft, grounding, ledger, packet, severity=severity, severity_issues=severity_issues, rubric=rubric,
+                          severity_notes=severity_notes)
+        final['action_notes'] = action_notes
         # Recorded supersession is credited only to announcements the final grounding verified.
         temporal = temporal_check(draft, ledger, final['handling'])
         diagnostics += [{'code': 'ALTERNATIVE_NOT_GROUNDED' if w['kind'] == 'ALTERNATIVE' else 'WITHHELD_STATEMENT', **w}
@@ -421,6 +568,7 @@ def advise(scenario, *, view, retriever, client, budget, rubric, run_id, as_of, 
             diagnostics.append({'code': 'UNSUPPORTED_ACTION_NOT_CARRIED', 'action': draft.proposed_action.model_dump()})
     outcome = {'draft': draft, 'ledger': ledger, 'inherited_flags': flags, 'grounding': grounding, 'temporal': temporal,
                'final': final, 'evidence_sufficiency': draft.evidence_sufficiency if draft else None,
+               'coverage_issues': covered_issues,
                'failures': [e for e in call.log if e['status'] != 'OK']}
     try:
         card = assemble_card(outcome, packet, run_id=run_id)
@@ -445,7 +593,9 @@ def advise(scenario, *, view, retriever, client, budget, rubric, run_id, as_of, 
                          'notes': final['severity_notes'], 'proposal': draft.severity.model_dump() if draft else None},
             'resolution': {'topic': final['resolution'], 'members': final['member_resolution'],
                            'agent1_attributed': packet['agent1_resolution']},
-            'established_handling': sorted(final['handling']),
+            'established_handling': sorted(final['handling']), 'coverage_issues': covered_issues,
+            'action_source': 'TOT' if action_notes and action_notes[0].startswith('Action selected') else
+            'DRAFT' if draft and draft.proposed_action else None, 'action_notes': action_notes,
             'tot': tot, 'evidence_ledger': ledger, 'card': card.model_dump(mode='json'),
             'review_items': [i.model_dump(mode='json') for i in items], 'coverage': covered,
             'budget': {'consumed': budget.topic_usage(), 'limits': BUDGET}, 'diagnostics': diagnostics}
@@ -504,6 +654,7 @@ def run_pilot(*, client, retriever=None, view=None, scenarios=None, budget_limit
         'pilot_version': PILOT_VERSION, 'run_id': run_id, 'semantic_judgments': client.label,
         'semantic_client_fingerprint': getattr(client, 'fingerprint', None),
         'live_request_settings': getattr(client, 'settings', None),
+        'prompts': prompt_fingerprints(),
         'handoff': {'run': Path(handoff).resolve().relative_to(ROOT).as_posix() if Path(handoff).resolve().is_relative_to(ROOT)
                     else str(handoff), 'canonical_sha256': view['canonical_sha256']},
         'index': {k: retriever.manifest[k] for k in ('build_fingerprint', 'chunking_version', 'corpus_fingerprint', 'cutoff')},
@@ -519,6 +670,19 @@ def run_pilot(*, client, retriever=None, view=None, scenarios=None, budget_limit
                        'card_line': (r.get('card') or {}).get('card_line'), 'control_outcome': r.get('control_outcome')}
                       for r in results]}
     return {'manifest': manifest, 'results': results}
+
+
+def prompt_fingerprints():
+    """SHA-256 of every rule text and output schema the model sees."""
+    from threadsense.agents.advisor_contracts import ToTComparison
+    digest = lambda text: sha256(text.encode('utf-8')).hexdigest()  # noqa: E731
+    return {'draft_rules': digest(DRAFT_RULES), 'revision_rules': digest(REVISION_RULES), 'grounding_rules': digest(GROUNDING_RULES),
+            'tot_rules': digest(advisor_tot.RULES),
+            'schemas': {s.__name__: digest(json.dumps(s.model_json_schema(), sort_keys=True))
+                        for s in (AdvisorDraft, GroundingJudgment, ToTComparison)},
+            'contract_versions': {'draft': AdvisorDraft.model_fields['contract_version'].default,
+                                  'grounding': GroundingJudgment.model_fields['contract_version'].default,
+                                  'tot': ToTComparison.model_fields['contract_version'].default}}
 
 
 def _tokens(text):

@@ -74,6 +74,32 @@ def compare(call, *, draft, temporal, ledger, payload, handling=frozenset(), ski
             'rationale': comparison.rationale}
 
 
+def adopt(tot, draft):
+    """A selected candidate may become the proposed action before final grounding: only when the draft has no
+    operational action, the model preferred one candidate (not a close call), it is valid, operational, has no
+    applicability issue, and shares evidence with at least one draft claim (its premises). The final grounding then
+    judges it like any action. Review reasons are untouched. Returns (draft, note or None)."""
+    from threadsense.agents.advisor_contracts import ActionProposal
+    current = draft.proposed_action
+    if tot['status'] != 'COMPARED' or (current and current.action_type != 'NO_ACTION'):
+        return draft, None
+    chosen = next((c for c in tot['candidates'] if c['candidate_id'] == tot['model_preferred_candidate_id']), None)
+    if chosen is None or tot['close_call']:
+        return draft, None
+    premises = [c.claim_id for c in draft.claims if set(c.evidence_ids) & set(chosen['evidence_ids'])]
+    reason = ('not valid' if not chosen['valid'] else 'not operational' if chosen['action_type'] == 'NO_ACTION' else
+              f"candidate issues {chosen['issues']}" if chosen['issues'] else 'no draft claim shares its evidence' if not premises
+              else None)
+    if reason:
+        return draft, f"ToT candidate {chosen['candidate_id']} not adopted: {reason}."
+    try:
+        action = ActionProposal(action_type=chosen['action_type'], draft_text=chosen['draft_text'], support_claim_ids=premises,
+                                scope_note=f"Selected from ToT candidate {chosen['candidate_id']}: {chosen['rationale']}")
+    except ValueError as error:  # e.g. a documentation action without targets
+        return draft, f"ToT candidate {chosen['candidate_id']} not adopted: {str(error).splitlines()[-1][:200]}"
+    return draft.model_copy(update={'proposed_action': action}), f"Action selected from ToT candidate {chosen['candidate_id']}."
+
+
 def alternatives(tot):
     """Candidates the final grounding call judges (invalid ones are never presented as grounded)."""
     return [c for c in tot.get('candidates', []) if c['valid']]
