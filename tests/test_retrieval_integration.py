@@ -38,3 +38,46 @@ def test_real_evaluation_runs_and_respects_date_exclusions(real):
         assert summary['answerable_cases'] == 9
     unsupported = next(c for c in report['cases'] if c['id'] == 'unsupported_payroll')
     assert unsupported['answerable'] is False and unsupported['variants']['hybrid_rrf_mmr']['recall'] is None
+
+
+def test_real_chunks_fit_the_tokenizer_without_truncation(real):
+    from threadsense.retrieval.config import FIXTURE_CUTOFF, FIXTURE_ROOT, KNOWLEDGE_ROOT
+    from threadsense.retrieval.corpus import collect
+    from tests.retrieval_doubles import check_chunks
+    retriever = real[1]
+    model = retriever.encoder.model
+    tokenizer, limit = model.tokenizer, model.max_seq_length
+    assert limit == real[0]['embedding']['max_tokens'] == 256
+    assert retriever.encoder.count('') == 2  # [CLS] and [SEP] are counted.
+    for chunk in retriever.chunks.values():
+        ids = tokenizer(chunk['indexed_text'], add_special_tokens=True, truncation=False)['input_ids']
+        assert len(ids) == chunk['token_count'] <= limit, chunk['chunk_id']
+        # What the model actually embeds after its own truncation is the whole chunk.
+        assert tokenizer(chunk['indexed_text'], truncation=True, max_length=limit)['input_ids'] == ids
+    documents, _ = collect(KNOWLEDGE_ROOT, FIXTURE_ROOT, FIXTURE_CUTOFF)
+    by_document = {}
+    for chunk in sorted(retriever.chunks.values(), key=lambda c: c['chunk_index']):
+        by_document.setdefault((chunk['document_id'], chunk['version_id']), []).append(chunk)
+    assert len(by_document) == len(documents) == real[0]['documents']
+    for document in documents:
+        check_chunks(document, by_document[(document['document_id'], document['version_id'])], limit)
+
+
+def test_stored_real_vectors_match_an_independent_encoding(real):
+    from sentence_transformers import SentenceTransformer
+    from tests.retrieval_doubles import check_stored, read_chroma
+    manifest, retriever = real
+    stored = read_chroma(retriever.index_dir/'chroma')
+    chunks = list(retriever.chunks.values())
+    check_stored(chunks, stored, 384)
+    # One per collection plus split, superseded and table-bearing chunks.
+    picks = {next(c['chunk_id'] for c in chunks if c['collection'] == name) for name in ('guidelines', 'faq', 'decisions')}
+    picks |= {next(c['chunk_id'] for c in chunks if c['chunk_count'] > 2 and c['collection'] == 'decisions'),
+              next(c['chunk_id'] for c in chunks if c['supersession']['chunk_superseded_by']),
+              next(c['chunk_id'] for c in chunks if '| --- |' in c['text'])}
+    model = SentenceTransformer(EMBEDDING['model'], revision=EMBEDDING['revision'], device='cpu', local_files_only=True)
+    fresh = model.encode([retriever.chunks[k]['indexed_text'] for k in sorted(picks)], normalize_embeddings=True)
+    for key, vector in zip(sorted(picks), fresh):
+        saved = stored[key][1]
+        assert max(abs(a - float(b)) for a, b in zip(saved, vector)) < 1e-5, key
+        assert sum(a * float(b) for a, b in zip(saved, vector)) > 0.99999, key

@@ -13,7 +13,7 @@ from threadsense.retrieval.corpus import collect
 from threadsense.retrieval.index import RetrievalIndexError, build_index, plan
 from threadsense.retrieval.search import Retriever, mmr, rrf
 from threadsense.retrieval.versions import VersionIndex
-from tests.retrieval_doubles import HashEncoder
+from tests.retrieval_doubles import HashEncoder, check_chunks, check_stored, read_chroma
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -56,16 +56,15 @@ def test_corpus_counts_are_derived_and_current_day_announcements_come_from_extra
 
 def test_chunks_fit_limit_never_truncate_and_keep_decision_context():
     documents, _ = collect(KNOWLEDGE_ROOT, FIXTURE_ROOT, FIXTURE_CUTOFF)
-    encoder = HashEncoder(max_tokens=80)
+    encoder = HashEncoder(max_tokens=80)  # Small limit: forces section packing and mid-section splits.
+    split = {'decisions': 0, 'parts': 0, 'superseded': 0}
     for document in documents:
         chunks = chunk_document(document, encoder.count, encoder.max_tokens)
-        assert all(c['token_count'] <= 80 for c in chunks)
-        words = ' '.join(document['text'].split()).split()
-        # A title-only preamble lives in each chunk's header, so check the indexed text.
-        joined = ' '.join(' '.join(c['indexed_text'] for c in chunks).split())
-        assert all(w in joined for w in words), document['document_id']
-        if chunks[0]['collection'] == 'decisions' and len(chunks) > 1 and chunks[0]['metadata']['decision_status']:
-            assert all(f"decision status: {chunks[0]['metadata']['decision_status']}" in c['indexed_text'] for c in chunks)
+        check_chunks(document, chunks, 80)
+        split['decisions'] += chunks[0]['collection'] == 'decisions' and len(chunks) > 1 and bool(chunks[0]['metadata']['outcome_status'])
+        split['parts'] += any('(part 2/' in c['text'] for c in chunks)
+        split['superseded'] += any(c['supersession']['chunk_superseded_by'] for c in chunks) and len(chunks) > 1
+    assert all(split.values()), split
     guide = next(d for d in documents if d['metadata']['source_metadata'].get('authoring', {}).get('document_id') == 'audio-multimodal-instructions')
     sections = [c['sections'] for c in chunk_document(guide, encoder.count, 256)]
     assert ['Playback and unavailable content'] in sections and all(len(s) == 1 for s in sections)
@@ -122,6 +121,44 @@ def test_incompatible_embedding_configuration_is_refused(built, tmp_path):
     (copy/'manifest.json').write_text(json.dumps(manifest), encoding='utf-8')
     with pytest.raises(RetrievalIndexError, match='embedding'):
         Retriever(copy, encoder=HashEncoder())
+
+
+def test_reopened_chroma_matches_the_sidecar(built):
+    index = built[0]
+    chunks = json.loads((index/'chunks.json').read_text(encoding='utf-8'))
+    stored = read_chroma(index/'chroma')
+    check_stored(chunks, stored, HashEncoder().dimension)
+    expected = HashEncoder().encode([c['indexed_text'] for c in chunks])
+    for chunk, vector in zip(chunks, expected):
+        assert stored[chunk['chunk_id']][1] == pytest.approx(vector, abs=1e-6)  # Chroma stores float32.
+
+
+def test_model_chunking_and_corpus_changes_are_detected(built, tmp_path):
+    copy = tmp_path/'copy'
+    shutil.copytree(built[0], copy)
+    manifest = json.loads((copy/'manifest.json').read_text(encoding='utf-8'))
+    manifest['chunking_version'] = 'knowledge-chunks-v0'
+    (copy/'manifest.json').write_text(json.dumps(manifest), encoding='utf-8')
+    with pytest.raises(RetrievalIndexError, match='chunking'):
+        Retriever(copy, encoder=HashEncoder())
+    knowledge, index = tmp_path/'knowledge', tmp_path/'index'
+    shutil.copytree(KNOWLEDGE_ROOT, knowledge, ignore=shutil.ignore_patterns('__pycache__'))
+    build_index(index, encoder=HashEncoder(), knowledge_root=knowledge)
+
+    class OtherRevision(HashEncoder):
+        def identity(self):
+            return {**super().identity(), 'revision': 'another-revision'}
+    with pytest.raises(RetrievalIndexError, match='--rebuild'):
+        build_index(index, encoder=OtherRevision(), knowledge_root=knowledge)
+    retriever = Retriever(index, encoder=HashEncoder())
+    assert retriever.staleness(knowledge_root=knowledge) == 'CURRENT'
+    path = knowledge/'instructions/audio_multimodal_instructions.md'
+    text = path.read_text(encoding='utf-8')
+    assert '## Playback and unavailable content' in text
+    path.write_text(text.replace('## Playback and unavailable content', '## Playback and unavailable content\nAn added sentence.', 1), encoding='utf-8')
+    assert retriever.staleness(knowledge_root=knowledge) == 'STALE'
+    with pytest.raises(RetrievalIndexError, match='--rebuild'):
+        build_index(index, encoder=HashEncoder(), knowledge_root=knowledge)
 
 
 def test_filters_select_before_both_paths_and_isolate_projects(retriever):
