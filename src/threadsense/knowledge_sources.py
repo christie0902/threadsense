@@ -150,13 +150,26 @@ def normalize_document(value):
 
 
 def iter_documents(paths):
-    """Normalize manual historical and extracted sources; reject inconsistent duplicates."""
-    seen={}
+    """Normalize manual historical and extracted sources; reject inconsistent duplicates.
+
+    JSON files hold one record or a list. Markdown files (mock-knowledge-markdown-v1)
+    hold one record each; one authoring document_id/version may not have two contents.
+    """
+    seen={};authored={}
     for path in sorted(map(Path,paths)):
-        value=json.loads(path.read_text(encoding='utf-8-sig'))
-        records=value if isinstance(value,list) else [value]
+        if path.suffix.lower()=='.md':
+            from threadsense.knowledge_markdown import markdown_source
+            records=[markdown_source(path)]
+        else:
+            value=json.loads(path.read_text(encoding='utf-8-sig'))
+            records=value if isinstance(value,list) else [value]
         for raw in records:
             document=normalize_document(raw);key=(document['document_id'],document['version_id'])
+            authoring=document['metadata']['source_metadata'].get('authoring')
+            if authoring:
+                claim=(authoring['document_id'],authoring['version'])
+                if authored.setdefault(claim,key)!=key:
+                    raise ValueError(f'Conflicting contents claim authoring identity {claim[0]}@{claim[1]}.')
             if key in seen:
                 if seen[key]['metadata']['content_sha256']!=document['metadata']['content_sha256'] or seen[key]['text']!=document['text']:
                     raise ValueError('Conflicting source/version duplicate.')

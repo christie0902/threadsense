@@ -96,7 +96,9 @@ SEVERITY_RUBRIC: dict[SeverityLevel, SeverityDefinition] = {
             "impact; a confusing FAQ heading when the underlying rule is "
             "understood and usable."
         ),
-        "required_signals": [],  # No required signal; default when higher triggers are absent
+        # No required signal. Limited impact may be inferred from context, but
+        # missing evidence alone does not establish LOW.
+        "required_signals": [],
     },
     SeverityLevel.NOT_APPLICABLE: {
         "definition": (
@@ -124,7 +126,7 @@ SEVERITY_RUBRIC: dict[SeverityLevel, SeverityDefinition] = {
 
 
 # Metadata for traceability (Agent 3 should record which version it used)
-RUBRIC_VERSION = "severity-rubric-v2-with-signals"
+RUBRIC_VERSION = "severity-rubric-v3-semantic-signals"
 PROJECT_ID = None  # Set per project when TL edits a copy, e.g. "audio_multimodal"
 
 

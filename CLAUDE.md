@@ -18,7 +18,7 @@ uv run --locked --extra dev python -m pytest tests/test_x.py   # single file
 ```
 
 - Always pass a **fresh** `--basetemp .cache/pytest-<name>`: pytest wipes it at start.
-- Full suite: 614 tests, ~5 min, all expected to pass. Intermittent `WinError 5` on `os.replace` is a Windows file lock (see Known issues), not a code failure.
+- Full suite: 653 tests, ~5 min, all expected to pass. Intermittent `WinError 5` on `os.replace` is a Windows file lock (see Known issues), not a code failure.
 - No linter/formatter configured. No build step beyond the editable install.
 - Zero-call checks: `--dry-run`, `--inspect`, `--check-input` flags (list in README). Anything with `--run`, or Agent 1 without `--dry-run`/`--inspect`, makes **paid model calls** — never run those without asking.
 - Dependency changes go in `pyproject.toml` and `uv.lock` together.
@@ -27,6 +27,7 @@ uv run --locked --extra dev python -m pytest tests/test_x.py   # single file
 
 - `src/threadsense/` — package. `routing.py`, `source_ingestion.py`, `knowledge_sources.py` (ingestion contract for Agent 3 retrieval), `adapters/mock_slack.py`, `topic_grouping.py`, `config.py` (.env + model selection).
 - `src/threadsense/agents/` — current Agent 1 (`thread_interpreter`, `interpretation_*`, `verification_*`) and Agent 2 (`topic_taxonomy`, `topic_contracts`, `topic_pipeline`, `topic_effective`). See its README.
+- Agent 3 (milestone 2): `agents/advice_contracts.py` (AdviceCard/DecisionRecord/AnnouncementRecord/ModelReviewItem v1), `agents/advice_inputs.py`, `severity_rubric.py` (loader for the TL rubric), `knowledge_markdown.py` + `knowledge_corpus.py` (Markdown ingestion via `knowledge_sources.iter_documents`). Check: `scripts/validate_agent3_inputs.py`.
 - `src/threadsense/legacy/` — frozen historical contracts/engines kept only for replay and fingerprints.
 - `scripts/` — CLI entry points (table in README). `tests/` — offline; model calls are mocked.
 - `data/fixtures/slack_generated/` — pipeline input (12 channels). `data/fixtures/slack/` is the old seed set used only by `main.py` and the generator.
@@ -61,8 +62,9 @@ uv run --locked --extra dev python -m pytest tests/test_x.py   # single file
 ## Current state (2026-10-28)
 
 - Branch `agent3`. Agent 1 v3 and Agent 2 v7 closed. Announcement routing integrated (schema 8 / handoff v2 for new exports).
-- **Next: Agent 3 milestone 1** — audit knowledge + fixtures against the 8–9 demo cases, produce a coverage matrix, no data edits yet. Full plan: [docs/agent3-plan.md](docs/agent3-plan.md).
-- Agent 3 input: `data/processed/agent2_taxonomy_final_v7/` via `topic_effective.load_effective_output` (90 groups / 97 topics / 49 obligations / 3 cautions / 41 review groups).
+- Agent 3 milestone 2 done 2026-10-29: contracts, rubric binding, Markdown knowledge ingestion (40 files in `data/knowledge`, user-authored mock data; don't rewrite). **Next: milestone 3, shared retrieval.** Full plan and open items: [docs/agent3-plan.md](docs/agent3-plan.md).
+- Agent 3 input: `data/processed/agent2_handoff_v2_projection/` (schema 8 / handoff v2, a zero-call projection of the v7 release; load with `advice_inputs.load_effective_view`): 81 groups / 79 topics / 161 assigned + 17 unassigned / 41 + 8 announcement-route obligations / 3 carried cautions. The frozen v7 release (handoff v1: 90 / 97 / 49 / 3 / 41) is unchanged.
+- Demo Slack input: `data/fixtures/slack_generated_demo/` (201 threads / 517 messages, cutoff `2026-10-02T12:00:00Z`); the original `slack_generated/` (200 / 516) stays unchanged.
 - Planned stack not yet installed: Chroma/FAISS + BM25, LangGraph, FastAPI, React (Vite/Tailwind).
 - 2026-10-28 cleanup archived superseded runs to `D:\Christie\2026_AgenticAI\threadsense-archive-20261028\` (also local tag `pre-cleanup-20261028`).
 
@@ -74,6 +76,7 @@ uv run --locked --extra dev python -m pytest tests/test_x.py   # single file
 - Intermittent `PermissionError: [WinError 5]` on `os.replace` (atomic writes in `topic_pipeline` / Agent 1 verification) when pytest's `--basetemp` is inside this VS Code-watched repo: an AV/indexer/watcher lock on fresh temp files. Worst after mass file changes. Verify by rerunning, or with `--basetemp` outside the repo.
 - `scripts/validate_threadsense_dataset.py` fails: thread `1790941015.000132` is unresolved in the blueprint but has a TL reply/approval. Relevant to the Agent 3 milestone 1 data audit.
 - `docs/repository-cleanup.md` (2026-10-22 section) links to deleted docs; `agent1-pilot-content-review.json` now lives in `data/metadata/historical/`.
-- `severity_rubric.py`: `get_rubric_for_project` returns only the default; its LOW default conflicts with UNKNOWN when evidence is insufficient.
+- `data/knowledge/severity_rubric.py` (TL-owned; don't edit policy text): `severity-rubric-v3-semantic-signals`. `get_rubric_for_project` returns the shared default for every project (`rubric_scope: SHARED_DEFAULT`).
 - `data/evaluation/domain_lexicon.json` duplicates `data/knowledge/domain_lexicon.json` (evaluation copy is not a model input).
 - Agent 3 plan refers to `mock_knowledge/`; the repo uses `data/knowledge/`.
+- 8 projected Agent 2 groups have no reusable taxonomy (their saved v7 responses also covered announcement members); their 17 members stay unassigned until a new run or an approved projection rule.

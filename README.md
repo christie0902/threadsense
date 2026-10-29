@@ -115,7 +115,13 @@ uv run --locked python scripts/run_thread_grouping.py --check-input
 uv run --locked python scripts/prepare_agent2_grouping.py
 uv run --locked python scripts/run_agent2_sample.py
 uv run --locked python scripts/run_agent2_batch.py --dry-run --limit 0
+uv run --locked python scripts/validate_agent3_inputs.py
 ```
+
+The last command validates the Agent 3 inputs: knowledge corpus (Markdown and JSON),
+severity rubric binding, demo Slack snapshot counts and the schema-8 Agent 2 handoff
+projection (`scripts/project_agent2_handoff.py`, zero calls). See the
+[Agent 3 plan](docs/agent3-plan.md#milestone-2-implemented).
 
 Inspect the historical effective handoff without regenerating it:
 
