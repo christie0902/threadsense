@@ -16,7 +16,7 @@ def main(argv=None):
     parser.add_argument('--index-dir', type=Path, default=INDEX_DIR)
     parser.add_argument('--top-k', type=int, default=5)
     parser.add_argument('--report', type=Path, help='New path for the full JSON report.')
-    parser.add_argument('--mmr-lambda', type=float, help='Override MMR lambda for this evaluation only (default 0.65).')
+    parser.add_argument('--mmr-lambda', type=float, help='Override MMR lambda for this evaluation only (default: retrieval DEFAULTS, 0.9).')
     parser.add_argument('--summary-only', action='store_true')
     parser.add_argument('--holdout', action='store_true', help='Evaluate the separate holdout cases instead.')
     args = parser.parse_args(argv)

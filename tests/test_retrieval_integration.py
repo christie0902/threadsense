@@ -81,3 +81,10 @@ def test_stored_real_vectors_match_an_independent_encoding(real):
         saved = stored[key][1]
         assert max(abs(a - float(b)) for a, b in zip(saved, vector)) < 1e-5, key
         assert sum(a * float(b) for a, b in zip(saved, vector)) > 0.99999, key
+
+
+def test_real_faq_chunks_keep_questions_with_answers(real):
+    question = '### Q: Do fake phone numbers or emails in a story require QN?'
+    faq = [c for c in real[1].chunks.values() if c['metadata']['authoring_document_id'] == 'safety-classification-faq']
+    answer = [c for c in faq if 'SC-PII-2026-09-10' in c['text']]
+    assert answer and all(question in c['text'].split('\n') for c in answer)

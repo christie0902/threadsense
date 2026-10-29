@@ -1,7 +1,9 @@
 # Agent 3 — Plan
 
-**Status:** Milestones 2 and 3 implemented (retrieval: 2026-10-29). Milestone 2 implemented (contracts, rubric binding, Markdown ingestion;
-2026-10-29). Milestone 1 audit not yet written up. Agent 3 consumes the Agent 2
+**Status:** Milestones 2, 3 and 4 implemented (2026-10-29): contracts, rubric binding and Markdown
+ingestion; shared retrieval; a bounded Advisor pilot, hardened (final statement-level grounding,
+announcement applicability, member-level resolution, request-boundary limits) and validated
+offline with scripted semantic judgments (no live model run yet). Milestone 1 audit not yet written up. Agent 3 consumes the Agent 2
 taxonomy handoff plus last-24h announcements and produces reviewable AdviceCards:
 research, final severity and recommendations.
 
@@ -148,12 +150,16 @@ Index: `.index/retrieval/` (git-ignored): persistent Chroma collections `guideli
   `b9db1e8a0d3a51769172ba8546f282a73f066e47` (the grouping model), CPU, normalized,
   cosine, 384 dimensions, 256-token limit, identical encoding for queries and documents,
   loaded with `local_files_only` unless `--allow-download`.
-- **Chunks** (`knowledge-chunks-v1`): guideline/FAQ sections with the document title;
+- **Chunks** (`knowledge-chunks-v2`): guideline/FAQ sections with the document title;
   decisions/announcements whole when they fit, otherwise consecutive sections under a
   header repeating record kind and decision/execution/outcome state; oversized units split
   at paragraph/line/sentence/word boundaries; each chunk is checked against the token
-  limit and nothing is truncated. Currently 113 chunks (guidelines 29, FAQ 17, decisions
-  67); 21 decision records split. Chunk IDs hash chunking version + document/version +
+  limit and nothing is truncated. v2 (Milestone 4 setup) splits an oversized FAQ section
+  at question/answer units, and an answer continuation repeats its exact question; lines
+  repeated for context (continued heading or question) are listed in each chunk's
+  `repeated_context`, so the preservation check can tell them from duplicated source text.
+  This fixed v1's orphaned continuation (the SC-PII-2026-09-10 paragraph without its
+  question). Currently 112 chunks (guidelines 29, FAQ 16, decisions 67); 21 documents split. Chunk IDs hash chunking version + document/version +
   position. Each chunk keeps citation, flat filter metadata, review lineage and
   section-level supersession; full normalized metadata stays in `documents.json`.
 - **Query.** `Retriever.search(query, project, batch=, batch_scope='project'|'strict',
@@ -226,3 +232,241 @@ Index: `.index/retrieval/` (git-ignored): persistent Chroma collections `guideli
   already tracked byte-exact (`-text`); keep it tracked as the recorded Agent 3 input. Its
   7 MB `effective_output.json` is derivable, but removing frozen files would change the
   recorded evidence, so leave it.
+
+## Milestone 4 (implemented): bounded Advisor pilot
+
+```powershell
+uv run --locked python scripts/run_agent3_pilot.py                    # zero calls: freshness, topics, initial retrieval, request sizes, live configuration
+uv run --locked python scripts/run_agent3_pilot.py --scripted tests/fixtures/agent3_pilot_scripted_judgments.json --write <new-dir>
+uv run --locked python scripts/run_agent3_pilot.py --run --write <new-dir>   # PAID; not yet run (see "Live run" below)
+```
+
+Modules (`src/threadsense/agents/`): `advisor_contracts.py` (model I/O: `AdvisorDraft` v2,
+`GroundingJudgment` v2, `ToTComparison` v1), `advisor_evidence.py` (freshness check, evidence
+ledger, agent-facing serialization, `ResearchTools`, `Budget`), `advisor_checks.py`
+(deterministic checks, final statements, authorization, card routing), `advisor_tot.py`
+(conditional shallow ToT), `advisor_pilot.py` (orchestration, scripted and CrewAI clients,
+request guard, outputs). AdviceCard v1 is unchanged; the pilot result record wraps it with the
+trace, ledger, statement verdicts, withheld statements and alternatives.
+
+**Retrieval setup (done first).**
+- FAQ question context: chunking v2 above. Index rebuilt; real-embedding evaluation
+  unchanged (main set RRF 1.00 / 9 full / 3 near-matches, RRF+MMR 0.9 1.00 / 9 / 4;
+  holdout RRF 0.83, RRF+MMR 1.00). No retrieval regression; labels, settings and holdout
+  untouched.
+- Evidence the model receives (`evidence_item`): citation identity (document/version/chunk
+  IDs, authoring ID, sections, source), `use`, applicability (state, replacement with its
+  effective date, unverified supersession, supersedes links, other revisions), dates, scope,
+  authority, recorded states and upstream review flags. `use` is `CURRENT_GUIDANCE`
+  (guideline/FAQ), `ANNOUNCEMENT`, `PRIOR_DECISION`, `HISTORY_ONLY`, `UNRESOLVED_VERSION`;
+  members are `MEMBER_REPORT`. Historical, unresolved, prior-decision and announcement
+  excerpts start with a status line, so the status cannot be read apart from the text.
+  Every payload also lists `withheld_by_version` and `version_diagnostics`. Tests parse the
+  exact text the model receives (`task_description`), not the sidecar.
+- Freshness: `open_retriever` runs `Retriever.staleness()` once before research and refuses
+  a stale or incompatible index with the rebuild command; queries never re-check.
+
+**Selected topics** (`data/evaluation/agent3_pilot_scenarios.json`, IDs and Agent 2 names
+only; no expected sources or answers): audio playback `cluster_6b59d1…` "LT audio player
+playback failure"; JSON vs prose `cluster_fb1dce…`; fictional PII `cluster_9378eb…`;
+Korean register `cluster_3b950a…`; submit failure `routed_440e64c…`; repeated ending
+`cluster_b7e523…`; plus the payroll negative control. The response-preference Submit threads
+are a projection gap (no Agent 2 topic), so that card covers the group's 4 unassigned
+members with `topic_id: null`, a mechanical label and a `projection_gap` inherited flag;
+no taxonomy is invented. The payroll question has no handoff members and stays cardless (an
+external negative control); a real handoff member is always on a card, even when its draft is
+UNSUPPORTED or missing.
+
+**Per-topic flow.** As-of is the index cutoff (`2026-10-02T12:00:00Z`) for every call,
+including history mode.
+1. Initial retrieval: current mode, all source types, top 5, RRF+MMR λ 0.9. The query is the
+   topic name plus the earliest member's Agent 1 central question.
+2. If the project has withheld (superseded) material, one history-mode supersession check
+   with the same query (generic rule; on this corpus only safety triggers it).
+3. Draft call. The model names gaps and optional follow-up queries; assesses each
+   announcement it relies on (relevant? directive? verbatim directing sentence); gives each
+   member a resolution state from that member's own messages; names documentation targets.
+4. Up to 3 follow-up retrievals executed by `ResearchTools` (the model never calls tools
+   itself), then at most one revision call.
+5. Deterministic checks: structure (`structural_issues`, `action_issues`), severity binding
+   to the unchanged rubric, temporal priority.
+6. Conditional ToT (one call), only on conflict, low-confidence or open-confirmation paths and
+   only when no structural check failed.
+7. **One final semantic grounding call** over every statement that can reach the card or a
+   reviewer (below), then authorization and deterministic card routing. Nothing after this
+   call can add or change a statement.
+
+**Final grounding and authorization (hardening pass, 2026-10-29).** Before this pass the
+grounding call judged only the draft's claims and action, and ToT ran afterwards; the summary,
+severity rationale, affected reporters and ToT alternatives were never judged, and resolution
+came from Agent 1. Now `statements()` builds one list:
+
+| Statement | Cites | Blocking |
+| --- | --- | --- |
+| `claim:<id>` (incident fact, guidance, history, inference) | the claim's evidence | if material |
+| `summary` | all material claims' evidence | yes |
+| `action` (text, scope and documentation targets) | support claims' evidence + targets | yes |
+| `announcement:<id>` (relevant directive, quoted) | the announcement | yes |
+| `resolution:<member>` (state other than UNKNOWN) | that member's messages (+ current sources) | yes |
+| `severity:rationale`, `severity:signal:<LEVEL>[i]` | signals, reporters, incident facts | yes, when binding succeeded |
+| `reporter:<author>` | the reporter's own message | yes |
+| `alternative:<candidate>` (valid ToT candidates) | the candidate's evidence | no (never card content) |
+
+The judgment returns one verdict per statement ID. Dependencies are applied deterministically
+(`_effective`): a guidance claim resting only on announcements needs a SUPPORTED announcement
+statement; an action needs every support claim SUPPORTED. No statement borrows another's
+verdict. Grounding is PASSED only when every blocking statement is SUPPORTED; statements citing
+nothing are never sent (NO_EVIDENCE). `authorize()` then builds the card only from SUPPORTED
+statements: card reasoning is composed from supported claims (the model's free-text reasoning
+stays in the result record), an unsupported summary is replaced by a withheld notice, an
+unsupported action is not carried, an unsupported severity rationale or signal leaves severity
+UNASSESSED, unsupported reporters are dropped from the lower-bound count, and an unsupported
+member resolution becomes UNKNOWN. Every withheld statement stays in `diagnostics`
+(`WITHHELD_STATEMENT` / `ALTERNATIVE_NOT_GROUNDED`) with its text and verdict; the card's
+GROUNDING_FAILURE reason names it by ID only. A ToT candidate is preferred only if it is valid
+and its own statement is SUPPORTED.
+
+**Announcement applicability.** The 31 announcements carry no metadata separating a directive
+from a routine note (all are `TEAM_LEAD` announcements; the 22:00 playback directive has the
+same empty status as "Reminder to use headphones"). So no announcement is current handling by
+type. An announcement becomes current handling for a topic only when the draft assesses it as
+relevant and directive with a verbatim directing sentence (deterministic quote check) **and** the
+final grounding judges that `announcement:` statement SUPPORTED. Recorded supersession resolves
+a conflict only in favour of current guidance or a verified announcement. Identity, dates,
+authority and scope are kept either way.
+
+**Documentation targets.** `UPDATE_DOCUMENTATION`/`UPDATE_FAQ` must name targets
+(`evidence_id`, section, `ADD`/`CORRECT`/`REMOVE`). Deterministic checks: the target is a
+retrieved source of the right type; a named section is in the cited chunk; `CORRECT`/`REMOVE` of
+current guidance is flagged `ACTION_TARGET_ALREADY_CURRENT` unless the draft reports a conflict
+involving it. The card's scope note lists the targets and their state (e.g. "CORRECT
+safety-qn-help-page@1.0 section 'Contact details' (superseded section, stale copy)").
+
+**Resolution.** Agent 1 resolution labels travel as attributed inputs (with Agent 1's
+verification status) and are never evidence. Each member's state must cite that member's own
+thread (current sources may add support; history may not). The topic state is computed from
+grounded member states: all equal → that state; known states differ → MIXED; any member without
+a supported state → UNKNOWN. One resolved member never resolves the topic. The card reasoning
+shows the grounded per-member counts and the attributed Agent 1 counts, including how many were
+unverified.
+
+**Budgets and request limits.** 4 model calls per topic (draft, revision, ToT, final
+grounding), 28 per run; 6 retrieval calls per topic, 42 per run. Draft, revision and ToT run
+only if a call stays reserved for the final grounding (`SKIPPED_RESERVED_FOR_GROUNDING`).
+Request boundary, measured offline at the httpx transport (`tests/test_agent3_request_boundary.py`):
+
+| Reply to one stage | Earlier Agent/Crew client | Now |
+| --- | --- | --- |
+| valid JSON | 1 request | 1 |
+| non-final-answer text | 2 (CrewAI forced-final-answer call) | 1 (stage FAILED) |
+| HTTP 500 / connection error | 3 (OpenAI SDK `max_retries=2`) | 1 |
+| HTTP 429 | 9 (SDK retries × CrewAI's fixed 3-attempt rate-limit retry) | 1 sent, retry refused unsent |
+
+The live client calls `crewai.LLM.call` directly (no Agent/Crew executor, no tools,
+`max_retries=0`, `response_format=json_object`, temperature 0, `max_tokens` 4096, timeout
+120 s) inside `RequestGuard`, which counts requests at the transport and refuses any second
+request in a stage before it is sent. A reply that arrives without a request through the
+guarded transport stops the run (`BoundaryNotObserved`). `QUIET_ENV` disables CrewAI telemetry
+and LiteLLM's remote price-map download. An end-to-end test runs the whole pilot through the
+live client against a fake provider: requests = stage calls ≤ 28, and cards match the scripted
+run.
+
+**Deterministic vs semantic.**
+
+| Check | How |
+| --- | --- |
+| Citation IDs exist; incident facts cite member messages only; guidance cites current guidance or an established announcement, never a historical/unresolved item; history cites retrieved records; quotes verbatim (status lines excluded); announcement assessments quote verbatim; resolution cites the member's own thread | Deterministic (`structural_issues`); any failure = grounding FAILED without a semantic call (and no ToT) |
+| Operational action supported by a guidance or prior-decision claim; documentation targets real, of the right type and not already current | Deterministic (`action_issues`) |
+| Each statement supported by the excerpts it cites | Final semantic grounding call; PASSED only if every blocking statement is SUPPORTED after dependencies. Citation existence alone never passes; a missing judgment is NOT_RUN and nothing is authorized |
+| Temporal priority | Deterministic: a model-reported conflict is RESOLVED only when recorded supersession links the historical item to the one current item (current guidance or a verified announcement); otherwise DETECTED. Unresolved versions or unverified supersession cited → DETECTED. Future and draft revisions never compete |
+| Severity | Semantic proposal, deterministic binding (rubric text by level/index, member-message evidence per signal, reporters from their own messages, recurrence from retrieved records), then semantic grounding of rationale, signals and reporters. Any failure leaves severity UNASSESSED with an OTHER reason |
+| Resolution | Semantic per-member proposal from thread messages, grounded per member; deterministic topic aggregation |
+| Card line | Deterministic: contract review codes + GROUNDING_NOT_RUN + OTHER (insufficient/unsupported evidence, severity not established, stage failures) → NEEDS_REVIEW; otherwise an authorized operational action → RECOMMENDED_ACTION; else OBSERVATION |
+| ToT | Triggered only by TEMPORAL_CONFLICT, confidence < 0.60 or OPEN confirmation; one call, 2–3 candidates, before the final grounding. Invalid candidates (unknown evidence) are not presented; valid ones are judged as their own statements. Never changes the card action or review reasons |
+
+**Offline pilot output** (`data/experiments/agent3_pilot_offline_v2/`, `SCRIPTED_MOCK`;
+`agent3_pilot_offline_v1/` is the pre-hardening run, kept for comparison): manifest,
+per-scenario results (retrieval trace, evidence ledger, model-call log with raw responses,
+drafts, follow-ups, statement verdicts, withheld statements, temporal, severity, resolution,
+ToT, card, review items, coverage, budget), `cards.json`, `review_items.json`, `report.md`.
+The prepared responses (`tests/fixtures/agent3_pilot_scripted_judgments.json`, regenerated by
+`tests/fixtures/make_agent3_pilot_scripted_judgments.py` when evidence IDs move) exercise the
+checks; they are not model output. Consumed: 18/28 model calls, 11/42 retrievals.
+
+| Topic | Card; action | Grounding | Severity | Resolution (grounded vs Agent 1) | ToT | Notes |
+| --- | --- | --- | --- | --- | --- | --- |
+| audio_playback | NEEDS_REVIEW (HIGH, flags); UPDATE_FAQ, ADD to FAQ "Playback and tool issues" | PASSED | HIGH: 4 affected reporters; recurrence FOUND (batch-05 trial) | MIXED (2 partial: TL interim handling; 2 unresolved) vs Agent 1 3 UNRESOLVED + 1 PARTIALLY_RESOLVED (2 unverified) | — | 22:00 announcement verified as handling |
+| json_vs_prose | NEEDS_REVIEW (open confirmation, flag); NO_ACTION (hold for TL) | PASSED | MEDIUM[0] | UNRESOLVED | A SUPPORTED (preferred); B (rejected JSON-first rule) UNSUPPORTED; C PARTIALLY_SUPPORTED | |
+| fictional_pii | NEEDS_REVIEW (flag); UPDATE_DOCUMENTATION, CORRECT help page v1.0 "Contact details" only | PASSED | MEDIUM[1] | UNRESOLVED vs Agent 1 2 PARTIALLY_RESOLVED | — | Clarification and batch-08 post verified; conflict RESOLVED_BY_RECORDED_SUPERSESSION; instructions v1.4 and FAQ v1.1 stated as already updated |
+| korean_register | NEEDS_REVIEW (flag); ROUTE_TO_LANGUAGE_SPECIALIST | PASSED | MEDIUM[0] | UNRESOLVED | — | Batch-10 precedent kept as scoped history |
+| submit_failure | NEEDS_REVIEW (HIGH, GROUNDING_FAILURE, projection gap + flags); ESCALATE_ENGINEERING (ask whether reports match the open handoff) | FAILED: `claim:c5` ("share the cause…") withheld | HIGH: 5 reporters | UNRESOLVED | — | c5 text only in diagnostics, never on the card |
+| repeated_ending | NEEDS_REVIEW (low confidence, insufficient evidence, flags); NO_ACTION | PASSED | MEDIUM[0] | UNRESOLVED | A and B SUPPORTED (close call); C ("confirmed loop", no evidence) not presented | No cause asserted |
+| payroll control | no card | — | — | — | — | UNSUPPORTED although 5 nearest neighbours were retrieved |
+
+**Tests.**
+- `tests/test_agent3_advisor.py` (28, test-double index): each test's docstring says DETERMINISTIC or MOCKED SEMANTIC. Covers, among others: final grounding covering every card statement and running last; a ToT candidate whose unsupported claim cannot borrow the draft's verdicts; the routine-reminder negative case; documentation targets; member-level resolution. One test removes the upstream obligations from a copy of one record to reach RECOMMENDED_ACTION and OBSERVATION.
+- `tests/test_agent3_request_boundary.py` (7, fake provider, network refused): one request per stage for each reply type; budget equals requests; an unobserved reply stops the run.
+- `tests/test_agent3_pilot_integration.py` (3, real embeddings, offline):
+  - the full scripted pilot, which also detects scripted evidence IDs drifting from the index;
+  - recovery of the 22:00 announcement when the real top five for the member question
+    "Was the previous playback workaround approved and did it work?" omit it;
+  - the whole pilot through the live client against a fake provider (request accounting).
+- The recovery test with the test encoder uses "Did the earlier reload trial restore playback?", for the same reason.
+
+**Live run (prepared, not run).**
+
+```powershell
+$env:PYTHONIOENCODING = 'utf-8'
+uv run --locked python scripts/run_agent3_pilot.py                                  # zero calls: check the printed live_configuration
+uv run --locked python scripts/run_agent3_pilot.py --run --write data/experiments/agent3_pilot_live_v1
+```
+
+- Model: `THREADSENSE_MODEL` (currently `openai/gpt-4o-mini`), key `OPENAI_API_KEY` from `.env`.
+- Limits: ≤ 4 calls per topic, ≤ 28 per run, 1 HTTP request per call (≤ 28 requests), no
+  retries, ≤ 4,096 completion tokens per call, 120 s timeout.
+- Size (measured on the scripted path, o200k tokenizer): draft requests 8–12k input tokens,
+  revision up to 17k, grounding up to 9k, ToT up to 10k; 18 requests ≈ 186k input tokens. A
+  live run that uses every call stays under 28 × 17k ≈ 480k input and 28 × 4,096 ≈ 115k
+  output tokens.
+- A failed stage is recorded, not retried; the topic still gets a card. Results are labelled
+  `LIVE_MODEL`.
+
+**Needs a real model evaluation (not shown by these tests):**
+- whether the Advisor names the right gaps and follow-up queries unprompted;
+- whether it keeps incident facts and guidance apart and cites precisely;
+- whether it avoids inventing causes, approvals or counts;
+- its announcement assessments (relevance and directive content) and documentation targets;
+- its per-member resolution states;
+- its severity proposals against the rubric, and affected-reporter identification;
+- whether its open-confirmation and conflict judgments are right;
+- statement-level grounding accuracy, including false PASS/FAIL rates on the larger statement set;
+- the quality and diversity of ToT candidates;
+- JSON validity rates with one attempt (each invalid output costs a stage);
+- whether 4 calls per topic is enough.
+
+**Remaining limitations.**
+- Every pilot topic carries upstream obligations, so every card is NEEDS_REVIEW; RECOMMENDED_ACTION and OBSERVATION routing is covered only by tests.
+- Initial-query construction is a fixed rule; in the real index the playback announcement already ranks in the top 5, so recovery runs only in tests.
+- ToT triggers are computed before the final grounding (from the draft and the pre-grounding temporal check). The card's temporal result is recomputed after grounding with verified announcements only.
+- Resolution has no state for "answered by current guidance but not in the thread"; such members are UNRESOLVED with that basis.
+- On HTTP 429, CrewAI's rate-limit wrapper still waits its backoff (1–8 s, or Retry-After) before the guard refuses the retry. `RequestGuard` patches the httpx transport class for the duration of one call, so the client is single-threaded.
+- Group members outside the selected topic are reported as outside this card. They are not dropped, but this pilot does not process them.
+
+**Test reliability (investigated 2026-10-29).**
+- ChromaDB "Nothing found on disk": reproduced with `tests/repro_chroma_reopen.py` (isolated temp
+  directories outside the repo). Cause: `build_index` released its client with `del`, which
+  leaves the Chroma system cached per path; the in-process `Retriever` then reused that cached
+  system and intermittently failed to read the HNSW segment. The subprocess readability check is
+  not the cause: a single-process variant failed too. Unclosed: 10 failures in 320 build→open
+  cycles; closed: 0 in 260. Fix: `client.close()` after the build (regression test
+  `test_build_releases_its_chroma_client`). No sleeps or retries.
+- Agent 1 `test_200_mixed_mocked_outcomes_continue_after_flagged_and_failed_middle_records`: the
+  full-suite failure's traceback was not captured, so its cause is not known. Repeated alone with
+  full logs (`.cache/test-logs/agent1-*.log`): with `--basetemp` inside the repo it failed 3 of 20
+  runs, each with `PermissionError [WinError 5]` from `os.replace` overwriting
+  `verified_v1/content_review_report.json` (`scripts/run_agent1_verification.py:50`; the runner
+  rewrites four report files after each of 200 records, about 800 replaces per test, and closes every
+  handle it opens). With `--basetemp` outside the repo: 0 of 20. That points to another process briefly
+  holding the freshly written file in the repo tree, but the comparison is not conclusive (one-sided
+  Fisher p about 0.12) and the process was not identified. The runner is fingerprinted, so it is
+  unchanged; use a `--basetemp` outside the repo.

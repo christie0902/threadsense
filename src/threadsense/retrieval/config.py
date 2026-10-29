@@ -14,7 +14,9 @@ EMBEDDING = {
     # Symmetric model: queries and documents are encoded identically, with no prefixes.
     'query_prefix': '', 'document_prefix': '',
 }
-CHUNKING_VERSION = 'knowledge-chunks-v1'
+# v2 (2026-10-29): oversized FAQ sections split at question/answer units, and an answer
+# continuation repeats its exact question (tracked in each chunk's repeated_context).
+CHUNKING_VERSION = 'knowledge-chunks-v2'
 COLLECTIONS = {'guideline': 'guidelines', 'faq': 'faq', 'decision': 'decisions', 'announcement': 'decisions'}
 COLLECTION_NAMES = ('guidelines', 'faq', 'decisions')
 HNSW = {'hnsw:space': 'cosine', 'hnsw:construction_ef': 200, 'hnsw:search_ef': 200}

@@ -118,7 +118,9 @@ def build_index(index_dir=INDEX_DIR, *, encoder, rebuild=False, **sources):
         counts[name] = len(collection.get(include=[])['ids'])
         if counts[name] != len(members):
             raise RetrievalIndexError(f'{name}: stored {counts[name]} chunks, expected {len(members)}.')
-    del client
+    # Release the build's Chroma system: `del` keeps it cached per path, and a later in-process open would
+    # reuse it and intermittently fail ("Nothing found on disk"; reproduced in ~5% of build->open cycles).
+    client.close()
     verify_readable(index_dir/'chroma', counts)
     chunks_sha = _write(index_dir/'chunks.json', chunks)
     documents_sha = _write(index_dir/'documents.json', {f"{d['document_id']}@{d['version_id']}": d for d in documents})

@@ -16,13 +16,19 @@ STATES = ('authoring_record_kind', 'decision_status', 'execution_status', 'outco
 
 
 def body_words(chunks):
-    """Chunk bodies in order with split bookkeeping undone: part markers removed, repeated headings dropped."""
+    """Chunk bodies in order with split bookkeeping undone: declared repeated context dropped,
+    the part-1 marker removed. Undeclared repetition stays and fails the comparison."""
     words = []
     for chunk in chunks:
+        repeated = list(chunk['repeated_context'])
         for line in chunk['text'].split('\n'):
+            if line in repeated:
+                repeated.remove(line)
+                continue
             part = PART.match(line)
-            if not (part and int(part.group(2)) > 1):
-                words += (part.group(1) if part else line).split()
+            assert not (part and int(part.group(2)) > 1), f'undeclared continuation heading {line!r}'
+            words += (part.group(1) if part else line).split()
+        assert not repeated, f"declared repeated context not found in chunk text: {repeated}"
     return words
 
 
@@ -37,6 +43,8 @@ def check_chunks(document, chunks, limit):
     supersession = document['metadata']['source_metadata'].get('supersession') or {'superseded_by': []}
     for index, chunk in enumerate(chunks):
         assert chunk['token_count'] <= limit and chunk['chunk_index'] == index and chunk['chunk_count'] == len(chunks)
+        # Repeated context must repeat source text (a continued heading or question), never add new text.
+        assert all(PART.sub(r'\1', line) in document['text'].split('\n') for line in chunk['repeated_context'])
         assert chunk['chunk_id'] == 'chunk_' + digest([CHUNKING_VERSION, document['document_id'], document['version_id'], index])[:32]
         header = chunk['indexed_text'][:-len(chunk['text'])]
         assert chunk['indexed_text'].endswith('\n\n' + chunk['text']) and header.rstrip('\n')

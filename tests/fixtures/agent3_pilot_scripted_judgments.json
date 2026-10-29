@@ -1,0 +1,1850 @@
+{
+ "version": "agent3-pilot-scripted-judgments-v2",
+ "purpose": "Prepared semantic responses (draft, revision, grounding, ToT) for the offline pilot run. They exercise the deterministic checks and routing; they are not model output and say nothing about model quality. Evidence IDs refer to the knowledge-chunks-v2 index; contracts are advisor draft v2 and grounding judgment v2.",
+ "responses": {
+  "audio_playback": {
+   "draft": {
+    "summary": "Four tutors report the LT audio player never loads or never starts (including a visible waveform with no playback) and ask whether to QN, recalling an earlier workaround.",
+    "reasoning": "Current instructions and the 22:00 UTC handling announcement treat this as a tool incident and rule out QN or model-quality scoring from unavailable playback alone. The FAQ has no waveform-without-playback entry. Whether the earlier workaround worked is not yet shown.",
+    "claims": [
+     {
+      "claim_id": "c1",
+      "kind": "INCIDENT_FACT",
+      "evidence_ids": [
+       "m:C_AUDIO_GENERAL:1790882197.000111",
+       "m:C_AUDIO_GENERAL:1790896012.001900",
+       "m:C_AUDIO_GENERAL:1790920171.000109",
+       "m:C_AUDIO_GENERAL:1790934294.000106"
+      ],
+      "text": "Four tutors in audio_batch_06 report that the LT player never loads or audio will not play, and ask whether to QN the task."
+     },
+     {
+      "claim_id": "c2",
+      "kind": "INCIDENT_FACT",
+      "evidence_ids": [
+       "m:C_AUDIO_GENERAL:1790934394.000226"
+      ],
+      "quote": "The waveform loads but pressing Play never starts sound.",
+      "text": "At least one report describes a waveform that loads while Play never starts sound."
+     },
+     {
+      "claim_id": "c3",
+      "kind": "GUIDANCE",
+      "evidence_ids": [
+       "k:slack:C_AUDIO_ANNOUNCEMENTS:1790892000.000901:1c524924",
+       "k:audio-multimodal-instructions@1.3:1c6df70e"
+      ],
+      "quote": "Treat this as a tool incident.",
+      "text": "Current handling: a player that never starts, including a visible waveform with no playback, is a tool incident; report the task ID, browser/error state and whether another clip plays, and do not choose content QN or score model quality solely because playback is unavailable."
+     },
+     {
+      "claim_id": "c4",
+      "kind": "GUIDANCE",
+      "evidence_ids": [
+       "k:audio-multimodal-faq@1.1:c724358c"
+      ],
+      "text": "The FAQ answers the never-loading player case but has no entry for a visible waveform with no playback."
+     }
+    ],
+    "gaps": [
+     {
+      "gap_id": "g1",
+      "need": "PRIOR_DECISION_OUTCOME",
+      "description": "Members recall an earlier workaround; whether that trial worked is not in the evidence.",
+      "follow_up": {
+       "query": "previous playback workaround trial outcome",
+       "source_types": [
+        "decision",
+        "announcement"
+       ],
+       "version_mode": "history"
+      }
+     }
+    ],
+    "evidence_sufficiency": "SUFFICIENT",
+    "proposed_action": {
+     "action_type": "UPDATE_FAQ",
+     "support_claim_ids": [
+      "c3",
+      "c4"
+     ],
+     "targets": [
+      {
+       "evidence_id": "k:audio-multimodal-faq@1.1:c724358c",
+       "section": "Playback and tool issues",
+       "change": "ADD"
+      }
+     ],
+     "draft_text": "Add an FAQ entry: a visible waveform with no playback is a playback/tool incident. Report the task ID, browser/error state and whether another clip plays; do not QN or score model quality solely because playback is unavailable.",
+     "scope_note": "audio_multimodal; mirrors the current instructions and the 2026-10-01 22:00 UTC announcement; does not state that the player is fixed."
+    },
+    "severity": {
+     "level": "HIGH",
+     "rationale": "Affected tasks cannot be evaluated while the player fails, and four distinct tutors report a comparable failure in the same batch within one day.",
+     "signals": [
+      {
+       "level": "HIGH",
+       "signal_index": 0,
+       "signal_text": "Explicit statement that assigned work cannot be completed or evaluated",
+       "support": "The TL states the affected task cannot be evaluated while the player fails to load.",
+       "evidence_ids": [
+        "m:C_AUDIO_GENERAL:1790920220.000113"
+       ]
+      },
+      {
+       "level": "HIGH",
+       "signal_index": 3,
+       "signal_text": "Multiple distinct people or affected tasks reporting a comparable problem within the relevant project, batch, and time window, suggesting broader disruption or systemic labeling risk. Consider the number affected relative to the known active group when that information is available; do not require an explicit statement of widespread impact",
+       "support": "Four distinct tutors report the same player failure in audio_batch_06 on 2026-10-01/02.",
+       "evidence_ids": [
+        "m:C_AUDIO_GENERAL:1790882197.000111",
+        "m:C_AUDIO_GENERAL:1790896012.001900",
+        "m:C_AUDIO_GENERAL:1790920171.000109",
+        "m:C_AUDIO_GENERAL:1790934294.000106"
+       ]
+      }
+     ],
+     "affected_reporters": [
+      {
+       "author_id": "U019",
+       "evidence_id": "m:C_AUDIO_GENERAL:1790882197.000111"
+      },
+      {
+       "author_id": "U018",
+       "evidence_id": "m:C_AUDIO_GENERAL:1790896012.001900"
+      },
+      {
+       "author_id": "U020",
+       "evidence_id": "m:C_AUDIO_GENERAL:1790920171.000109"
+      },
+      {
+       "author_id": "U013",
+       "evidence_id": "m:C_AUDIO_GENERAL:1790934294.000106"
+      }
+     ],
+     "recurrence": "NOT_CHECKED"
+    },
+    "confidence": 0.82,
+    "open_confirmation": "NONE",
+    "announcement_assessments": [
+     {
+      "evidence_id": "k:slack:C_AUDIO_ANNOUNCEMENTS:1790892000.000901:1c524924",
+      "relevant": true,
+      "directive": true,
+      "directive_quote": "Treat this as a tool incident.",
+      "rationale": "Posted for audio_batch_06 on 2026-10-01 about a player that never starts, including a visible waveform with no playback: the reported problem."
+     }
+    ],
+    "resolution": [
+     {
+      "member_id": "member_8ce5853bbd6b1a416c28b76f",
+      "state": "UNRESOLVED",
+      "evidence_ids": [
+       "m:C_AUDIO_GENERAL:1790882197.000111",
+       "m:C_AUDIO_GENERAL:1790882245.000113",
+       "m:C_AUDIO_GENERAL:1790882287.000226",
+       "m:C_AUDIO_GENERAL:1790882343.000339"
+      ],
+      "basis": "The TL asks for task IDs and a reproduction attempt; no handling or fix is given in the thread."
+     },
+     {
+      "member_id": "member_e0275e7d53c557361ca40bd1",
+      "state": "UNRESOLVED",
+      "evidence_ids": [
+       "m:C_AUDIO_GENERAL:1790896012.001900",
+       "m:C_AUDIO_GENERAL:1790896062.000113",
+       "m:C_AUDIO_GENERAL:1790896106.000226"
+      ],
+      "basis": "The TL asks for task IDs and a reproduction attempt; no handling or fix is given in the thread."
+     },
+     {
+      "member_id": "member_943da52557c55ff31ee76f89",
+      "state": "PARTIALLY_RESOLVED",
+      "evidence_ids": [
+       "m:C_AUDIO_GENERAL:1790920171.000109",
+       "m:C_AUDIO_GENERAL:1790920220.000113"
+      ],
+      "basis": "The TL gives interim handling (report the playback incident, do not mark a model-quality failure); the player failure itself is not fixed."
+     },
+     {
+      "member_id": "member_61f4987d5eb6b1ccb2894091",
+      "state": "PARTIALLY_RESOLVED",
+      "evidence_ids": [
+       "m:C_AUDIO_GENERAL:1790934294.000106",
+       "m:C_AUDIO_GENERAL:1790934351.000113",
+       "m:C_AUDIO_GENERAL:1790934394.000226",
+       "m:C_AUDIO_GENERAL:1790934431.000339"
+      ],
+      "basis": "The TL gives interim handling (report the playback incident, do not mark a model-quality failure); the player failure itself is not fixed."
+     }
+    ]
+   },
+   "revision": {
+    "summary": "Four tutors report the LT audio player never loads or never starts (including a visible waveform with no playback) and ask whether to QN, recalling an earlier workaround.",
+    "reasoning": "Current instructions and the 22:00 UTC handling announcement treat this as a tool incident and rule out QN or model-quality scoring from unavailable playback alone. The FAQ has no waveform-without-playback entry. The earlier reload trial was unsuccessful in sample and has expired, so it is history, not current guidance.",
+    "claims": [
+     {
+      "claim_id": "c1",
+      "kind": "INCIDENT_FACT",
+      "evidence_ids": [
+       "m:C_AUDIO_GENERAL:1790882197.000111",
+       "m:C_AUDIO_GENERAL:1790896012.001900",
+       "m:C_AUDIO_GENERAL:1790920171.000109",
+       "m:C_AUDIO_GENERAL:1790934294.000106"
+      ],
+      "text": "Four tutors in audio_batch_06 report that the LT player never loads or audio will not play, and ask whether to QN the task."
+     },
+     {
+      "claim_id": "c2",
+      "kind": "INCIDENT_FACT",
+      "evidence_ids": [
+       "m:C_AUDIO_GENERAL:1790934394.000226"
+      ],
+      "quote": "The waveform loads but pressing Play never starts sound.",
+      "text": "At least one report describes a waveform that loads while Play never starts sound."
+     },
+     {
+      "claim_id": "c3",
+      "kind": "GUIDANCE",
+      "evidence_ids": [
+       "k:slack:C_AUDIO_ANNOUNCEMENTS:1790892000.000901:1c524924",
+       "k:audio-multimodal-instructions@1.3:1c6df70e"
+      ],
+      "quote": "Treat this as a tool incident.",
+      "text": "Current handling: a player that never starts, including a visible waveform with no playback, is a tool incident; report the task ID, browser/error state and whether another clip plays, and do not choose content QN or score model quality solely because playback is unavailable."
+     },
+     {
+      "claim_id": "c4",
+      "kind": "GUIDANCE",
+      "evidence_ids": [
+       "k:audio-multimodal-faq@1.1:c724358c"
+      ],
+      "text": "The FAQ answers the never-loading player case but has no entry for a visible waveform with no playback."
+     },
+     {
+      "claim_id": "c5",
+      "kind": "HISTORY",
+      "evidence_ids": [
+       "k:audio-playback-trial-outcome@1.0:16332fce",
+       "k:audio-playback-trial-post@1.0:d674dbe6"
+      ],
+      "quote": "The trial did not provide a dependable general workaround.",
+      "text": "The August batch-05 one-reload trial restored playback in two of six attempts, did not provide a dependable workaround, and its posted guidance expired on August 28."
+     }
+    ],
+    "gaps": [],
+    "evidence_sufficiency": "SUFFICIENT",
+    "proposed_action": {
+     "action_type": "UPDATE_FAQ",
+     "support_claim_ids": [
+      "c3",
+      "c4"
+     ],
+     "targets": [
+      {
+       "evidence_id": "k:audio-multimodal-faq@1.1:c724358c",
+       "section": "Playback and tool issues",
+       "change": "ADD"
+      }
+     ],
+     "draft_text": "Add an FAQ entry: a visible waveform with no playback is a playback/tool incident. Report the task ID, browser/error state and whether another clip plays; do not QN or score model quality solely because playback is unavailable.",
+     "scope_note": "audio_multimodal; mirrors the current instructions and the 2026-10-01 22:00 UTC announcement; does not state that the player is fixed."
+    },
+    "severity": {
+     "level": "HIGH",
+     "rationale": "Affected tasks cannot be evaluated while the player fails, and four distinct tutors report a comparable failure in the same batch within one day.",
+     "signals": [
+      {
+       "level": "HIGH",
+       "signal_index": 0,
+       "signal_text": "Explicit statement that assigned work cannot be completed or evaluated",
+       "support": "The TL states the affected task cannot be evaluated while the player fails to load.",
+       "evidence_ids": [
+        "m:C_AUDIO_GENERAL:1790920220.000113"
+       ]
+      },
+      {
+       "level": "HIGH",
+       "signal_index": 3,
+       "signal_text": "Multiple distinct people or affected tasks reporting a comparable problem within the relevant project, batch, and time window, suggesting broader disruption or systemic labeling risk. Consider the number affected relative to the known active group when that information is available; do not require an explicit statement of widespread impact",
+       "support": "Four distinct tutors report the same player failure in audio_batch_06 on 2026-10-01/02.",
+       "evidence_ids": [
+        "m:C_AUDIO_GENERAL:1790882197.000111",
+        "m:C_AUDIO_GENERAL:1790896012.001900",
+        "m:C_AUDIO_GENERAL:1790920171.000109",
+        "m:C_AUDIO_GENERAL:1790934294.000106"
+       ]
+      }
+     ],
+     "affected_reporters": [
+      {
+       "author_id": "U019",
+       "evidence_id": "m:C_AUDIO_GENERAL:1790882197.000111"
+      },
+      {
+       "author_id": "U018",
+       "evidence_id": "m:C_AUDIO_GENERAL:1790896012.001900"
+      },
+      {
+       "author_id": "U020",
+       "evidence_id": "m:C_AUDIO_GENERAL:1790920171.000109"
+      },
+      {
+       "author_id": "U013",
+       "evidence_id": "m:C_AUDIO_GENERAL:1790934294.000106"
+      }
+     ],
+     "recurrence": "FOUND",
+     "recurrence_evidence_ids": [
+      "k:audio-playback-trial-outcome@1.0:16332fce"
+     ]
+    },
+    "confidence": 0.82,
+    "open_confirmation": "NONE",
+    "announcement_assessments": [
+     {
+      "evidence_id": "k:slack:C_AUDIO_ANNOUNCEMENTS:1790892000.000901:1c524924",
+      "relevant": true,
+      "directive": true,
+      "directive_quote": "Treat this as a tool incident.",
+      "rationale": "Posted for audio_batch_06 on 2026-10-01 about a player that never starts, including a visible waveform with no playback: the reported problem."
+     }
+    ],
+    "resolution": [
+     {
+      "member_id": "member_8ce5853bbd6b1a416c28b76f",
+      "state": "UNRESOLVED",
+      "evidence_ids": [
+       "m:C_AUDIO_GENERAL:1790882197.000111",
+       "m:C_AUDIO_GENERAL:1790882245.000113",
+       "m:C_AUDIO_GENERAL:1790882287.000226",
+       "m:C_AUDIO_GENERAL:1790882343.000339"
+      ],
+      "basis": "The TL asks for task IDs and a reproduction attempt; no handling or fix is given in the thread."
+     },
+     {
+      "member_id": "member_e0275e7d53c557361ca40bd1",
+      "state": "UNRESOLVED",
+      "evidence_ids": [
+       "m:C_AUDIO_GENERAL:1790896012.001900",
+       "m:C_AUDIO_GENERAL:1790896062.000113",
+       "m:C_AUDIO_GENERAL:1790896106.000226"
+      ],
+      "basis": "The TL asks for task IDs and a reproduction attempt; no handling or fix is given in the thread."
+     },
+     {
+      "member_id": "member_943da52557c55ff31ee76f89",
+      "state": "PARTIALLY_RESOLVED",
+      "evidence_ids": [
+       "m:C_AUDIO_GENERAL:1790920171.000109",
+       "m:C_AUDIO_GENERAL:1790920220.000113"
+      ],
+      "basis": "The TL gives interim handling (report the playback incident, do not mark a model-quality failure); the player failure itself is not fixed."
+     },
+     {
+      "member_id": "member_61f4987d5eb6b1ccb2894091",
+      "state": "PARTIALLY_RESOLVED",
+      "evidence_ids": [
+       "m:C_AUDIO_GENERAL:1790934294.000106",
+       "m:C_AUDIO_GENERAL:1790934351.000113",
+       "m:C_AUDIO_GENERAL:1790934394.000226",
+       "m:C_AUDIO_GENERAL:1790934431.000339"
+      ],
+      "basis": "The TL gives interim handling (report the playback incident, do not mark a model-quality failure); the player failure itself is not fixed."
+     }
+    ]
+   },
+   "grounding": {
+    "verdicts": [
+     {
+      "statement_id": "claim:c1",
+      "verdict": "SUPPORTED",
+      "rationale": "The cited excerpts state this directly."
+     },
+     {
+      "statement_id": "claim:c2",
+      "verdict": "SUPPORTED",
+      "rationale": "The cited excerpts state this directly."
+     },
+     {
+      "statement_id": "claim:c3",
+      "verdict": "SUPPORTED",
+      "rationale": "The cited excerpts state this directly."
+     },
+     {
+      "statement_id": "claim:c4",
+      "verdict": "SUPPORTED",
+      "rationale": "The cited excerpts state this directly."
+     },
+     {
+      "statement_id": "claim:c5",
+      "verdict": "SUPPORTED",
+      "rationale": "The cited excerpts state this directly."
+     },
+     {
+      "statement_id": "summary",
+      "verdict": "SUPPORTED",
+      "rationale": "The cited excerpts state this directly."
+     },
+     {
+      "statement_id": "action",
+      "verdict": "SUPPORTED",
+      "rationale": "The cited excerpts state this directly."
+     },
+     {
+      "statement_id": "announcement:k:slack:C_AUDIO_ANNOUNCEMENTS:1790892000.000901:1c524924",
+      "verdict": "SUPPORTED",
+      "rationale": "The cited excerpts state this directly."
+     },
+     {
+      "statement_id": "resolution:member_8ce5853bbd6b1a416c28b76f",
+      "verdict": "SUPPORTED",
+      "rationale": "The cited excerpts state this directly."
+     },
+     {
+      "statement_id": "resolution:member_e0275e7d53c557361ca40bd1",
+      "verdict": "SUPPORTED",
+      "rationale": "The cited excerpts state this directly."
+     },
+     {
+      "statement_id": "resolution:member_943da52557c55ff31ee76f89",
+      "verdict": "SUPPORTED",
+      "rationale": "The cited excerpts state this directly."
+     },
+     {
+      "statement_id": "resolution:member_61f4987d5eb6b1ccb2894091",
+      "verdict": "SUPPORTED",
+      "rationale": "The cited excerpts state this directly."
+     },
+     {
+      "statement_id": "severity:rationale",
+      "verdict": "SUPPORTED",
+      "rationale": "The cited excerpts state this directly."
+     },
+     {
+      "statement_id": "severity:signal:HIGH[0]",
+      "verdict": "SUPPORTED",
+      "rationale": "The cited excerpts state this directly."
+     },
+     {
+      "statement_id": "severity:signal:HIGH[3]",
+      "verdict": "SUPPORTED",
+      "rationale": "The cited excerpts state this directly."
+     },
+     {
+      "statement_id": "reporter:U019",
+      "verdict": "SUPPORTED",
+      "rationale": "The cited excerpts state this directly."
+     },
+     {
+      "statement_id": "reporter:U018",
+      "verdict": "SUPPORTED",
+      "rationale": "The cited excerpts state this directly."
+     },
+     {
+      "statement_id": "reporter:U020",
+      "verdict": "SUPPORTED",
+      "rationale": "The cited excerpts state this directly."
+     },
+     {
+      "statement_id": "reporter:U013",
+      "verdict": "SUPPORTED",
+      "rationale": "The cited excerpts state this directly."
+     }
+    ]
+   }
+  },
+  "json_vs_prose": {
+   "draft": {
+    "summary": "Tutors ask whether an accurate prose answer beats a response that follows a required JSON format.",
+    "reasoning": "Current guidance scores the two dimensions separately and sends unsettled pairs to the TL; no case decision is recorded for these tasks.",
+    "claims": [
+     {
+      "claim_id": "c1",
+      "kind": "INCIDENT_FACT",
+      "evidence_ids": [
+       "m:C_RP_GENERAL:1790856332.000018",
+       "m:C_RP_QA:1790913824.000016",
+       "m:C_RP_GENERAL:1790933024.000339"
+      ],
+      "text": "Tutors ask whether an accurate prose response beats one that follows an explicitly required JSON format; the TL asked for the exact formatting instruction before weighing the responses."
+     },
+     {
+      "claim_id": "c2",
+      "kind": "GUIDANCE",
+      "evidence_ids": [
+       "k:response-preference-faq@1.1:fa9b6a3d"
+      ],
+      "quote": "No universal tie-break rule is established for competing accuracy and instruction-following defects.",
+      "text": "Score format adherence and accuracy separately; no universal tie-break exists, and pairs the guidance does not settle go to TL confirmation with the prompt and both responses."
+     }
+    ],
+    "gaps": [
+     {
+      "gap_id": "g1",
+      "need": "PRIOR_DECISION_OUTCOME",
+      "description": "Has a TL ruled on JSON versus prose before?",
+      "follow_up": {
+       "query": "TL decision on JSON required format versus accurate prose preference rule",
+       "source_types": [
+        "decision"
+       ],
+       "version_mode": "history"
+      }
+     },
+     {
+      "gap_id": "g2",
+      "need": "OTHER",
+      "description": "The exact prompt and both responses for RP-3824 are not in the evidence."
+     }
+    ],
+    "evidence_sufficiency": "SUFFICIENT",
+    "proposed_action": {
+     "action_type": "NO_ACTION",
+     "support_claim_ids": [
+      "c2"
+     ],
+     "draft_text": "Hold for TL confirmation; request the exact prompt and both responses for RP-3824."
+    },
+    "severity": {
+     "level": "MEDIUM",
+     "rationale": "The same format-versus-accuracy question recurs across three threads and affects how pairs are scored.",
+     "signals": [
+      {
+       "level": "MEDIUM",
+       "signal_index": 0,
+       "signal_text": "Recurring confusion about the same rule, tool behavior, or scoring criterion that suggests meaningful workflow or labeling impact",
+       "support": "Three threads ask how to weigh a required format against accuracy.",
+       "evidence_ids": [
+        "m:C_RP_GENERAL:1790856332.000018",
+        "m:C_RP_QA:1790913824.000016",
+        "m:C_RP_GENERAL:1790932885.000015"
+       ]
+      }
+     ]
+    },
+    "confidence": 0.7,
+    "open_confirmation": "OPEN",
+    "open_confirmation_detail": "Whether accurate prose outweighs the required JSON format in RP-3824 needs a TL decision; current guidance defines no universal ordering and the exact prompt is not in the evidence.",
+    "resolution": [
+     {
+      "member_id": "member_6b0a2b0015aa474bf50996d0",
+      "state": "UNRESOLVED",
+      "evidence_ids": [
+       "m:C_RP_GENERAL:1790856332.000018"
+      ],
+      "basis": "No answer in the thread; the TL asks for the exact formatting instruction before weighing the responses."
+     },
+     {
+      "member_id": "member_225803f43142caa5d3c165cf",
+      "state": "UNRESOLVED",
+      "evidence_ids": [
+       "m:C_RP_QA:1790913824.000016",
+       "m:C_RP_QA:1790913880.000113",
+       "m:C_RP_QA:1790913921.000226"
+      ],
+      "basis": "No answer in the thread; the TL asks for the exact formatting instruction before weighing the responses."
+     },
+     {
+      "member_id": "member_b0a066a9dcba609a9aebaec9",
+      "state": "UNRESOLVED",
+      "evidence_ids": [
+       "m:C_RP_GENERAL:1790932885.000015",
+       "m:C_RP_GENERAL:1790932935.000113",
+       "m:C_RP_GENERAL:1790932979.000226",
+       "m:C_RP_GENERAL:1790933024.000339"
+      ],
+      "basis": "No answer in the thread; the TL asks for the exact formatting instruction before weighing the responses."
+     }
+    ]
+   },
+   "revision": {
+    "summary": "Tutors ask whether an accurate prose answer beats a response that follows a required JSON format.",
+    "reasoning": "Current guidance scores the two dimensions separately and sends unsettled pairs to the TL; no case decision is recorded for these tasks.",
+    "claims": [
+     {
+      "claim_id": "c1",
+      "kind": "INCIDENT_FACT",
+      "evidence_ids": [
+       "m:C_RP_GENERAL:1790856332.000018",
+       "m:C_RP_QA:1790913824.000016",
+       "m:C_RP_GENERAL:1790933024.000339"
+      ],
+      "text": "Tutors ask whether an accurate prose response beats one that follows an explicitly required JSON format; the TL asked for the exact formatting instruction before weighing the responses."
+     },
+     {
+      "claim_id": "c2",
+      "kind": "GUIDANCE",
+      "evidence_ids": [
+       "k:response-preference-faq@1.1:fa9b6a3d"
+      ],
+      "quote": "No universal tie-break rule is established for competing accuracy and instruction-following defects.",
+      "text": "Score format adherence and accuracy separately; no universal tie-break exists, and pairs the guidance does not settle go to TL confirmation with the prompt and both responses."
+     },
+     {
+      "claim_id": "c3",
+      "kind": "HISTORY",
+      "evidence_ids": [
+       "k:rp-format-rule-rejected@1.0:59d718d7"
+      ],
+      "quote": "Rejection also does not create a prose-first rule.",
+      "text": "On 2026-09-23 the TL rejected a universal JSON-first rule; the rejection did not create a prose-first rule, and unresolved trade-offs stay open for TL confirmation."
+     },
+     {
+      "claim_id": "c4",
+      "kind": "HISTORY",
+      "evidence_ids": [
+       "k:rp-audit-manifest-approval@1.0:67038303"
+      ],
+      "text": "The JSON audit-manifest approval concerns export files and creates no preference rule for scored responses."
+     }
+    ],
+    "gaps": [
+     {
+      "gap_id": "g2",
+      "need": "OTHER",
+      "description": "The exact prompt and both responses for RP-3824 are not in the evidence."
+     }
+    ],
+    "evidence_sufficiency": "SUFFICIENT",
+    "proposed_action": {
+     "action_type": "NO_ACTION",
+     "support_claim_ids": [
+      "c2",
+      "c3"
+     ],
+     "draft_text": "Hold for TL confirmation; request the exact prompt and both responses for RP-3824."
+    },
+    "severity": {
+     "level": "MEDIUM",
+     "rationale": "The same format-versus-accuracy question recurs across three threads and affects how pairs are scored.",
+     "signals": [
+      {
+       "level": "MEDIUM",
+       "signal_index": 0,
+       "signal_text": "Recurring confusion about the same rule, tool behavior, or scoring criterion that suggests meaningful workflow or labeling impact",
+       "support": "Three threads ask how to weigh a required format against accuracy.",
+       "evidence_ids": [
+        "m:C_RP_GENERAL:1790856332.000018",
+        "m:C_RP_QA:1790913824.000016",
+        "m:C_RP_GENERAL:1790932885.000015"
+       ]
+      }
+     ]
+    },
+    "confidence": 0.7,
+    "open_confirmation": "OPEN",
+    "open_confirmation_detail": "Whether accurate prose outweighs the required JSON format in RP-3824 needs a TL decision; current guidance defines no universal ordering and the exact prompt is not in the evidence.",
+    "resolution": [
+     {
+      "member_id": "member_6b0a2b0015aa474bf50996d0",
+      "state": "UNRESOLVED",
+      "evidence_ids": [
+       "m:C_RP_GENERAL:1790856332.000018"
+      ],
+      "basis": "No answer in the thread; the TL asks for the exact formatting instruction before weighing the responses."
+     },
+     {
+      "member_id": "member_225803f43142caa5d3c165cf",
+      "state": "UNRESOLVED",
+      "evidence_ids": [
+       "m:C_RP_QA:1790913824.000016",
+       "m:C_RP_QA:1790913880.000113",
+       "m:C_RP_QA:1790913921.000226"
+      ],
+      "basis": "No answer in the thread; the TL asks for the exact formatting instruction before weighing the responses."
+     },
+     {
+      "member_id": "member_b0a066a9dcba609a9aebaec9",
+      "state": "UNRESOLVED",
+      "evidence_ids": [
+       "m:C_RP_GENERAL:1790932885.000015",
+       "m:C_RP_GENERAL:1790932935.000113",
+       "m:C_RP_GENERAL:1790932979.000226",
+       "m:C_RP_GENERAL:1790933024.000339"
+      ],
+      "basis": "No answer in the thread; the TL asks for the exact formatting instruction before weighing the responses."
+     }
+    ]
+   },
+   "tot": {
+    "candidates": [
+     {
+      "candidate_id": "A",
+      "action_type": "NO_ACTION",
+      "evidence_ids": [
+       "k:response-preference-faq@1.1:fa9b6a3d",
+       "k:rp-format-rule-rejected@1.0:59d718d7"
+      ],
+      "draft_text": "Hold for TL confirmation with the exact prompt and both responses.",
+      "evidence_support": "STRONG",
+      "applicability": "MIXED",
+      "severity_fit": "FITS",
+      "rationale": "Matches the FAQ and the rejected JSON-first rule; does not decide the case without the materials."
+     },
+     {
+      "candidate_id": "B",
+      "action_type": "POST_ALIGNMENT",
+      "evidence_ids": [
+       "k:rp-format-rule-rejected@1.0:59d718d7"
+      ],
+      "draft_text": "Announce that the JSON-formatted response wins whenever JSON is required.",
+      "evidence_support": "WEAK",
+      "applicability": "CURRENT",
+      "severity_fit": "PARTIAL",
+      "rationale": "Would settle the question quickly, but the TL rejected exactly this universal rule."
+     },
+     {
+      "candidate_id": "C",
+      "action_type": "SCHEDULE_ALIGNMENT",
+      "evidence_ids": [
+       "k:response-preference-instructions@1.1:a71c54c7",
+       "k:rp-tie-calibration-outcome@1.0:053fe48a"
+      ],
+      "draft_text": "Short calibration: score format and accuracy separately on the three reported pairs before the TL decides.",
+      "evidence_support": "PARTIAL",
+      "applicability": "MIXED",
+      "severity_fit": "FITS",
+      "rationale": "Calibration helped in a prior sample but did not settle a format-versus-accuracy pair."
+     }
+    ],
+    "preferred_candidate_id": "A",
+    "close_call": false,
+    "rationale": "A follows current guidance and history; B restates a rejected rule; C is useful but secondary."
+   },
+   "grounding": {
+    "verdicts": [
+     {
+      "statement_id": "claim:c1",
+      "verdict": "SUPPORTED",
+      "rationale": "The cited excerpts state this directly."
+     },
+     {
+      "statement_id": "claim:c2",
+      "verdict": "SUPPORTED",
+      "rationale": "The cited excerpts state this directly."
+     },
+     {
+      "statement_id": "claim:c3",
+      "verdict": "SUPPORTED",
+      "rationale": "The cited excerpts state this directly."
+     },
+     {
+      "statement_id": "claim:c4",
+      "verdict": "SUPPORTED",
+      "rationale": "The cited excerpts state this directly."
+     },
+     {
+      "statement_id": "summary",
+      "verdict": "SUPPORTED",
+      "rationale": "The cited excerpts state this directly."
+     },
+     {
+      "statement_id": "action",
+      "verdict": "SUPPORTED",
+      "rationale": "The cited excerpts state this directly."
+     },
+     {
+      "statement_id": "resolution:member_6b0a2b0015aa474bf50996d0",
+      "verdict": "SUPPORTED",
+      "rationale": "The cited excerpts state this directly."
+     },
+     {
+      "statement_id": "resolution:member_225803f43142caa5d3c165cf",
+      "verdict": "SUPPORTED",
+      "rationale": "The cited excerpts state this directly."
+     },
+     {
+      "statement_id": "resolution:member_b0a066a9dcba609a9aebaec9",
+      "verdict": "SUPPORTED",
+      "rationale": "The cited excerpts state this directly."
+     },
+     {
+      "statement_id": "severity:rationale",
+      "verdict": "SUPPORTED",
+      "rationale": "The cited excerpts state this directly."
+     },
+     {
+      "statement_id": "severity:signal:MEDIUM[0]",
+      "verdict": "SUPPORTED",
+      "rationale": "The cited excerpts state this directly."
+     },
+     {
+      "statement_id": "alternative:A",
+      "verdict": "SUPPORTED",
+      "rationale": "The cited excerpts state this directly."
+     },
+     {
+      "statement_id": "alternative:B",
+      "verdict": "UNSUPPORTED",
+      "rationale": "The cited record rejects exactly this universal rule."
+     },
+     {
+      "statement_id": "alternative:C",
+      "verdict": "PARTIALLY_SUPPORTED",
+      "rationale": "Calibration helped once but did not settle a format-versus-accuracy pair."
+     }
+    ]
+   }
+  },
+  "fictional_pii": {
+   "draft": {
+    "summary": "Tutors ask whether made-up phone numbers in fictional stories need QN, and see two differing versions of the guidance.",
+    "reasoning": "The dated clarification and the current FAQ answer the question; the older help-page section is superseded, which explains the differing versions.",
+    "claims": [
+     {
+      "claim_id": "c1",
+      "kind": "INCIDENT_FACT",
+      "evidence_ids": [
+       "m:C_SAFETY_GENERAL:1790890012.001700",
+       "m:C_SAFETY_GENERAL:1790911772.000059",
+       "m:C_SAFETY_QA:1790934673.000061"
+      ],
+      "quote": "I have two versions of the note open and they seem to differ.",
+      "text": "Three threads ask whether a made-up phone number in a fictional story requires QN; one QA tutor has two differing versions of the note open."
+     },
+     {
+      "claim_id": "c2",
+      "kind": "GUIDANCE",
+      "evidence_ids": [
+       "k:safety-fictional-pii-clarification@1.0:3682998e",
+       "k:safety-classification-faq@1.1:6025b955",
+       "k:safety-pii-clarification-post@1.0:8dc35766"
+      ],
+      "text": "Current rule SC-PII-2026-09-10 (effective 2026-09-10): clearly fictional placeholder phone numbers or emails alone do not require QN when no real individual is identifiable; ambiguity or another trigger still needs review."
+     },
+     {
+      "claim_id": "c3",
+      "kind": "HISTORY",
+      "evidence_ids": [
+       "k:safety-qn-help-page@1.0:983cdeaa",
+       "k:safety-fictional-pii-clarification@1.0:3682998e"
+      ],
+      "text": "The QN help page v1.0 'Contact details' section quarantined any phone number even when made up; that section is superseded by SC-PII-2026-09-10."
+     }
+    ],
+    "gaps": [
+     {
+      "gap_id": "g1",
+      "need": "PRIOR_DECISION_OUTCOME",
+      "description": "Was the stale help-page copy corrected after the approved documentation sync?",
+      "follow_up": {
+       "query": "help page documentation update outcome stale copy",
+       "source_types": [
+        "decision"
+       ],
+       "version_mode": "history"
+      }
+     }
+    ],
+    "evidence_sufficiency": "SUFFICIENT",
+    "proposed_action": {
+     "action_type": "UPDATE_DOCUMENTATION",
+     "support_claim_ids": [
+      "c2"
+     ],
+     "targets": [
+      {
+       "evidence_id": "k:safety-qn-help-page@1.0:983cdeaa",
+       "section": "Contact details",
+       "change": "CORRECT"
+      }
+     ],
+     "draft_text": "Correct the QN help page v1.0 'Contact details' wording to match SC-PII-2026-09-10 and point tutors to the current instructions.",
+     "scope_note": "safety_classification; fictional-contact branch only; other QN controls unchanged."
+    },
+    "severity": {
+     "level": "MEDIUM",
+     "rationale": "Two documentation versions disagree on QN handling for fictional contact details, which is likely to affect how tasks are handled.",
+     "signals": [
+      {
+       "level": "MEDIUM",
+       "signal_index": 1,
+       "signal_text": "Conflicting interpretations that affect, or are reasonably likely to affect, how tasks are scored or handled",
+       "support": "A tutor has two differing versions of the note; the TL notes the posted wording may conflict with older PII examples.",
+       "evidence_ids": [
+        "m:C_SAFETY_QA:1790934673.000061",
+        "m:C_SAFETY_GENERAL:1790890151.000339"
+       ]
+      }
+     ]
+    },
+    "confidence": 0.86,
+    "open_confirmation": "NONE",
+    "source_conflicts": [
+     {
+      "evidence_ids": [
+       "k:safety-qn-help-page@1.0:983cdeaa",
+       "k:safety-fictional-pii-clarification@1.0:3682998e"
+      ],
+      "description": "Help page v1.0 quarantines any phone number; the clarification exempts verified fictional placeholders."
+     }
+    ],
+    "announcement_assessments": [
+     {
+      "evidence_id": "k:safety-fictional-pii-clarification@1.0:3682998e",
+      "relevant": true,
+      "directive": true,
+      "directive_quote": "Clearly fictional placeholder phone numbers or email addresses alone do not require QN when the surrounding evidence establishes that no real individual is identifiable.",
+      "rationale": "TL-approved, project-wide clarification effective 2026-09-10 for the fictional-contact branch of QN handling: the question asked."
+     },
+     {
+      "evidence_id": "k:safety-pii-clarification-post@1.0:8dc35766",
+      "relevant": true,
+      "directive": true,
+      "directive_quote": "Verified fictional placeholders alone do not require QN when no real individual is identifiable.",
+      "rationale": "Posted to safety_batch_08, the batch these threads come from, announcing the same clarification."
+     }
+    ],
+    "resolution": [
+     {
+      "member_id": "member_e6ba202b428b4ab5ed0c0aff",
+      "state": "UNRESOLVED",
+      "evidence_ids": [
+       "m:C_SAFETY_GENERAL:1790890012.001700",
+       "m:C_SAFETY_GENERAL:1790890065.000113",
+       "m:C_SAFETY_GENERAL:1790890106.000226",
+       "m:C_SAFETY_GENERAL:1790890151.000339"
+      ],
+      "basis": "The TL holds a general-rule update until the current rule is verified; no handling is given."
+     },
+     {
+      "member_id": "member_17589781d46b6d4b3ee94a6b",
+      "state": "UNRESOLVED",
+      "evidence_ids": [
+       "m:C_SAFETY_GENERAL:1790911772.000059",
+       "m:C_SAFETY_GENERAL:1790911817.000113",
+       "m:C_SAFETY_GENERAL:1790911866.000226",
+       "m:C_SAFETY_GENERAL:1790911908.000339"
+      ],
+      "basis": "No answer in the thread; the current rule answers the question but the thread does not record it applied."
+     },
+     {
+      "member_id": "member_b26b6a34827bebdc9e52666f",
+      "state": "UNRESOLVED",
+      "evidence_ids": [
+       "m:C_SAFETY_QA:1790934673.000061",
+       "m:C_SAFETY_QA:1790934726.000113",
+       "m:C_SAFETY_QA:1790934775.000226"
+      ],
+      "basis": "No answer in the thread; the current rule answers the question but the thread does not record it applied."
+     }
+    ]
+   },
+   "revision": {
+    "summary": "Tutors ask whether made-up phone numbers in fictional stories need QN, and see two differing versions of the guidance.",
+    "reasoning": "The dated clarification and the current FAQ answer the question; the older help-page section is superseded, which explains the differing versions.",
+    "claims": [
+     {
+      "claim_id": "c1",
+      "kind": "INCIDENT_FACT",
+      "evidence_ids": [
+       "m:C_SAFETY_GENERAL:1790890012.001700",
+       "m:C_SAFETY_GENERAL:1790911772.000059",
+       "m:C_SAFETY_QA:1790934673.000061"
+      ],
+      "quote": "I have two versions of the note open and they seem to differ.",
+      "text": "Three threads ask whether a made-up phone number in a fictional story requires QN; one QA tutor has two differing versions of the note open."
+     },
+     {
+      "claim_id": "c2",
+      "kind": "GUIDANCE",
+      "evidence_ids": [
+       "k:safety-fictional-pii-clarification@1.0:3682998e",
+       "k:safety-classification-faq@1.1:6025b955",
+       "k:safety-pii-clarification-post@1.0:8dc35766"
+      ],
+      "text": "Current rule SC-PII-2026-09-10 (effective 2026-09-10): clearly fictional placeholder phone numbers or emails alone do not require QN when no real individual is identifiable; ambiguity or another trigger still needs review."
+     },
+     {
+      "claim_id": "c3",
+      "kind": "HISTORY",
+      "evidence_ids": [
+       "k:safety-qn-help-page@1.0:983cdeaa",
+       "k:safety-fictional-pii-clarification@1.0:3682998e"
+      ],
+      "text": "The QN help page v1.0 'Contact details' section quarantined any phone number even when made up; that section is superseded by SC-PII-2026-09-10."
+     },
+     {
+      "claim_id": "c4",
+      "kind": "HISTORY",
+      "evidence_ids": [
+       "k:safety-doc-sync-outcome@1.0:cd4505b9"
+      ],
+      "quote": "Still contains the blanket initial-quarantine wording",
+      "text": "A follow-up inspection found the help page v1.0 still contains the blanket wording; the approved documentation sync was only partially completed."
+     },
+     {
+      "claim_id": "c5",
+      "kind": "HISTORY",
+      "evidence_ids": [
+       "k:safety-doc-sync-outcome@1.0:cd4505b9"
+      ],
+      "quote": "Contains the scoped fictional-placeholder rule",
+      "text": "The same inspection found safety instructions v1.4 already contain the scoped rule and FAQ v1.1 names the old help page and the dated clarification; only the help page copy remains stale."
+     }
+    ],
+    "gaps": [],
+    "evidence_sufficiency": "SUFFICIENT",
+    "proposed_action": {
+     "action_type": "UPDATE_DOCUMENTATION",
+     "support_claim_ids": [
+      "c2",
+      "c4",
+      "c5"
+     ],
+     "targets": [
+      {
+       "evidence_id": "k:safety-qn-help-page@1.0:983cdeaa",
+       "section": "Contact details",
+       "change": "CORRECT"
+      }
+     ],
+     "draft_text": "Correct or retire the QN help page v1.0 'Contact details' wording so it matches SC-PII-2026-09-10. Instructions v1.4 and FAQ v1.1 already reflect the clarification and need no change.",
+     "scope_note": "safety_classification; fictional-contact branch only; other QN controls unchanged."
+    },
+    "severity": {
+     "level": "MEDIUM",
+     "rationale": "Two documentation versions disagree on QN handling for fictional contact details, which is likely to affect how tasks are handled.",
+     "signals": [
+      {
+       "level": "MEDIUM",
+       "signal_index": 1,
+       "signal_text": "Conflicting interpretations that affect, or are reasonably likely to affect, how tasks are scored or handled",
+       "support": "A tutor has two differing versions of the note; the TL notes the posted wording may conflict with older PII examples.",
+       "evidence_ids": [
+        "m:C_SAFETY_QA:1790934673.000061",
+        "m:C_SAFETY_GENERAL:1790890151.000339"
+       ]
+      }
+     ]
+    },
+    "confidence": 0.86,
+    "open_confirmation": "NONE",
+    "source_conflicts": [
+     {
+      "evidence_ids": [
+       "k:safety-qn-help-page@1.0:983cdeaa",
+       "k:safety-fictional-pii-clarification@1.0:3682998e"
+      ],
+      "description": "Help page v1.0 quarantines any phone number; the clarification exempts verified fictional placeholders."
+     }
+    ],
+    "announcement_assessments": [
+     {
+      "evidence_id": "k:safety-fictional-pii-clarification@1.0:3682998e",
+      "relevant": true,
+      "directive": true,
+      "directive_quote": "Clearly fictional placeholder phone numbers or email addresses alone do not require QN when the surrounding evidence establishes that no real individual is identifiable.",
+      "rationale": "TL-approved, project-wide clarification effective 2026-09-10 for the fictional-contact branch of QN handling: the question asked."
+     },
+     {
+      "evidence_id": "k:safety-pii-clarification-post@1.0:8dc35766",
+      "relevant": true,
+      "directive": true,
+      "directive_quote": "Verified fictional placeholders alone do not require QN when no real individual is identifiable.",
+      "rationale": "Posted to safety_batch_08, the batch these threads come from, announcing the same clarification."
+     }
+    ],
+    "resolution": [
+     {
+      "member_id": "member_e6ba202b428b4ab5ed0c0aff",
+      "state": "UNRESOLVED",
+      "evidence_ids": [
+       "m:C_SAFETY_GENERAL:1790890012.001700",
+       "m:C_SAFETY_GENERAL:1790890065.000113",
+       "m:C_SAFETY_GENERAL:1790890106.000226",
+       "m:C_SAFETY_GENERAL:1790890151.000339"
+      ],
+      "basis": "The TL holds a general-rule update until the current rule is verified; no handling is given."
+     },
+     {
+      "member_id": "member_17589781d46b6d4b3ee94a6b",
+      "state": "UNRESOLVED",
+      "evidence_ids": [
+       "m:C_SAFETY_GENERAL:1790911772.000059",
+       "m:C_SAFETY_GENERAL:1790911817.000113",
+       "m:C_SAFETY_GENERAL:1790911866.000226",
+       "m:C_SAFETY_GENERAL:1790911908.000339"
+      ],
+      "basis": "No answer in the thread; the current rule answers the question but the thread does not record it applied."
+     },
+     {
+      "member_id": "member_b26b6a34827bebdc9e52666f",
+      "state": "UNRESOLVED",
+      "evidence_ids": [
+       "m:C_SAFETY_QA:1790934673.000061",
+       "m:C_SAFETY_QA:1790934726.000113",
+       "m:C_SAFETY_QA:1790934775.000226"
+      ],
+      "basis": "No answer in the thread; the current rule answers the question but the thread does not record it applied."
+     }
+    ]
+   },
+   "grounding": {
+    "verdicts": [
+     {
+      "statement_id": "claim:c1",
+      "verdict": "SUPPORTED",
+      "rationale": "The cited excerpts state this directly."
+     },
+     {
+      "statement_id": "claim:c2",
+      "verdict": "SUPPORTED",
+      "rationale": "The cited excerpts state this directly."
+     },
+     {
+      "statement_id": "claim:c3",
+      "verdict": "SUPPORTED",
+      "rationale": "The cited excerpts state this directly."
+     },
+     {
+      "statement_id": "claim:c4",
+      "verdict": "SUPPORTED",
+      "rationale": "The cited excerpts state this directly."
+     },
+     {
+      "statement_id": "claim:c5",
+      "verdict": "SUPPORTED",
+      "rationale": "The cited excerpts state this directly."
+     },
+     {
+      "statement_id": "summary",
+      "verdict": "SUPPORTED",
+      "rationale": "The cited excerpts state this directly."
+     },
+     {
+      "statement_id": "action",
+      "verdict": "SUPPORTED",
+      "rationale": "The cited excerpts state this directly."
+     },
+     {
+      "statement_id": "announcement:k:safety-fictional-pii-clarification@1.0:3682998e",
+      "verdict": "SUPPORTED",
+      "rationale": "The cited excerpts state this directly."
+     },
+     {
+      "statement_id": "announcement:k:safety-pii-clarification-post@1.0:8dc35766",
+      "verdict": "SUPPORTED",
+      "rationale": "The cited excerpts state this directly."
+     },
+     {
+      "statement_id": "resolution:member_e6ba202b428b4ab5ed0c0aff",
+      "verdict": "SUPPORTED",
+      "rationale": "The cited excerpts state this directly."
+     },
+     {
+      "statement_id": "resolution:member_17589781d46b6d4b3ee94a6b",
+      "verdict": "SUPPORTED",
+      "rationale": "The cited excerpts state this directly."
+     },
+     {
+      "statement_id": "resolution:member_b26b6a34827bebdc9e52666f",
+      "verdict": "SUPPORTED",
+      "rationale": "The cited excerpts state this directly."
+     },
+     {
+      "statement_id": "severity:rationale",
+      "verdict": "SUPPORTED",
+      "rationale": "The cited excerpts state this directly."
+     },
+     {
+      "statement_id": "severity:signal:MEDIUM[1]",
+      "verdict": "SUPPORTED",
+      "rationale": "The cited excerpts state this directly."
+     }
+    ]
+   }
+  },
+  "korean_register": {
+   "draft": {
+    "summary": "Four threads report Korean answers that switch from 존댓말 to 반말 and ask which QA rule applies.",
+    "reasoning": "The batch-10 precedent is limited to a quoted-speaker case; same-addressee switches need Korean language QA with exact endings, as the FAQ and instructions direct.",
+    "claims": [
+     {
+      "claim_id": "c1",
+      "kind": "INCIDENT_FACT",
+      "evidence_ids": [
+       "m:C_MULTI_GENERAL:1790856672.000159",
+       "m:C_MULTI_GENERAL:1790882012.001500",
+       "m:C_MULTI_GENERAL:1790897091.000160",
+       "m:C_MULTI_QA:1790931281.000162",
+       "m:C_MULTI_QA:1790931330.000113"
+      ],
+      "quote": "The response starts in 존댓말, then addresses the same person in 반말.",
+      "text": "Four threads report Korean answers that start in 존댓말 and switch to 반말; one says the switch addresses the same person."
+     },
+     {
+      "claim_id": "c2",
+      "kind": "HISTORY",
+      "evidence_ids": [
+       "k:multi-korean-scoped-result@1.0:5b489480"
+      ],
+      "quote": "The finding does not authorize a casual switch while addressing the same person without a discourse reason.",
+      "text": "The batch-10 precedent (M10-KO-017) found no penalty only because the casual sentence was a quote from another speaker; it does not cover same-addressee switches."
+     },
+     {
+      "claim_id": "c3",
+      "kind": "GUIDANCE",
+      "evidence_ids": [
+       "k:multilingual-eval-faq@1.1:c080929d",
+       "k:multilingual-eval-instructions@1.2:e19f0e0c"
+      ],
+      "quote": "Route the case to appropriate Korean or Japanese language QA with exact sentence endings and surrounding context.",
+      "text": "Current guidance routes Korean register shifts to Korean language QA with exact endings and context; a shift alone is not a major penalty."
+     }
+    ],
+    "evidence_sufficiency": "SUFFICIENT",
+    "proposed_action": {
+     "action_type": "ROUTE_TO_LANGUAGE_SPECIALIST",
+     "support_claim_ids": [
+      "c2",
+      "c3"
+     ],
+     "draft_text": "Route the four reports with the exact Korean endings and surrounding context to Korean language QA; do not apply the batch-10 quoted-speech finding to same-addressee switches.",
+     "scope_note": "multi_batch_11; the precedent is from multi_batch_10 and scoped to one case."
+    },
+    "severity": {
+     "level": "MEDIUM",
+     "rationale": "The same register question recurs across four threads and affects scoring.",
+     "signals": [
+      {
+       "level": "MEDIUM",
+       "signal_index": 0,
+       "signal_text": "Recurring confusion about the same rule, tool behavior, or scoring criterion that suggests meaningful workflow or labeling impact",
+       "support": "Four threads ask how to score the same 존댓말-to-반말 switch.",
+       "evidence_ids": [
+        "m:C_MULTI_GENERAL:1790856672.000159",
+        "m:C_MULTI_GENERAL:1790882012.001500",
+        "m:C_MULTI_GENERAL:1790897091.000160",
+        "m:C_MULTI_QA:1790931281.000162"
+       ]
+      }
+     ]
+    },
+    "confidence": 0.76,
+    "open_confirmation": "NONE",
+    "resolution": [
+     {
+      "member_id": "member_8c54e5824868d24507d20361",
+      "state": "UNRESOLVED",
+      "evidence_ids": [
+       "m:C_MULTI_GENERAL:1790856672.000159"
+      ],
+      "basis": "No answer in the thread; reviewers ask for the exact Korean endings and context."
+     },
+     {
+      "member_id": "member_74e92dc600ce9bbc7f5bfc91",
+      "state": "UNRESOLVED",
+      "evidence_ids": [
+       "m:C_MULTI_GENERAL:1790882012.001500",
+       "m:C_MULTI_GENERAL:1790882064.000113",
+       "m:C_MULTI_GENERAL:1790882103.000226"
+      ],
+      "basis": "No answer in the thread; reviewers ask for the exact Korean endings and context."
+     },
+     {
+      "member_id": "member_fd22fa33e77a761978a1a44e",
+      "state": "UNRESOLVED",
+      "evidence_ids": [
+       "m:C_MULTI_GENERAL:1790897091.000160",
+       "m:C_MULTI_GENERAL:1790897137.000113",
+       "m:C_MULTI_GENERAL:1790897193.000226",
+       "m:C_MULTI_GENERAL:1790897232.000339"
+      ],
+      "basis": "No answer in the thread; reviewers ask for the exact Korean endings and context."
+     },
+     {
+      "member_id": "member_bac94c44f7245ade46fc1c0e",
+      "state": "UNRESOLVED",
+      "evidence_ids": [
+       "m:C_MULTI_QA:1790931281.000162",
+       "m:C_MULTI_QA:1790931330.000113"
+      ],
+      "basis": "No answer in the thread; reviewers ask for the exact Korean endings and context."
+     }
+    ]
+   },
+   "grounding": {
+    "verdicts": [
+     {
+      "statement_id": "claim:c1",
+      "verdict": "SUPPORTED",
+      "rationale": "The cited excerpts state this directly."
+     },
+     {
+      "statement_id": "claim:c2",
+      "verdict": "SUPPORTED",
+      "rationale": "The cited excerpts state this directly."
+     },
+     {
+      "statement_id": "claim:c3",
+      "verdict": "SUPPORTED",
+      "rationale": "The cited excerpts state this directly."
+     },
+     {
+      "statement_id": "summary",
+      "verdict": "SUPPORTED",
+      "rationale": "The cited excerpts state this directly."
+     },
+     {
+      "statement_id": "action",
+      "verdict": "SUPPORTED",
+      "rationale": "The cited excerpts state this directly."
+     },
+     {
+      "statement_id": "resolution:member_8c54e5824868d24507d20361",
+      "verdict": "SUPPORTED",
+      "rationale": "The cited excerpts state this directly."
+     },
+     {
+      "statement_id": "resolution:member_74e92dc600ce9bbc7f5bfc91",
+      "verdict": "SUPPORTED",
+      "rationale": "The cited excerpts state this directly."
+     },
+     {
+      "statement_id": "resolution:member_fd22fa33e77a761978a1a44e",
+      "verdict": "SUPPORTED",
+      "rationale": "The cited excerpts state this directly."
+     },
+     {
+      "statement_id": "resolution:member_bac94c44f7245ade46fc1c0e",
+      "verdict": "SUPPORTED",
+      "rationale": "The cited excerpts state this directly."
+     },
+     {
+      "statement_id": "severity:rationale",
+      "verdict": "SUPPORTED",
+      "rationale": "The cited excerpts state this directly."
+     },
+     {
+      "statement_id": "severity:signal:MEDIUM[0]",
+      "verdict": "SUPPORTED",
+      "rationale": "The cited excerpts state this directly."
+     }
+    ]
+   }
+  },
+  "submit_failure": {
+   "draft": {
+    "summary": "Four reports in rp_batch_15 describe Submit staying grey or doing nothing after the rubric is complete.",
+    "reasoning": "Current instructions require capturing task ID, field state and button behavior; an engineering handoff for earlier disabled-Submit reports is open. The resolved browser-zoom case is a different symptom.",
+    "claims": [
+     {
+      "claim_id": "c1",
+      "kind": "INCIDENT_FACT",
+      "evidence_ids": [
+       "m:C_RP_GENERAL:1790873412.001200",
+       "m:C_RP_GENERAL:1790901577.000031",
+       "m:C_RP_GENERAL:1790905337.000033",
+       "m:C_RP_GENERAL:1790923325.000034"
+      ],
+      "text": "Four reports in rp_batch_15 describe Submit staying grey or doing nothing after the rubric is complete."
+     },
+     {
+      "claim_id": "c2",
+      "kind": "GUIDANCE",
+      "evidence_ids": [
+       "k:response-preference-instructions@1.1:36683c52"
+      ],
+      "quote": "A selected label is not a completed submission until LT confirms it.",
+      "text": "Capture the task ID, required-field state, error and exact button behavior; a selected label is not a completed submission until LT confirms it."
+     },
+     {
+      "claim_id": "c3",
+      "kind": "HISTORY",
+      "evidence_ids": [
+       "k:rp-submit-engineering-handoff@1.0:6afb6e6d",
+       "k:rp-submit-engineering-handoff@1.0:d84c905d"
+      ],
+      "text": "An engineering handoff (SIM-ENG-RP-20260928-01) for earlier disabled-Submit reports is open with no fix recorded; new reports must be matched to its symptoms before linking."
+     },
+     {
+      "claim_id": "c4",
+      "kind": "HISTORY",
+      "evidence_ids": [
+       "k:rp-submit-zoom-generalization-rejected@1.0:044e436d"
+      ],
+      "text": "The earlier browser-zoom case concerned a Submit button below the visible area, not a disabled button, and was resolved for two tasks only."
+     },
+     {
+      "claim_id": "c5",
+      "kind": "INFERENCE",
+      "evidence_ids": [
+       "k:rp-submit-engineering-handoff@1.0:6afb6e6d",
+       "m:C_RP_GENERAL:1790873412.001200"
+      ],
+      "text": "These four reports share the cause already under investigation in SIM-ENG-RP-20260928-01."
+     }
+    ],
+    "evidence_sufficiency": "SUFFICIENT",
+    "proposed_action": {
+     "action_type": "ESCALATE_ENGINEERING",
+     "support_claim_ids": [
+      "c2",
+      "c3"
+     ],
+     "draft_text": "Send the four task references with field state and button behavior to engineering and ask whether they match SIM-ENG-RP-20260928-01."
+    },
+    "severity": {
+     "level": "HIGH",
+     "rationale": "Tutors cannot submit completed work, and several distinct people report it in the same batch.",
+     "signals": [
+      {
+       "level": "HIGH",
+       "signal_index": 0,
+       "signal_text": "Explicit statement that assigned work cannot be completed or evaluated",
+       "support": "A tutor reports LT does not let them submit the finished pair.",
+       "evidence_ids": [
+        "m:C_RP_GENERAL:1790923325.000034"
+       ]
+      },
+      {
+       "level": "HIGH",
+       "signal_index": 3,
+       "signal_text": "Multiple distinct people or affected tasks reporting a comparable problem within the relevant project, batch, and time window, suggesting broader disruption or systemic labeling risk. Consider the number affected relative to the known active group when that information is available; do not require an explicit statement of widespread impact",
+       "support": "Four distinct people report the same Submit failure in rp_batch_15.",
+       "evidence_ids": [
+        "m:C_RP_GENERAL:1790873412.001200",
+        "m:C_RP_GENERAL:1790901577.000031",
+        "m:C_RP_GENERAL:1790905337.000033",
+        "m:C_RP_GENERAL:1790923325.000034"
+       ]
+      }
+     ],
+     "affected_reporters": [
+      {
+       "author_id": "U014",
+       "evidence_id": "m:C_RP_GENERAL:1790873412.001200"
+      },
+      {
+       "author_id": "U015",
+       "evidence_id": "m:C_RP_GENERAL:1790901577.000031"
+      },
+      {
+       "author_id": "U020",
+       "evidence_id": "m:C_RP_GENERAL:1790905337.000033"
+      },
+      {
+       "author_id": "U002",
+       "evidence_id": "m:C_RP_GENERAL:1790923325.000034"
+      },
+      {
+       "author_id": "U004",
+       "evidence_id": "m:C_RP_GENERAL:1790923372.000113"
+      }
+     ]
+    },
+    "confidence": 0.8,
+    "open_confirmation": "NONE",
+    "resolution": [
+     {
+      "member_id": "member_92cea4511885f2a7a0f35d94",
+      "state": "UNRESOLVED",
+      "evidence_ids": [
+       "m:C_RP_GENERAL:1790873412.001200",
+       "m:C_RP_GENERAL:1790873462.000113",
+       "m:C_RP_GENERAL:1790873502.000226",
+       "m:C_RP_GENERAL:1790873555.000339"
+      ],
+      "basis": "The TL asks for task ID, field state and button behavior; submission status is still unverified."
+     },
+     {
+      "member_id": "member_ea9f29f60a529c3654667b12",
+      "state": "UNRESOLVED",
+      "evidence_ids": [
+       "m:C_RP_GENERAL:1790901577.000031",
+       "m:C_RP_GENERAL:1790901628.000113",
+       "m:C_RP_GENERAL:1790901675.000226"
+      ],
+      "basis": "The TL asks for task ID, field state and button behavior; submission status is still unverified."
+     },
+     {
+      "member_id": "member_53f1807530ac0f8700ba8fdd",
+      "state": "UNRESOLVED",
+      "evidence_ids": [
+       "m:C_RP_GENERAL:1790905337.000033",
+       "m:C_RP_GENERAL:1790905385.000113",
+       "m:C_RP_GENERAL:1790905427.000226",
+       "m:C_RP_GENERAL:1790905481.000339"
+      ],
+      "basis": "The TL asks for task ID, field state and button behavior; submission status is still unverified."
+     },
+     {
+      "member_id": "member_3b5b9d157c909625cd45bc6c",
+      "state": "UNRESOLVED",
+      "evidence_ids": [
+       "m:C_RP_GENERAL:1790923325.000034",
+       "m:C_RP_GENERAL:1790923372.000113",
+       "m:C_RP_GENERAL:1790923420.000226",
+       "m:C_RP_GENERAL:1790923471.000339"
+      ],
+      "basis": "The TL asks for task ID, field state and button behavior; submission status is still unverified."
+     }
+    ]
+   },
+   "grounding": {
+    "verdicts": [
+     {
+      "statement_id": "claim:c1",
+      "verdict": "SUPPORTED",
+      "rationale": "The cited excerpts state this directly."
+     },
+     {
+      "statement_id": "claim:c2",
+      "verdict": "SUPPORTED",
+      "rationale": "The cited excerpts state this directly."
+     },
+     {
+      "statement_id": "claim:c3",
+      "verdict": "SUPPORTED",
+      "rationale": "The cited excerpts state this directly."
+     },
+     {
+      "statement_id": "claim:c4",
+      "verdict": "SUPPORTED",
+      "rationale": "The cited excerpts state this directly."
+     },
+     {
+      "statement_id": "claim:c5",
+      "verdict": "UNSUPPORTED",
+      "rationale": "The handoff record says a similar button state does not establish the same cause; no cited source links these reports to the open incident."
+     },
+     {
+      "statement_id": "summary",
+      "verdict": "SUPPORTED",
+      "rationale": "The cited excerpts state this directly."
+     },
+     {
+      "statement_id": "action",
+      "verdict": "SUPPORTED",
+      "rationale": "The cited excerpts state this directly."
+     },
+     {
+      "statement_id": "resolution:member_92cea4511885f2a7a0f35d94",
+      "verdict": "SUPPORTED",
+      "rationale": "The cited excerpts state this directly."
+     },
+     {
+      "statement_id": "resolution:member_ea9f29f60a529c3654667b12",
+      "verdict": "SUPPORTED",
+      "rationale": "The cited excerpts state this directly."
+     },
+     {
+      "statement_id": "resolution:member_53f1807530ac0f8700ba8fdd",
+      "verdict": "SUPPORTED",
+      "rationale": "The cited excerpts state this directly."
+     },
+     {
+      "statement_id": "resolution:member_3b5b9d157c909625cd45bc6c",
+      "verdict": "SUPPORTED",
+      "rationale": "The cited excerpts state this directly."
+     },
+     {
+      "statement_id": "severity:rationale",
+      "verdict": "SUPPORTED",
+      "rationale": "The cited excerpts state this directly."
+     },
+     {
+      "statement_id": "severity:signal:HIGH[0]",
+      "verdict": "SUPPORTED",
+      "rationale": "The cited excerpts state this directly."
+     },
+     {
+      "statement_id": "severity:signal:HIGH[3]",
+      "verdict": "SUPPORTED",
+      "rationale": "The cited excerpts state this directly."
+     },
+     {
+      "statement_id": "reporter:U014",
+      "verdict": "SUPPORTED",
+      "rationale": "The cited excerpts state this directly."
+     },
+     {
+      "statement_id": "reporter:U015",
+      "verdict": "SUPPORTED",
+      "rationale": "The cited excerpts state this directly."
+     },
+     {
+      "statement_id": "reporter:U020",
+      "verdict": "SUPPORTED",
+      "rationale": "The cited excerpts state this directly."
+     },
+     {
+      "statement_id": "reporter:U002",
+      "verdict": "SUPPORTED",
+      "rationale": "The cited excerpts state this directly."
+     },
+     {
+      "statement_id": "reporter:U004",
+      "verdict": "SUPPORTED",
+      "rationale": "The cited excerpts state this directly."
+     }
+    ]
+   }
+  },
+  "repeated_ending": {
+   "draft": {
+    "summary": "Five reports describe generated audio that speaks its final sentence twice although the transcript has it once.",
+    "reasoning": "Instructions require locating the repeat and comparing the downloaded file with player output before calling it a generation defect; a prior report was kept as an observation for the same reason. No comparison is recorded here, so the cause is not established.",
+    "claims": [
+     {
+      "claim_id": "c1",
+      "kind": "INCIDENT_FACT",
+      "evidence_ids": [
+       "m:C_AUDIO_GENERAL:1790868894.000123",
+       "m:C_AUDIO_GENERAL:1790889930.000126",
+       "m:C_AUDIO_GENERAL:1790899012.002000",
+       "m:C_AUDIO_GENERAL:1790915994.000122",
+       "m:C_AUDIO_QA:1790923533.000125",
+       "m:C_AUDIO_GENERAL:1790889987.000113"
+      ],
+      "text": "Five reports describe the final sentence spoken twice while the transcript has it once; one reply says the repeat is in the exported audio."
+     },
+     {
+      "claim_id": "c2",
+      "kind": "GUIDANCE",
+      "evidence_ids": [
+       "k:audio-multimodal-instructions@1.3:7a5ab59d"
+      ],
+      "quote": "Do not call it a confirmed generation defect until the available evidence distinguishes generation from playback.",
+      "text": "Record where the phrase repeats, compare the downloaded file with player output if feasible, and do not call it a confirmed generation defect until generation is distinguished from playback."
+     },
+     {
+      "claim_id": "c3",
+      "kind": "HISTORY",
+      "evidence_ids": [
+       "k:audio-repeat-observation-review@1.0:ae0550d0"
+      ],
+      "text": "A prior repeated-ending report was retained as an observation; the TL deferred a confirmed-loop escalation and requested a file-versus-player comparison."
+     }
+    ],
+    "gaps": [
+     {
+      "gap_id": "g1",
+      "need": "OTHER",
+      "description": "No downloaded-file versus player comparison is recorded for these tasks, so the cause is not established."
+     }
+    ],
+    "evidence_sufficiency": "INSUFFICIENT",
+    "proposed_action": {
+     "action_type": "NO_ACTION",
+     "support_claim_ids": [
+      "c2",
+      "c3"
+     ],
+     "draft_text": "Keep as an observation; ask reporters to note where the repeat starts and compare the downloaded file with player output."
+    },
+    "severity": {
+     "level": "MEDIUM",
+     "rationale": "The same scoring question recurs across five reports; impact is contained.",
+     "signals": [
+      {
+       "level": "MEDIUM",
+       "signal_index": 0,
+       "signal_text": "Recurring confusion about the same rule, tool behavior, or scoring criterion that suggests meaningful workflow or labeling impact",
+       "support": "Five reports ask how to handle the same repeated-ending behavior.",
+       "evidence_ids": [
+        "m:C_AUDIO_GENERAL:1790868894.000123",
+        "m:C_AUDIO_GENERAL:1790889930.000126",
+        "m:C_AUDIO_GENERAL:1790899012.002000",
+        "m:C_AUDIO_GENERAL:1790915994.000122",
+        "m:C_AUDIO_QA:1790923533.000125"
+       ]
+      }
+     ]
+    },
+    "confidence": 0.55,
+    "open_confirmation": "NONE",
+    "resolution": [
+     {
+      "member_id": "member_7e30b0730acedd4c18fcf3a5",
+      "state": "UNRESOLVED",
+      "evidence_ids": [
+       "m:C_AUDIO_GENERAL:1790868894.000123",
+       "m:C_AUDIO_GENERAL:1790868952.000113",
+       "m:C_AUDIO_GENERAL:1790868994.000226"
+      ],
+      "basis": "No answer in the thread; reviewers ask for a downloaded-file versus player comparison."
+     },
+     {
+      "member_id": "member_9af4caa31c6ee01df21547d4",
+      "state": "UNRESOLVED",
+      "evidence_ids": [
+       "m:C_AUDIO_GENERAL:1790889930.000126",
+       "m:C_AUDIO_GENERAL:1790889987.000113"
+      ],
+      "basis": "No answer in the thread; reviewers ask for a downloaded-file versus player comparison."
+     },
+     {
+      "member_id": "member_a05733133a11c3689d715928",
+      "state": "UNRESOLVED",
+      "evidence_ids": [
+       "m:C_AUDIO_GENERAL:1790899012.002000",
+       "m:C_AUDIO_GENERAL:1790899060.000113",
+       "m:C_AUDIO_GENERAL:1790899110.000226"
+      ],
+      "basis": "No answer in the thread; reviewers ask for a downloaded-file versus player comparison."
+     },
+     {
+      "member_id": "member_dfb394ecfe8f564ef2360a40",
+      "state": "UNRESOLVED",
+      "evidence_ids": [
+       "m:C_AUDIO_GENERAL:1790915994.000122",
+       "m:C_AUDIO_GENERAL:1790916048.000113",
+       "m:C_AUDIO_GENERAL:1790916097.000226"
+      ],
+      "basis": "No answer in the thread; reviewers ask for a downloaded-file versus player comparison."
+     },
+     {
+      "member_id": "member_149de7c563b87a982aa7a9ea",
+      "state": "UNRESOLVED",
+      "evidence_ids": [
+       "m:C_AUDIO_QA:1790923533.000125",
+       "m:C_AUDIO_QA:1790923582.000113"
+      ],
+      "basis": "No answer in the thread; reviewers ask for a downloaded-file versus player comparison."
+     }
+    ]
+   },
+   "tot": {
+    "candidates": [
+     {
+      "candidate_id": "A",
+      "action_type": "NO_ACTION",
+      "evidence_ids": [
+       "k:audio-multimodal-instructions@1.3:7a5ab59d",
+       "k:audio-repeat-observation-review@1.0:ae0550d0"
+      ],
+      "draft_text": "Keep as an observation until a file-versus-player comparison exists.",
+      "evidence_support": "STRONG",
+      "applicability": "MIXED",
+      "severity_fit": "FITS",
+      "rationale": "Matches the instruction and the prior deferral."
+     },
+     {
+      "candidate_id": "B",
+      "action_type": "POST_ALIGNMENT",
+      "evidence_ids": [
+       "k:audio-multimodal-instructions@1.3:7a5ab59d"
+      ],
+      "draft_text": "Remind tutors to timestamp the repeat and compare the downloaded file with player output.",
+      "evidence_support": "PARTIAL",
+      "applicability": "CURRENT",
+      "severity_fit": "FITS",
+      "rationale": "Restates current guidance for five recent reports."
+     },
+     {
+      "candidate_id": "C",
+      "action_type": "ESCALATE_ENGINEERING",
+      "evidence_ids": [],
+      "draft_text": "Escalate a confirmed TTS generation loop.",
+      "evidence_support": "STRONG",
+      "applicability": "CURRENT",
+      "severity_fit": "PARTIAL",
+      "rationale": "Several reports describe the same loop."
+     }
+    ],
+    "preferred_candidate_id": "A",
+    "close_call": true,
+    "rationale": "A and B are both supported and differ only in whether to post a reminder."
+   },
+   "grounding": {
+    "verdicts": [
+     {
+      "statement_id": "claim:c1",
+      "verdict": "SUPPORTED",
+      "rationale": "The cited excerpts state this directly."
+     },
+     {
+      "statement_id": "claim:c2",
+      "verdict": "SUPPORTED",
+      "rationale": "The cited excerpts state this directly."
+     },
+     {
+      "statement_id": "claim:c3",
+      "verdict": "SUPPORTED",
+      "rationale": "The cited excerpts state this directly."
+     },
+     {
+      "statement_id": "summary",
+      "verdict": "SUPPORTED",
+      "rationale": "The cited excerpts state this directly."
+     },
+     {
+      "statement_id": "action",
+      "verdict": "SUPPORTED",
+      "rationale": "The cited excerpts state this directly."
+     },
+     {
+      "statement_id": "resolution:member_7e30b0730acedd4c18fcf3a5",
+      "verdict": "SUPPORTED",
+      "rationale": "The cited excerpts state this directly."
+     },
+     {
+      "statement_id": "resolution:member_9af4caa31c6ee01df21547d4",
+      "verdict": "SUPPORTED",
+      "rationale": "The cited excerpts state this directly."
+     },
+     {
+      "statement_id": "resolution:member_a05733133a11c3689d715928",
+      "verdict": "SUPPORTED",
+      "rationale": "The cited excerpts state this directly."
+     },
+     {
+      "statement_id": "resolution:member_dfb394ecfe8f564ef2360a40",
+      "verdict": "SUPPORTED",
+      "rationale": "The cited excerpts state this directly."
+     },
+     {
+      "statement_id": "resolution:member_149de7c563b87a982aa7a9ea",
+      "verdict": "SUPPORTED",
+      "rationale": "The cited excerpts state this directly."
+     },
+     {
+      "statement_id": "severity:rationale",
+      "verdict": "SUPPORTED",
+      "rationale": "The cited excerpts state this directly."
+     },
+     {
+      "statement_id": "severity:signal:MEDIUM[0]",
+      "verdict": "SUPPORTED",
+      "rationale": "The cited excerpts state this directly."
+     },
+     {
+      "statement_id": "alternative:A",
+      "verdict": "SUPPORTED",
+      "rationale": "The cited excerpts state this directly."
+     },
+     {
+      "statement_id": "alternative:B",
+      "verdict": "SUPPORTED",
+      "rationale": "The cited excerpts state this directly."
+     }
+    ]
+   }
+  },
+  "control_unsupported_payroll": {
+   "draft": {
+    "summary": "No retrieved source addresses contractor payroll deadlines.",
+    "reasoning": "The retrieved audio guidance concerns playback, scoring and onboarding; none mentions payroll.",
+    "claims": [],
+    "gaps": [
+     {
+      "gap_id": "g1",
+      "need": "OTHER",
+      "description": "No payroll source exists in the project knowledge."
+     }
+    ],
+    "evidence_sufficiency": "UNSUPPORTED",
+    "proposed_action": null,
+    "severity": {
+     "level": "UNKNOWN",
+     "rationale": "No incident evidence."
+    },
+    "confidence": 0.9,
+    "open_confirmation": "NONE"
+   }
+  }
+ }
+}

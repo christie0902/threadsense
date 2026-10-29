@@ -1,11 +1,16 @@
 """Deterministic chunks with full provenance; one chunk corpus for dense and BM25.
 
 Guidelines/FAQ: one chunk per level-2 section, prefixed with the document title.
-Decisions/announcements: the whole record when it fits; otherwise consecutive
-sections packed under a header that repeats the record kind and its decision,
-execution and outcome states, so proposed advice stays distinguishable from the
-TL response. Oversized units split at paragraph, line, sentence, then word
-boundaries. Nothing is truncated: every chunk is checked against the token limit.
+An oversized FAQ section splits into question/answer units (one per chunk); an
+answer that still does not fit continues in further chunks that each repeat its
+exact question line. Decisions/announcements: the whole record when it fits;
+otherwise consecutive sections packed under a header that repeats the record kind
+and its decision, execution and outcome states, so proposed advice stays
+distinguishable from the TL response. Other oversized units split at paragraph,
+line, sentence, then word boundaries. Lines repeated for context (a continued
+section heading, a continued FAQ question) are listed in each chunk's
+repeated_context, so they are never mistaken for duplicated source content.
+Nothing is truncated: every chunk is checked against the token limit.
 """
 import re
 
@@ -92,18 +97,45 @@ def _split_text(text, budget, count):
     return pieces + ([' '.join(current)] if current else [])
 
 
+QUESTION = re.compile(r'^### ', re.M)
+
+
+def _faq_pieces(text, budget, count):
+    """Question/answer units of one FAQ section body; a split answer repeats its question.
+
+    Returns (piece, repeated_lines) pairs. Text before the first question stays its own unit.
+    """
+    starts = [m.start() for m in QUESTION.finditer(text)]
+    if not starts:
+        return [(piece, []) for piece in _split_text(text, budget, count)]
+    units = [u.strip() for u in (text[a:b] for a, b in zip([0, *starts], [*starts, len(text)])) if u.strip()]
+    pieces = []
+    for unit in units:
+        if count(unit) <= budget:
+            pieces.append((unit, []))
+            continue
+        question, answer = (unit.split('\n', 1) + [''])[:2]
+        if not question.startswith('### '):
+            pieces += [(piece, []) for piece in _split_text(unit, budget, count)]
+            continue
+        parts = _split_text(answer, budget - count(question) - 2, count)
+        pieces += [(f'{question}\n{part}', [question] if i else []) for i, part in enumerate(parts)]
+    return pieces
+
+
 def _pack(units, header, count, limit):
-    """Greedily pack (sections, text) units into chunks within the limit."""
-    chunks, current_sections, current = [], [], []
-    for unit_sections, text in units:
+    """Greedily pack (sections, text, repeated) units into chunks within the limit."""
+    chunks, current_sections, current, repeated = [], [], [], []
+    for unit_sections, text, unit_repeated in units:
         candidate = '\n\n'.join([header, *current, text])
         if current and count(candidate) > limit:
-            chunks.append((current_sections, current))
-            current_sections, current = [], []
+            chunks.append((current_sections, current, repeated))
+            current_sections, current, repeated = [], [], []
         current_sections = [*current_sections, *[s for s in unit_sections if s not in current_sections]]
         current.append(text)
+        repeated = [*repeated, *unit_repeated]
     if current:
-        chunks.append((current_sections, current))
+        chunks.append((current_sections, current, repeated))
     return chunks
 
 
@@ -118,26 +150,32 @@ def chunk_document(document, count, limit):
         parts[0] = ('Preamble' if len(parts) > 1 else None, parts[0][1])
     whole = '\n\n'.join([header, document['text'].strip()])
     if collection == 'decisions' and count(whole) <= limit:
-        planned = [([h for h, _ in parts if h], [document['text'].strip()])]
+        planned = [([h for h, _ in parts if h], [document['text'].strip()], [])]
     else:
         units = []
         for heading, text in parts:
             text = text.strip()
             label = [heading] if heading else []
             if count('\n\n'.join([header, text])) <= limit:
-                units.append((label, text))
+                units.append((label, text, []))
                 continue
             first, rest = (text.split('\n', 1) + [''])[:2] if heading else ('', text)
-            pieces = _split_text(rest, limit - count(header) - count(first) - 8, count)
-            units += [(label, f"{first} (part {i}/{len(pieces)})\n{piece}" if heading else piece)
-                      for i, piece in enumerate(pieces, 1)]
+            budget = limit - count(header) - count(first) - 8
+            pieces = _faq_pieces(rest, budget, count) if collection == 'faq' and heading else \
+                [(piece, []) for piece in _split_text(rest, budget, count)]
+            for i, (piece, repeated) in enumerate(pieces, 1):
+                if not heading:
+                    units.append((label, piece, repeated))
+                    continue
+                line = f"{first} (part {i}/{len(pieces)})"  # Part 1 carries the source heading itself.
+                units.append((label, f"{line}\n{piece}", [line, *repeated] if i > 1 else repeated))
         if collection == 'decisions':
             planned = _pack(units, header, count, limit)
         else:
-            planned = [(label, [text]) for label, text in units]
+            planned = [(label, [text], repeated) for label, text, repeated in units]
     supersession = meta['source_metadata'].get('supersession') or {'supersedes': [], 'superseded_by': []}
     chunks = []
-    for index, (chunk_sections, texts) in enumerate(planned):
+    for index, (chunk_sections, texts, repeated) in enumerate(planned):
         body = '\n\n'.join(texts)
         indexed = '\n\n'.join([header, body])
         tokens = count(indexed)
@@ -149,7 +187,7 @@ def chunk_document(document, count, limit):
             'chunk_id': 'chunk_' + digest([CHUNKING_VERSION, document['document_id'], document['version_id'], index])[:32],
             'collection': collection, 'document_id': document['document_id'], 'version_id': document['version_id'],
             'chunk_index': index, 'chunk_count': len(planned), 'sections': chunk_sections,
-            'text': body, 'indexed_text': indexed, 'token_count': tokens,
+            'text': body, 'indexed_text': indexed, 'token_count': tokens, 'repeated_context': repeated,
             'citation': citation(document, chunk_sections), 'metadata': projection(document),
             'supersession': {'chunk_superseded_by': superseded, 'document_supersedes': supersession['supersedes'],
                              'document_superseded_by': supersession['superseded_by']},

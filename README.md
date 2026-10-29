@@ -134,6 +134,19 @@ The build is offline and needs the pinned `all-MiniLM-L6-v2` revision in the loc
 Hugging Face cache; add `--allow-download` once to fetch it. See
 [Milestone 3](docs/agent3-plan.md#milestone-3-implemented-shared-hybrid-retrieval).
 
+Agent 3 Advisor pilot (six handoff topics plus a negative control):
+
+```sh
+uv run --locked python scripts/run_agent3_pilot.py      # zero calls: freshness check, topics, initial retrieval, budget
+uv run --locked python scripts/run_agent3_pilot.py --scripted tests/fixtures/agent3_pilot_scripted_judgments.json --write <new-dir>
+```
+
+`--scripted` is offline: prepared semantic judgments exercise the deterministic checks and
+routing. `--run --write <new-dir>` makes **paid** model calls through CrewAI (bounded: at
+most 4 per topic, 28 per run, one HTTP request per call with no retries; the zero-call default
+prints the model and limits). See
+[Milestone 4](docs/agent3-plan.md#milestone-4-implemented-bounded-advisor-pilot).
+
 Inspect the historical effective handoff without regenerating it:
 
 ```powershell

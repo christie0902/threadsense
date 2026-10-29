@@ -70,6 +70,24 @@ def test_chunks_fit_limit_never_truncate_and_keep_decision_context():
     assert ['Playback and unavailable content'] in sections and all(len(s) == 1 for s in sections)
 
 
+def test_faq_answer_continuations_keep_their_question():
+    # Regression: v1 put the SC-PII-2026-09-10 paragraph in a chunk without its question.
+    documents, _ = collect(KNOWLEDGE_ROOT, FIXTURE_ROOT, FIXTURE_CUTOFF)
+    faq = next(d for d in documents if d['metadata']['source_metadata'].get('authoring', {}).get('document_id') == 'safety-classification-faq')
+    question = '### Q: Do fake phone numbers or emails in a story require QN?'
+    continued = 0
+    for limit in (45, 60, 80, 120):
+        encoder = HashEncoder(max_tokens=limit)
+        chunks = chunk_document(faq, encoder.count, limit)
+        check_chunks(faq, chunks, limit)
+        answer = [c for c in chunks if 'SC-PII-2026-09-10' in c['text'] or 'Verified fictional placeholders' in c['text']]
+        assert answer and all(question in c['text'].split('\n') for c in answer), limit
+        continued += sum(question in c['repeated_context'] for c in answer)
+        # Each question keeps its own answer: no chunk mixes two questions' text across a split.
+        assert all(c['text'].count('### Q:') <= 1 for c in chunks if c['chunk_count'] > 1 and c['sections'] == ['Quarantine and QN'])
+    assert continued, 'some limit must force the answer to continue across chunks'
+
+
 def test_chunk_ids_are_deterministic_and_path_independent(tmp_path):
     copy = tmp_path/'elsewhere/knowledge'
     shutil.copytree(KNOWLEDGE_ROOT, copy, ignore=shutil.ignore_patterns('__pycache__'))
@@ -264,3 +282,13 @@ def test_queries_are_read_only(built):
     assert sources_snapshot() == sources
     assert {p: p.read_bytes() for p in index.glob('*.json')} == files
     assert retriever.staleness() == 'CURRENT'
+
+
+def test_build_releases_its_chroma_client(tmp_path):
+    """The build closes its Chroma client: a cached build system reused by an in-process open intermittently
+    failed with "Nothing found on disk" (tests/repro_chroma_reopen.py: 10/320 cycles unclosed, 0/260 closed)."""
+    from chromadb.api.shared_system_client import SharedSystemClient
+    index = tmp_path/'index'
+    build_index(index, encoder=HashEncoder())
+    assert str(index/'chroma') not in SharedSystemClient._identifier_to_system
+    Retriever(index, encoder=HashEncoder())  # Opens with a fresh system.
