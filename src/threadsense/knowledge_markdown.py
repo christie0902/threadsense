@@ -126,7 +126,12 @@ def lifecycle(front):
 
 def markdown_source(path):
     """Parse one Markdown knowledge file into a validated SourceRecord."""
-    front, body = split_front_matter(Path(path).read_text(encoding='utf-8-sig'))
+    return markdown_text_source(Path(path).read_text(encoding='utf-8-sig'))
+
+
+def markdown_text_source(text):
+    """markdown_source for text already in memory (e.g. a TL decision checked before it is saved)."""
+    front, body = split_front_matter(text)
     missing = [key for key in REQUIRED if key not in front]
     _check(not missing, f'Missing front matter: {missing}.')
     _check(front['authoring_schema'] == AUTHORING_SCHEMA, f"Unsupported authoring schema {front['authoring_schema']!r}.")

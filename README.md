@@ -9,7 +9,7 @@ splitting, concise reusable topic names and explicit outliers. It consumes Agent
 summaries/questions, preserves full canonical records and all 49 inherited review
 obligations passively, and uses one strict request per group without retries.
 Prospective exports leave severity UNKNOWN/UNASSESSED and defer assessment to Agent 3.
-The frozen v7 release retains its historical deterministic metadata. Agent 3 will own research, answer/policy
+The frozen v7 release retains its historical deterministic metadata. Agent 3 owns research, answer/policy
 reassessment, final severity and recommendations.
 
 Agent 2 v7 is **complete with nonblocking review**: 90 CONSOLIDATED groups,
@@ -18,7 +18,13 @@ four-group pilot was reused; 86 new requests completed, with no failed, interrup
 or unprocessed groups. Three naming cautions remain in the reviewed effective view.
 See the [Agent 2 summary](docs/Agent2_Summary.md) and the
 [current routing and knowledge-source guide](docs/announcement-routing.md).
-Historical v6/v7 outputs remain preserved. Agent 3 and the dashboard remain planned.
+Historical v6/v7 outputs remain preserved.
+
+Agent 3 (2026-10-30): a bounded CrewAI Advisor produces AdviceCards, live-validated on the six pilot topics and,
+for the current prompts, on two topics (audio, Submit); a LangGraph overnight workflow runs the whole handoff,
+validated offline with scripted and placeholder judgments (no full live run yet); a local dashboard shows a run's
+morning brief and records team-lead decisions, validated offline. The validation level of each part is in the
+[Agent 3 plan](docs/agent3-plan.md).
 
 ## Maintained documentation
 
@@ -159,6 +165,19 @@ handoff: `scripts/run_agent3_overnight.py --cutoff <ISO>` (zero calls: plan and 
 morning brief (`morning_brief.json`/`.md`), cards, Model Review Queue, accounting and diagnostics. See
 [Milestone 4](docs/agent3-plan.md#milestone-4-implemented-bounded-advisor-pilot).
 
+Morning-brief dashboard (local, no model calls, no posting; TL decisions go to an ignored SQLite store):
+
+```sh
+npm --prefix web ci && npm --prefix web run build      # once: build the frontend into web/dist
+uv run --locked python scripts/run_dashboard.py        # http://127.0.0.1:8000 (add --include-test-fixtures for the labelled fixture run)
+uv run --locked python scripts/build_decision_snapshot.py --cutoff <ISO> --index-dir .index/retrieval_tl_<date> [--build]
+npm --prefix web run test:ui                           # browser tests (system Chrome)
+```
+
+Approving a card records a decision only; nothing is executed or posted. Saved decisions reach retrieval only
+through a new snapshot at a later cutoff. See
+[Milestone 6](docs/agent3-plan.md#milestone-6-implemented-2026-10-30-morning-brief-dashboard-and-tl-decision-loop).
+
 Inspect the historical effective handoff without regenerating it:
 
 ```powershell
@@ -194,6 +213,8 @@ the frozen baselines when preparing any future run.
 | Retained benchmark | `scripts/run_prose_comparison_experiment.py` |
 | Dataset authoring | `scripts/generate_thread_blueprint.py`, `scripts/generate_slack_fixtures.py` |
 | Dataset checks | `scripts/validate_topic_catalog.py`, `scripts/validate_slack_fixtures.py`, `scripts/validate_threadsense_dataset.py` |
+| Agent 3 | `scripts/run_agent3_pilot.py`, `scripts/run_agent3_overnight.py` (zero calls by default; `--run` is paid) |
+| Dashboard / TL decisions | `scripts/run_dashboard.py`, `scripts/build_decision_snapshot.py`, `web/` |
 
 Agent 2 preparation is read-only unless `--write` or `--prepare` is supplied.
 Dataset authoring writes files; it supports reproducibility, not regeneration of

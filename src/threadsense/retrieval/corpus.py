@@ -9,7 +9,7 @@ from pathlib import Path
 
 from threadsense.knowledge_corpus import discover
 from threadsense.knowledge_sources import extract_announcement, iter_documents, normalize_document
-from threadsense.routing import IDENTITY, ROOT, digest
+from threadsense.routing import IDENTITY, ROOT, aware, digest
 from threadsense.source_ingestion import existing_canonical_members, fixture_routes
 
 
@@ -54,12 +54,32 @@ def current_day_announcements(fixture_root, cutoff, canonical_members=None):
     return documents, receipt
 
 
-def collect(knowledge_root, fixture_root, cutoff, canonical_members=None):
+def tl_decision_documents(decision_root, cutoff):
+    """TL decisions exported by the dashboard store (Markdown, same parser as the knowledge store).
+
+    Only decisions recorded at or before the snapshot cutoff are ingested; later ones are reported, never backdated.
+    """
+    paths = sorted(Path(decision_root).rglob('*.md')) if Path(decision_root).is_dir() else []
+    documents, after = [], []
+    for path in paths:
+        for document in iter_documents([path]):
+            if aware(document['metadata']['effective_at']) > aware(cutoff):
+                after.append({'document_id': document['document_id'], 'version_id': document['version_id'],
+                              'effective_at': document['metadata']['effective_at']})
+                continue
+            documents.append({**document, 'origin': 'tl_decision_store', 'source_file': _rel(path, decision_root)})
+    receipt = {'decision_root': _rel(decision_root, ROOT), 'files': len(paths), 'included': len(documents),
+               'after_cutoff': after}
+    return documents, receipt
+
+
+def collect(knowledge_root, fixture_root, cutoff, canonical_members=None, decision_root=None):
     """Deduplicate identical (document, version) pairs; report overlapping Slack messages."""
     knowledge, shared_count = knowledge_documents(knowledge_root)
     announcements, receipt = current_day_announcements(Path(fixture_root), cutoff, canonical_members)
+    decisions, decision_receipt = tl_decision_documents(decision_root, cutoff) if decision_root else ([], None)
     unique, duplicates = {}, []
-    for document in [*knowledge, *announcements]:
+    for document in [*knowledge, *announcements, *decisions]:
         key = (document['document_id'], document['version_id'])
         if key in unique:
             duplicates.append({'document_id': key[0], 'version_id': key[1], 'source_file': document['source_file']})
@@ -73,4 +93,4 @@ def collect(knowledge_root, fixture_root, cutoff, canonical_members=None):
     return documents, {'knowledge_documents': len(knowledge), 'shared_iterator_documents': shared_count,
                        'current_day_announcements': receipt, 'duplicates_removed': duplicates,
                        'overlapping_slack_messages': overlaps, 'documents': len(documents),
-                       'corpus_fingerprint': fingerprint}
+                       'corpus_fingerprint': fingerprint} | ({'tl_decisions': decision_receipt} if decision_root else {})

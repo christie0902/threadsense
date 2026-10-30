@@ -1,5 +1,18 @@
 # Current agent implementation
 
+Agent 3 (research, severity, AdviceCards) and the overnight workflow:
+
+| File | Responsibility |
+| --- | --- |
+| `advice_contracts.py` | AdviceCard v1-v3, DecisionRecord, AnnouncementRecord, ModelReviewItem |
+| `advice_inputs.py` | Handoff loading/accounting, review items, historical DecisionRecord mapping |
+| `advisor_contracts.py` | Model I/O contracts (draft, grounding judgment, ToT) |
+| `advisor_evidence.py`, `advisor_checks.py`, `advisor_tot.py` | Evidence ledger and research tools; deterministic checks and routing; ToT |
+| `advisor_pilot.py` | Advisor orchestration (CrewAI stages, request guard, cost ledger) |
+| `overnight.py` | LangGraph overnight workflow over the whole handoff |
+
+The dashboard and TL decision store live in `../dashboard/` (see `docs/agent3-plan.md`, Milestone 6).
+
 For current Agent 2 work, start with:
 
 | File | Responsibility |

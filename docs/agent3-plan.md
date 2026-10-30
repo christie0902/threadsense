@@ -1,11 +1,27 @@
 # Agent 3 — Plan
 
-**Status:** Milestone 5 (overnight LangGraph workflow) implemented 2026-10-30; milestones 2, 3 and 4 implemented (2026-10-29): contracts, rubric binding and Markdown
-ingestion; shared retrieval; a bounded Advisor pilot, hardened (final statement-level grounding,
-announcement applicability, member-level resolution, request-boundary limits) and validated
-offline with scripted semantic judgments (no live model run yet). Milestone 1 audit not yet written up. Agent 3 consumes the Agent 2
-taxonomy handoff plus last-24h announcements and produces reviewable AdviceCards:
-research, final severity and recommendations.
+**Status (2026-10-30):** milestones 2-6 implemented; the Milestone 1 audit is not written up; Milestone 7 not
+started. Agent 3 consumes the Agent 2 taxonomy handoff (schema 8 / handoff v2 projection) plus last-24h
+announcements and produces reviewable AdviceCards (research, final severity, recommendations); the dashboard shows
+them and records team-lead decisions.
+
+How each part has been validated (levels: **live** = real model calls; **scripted** = prepared judgments replayed
+offline; **placeholder** = a scripted stand-in that judges nothing; **offline** = deterministic code and tests, no
+model; **test fixture** = hand-written, labelled data):
+
+| Part | Validation | Where |
+| --- | --- | --- |
+| Contracts, rubric binding, Markdown ingestion (M2) | offline | `scripts/validate_agent3_inputs.py`, tests |
+| Shared retrieval (M3) | offline (local embeddings; tuned set + holdout) | `scripts/evaluate_retrieval.py` |
+| Advisor pilot v4-v5 (M4) | live, 6 topics + negative control | `agent3_acceptance_v1`, `agent3_closeout_v1` |
+| Advisor v6 prompts | live, audio + Submit only | `agent3_readability_v1` |
+| Advisor v6.1 prompts | live, audio + Submit only; its possessive-plural and record-authorship fixes, and the ToT fallback, are offline only | `agent3_overnight_smoke_v1` |
+| Overnight workflow (M5), full handoff (87 work items) | scripted for the 6 pilot topics, placeholder for the other 81; no full live run | `agent3_overnight_offline_v2` |
+| Overnight workflow, live | 2 topics (audio, Submit), 8 requests | `agent3_overnight_smoke_v1` |
+| Dashboard + TL decision loop (M6) | offline: backend tests and browser tests on the saved runs, plus a labelled test-fixture run | `tests/test_dashboard.py`, `web/tests/` |
+
+Open evaluation cases (not used for tuning) are in `data/evaluation/agent3_open_evaluation_cases.json`; the first is
+the audio trial-outcome follow-up retrieval miss from the live smoke run (Milestone 6 section).
 
 | # | Milestone | Work | Technologies / details | Done when |
 | --- | --- | --- | --- | --- |
@@ -23,18 +39,19 @@ research, final severity and recommendations.
   `data/knowledge/` (`instructions/`, `faq/`, `decisions/<project>/`). See
   [announcement-routing.md](announcement-routing.md) for the source format and the
   shared ingestion contract (`knowledge_sources.iter_documents` / `normalize_document`).
-- Agent 3 input: `data/processed/agent2_taxonomy_final_v7/` via
-  `threadsense.agents.topic_effective.load_effective_output` (historical, handoff v1),
-  or new schema-8 / `agent2-taxonomy-handoff-v2` exports with severity
-  `UNKNOWN`/`UNASSESSED` deferred to Agent 3.
-- Must carry all 49 inherited Agent 1 obligations and 3 naming cautions; Needs
-  Review items appear even without a recommendation.
-- Severity rubric: `data/knowledge/severity_rubric.py` (`severity-rubric-v2-with-signals`).
-  Open: per-project rubrics (`get_rubric_for_project` returns default only) and
-  LOW-default vs UNKNOWN when evidence is insufficient.
-- Not yet dependencies: LangGraph, FastAPI, React toolchain. Chroma is a direct dependency since
-  milestone 3; BM25 is implemented in `retrieval/bm25.py` (no rank-bm25 package).
-  Add them to `pyproject.toml` + `uv.lock` together when a milestone needs them.
+- Agent 3 input: `data/processed/agent2_handoff_v2_projection/` (schema 8 / `agent2-taxonomy-handoff-v2`, a
+  zero-call projection of the v7 release; load with `advice_inputs.load_effective_view`), with severity
+  `UNKNOWN`/`UNASSESSED` deferred to Agent 3. The frozen v7 release (handoff v1,
+  `topic_effective.load_effective_output`) is unchanged.
+- Must carry every obligation: in the projection, 41 inherited Agent 1 obligations on discussions, 8 on
+  announcement-route members and 3 naming cautions (49 + 3 in the v7 release). Needs Review items appear even
+  without a recommendation.
+- Severity rubric: `data/knowledge/severity_rubric.py` (`severity-rubric-v3-semantic-signals`, TL-owned).
+  Open: per-project rubrics (`get_rubric_for_project` returns the shared default) and the severity level for
+  rule-confusion topics (a TL rubric decision).
+- Dependencies: Chroma (M3), LangGraph 1.2.18 (M5), FastAPI 0.162.0 (M6); BM25 is in-house
+  (`retrieval/bm25.py`). The dashboard frontend (`web/`, React 18 / Vite 5 / Tailwind 3 / Framer Motion 11,
+  Playwright for UI tests) has its own pinned `package.json` and `package-lock.json`.
 
 ## Milestone 2 (implemented)
 
@@ -857,3 +874,138 @@ topics are among the larger ones; the other topics are unmeasured.
   for rule-confusion topics remains a TL rubric decision.
 - Run-state saves inside the VS Code-watched repo can hit the Windows `WinError 5` lock; such a run stops as
   PERSISTENCE (resume it, or write runs outside the repo).
+
+## Milestone 6 (implemented 2026-10-30): morning-brief dashboard and TL decision loop
+
+Backend `src/threadsense/dashboard/` (FastAPI 0.162.0): `runs.py` (read-only run catalog, evidence and thread
+views), `decisions.py` (decision contracts and the SQLite store), `decision_sources.py` (export through the
+existing ingestion path, later snapshots), `app.py` (API). Frontend `web/` (React 18, Vite 5, Tailwind 3, Framer
+Motion 11). Runners `scripts/run_dashboard.py`, `scripts/build_decision_snapshot.py`. Tests `tests/test_dashboard.py`
+(backend) and `web/tests/dashboard.spec.js` (Playwright, system Chrome). Labelled fixture run
+`tests/fixtures/dashboard_runs/dashboard_states_fixture_v1/` (builder `tests/fixtures/make_dashboard_fixture_run.py`).
+No model calls, no Slack posting, no endpoint that executes anything.
+
+**The page.** Run selector (each overnight run directory separately; never merged), project filter, acting-as
+team lead (fixture users with role TEAM_LEAD; no authentication, localhost only), run banner with mode
+(LIVE / SCRIPTED / TEST_FIXTURE), status, cutoff and window, and a note when two directories share a run ID
+(`offline_v1`/`offline_v2`). Overview tiles: cards by line, failed, unprocessed, out of scope, model-review items;
+the saved briefing (the run's `morning_brief.md` header) and a topic summary (every work item with its outcome).
+Incomplete work is listed with its failure class. Cards are grouped Recommended actions / Observations / Needs
+review; each card shows its saved text unchanged: summary, action label, instruction, why, copyable draft, scope
+note, review notes, supported alternatives (ToT candidates the final grounding call judged SUPPORTED and
+SUFFICIENT, with no recorded prose or display issue, other than the card's action), related threads, cited sources. A per-card badge names the semantic
+source: Live model, Scripted (prepared judgments), Scripted placeholder (nothing judged), Test fixture. IDs, checks,
+reasons and diagnostics are in an expandable technical section. The Model Review Queue is a separate tab.
+
+**Evidence.** The source view reads the run's saved evidence ledger: saved text, source date and basis, effective
+and valid-until dates, scope and batch relation, applicability (state, revision state, replaced by), authority,
+recorded decision states, citation IDs. Superseded sections, superseded revisions and expired records carry a
+visible label in the card list, the full evidence list and the detail view. Thread views come from the Slack
+fixture (internal view; fixtures store no permalinks, so none is shown or invented) and mark each message that is
+in the saved evidence and whether it still matches it. A stored permalink would be linked. Only threads referenced
+by the run can be opened. Deep links (`#run=...&panel=...`) reopen the same view.
+
+**Decisions (persistence extension).** One authoritative store: a SQLite file (default
+`.state/dashboard/tl_decisions.sqlite3`, ignored by git; `--decision-db` to choose). SQLite was chosen over JSON
+files because it gives atomic transactions, a unique idempotency key and serialized writers, and it does not use
+the `os.replace` pattern that hits the Windows `WinError 5` lock in this watched repo. Rows are append-only
+(`card_decisions`, `review_actions`); a separate `indexing` table holds retrieval status. Two new contracts wrap
+the unchanged v1 records (DecisionRecord and ModelReviewItem are not edited):
+- `dashboard-tl-decision-v1` (TLDecisionEntry): the DecisionRecord plus run/card binding (run directory, run ID,
+  run mode, `cards.json` hash), the resolution kind, text provenance, TL note, request key and hash, sequence and
+  superseded entry. Fixed flags: approval is not execution; a disposition is not resolution evidence; a severity
+  override is not a rubric change.
+- `dashboard-model-review-action-v1` (ModelReviewEntry): one ReviewAction for one ModelReviewItem of one run.
+
+| Card line | Decision | DecisionRecord |
+| --- | --- | --- |
+| Recommended action | Approve (draft unchanged or edited) | APPROVED / APPROVED_WITH_EDITS, the card's action type |
+| Needs review | Confirm FAQ update | APPROVED(_WITH_EDITS), UPDATE_FAQ |
+| Needs review | Confirm announcement | APPROVED(_WITH_EDITS), POST_ALIGNMENT |
+| Needs review | Route to an expert (engineering / language specialist) | APPROVED(_WITH_EDITS), ESCALATE_ENGINEERING / ROUTE_TO_LANGUAGE_SPECIALIST |
+| Needs review | Override severity (reason required) | OVERRIDDEN, severity_override {proposed, tl_selected, reason} |
+| Needs review | Dismiss (reason required) | REJECTED, no action |
+| Observation | none | - |
+
+Every decision records execution NOT_EXECUTED and outcome NOT_OBSERVED. Text provenance is explicit:
+MODEL_GROUNDED (the card's validated draft, or a supported alternative's draft, unchanged), TL_EDITED (the TL
+changed that draft; the original is kept), TL_WRITTEN (no matching draft existed), NONE. The UI labels each before
+and after saving. Copying a draft only writes to the clipboard ("Nothing was posted").
+
+A decided card leaves the active worklist and is listed under Resolved with its card, review reasons and evidence
+unchanged; "Record a new decision" appends a superseding entry. Model-review actions are run-scoped: ACCEPT
+resolves the flag for that run, REJECT records a negative example (`/api/runs/<run>/negative-examples`, with the
+upstream obligation verbatim), DEFER keeps it open; the item's history is `record_review_action` applied in order.
+They never touch a card.
+
+**Safe repeats.** Every POST needs an `Idempotency-Key`. In one `BEGIN IMMEDIATE` transaction the server looks up
+the key: same request hash returns the stored response (HTTP 200, `replayed: true`); a different request is refused
+(422 `IDEMPOTENCY_KEY_REUSED`, the first decision unchanged); otherwise the request's `expected_head` must equal
+the card's (or item's) latest entry, else 409 `STALE` with the current head; then the entry, its indexing row and
+the key are written and committed (WAL, `synchronous=FULL`), and only then does the response say
+`persisted: true`. The UI reuses the key only to retry the identical request (lost response: "Not confirmed ...
+Retry safely"), disables the button while saving, and shows success only on a persisted 2xx; a conflict shows the
+newer decision and saves nothing.
+
+**Retrieval loop.** Before a decision is committed it is rendered as a `mock-knowledge-markdown-v1` decision record
+and parsed by the existing path (`knowledge_markdown` -> `SourceRecord` -> `normalize_document`);
+`advice_inputs.decision_record_from_source` must reproduce the stored DecisionRecord exactly (except `source`), so
+approval, execution and outcome states survive (one additive mapping: `tl_response.outcome: overridden`). One
+lineage per (run, card): later decisions are later versions, so `version_mode='current'` shows only the latest.
+Records are decisions (history), never guideline/FAQ, so an approved draft never becomes current policy. Indexing is
+separate: `scripts/build_decision_snapshot.py --cutoff <later> --index-dir <new>` exports the store
+(content-addressed, byte-identical on repeat) and builds a NEW snapshot with the knowledge store plus decisions
+recorded at or before the cutoff (`retrieval.index.plan(..., decision_root=...)`; without it the build fingerprint
+inputs are unchanged). Later decisions are reported as after the cutoff, never backdated. It refuses the active
+index (`.index/retrieval`). Status per decision: PENDING -> INDEXED (snapshot, fingerprint) or FAILED (error); a
+failed build leaves the decision intact and a later build indexes it once. Note: the later snapshot's current-day
+announcement window is the 24 hours before its cutoff, so the October 1-2 fixture announcements are not in it.
+
+**Commands.**
+```sh
+npm --prefix web ci && npm --prefix web run build                                   # once: frontend bundle (web/dist)
+uv run --locked python scripts/run_dashboard.py                                     # http://127.0.0.1:8000
+uv run --locked python scripts/run_dashboard.py --include-test-fixtures --decision-db D:/tsb/demo.sqlite3
+npm --prefix web run dev                                                            # optional: Vite dev server on :5173, proxies /api
+uv run --locked python scripts/build_decision_snapshot.py --cutoff <ISO> --index-dir .index/retrieval_tl_<date>          # plan only
+uv run --locked python scripts/build_decision_snapshot.py --cutoff <ISO> --index-dir .index/retrieval_tl_<date> --build  # build
+uv run --locked --extra dev python -m pytest tests/test_dashboard.py -q --basetemp D:/tsb/pytest-dashboard
+npm --prefix web run test:ui                                                        # needs web/dist and system Chrome
+```
+
+**Verification (offline, 2026-10-30).** Backend `tests/test_dashboard.py`: 21 passed (run modes and shared run IDs;
+card text unchanged; supported alternative; superseded labels; thread view without permalinks; approval saved once,
+replay, key reuse refused, restart; 8 concurrent duplicates -> one row; stale -> 409, superseding entry; every
+resolution kind including TL-edited, TL-written and supported-alternative text; 8 invalid requests refused with no
+row; observations and missing keys refused; review actions run-scoped with cards and run files byte-identical;
+Markdown round trip; later snapshot finds the decision with `tl_approved` / `not_executed` / `not_observed`, the
+October 2 snapshot excludes it, failed indexing recorded then indexed once, a superseding decision is the only
+current version; no decision source leaves the plan fingerprint unchanged; run artifacts and corpus unchanged).
+Browser `web/tests/dashboard.spec.js`: 9 passed against the real server and system Chrome (approve -> refresh ->
+restart = one decision, not executed, copy is not posting, no non-local request; double click and two concurrent
+identical requests = one decision, key reuse with new content refused; lost response -> "Not confirmed" -> safe
+retry, one decision; FAQ (edited), language specialist, announcement (TL-written), dismiss, supported alternative,
+with run files unchanged; stale second tab -> conflict; Accept/Reject/Defer with cards unchanged; superseded labels
+in list and detail, thread view and deep link; live/scripted/fixture banners, failed and unprocessed counts; a saved
+decision indexed into a later real-embedding snapshot and found by retrieval with its exact states).
+
+**Open evaluation case: audio trial-outcome follow-up miss** (`data/evaluation/agent3_open_evaluation_cases.json`).
+In `agent3_overnight_smoke_v1` the audio card's follow-up query (written by the model) returned the trial approval
+but not the trial-outcome record, so the card says the outcome is not established in the available records.
+Replaying the same query and filters against the run's index (zero calls) puts the outcome record 6th, one place
+outside `top_k` 5, behind the current instructions and two batch-06 announcements. Earlier live runs retrieved it
+with different queries. Recorded only: no retrieval parameter, corpus or prompt change, and the smoke output is
+unchanged.
+
+**Limitations.**
+- No authentication: the acting-as choice is trusted; serve on localhost only (the runner refuses other hosts).
+- The live smoke run has two Needs Review cards only; Recommended Action, Observation and unprocessed-work states
+  are exercised on the labelled test fixture, and some resolutions on scripted offline cards.
+- Overnight runs do not yet read a decision-inclusive snapshot: `run_agent3_overnight.py` uses the active index,
+  so a later run that should see TL decisions needs that wiring (Milestone 7) and a new snapshot at its cutoff.
+- A later snapshot has no current-day fixture announcements unless the fixtures cover its window.
+- Thread views read the demo fixture at request time and flag messages that differ from the saved evidence; they
+  are not a frozen copy.
+- Expert routing and FAQ/announcement confirmation record intent only; nothing is sent or edited.
+- Supported alternatives are shown only when the final grounding judged them SUPPORTED and SUFFICIENT and the ToT
+  candidate check recorded no prose or display issue; they are not part of the AdviceCard contract itself.

@@ -69,9 +69,14 @@ def _rel(path):
     return path.relative_to(ROOT).as_posix() if path.is_relative_to(ROOT) else path.as_posix()
 
 
-def plan(encoder, *, knowledge_root=KNOWLEDGE_ROOT, fixture_root=FIXTURE_ROOT, cutoff=FIXTURE_CUTOFF, canonical_members=None):
-    """Normalize and chunk without touching any index. Returns chunks, documents and fingerprints."""
-    documents, corpus = collect(Path(knowledge_root), Path(fixture_root), cutoff, canonical_members)
+def plan(encoder, *, knowledge_root=KNOWLEDGE_ROOT, fixture_root=FIXTURE_ROOT, cutoff=FIXTURE_CUTOFF, canonical_members=None,
+         decision_root=None):
+    """Normalize and chunk without touching any index. Returns chunks, documents and fingerprints.
+
+    decision_root (optional): exported TL decisions; absent, the fingerprint is the same as before it existed.
+    """
+    documents, corpus = collect(Path(knowledge_root), Path(fixture_root), cutoff, canonical_members,
+                                Path(decision_root) if decision_root else None)
     chunks = [c for d in sorted(documents, key=lambda d: (d['document_id'], d['version_id']))
               for c in chunk_document(d, encoder.count, encoder.max_tokens)]
     ids = [c['chunk_id'] for c in chunks]
@@ -82,6 +87,8 @@ def plan(encoder, *, knowledge_root=KNOWLEDGE_ROOT, fixture_root=FIXTURE_ROOT, c
             'knowledge_root': _rel(knowledge_root), 'fixture_root': _rel(fixture_root),
             'corpus_fingerprint': corpus['corpus_fingerprint'],
             'chunk_fingerprint': digest([[c['chunk_id'], sha256(c['indexed_text'].encode('utf-8')).hexdigest()] for c in chunks])}
+    if decision_root:
+        core['decision_root'] = _rel(decision_root)
     return chunks, documents, corpus, core
 
 

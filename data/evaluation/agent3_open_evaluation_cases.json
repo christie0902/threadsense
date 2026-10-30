@@ -1,0 +1,33 @@
+{
+  "version": "agent3-open-evaluation-cases-v1",
+  "purpose": "Open evaluation cases observed in saved runs. Not used for tuning; not part of agent3_retrieval_cases.json or the holdout. A case closes only with a recorded change and a rerun into a new output directory; the run where it was observed is never rewritten.",
+  "cases": [
+    {
+      "id": "audio_trial_outcome_followup_miss",
+      "status": "OPEN",
+      "recorded": "2026-10-30",
+      "observed_in": "data/experiments/agent3_overnight_smoke_v1 (live, Sol, prompts v6.1)",
+      "work_id": "topic:cluster_6b59d13144282285/topic_2",
+      "card_id": "card_bd0a25b5720e9f5c55945f96f92f4783",
+      "project": "audio_multimodal",
+      "stage": "Advisor follow-up retrieval for gap g1 (PRIOR_DECISION_OUTCOME); the query is written by the model",
+      "query": "Audio multimodal batch 05 one-reload playback trial ending August 28 2026: observed results and decisions extending, ending or replacing the trial; applicability to batch 06 player never loads or waveform visible with no playback",
+      "filters": {"as_of": "2026-10-02T12:00:00Z", "batch": "audio_batch_06", "document_types": ["decision", "announcement", "guideline"], "version_mode": "history"},
+      "top_k": 5,
+      "expected": [{"authoring": "audio-playback-trial-outcome"}],
+      "observed_results": ["audio-playback-trial-post@1.0", "audio-playback-trial-approval@1.0", "slack:C_AUDIO_ANNOUNCEMENTS:1790892000.000901", "audio-multimodal-instructions@1.3", "slack:C_AUDIO_ANNOUNCEMENTS:1790890099.000112"],
+      "replay": {
+        "date": "2026-10-30",
+        "index_build_fingerprint": "4da16f090eb5f2c61f408948f4f761b254caaf4e3a226e1e46a9574308ccc791",
+        "model_calls": 0,
+        "outcome_rank": 6,
+        "outcome_dense_rank": 8,
+        "outcome_bm25_rank": 4,
+        "note": "Same query and filters against the run's index (deterministic): the outcome record ranks 6th, one place outside top_k 5, behind the current instructions and two batch-06 announcements."
+      },
+      "effect_on_card": "The card says the trial outcome 'is not established in the available records' and its coverage note says nothing further was found. Accurate for what was retrieved, not for the corpus.",
+      "earlier_runs": "The outcome record was retrieved for this topic in agent3_acceptance_v1, agent3_closeout_v1 and agent3_readability_v1 (different follow-up queries).",
+      "not_done": "No retrieval parameter, corpus document or prompt was changed for this case, and the smoke run output was not rewritten."
+    }
+  ]
+}

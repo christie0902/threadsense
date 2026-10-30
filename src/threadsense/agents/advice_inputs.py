@@ -242,7 +242,7 @@ def structural_occurrence(threads, *, computed_from):
 # Recorded authoring statuses -> contract states. Unknown values fail loudly.
 TL_OUTCOMES = {'tl_approved': 'APPROVED', 'tl_rejected': 'REJECTED', 'tl_deferred': 'DEFERRED', 'tl_overridden': 'OVERRIDDEN'}
 TL_RESPONSE_OUTCOMES = {'approved': 'APPROVED', 'approved_with_edits': 'APPROVED_WITH_EDITS',
-                        'rejected': 'REJECTED', 'deferred': 'DEFERRED'}
+                        'rejected': 'REJECTED', 'deferred': 'DEFERRED', 'overridden': 'OVERRIDDEN'}
 EXECUTION_STATES = {
     'not_yet_executed': 'NOT_EXECUTED', 'not_executed': 'NOT_EXECUTED', 'pending_scheduling': 'PENDING',
     'pending_post': 'PENDING', 'pending_document_updates': 'PENDING', 'evidence_requested': 'PENDING',
