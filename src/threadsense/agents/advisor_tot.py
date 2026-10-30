@@ -145,6 +145,8 @@ def fallback(tot, draft, verdict):
     from threadsense.agents.advisor_contracts import ActionProposal
     if tot['status'] != 'COMPARED' or draft.proposed_action is None or draft.proposed_action.action_type == 'NO_ACTION':
         return None, None, None
+    if verdict == 'NO_INTERVENTION_NEED':  # No intervention is justified; another action would not change that.
+        return None, None, 'No ToT fallback: the evidence did not show a need to intervene.'
     chosen = next((c for c in tot['candidates'] if c['candidate_id'] == tot['model_preferred_candidate_id']), None)
     if chosen is None:
         return None, None, 'No ToT fallback: no preferred candidate.'

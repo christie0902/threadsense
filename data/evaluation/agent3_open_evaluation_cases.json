@@ -12,10 +12,29 @@
       "project": "audio_multimodal",
       "stage": "Advisor follow-up retrieval for gap g1 (PRIOR_DECISION_OUTCOME); the query is written by the model",
       "query": "Audio multimodal batch 05 one-reload playback trial ending August 28 2026: observed results and decisions extending, ending or replacing the trial; applicability to batch 06 player never loads or waveform visible with no playback",
-      "filters": {"as_of": "2026-10-02T12:00:00Z", "batch": "audio_batch_06", "document_types": ["decision", "announcement", "guideline"], "version_mode": "history"},
+      "filters": {
+        "as_of": "2026-10-02T12:00:00Z",
+        "batch": "audio_batch_06",
+        "document_types": [
+          "decision",
+          "announcement",
+          "guideline"
+        ],
+        "version_mode": "history"
+      },
       "top_k": 5,
-      "expected": [{"authoring": "audio-playback-trial-outcome"}],
-      "observed_results": ["audio-playback-trial-post@1.0", "audio-playback-trial-approval@1.0", "slack:C_AUDIO_ANNOUNCEMENTS:1790892000.000901", "audio-multimodal-instructions@1.3", "slack:C_AUDIO_ANNOUNCEMENTS:1790890099.000112"],
+      "expected": [
+        {
+          "authoring": "audio-playback-trial-outcome"
+        }
+      ],
+      "observed_results": [
+        "audio-playback-trial-post@1.0",
+        "audio-playback-trial-approval@1.0",
+        "slack:C_AUDIO_ANNOUNCEMENTS:1790892000.000901",
+        "audio-multimodal-instructions@1.3",
+        "slack:C_AUDIO_ANNOUNCEMENTS:1790890099.000112"
+      ],
       "replay": {
         "date": "2026-10-30",
         "index_build_fingerprint": "4da16f090eb5f2c61f408948f4f761b254caaf4e3a226e1e46a9574308ccc791",
@@ -27,7 +46,16 @@
       },
       "effect_on_card": "The card says the trial outcome 'is not established in the available records' and its coverage note says nothing further was found. Accurate for what was retrieved, not for the corpus.",
       "earlier_runs": "The outcome record was retrieved for this topic in agent3_acceptance_v1, agent3_closeout_v1 and agent3_readability_v1 (different follow-up queries).",
-      "not_done": "No retrieval parameter, corpus document or prompt was changed for this case, and the smoke run output was not rewritten."
+      "not_done": "No retrieval parameter, corpus document or prompt was changed for this case, and the smoke run output was not rewritten.",
+      "investigation_2026_10_30": {
+        "forward_link": "None: the retrieved approval (audio-playback-trial-approval@1.0) has source_refs [] and no supersession refs; its body only says an outcome review was requested.",
+        "recorded_links_found": "The outcome record (audio-playback-trial-outcome@1.0) cites the approval and the post in source_refs (backward link) and shares event_series_id AUDIO-B05-PLAYBACK-TRIAL.",
+        "bounded_lookup": "retrieval/related.py, evaluated offline only (scripts/evaluate_related_lookup.py, data/experiments/agent3_related_lookup_eval_v1/report.json): recorded links only, same scope/date/version filters, at most 2 added documents.",
+        "result": "Recovers the outcome record for the frozen query (1 candidate, backward + series). Tuned cases: recall already 1.0 at top 5 (no gain), 13 records added (4 context, 2 labelled distractors, 7 unlabelled). Holdout: recall 1.0 (no gain), 2 context records added.",
+        "decision": "Not enabled in the Advisor: no measurable gain on the labelled sets, extra input tokens and two distractors; enabling it would also need a new live validation."
+      },
+      "final_eval_observation": "In agent3_final_eval_v1 (live, prompts v6.2) the audio topic retrieved the outcome record with a different model-written query (5/5 expected sources). The frozen miss is unchanged as a baseline; recall still depends on the model's follow-up query.",
+      "absence_wording": "Prompts v6.2 and the ABSENCE_OVERCLAIM check limit absence statements to what the run retrieved; the coverage note now says \"this run's searches retrieved nothing further\"."
     }
   ]
 }

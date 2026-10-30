@@ -175,7 +175,10 @@ npm --prefix web run test:ui                           # browser tests (system C
 ```
 
 Approving a card records a decision only; nothing is executed or posted. Saved decisions reach retrieval only
-through a new snapshot at a later cutoff. See
+through a new snapshot at a later cutoff (decisions on live runs by default; `--namespace demo|test` for scripted or
+fixture runs), which an overnight run selects with `--index-dir`. Offline demonstration of the whole loop:
+`scripts/run_feedback_loop_demo.py --write <new dir>`; scenario coverage: `scripts/report_scenario_coverage.py`.
+See [Milestone 7](docs/agent3-plan.md#milestone-7-implemented-2026-10-30-final-integration-and-demo-validation) and
 [Milestone 6](docs/agent3-plan.md#milestone-6-implemented-2026-10-30-morning-brief-dashboard-and-tl-decision-loop).
 
 Inspect the historical effective handoff without regenerating it:

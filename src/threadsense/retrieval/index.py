@@ -70,13 +70,14 @@ def _rel(path):
 
 
 def plan(encoder, *, knowledge_root=KNOWLEDGE_ROOT, fixture_root=FIXTURE_ROOT, cutoff=FIXTURE_CUTOFF, canonical_members=None,
-         decision_root=None):
+         decision_roots=None):
     """Normalize and chunk without touching any index. Returns chunks, documents and fingerprints.
 
-    decision_root (optional): exported TL decisions; absent, the fingerprint is the same as before it existed.
+    decision_roots (optional): exported TL decision namespaces; absent, the fingerprint is the same as before they
+    existed.
     """
-    documents, corpus = collect(Path(knowledge_root), Path(fixture_root), cutoff, canonical_members,
-                                Path(decision_root) if decision_root else None)
+    roots = [Path(r) for r in decision_roots] if decision_roots else None
+    documents, corpus = collect(Path(knowledge_root), Path(fixture_root), cutoff, canonical_members, roots)
     chunks = [c for d in sorted(documents, key=lambda d: (d['document_id'], d['version_id']))
               for c in chunk_document(d, encoder.count, encoder.max_tokens)]
     ids = [c['chunk_id'] for c in chunks]
@@ -87,9 +88,19 @@ def plan(encoder, *, knowledge_root=KNOWLEDGE_ROOT, fixture_root=FIXTURE_ROOT, c
             'knowledge_root': _rel(knowledge_root), 'fixture_root': _rel(fixture_root),
             'corpus_fingerprint': corpus['corpus_fingerprint'],
             'chunk_fingerprint': digest([[c['chunk_id'], sha256(c['indexed_text'].encode('utf-8')).hexdigest()] for c in chunks])}
-    if decision_root:
-        core['decision_root'] = _rel(decision_root)
+    if roots:
+        core['decision_roots'] = [_rel(r) for r in roots]
     return chunks, documents, corpus, core
+
+
+def snapshot_sources(manifest):
+    """The sources a snapshot was built from (recorded in its manifest), for its freshness check."""
+    resolve = lambda p: Path(p) if Path(p).is_absolute() else ROOT/p
+    sources = {'knowledge_root': resolve(manifest['knowledge_root']), 'fixture_root': resolve(manifest['fixture_root']),
+               'cutoff': manifest['cutoff']}
+    if manifest.get('decision_roots'):
+        sources['decision_roots'] = [resolve(p) for p in manifest['decision_roots']]
+    return sources
 
 
 def build_index(index_dir=INDEX_DIR, *, encoder, rebuild=False, **sources):

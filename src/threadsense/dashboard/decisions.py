@@ -30,8 +30,13 @@ from threadsense.agents.advice_contracts import (
 from threadsense.routing import ROOT, aware
 
 STORE_PATH = ROOT/'.state/dashboard/tl_decisions.sqlite3'
-DECISION_CONTRACT = 'dashboard-tl-decision-v1'
-REVIEW_CONTRACT = 'dashboard-model-review-action-v1'
+DECISION_CONTRACT = 'dashboard-tl-decision-v3'
+REVIEW_CONTRACT = 'dashboard-model-review-action-v2'
+Namespace = Literal['operational', 'demo', 'test']
+# Who recorded the decision. Demo scripts and tests record simulated decisions: never operational, whatever the run.
+DecisionOrigin = Literal['TL_DASHBOARD', 'DEMO_SCRIPT', 'TEST']
+ORIGIN_NAMESPACES = {'DEMO_SCRIPT': 'demo', 'TEST': 'test'}
+JudgmentProvenance = Literal['LIVE_MODEL', 'SCRIPTED_PILOT', 'SCRIPTED_PLACEHOLDER', 'TEST_FIXTURE', 'UNKNOWN']
 DecisionKind = Literal['APPROVE_ACTION', 'CONFIRM_FAQ_UPDATE', 'CONFIRM_ANNOUNCEMENT', 'OVERRIDE_SEVERITY', 'DISMISS',
                        'ROUTE_TO_EXPERT']
 KINDS_BY_LINE = {'RECOMMENDED_ACTION': ('APPROVE_ACTION',),
@@ -114,13 +119,20 @@ class TextProvenance(Frozen):
 
 
 class TLDecisionEntry(Frozen):
-    contract_version: Literal['dashboard-tl-decision-v1'] = DECISION_CONTRACT
+    """v2: bound to the immutable run instance (run_key + run_instance; run_id alone can repeat), with the decision
+    namespace and the judgment provenance of the card it answers. v3: decision_origin (who recorded it); a demo-script
+    or test decision is in the demo/test namespace even on a live run's card."""
+    contract_version: Literal['dashboard-tl-decision-v3'] = DECISION_CONTRACT
+    decision_origin: DecisionOrigin = 'TL_DASHBOARD'
     entry_id: Annotated[str, StringConstraints(pattern=r'^decision_[0-9a-f]{32}$')]
     sequence: int = Field(ge=1)
     supersedes_entry_id: str | None = None
     run_key: Text
     run_id: Text
+    run_instance: Annotated[str, StringConstraints(pattern=r'^[0-9a-f]{64}$')]
     run_mode: Literal['LIVE', 'SCRIPTED', 'TEST_FIXTURE', 'UNKNOWN']
+    namespace: Namespace
+    judgment_provenance: JudgmentProvenance
     cards_sha256: Text
     card_id: Text
     card_line: Literal['RECOMMENDED_ACTION', 'NEEDS_REVIEW', 'OBSERVATION']
@@ -146,6 +158,8 @@ class TLDecisionEntry(Frozen):
     @model_validator(mode='after')
     def consistent(self):
         aware(self.recorded_at)
+        if self.decision_origin in ORIGIN_NAMESPACES and self.namespace != ORIGIN_NAMESPACES[self.decision_origin]:
+            raise ValueError('A simulated decision belongs to the demo/test namespace.')
         d = self.decision
         if d.decision_id != self.entry_id or d.project_id != self.project_id:
             raise ValueError('Entry and DecisionRecord disagree.')
@@ -159,12 +173,14 @@ class TLDecisionEntry(Frozen):
 
 
 class ModelReviewEntry(Frozen):
-    contract_version: Literal['dashboard-model-review-action-v1'] = REVIEW_CONTRACT
+    contract_version: Literal['dashboard-model-review-action-v2'] = REVIEW_CONTRACT
     entry_id: Annotated[str, StringConstraints(pattern=r'^reviewaction_[0-9a-f]{32}$')]
     sequence: int = Field(ge=1)
     supersedes_entry_id: str | None = None
     run_key: Text
     run_id: Text
+    run_instance: Annotated[str, StringConstraints(pattern=r'^[0-9a-f]{64}$')]
+    namespace: Namespace
     item_id: Text
     project_id: Text
     action: ReviewAction
@@ -181,6 +197,11 @@ class ModelReviewEntry(Frozen):
         return self
 
 
+def card_series_id(run_ref, card_id):
+    """Event series for every TL decision on one card of one run instance (records stay separate; none hides another)."""
+    return 'tl-card-' + sha256(f'{run_ref}\n{card_id}'.encode('utf-8')).hexdigest()[:20]
+
+
 def now_iso():
     return datetime.now(timezone.utc).isoformat(timespec='seconds').replace('+00:00', 'Z')
 
@@ -190,7 +211,8 @@ def request_hash(target, body):
     return sha256(data.encode('utf-8')).hexdigest()
 
 
-def build_decision(*, run, card, request, actors, sequence, head, recorded_at, key, request_sha, alternatives=()):
+def build_decision(*, run, card, request, actors, sequence, head, recorded_at, key, request_sha, alternatives=(),
+                   decision_origin='TL_DASHBOARD'):
     """DecisionRecord + entry for one TL request on one card; refuses anything the card or contract does not allow."""
     if request.kind not in KINDS_BY_LINE[card['card_line']]:
         allowed = ', '.join(KINDS_BY_LINE[card['card_line']]) or 'none'
@@ -249,10 +271,11 @@ def build_decision(*, run, card, request, actors, sequence, head, recorded_at, k
     outcome = {'DISMISS': 'REJECTED', 'OVERRIDE_SEVERITY': 'OVERRIDDEN'}.get(
         request.kind, 'APPROVED_WITH_EDITS' if text['origin'] in ('TL_EDITED', 'TL_WRITTEN') else 'APPROVED')
     lineage = card['lineage']
-    entry_id = stable_id('decision', {'run_key': run.key, 'card_id': card['card_id'], 'sequence': sequence,
+    entry_id = stable_id('decision', {'run_ref': run.ref, 'card_id': card['card_id'], 'sequence': sequence,
                                       'idempotency_key': key})
     record = DecisionRecord(
         decision_id=entry_id, project_id=card['project_id'], batch_id=lineage.get('batch_id'),
+        event_series_id=card_series_id(run.ref, card['card_id']),
         original_advice={'advice_id': card['card_id'] + (f':{request.alternative_id}' if request.alternative_id else ''),
                          'card_id': card['card_id'],
                          'provenance': f"agent3 AdviceCard v3, run {run.brief['run_id']} ({run.key}, {run.mode})"
@@ -270,24 +293,28 @@ def build_decision(*, run, card, request, actors, sequence, head, recorded_at, k
                 'artifact_sha256': run.cards_sha256, 'note': card['card_id']})
     return TLDecisionEntry(
         entry_id=entry_id, sequence=sequence, supersedes_entry_id=head['entry_id'] if head else None, run_key=run.key,
-        run_id=run.brief['run_id'], run_mode=run.mode, cards_sha256=run.cards_sha256, card_id=card['card_id'],
+        run_id=run.brief['run_id'], run_instance=run.instance, run_mode=run.mode, decision_origin=decision_origin,
+        namespace=ORIGIN_NAMESPACES.get(decision_origin, run.namespace),
+        judgment_provenance=run.semantic_source(card['card_id']) or 'UNKNOWN', cards_sha256=run.cards_sha256, card_id=card['card_id'],
         card_line=card['card_line'], topic_name=card['topic_name'], project_id=card['project_id'],
         batch_id=lineage.get('batch_id'), kind=request.kind, recorded_at=recorded_at, actor_id=actor['actor_id'],
         actor_role=actor['role'], text=text, note=note, expert=request.expert, decision=record, idempotency_key=key,
         request_sha256=request_sha)
 
 
-def build_review_action(*, run, item, request, actors, sequence, head, recorded_at, key, request_sha):
+def build_review_action(*, run, item, request, actors, sequence, head, recorded_at, key, request_sha,
+                        decision_origin='TL_DASHBOARD'):
     actor = actors.get(request.actor_id)
     if actor is None:
         raise DecisionError(f'{request.actor_id} is not a recorded team lead.')
     action = ReviewAction(action=request.action, actor_id=actor['actor_id'], actor_role=actor['role'], acted_at=recorded_at,
                           note=(request.note or '').strip() or None)
     return ModelReviewEntry(
-        entry_id=stable_id('reviewaction', {'run_key': run.key, 'item_id': item.item_id, 'sequence': sequence,
+        entry_id=stable_id('reviewaction', {'run_ref': run.ref, 'item_id': item.item_id, 'sequence': sequence,
                                             'idempotency_key': key}),
         sequence=sequence, supersedes_entry_id=head['entry_id'] if head else None, run_key=run.key,
-        run_id=run.brief['run_id'], item_id=item.item_id, project_id=item.project_id, action=action,
+        run_id=run.brief['run_id'], run_instance=run.instance, namespace=ORIGIN_NAMESPACES.get(decision_origin, run.namespace),
+        item_id=item.item_id, project_id=item.project_id, action=action,
         effect=EFFECTS[request.action], related_card_ids=item.related_card_ids, idempotency_key=key, request_sha256=request_sha)
 
 
@@ -332,7 +359,8 @@ class DecisionStore:
         return _Closing(db)
 
     def submit(self, *, kind, run_key, target_id, key, body, build, on_insert=None):
-        """Idempotent append. Returns (response, replayed). build(head, sequence, request_sha) makes the entry."""
+        """Idempotent append. Returns (response, replayed). build(head, sequence, request_sha) makes the entry.
+        run_key is the run reference (directory#instance), so two runs that report the same run_id never share rows."""
         table, column = TABLES[kind]
         target = [kind, run_key, target_id]
         digest = request_hash(target, body)
@@ -379,6 +407,13 @@ class DecisionStore:
         with self._connect() as db:
             rows = db.execute(query + f' ORDER BY {column}, sequence', args).fetchall()
         return [json.loads(r['entry']) for r in rows]
+
+    def other_instances(self, run_key, run_ref):
+        """Rows recorded for a run directory of the same name but a different instance (its files changed)."""
+        with self._connect() as db:
+            return sum(db.execute(f"SELECT COUNT(*) FROM {t} WHERE run_key LIKE ? AND run_key<>?",
+                                  (run_key.replace('%', '') + '#%', run_ref)).fetchone()[0]
+                       for t in ('card_decisions', 'review_actions'))
 
     def all_card_decisions(self):
         with self._connect() as db:

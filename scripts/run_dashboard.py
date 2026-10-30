@@ -22,6 +22,8 @@ def main(argv=None):
     parser.add_argument('--include-test-fixtures', action='store_true',
                         help='Also list the labelled dashboard fixture runs (tests/fixtures/dashboard_runs).')
     parser.add_argument('--decision-db', type=Path, default=STORE_PATH, help='SQLite decision store (created if missing).')
+    parser.add_argument('--decision-origin', choices=('TL_DASHBOARD', 'DEMO_SCRIPT', 'TEST'), default='TL_DASHBOARD',
+                        help='Who records decisions here; DEMO_SCRIPT/TEST keep them out of operational snapshots.')
     args = parser.parse_args(argv)
     if args.host not in ('127.0.0.1', 'localhost', '::1'):
         parser.error('The dashboard has no authentication; serve it on localhost only.')
@@ -30,7 +32,7 @@ def main(argv=None):
     from threadsense.dashboard.decisions import DecisionStore
     from threadsense.dashboard.runs import Catalog
     app = create_app(catalog=Catalog(args.runs or RUN_ROOTS, include_fixtures=args.include_test_fixtures),
-                     store=DecisionStore(args.decision_db))
+                     store=DecisionStore(args.decision_db), decision_origin=args.decision_origin)
     print(f'Decision store: {args.decision_db}', flush=True)
     uvicorn.run(app, host=args.host, port=args.port, log_level='warning')
     return 0

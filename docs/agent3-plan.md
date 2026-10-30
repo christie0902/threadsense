@@ -1,7 +1,7 @@
 # Agent 3 — Plan
 
-**Status (2026-10-30):** milestones 2-6 implemented; the Milestone 1 audit is not written up; Milestone 7 not
-started. Agent 3 consumes the Agent 2 taxonomy handoff (schema 8 / handoff v2 projection) plus last-24h
+**Status (2026-10-30):** milestones 2-7 implemented; the Milestone 1 audit is not written up as such (the Milestone 7
+scenario coverage matrix covers the nine demo cases). Agent 3 consumes the Agent 2 taxonomy handoff (schema 8 / handoff v2 projection) plus last-24h
 announcements and produces reviewable AdviceCards (research, final severity, recommendations); the dashboard shows
 them and records team-lead decisions.
 
@@ -16,12 +16,16 @@ model; **test fixture** = hand-written, labelled data):
 | Advisor pilot v4-v5 (M4) | live, 6 topics + negative control | `agent3_acceptance_v1`, `agent3_closeout_v1` |
 | Advisor v6 prompts | live, audio + Submit only | `agent3_readability_v1` |
 | Advisor v6.1 prompts | live, audio + Submit only; its possessive-plural and record-authorship fixes, and the ToT fallback, are offline only | `agent3_overnight_smoke_v1` |
+| Advisor v6.2 prompts (absence wording) | live, the nine demo scenarios once (30 requests, $1.56); ToT fallback still offline only | `agent3_final_eval_v1` |
 | Overnight workflow (M5), full handoff (87 work items) | scripted for the 6 pilot topics, placeholder for the other 81; no full live run | `agent3_overnight_offline_v2` |
 | Overnight workflow, live | 2 topics (audio, Submit), 8 requests | `agent3_overnight_smoke_v1` |
 | Dashboard + TL decision loop (M6) | offline: backend tests and browser tests on the saved runs, plus a labelled test-fixture run | `tests/test_dashboard.py`, `web/tests/` |
+| TL decision -> later snapshot -> overnight retrieval (M7) | offline (scripted judgments; real embeddings in the demo) | `agent3_feedback_loop_offline_v1`, `tests/test_agent3_feedback_loop.py` |
+| Demo scenario matrix (M7) | live for all nine (final eval); scripted for the six pilot topics; three were placeholder-only before | `agent3_scenario_coverage_v1` |
+| Repair pass: prompts v7 (intervention need, summary distinctions, open-question definition), retrieval expansion | live once on six cases (16 requests, $0.97); NO_INTERVENTION_NEED path and partitive fix offline only | `agent3_repair_eval_v1`, `agent3_repair_comparison_v1` |
 
 Open evaluation cases (not used for tuning) are in `data/evaluation/agent3_open_evaluation_cases.json`; the first is
-the audio trial-outcome follow-up retrieval miss from the live smoke run (Milestone 6 section).
+the audio trial-outcome follow-up retrieval miss from the live smoke run (investigated in Milestone 7).
 
 | # | Milestone | Work | Technologies / details | Done when |
 | --- | --- | --- | --- | --- |
@@ -1009,3 +1013,204 @@ unchanged.
 - Expert routing and FAQ/announcement confirmation record intent only; nothing is sent or edited.
 - Supported alternatives are shown only when the final grounding judged them SUPPORTED and SUFFICIENT and the ToT
   candidate check recorded no prose or display issue; they are not part of the AdviceCard contract itself.
+
+## Milestone 7 (implemented 2026-10-30): final integration and demo validation
+
+**Run identity and isolation.** `run_id` is a hash of a run's inputs, so two directories can report the same one
+(`offline_v1`/`offline_v2` share it and 86 card IDs). Decisions and review actions are now bound to the immutable run
+instance: `run_ref = <directory>#<sha256 of run_manifest, morning_brief, cards, review_queue>` (contracts
+`dashboard-tl-decision-v2` / `dashboard-model-review-action-v2` add `run_instance`, `namespace`,
+`judgment_provenance`). Acting on one run never changes another, before or after a restart; replacing a directory's
+files makes a new instance, and rows for the old instance are reported (`rows_for_other_instances`), not shown.
+Namespaces: decisions on LIVE runs are `operational`; on scripted runs `demo`; on the hand-written fixture runs
+`test`. Default snapshots ingest `operational` only (`--namespace demo|test` opts in). The authored demo corpus in
+`data/knowledge` is synthetic and stays in every snapshot; only UI test data and scripted-run decisions are excluded.
+Judgment provenance (LIVE_MODEL / SCRIPTED_PILOT / SCRIPTED_PLACEHOLDER / TEST_FIXTURE) is stored with each decision,
+written to the exported record's front matter and tags (`namespace-*`, `judgment-*`), and visible in retrieval
+metadata.
+
+**Decision history.** Each TL decision is its own decision record; decisions on one card share an
+`event_series_id` (`tl-card-...`). A newer disposition no longer withholds the earlier one as a superseded revision:
+both stay retrievable as history with their own states and dates.
+
+**Overnight feedback connection.** `run_agent3_overnight.py --index-dir <snapshot>` selects an immutable snapshot
+(default `.index/retrieval`). The snapshot is checked against the sources recorded in its own manifest
+(`retrieval.index.snapshot_sources`: knowledge root, fixtures, cutoff, decision namespaces), so a later snapshot is
+not mistaken for stale. The run manifest records the snapshot path, build/corpus fingerprints, decision roots,
+decisions included, prior announcements carried and the fixture fingerprint; a resume always uses the recorded
+snapshot and refuses any change (a run that predates recorded snapshot paths cannot be resumed). The run cutoff must
+still equal the snapshot cutoff. `build_decision_snapshot.py` refuses a cutoff in the future (a later save could
+otherwise fall inside an "immutable" snapshot). When the handoff's discussions all precede the run window, the brief
+says so ("replay of an earlier handoff ... not new Slack activity") and counts 0 discussion threads in the window.
+
+**Historical announcements.** A snapshot now carries earlier announcements (all activity before its window) through
+the same `extract_announcement` path, with the same canonical document and version IDs they had as current-day
+records (no duplicates), dates, scope and supersession; messages created after the cutoff are excluded. Retrieval
+marks them `origin: prior_announcement`. (Corrected in the repair pass: they keep the ANNOUNCEMENT use they had when
+current; crossing the intake window is not expiry or supersession.) The active October 2 snapshot is unchanged
+(every demo announcement is in its window; corpus fingerprint identical). An October 31 snapshot: 0 window
+announcements, 23 prior announcements, same identities and versions as the October 2 current-day records.
+
+**Thread views.** New runs record `fixture_sha256`. The dashboard compares it: VERIFIED_ORIGINAL, CHANGED_SINCE_RUN,
+or NOT_RECORDED (runs before this milestone). Unless verified, messages not in the saved evidence are labelled
+"current fixture content", separate from the run's evidence; saved messages are still compared one by one.
+
+**Demonstration (offline, real embeddings, zero model calls):** `scripts/run_feedback_loop_demo.py --write
+data/experiments/agent3_feedback_loop_offline_v1`. A TL decision (route the live smoke audio card to engineering,
+U006) was saved at 2026-10-30T18:45:43Z (operational, LIVE_MODEL); a new snapshot
+`.index/retrieval_feedback_20261030T184543Z` with that cutoff included it (0 window announcements, 23 prior); the
+overnight graph (scripted, audio topic) retrieved it in its initial current-guidance search as
+`[PRIOR RECORD (expert_referral; decision_status: tl_approved; execution_status: not_executed; outcome_status:
+not_observed) - history, not a standing rule.]`. The brief labels the handoff as a replay. The same loop runs in
+`tests/test_agent3_feedback_loop.py` (test-double encoder), including a refused resume on another snapshot.
+
+**Scenario coverage matrix** (`data/evaluation/agent3_demo_scenarios.json`, evaluation only): the nine demo cases
+(`docs/threadsense_demo_update/DEMO_COVERAGE.md`) mapped to real handoff topics, with member IDs and inherited
+obligations taken from the handoff (checked by `tests/test_agent3_milestone7.py`), expected sources with their
+relation (labels follow each source's recorded document type), acceptable action sets, required review reasons
+(INHERITED_FLAG wherever the members carry inherited obligations: eight of nine topics, which therefore can never be
+Recommended Action), behaviour notes and "must not" items. Severity is recorded, not scored: the level for
+rule-confusion topics remains a pending TL rubric decision. Reporter: `scripts/report_scenario_coverage.py`; result
+`data/experiments/agent3_scenario_coverage_v1/coverage.md` (all runs and levels).
+
+| Scenario | Topic (work ID) | Acceptable actions | Final live (v6.2) | Earlier levels |
+| --- | --- | --- | --- | --- |
+| FAQ edge case | `topic:cluster_6b59d13144282285/topic_2` | escalate, reminder, FAQ | Report to engineering; 5/5 sources (trial outcome retrieved) | live x4, scripted |
+| TL confirmation | `topic:cluster_fb1dce1eeeedc4cb/topic_1` | review session, reminder, FAQ, none | Reminder; open confirmation; summary withheld (attribution too specific); 2/3 sources | live x2, scripted |
+| Instruction conflict | `topic:cluster_9378eb54bc546fcd/topic_1` | update documentation, reminder | Update documentation; TEMPORAL_CONFLICT; 2/3 sources | live x2, scripted |
+| Language routing | `topic:cluster_3b950ad40b12ab58/topic_1` | language specialist, reminder | Language specialist; grounding PASSED; 3/3 | live x2, scripted |
+| Technical escalation | `gap:routed_440e64c7fbdcc49f` | escalate | Report to engineering; summary withheld (control behaviour overgeneralized); 3/3 | live x4, scripted |
+| Already announced | `topic:cluster_e6a79dfad226e738/topic_2` | reminder, escalate, none | Reminder; HIGH; 1/2 (instructions not retrieved); no claim about reading the announcement | placeholder only before |
+| QA misalignment | `topic:cluster_f944891544b06f79/topic_2` | review session, reminder, none | Review session; TEMPORAL_CONFLICT; 2/4 | placeholder only before |
+| Observation only | `topic:cluster_b7e5234380f9ea67/topic_1` | none, escalate | **Reminder (outside the set)**; cause stated unconfirmed | live x2 (also reminder), scripted |
+| Inherited flags | `topic:cluster_db20d884110726af/topic_1` | language specialist, reminder, none | Language specialist; flags kept; grounding PASSED | placeholder only before |
+
+All nine final cards are Needs Review with every required review reason; no inherited flag was removed. Unchanged
+result, reported as found: observation-only chose "Post a reminder" again (as in acceptance and closeout), outside the
+acceptable set written for it. ToT ran on all nine (each has a trigger, e.g. inherited flags or an open
+confirmation); every card kept its own draft action, so the ToT fallback is still offline-only. No stage failed.
+
+**Audio retrieval miss, offline investigation** (`data/evaluation/agent3_open_evaluation_cases.json`). Baseline kept:
+the frozen query ranks the outcome record 6th. The retrieved approval does not reference its outcome (empty
+`source_refs`); the outcome record cites the approval and shares its `event_series_id`. A bounded lookup over recorded
+links only (`retrieval/related.py`: forward/backward `source_refs` and shared series, same filters, at most 2 added)
+recovers the outcome for the frozen query. On the tuned cases and holdout recall is already 1.0 at top 5, so it gains
+nothing there and adds 13 records on the tuned set (4 context, 2 labelled distractors, 7 unlabelled) and 2 context
+records on the holdout (`data/experiments/agent3_related_lookup_eval_v1/report.json`). Not enabled in the Advisor.
+Absence statements: prompts v6.2 add one writing-guide rule (say what this run retrieved; never claim that no record
+exists anywhere), a display check `ABSENCE_OVERCLAIM` flags such claims, and the deterministic coverage note now reads
+"this run's searches retrieved nothing further (that does not show no such record exists)". The final live run used
+the new wording ("which the records retrieved for this run do not show") and raised no ABSENCE_OVERCLAIM.
+
+**Final live evaluation** (`data/experiments/agent3_final_eval_v1/`, Sol, prompts v6.2, cutoff 2026-10-02, the active
+snapshot, nine work items, `--max-requests 36 --max-cost 8`, zero retries, run once): status COMPLETE, accounting
+COMPLETE; 30 HTTP requests (9 drafts, 3 revisions, 9 ToT, 9 grounding), 0 blocked, 0 failed; 375,338 input / 80,701
+output (6,314 reasoning) tokens; **$1.5577** charged. Grounding PASSED on 4 cards, FAILED (statements withheld) on 5.
+
+**Checks (2026-10-30, temp dirs on D:/tsb):** full suite 827 passed (one test pin updated for the v6.2 prompt version);
+browser 10 passed; retrieval evaluation unchanged (tuned 1.0 recall, 4 distractor results, 0 violations; holdout 1.0).
+
+**Final demonstration.**
+```sh
+npm --prefix web ci && npm --prefix web run build
+uv run --locked python scripts/run_dashboard.py            # recorded live runs: agent3_final_eval_v1, agent3_overnight_smoke_v1
+uv run --locked python scripts/run_dashboard.py --include-test-fixtures --decision-db D:/tsb/demo.sqlite3   # plus the labelled fixture run
+uv run --locked python scripts/run_feedback_loop_demo.py --write data/experiments/<new dir>                   # decision -> later overnight retrieval
+uv run --locked python scripts/report_scenario_coverage.py --run data/experiments/agent3_final_eval_v1 ...
+```
+The live dashboard shows recorded live outputs; scripted runs and the fixture run carry their own banners and badges.
+
+**Limitations.** Eight of nine demo topics carry inherited flags and so can only be Needs Review; Recommended Action
+and Observation lines appear only on the labelled fixture. Five of nine live cards withheld statements (two
+summaries). Retrieval recall still depends on the model's follow-up queries; the recorded-link lookup is evaluated,
+not enabled. The ToT fallback and the possessive-plural/record-authorship fixes remain offline-only. Severity for
+rule-confusion topics is a pending TL rubric decision. No authentication on the dashboard; namespaces come from run
+mode, not from a user role. A full live overnight run of all 87 work items has not been done (estimate in Milestone 5).
+
+## Repair pass (2026-10-30): intervention need, retrieval misses, summaries, provenance
+
+Baseline: the frozen Milestone 7 run `agent3_final_eval_v1` (unchanged). Labels, corpus, rubric and inherited
+obligations unchanged. Prompts `agent3-advisor-prompts-v7`, draft contract `agent3-advisor-draft-v7`.
+
+**1. Observation-only.** The saved threads were read in full: two of five threads ask "what is the correct handling";
+the team lead or a QA tutor answered in every thread but one (the same comparison instruction, file versus player);
+the earlier TL decision (`audio-repeat-observation-review`, deferred) keeps the report as an open observation and
+says to reassess only if new evidence establishes a defect or material impact. The live reminders' stated reason was
+"the questions and reports warrant a shared reminder" - the generic case. So the observation-only expectation holds
+against POST_ALIGNMENT. Conflict reported, not resolved by relabelling: the dataset's per-thread blueprint expects
+ESCALATE_ENGINEERING for all five threads; the matrix already accepts it, so the matrix is unchanged.
+Repair: draft v7 requires an operational action to state `intervention_need` (UNRESOLVED_HANDLING_QUESTION,
+GUIDANCE_GAP, APPLICABLE_PENDING_DECISION or OPERATIONAL_PROBLEM, with evidence); it is judged as statement
+`action:need` in the same final grounding call (no extra call). An action stands only if the need is SUPPORTED;
+otherwise the action verdict is NO_INTERVENTION_NEED, which withholds the action and blocks the ToT fallback but is
+not a grounding failure: the card line still comes from the review reasons (an observation with inherited flags stays
+Needs Review with no action). Prompts: infer the need from the threads and records, not keywords; answered questions
+are not unresolved; repeated unanswered questions can be; existing guidance does not by itself mean NO_ACTION; "a
+reminder might help" is not a need. Recorded v6 drafts replay under v6 rules (`LEGACY_LABELS`).
+
+**2. Retrieval misses** (`scripts/diagnose_retrieval_misses.py`, exact recorded steps against the run's snapshot):
+every missing source was RANKED_BELOW_CUTOFF (top_k 5) - audio trial outcome rank 6 (follow-up), already-announced
+instructions rank 7, QA-misalignment instructions rank 6 and the RP status note rank 13; nothing was filtered out or
+never searched; one source (the tie-calibration post) was retrieved but not cited. In both instruction misses the
+expected section was the best-ranked guideline, crowded out by records of other types. Smallest general fix, in
+`ResearchTools` (bounded, same project/scope/batch/date/version filters, distinguishable as `retrieved_as`):
+- type coverage: the initial current-guidance search keeps the first guideline and FAQ chunk of the same ranking
+  (read to depth 30) when none reached the top 5 (at most 2 per topic);
+- related records: prior-decision research (history mode, decision records requested) adds decision records linked to
+  a returned record by recorded `source_refs` in either direction or a shared `event_series_id` (at most 2 per topic).
+Replays of recorded runs keep their original retrieval. Evaluation (`scripts/evaluate_retrieval_expansion.py`,
+`data/experiments/agent3_retrieval_expansion_eval_v2/`; v1 used a type-only re-ranking that picked a different
+section and was corrected once on the failure case, not on the holdout): recorded failures - 4 of 5 recovered (trial
+outcome, both instruction sections), RP status note still missing; tuned cases - no relevant gain possible (recall
+already 1.0), 3 records added in current mode (1 context, 2 unlabelled) and 7 in history mode (2 context, 5
+unlabelled), 0 distractors, 0 must-exclude, about 490 and 2,070 added tokens over 10 searches each; holdout - no
+gain, 2 context records in history mode. Ranked results are unchanged, so nothing is displaced. The existing retrieval
+evaluation is unchanged.
+
+**3. Summaries.** Both withheld summaries were correctly judged too broad (Submit: "stays disabled or does nothing"
+attributed to all reporters; TL confirmation: both QA tutors said to ask about factual accuracy). Generation fix only:
+the writing guide now separates what several reporters share from what only some report, a question from an affected
+report, and a reported symptom from a confirmed finding. The judge is unchanged. One checker false positive found in
+the live run was fixed with a regression: "one of the tutors also reports ..." was read as a plural claim
+(`PARTITIVE` exemption; real plurals still checked).
+
+**4. Provenance and applicability.** Decision contract v3 adds `decision_origin` (TL_DASHBOARD, DEMO_SCRIPT, TEST): a
+simulated decision is demo/test data even on a live card and keeps the card's judgment provenance
+(`create_app(decision_origin=...)`, `run_dashboard.py --decision-origin`; the feedback demo and UI tests use it).
+`agent3_feedback_loop_offline_v1` recorded its simulated approval as operational (the defect); it is unchanged and
+superseded by `agent3_feedback_loop_offline_v2` (demo namespace, demo-only snapshot). Correction to Milestone 7:
+earlier announcements are no longer HISTORY_ONLY for crossing the 24-hour intake boundary; they keep the use they had
+when current (ANNOUNCEMENT: handling only once shown relevant and directive), labelled "collected before this run's
+24-hour window"; only recorded expiry or supersession makes them history. Approved, unexecuted TL decisions remain
+PRIOR_DECISION history.
+
+**5. ToT trigger audit.** Triggers are temporal conflict, low confidence and the draft's open confirmation; inherited
+flags never trigger. In the baseline, 8 of 9 open questions triggered ToT; at least four were not team-lead
+questions (a root cause, a pending file comparison, two pending expert assessments). The draft and judge rules now
+define an open confirmation as a handling or policy question for the team lead (the judge criterion is stricter, not
+looser).
+
+**Comparison run** (`data/experiments/agent3_repair_eval_v1/`, Sol, prompts v7, same snapshot, six work items,
+`--max-requests 24 --max-cost 4`, zero retries, once; comparison `data/experiments/agent3_repair_comparison_v1/`):
+16 requests (baseline on the same six: 21), 228,290 input / 51,791 output tokens, **$0.9745** (baseline $1.1302);
+accounting COMPLETE; no stage failure.
+
+| Issue | Status | Evidence |
+| --- | --- | --- |
+| Observation-only reminder | Improved live | Draft proposed NO_ACTION; no action shown; Needs Review only for the inherited flag; summary keeps the observation |
+| Intervention need in grounding | Fixed offline, exercised live | 5 needs stated and judged SUPPORTED live; no NO_INTERVENTION_NEED case occurred live (offline paired tests only) |
+| Already-announced missing instructions | Improved live | 2/2 expected sources retrieved and cited (was 1/2) |
+| QA-misalignment missing sources | Partly improved live | 3/4 retrieved (instructions recovered); RP status note (rank 13) unresolved |
+| Audio trial outcome (smoke miss) | Fixed offline; retrieved live | 5/5 live, as in the baseline; the related-record path recovers it offline |
+| Submit summary overgeneralized | Improved live | Summary shown ("including grey or disabled controls and a click that does nothing") |
+| TL-confirmation summary attribution | Improved live | Summary shown |
+| Unsupported content withheld | Preserved | Withheld statements: Submit 1, audio 3, TL 1, already-announced 1 |
+| Review obligations | Preserved | Inherited flags kept on every card; all six Needs Review |
+| ToT on non-team-lead questions | Improved live | ToT ran on 1 of 6 (was 6 of 6) |
+| TL-confirmation open question | Changed; judge rejected it | Open question judged UNSUPPORTED as a case-specific preference judgment; ToT still ran on the draft's trigger |
+| QA-misalignment temporal conflict | Changed, unverified | Draft declared no source conflict (baseline: two unexplained conflicts); not shown to be a lost legitimate trigger or a fixed false one |
+| Audio action withheld | Regressed live; cause fixed offline | A checker false positive ("one of the tutors ... reports") rejected a premise; fixed with a regression, not re-run live |
+
+Checks before the paid run: focused tests, browser 10 passed, retrieval evaluation unchanged, full suite (two
+integration failures from a fixture-builder bug, fixed and re-run). Final full suite after the partitive fix: 841
+passed (temp dirs on D:/tsb).

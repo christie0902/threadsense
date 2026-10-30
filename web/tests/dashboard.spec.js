@@ -264,6 +264,9 @@ test('source and thread views come from saved evidence and keep superseded label
   await audio.getByTestId('thread-link').first().click()
   const thread = page.getByTestId('thread-detail')
   await expect(thread.getByTestId('permalink-note')).toContainText('No Slack permalink is stored')
+  // The smoke run predates the fixture fingerprint: the thread is labelled current fixture content, apart from saved evidence.
+  await expect(thread.getByTestId('fixture-status')).toHaveAttribute('data-status', 'NOT_RECORDED')
+  await expect(thread.getByTestId('fixture-status')).toContainText('separate from the run\'s saved evidence')
   await expect(thread.getByTestId('thread-message').first()).toContainText('matches saved evidence')
   expect(page.url()).toContain('panel=thread')
   await page.reload() // deep link reopens the same view
@@ -315,8 +318,12 @@ test('a saved decision reaches a later retrieval snapshot with its exact states'
   await box.getByRole('button', { name: /Done/ }).click()
   const cutoff = new Date().toISOString() // after the decision was saved: a coherent later cutoff
   const run = args => execFileSync('uv', ['run', '--locked', 'python', ...args], { cwd: REPO, encoding: 'utf-8' })
-  const built = JSON.parse(run(['scripts/build_decision_snapshot.py', '--cutoff', cutoff, '--index-dir', `${server.dir}/snapshot`,
-    '--export-dir', `${server.dir}/exports`, '--decision-db', server.db, '--build']))
+  const snapshotArgs = ['scripts/build_decision_snapshot.py', '--cutoff', cutoff, '--index-dir', `${server.dir}/snapshot`,
+    '--export-dir', `${server.dir}/exports`, '--decision-db', server.db]
+  // A decision on the hand-written fixture run is UI test data: excluded from default (operational) snapshots.
+  const plan = JSON.parse(run(snapshotArgs))
+  expect([plan.would_include, plan.excluded_by_namespace]).toEqual([0, 1])
+  const built = JSON.parse(run([...snapshotArgs, '--namespace', 'test', '--build']))
   expect(built.decisions_indexed).toBe(1)
   expect(built.decisions_after_cutoff).toEqual([])
   await page.reload()
@@ -330,4 +337,28 @@ r = Retriever(sys.argv[1]).search('team lead approved reminder made-up phone num
 print(json.dumps([{k: x['metadata'][k] for k in ('origin', 'decision_status', 'execution_status', 'outcome_status')} for x in r['results']]))
 `, `${server.dir}/snapshot`]).trim().split('\n').at(-1))
   expect(found).toContainEqual({ origin: 'tl_decision_store', decision_status: 'tl_approved', execution_status: 'not_executed', outcome_status: 'not_observed' })
+})
+
+test('two runs with the same run_id and card_id keep separate decisions, also after restart', async ({ page }) => {
+  server = await startServer('isolation')
+  const runs = (await server.api('/api/runs')).runs
+  const [v1, v2] = [runs.find(r => r.run_key === V1), runs.find(r => r.run_key === V2)]
+  expect(v1.run_id).toBe(v2.run_id)
+  expect(v1.run_instance).not.toBe(v2.run_instance)
+  const card = await cardId(V1, c => c.topic_name === 'LT response-fetch failure on safety tasks')
+  expect((await server.api(`/api/runs/${V2}/brief`)).cards.some(c => c.card.card_id === card.card_id)).toBe(true)
+  await open(page, V1, `&project=${card.project_id}`)
+  const box = cardBox(page, card.topic_name)
+  await box.getByRole('button', { name: 'Resolve…' }).click()
+  await box.getByLabel('Dismiss').check()
+  await box.locator('textarea[name=note]').fill('Handled in the engineering thread.')
+  await box.getByTestId('save-decision').click()
+  await expect(box.getByTestId('save-success')).toBeVisible()
+  for (const step of ['now', 'restart']) {
+    if (step === 'restart') await server.restart()
+    await open(page, V2, `&project=${card.project_id}`)
+    await expect(page.getByTestId('active-NEEDS_REVIEW').locator(`[data-card-id="${card.card_id}"]`)).toHaveCount(1)
+    expect(await decisionsFor(V2, card.card_id)).toEqual([])
+    expect((await decisionsFor(V1, card.card_id)).map(d => [d.kind, d.run_instance])).toEqual([['DISMISS', v1.run_instance]])
+  }
 })

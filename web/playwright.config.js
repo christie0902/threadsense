@@ -4,6 +4,7 @@ import { defineConfig } from '@playwright/test'
 // Stores, snapshots and Playwright output go outside the repository (TS_UI_TMP, default D:/tsb/ui-<time>).
 const tmp = process.env.TS_UI_TMP || `D:/tsb/ui-${Date.now()}`
 process.env.TS_UI_TMP = tmp
+process.env.TS_UI_ORIGIN ||= 'TEST' // Decisions made by UI tests are test data, never operational.
 
 export default defineConfig({
   testDir: './tests',

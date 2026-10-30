@@ -86,7 +86,7 @@ def use_of(result):
     if applicability == 'UNRESOLVED':
         return 'UNRESOLVED_VERSION'
     if applicability != 'CURRENT' or result.get('expired_as_of'):
-        return 'HISTORY_ONLY'
+        return 'HISTORY_ONLY'  # Only recorded applicability or expiry; leaving the 24-hour intake window is neither.
     kind = result['metadata']['document_type']
     if kind in ('guideline', 'faq'):
         return 'CURRENT_GUIDANCE'
@@ -114,8 +114,9 @@ def banner(result, use):
     if use == 'UNRESOLVED_VERSION':
         return '[UNRESOLVED VERSION: competing revisions could not be ordered from recorded dates/scope; do not choose one.]'
     if use == 'ANNOUNCEMENT':
+        earlier = ", collected before this run's 24-hour window" if m.get('origin') == 'prior_announcement' else ''
         return (f"[ANNOUNCEMENT posted {m['source_date']} by {m['authority_role'] or 'unknown role'} "
-                f"({m['batch_id'] or m['scope']}): not established as handling for this topic until you show it is "
+                f"({m['batch_id'] or m['scope']}{earlier}): not established as handling for this topic until you show it is "
                 'relevant and gives a directive.]')
     if use == 'PRIOR_DECISION':
         states = '; '.join(f"{k}: {m[k]}" for k in ('decision_status', 'execution_status', 'outcome_status') if m.get(k))
@@ -152,6 +153,13 @@ def evidence_item(result, evidence_id):
             if m['review_required'] else None,
         'excerpt': f'{note}\n{result["text"]}' if note else result['text'],
     }
+
+
+def expanded_item(result, evidence_id, role):
+    """An evidence item added outside the ranked results: same fields, plus how it was reached."""
+    item = evidence_item(result, evidence_id)
+    label = ('[RELATED RECORD - not a search match: ' if role['role'] == 'RELATED_RECORD' else '[ADDED FOR TYPE COVERAGE: ')
+    return {**item, 'retrieved_as': role, 'excerpt': f"{label}{role['detail']}.]\n{item['excerpt']}"}
 
 
 def withheld_item(entry):
@@ -203,14 +211,29 @@ def model_view(item):
             'reactions': [{'name': r['name'], 'users': [u['id'] for u in r['users']]} for r in item['reactions']]}
 
 
-class ResearchTools:
-    """Guideline / FAQ / decision / announcement retrieval for one topic, charged to the budget."""
+GUIDANCE_TYPES = ('guideline', 'faq')
+# Per topic: at most this many records added outside the ranked top_k (each kind), under the same filters.
+EXPANSION_LIMITS = {'TYPE_COVERAGE': 2, 'RELATED_RECORD': 2}
+COVERAGE_DEPTH = 30  # How far down the same ranking type coverage looks (the retrieval candidate depth).
 
-    def __init__(self, retriever, *, project, batch, as_of, budget, top_k=5, ledger=None):
+
+class ResearchTools:
+    """Guideline / FAQ / decision / announcement retrieval for one topic, charged to the budget.
+
+    Two bounded additions (`expansion`), each kept distinguishable from the ranked results (ledger `retrieved_as`,
+    and a status line in the excerpt): the initial current-guidance search keeps the best-ranked eligible guideline and
+    FAQ chunk when none reached the top_k (records of other types can crowd them out); prior-decision research
+    (history mode, decision records requested) adds decision records explicitly linked to a returned record by
+    recorded source_refs (either direction) or a shared event_series_id (retrieval/related.py). Same project, scope,
+    batch, date and version filters; no inferred links; no extra retrieval budget beyond the limits above.
+    """
+
+    def __init__(self, retriever, *, project, batch, as_of, budget, top_k=5, ledger=None, expansion=True):
         self.retriever, self.project, self.batch, self.as_of = retriever, project, batch, as_of
-        self.budget, self.top_k = budget, top_k
+        self.budget, self.top_k, self.expansion = budget, top_k, expansion
         self.ledger = {} if ledger is None else ledger
         self.trace, self.withheld, self.diagnostics = [], {}, {}
+        self.added = {kind: 0 for kind in EXPANSION_LIMITS}
 
     def search(self, query, *, purpose, source_types=None, version_mode='current', gap_id=None):
         step = {'step': len(self.trace) + 1, 'purpose': purpose, 'gap_id': gap_id, 'query': query,
@@ -235,10 +258,43 @@ class ResearchTools:
             self.withheld.setdefault(entry['chunk_id'], withheld_item(entry))
         for diagnostic in response['version_diagnostics']:
             self.diagnostics.setdefault(repr(sorted(diagnostic.items(), key=str)), diagnostic)
+        added = []
+        for result, role in self._expansion(query, purpose, response, step['source_types'], version_mode):
+            evidence_id = knowledge_evidence_id(result)
+            if evidence_id in self.ledger:
+                continue
+            self.ledger[evidence_id] = expanded_item(result, evidence_id, role)
+            added.append({'evidence_id': evidence_id, **role})
+            new.append(evidence_id)
         self.trace.append({**step, 'status': 'DONE', 'mode': response['mode'], 'use_mmr': response['use_mmr'],
                            'mmr_lambda': response['config']['mmr_lambda'], 'result_ids': ids, 'new_evidence_ids': new,
-                           'eligible_chunks': response['eligible_chunks']})
-        return {'query': query, 'version_mode': version_mode, 'results': [self.ledger[i] for i in ids]}
+                           'eligible_chunks': response['eligible_chunks'], 'added': added})
+        return {'query': query, 'version_mode': version_mode,
+                'results': [self.ledger[i] for i in ids] + [self.ledger[a['evidence_id']] for a in added]}
+
+    def _expansion(self, query, purpose, response, types, version_mode):
+        if not self.expansion:
+            return []
+        out = []
+        filters = {'batch': self.batch, 'as_of': self.as_of, 'version_mode': version_mode}
+        if purpose == 'initial_current_guidance':
+            missing = [k for k in GUIDANCE_TYPES if k in types and not any(r['metadata']['document_type'] == k for r in response['results'])]
+            if missing:  # The same query and ranking, read further: the first chunk of each missing type.
+                wide = self.retriever.search(query, self.project, top_k=COVERAGE_DEPTH, document_types=types, **filters)['results']
+                for kind in missing:
+                    best = next((r for r in wide if r['metadata']['document_type'] == kind), None)
+                    if best is not None and self.added['TYPE_COVERAGE'] < EXPANSION_LIMITS['TYPE_COVERAGE']:
+                        self.added['TYPE_COVERAGE'] += 1
+                        out.append((best, {'role': 'TYPE_COVERAGE', 'detail': f"best-ranked {kind} for this query (rank "
+                                                                              f"{best['rank']}), outside the top {self.top_k}"}))
+        room = EXPANSION_LIMITS['RELATED_RECORD'] - self.added['RELATED_RECORD']
+        if version_mode == 'history' and 'decision' in types and room > 0:
+            from threadsense.retrieval.related import related
+            for r in related(self.retriever, response, self.project, limit=room, document_types=['decision'], **filters)['added']:
+                self.added['RELATED_RECORD'] += 1
+                links = '; '.join(dict.fromkeys(f"{l['link']} link from {l['from']}" for l in r['links']))
+                out.append((r, {'role': 'RELATED_RECORD', 'detail': f'recorded {links}', 'links': r['links']}))
+        return out
 
     def notes(self):
         return {'withheld_by_version': list(self.withheld.values()), 'version_diagnostics': list(self.diagnostics.values())}

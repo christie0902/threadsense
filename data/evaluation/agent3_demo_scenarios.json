@@ -1,0 +1,499 @@
+{
+ "version": "agent3-demo-scenarios-v1",
+ "recorded": "2026-10-30",
+ "purpose": "Coverage matrix for the nine demo cases (docs/threadsense_demo_update/DEMO_COVERAGE.md) mapped to real Agent 2 handoff topics (data/processed/agent2_handoff_v2_projection). Evaluation only: never a model input.",
+ "scoring": {
+  "acceptable_actions": "Any listed action passes; no exact wording or single action is required where the evidence supports several.",
+  "required_review_reasons": "Deterministic: INHERITED_FLAG whenever the topic's members carry inherited obligations (computed from the handoff). Flags are never removed to reach a Recommended Action.",
+  "expected_sources": "Retrieved into the topic's evidence ledger with the expected relation (CURRENT_GUIDANCE, ANNOUNCEMENT, PRIOR_DECISION, or HISTORY = HISTORY_ONLY). Recall of a source is reported, not required: retrieval depends on the model's follow-up queries. Relations follow each source's recorded document type: authored channel announcements (e.g. the fictional-PII clarification, the tie-calibration post) are ANNOUNCEMENT records, which the Advisor treats as current handling only once it shows they apply.",
+  "must_not": "Checked by reading the card (manual); the reporter only flags relation violations it can detect.",
+  "severity": "Recorded, not scored. The severity level for rule-confusion topics is a pending TL rubric decision; the rubric is not tuned to these labels."
+ },
+ "scenarios": [
+  {
+   "id": "faq_edge_case",
+   "demo_case": "FAQ edge case",
+   "work_id": "topic:cluster_6b59d13144282285/topic_2",
+   "candidate_group_id": "cluster_6b59d13144282285",
+   "topic_id": "cluster_6b59d13144282285/topic_2",
+   "topic_name": "LT audio player playback failure",
+   "project_id": "audio_multimodal",
+   "batch_id": "audio_batch_06",
+   "member_ids": [
+    "member_8ce5853bbd6b1a416c28b76f",
+    "member_e0275e7d53c557361ca40bd1",
+    "member_943da52557c55ff31ee76f89",
+    "member_61f4987d5eb6b1ccb2894091"
+   ],
+   "inherited_obligation_member_ids": [
+    "member_8ce5853bbd6b1a416c28b76f",
+    "member_943da52557c55ff31ee76f89"
+   ],
+   "pilot_scenario": "audio_playback",
+   "expected_sources": [
+    {
+     "ref": {
+      "authoring": "audio-multimodal-instructions",
+      "section": "Playback and unavailable content"
+     },
+     "relation": "CURRENT_GUIDANCE"
+    },
+    {
+     "ref": {
+      "authoring": "audio-multimodal-faq"
+     },
+     "relation": "CURRENT_GUIDANCE"
+    },
+    {
+     "ref": {
+      "slack": [
+       "C_AUDIO_ANNOUNCEMENTS",
+       "1790892000.000901"
+      ]
+     },
+     "relation": "ANNOUNCEMENT"
+    },
+    {
+     "ref": {
+      "authoring": "audio-playback-trial-approval"
+     },
+     "relation": "HISTORY"
+    },
+    {
+     "ref": {
+      "authoring": "audio-playback-trial-outcome"
+     },
+     "relation": "HISTORY"
+    }
+   ],
+   "acceptable_actions": [
+    "ESCALATE_ENGINEERING",
+    "POST_ALIGNMENT",
+    "UPDATE_FAQ"
+   ],
+   "required_review_reasons": [
+    "INHERITED_FLAG"
+   ],
+   "required_card_line": "NEEDS_REVIEW",
+   "expected_behavior": "Handling comes from the instructions; the FAQ gap is narrower (waveform visible, no playback). General reporting already exists, so an FAQ addition is acceptable, not required.",
+   "must_not": [
+    "Treat the expired batch-05 reload trial as current handling.",
+    "Invent a new policy."
+   ]
+  },
+  {
+   "id": "tl_confirmation",
+   "demo_case": "TL confirmation (JSON vs prose)",
+   "work_id": "topic:cluster_fb1dce1eeeedc4cb/topic_1",
+   "candidate_group_id": "cluster_fb1dce1eeeedc4cb",
+   "topic_id": "cluster_fb1dce1eeeedc4cb/topic_1",
+   "topic_name": "Format adherence vs factual accuracy",
+   "project_id": "response_preference",
+   "batch_id": "rp_batch_15",
+   "member_ids": [
+    "member_6b0a2b0015aa474bf50996d0",
+    "member_b0a066a9dcba609a9aebaec9",
+    "member_225803f43142caa5d3c165cf"
+   ],
+   "inherited_obligation_member_ids": [
+    "member_225803f43142caa5d3c165cf"
+   ],
+   "pilot_scenario": "json_vs_prose",
+   "expected_sources": [
+    {
+     "ref": {
+      "authoring": "response-preference-instructions"
+     },
+     "relation": "CURRENT_GUIDANCE"
+    },
+    {
+     "ref": {
+      "authoring": "response-preference-faq"
+     },
+     "relation": "CURRENT_GUIDANCE"
+    },
+    {
+     "ref": {
+      "authoring": "rp-format-rule-rejected"
+     },
+     "relation": "PRIOR_DECISION"
+    }
+   ],
+   "acceptable_actions": [
+    "SCHEDULE_ALIGNMENT",
+    "POST_ALIGNMENT",
+    "UPDATE_FAQ",
+    "NO_ACTION"
+   ],
+   "required_review_reasons": [
+    "INHERITED_FLAG"
+   ],
+   "required_card_line": "NEEDS_REVIEW",
+   "expected_behavior": "Identify the formatting violation and the absence of a universal format-over-accuracy ordering; the team lead confirmation stays open (OPEN_CONFIRMATION expected, not forced).",
+   "must_not": [
+    "Present the rejected universal JSON-first rule as current."
+   ]
+  },
+  {
+   "id": "instruction_conflict",
+   "demo_case": "Instruction conflict (fictional PII)",
+   "work_id": "topic:cluster_9378eb54bc546fcd/topic_1",
+   "candidate_group_id": "cluster_9378eb54bc546fcd",
+   "topic_id": "cluster_9378eb54bc546fcd/topic_1",
+   "topic_name": "Fictional phone number quarantine handling",
+   "project_id": "safety_classification",
+   "batch_id": "safety_batch_08",
+   "member_ids": [
+    "member_e6ba202b428b4ab5ed0c0aff",
+    "member_17589781d46b6d4b3ee94a6b",
+    "member_b26b6a34827bebdc9e52666f"
+   ],
+   "inherited_obligation_member_ids": [
+    "member_b26b6a34827bebdc9e52666f"
+   ],
+   "pilot_scenario": "fictional_pii",
+   "expected_sources": [
+    {
+     "ref": {
+      "authoring": "safety-fictional-pii-clarification"
+     },
+     "relation": "ANNOUNCEMENT"
+    },
+    {
+     "ref": {
+      "authoring": "safety-classification-instructions"
+     },
+     "relation": "CURRENT_GUIDANCE"
+    },
+    {
+     "ref": {
+      "authoring": "safety-qn-help-page",
+      "section": "Contact details"
+     },
+     "relation": "HISTORY"
+    }
+   ],
+   "acceptable_actions": [
+    "UPDATE_DOCUMENTATION",
+    "POST_ALIGNMENT"
+   ],
+   "required_review_reasons": [
+    "INHERITED_FLAG"
+   ],
+   "required_card_line": "NEEDS_REVIEW",
+   "expected_behavior": "Compare the old help-page rule with its scoped, dated supersession; the clarification is current and the help-page section is stale.",
+   "must_not": [
+    "Cite the superseded help-page section as current guidance."
+   ]
+  },
+  {
+   "id": "language_routing",
+   "demo_case": "Language routing",
+   "work_id": "topic:cluster_3b950ad40b12ab58/topic_1",
+   "candidate_group_id": "cluster_3b950ad40b12ab58",
+   "topic_id": "cluster_3b950ad40b12ab58/topic_1",
+   "topic_name": "Korean honorific level inconsistency QA",
+   "project_id": "multilingual_eval",
+   "batch_id": "multi_batch_11",
+   "member_ids": [
+    "member_8c54e5824868d24507d20361",
+    "member_74e92dc600ce9bbc7f5bfc91",
+    "member_fd22fa33e77a761978a1a44e",
+    "member_bac94c44f7245ade46fc1c0e"
+   ],
+   "inherited_obligation_member_ids": [
+    "member_74e92dc600ce9bbc7f5bfc91"
+   ],
+   "pilot_scenario": "korean_register",
+   "expected_sources": [
+    {
+     "ref": {
+      "authoring": "multilingual-eval-instructions"
+     },
+     "relation": "CURRENT_GUIDANCE"
+    },
+    {
+     "ref": {
+      "authoring": "multi-korean-scoped-result"
+     },
+     "relation": "PRIOR_DECISION"
+    },
+    {
+     "ref": {
+      "authoring": "multi-korean-referral"
+     },
+     "relation": "PRIOR_DECISION"
+    }
+   ],
+   "acceptable_actions": [
+    "ROUTE_TO_LANGUAGE_SPECIALIST",
+    "POST_ALIGNMENT"
+   ],
+   "required_review_reasons": [
+    "INHERITED_FLAG"
+   ],
+   "required_card_line": "NEEDS_REVIEW",
+   "expected_behavior": "Keep locale and context checks; route disputed cases to the matching language QA. The Korean precedent is scoped to its case.",
+   "must_not": [
+    "Generalize the scoped Korean result into a project rule.",
+    "Treat valid variants as automatic errors."
+   ]
+  },
+  {
+   "id": "technical_escalation",
+   "demo_case": "Technical escalation (Submit)",
+   "work_id": "gap:routed_440e64c7fbdcc49f",
+   "candidate_group_id": "routed_440e64c7fbdcc49f",
+   "topic_id": null,
+   "topic_name": null,
+   "project_id": "response_preference",
+   "batch_id": "rp_batch_15",
+   "member_ids": [
+    "member_92cea4511885f2a7a0f35d94",
+    "member_ea9f29f60a529c3654667b12",
+    "member_53f1807530ac0f8700ba8fdd",
+    "member_3b5b9d157c909625cd45bc6c"
+   ],
+   "inherited_obligation_member_ids": [
+    "member_92cea4511885f2a7a0f35d94",
+    "member_ea9f29f60a529c3654667b12"
+   ],
+   "pilot_scenario": "submit_failure",
+   "expected_sources": [
+    {
+     "ref": {
+      "authoring": "rp-submit-engineering-handoff"
+     },
+     "relation": "PRIOR_DECISION"
+    },
+    {
+     "ref": {
+      "authoring": "response-preference-instructions"
+     },
+     "relation": "CURRENT_GUIDANCE"
+    },
+    {
+     "ref": {
+      "slack": [
+       "C_RP_ANNOUNCEMENTS",
+       "1790888971.000030"
+      ]
+     },
+     "relation": "ANNOUNCEMENT"
+    }
+   ],
+   "acceptable_actions": [
+    "ESCALATE_ENGINEERING"
+   ],
+   "required_review_reasons": [
+    "INHERITED_FLAG"
+   ],
+   "required_card_line": "NEEDS_REVIEW",
+   "expected_behavior": "Recommend evidence capture and escalation when justified; the projection gap stays visible.",
+   "must_not": [
+    "Claim a completed escalation or ticket.",
+    "Use the rejected Zoom workaround as current handling."
+   ]
+  },
+  {
+   "id": "already_announced",
+   "demo_case": "Repeated question after an announcement",
+   "work_id": "topic:cluster_e6a79dfad226e738/topic_2",
+   "candidate_group_id": "cluster_e6a79dfad226e738",
+   "topic_id": "cluster_e6a79dfad226e738/topic_2",
+   "topic_name": "Audio player buffering at 00:00",
+   "project_id": "audio_multimodal",
+   "batch_id": "audio_batch_06",
+   "member_ids": [
+    "member_5a1a4e04becddf182c6e3ada"
+   ],
+   "inherited_obligation_member_ids": [],
+   "pilot_scenario": null,
+   "expected_sources": [
+    {
+     "ref": {
+      "slack": [
+       "C_AUDIO_ANNOUNCEMENTS",
+       "1790892000.000901"
+      ]
+     },
+     "relation": "ANNOUNCEMENT"
+    },
+    {
+     "ref": {
+      "authoring": "audio-multimodal-instructions",
+      "section": "Playback and unavailable content"
+     },
+     "relation": "CURRENT_GUIDANCE"
+    }
+   ],
+   "acceptable_actions": [
+    "POST_ALIGNMENT",
+    "ESCALATE_ENGINEERING",
+    "NO_ACTION"
+   ],
+   "required_review_reasons": [],
+   "required_card_line": null,
+   "expected_behavior": "Cite the playback reminder (posted 2026-10-01 22:00 UTC) and the later question (2026-10-02 07:02 UTC).",
+   "must_not": [
+    "Claim the reporter read or ignored the announcement."
+   ]
+  },
+  {
+   "id": "qa_misalignment",
+   "demo_case": "QA misalignment (ties)",
+   "work_id": "topic:cluster_f944891544b06f79/topic_2",
+   "candidate_group_id": "cluster_f944891544b06f79",
+   "topic_id": "cluster_f944891544b06f79/topic_2",
+   "topic_name": "QA calibration on disputed tie decisions",
+   "project_id": "response_preference",
+   "batch_id": "rp_batch_15",
+   "member_ids": [
+    "member_0886e8fe7e7d998c1077ff10",
+    "member_cb06b7a6847122af7e6b8e4b",
+    "member_42af0c53b9dee102697caa09"
+   ],
+   "inherited_obligation_member_ids": [
+    "member_0886e8fe7e7d998c1077ff10",
+    "member_42af0c53b9dee102697caa09"
+   ],
+   "pilot_scenario": null,
+   "expected_sources": [
+    {
+     "ref": {
+      "authoring": "response-preference-instructions"
+     },
+     "relation": "CURRENT_GUIDANCE"
+    },
+    {
+     "ref": {
+      "authoring": "response-preference-faq"
+     },
+     "relation": "CURRENT_GUIDANCE"
+    },
+    {
+     "ref": {
+      "authoring": "rp-tie-calibration-post"
+     },
+     "relation": "ANNOUNCEMENT"
+    },
+    {
+     "ref": {
+      "slack": [
+       "C_RP_ANNOUNCEMENTS",
+       "1790929075.000039"
+      ]
+     },
+     "relation": "ANNOUNCEMENT"
+    }
+   ],
+   "acceptable_actions": [
+    "SCHEDULE_ALIGNMENT",
+    "POST_ALIGNMENT",
+    "NO_ACTION"
+   ],
+   "required_review_reasons": [
+    "INHERITED_FLAG"
+   ],
+   "required_card_line": "NEEDS_REVIEW",
+   "expected_behavior": "Compare the task evidence with the consistent tie guidance; a single disagreement is not a systemic defect.",
+   "must_not": [
+    "Call one disputed tie a systemic QA defect."
+   ]
+  },
+  {
+   "id": "observation_only",
+   "demo_case": "Observation only (repeated ending)",
+   "work_id": "topic:cluster_b7e5234380f9ea67/topic_1",
+   "candidate_group_id": "cluster_b7e5234380f9ea67",
+   "topic_id": "cluster_b7e5234380f9ea67/topic_1",
+   "topic_name": "Repeated final line in exported audio",
+   "project_id": "audio_multimodal",
+   "batch_id": "audio_batch_06",
+   "member_ids": [
+    "member_7e30b0730acedd4c18fcf3a5",
+    "member_9af4caa31c6ee01df21547d4",
+    "member_a05733133a11c3689d715928",
+    "member_dfb394ecfe8f564ef2360a40",
+    "member_149de7c563b87a982aa7a9ea"
+   ],
+   "inherited_obligation_member_ids": [
+    "member_a05733133a11c3689d715928"
+   ],
+   "pilot_scenario": "repeated_ending",
+   "expected_sources": [
+    {
+     "ref": {
+      "authoring": "audio-multimodal-instructions"
+     },
+     "relation": "CURRENT_GUIDANCE"
+    },
+    {
+     "ref": {
+      "authoring": "audio-repeat-observation-review"
+     },
+     "relation": "PRIOR_DECISION"
+    }
+   ],
+   "acceptable_actions": [
+    "NO_ACTION",
+    "ESCALATE_ENGINEERING"
+   ],
+   "required_review_reasons": [
+    "INHERITED_FLAG"
+   ],
+   "required_card_line": "NEEDS_REVIEW",
+   "expected_behavior": "Preserve the generation-versus-playback uncertainty.",
+   "must_not": [
+    "Assert a confirmed model defect."
+   ]
+  },
+  {
+   "id": "upstream_flags",
+   "demo_case": "Inherited review flags",
+   "work_id": "topic:cluster_db20d884110726af/topic_1",
+   "candidate_group_id": "cluster_db20d884110726af",
+   "topic_id": "cluster_db20d884110726af/topic_1",
+   "topic_name": "Japanese speech-level shift evaluation",
+   "project_id": "multilingual_eval",
+   "batch_id": "multi_batch_11",
+   "member_ids": [
+    "member_c0e209a71f0bd7157b85d5f4",
+    "member_312342420c2338d5fbce8532",
+    "member_dc26e975ca3fa5cce7ea30e5"
+   ],
+   "inherited_obligation_member_ids": [
+    "member_312342420c2338d5fbce8532",
+    "member_c0e209a71f0bd7157b85d5f4"
+   ],
+   "pilot_scenario": null,
+   "expected_sources": [
+    {
+     "ref": {
+      "authoring": "multilingual-eval-instructions"
+     },
+     "relation": "CURRENT_GUIDANCE"
+    },
+    {
+     "ref": {
+      "authoring": "multi-japanese-review-pending"
+     },
+     "relation": "PRIOR_DECISION"
+    }
+   ],
+   "acceptable_actions": [
+    "ROUTE_TO_LANGUAGE_SPECIALIST",
+    "POST_ALIGNMENT",
+    "NO_ACTION"
+   ],
+   "required_review_reasons": [
+    "INHERITED_FLAG"
+   ],
+   "required_card_line": "NEEDS_REVIEW",
+   "expected_behavior": "Consume the effective review registry: the members' inherited Agent 1 flags stay on the card and in the Model Review Queue.",
+   "must_not": [
+    "Remove or resolve an inherited flag to reach a Recommended Action."
+   ]
+  }
+ ]
+}

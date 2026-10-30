@@ -1,0 +1,2549 @@
+{
+ "matrix": "agent3-demo-scenarios-v1",
+ "runs": [
+  "data/experiments/agent3_final_eval_v1",
+  "data/experiments/agent3_acceptance_v1",
+  "data/experiments/agent3_closeout_v1",
+  "data/experiments/agent3_readability_v1",
+  "data/experiments/agent3_overnight_smoke_v1",
+  "data/experiments/agent3_overnight_offline_v2"
+ ],
+ "scenarios": [
+  {
+   "id": "faq_edge_case",
+   "demo_case": "FAQ edge case",
+   "work_id": "topic:cluster_6b59d13144282285/topic_2",
+   "acceptable_actions": [
+    "ESCALATE_ENGINEERING",
+    "POST_ALIGNMENT",
+    "UPDATE_FAQ"
+   ],
+   "required_review_reasons": [
+    "INHERITED_FLAG"
+   ],
+   "must_not": [
+    "Treat the expired batch-05 reload trial as current handling.",
+    "Invent a new policy."
+   ],
+   "observed": [
+    {
+     "run": "data/experiments/agent3_final_eval_v1",
+     "level": "live",
+     "card_line": "NEEDS_REVIEW",
+     "action_type": "ESCALATE_ENGINEERING",
+     "action_ok": true,
+     "review_reasons": [
+      "GROUNDING_FAILURE",
+      "HIGH_SEVERITY",
+      "INHERITED_FLAG",
+      "OPEN_CONFIRMATION"
+     ],
+     "required_reasons_ok": true,
+     "missing_reasons": [],
+     "card_line_ok": true,
+     "inherited_flags": 2,
+     "grounding": "FAILED",
+     "tot": "COMPARED",
+     "severity": "HIGH (ASSESSED)",
+     "sources_retrieved": "5/5",
+     "relation_violations": [],
+     "sources": [
+      {
+       "ref": {
+        "authoring": "audio-multimodal-instructions",
+        "section": "Playback and unavailable content"
+       },
+       "relation": "CURRENT_GUIDANCE",
+       "retrieved": true,
+       "uses": [
+        "CURRENT_GUIDANCE"
+       ],
+       "cited": true,
+       "relation_ok": true
+      },
+      {
+       "ref": {
+        "authoring": "audio-multimodal-faq"
+       },
+       "relation": "CURRENT_GUIDANCE",
+       "retrieved": true,
+       "uses": [
+        "CURRENT_GUIDANCE"
+       ],
+       "cited": true,
+       "relation_ok": true
+      },
+      {
+       "ref": {
+        "slack": [
+         "C_AUDIO_ANNOUNCEMENTS",
+         "1790892000.000901"
+        ]
+       },
+       "relation": "ANNOUNCEMENT",
+       "retrieved": true,
+       "uses": [
+        "ANNOUNCEMENT"
+       ],
+       "cited": true,
+       "relation_ok": true
+      },
+      {
+       "ref": {
+        "authoring": "audio-playback-trial-approval"
+       },
+       "relation": "HISTORY",
+       "retrieved": true,
+       "uses": [
+        "HISTORY_ONLY"
+       ],
+       "cited": true,
+       "relation_ok": true
+      },
+      {
+       "ref": {
+        "authoring": "audio-playback-trial-outcome"
+       },
+       "relation": "HISTORY",
+       "retrieved": true,
+       "uses": [
+        "PRIOR_DECISION"
+       ],
+       "cited": true,
+       "relation_ok": true
+      }
+     ],
+     "summary": "A QA tutor and three tutors report LT playback failures and ask whether to use QN, recalling a possible earlier workaround. Current guidance says to report a technical issue rather than judge unavailable audio; the earlier reload trial did not establish a dependable workaround and was not extended to later queues.",
+     "review_notes": [
+      "Upstream review flags remain open for the QA tutor's failed-workaround interpretation and one tutor's resolution assessment. This draft does not infer a workaround attempt from recurrence or playback recovery from handling instructions.",
+      "Severity is high under the team rubric.",
+      "2 earlier review flags are still open on these threads.",
+      "Some advisor statements were not supported by the evidence and are not shown.",
+      "Open question: What is causing the current playback failures, and what will restore playback on the affected tasks?"
+     ],
+     "action_label": "Report a technical issue to engineering"
+    },
+    {
+     "run": "data/experiments/agent3_acceptance_v1",
+     "level": "live",
+     "card_line": "NEEDS_REVIEW",
+     "action_type": null,
+     "action_ok": null,
+     "review_reasons": [
+      "GROUNDING_FAILURE",
+      "HIGH_SEVERITY",
+      "INHERITED_FLAG",
+      "OPEN_CONFIRMATION"
+     ],
+     "required_reasons_ok": true,
+     "missing_reasons": [],
+     "card_line_ok": true,
+     "inherited_flags": 2,
+     "grounding": "FAILED",
+     "tot": "COMPARED",
+     "severity": "HIGH (ASSESSED)",
+     "sources_retrieved": "5/5",
+     "relation_violations": [],
+     "sources": [
+      {
+       "ref": {
+        "authoring": "audio-multimodal-instructions",
+        "section": "Playback and unavailable content"
+       },
+       "relation": "CURRENT_GUIDANCE",
+       "retrieved": true,
+       "uses": [
+        "CURRENT_GUIDANCE"
+       ],
+       "cited": true,
+       "relation_ok": true
+      },
+      {
+       "ref": {
+        "authoring": "audio-multimodal-faq"
+       },
+       "relation": "CURRENT_GUIDANCE",
+       "retrieved": true,
+       "uses": [
+        "CURRENT_GUIDANCE"
+       ],
+       "cited": true,
+       "relation_ok": true
+      },
+      {
+       "ref": {
+        "slack": [
+         "C_AUDIO_ANNOUNCEMENTS",
+         "1790892000.000901"
+        ]
+       },
+       "relation": "ANNOUNCEMENT",
+       "retrieved": true,
+       "uses": [
+        "ANNOUNCEMENT"
+       ],
+       "cited": true,
+       "relation_ok": true
+      },
+      {
+       "ref": {
+        "authoring": "audio-playback-trial-approval"
+       },
+       "relation": "HISTORY",
+       "retrieved": true,
+       "uses": [
+        "HISTORY_ONLY"
+       ],
+       "cited": true,
+       "relation_ok": true
+      },
+      {
+       "ref": {
+        "authoring": "audio-playback-trial-outcome"
+       },
+       "relation": "HISTORY",
+       "retrieved": true,
+       "uses": [
+        "PRIOR_DECISION"
+       ],
+       "cited": true,
+       "relation_ok": true
+      }
+     ],
+     "summary": "Four members report LT playback failures and ask about QN or a recalled workaround [m:C_AUDIO_GENERAL:1790882197.000111; m:C_AUDIO_GENERAL:1790896012.001900; m:C_AUDIO_GENERAL:1790920171.000109; m:C_AUDIO_GENERAL:1790934294.000106]. Post current batch handling: report a tool incident, retain reproduction details, and do not infer a model-quality failure or content-based QN reason from unavailable playback [k:audio-multimodal-instructions@1.3:1c6df70e]. Follow-up retrieval establishes that the earlier reload trial was completed, was not dependable in its sample, and was not extended into a later queue; it does not establish what these reporters tried [k:audio-playback-trial-outcome@1.0:16332fce].",
+     "review_notes": [],
+     "action_label": null
+    },
+    {
+     "run": "data/experiments/agent3_closeout_v1",
+     "level": "live",
+     "card_line": "NEEDS_REVIEW",
+     "action_type": "POST_ALIGNMENT",
+     "action_ok": true,
+     "review_reasons": [
+      "GROUNDING_FAILURE",
+      "HIGH_SEVERITY",
+      "INHERITED_FLAG",
+      "OPEN_CONFIRMATION",
+      "OTHER"
+     ],
+     "required_reasons_ok": true,
+     "missing_reasons": [],
+     "card_line_ok": true,
+     "inherited_flags": 2,
+     "grounding": "FAILED",
+     "tot": "COMPARED",
+     "severity": "HIGH (ASSESSED)",
+     "sources_retrieved": "5/5",
+     "relation_violations": [],
+     "sources": [
+      {
+       "ref": {
+        "authoring": "audio-multimodal-instructions",
+        "section": "Playback and unavailable content"
+       },
+       "relation": "CURRENT_GUIDANCE",
+       "retrieved": true,
+       "uses": [
+        "CURRENT_GUIDANCE"
+       ],
+       "cited": true,
+       "relation_ok": true
+      },
+      {
+       "ref": {
+        "authoring": "audio-multimodal-faq"
+       },
+       "relation": "CURRENT_GUIDANCE",
+       "retrieved": true,
+       "uses": [
+        "CURRENT_GUIDANCE"
+       ],
+       "cited": true,
+       "relation_ok": true
+      },
+      {
+       "ref": {
+        "slack": [
+         "C_AUDIO_ANNOUNCEMENTS",
+         "1790892000.000901"
+        ]
+       },
+       "relation": "ANNOUNCEMENT",
+       "retrieved": true,
+       "uses": [
+        "ANNOUNCEMENT"
+       ],
+       "cited": true,
+       "relation_ok": true
+      },
+      {
+       "ref": {
+        "authoring": "audio-playback-trial-approval"
+       },
+       "relation": "HISTORY",
+       "retrieved": true,
+       "uses": [
+        "HISTORY_ONLY"
+       ],
+       "cited": false,
+       "relation_ok": true
+      },
+      {
+       "ref": {
+        "authoring": "audio-playback-trial-outcome"
+       },
+       "relation": "HISTORY",
+       "retrieved": true,
+       "uses": [
+        "PRIOR_DECISION"
+       ],
+       "cited": false,
+       "relation_ok": true
+      }
+     ],
+     "summary": "A QA tutor and three tutors report LT playback failures and ask whether to use QN, while recalling a possible previous-queue workaround. Current guidance already directs tool-incident reporting, not content QN based solely on unavailable playback. Post that alignment and collect reproduction details; do not imply that playback is repaired or that the earlier workaround applies. [m:C_AUDIO_GENERAL:1790882197.000111; m:C_AUDIO_GENERAL:1790896012.001900; m:C_AUDIO_GENERAL:1790920171.000109; m:C_AUDIO_GENERAL:1790934294.000106; k:audio-multimodal-instructions@1.3:1c6df70e]",
+     "review_notes": [],
+     "action_label": null
+    },
+    {
+     "run": "data/experiments/agent3_readability_v1",
+     "level": "live",
+     "card_line": "NEEDS_REVIEW",
+     "action_type": "POST_ALIGNMENT",
+     "action_ok": true,
+     "review_reasons": [
+      "GROUNDING_FAILURE",
+      "HIGH_SEVERITY",
+      "INHERITED_FLAG"
+     ],
+     "required_reasons_ok": true,
+     "missing_reasons": [],
+     "card_line_ok": true,
+     "inherited_flags": 2,
+     "grounding": "FAILED",
+     "tot": "NOT_TRIGGERED",
+     "severity": "HIGH (ASSESSED)",
+     "sources_retrieved": "5/5",
+     "relation_violations": [],
+     "sources": [
+      {
+       "ref": {
+        "authoring": "audio-multimodal-instructions",
+        "section": "Playback and unavailable content"
+       },
+       "relation": "CURRENT_GUIDANCE",
+       "retrieved": true,
+       "uses": [
+        "CURRENT_GUIDANCE"
+       ],
+       "cited": true,
+       "relation_ok": true
+      },
+      {
+       "ref": {
+        "authoring": "audio-multimodal-faq"
+       },
+       "relation": "CURRENT_GUIDANCE",
+       "retrieved": true,
+       "uses": [
+        "CURRENT_GUIDANCE"
+       ],
+       "cited": true,
+       "relation_ok": true
+      },
+      {
+       "ref": {
+        "slack": [
+         "C_AUDIO_ANNOUNCEMENTS",
+         "1790892000.000901"
+        ]
+       },
+       "relation": "ANNOUNCEMENT",
+       "retrieved": true,
+       "uses": [
+        "ANNOUNCEMENT"
+       ],
+       "cited": true,
+       "relation_ok": true
+      },
+      {
+       "ref": {
+        "authoring": "audio-playback-trial-approval"
+       },
+       "relation": "HISTORY",
+       "retrieved": true,
+       "uses": [
+        "HISTORY_ONLY"
+       ],
+       "cited": true,
+       "relation_ok": true
+      },
+      {
+       "ref": {
+        "authoring": "audio-playback-trial-outcome"
+       },
+       "relation": "HISTORY",
+       "retrieved": true,
+       "uses": [
+        "PRIOR_DECISION"
+       ],
+       "cited": true,
+       "relation_ok": true
+      }
+     ],
+     "summary": "A QA tutor and three tutors report that LT audio will not load or play and ask whether to use QN. Current guidance says to report a technical issue rather than infer a content problem; the earlier reload trial did not establish a dependable workaround and was not extended into a later queue.",
+     "review_notes": [
+      "Severity is high under the team rubric.",
+      "2 earlier review flags are still open on these threads.",
+      "Some advisor statements were not supported by the evidence and are not shown."
+     ],
+     "action_label": "Post a reminder"
+    },
+    {
+     "run": "data/experiments/agent3_overnight_smoke_v1",
+     "level": "live",
+     "card_line": "NEEDS_REVIEW",
+     "action_type": "ESCALATE_ENGINEERING",
+     "action_ok": true,
+     "review_reasons": [
+      "GROUNDING_FAILURE",
+      "HIGH_SEVERITY",
+      "INHERITED_FLAG",
+      "OPEN_CONFIRMATION",
+      "OTHER"
+     ],
+     "required_reasons_ok": true,
+     "missing_reasons": [],
+     "card_line_ok": true,
+     "inherited_flags": 2,
+     "grounding": "FAILED",
+     "tot": "COMPARED",
+     "severity": "HIGH (ASSESSED)",
+     "sources_retrieved": "4/5",
+     "relation_violations": [],
+     "sources": [
+      {
+       "ref": {
+        "authoring": "audio-multimodal-instructions",
+        "section": "Playback and unavailable content"
+       },
+       "relation": "CURRENT_GUIDANCE",
+       "retrieved": true,
+       "uses": [
+        "CURRENT_GUIDANCE"
+       ],
+       "cited": true,
+       "relation_ok": true
+      },
+      {
+       "ref": {
+        "authoring": "audio-multimodal-faq"
+       },
+       "relation": "CURRENT_GUIDANCE",
+       "retrieved": true,
+       "uses": [
+        "CURRENT_GUIDANCE"
+       ],
+       "cited": true,
+       "relation_ok": true
+      },
+      {
+       "ref": {
+        "slack": [
+         "C_AUDIO_ANNOUNCEMENTS",
+         "1790892000.000901"
+        ]
+       },
+       "relation": "ANNOUNCEMENT",
+       "retrieved": true,
+       "uses": [
+        "ANNOUNCEMENT"
+       ],
+       "cited": true,
+       "relation_ok": true
+      },
+      {
+       "ref": {
+        "authoring": "audio-playback-trial-approval"
+       },
+       "relation": "HISTORY",
+       "retrieved": true,
+       "uses": [
+        "HISTORY_ONLY"
+       ],
+       "cited": true,
+       "relation_ok": true
+      },
+      {
+       "ref": {
+        "authoring": "audio-playback-trial-outcome"
+       },
+       "relation": "HISTORY",
+       "retrieved": false,
+       "uses": [],
+       "cited": false,
+       "relation_ok": null
+      }
+     ],
+     "summary": "A QA tutor and three tutors report unavailable LT playback and ask whether to use QN. Current guidance says to report a technical issue rather than infer a content-quality failure; the earlier reload trial does not establish a repair for these reports.",
+     "review_notes": [
+      "Earlier review flags remain open on the failed-workaround interpretation in the QA tutor's thread and the resolution assessment in a tutor's player-never-loads thread. The supplied messages do not establish that a current reporter attempted a workaround or that playback recovered.",
+      "Severity is high under the team rubric.",
+      "2 earlier review flags are still open on these threads.",
+      "Some advisor statements were not supported by the evidence and are not shown.",
+      "Open question: Does the earlier reload trial apply to the current symptoms, and what observed outcome or later decision supports using it now?",
+      "Research on earlier decisions and their outcomes: nothing further was found."
+     ],
+     "action_label": "Report a technical issue to engineering"
+    },
+    {
+     "run": "data/experiments/agent3_overnight_offline_v2",
+     "level": "scripted",
+     "card_line": "NEEDS_REVIEW",
+     "action_type": "UPDATE_FAQ",
+     "action_ok": true,
+     "review_reasons": [
+      "HIGH_SEVERITY",
+      "INHERITED_FLAG"
+     ],
+     "required_reasons_ok": true,
+     "missing_reasons": [],
+     "card_line_ok": true,
+     "inherited_flags": 2,
+     "grounding": "PASSED",
+     "tot": "NOT_TRIGGERED",
+     "severity": "HIGH (ASSESSED)",
+     "sources_retrieved": "5/5",
+     "relation_violations": [],
+     "sources": [
+      {
+       "ref": {
+        "authoring": "audio-multimodal-instructions",
+        "section": "Playback and unavailable content"
+       },
+       "relation": "CURRENT_GUIDANCE",
+       "retrieved": true,
+       "uses": [
+        "CURRENT_GUIDANCE"
+       ],
+       "cited": true,
+       "relation_ok": true
+      },
+      {
+       "ref": {
+        "authoring": "audio-multimodal-faq"
+       },
+       "relation": "CURRENT_GUIDANCE",
+       "retrieved": true,
+       "uses": [
+        "CURRENT_GUIDANCE"
+       ],
+       "cited": true,
+       "relation_ok": true
+      },
+      {
+       "ref": {
+        "slack": [
+         "C_AUDIO_ANNOUNCEMENTS",
+         "1790892000.000901"
+        ]
+       },
+       "relation": "ANNOUNCEMENT",
+       "retrieved": true,
+       "uses": [
+        "ANNOUNCEMENT"
+       ],
+       "cited": true,
+       "relation_ok": true
+      },
+      {
+       "ref": {
+        "authoring": "audio-playback-trial-approval"
+       },
+       "relation": "HISTORY",
+       "retrieved": true,
+       "uses": [
+        "HISTORY_ONLY"
+       ],
+       "cited": false,
+       "relation_ok": true
+      },
+      {
+       "ref": {
+        "authoring": "audio-playback-trial-outcome"
+       },
+       "relation": "HISTORY",
+       "retrieved": true,
+       "uses": [
+        "PRIOR_DECISION"
+       ],
+       "cited": true,
+       "relation_ok": true
+      }
+     ],
+     "summary": "Four tutors report the LT audio player never loads or never starts (including a visible waveform with no playback) and ask whether to QN, recalling an earlier workaround.",
+     "review_notes": [
+      "Severity is high under the team rubric.",
+      "2 earlier review flags are still open on these threads."
+     ],
+     "action_label": "Update the FAQ"
+    }
+   ],
+   "validation_levels": [
+    "live",
+    "scripted"
+   ]
+  },
+  {
+   "id": "tl_confirmation",
+   "demo_case": "TL confirmation (JSON vs prose)",
+   "work_id": "topic:cluster_fb1dce1eeeedc4cb/topic_1",
+   "acceptable_actions": [
+    "SCHEDULE_ALIGNMENT",
+    "POST_ALIGNMENT",
+    "UPDATE_FAQ",
+    "NO_ACTION"
+   ],
+   "required_review_reasons": [
+    "INHERITED_FLAG"
+   ],
+   "must_not": [
+    "Present the rejected universal JSON-first rule as current."
+   ],
+   "observed": [
+    {
+     "run": "data/experiments/agent3_final_eval_v1",
+     "level": "live",
+     "card_line": "NEEDS_REVIEW",
+     "action_type": "POST_ALIGNMENT",
+     "action_ok": true,
+     "review_reasons": [
+      "GROUNDING_FAILURE",
+      "INHERITED_FLAG",
+      "OPEN_CONFIRMATION"
+     ],
+     "required_reasons_ok": true,
+     "missing_reasons": [],
+     "card_line_ok": true,
+     "inherited_flags": 1,
+     "grounding": "FAILED",
+     "tot": "COMPARED",
+     "severity": "MEDIUM (ASSESSED)",
+     "sources_retrieved": "2/3",
+     "relation_violations": [],
+     "sources": [
+      {
+       "ref": {
+        "authoring": "response-preference-instructions"
+       },
+       "relation": "CURRENT_GUIDANCE",
+       "retrieved": true,
+       "uses": [
+        "CURRENT_GUIDANCE"
+       ],
+       "cited": true,
+       "relation_ok": true
+      },
+      {
+       "ref": {
+        "authoring": "response-preference-faq"
+       },
+       "relation": "CURRENT_GUIDANCE",
+       "retrieved": true,
+       "uses": [
+        "CURRENT_GUIDANCE"
+       ],
+       "cited": true,
+       "relation_ok": true
+      },
+      {
+       "ref": {
+        "authoring": "rp-format-rule-rejected"
+       },
+       "relation": "PRIOR_DECISION",
+       "retrieved": false,
+       "uses": [],
+       "cited": false,
+       "relation_ok": null
+      }
+     ],
+     "summary": "The advisor's summary is not shown because the evidence did not support it; see the related threads.",
+     "review_notes": [
+      "The upstream review flag for the JSON-versus-prose thread remains open: a tutor's reply must not be treated as authoritative guidance. Review the exact prompt and both responses before confirming that pair's preference.",
+      "1 earlier review flag is still open on these threads.",
+      "Some advisor statements were not supported by the evidence and are not shown.",
+      "Open question: For RP-3824, which response should be preferred once the exact prompt, both responses, and the separate factual-accuracy and instruction-adherence defects have been reviewed?"
+     ],
+     "action_label": "Post a reminder"
+    },
+    {
+     "run": "data/experiments/agent3_acceptance_v1",
+     "level": "live",
+     "card_line": "NEEDS_REVIEW",
+     "action_type": "POST_ALIGNMENT",
+     "action_ok": true,
+     "review_reasons": [
+      "GROUNDING_FAILURE",
+      "INHERITED_FLAG",
+      "OPEN_CONFIRMATION"
+     ],
+     "required_reasons_ok": true,
+     "missing_reasons": [],
+     "card_line_ok": true,
+     "inherited_flags": 1,
+     "grounding": "FAILED",
+     "tot": "COMPARED",
+     "severity": "MEDIUM (ASSESSED)",
+     "sources_retrieved": "2/3",
+     "relation_violations": [],
+     "sources": [
+      {
+       "ref": {
+        "authoring": "response-preference-instructions"
+       },
+       "relation": "CURRENT_GUIDANCE",
+       "retrieved": true,
+       "uses": [
+        "CURRENT_GUIDANCE"
+       ],
+       "cited": true,
+       "relation_ok": true
+      },
+      {
+       "ref": {
+        "authoring": "response-preference-faq"
+       },
+       "relation": "CURRENT_GUIDANCE",
+       "retrieved": true,
+       "uses": [
+        "CURRENT_GUIDANCE"
+       ],
+       "cited": true,
+       "relation_ok": true
+      },
+      {
+       "ref": {
+        "authoring": "rp-format-rule-rejected"
+       },
+       "relation": "PRIOR_DECISION",
+       "retrieved": false,
+       "uses": [],
+       "cited": false,
+       "relation_ok": null
+      }
+     ],
+     "summary": "Post a batch-15 alignment on scoring factual accuracy and instruction adherence separately, without inventing an accuracy-versus-format tie-break. The three member threads remain unresolved; obtain the actual prompts and both responses before deciding individual preferences.",
+     "review_notes": [],
+     "action_label": null
+    },
+    {
+     "run": "data/experiments/agent3_closeout_v1",
+     "level": "live",
+     "card_line": "NEEDS_REVIEW",
+     "action_type": "POST_ALIGNMENT",
+     "action_ok": true,
+     "review_reasons": [
+      "GROUNDING_FAILURE",
+      "INHERITED_FLAG",
+      "OPEN_CONFIRMATION"
+     ],
+     "required_reasons_ok": true,
+     "missing_reasons": [],
+     "card_line_ok": true,
+     "inherited_flags": 1,
+     "grounding": "FAILED",
+     "tot": "COMPARED",
+     "severity": "MEDIUM (ASSESSED)",
+     "sources_retrieved": "2/3",
+     "relation_violations": [],
+     "sources": [
+      {
+       "ref": {
+        "authoring": "response-preference-instructions"
+       },
+       "relation": "CURRENT_GUIDANCE",
+       "retrieved": true,
+       "uses": [
+        "CURRENT_GUIDANCE"
+       ],
+       "cited": true,
+       "relation_ok": true
+      },
+      {
+       "ref": {
+        "authoring": "response-preference-faq"
+       },
+       "relation": "CURRENT_GUIDANCE",
+       "retrieved": true,
+       "uses": [
+        "CURRENT_GUIDANCE"
+       ],
+       "cited": true,
+       "relation_ok": true
+      },
+      {
+       "ref": {
+        "authoring": "rp-format-rule-rejected"
+       },
+       "relation": "PRIOR_DECISION",
+       "retrieved": false,
+       "uses": [],
+       "cited": false,
+       "relation_ok": null
+      }
+     ],
+     "summary": "Two QA tutors and a tutor ask how to weigh format adherence against accuracy, including a JSON-versus-prose case; none of their threads establishes a preferred response [m:C_RP_GENERAL:1790856332.000018; m:C_RP_QA:1790913824.000016; m:C_RP_GENERAL:1790932885.000015]. Post alignment on the current FAQ: assess the dimensions separately, verify mandatory structure, and supply the prompt and both responses for unresolved pair-specific confirmation—not a universal accuracy-versus-format rule [k:response-preference-faq@1.1:fa9b6a3d].",
+     "review_notes": [],
+     "action_label": null
+    },
+    {
+     "run": "data/experiments/agent3_overnight_offline_v2",
+     "level": "scripted",
+     "card_line": "NEEDS_REVIEW",
+     "action_type": "NO_ACTION",
+     "action_ok": true,
+     "review_reasons": [
+      "INHERITED_FLAG",
+      "OPEN_CONFIRMATION"
+     ],
+     "required_reasons_ok": true,
+     "missing_reasons": [],
+     "card_line_ok": true,
+     "inherited_flags": 1,
+     "grounding": "PASSED",
+     "tot": "COMPARED",
+     "severity": "MEDIUM (ASSESSED)",
+     "sources_retrieved": "3/3",
+     "relation_violations": [],
+     "sources": [
+      {
+       "ref": {
+        "authoring": "response-preference-instructions"
+       },
+       "relation": "CURRENT_GUIDANCE",
+       "retrieved": true,
+       "uses": [
+        "CURRENT_GUIDANCE"
+       ],
+       "cited": false,
+       "relation_ok": true
+      },
+      {
+       "ref": {
+        "authoring": "response-preference-faq"
+       },
+       "relation": "CURRENT_GUIDANCE",
+       "retrieved": true,
+       "uses": [
+        "CURRENT_GUIDANCE"
+       ],
+       "cited": true,
+       "relation_ok": true
+      },
+      {
+       "ref": {
+        "authoring": "rp-format-rule-rejected"
+       },
+       "relation": "PRIOR_DECISION",
+       "retrieved": true,
+       "uses": [
+        "PRIOR_DECISION"
+       ],
+       "cited": true,
+       "relation_ok": true
+      }
+     ],
+     "summary": "Tutors ask whether an accurate prose answer beats a response that follows a required JSON format.",
+     "review_notes": [
+      "1 earlier review flag is still open on these threads.",
+      "Open question: Whether accurate prose outweighs the required JSON format in RP-3824 needs a TL decision; current guidance defines no universal ordering and the exact prompt is not in the evidence."
+     ],
+     "action_label": "No action needed now"
+    }
+   ],
+   "validation_levels": [
+    "live",
+    "scripted"
+   ]
+  },
+  {
+   "id": "instruction_conflict",
+   "demo_case": "Instruction conflict (fictional PII)",
+   "work_id": "topic:cluster_9378eb54bc546fcd/topic_1",
+   "acceptable_actions": [
+    "UPDATE_DOCUMENTATION",
+    "POST_ALIGNMENT"
+   ],
+   "required_review_reasons": [
+    "INHERITED_FLAG"
+   ],
+   "must_not": [
+    "Cite the superseded help-page section as current guidance."
+   ],
+   "observed": [
+    {
+     "run": "data/experiments/agent3_final_eval_v1",
+     "level": "live",
+     "card_line": "NEEDS_REVIEW",
+     "action_type": "UPDATE_DOCUMENTATION",
+     "action_ok": true,
+     "review_reasons": [
+      "GROUNDING_FAILURE",
+      "INHERITED_FLAG",
+      "TEMPORAL_CONFLICT"
+     ],
+     "required_reasons_ok": true,
+     "missing_reasons": [],
+     "card_line_ok": true,
+     "inherited_flags": 1,
+     "grounding": "FAILED",
+     "tot": "COMPARED",
+     "severity": "MEDIUM (ASSESSED)",
+     "sources_retrieved": "2/3",
+     "relation_violations": [],
+     "sources": [
+      {
+       "ref": {
+        "authoring": "safety-fictional-pii-clarification"
+       },
+       "relation": "ANNOUNCEMENT",
+       "retrieved": true,
+       "uses": [
+        "ANNOUNCEMENT"
+       ],
+       "cited": true,
+       "relation_ok": true
+      },
+      {
+       "ref": {
+        "authoring": "safety-classification-instructions"
+       },
+       "relation": "CURRENT_GUIDANCE",
+       "retrieved": false,
+       "uses": [],
+       "cited": false,
+       "relation_ok": null
+      },
+      {
+       "ref": {
+        "authoring": "safety-qn-help-page",
+        "section": "Contact details"
+       },
+       "relation": "HISTORY",
+       "retrieved": true,
+       "uses": [
+        "HISTORY_ONLY"
+       ],
+       "cited": true,
+       "relation_ok": true
+      }
+     ],
+     "summary": "Two tutors and a QA tutor asked how to handle fictional phone numbers; the QA tutor reports that two versions of the note seem to differ. Current guidance identifies the older help-page wording as stale and gives the rule and its effective date.",
+     "review_notes": [
+      "The QA thread’s upstream review flag remains open. Its tutor reply is not authority for the rule; the proposed correction relies on the current FAQ and dated clarification.",
+      "1 earlier review flag is still open on these threads.",
+      "Sources disagree on a point, and the records do not settle which applies; confirm before acting.",
+      "Some advisor statements were not supported by the evidence and are not shown."
+     ],
+     "action_label": "Update the documentation"
+    },
+    {
+     "run": "data/experiments/agent3_acceptance_v1",
+     "level": "live",
+     "card_line": "NEEDS_REVIEW",
+     "action_type": "UPDATE_DOCUMENTATION",
+     "action_ok": true,
+     "review_reasons": [
+      "GROUNDING_FAILURE",
+      "HIGH_SEVERITY",
+      "INHERITED_FLAG",
+      "TEMPORAL_CONFLICT"
+     ],
+     "required_reasons_ok": true,
+     "missing_reasons": [],
+     "card_line_ok": true,
+     "inherited_flags": 1,
+     "grounding": "FAILED",
+     "tot": "COMPARED",
+     "severity": "HIGH (ASSESSED)",
+     "sources_retrieved": "2/3",
+     "relation_violations": [],
+     "sources": [
+      {
+       "ref": {
+        "authoring": "safety-fictional-pii-clarification"
+       },
+       "relation": "ANNOUNCEMENT",
+       "retrieved": true,
+       "uses": [
+        "ANNOUNCEMENT"
+       ],
+       "cited": true,
+       "relation_ok": true
+      },
+      {
+       "ref": {
+        "authoring": "safety-classification-instructions"
+       },
+       "relation": "CURRENT_GUIDANCE",
+       "retrieved": false,
+       "uses": [],
+       "cited": false,
+       "relation_ok": null
+      },
+      {
+       "ref": {
+        "authoring": "safety-qn-help-page",
+        "section": "Contact details"
+       },
+       "relation": "HISTORY",
+       "retrieved": true,
+       "uses": [
+        "HISTORY_ONLY"
+       ],
+       "cited": true,
+       "relation_ok": true
+      }
+     ],
+     "summary": "Correct the stale fictional-contact branch in the QN help page. Current guidance exempts verified fictional placeholders alone from QN, but preserves review for uncertain real-person identification or separate safety triggers. Three member threads still lack a definitive task-handling answer; one explicitly reports differing note versions.",
+     "review_notes": [],
+     "action_label": null
+    },
+    {
+     "run": "data/experiments/agent3_closeout_v1",
+     "level": "live",
+     "card_line": "NEEDS_REVIEW",
+     "action_type": "UPDATE_DOCUMENTATION",
+     "action_ok": true,
+     "review_reasons": [
+      "GROUNDING_FAILURE",
+      "INHERITED_FLAG",
+      "TEMPORAL_CONFLICT"
+     ],
+     "required_reasons_ok": true,
+     "missing_reasons": [],
+     "card_line_ok": true,
+     "inherited_flags": 1,
+     "grounding": "FAILED",
+     "tot": "COMPARED",
+     "severity": "MEDIUM (ASSESSED)",
+     "sources_retrieved": "2/3",
+     "relation_violations": [],
+     "sources": [
+      {
+       "ref": {
+        "authoring": "safety-fictional-pii-clarification"
+       },
+       "relation": "ANNOUNCEMENT",
+       "retrieved": true,
+       "uses": [
+        "ANNOUNCEMENT"
+       ],
+       "cited": true,
+       "relation_ok": true
+      },
+      {
+       "ref": {
+        "authoring": "safety-classification-instructions"
+       },
+       "relation": "CURRENT_GUIDANCE",
+       "retrieved": false,
+       "uses": [],
+       "cited": false,
+       "relation_ok": null
+      },
+      {
+       "ref": {
+        "authoring": "safety-qn-help-page",
+        "section": "Contact details"
+       },
+       "relation": "HISTORY",
+       "retrieved": true,
+       "uses": [
+        "HISTORY_ONLY"
+       ],
+       "cited": true,
+       "relation_ok": true
+      }
+     ],
+     "summary": "Two tutors ask how to handle fictional phone numbers, and a QA tutor reports differing note versions. Current guidance exempts verified fictional placeholders alone from QN, subject to identifiability and separate-trigger checks. Correct the superseded help-page wording rather than change the already-current FAQ. [m:C_SAFETY_GENERAL:1790890012.001700; m:C_SAFETY_GENERAL:1790911772.000059; m:C_SAFETY_QA:1790934673.000061; k:safety-classification-faq@1.1:6025b955]",
+     "review_notes": [],
+     "action_label": null
+    },
+    {
+     "run": "data/experiments/agent3_overnight_offline_v2",
+     "level": "scripted",
+     "card_line": "NEEDS_REVIEW",
+     "action_type": "UPDATE_DOCUMENTATION",
+     "action_ok": true,
+     "review_reasons": [
+      "INHERITED_FLAG"
+     ],
+     "required_reasons_ok": true,
+     "missing_reasons": [],
+     "card_line_ok": true,
+     "inherited_flags": 1,
+     "grounding": "PASSED",
+     "tot": "NOT_TRIGGERED",
+     "severity": "MEDIUM (ASSESSED)",
+     "sources_retrieved": "2/3",
+     "relation_violations": [],
+     "sources": [
+      {
+       "ref": {
+        "authoring": "safety-fictional-pii-clarification"
+       },
+       "relation": "ANNOUNCEMENT",
+       "retrieved": true,
+       "uses": [
+        "ANNOUNCEMENT"
+       ],
+       "cited": true,
+       "relation_ok": true
+      },
+      {
+       "ref": {
+        "authoring": "safety-classification-instructions"
+       },
+       "relation": "CURRENT_GUIDANCE",
+       "retrieved": false,
+       "uses": [],
+       "cited": false,
+       "relation_ok": null
+      },
+      {
+       "ref": {
+        "authoring": "safety-qn-help-page",
+        "section": "Contact details"
+       },
+       "relation": "HISTORY",
+       "retrieved": true,
+       "uses": [
+        "HISTORY_ONLY"
+       ],
+       "cited": true,
+       "relation_ok": true
+      }
+     ],
+     "summary": "Tutors ask whether made-up phone numbers in fictional stories need QN, and see two differing versions of the guidance.",
+     "review_notes": [
+      "1 earlier review flag is still open on these threads."
+     ],
+     "action_label": "Update the documentation"
+    }
+   ],
+   "validation_levels": [
+    "live",
+    "scripted"
+   ]
+  },
+  {
+   "id": "language_routing",
+   "demo_case": "Language routing",
+   "work_id": "topic:cluster_3b950ad40b12ab58/topic_1",
+   "acceptable_actions": [
+    "ROUTE_TO_LANGUAGE_SPECIALIST",
+    "POST_ALIGNMENT"
+   ],
+   "required_review_reasons": [
+    "INHERITED_FLAG"
+   ],
+   "must_not": [
+    "Generalize the scoped Korean result into a project rule.",
+    "Treat valid variants as automatic errors."
+   ],
+   "observed": [
+    {
+     "run": "data/experiments/agent3_final_eval_v1",
+     "level": "live",
+     "card_line": "NEEDS_REVIEW",
+     "action_type": "ROUTE_TO_LANGUAGE_SPECIALIST",
+     "action_ok": true,
+     "review_reasons": [
+      "INHERITED_FLAG",
+      "OPEN_CONFIRMATION"
+     ],
+     "required_reasons_ok": true,
+     "missing_reasons": [],
+     "card_line_ok": true,
+     "inherited_flags": 1,
+     "grounding": "PASSED",
+     "tot": "COMPARED",
+     "severity": "MEDIUM (ASSESSED)",
+     "sources_retrieved": "3/3",
+     "relation_violations": [],
+     "sources": [
+      {
+       "ref": {
+        "authoring": "multilingual-eval-instructions"
+       },
+       "relation": "CURRENT_GUIDANCE",
+       "retrieved": true,
+       "uses": [
+        "CURRENT_GUIDANCE"
+       ],
+       "cited": true,
+       "relation_ok": true
+      },
+      {
+       "ref": {
+        "authoring": "multi-korean-scoped-result"
+       },
+       "relation": "PRIOR_DECISION",
+       "retrieved": true,
+       "uses": [
+        "PRIOR_DECISION"
+       ],
+       "cited": true,
+       "relation_ok": true
+      },
+      {
+       "ref": {
+        "authoring": "multi-korean-referral"
+       },
+       "relation": "PRIOR_DECISION",
+       "retrieved": true,
+       "uses": [
+        "PRIOR_DECISION"
+       ],
+       "cited": true,
+       "relation_ok": true
+      }
+     ],
+     "summary": "A QA tutor and two tutors report Korean responses switching from 존댓말 to 반말 and ask about earlier discussion, scoring or handling. Current guidance calls for Korean language QA review with exact endings and context, not an automatic major penalty.",
+     "review_notes": [
+      "The upstream review flag on the tutor's severity-question thread remains open: a tutor's reply was previously treated as authority. This draft treats that reply only as discussion and uses current instructions and the FAQ for guidance.",
+      "1 earlier review flag is still open on these threads.",
+      "Open question: For the current reported cases, does Korean language QA find an unjustified register shift, and what task-quality grade is supported by its impact in context?"
+     ],
+     "action_label": "Ask a language specialist to review"
+    },
+    {
+     "run": "data/experiments/agent3_acceptance_v1",
+     "level": "live",
+     "card_line": "NEEDS_REVIEW",
+     "action_type": "ROUTE_TO_LANGUAGE_SPECIALIST",
+     "action_ok": true,
+     "review_reasons": [
+      "GROUNDING_FAILURE",
+      "HIGH_SEVERITY",
+      "INHERITED_FLAG",
+      "OPEN_CONFIRMATION"
+     ],
+     "required_reasons_ok": true,
+     "missing_reasons": [],
+     "card_line_ok": true,
+     "inherited_flags": 1,
+     "grounding": "FAILED",
+     "tot": "COMPARED",
+     "severity": "HIGH (ASSESSED)",
+     "sources_retrieved": "3/3",
+     "relation_violations": [],
+     "sources": [
+      {
+       "ref": {
+        "authoring": "multilingual-eval-instructions"
+       },
+       "relation": "CURRENT_GUIDANCE",
+       "retrieved": true,
+       "uses": [
+        "CURRENT_GUIDANCE"
+       ],
+       "cited": true,
+       "relation_ok": true
+      },
+      {
+       "ref": {
+        "authoring": "multi-korean-scoped-result"
+       },
+       "relation": "PRIOR_DECISION",
+       "retrieved": true,
+       "uses": [
+        "PRIOR_DECISION"
+       ],
+       "cited": true,
+       "relation_ok": true
+      },
+      {
+       "ref": {
+        "authoring": "multi-korean-referral"
+       },
+       "relation": "PRIOR_DECISION",
+       "retrieved": true,
+       "uses": [
+        "PRIOR_DECISION"
+       ],
+       "cited": true,
+       "relation_ok": true
+      }
+     ],
+     "summary": "Multiple members report Korean polite-to-casual register shifts and unresolved scoring questions. Route the current cases to Korean language QA with exact endings and surrounding context; a shift alone does not justify a major task-quality penalty. The retrieved batch-10 outcome was limited to a quoted-speaker case, not a general exemption.",
+     "review_notes": [],
+     "action_label": null
+    },
+    {
+     "run": "data/experiments/agent3_closeout_v1",
+     "level": "live",
+     "card_line": "NEEDS_REVIEW",
+     "action_type": "ROUTE_TO_LANGUAGE_SPECIALIST",
+     "action_ok": true,
+     "review_reasons": [
+      "GROUNDING_FAILURE",
+      "INHERITED_FLAG",
+      "OPEN_CONFIRMATION"
+     ],
+     "required_reasons_ok": true,
+     "missing_reasons": [],
+     "card_line_ok": true,
+     "inherited_flags": 1,
+     "grounding": "FAILED",
+     "tot": "COMPARED",
+     "severity": "MEDIUM (ASSESSED)",
+     "sources_retrieved": "3/3",
+     "relation_violations": [],
+     "sources": [
+      {
+       "ref": {
+        "authoring": "multilingual-eval-instructions"
+       },
+       "relation": "CURRENT_GUIDANCE",
+       "retrieved": true,
+       "uses": [
+        "CURRENT_GUIDANCE"
+       ],
+       "cited": true,
+       "relation_ok": true
+      },
+      {
+       "ref": {
+        "authoring": "multi-korean-scoped-result"
+       },
+       "relation": "PRIOR_DECISION",
+       "retrieved": true,
+       "uses": [
+        "PRIOR_DECISION"
+       ],
+       "cited": true,
+       "relation_ok": true
+      },
+      {
+       "ref": {
+        "authoring": "multi-korean-referral"
+       },
+       "relation": "PRIOR_DECISION",
+       "retrieved": true,
+       "uses": [
+        "PRIOR_DECISION"
+       ],
+       "cited": true,
+       "relation_ok": true
+      }
+     ],
+     "summary": "A QA tutor and two tutors report Korean polite-to-casual register shifts and ask about prior discussion, scoring or handling. Route the current cases to Korean language QA with exact endings and context; neither an automatic major penalty nor the earlier quoted-speaker exemption is justified by the supplied evidence. [m:C_MULTI_GENERAL:1790856672.000159; m:C_MULTI_GENERAL:1790882012.001500; m:C_MULTI_GENERAL:1790897091.000160; m:C_MULTI_QA:1790931281.000162; k:multilingual-eval-faq@1.1:c080929d; k:multi-korean-scoped-result@1.0:5b489480]",
+     "review_notes": [],
+     "action_label": null
+    },
+    {
+     "run": "data/experiments/agent3_overnight_offline_v2",
+     "level": "scripted",
+     "card_line": "NEEDS_REVIEW",
+     "action_type": "ROUTE_TO_LANGUAGE_SPECIALIST",
+     "action_ok": true,
+     "review_reasons": [
+      "INHERITED_FLAG"
+     ],
+     "required_reasons_ok": true,
+     "missing_reasons": [],
+     "card_line_ok": true,
+     "inherited_flags": 1,
+     "grounding": "PASSED",
+     "tot": "NOT_TRIGGERED",
+     "severity": "MEDIUM (ASSESSED)",
+     "sources_retrieved": "3/3",
+     "relation_violations": [],
+     "sources": [
+      {
+       "ref": {
+        "authoring": "multilingual-eval-instructions"
+       },
+       "relation": "CURRENT_GUIDANCE",
+       "retrieved": true,
+       "uses": [
+        "CURRENT_GUIDANCE"
+       ],
+       "cited": true,
+       "relation_ok": true
+      },
+      {
+       "ref": {
+        "authoring": "multi-korean-scoped-result"
+       },
+       "relation": "PRIOR_DECISION",
+       "retrieved": true,
+       "uses": [
+        "PRIOR_DECISION"
+       ],
+       "cited": true,
+       "relation_ok": true
+      },
+      {
+       "ref": {
+        "authoring": "multi-korean-referral"
+       },
+       "relation": "PRIOR_DECISION",
+       "retrieved": true,
+       "uses": [
+        "PRIOR_DECISION"
+       ],
+       "cited": false,
+       "relation_ok": true
+      }
+     ],
+     "summary": "Four threads report Korean answers that switch from 존댓말 to 반말 and ask which QA rule applies.",
+     "review_notes": [
+      "1 earlier review flag is still open on these threads."
+     ],
+     "action_label": "Ask a language specialist to review"
+    }
+   ],
+   "validation_levels": [
+    "live",
+    "scripted"
+   ]
+  },
+  {
+   "id": "technical_escalation",
+   "demo_case": "Technical escalation (Submit)",
+   "work_id": "gap:routed_440e64c7fbdcc49f",
+   "acceptable_actions": [
+    "ESCALATE_ENGINEERING"
+   ],
+   "required_review_reasons": [
+    "INHERITED_FLAG"
+   ],
+   "must_not": [
+    "Claim a completed escalation or ticket.",
+    "Use the rejected Zoom workaround as current handling."
+   ],
+   "observed": [
+    {
+     "run": "data/experiments/agent3_final_eval_v1",
+     "level": "live",
+     "card_line": "NEEDS_REVIEW",
+     "action_type": "ESCALATE_ENGINEERING",
+     "action_ok": true,
+     "review_reasons": [
+      "GROUNDING_FAILURE",
+      "HIGH_SEVERITY",
+      "INHERITED_FLAG",
+      "OPEN_CONFIRMATION"
+     ],
+     "required_reasons_ok": true,
+     "missing_reasons": [],
+     "card_line_ok": true,
+     "inherited_flags": 3,
+     "grounding": "FAILED",
+     "tot": "COMPARED",
+     "severity": "HIGH (ASSESSED)",
+     "sources_retrieved": "3/3",
+     "relation_violations": [],
+     "sources": [
+      {
+       "ref": {
+        "authoring": "rp-submit-engineering-handoff"
+       },
+       "relation": "PRIOR_DECISION",
+       "retrieved": true,
+       "uses": [
+        "PRIOR_DECISION"
+       ],
+       "cited": true,
+       "relation_ok": true
+      },
+      {
+       "ref": {
+        "authoring": "response-preference-instructions"
+       },
+       "relation": "CURRENT_GUIDANCE",
+       "retrieved": true,
+       "uses": [
+        "CURRENT_GUIDANCE"
+       ],
+       "cited": true,
+       "relation_ok": true
+      },
+      {
+       "ref": {
+        "slack": [
+         "C_RP_ANNOUNCEMENTS",
+         "1790888971.000030"
+        ]
+       },
+       "relation": "ANNOUNCEMENT",
+       "retrieved": true,
+       "uses": [
+        "ANNOUNCEMENT"
+       ],
+       "cited": false,
+       "relation_ok": true
+      }
+     ],
+     "summary": "The advisor's summary is not shown because the evidence did not support it; see the related threads.",
+     "review_notes": [
+      "Review the unassigned grouping before sending: the projection-gap flag, two upstream member-interpretation review flags and the announcement's authority-review flag remain open. The draft relies on member messages and current instructions, not those interpretations or the announcement's context reply.",
+      "Severity is high under the team rubric.",
+      "3 earlier review flags are still open on these threads.",
+      "Some advisor statements were not supported by the evidence and are not shown.",
+      "Open question: Do these new task reports match the earlier engineering incident, and did LT record successful submissions for any of the reported tasks?"
+     ],
+     "action_label": "Report a technical issue to engineering"
+    },
+    {
+     "run": "data/experiments/agent3_acceptance_v1",
+     "level": "live",
+     "card_line": "NEEDS_REVIEW",
+     "action_type": null,
+     "action_ok": null,
+     "review_reasons": [
+      "GROUNDING_FAILURE",
+      "HIGH_SEVERITY",
+      "INHERITED_FLAG",
+      "OPEN_CONFIRMATION"
+     ],
+     "required_reasons_ok": true,
+     "missing_reasons": [],
+     "card_line_ok": true,
+     "inherited_flags": 3,
+     "grounding": "FAILED",
+     "tot": "COMPARED",
+     "severity": "HIGH (ASSESSED)",
+     "sources_retrieved": "3/3",
+     "relation_violations": [],
+     "sources": [
+      {
+       "ref": {
+        "authoring": "rp-submit-engineering-handoff"
+       },
+       "relation": "PRIOR_DECISION",
+       "retrieved": true,
+       "uses": [
+        "PRIOR_DECISION"
+       ],
+       "cited": true,
+       "relation_ok": true
+      },
+      {
+       "ref": {
+        "authoring": "response-preference-instructions"
+       },
+       "relation": "CURRENT_GUIDANCE",
+       "retrieved": true,
+       "uses": [
+        "CURRENT_GUIDANCE"
+       ],
+       "cited": true,
+       "relation_ok": true
+      },
+      {
+       "ref": {
+        "slack": [
+         "C_RP_ANNOUNCEMENTS",
+         "1790888971.000030"
+        ]
+       },
+       "relation": "ANNOUNCEMENT",
+       "retrieved": true,
+       "uses": [
+        "ANNOUNCEMENT"
+       ],
+       "cited": false,
+       "relation_ok": true
+      }
+     ],
+     "summary": "Members report grey or disabled Submit controls, a Submit click that does nothing, and inability to submit after completing the rubric across four threads [m:C_RP_GENERAL:1790873412.001200; m:C_RP_GENERAL:1790901577.000031; m:C_RP_GENERAL:1790905337.000033; m:C_RP_GENERAL:1790923325.000034; m:C_RP_GENERAL:1790923372.000113]. Propose collecting diagnostics under current instructions and routing the examples to engineering without assuming a shared cause or successful submission [k:response-preference-instructions@1.1:36683c52; k:rp-submit-engineering-handoff@1.0:6afb6e6d].",
+     "review_notes": [],
+     "action_label": null
+    },
+    {
+     "run": "data/experiments/agent3_closeout_v1",
+     "level": "live",
+     "card_line": "NEEDS_REVIEW",
+     "action_type": null,
+     "action_ok": null,
+     "review_reasons": [
+      "GROUNDING_FAILURE",
+      "HIGH_SEVERITY",
+      "INHERITED_FLAG",
+      "OPEN_CONFIRMATION",
+      "OTHER"
+     ],
+     "required_reasons_ok": true,
+     "missing_reasons": [],
+     "card_line_ok": true,
+     "inherited_flags": 3,
+     "grounding": "FAILED",
+     "tot": "COMPARED",
+     "severity": "HIGH (ASSESSED)",
+     "sources_retrieved": "3/3",
+     "relation_violations": [],
+     "sources": [
+      {
+       "ref": {
+        "authoring": "rp-submit-engineering-handoff"
+       },
+       "relation": "PRIOR_DECISION",
+       "retrieved": true,
+       "uses": [
+        "PRIOR_DECISION"
+       ],
+       "cited": true,
+       "relation_ok": true
+      },
+      {
+       "ref": {
+        "authoring": "response-preference-instructions"
+       },
+       "relation": "CURRENT_GUIDANCE",
+       "retrieved": true,
+       "uses": [
+        "CURRENT_GUIDANCE"
+       ],
+       "cited": true,
+       "relation_ok": true
+      },
+      {
+       "ref": {
+        "slack": [
+         "C_RP_ANNOUNCEMENTS",
+         "1790888971.000030"
+        ]
+       },
+       "relation": "ANNOUNCEMENT",
+       "retrieved": true,
+       "uses": [
+        "ANNOUNCEMENT"
+       ],
+       "cited": false,
+       "relation_ok": true
+      }
+     ],
+     "summary": "Two QA tutors and three tutors report submission problems: grey or disabled Submit controls, a click that does nothing, or inability to submit a completed rubric. Submission remains unverified in all four supplied threads. Collect the required incident details and route the examples to engineering, checking symptom matches before associating them with the earlier batch-15 handoff. [m:C_RP_GENERAL:1790873412.001200; m:C_RP_GENERAL:1790901577.000031; m:C_RP_GENERAL:1790905337.000033; m:C_RP_GENERAL:1790923325.000034; m:C_RP_GENERAL:1790923372.000113; k:rp-submit-engineering-handoff@1.0:6afb6e6d]",
+     "review_notes": [],
+     "action_label": null
+    },
+    {
+     "run": "data/experiments/agent3_readability_v1",
+     "level": "live",
+     "card_line": "NEEDS_REVIEW",
+     "action_type": "ESCALATE_ENGINEERING",
+     "action_ok": true,
+     "review_reasons": [
+      "GROUNDING_FAILURE",
+      "HIGH_SEVERITY",
+      "INHERITED_FLAG",
+      "OPEN_CONFIRMATION"
+     ],
+     "required_reasons_ok": true,
+     "missing_reasons": [],
+     "card_line_ok": true,
+     "inherited_flags": 3,
+     "grounding": "FAILED",
+     "tot": "COMPARED",
+     "severity": "HIGH (ASSESSED)",
+     "sources_retrieved": "3/3",
+     "relation_violations": [],
+     "sources": [
+      {
+       "ref": {
+        "authoring": "rp-submit-engineering-handoff"
+       },
+       "relation": "PRIOR_DECISION",
+       "retrieved": true,
+       "uses": [
+        "PRIOR_DECISION"
+       ],
+       "cited": true,
+       "relation_ok": true
+      },
+      {
+       "ref": {
+        "authoring": "response-preference-instructions"
+       },
+       "relation": "CURRENT_GUIDANCE",
+       "retrieved": true,
+       "uses": [
+        "CURRENT_GUIDANCE"
+       ],
+       "cited": true,
+       "relation_ok": true
+      },
+      {
+       "ref": {
+        "slack": [
+         "C_RP_ANNOUNCEMENTS",
+         "1790888971.000030"
+        ]
+       },
+       "relation": "ANNOUNCEMENT",
+       "retrieved": true,
+       "uses": [
+        "ANNOUNCEMENT"
+       ],
+       "cited": false,
+       "relation_ok": true
+      }
+     ],
+     "summary": "Two QA tutors and three tutors report that LT will not submit their work, including disabled buttons and a click that does nothing. Submission status remains unverified in all four threads, and no shared cause is confirmed.",
+     "review_notes": [
+      "The routing projection gap and existing upstream review flags remain open. Engineering still needs to verify submission status and whether the new examples belong to the earlier incident; the draft does not assume either.",
+      "Severity is high under the team rubric.",
+      "3 earlier review flags are still open on these threads.",
+      "Some advisor statements were not supported by the evidence and are not shown.",
+      "Open question: Do the new task reports match the earlier engineering incident, and did any of the affected tasks actually submit?"
+     ],
+     "action_label": "Report a technical issue to engineering"
+    },
+    {
+     "run": "data/experiments/agent3_overnight_smoke_v1",
+     "level": "live",
+     "card_line": "NEEDS_REVIEW",
+     "action_type": "ESCALATE_ENGINEERING",
+     "action_ok": true,
+     "review_reasons": [
+      "GROUNDING_FAILURE",
+      "HIGH_SEVERITY",
+      "INHERITED_FLAG",
+      "OPEN_CONFIRMATION"
+     ],
+     "required_reasons_ok": true,
+     "missing_reasons": [],
+     "card_line_ok": true,
+     "inherited_flags": 3,
+     "grounding": "FAILED",
+     "tot": "COMPARED",
+     "severity": "HIGH (ASSESSED)",
+     "sources_retrieved": "3/3",
+     "relation_violations": [],
+     "sources": [
+      {
+       "ref": {
+        "authoring": "rp-submit-engineering-handoff"
+       },
+       "relation": "PRIOR_DECISION",
+       "retrieved": true,
+       "uses": [
+        "PRIOR_DECISION"
+       ],
+       "cited": true,
+       "relation_ok": true
+      },
+      {
+       "ref": {
+        "authoring": "response-preference-instructions"
+       },
+       "relation": "CURRENT_GUIDANCE",
+       "retrieved": true,
+       "uses": [
+        "CURRENT_GUIDANCE"
+       ],
+       "cited": true,
+       "relation_ok": true
+      },
+      {
+       "ref": {
+        "slack": [
+         "C_RP_ANNOUNCEMENTS",
+         "1790888971.000030"
+        ]
+       },
+       "relation": "ANNOUNCEMENT",
+       "retrieved": true,
+       "uses": [
+        "ANNOUNCEMENT"
+       ],
+       "cited": false,
+       "relation_ok": true
+      }
+     ],
+     "summary": "Two QA tutors and three tutors report that Submit stays grey, does nothing, or prevents submission. The team lead leaves submission status unverified in all four threads; a shared cause is not established.",
+     "review_notes": [
+      "Keep the announcement's upstream review flag and the two flagged member-thread reviews open; this draft does not clear them.",
+      "Severity is high under the team rubric.",
+      "3 earlier review flags are still open on these threads.",
+      "Some advisor statements were not supported by the evidence and are not shown.",
+      "Open question: Do the new reports match the earlier engineering incident, or do they require a separate investigation?"
+     ],
+     "action_label": "Report a technical issue to engineering"
+    },
+    {
+     "run": "data/experiments/agent3_overnight_offline_v2",
+     "level": "scripted",
+     "card_line": "NEEDS_REVIEW",
+     "action_type": "ESCALATE_ENGINEERING",
+     "action_ok": true,
+     "review_reasons": [
+      "GROUNDING_FAILURE",
+      "HIGH_SEVERITY",
+      "INHERITED_FLAG"
+     ],
+     "required_reasons_ok": true,
+     "missing_reasons": [],
+     "card_line_ok": true,
+     "inherited_flags": 3,
+     "grounding": "FAILED",
+     "tot": "NOT_TRIGGERED",
+     "severity": "HIGH (ASSESSED)",
+     "sources_retrieved": "3/3",
+     "relation_violations": [],
+     "sources": [
+      {
+       "ref": {
+        "authoring": "rp-submit-engineering-handoff"
+       },
+       "relation": "PRIOR_DECISION",
+       "retrieved": true,
+       "uses": [
+        "PRIOR_DECISION"
+       ],
+       "cited": true,
+       "relation_ok": true
+      },
+      {
+       "ref": {
+        "authoring": "response-preference-instructions"
+       },
+       "relation": "CURRENT_GUIDANCE",
+       "retrieved": true,
+       "uses": [
+        "CURRENT_GUIDANCE"
+       ],
+       "cited": true,
+       "relation_ok": true
+      },
+      {
+       "ref": {
+        "slack": [
+         "C_RP_ANNOUNCEMENTS",
+         "1790888971.000030"
+        ]
+       },
+       "relation": "ANNOUNCEMENT",
+       "retrieved": true,
+       "uses": [
+        "ANNOUNCEMENT"
+       ],
+       "cited": false,
+       "relation_ok": true
+      }
+     ],
+     "summary": "Four reports in rp_batch_15 describe Submit staying grey or doing nothing after the rubric is complete.",
+     "review_notes": [
+      "Severity is high under the team rubric.",
+      "3 earlier review flags are still open on these threads.",
+      "Some advisor statements were not supported by the evidence and are not shown."
+     ],
+     "action_label": "Report a technical issue to engineering"
+    }
+   ],
+   "validation_levels": [
+    "live",
+    "scripted"
+   ]
+  },
+  {
+   "id": "already_announced",
+   "demo_case": "Repeated question after an announcement",
+   "work_id": "topic:cluster_e6a79dfad226e738/topic_2",
+   "acceptable_actions": [
+    "POST_ALIGNMENT",
+    "ESCALATE_ENGINEERING",
+    "NO_ACTION"
+   ],
+   "required_review_reasons": [],
+   "must_not": [
+    "Claim the reporter read or ignored the announcement."
+   ],
+   "observed": [
+    {
+     "run": "data/experiments/agent3_final_eval_v1",
+     "level": "live",
+     "card_line": "NEEDS_REVIEW",
+     "action_type": "POST_ALIGNMENT",
+     "action_ok": true,
+     "review_reasons": [
+      "GROUNDING_FAILURE",
+      "HIGH_SEVERITY",
+      "OPEN_CONFIRMATION",
+      "OTHER"
+     ],
+     "required_reasons_ok": true,
+     "missing_reasons": [],
+     "card_line_ok": true,
+     "inherited_flags": 0,
+     "grounding": "FAILED",
+     "tot": "COMPARED",
+     "severity": "HIGH (ASSESSED)",
+     "sources_retrieved": "1/2",
+     "relation_violations": [],
+     "sources": [
+      {
+       "ref": {
+        "slack": [
+         "C_AUDIO_ANNOUNCEMENTS",
+         "1790892000.000901"
+        ]
+       },
+       "relation": "ANNOUNCEMENT",
+       "retrieved": true,
+       "uses": [
+        "ANNOUNCEMENT"
+       ],
+       "cited": true,
+       "relation_ok": true
+      },
+      {
+       "ref": {
+        "authoring": "audio-multimodal-instructions",
+        "section": "Playback and unavailable content"
+       },
+       "relation": "CURRENT_GUIDANCE",
+       "retrieved": false,
+       "uses": [],
+       "cited": false,
+       "relation_ok": null
+      }
+     ],
+     "summary": "Two tutors report that the audio player stays buffering at 00:00; one reports that reloading did not help. The team lead requested task IDs and a reproduction attempt before deciding whether an old workaround applies.",
+     "review_notes": [
+      "Whether the old workaround applies still needs review of the requested diagnostic details and the earlier trial's outcome or extension decision, which the records retrieved for this run do not show. The reminder does not authorize that workaround.",
+      "Severity is high under the team rubric.",
+      "Some advisor statements were not supported by the evidence and are not shown.",
+      "Open question: Does the earlier reload workaround apply to this batch after the requested task IDs and reproduction attempt are reviewed?",
+      "Research on earlier decisions and their outcomes: this run's searches retrieved nothing further (that does not show no such record exists)."
+     ],
+     "action_label": "Post a reminder"
+    },
+    {
+     "run": "data/experiments/agent3_overnight_offline_v2",
+     "level": "placeholder",
+     "card_line": "NEEDS_REVIEW",
+     "action_type": null,
+     "action_ok": null,
+     "review_reasons": [
+      "GROUNDING_FAILURE",
+      "LOW_CONFIDENCE",
+      "OTHER"
+     ],
+     "required_reasons_ok": true,
+     "missing_reasons": [],
+     "card_line_ok": true,
+     "inherited_flags": 0,
+     "grounding": "FAILED",
+     "tot": "COMPARED",
+     "severity": "UNKNOWN (UNASSESSED)",
+     "sources_retrieved": "1/2",
+     "relation_violations": [],
+     "sources": [
+      {
+       "ref": {
+        "slack": [
+         "C_AUDIO_ANNOUNCEMENTS",
+         "1790892000.000901"
+        ]
+       },
+       "relation": "ANNOUNCEMENT",
+       "retrieved": true,
+       "uses": [
+        "ANNOUNCEMENT"
+       ],
+       "cited": false,
+       "relation_ok": true
+      },
+      {
+       "ref": {
+        "authoring": "audio-multimodal-instructions",
+        "section": "Playback and unavailable content"
+       },
+       "relation": "CURRENT_GUIDANCE",
+       "retrieved": false,
+       "uses": [],
+       "cited": false,
+       "relation_ok": null
+      }
+     ],
+     "summary": "The advisor's summary is not shown because the evidence did not support it; see the related threads.",
+     "review_notes": [
+      "The advisor's confidence is low.",
+      "Some advisor statements were not supported by the evidence and are not shown.",
+      "Research on current guidance was not completed.",
+      "Research on announcements was not completed.",
+      "Research on earlier decisions and their outcomes was not completed.",
+      "Research on members' questions was not completed.",
+      "Some evidence the advisor needed is missing.",
+      "Severity could not be established from the supported evidence."
+     ],
+     "action_label": null
+    }
+   ],
+   "validation_levels": [
+    "live",
+    "placeholder"
+   ]
+  },
+  {
+   "id": "qa_misalignment",
+   "demo_case": "QA misalignment (ties)",
+   "work_id": "topic:cluster_f944891544b06f79/topic_2",
+   "acceptable_actions": [
+    "SCHEDULE_ALIGNMENT",
+    "POST_ALIGNMENT",
+    "NO_ACTION"
+   ],
+   "required_review_reasons": [
+    "INHERITED_FLAG"
+   ],
+   "must_not": [
+    "Call one disputed tie a systemic QA defect."
+   ],
+   "observed": [
+    {
+     "run": "data/experiments/agent3_final_eval_v1",
+     "level": "live",
+     "card_line": "NEEDS_REVIEW",
+     "action_type": "SCHEDULE_ALIGNMENT",
+     "action_ok": true,
+     "review_reasons": [
+      "HIGH_SEVERITY",
+      "INHERITED_FLAG",
+      "OPEN_CONFIRMATION",
+      "TEMPORAL_CONFLICT"
+     ],
+     "required_reasons_ok": true,
+     "missing_reasons": [],
+     "card_line_ok": true,
+     "inherited_flags": 2,
+     "grounding": "PASSED",
+     "tot": "COMPARED",
+     "severity": "HIGH (ASSESSED)",
+     "sources_retrieved": "2/4",
+     "relation_violations": [],
+     "sources": [
+      {
+       "ref": {
+        "authoring": "response-preference-instructions"
+       },
+       "relation": "CURRENT_GUIDANCE",
+       "retrieved": false,
+       "uses": [],
+       "cited": false,
+       "relation_ok": null
+      },
+      {
+       "ref": {
+        "authoring": "response-preference-faq"
+       },
+       "relation": "CURRENT_GUIDANCE",
+       "retrieved": true,
+       "uses": [
+        "CURRENT_GUIDANCE"
+       ],
+       "cited": true,
+       "relation_ok": true
+      },
+      {
+       "ref": {
+        "authoring": "rp-tie-calibration-post"
+       },
+       "relation": "ANNOUNCEMENT",
+       "retrieved": true,
+       "uses": [
+        "ANNOUNCEMENT"
+       ],
+       "cited": false,
+       "relation_ok": true
+      },
+      {
+       "ref": {
+        "slack": [
+         "C_RP_ANNOUNCEMENTS",
+         "1790929075.000039"
+        ]
+       },
+       "relation": "ANNOUNCEMENT",
+       "retrieved": false,
+       "uses": [],
+       "cited": false,
+       "relation_ok": null
+      }
+     ],
+     "summary": "Two QA tutors report disputed tie judgments, and a tutor reports different QA outcomes on similar pairs. The team lead requested both rationales for calibration before changing the tie threshold.",
+     "review_notes": [
+      "The upstream reviews for the two later threads remain open. Review the latest pair comparison when the requested materials arrive; do not treat the earlier pair-specific replies as proof that QA scores were corrected.",
+      "Severity is high under the team rubric.",
+      "2 earlier review flags are still open on these threads.",
+      "Sources disagree on a point, and the records do not settle which applies; confirm before acting.",
+      "Open question: Are the latest disputed pairs actually comparable once their prompt constraints and both written QA rationales are reviewed, and which judgments does that comparison support?"
+     ],
+     "action_label": "Schedule a short review session"
+    },
+    {
+     "run": "data/experiments/agent3_overnight_offline_v2",
+     "level": "placeholder",
+     "card_line": "NEEDS_REVIEW",
+     "action_type": null,
+     "action_ok": null,
+     "review_reasons": [
+      "GROUNDING_FAILURE",
+      "INHERITED_FLAG",
+      "LOW_CONFIDENCE",
+      "OTHER"
+     ],
+     "required_reasons_ok": true,
+     "missing_reasons": [],
+     "card_line_ok": true,
+     "inherited_flags": 2,
+     "grounding": "FAILED",
+     "tot": "COMPARED",
+     "severity": "UNKNOWN (UNASSESSED)",
+     "sources_retrieved": "2/4",
+     "relation_violations": [],
+     "sources": [
+      {
+       "ref": {
+        "authoring": "response-preference-instructions"
+       },
+       "relation": "CURRENT_GUIDANCE",
+       "retrieved": false,
+       "uses": [],
+       "cited": false,
+       "relation_ok": null
+      },
+      {
+       "ref": {
+        "authoring": "response-preference-faq"
+       },
+       "relation": "CURRENT_GUIDANCE",
+       "retrieved": true,
+       "uses": [
+        "CURRENT_GUIDANCE"
+       ],
+       "cited": false,
+       "relation_ok": true
+      },
+      {
+       "ref": {
+        "authoring": "rp-tie-calibration-post"
+       },
+       "relation": "ANNOUNCEMENT",
+       "retrieved": true,
+       "uses": [
+        "ANNOUNCEMENT"
+       ],
+       "cited": false,
+       "relation_ok": true
+      },
+      {
+       "ref": {
+        "slack": [
+         "C_RP_ANNOUNCEMENTS",
+         "1790929075.000039"
+        ]
+       },
+       "relation": "ANNOUNCEMENT",
+       "retrieved": false,
+       "uses": [],
+       "cited": false,
+       "relation_ok": null
+      }
+     ],
+     "summary": "The advisor's summary is not shown because the evidence did not support it; see the related threads.",
+     "review_notes": [
+      "The advisor's confidence is low.",
+      "2 earlier review flags are still open on these threads.",
+      "Some advisor statements were not supported by the evidence and are not shown.",
+      "Research on current guidance was not completed.",
+      "Research on announcements was not completed.",
+      "Research on earlier decisions and their outcomes was not completed.",
+      "Research on members' questions was not completed.",
+      "Some evidence the advisor needed is missing.",
+      "Severity could not be established from the supported evidence."
+     ],
+     "action_label": null
+    }
+   ],
+   "validation_levels": [
+    "live",
+    "placeholder"
+   ]
+  },
+  {
+   "id": "observation_only",
+   "demo_case": "Observation only (repeated ending)",
+   "work_id": "topic:cluster_b7e5234380f9ea67/topic_1",
+   "acceptable_actions": [
+    "NO_ACTION",
+    "ESCALATE_ENGINEERING"
+   ],
+   "required_review_reasons": [
+    "INHERITED_FLAG"
+   ],
+   "must_not": [
+    "Assert a confirmed model defect."
+   ],
+   "observed": [
+    {
+     "run": "data/experiments/agent3_final_eval_v1",
+     "level": "live",
+     "card_line": "NEEDS_REVIEW",
+     "action_type": "POST_ALIGNMENT",
+     "action_ok": false,
+     "review_reasons": [
+      "HIGH_SEVERITY",
+      "INHERITED_FLAG",
+      "OPEN_CONFIRMATION"
+     ],
+     "required_reasons_ok": true,
+     "missing_reasons": [],
+     "card_line_ok": true,
+     "inherited_flags": 2,
+     "grounding": "PASSED",
+     "tot": "COMPARED",
+     "severity": "HIGH (ASSESSED)",
+     "sources_retrieved": "2/2",
+     "relation_violations": [],
+     "sources": [
+      {
+       "ref": {
+        "authoring": "audio-multimodal-instructions"
+       },
+       "relation": "CURRENT_GUIDANCE",
+       "retrieved": true,
+       "uses": [
+        "CURRENT_GUIDANCE"
+       ],
+       "cited": true,
+       "relation_ok": true
+      },
+      {
+       "ref": {
+        "authoring": "audio-repeat-observation-review"
+       },
+       "relation": "PRIOR_DECISION",
+       "retrieved": true,
+       "uses": [
+        "PRIOR_DECISION"
+       ],
+       "cited": true,
+       "relation_ok": true
+      }
+     ],
+     "summary": "A QA tutor and a tutor asked how to handle repeated endings; three other tutors report repetition in exported audio or the recording. The cause remains unconfirmed.",
+     "review_notes": [
+      "The tutor's transcript comparison still needs review; treat it as a report, not verification of a generation defect.",
+      "Severity is high under the team rubric.",
+      "2 earlier review flags are still open on these threads.",
+      "Open question: For AUDIO-9012 and AUDIO-3533, does a downloaded-file versus LT-player comparison establish whether the repetition exists in the file itself?"
+     ],
+     "action_label": "Post a reminder"
+    },
+    {
+     "run": "data/experiments/agent3_acceptance_v1",
+     "level": "live",
+     "card_line": "NEEDS_REVIEW",
+     "action_type": "POST_ALIGNMENT",
+     "action_ok": false,
+     "review_reasons": [
+      "GROUNDING_FAILURE",
+      "HIGH_SEVERITY",
+      "INHERITED_FLAG",
+      "OPEN_CONFIRMATION"
+     ],
+     "required_reasons_ok": true,
+     "missing_reasons": [],
+     "card_line_ok": true,
+     "inherited_flags": 2,
+     "grounding": "FAILED",
+     "tot": "COMPARED",
+     "severity": "HIGH (ASSESSED)",
+     "sources_retrieved": "2/2",
+     "relation_violations": [],
+     "sources": [
+      {
+       "ref": {
+        "authoring": "audio-multimodal-instructions"
+       },
+       "relation": "CURRENT_GUIDANCE",
+       "retrieved": true,
+       "uses": [
+        "CURRENT_GUIDANCE"
+       ],
+       "cited": true,
+       "relation_ok": true
+      },
+      {
+       "ref": {
+        "authoring": "audio-repeat-observation-review"
+       },
+       "relation": "PRIOR_DECISION",
+       "retrieved": true,
+       "uses": [
+        "PRIOR_DECISION"
+       ],
+       "cited": true,
+       "relation_ok": true
+      }
+     ],
+     "summary": "Members report repeated final lines, including reports of repetition in exported audio. Post an alignment reminder to record the repeated span, compare the downloaded file with player output where feasible, and document transcript mismatches without declaring a confirmed generation defect. The reports warrant attention across multiple distinct reporters, but cause and resolution remain unverified.",
+     "review_notes": [],
+     "action_label": null
+    },
+    {
+     "run": "data/experiments/agent3_closeout_v1",
+     "level": "live",
+     "card_line": "NEEDS_REVIEW",
+     "action_type": "POST_ALIGNMENT",
+     "action_ok": false,
+     "review_reasons": [
+      "GROUNDING_FAILURE",
+      "HIGH_SEVERITY",
+      "INHERITED_FLAG",
+      "OPEN_CONFIRMATION"
+     ],
+     "required_reasons_ok": true,
+     "missing_reasons": [],
+     "card_line_ok": true,
+     "inherited_flags": 2,
+     "grounding": "FAILED",
+     "tot": "COMPARED",
+     "severity": "HIGH (ASSESSED)",
+     "sources_retrieved": "2/2",
+     "relation_violations": [],
+     "sources": [
+      {
+       "ref": {
+        "authoring": "audio-multimodal-instructions"
+       },
+       "relation": "CURRENT_GUIDANCE",
+       "retrieved": true,
+       "uses": [
+        "CURRENT_GUIDANCE"
+       ],
+       "cited": true,
+       "relation_ok": true
+      },
+      {
+       "ref": {
+        "authoring": "audio-repeat-observation-review"
+       },
+       "relation": "PRIOR_DECISION",
+       "retrieved": true,
+       "uses": [
+        "PRIOR_DECISION"
+       ],
+       "cited": true,
+       "relation_ok": true
+      }
+     ],
+     "summary": "Repeated endings are reported by two QA tutors and two tutors across the supplied threads; separate tutor replies report repetition in exported audio. Post alignment on the existing comparison and correspondence guidance, without announcing a confirmed generation defect [m:C_AUDIO_GENERAL:1790868894.000123; m:C_AUDIO_GENERAL:1790889930.000126; m:C_AUDIO_GENERAL:1790915994.000122; m:C_AUDIO_QA:1790923533.000125; m:C_AUDIO_GENERAL:1790889987.000113; m:C_AUDIO_QA:1790923582.000113; k:audio-multimodal-instructions@1.3:7a5ab59d].",
+     "review_notes": [],
+     "action_label": null
+    },
+    {
+     "run": "data/experiments/agent3_overnight_offline_v2",
+     "level": "scripted",
+     "card_line": "NEEDS_REVIEW",
+     "action_type": "NO_ACTION",
+     "action_ok": true,
+     "review_reasons": [
+      "INHERITED_FLAG",
+      "LOW_CONFIDENCE",
+      "OTHER"
+     ],
+     "required_reasons_ok": true,
+     "missing_reasons": [],
+     "card_line_ok": true,
+     "inherited_flags": 2,
+     "grounding": "PASSED",
+     "tot": "COMPARED",
+     "severity": "MEDIUM (ASSESSED)",
+     "sources_retrieved": "2/2",
+     "relation_violations": [],
+     "sources": [
+      {
+       "ref": {
+        "authoring": "audio-multimodal-instructions"
+       },
+       "relation": "CURRENT_GUIDANCE",
+       "retrieved": true,
+       "uses": [
+        "CURRENT_GUIDANCE"
+       ],
+       "cited": true,
+       "relation_ok": true
+      },
+      {
+       "ref": {
+        "authoring": "audio-repeat-observation-review"
+       },
+       "relation": "PRIOR_DECISION",
+       "retrieved": true,
+       "uses": [
+        "PRIOR_DECISION"
+       ],
+       "cited": true,
+       "relation_ok": true
+      }
+     ],
+     "summary": "Five reports describe generated audio that speaks its final sentence twice although the transcript has it once.",
+     "review_notes": [
+      "The advisor's confidence is low.",
+      "2 earlier review flags are still open on these threads.",
+      "Some evidence the advisor needed is missing."
+     ],
+     "action_label": "No action needed now"
+    }
+   ],
+   "validation_levels": [
+    "live",
+    "scripted"
+   ]
+  },
+  {
+   "id": "upstream_flags",
+   "demo_case": "Inherited review flags",
+   "work_id": "topic:cluster_db20d884110726af/topic_1",
+   "acceptable_actions": [
+    "ROUTE_TO_LANGUAGE_SPECIALIST",
+    "POST_ALIGNMENT",
+    "NO_ACTION"
+   ],
+   "required_review_reasons": [
+    "INHERITED_FLAG"
+   ],
+   "must_not": [
+    "Remove or resolve an inherited flag to reach a Recommended Action."
+   ],
+   "observed": [
+    {
+     "run": "data/experiments/agent3_final_eval_v1",
+     "level": "live",
+     "card_line": "NEEDS_REVIEW",
+     "action_type": "ROUTE_TO_LANGUAGE_SPECIALIST",
+     "action_ok": true,
+     "review_reasons": [
+      "INHERITED_FLAG",
+      "OPEN_CONFIRMATION"
+     ],
+     "required_reasons_ok": true,
+     "missing_reasons": [],
+     "card_line_ok": true,
+     "inherited_flags": 2,
+     "grounding": "PASSED",
+     "tot": "COMPARED",
+     "severity": "MEDIUM (ASSESSED)",
+     "sources_retrieved": "2/2",
+     "relation_violations": [],
+     "sources": [
+      {
+       "ref": {
+        "authoring": "multilingual-eval-instructions"
+       },
+       "relation": "CURRENT_GUIDANCE",
+       "retrieved": true,
+       "uses": [
+        "CURRENT_GUIDANCE"
+       ],
+       "cited": true,
+       "relation_ok": true
+      },
+      {
+       "ref": {
+        "authoring": "multi-japanese-review-pending"
+       },
+       "relation": "PRIOR_DECISION",
+       "retrieved": true,
+       "uses": [
+        "PRIOR_DECISION"
+       ],
+       "cited": true,
+       "relation_ok": true
+      }
+     ],
+     "summary": "A QA tutor and two tutors raise Japanese responses that shift from polite to casual language. Their threads do not settle whether the shifts are justified or what penalty, if any, applies.",
+     "review_notes": [
+      "The reported shifts still need Japanese QA's case-specific assessment before any penalty is decided.",
+      "2 earlier review flags are still open on these threads.",
+      "Open question: For each current case, does the complete dialogue justify the speech-level shift, and what demonstrated impact, if any, warrants a penalty?"
+     ],
+     "action_label": "Ask a language specialist to review"
+    },
+    {
+     "run": "data/experiments/agent3_overnight_offline_v2",
+     "level": "placeholder",
+     "card_line": "NEEDS_REVIEW",
+     "action_type": null,
+     "action_ok": null,
+     "review_reasons": [
+      "GROUNDING_FAILURE",
+      "INHERITED_FLAG",
+      "LOW_CONFIDENCE",
+      "OTHER"
+     ],
+     "required_reasons_ok": true,
+     "missing_reasons": [],
+     "card_line_ok": true,
+     "inherited_flags": 2,
+     "grounding": "FAILED",
+     "tot": "COMPARED",
+     "severity": "UNKNOWN (UNASSESSED)",
+     "sources_retrieved": "2/2",
+     "relation_violations": [],
+     "sources": [
+      {
+       "ref": {
+        "authoring": "multilingual-eval-instructions"
+       },
+       "relation": "CURRENT_GUIDANCE",
+       "retrieved": true,
+       "uses": [
+        "CURRENT_GUIDANCE"
+       ],
+       "cited": false,
+       "relation_ok": true
+      },
+      {
+       "ref": {
+        "authoring": "multi-japanese-review-pending"
+       },
+       "relation": "PRIOR_DECISION",
+       "retrieved": true,
+       "uses": [
+        "PRIOR_DECISION"
+       ],
+       "cited": false,
+       "relation_ok": true
+      }
+     ],
+     "summary": "The advisor's summary is not shown because the evidence did not support it; see the related threads.",
+     "review_notes": [
+      "The advisor's confidence is low.",
+      "2 earlier review flags are still open on these threads.",
+      "Some advisor statements were not supported by the evidence and are not shown.",
+      "Research on current guidance was not completed.",
+      "Research on announcements was not completed.",
+      "Research on earlier decisions and their outcomes was not completed.",
+      "Research on members' questions was not completed.",
+      "Some evidence the advisor needed is missing.",
+      "Severity could not be established from the supported evidence."
+     ],
+     "action_label": null
+    }
+   ],
+   "validation_levels": [
+    "live",
+    "placeholder"
+   ]
+  }
+ ]
+}

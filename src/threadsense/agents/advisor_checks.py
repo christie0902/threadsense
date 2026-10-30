@@ -89,6 +89,8 @@ PEOPLE = r'(?:tutors|team\s+leads|engineers|members|annotators|reporters|people|
 PLURAL = re.compile(rf'\b(several|multiple|many|both|two|three|four|five|six|seven|eight|nine|ten|\d+)\s+'
                     rf'(?:(?:different|distinct|separate|other)\s+)?(?:qa\s+)?{PEOPLE}\b'
                     rf'|\b{PEOPLE}\s+(?:all\s+|also\s+|each\s+)?{SPEECH}\b', re.I)
+# "One of the tutors reports": a singular subject before a plural noun; not a claim about several people.
+PARTITIVE = re.compile(r'\b(?:one|each|either|neither|any|none)\s+of\s+(?:the\s+|these\s+|those\s+|their\s+)?(?:\w+\s+)?$', re.I)
 
 
 RAW_ID = re.compile(r'\b[mk]:[A-Za-z0-9_.:@-]+|\bclaim:\w+|\bmember_[0-9a-f]{8,}|\bcard_[0-9a-f]{8,}|\bU\d{3}\b'
@@ -101,6 +103,19 @@ ATTRIBUTION_CUE = re.compile(r'(?:\b(?:says?|said|writes?|wrote|states?|stated|a
                              r'called it)\b[^"“.]{0,15}|:\s*)$', re.I)
 
 
+# An absence stated beyond what this run retrieved ("no such decision exists"); research can only show what it found.
+ABSENCE_OVERCLAIM = re.compile(
+    r'\bno (?:such |other |later |further )?(?:records?|decisions?|outcomes?|announcements?|guidance|documents?|policy|policies|rules?)'
+    r' (?:exists?|was ever|were ever|has ever been|have ever been)\b'
+    r'|\b(?:records?|decisions?|outcomes?|guidance|documents?) (?:does|do) not exist\b'
+    r'|\bnowhere in the (?:records|knowledge (?:store|base))\b|\bnot in the knowledge (?:store|base)\b', re.I)
+
+
+NEED_KINDS = {'UNRESOLVED_HANDLING_QUESTION': 'an unresolved handling question', 'GUIDANCE_GAP': 'a guidance gap',
+              'APPLICABLE_PENDING_DECISION': 'an applicable pending decision',
+              'OPERATIONAL_PROBLEM': 'an operational problem that needs coordination'}
+
+
 def display_issues(text, items):
     """Team lead-facing text: no raw evidence/claim/user/member IDs, enum names or premise lists outside quotations.
     A quoted passage of five or more words, or any quotation explicitly attributed to a person or source ("the team lead
@@ -109,6 +124,10 @@ def display_issues(text, items):
     found = sorted(set(RAW_ID.findall(_unquoted(text))))
     if found:
         issues.append(('RAW_ID_IN_PROSE', f'Internal identifiers in display text: {found}.'))
+    absence = ABSENCE_OVERCLAIM.search(_unquoted(text))
+    if absence:
+        issues.append(('ABSENCE_OVERCLAIM', f'"{absence.group(0)}" claims more than this run retrieved; say what the '
+                                            'records retrieved for this run show.'))
     for match in QUOTED.finditer(text or ''):
         quote = match.group(1) or match.group(2)
         attributed = bool(ATTRIBUTION_CUE.search(text[:match.start()]))
@@ -186,6 +205,8 @@ def prose_issues(text, items, ledger, attributions=()):
     authors = {i['author_id'] for i in messages} or topic
     starters = {i.get('thread_starter_id') for i in messages} - {None} or topic
     for match in PLURAL.finditer(prose):
+        if match.group(1) is None and PARTITIVE.search(prose[:match.start()]):
+            continue
         word = (match.group(1) or '').lower()
         needed = int(word) if word.isdigit() else COUNTS.get(word, 2)
         people = starters if prose[match.end():match.end() + 1] in "'’" else authors
@@ -503,6 +524,11 @@ def statements(draft, ledger, *, severity=None, alternatives=(), handling=None):
         if action.rationale:
             add('action:rationale', 'ACTION_RATIONALE', f'Why this helps: {action.rationale}',
                 support + [t.evidence_id for t in action.targets], blocking=False)
+        need = getattr(action, 'intervention_need', None)
+        if need is not None and action.action_type != 'NO_ACTION':
+            # Non-blocking for the card's grounding status; the action stands only if this is SUPPORTED.
+            add('action:need', 'INTERVENTION_NEED', f'Why intervening now is needed ({NEED_KINDS[need.kind]}): '
+                f'{need.statement}', need.evidence_ids, blocking=False)
     if draft.review_note:
         add('review_note', 'REVIEW_NOTE', f'Still needs review: {draft.review_note}', _review_note_evidence(draft),
             blocking=False)
@@ -582,6 +608,10 @@ def _effective(draft, ledger, verdicts, sufficiency=None, pending=False):
     if 'action' in out and draft.proposed_action and out['action'] == 'SUPPORTED':
         premises = [f'claim:{i}' for i in draft.proposed_action.support_claim_ids]
         out['action'] = sufficiency_verdict(premises, sufficiency, verdicts, out, pending)
+    # Intervention need is separate from card-line routing: an action without a supported need is not shown, but that
+    # alone is not a grounding failure (the card may still be an observation, or Needs Review for other reasons).
+    if out.get('action') == 'SUPPORTED' and 'action:need' in out and out['action:need'] != 'SUPPORTED':
+        out['action'] = out['action:need'] if out['action:need'] in ('PENDING', 'NOT_JUDGED') else 'NO_INTERVENTION_NEED'
     return out
 
 
@@ -626,7 +656,8 @@ def grounding_result(draft, ledger, stmts, *, structural=(), actions=(), judgmen
     blocking = [s for s in judged if s['blocking']]
     waiting = [s['statement_id'] for s in blocking if s['verdict'] == 'PENDING']
     unjudged = [s['statement_id'] for s in blocking if s['verdict'] == 'NOT_JUDGED']
-    unsupported = [s['statement_id'] for s in blocking if s['verdict'] not in ('SUPPORTED', 'NOT_JUDGED', 'PENDING')]
+    unsupported = [s['statement_id'] for s in blocking
+                   if s['verdict'] not in ('SUPPORTED', 'NOT_JUDGED', 'PENDING', 'NO_INTERVENTION_NEED')]
     result['pending'] = [s['statement_id'] for s in judged if s['verdict'] == 'PENDING']
     if not ran:
         failed = [s for s in unsupported if s in rejected]
@@ -956,7 +987,7 @@ def _coverage_note(issue):
         return (f'Research on {what}: relevant records were found but not used, because the revision step did not run. '
                 'Check them before acting.')
     if 'found no new evidence' in state or 'still missing' in state:
-        return f'Research on {what}: nothing further was found.'
+        return f"Research on {what}: this run's searches retrieved nothing further (that does not show no such record exists)."
     if 'not run' in state or 'not researched' in state:
         return f'Research on {what} was not completed.'
     return f'The advisor did not fully check {what}.'
@@ -1023,6 +1054,11 @@ def assemble_card(outcome, packet, *, run_id):
     for failure in outcome['failures']:
         reason('OTHER', f"{failure['stage']}: {failure['status']} ({failure.get('error', '')})", _stage_note(failure))
     action = final['action'] if sufficiency != 'UNSUPPORTED' else None
+    proposed = draft.proposed_action if draft else None
+    if action is None and proposed is not None and any(
+            s['statement_id'] == 'action' and s['verdict'] == 'NO_INTERVENTION_NEED' for s in grounding['statements']):
+        notes.append(f"The advisor proposed \"{ACTION_LABELS[proposed.action_type]}\", but the evidence did not show a need "
+                     'to intervene now, so no action is recommended.')
     if action is not None and final.get('essential') is not None:
         notes.append("The advisor's first proposal was not supported; this action is a reviewed alternative that passed "
                      'the same checks.')

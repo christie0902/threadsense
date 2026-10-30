@@ -13,11 +13,16 @@ from pathlib import Path
 
 from threadsense.agents.advice_contracts import ACTION_LABELS, AdviceCardV3, ModelReviewItem
 from threadsense.retrieval.config import FIXTURE_ROOT
-from threadsense.routing import ROOT, slack_datetime
+from threadsense.routing import ROOT, fixture_fingerprint, slack_datetime
 
 BRIEF_VERSION = 'agent3-morning-brief-v1'
 RUN_ROOTS = (ROOT/'data/experiments',)
 FIXTURE_RUN_ROOT = ROOT/'tests/fixtures/dashboard_runs'
+# Files that make one immutable run instance; two directories can report the same run_id (same inputs).
+INSTANCE_FILES = ('run_manifest.json', 'morning_brief.json', 'cards.json', 'review_queue.json')
+# Decision namespace by run mode: only decisions on live runs are operational; scripted runs are demonstrations and
+# the hand-written fixture runs are UI test data. Default snapshots ingest operational decisions only.
+NAMESPACES = {'LIVE': 'operational', 'SCRIPTED': 'demo', 'TEST_FIXTURE': 'test', 'UNKNOWN': 'test'}
 INCOMPLETE = ('TOPIC_FAILED', 'UNPROCESSED_BUDGET', 'UNPROCESSED_RUN_STOPPED', 'INTERRUPTED_UNCERTAIN')
 SUPERSEDED_STATES = {'SUPERSEDED_REVISION', 'SECTION_SUPERSEDED'}
 
@@ -69,7 +74,12 @@ class Run:
         if self.brief.get('brief_version') != BRIEF_VERSION:
             raise ValueError(f'{self.key}: unsupported brief version {self.brief.get("brief_version")!r}.')
         self.mode = run_mode(self.brief, self.manifest)
+        self.namespace = NAMESPACES[self.mode]
         self.cards_sha256 = file_sha256(self.path/'cards.json')
+        # The binding for decisions and review actions: directory name plus the hash of its immutable files.
+        self.instance = sha256(json.dumps({f: file_sha256(self.path/f) for f in INSTANCE_FILES}, sort_keys=True)
+                               .encode('utf-8')).hexdigest()
+        self.ref = f'{self.key}#{self.instance}'
 
     @cached_property
     def cards(self):
@@ -113,7 +123,8 @@ class Run:
         b, counts = self.brief, self.brief['counts']
         incomplete = b.get('incomplete_work') or []
         return {
-            'run_key': self.key, 'run_id': b['run_id'], 'mode': self.mode, 'status': b['status'], 'cutoff': b['cutoff'],
+            'run_key': self.key, 'run_id': b['run_id'], 'run_instance': self.instance, 'namespace': self.namespace,
+            'mode': self.mode, 'status': b['status'], 'cutoff': b['cutoff'],
             'window': b['window'], 'semantic_judgments': b['semantic_judgments'], 'semantic_note': b['semantic_note'],
             'test_fixture_note': self.manifest.get('test_fixture_note'),
             'shares_run_id_with': sorted(o.key for o in others if o is not self and o.brief['run_id'] == b['run_id']),
@@ -260,7 +271,12 @@ def evidence_view(entry, *, cited, full=False):
 
 
 def thread_view(run, channel_id, thread_id, fixture_root=FIXTURE_ROOT):
-    """Fixture thread (internal view; fixtures store no Slack permalinks), checked against the saved excerpts."""
+    """Fixture thread (internal view; fixtures store no Slack permalinks), checked against the saved excerpts.
+
+    fixture_status: VERIFIED_ORIGINAL when the fixture files match the fingerprint the run recorded; CHANGED_SINCE_RUN
+    when they do not; NOT_RECORDED for runs that predate the fingerprint. Except when verified, messages are labelled
+    current fixture content, separate from the run's saved evidence (each saved message is still compared).
+    """
     if (channel_id, thread_id) not in run.thread_keys():
         raise RunNotFound(f'Thread {channel_id}/{thread_id} is not referenced by run {run.key}.')
     path = Path(fixture_root)/'channels'/f'{channel_id}.json'
@@ -280,8 +296,11 @@ def thread_view(run, channel_id, thread_id, fixture_root=FIXTURE_ROOT):
                          'text': m.get('text', ''), 'permalink': m.get('permalink'),
                          'in_saved_evidence': excerpt is not None,
                          'matches_saved_evidence': None if excerpt is None else excerpt == m.get('text', '')})
+    recorded = (run.manifest.get('fingerprints') or {}).get('fixture_sha256')
+    status = 'NOT_RECORDED' if not recorded else 'VERIFIED_ORIGINAL' if recorded == fixture_fingerprint(fixture_root) \
+        else 'CHANGED_SINCE_RUN'
     channel = data['channel']
-    return {'channel_id': channel_id, 'channel_name': channel.get('name'), 'project_id': channel.get('project_id'),
+    return {'fixture_status': status, 'fixture_sha256_recorded': recorded,'channel_id': channel_id, 'channel_name': channel.get('name'), 'project_id': channel.get('project_id'),
             'batch_id': channel.get('batch_id'), 'thread_id': thread_id, 'permalink': root[0].get('permalink'),
             'source': 'fixture', 'fixture_root': Path(fixture_root).resolve().relative_to(ROOT).as_posix()
             if Path(fixture_root).resolve().is_relative_to(ROOT) else str(fixture_root), 'messages': messages}

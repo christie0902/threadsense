@@ -32,7 +32,7 @@ def live_settings():
     return pilot.live_settings(**module.ARMS[ARM])
 
 
-def build_runtime(out, mode, *, cutoff, only, max_requests, max_cost, release=()):
+def build_runtime(out, mode, *, cutoff, only, max_requests, max_cost, release=(), index_dir=None):
     from threadsense.agents import advisor_pilot as pilot
     from threadsense.agents import overnight
     if mode == 'LIVE':
@@ -42,9 +42,9 @@ def build_runtime(out, mode, *, cutoff, only, max_requests, max_cost, release=()
         ledger = overnight.PersistentLedger(max_cost, per_request)
         client = pilot.CrewAIClient(settings, ledger=ledger)
         return overnight.Runtime(out, client=client, cutoff=cutoff, only=only, max_requests=max_requests, ledger=ledger,
-                                 mode=mode, release=release, settings=settings)
+                                 mode=mode, release=release, settings=settings, index_dir=index_dir or overnight.INDEX_DIR)
     return overnight.Runtime(out, client=overnight.HandoffScriptedClient(), cutoff=cutoff, only=only,
-                             max_requests=max_requests, mode=mode, release=release)
+                             max_requests=max_requests, mode=mode, release=release, index_dir=index_dir or overnight.INDEX_DIR)
 
 
 def main(argv=None):
@@ -59,6 +59,8 @@ def main(argv=None):
     parser.add_argument('--max-requests', type=int, help='Run-wide HTTP request ceiling.')
     parser.add_argument('--max-cost', type=float, help='Run-wide dollar budget (live).')
     parser.add_argument('--release', action='append', default=[], help='With --resume: reprocess this interrupted work ID.')
+    parser.add_argument('--index-dir', type=Path, help='Retrieval snapshot (default .index/retrieval); its cutoff must equal '
+                        '--cutoff. A resume always uses the snapshot recorded in the run manifest.')
     args = parser.parse_args(argv)
     sys.stdout.reconfigure(encoding='utf-8')
     from threadsense.agents import advisor_pilot as pilot
@@ -67,12 +69,15 @@ def main(argv=None):
     from threadsense.agents import overnight
     from threadsense.handoff_inputs import read_json
     if args.resume:
-        if args.write or args.scripted or args.run or args.only or args.max_requests or args.max_cost or args.cutoff:
+        if args.write or args.scripted or args.run or args.only or args.max_requests or args.max_cost or args.cutoff or args.index_dir:
             parser.error('--resume takes its options from the run manifest; pass only --release.')
         saved = read_json(args.resume/'run_manifest.json')['fingerprints']
+        if not saved['index'].get('index_dir'):
+            parser.error('This run predates recorded snapshot paths; it cannot be resumed safely. Start a new run directory.')
         rt = build_runtime(args.resume, saved['mode'], cutoff=saved['cutoff'], only=saved['only'],
                            max_requests=saved['budget_limits']['model_calls_total'], max_cost=saved['cost_limit_usd'],
-                           release=args.release)
+                           release=args.release, index_dir=overnight.ROOT/saved['index']['index_dir']
+                           if not Path(saved['index']['index_dir']).is_absolute() else Path(saved['index']['index_dir']))
     else:
         if not args.cutoff:
             parser.error('--cutoff is required (the run window is explicit).')
@@ -94,7 +99,7 @@ def main(argv=None):
             if per_request * overnight.REQUESTS_TO_START > args.max_cost:
                 parser.error(f'--max-cost ${args.max_cost} cannot cover one topic (two reservations of ${per_request:.4f}).')
         rt = build_runtime(args.write, mode, cutoff=args.cutoff, only=args.only, max_requests=args.max_requests,
-                           max_cost=args.max_cost)
+                           max_cost=args.max_cost, index_dir=args.index_dir)
     try:
         state = overnight.run(rt)
     except overnight.OvernightError as error:
@@ -110,7 +115,8 @@ def main(argv=None):
 
 
 def plan_only(args, overnight, pilot):
-    rt = overnight.Runtime(Path('.'), client=overnight.HandoffScriptedClient(), cutoff=args.cutoff, only=args.only)
+    rt = overnight.Runtime(Path('.'), client=overnight.HandoffScriptedClient(), cutoff=args.cutoff, only=args.only,
+                           index_dir=args.index_dir or overnight.INDEX_DIR)
     try:
         overnight.load_handoff(rt)
         overnight.extract_announcements(rt)
@@ -129,6 +135,9 @@ def plan_only(args, overnight, pilot):
     worst = overnight.PER_TOPIC['model_calls_per_topic'] * len(in_scope)
     print(json.dumps({
         'model_calls': 0, 'cutoff': args.cutoff, 'window': rt.extraction['window'],
+        'snapshot': {'index_dir': str(rt.index_dir), 'build_fingerprint': rt.retriever.manifest['build_fingerprint'],
+                     'decision_roots': rt.retriever.manifest.get('decision_roots')},
+        'handoff_activity': rt.handoff_activity,
         'handoff_members': sum(len(r['members']) for r in rt.view['records']),
         'work_items': len(rt.work), 'in_scope': len(in_scope),
         'by_kind': {k: sum(1 for w in in_scope if w['kind'] == k) for k in ('TOPIC', 'PROJECTION_GAP')},

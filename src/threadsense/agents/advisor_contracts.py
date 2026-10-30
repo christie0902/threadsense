@@ -13,7 +13,9 @@ explicit judgment of whether the passed premises suffice for the exact proposed 
 that refers to people by role, never by name, and records who wrote, started or took part in a thread as
 canonical-ID attributions; grounding v4 also judges the sufficiency of each reviewed ToT alternative. Draft v6
 adds the team lead-facing action instruction and rationale (draft_text is the copyable draft) and an optional review
-note; ToT v2 adds a candidate instruction.
+note; ToT v2 adds a candidate instruction. Draft v7 requires an operational action to state its intervention need (why
+acting now is needed, from the evidence); the final grounding judges it like any statement. Recorded v6 drafts keep
+the v6 rules.
 """
 from typing import Literal
 
@@ -106,8 +108,21 @@ class ActionTarget(Strict):
     change: Literal['ADD', 'CORRECT', 'REMOVE']
 
 
+# Evidence-backed reasons to intervene. "A reminder might help" is none of these.
+InterventionKind = Literal['UNRESOLVED_HANDLING_QUESTION', 'GUIDANCE_GAP', 'APPLICABLE_PENDING_DECISION',
+                           'OPERATIONAL_PROBLEM']
+
+
+class InterventionNeed(Strict):
+    """Why this topic needs intervention now, as shown by the cited evidence (judged as statement action:need)."""
+    kind: InterventionKind
+    statement: Text
+    evidence_ids: list[str] = Field(min_length=1)
+
+
 class ActionProposal(Strict):
     action_type: ActionType
+    intervention_need: InterventionNeed | None = None  # Required (draft v7) for any action other than NO_ACTION.
     instruction: str | None = None  # One concrete sentence telling the team lead what to do.
     rationale: str | None = None  # Why that helps, in 1-2 short sentences.
     draft_text: str | None = None  # The copyable draft (announcement, escalation message, documentation wording).
@@ -166,7 +181,7 @@ class CoverageItem(Strict):
 
 
 class AdvisorDraft(Strict):
-    contract_version: Literal['agent3-advisor-draft-v6'] = 'agent3-advisor-draft-v6'
+    contract_version: Literal['agent3-advisor-draft-v7', 'agent3-advisor-draft-v6'] = 'agent3-advisor-draft-v7'
     summary: Text  # What happened, 1-2 short sentences for the team lead.
     reasoning: Text
     claims: list[Claim] = Field(default_factory=list)
@@ -194,6 +209,11 @@ class AdvisorDraft(Strict):
         _distinct([r.member_id for r in self.resolution], 'Resolution member IDs')
         if self.proposed_action and set(self.proposed_action.support_claim_ids) - set(claims):
             raise ValueError('Action support must reference claims in this draft.')
+        action = self.proposed_action
+        if (self.contract_version == 'agent3-advisor-draft-v7' and action is not None and action.action_type != 'NO_ACTION'
+                and action.intervention_need is None):
+            raise ValueError('An operational action states its intervention_need (why intervening now is needed, with '
+                             'the evidence that shows it); otherwise propose NO_ACTION.')
         if self.open_confirmation == 'OPEN' and not ((self.open_question or '').strip() and self.open_question_evidence_ids):
             raise ValueError('An open confirmation states the specific unresolved question and cites the evidence '
                              'that leaves it open.')

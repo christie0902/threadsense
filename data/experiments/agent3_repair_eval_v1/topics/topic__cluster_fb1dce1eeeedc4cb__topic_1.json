@@ -1,0 +1,2902 @@
+{
+  "work_item": {
+    "candidate_group_id": "cluster_fb1dce1eeeedc4cb",
+    "project_id": "response_preference",
+    "batch_id": "rp_batch_15",
+    "work_id": "topic:cluster_fb1dce1eeeedc4cb/topic_1",
+    "kind": "TOPIC",
+    "topic_id": "cluster_fb1dce1eeeedc4cb/topic_1",
+    "topic_name": "Format adherence vs factual accuracy",
+    "member_ids": [
+      "member_6b0a2b0015aa474bf50996d0",
+      "member_b0a066a9dcba609a9aebaec9",
+      "member_225803f43142caa5d3c165cf"
+    ],
+    "pilot_scenario": "json_vs_prose",
+    "in_scope": true
+  },
+  "workflow": {
+    "outcome": "CARD",
+    "card_id": "card_0a4ca19a27cee4d5eb2bab6affb41eb0",
+    "card_line": "NEEDS_REVIEW",
+    "grounding": "FAILED",
+    "stage_failures": [],
+    "semantic_source": "LIVE_MODEL"
+  },
+  "result": {
+    "scenario": {
+      "id": "topic:cluster_fb1dce1eeeedc4cb/topic_1",
+      "candidate_group_id": "cluster_fb1dce1eeeedc4cb",
+      "focus": "Format adherence vs factual accuracy",
+      "topic_id": "cluster_fb1dce1eeeedc4cb/topic_1"
+    },
+    "status": "CARD",
+    "topic": {
+      "project_id": "response_preference",
+      "batch_id": "rp_batch_15",
+      "candidate_group_id": "cluster_fb1dce1eeeedc4cb",
+      "topic_id": "cluster_fb1dce1eeeedc4cb/topic_1",
+      "topic_label": "Format adherence vs factual accuracy",
+      "projection_gap": null,
+      "as_of": "2026-10-02T12:00:00Z",
+      "member_ids": [
+        "member_6b0a2b0015aa474bf50996d0",
+        "member_225803f43142caa5d3c165cf",
+        "member_b0a066a9dcba609a9aebaec9"
+      ],
+      "initial_query": "Format adherence vs factual accuracy. Could QA clarify this case: A follows format, B is more accurate. Which wins?"
+    },
+    "retrieval_trace": [
+      {
+        "step": 1,
+        "purpose": "initial_current_guidance",
+        "gap_id": null,
+        "query": "Format adherence vs factual accuracy. Could QA clarify this case: A follows format, B is more accurate. Which wins?",
+        "source_types": [
+          "guideline",
+          "faq",
+          "decision",
+          "announcement"
+        ],
+        "version_mode": "current",
+        "as_of": "2026-10-02T12:00:00Z",
+        "batch": "rp_batch_15",
+        "top_k": 5,
+        "status": "DONE",
+        "mode": "hybrid",
+        "use_mmr": true,
+        "mmr_lambda": 0.9,
+        "result_ids": [
+          "k:response-preference-faq@1.1:fa9b6a3d",
+          "k:rp-tie-calibration-outcome@1.0:053fe48a",
+          "k:response-preference-instructions@1.1:a71c54c7",
+          "k:rp-audit-manifest-post@1.0:f64eba9c",
+          "k:rp-tie-calibration-post@1.0:4a3c786f"
+        ],
+        "new_evidence_ids": [
+          "k:response-preference-faq@1.1:fa9b6a3d",
+          "k:rp-tie-calibration-outcome@1.0:053fe48a",
+          "k:response-preference-instructions@1.1:a71c54c7",
+          "k:rp-audit-manifest-post@1.0:f64eba9c",
+          "k:rp-tie-calibration-post@1.0:4a3c786f"
+        ],
+        "eligible_chunks": 28,
+        "added": []
+      }
+    ],
+    "retrieval_notes": {
+      "withheld_by_version": [],
+      "version_diagnostics": []
+    },
+    "follow_ups": [],
+    "unfilled_gaps": [
+      {
+        "gap_id": "g1",
+        "need": "OTHER",
+        "description": "The exact prompts and both responses are not supplied for the questioned pairs. Obtain them from the thread starters and assess mandatory structure, factual defects and the user-facing benefit before deciding preferences. No additional policy retrieval is needed to support the reminder.",
+        "follow_up": null
+      }
+    ],
+    "model_calls": [
+      {
+        "stage": "draft",
+        "schema": "AdvisorDraft",
+        "raw": "{\n  \"contract_version\": \"agent3-advisor-draft-v7\",\n  \"summary\": \"Two QA tutors and a tutor ask how to weigh requested format against factual accuracy across three threads. Current guidance requires separate scoring and case-specific review rather than a universal tie-break rule; in one thread, the team lead has already requested the exact formatting instruction.\",\n  \"reasoning\": \"The repeated questions concern how responses should be scored, not merely a preference for writing style. A reminder can answer the shared procedural question while preserving the team lead's existing request in one thread. The retrieved FAQ already covers this issue, so no documentation change or new general priority rule is supported. The actual prompts and response pairs are still needed before deciding individual preferences.\",\n  \"claims\": [\n    {\n      \"claim_id\": \"c1\",\n      \"kind\": \"INCIDENT_FACT\",\n      \"text\": \"A QA tutor asks which response wins when one follows the format and another is more accurate.\",\n      \"evidence_ids\": [\n        \"m:C_RP_GENERAL:1790856332.000018\"\n      ],\n      \"attributions\": [\n        {\n          \"user_id\": \"U019\",\n          \"relation\": \"AUTHOR\",\n          \"evidence_id\": \"m:C_RP_GENERAL:1790856332.000018\"\n        }\n      ],\n      \"quote_kind\": \"PARAPHRASE\"\n    },\n    {\n      \"claim_id\": \"c2\",\n      \"kind\": \"INCIDENT_FACT\",\n      \"text\": \"A QA tutor reports that a prompt requested a JSON object while one response used prose, and asks which response is better.\",\n      \"evidence_ids\": [\n        \"m:C_RP_QA:1790913824.000016\"\n      ],\n      \"attributions\": [\n        {\n          \"user_id\": \"U007\",\n          \"relation\": \"AUTHOR\",\n          \"evidence_id\": \"m:C_RP_QA:1790913824.000016\"\n        }\n      ],\n      \"quote_kind\": \"PARAPHRASE\"\n    },\n    {\n      \"claim_id\": \"c3\",\n      \"kind\": \"INCIDENT_FACT\",\n      \"text\": \"A tutor asks whether accuracy can outweigh ignoring the user's requested output structure.\",\n      \"evidence_ids\": [\n        \"m:C_RP_GENERAL:1790932885.000015\"\n      ],\n      \"attributions\": [\n        {\n          \"user_id\": \"U018\",\n          \"relation\": \"AUTHOR\",\n          \"evidence_id\": \"m:C_RP_GENERAL:1790932885.000015\"\n        }\n      ],\n      \"quote_kind\": \"PARAPHRASE\"\n    },\n    {\n      \"claim_id\": \"c4\",\n      \"kind\": \"GUIDANCE\",\n      \"text\": \"Current guidance requires recording format violations separately from factual accuracy, checking whether the structure was mandatory, and avoiding a universal accuracy-versus-format priority rule. If the actual pair and applicable guidance do not settle the preference, the prompt and both responses should go to the team lead for confirmation.\",\n      \"evidence_ids\": [\n        \"k:response-preference-faq@1.1:fa9b6a3d\",\n        \"k:response-preference-instructions@1.1:a71c54c7\"\n      ],\n      \"attributions\": [],\n      \"quote_kind\": \"PARAPHRASE\"\n    },\n    {\n      \"claim_id\": \"c5\",\n      \"kind\": \"THREAD_INSTRUCTION\",\n      \"text\": \"In the tutor's thread, the team lead requests the exact formatting instruction so QA can verify whether it was mandatory before weighing the responses.\",\n      \"evidence_ids\": [\n        \"m:C_RP_GENERAL:1790933024.000339\"\n      ],\n      \"attributions\": [\n        {\n          \"user_id\": \"U001\",\n          \"relation\": \"AUTHOR\",\n          \"evidence_id\": \"m:C_RP_GENERAL:1790933024.000339\"\n        },\n        {\n          \"user_id\": \"U018\",\n          \"relation\": \"THREAD_STARTER\",\n          \"evidence_id\": \"m:C_RP_GENERAL:1790933024.000339\"\n        }\n      ],\n      \"quote_kind\": \"PARAPHRASE\"\n    },\n    {\n      \"claim_id\": \"c6\",\n      \"kind\": \"INCIDENT_FACT\",\n      \"text\": \"In the JSON-versus-prose thread, a tutor proposes scoring the format failure separately, and a QA tutor distinguishes correctness from compliance while asking whether the structure was mandatory and the facts correct; neither message chooses a preferred response.\",\n      \"evidence_ids\": [\n        \"m:C_RP_QA:1790913880.000113\",\n        \"m:C_RP_QA:1790913921.000226\"\n      ],\n      \"attributions\": [\n        {\n          \"user_id\": \"U018\",\n          \"relation\": \"AUTHOR\",\n          \"evidence_id\": \"m:C_RP_QA:1790913880.000113\"\n        },\n        {\n          \"user_id\": \"U014\",\n          \"relation\": \"AUTHOR\",\n          \"evidence_id\": \"m:C_RP_QA:1790913921.000226\"\n        }\n      ],\n      \"quote_kind\": \"PARAPHRASE\"\n    },\n    {\n      \"claim_id\": \"c7\",\n      \"kind\": \"HISTORY\",\n      \"text\": \"The prior-batch calibration follow-up records improved agreement in the reviewed sample but retains one disputed pair because the packet did not establish whether its output-format constraint was mandatory. It explicitly does not establish a universal accuracy-versus-format rule or settle a new batch.\",\n      \"evidence_ids\": [\n        \"k:rp-tie-calibration-outcome@1.0:053fe48a\"\n      ],\n      \"attributions\": [],\n      \"quote_kind\": \"PARAPHRASE\"\n    },\n    {\n      \"claim_id\": \"c8\",\n      \"kind\": \"INFERENCE\",\n      \"text\": \"The repeated preference questions remain without a selected response in the supplied threads, although one thread has already received a concrete next step from the team lead; a shared reminder should clarify the procedure without deciding the pairs.\",\n      \"evidence_ids\": [\n        \"m:C_RP_GENERAL:1790856332.000018\",\n        \"m:C_RP_QA:1790913824.000016\",\n        \"m:C_RP_QA:1790913880.000113\",\n        \"m:C_RP_QA:1790913921.000226\",\n        \"m:C_RP_GENERAL:1790932885.000015\",\n        \"m:C_RP_GENERAL:1790933024.000339\",\n        \"k:response-preference-faq@1.1:fa9b6a3d\"\n      ],\n      \"attributions\": [\n        {\n          \"user_id\": \"U001\",\n          \"relation\": \"AUTHOR\",\n          \"evidence_id\": \"m:C_RP_GENERAL:1790933024.000339\"\n        }\n      ],\n      \"quote_kind\": \"PARAPHRASE\"\n    }\n  ],\n  \"gaps\": [\n    {\n      \"gap_id\": \"g1\",\n      \"need\": \"OTHER\",\n      \"description\": \"The exact prompts and both responses are not supplied for the questioned pairs. Obtain them from the thread starters and assess mandatory structure, factual defects and the user-facing benefit before deciding preferences. No additional policy retrieval is needed to support the reminder.\",\n      \"follow_up\": null\n    }\n  ],\n  \"evidence_sufficiency\": \"SUFFICIENT\",\n  \"proposed_action\": {\n    \"action_type\": \"POST_ALIGNMENT\",\n    \"intervention_need\": {\n      \"kind\": \"UNRESOLVED_HANDLING_QUESTION\",\n      \"statement\": \"Repeated questions across threads still lack a selected preference or shared procedural answer, so the current case-review procedure should be made explicit without replacing the team lead's existing request.\",\n      \"evidence_ids\": [\n        \"m:C_RP_GENERAL:1790856332.000018\",\n        \"m:C_RP_QA:1790913824.000016\",\n        \"m:C_RP_QA:1790913921.000226\",\n        \"m:C_RP_GENERAL:1790933024.000339\"\n      ]\n    },\n    \"instruction\": \"Post a batch reminder to score format and factual accuracy separately and provide the prompt and both responses for team lead confirmation when the pair and current guidance do not settle the preference.\",\n    \"rationale\": \"The repeated questions need a shared procedure, not a new rule that format or accuracy always wins. The reminder also preserves the team lead's request to inspect the actual instruction before weighing the responses.\",\n    \"draft_text\": \"For this batch, score factual accuracy and instruction adherence separately. A required output format is not optional, but there is no universal rule that accuracy or format always wins.\\n- Check the exact user instruction to establish whether the requested structure was mandatory.\\n- Compare both responses and identify their factual and instruction-following defects separately.\\n- If the actual pair and current guidance still do not settle the preference, provide the prompt and both responses for team lead confirmation.\\nIn the thread where the team lead requested the exact formatting instruction, please supply it before weighing the responses. Do not infer a general priority rule from one example.\",\n    \"scope_note\": \"Applies to response comparison in the current batch, not administrative QA export formats. It restates current guidance and does not choose a response for any supplied case.\",\n    \"support_claim_ids\": [\n      \"c1\",\n      \"c2\",\n      \"c3\",\n      \"c4\",\n      \"c5\",\n      \"c6\",\n      \"c8\"\n    ],\n    \"targets\": []\n  },\n  \"severity\": {\n    \"level\": \"MEDIUM\",\n    \"rationale\": \"Two QA tutors and a tutor raise the same consequential scoring tradeoff across three threads. This supports recurring uncertainty about preference judgments, but not widespread incorrect labels, blocked work or a batch-wide failure.\",\n    \"signals\": [\n      {\n        \"level\": \"MEDIUM\",\n        \"signal_index\": 0,\n        \"signal_text\": \"Recurring confusion about the same rule, tool behavior, or scoring criterion that suggests meaningful workflow or labeling impact\",\n        \"support\": \"Two QA tutors and a tutor repeatedly ask whether accuracy or required format should determine the preferred response, leaving a consequential scoring choice unsettled across threads.\",\n        \"evidence_ids\": [\n          \"m:C_RP_GENERAL:1790856332.000018\",\n          \"m:C_RP_QA:1790913824.000016\",\n          \"m:C_RP_GENERAL:1790932885.000015\"\n        ]\n      }\n    ],\n    \"affected_reporters\": [],\n    \"recurrence\": \"FOUND\",\n    \"recurrence_evidence_ids\": [\n      \"k:rp-tie-calibration-outcome@1.0:053fe48a\"\n    ],\n    \"reported_recurrence_evidence_ids\": []\n  },\n  \"confidence\": 0.92,\n  \"open_confirmation\": \"OPEN\",\n  \"open_question\": \"For the JSON-versus-prose pair, which response should be preferred after the exact prompt and both responses establish the instruction-following and factual-accuracy defects?\",\n  \"open_question_evidence_ids\": [\n    \"m:C_RP_QA:1790913824.000016\",\n    \"m:C_RP_QA:1790913921.000226\",\n    \"k:response-preference-faq@1.1:fa9b6a3d\"\n  ],\n  \"source_conflicts\": [],\n  \"announcement_assessments\": [\n    {\n      \"evidence_id\": \"k:rp-audit-manifest-post@1.0:f64eba9c\",\n      \"relevant\": false,\n      \"directive\": true,\n      \"directive_quote\": \"For RP batch 15 weekly QA audit exports prepared from today, the manifest must be JSON rather than a prose list.\",\n      \"rationale\": \"This is a directive for the same batch, but it concerns administrative QA files and expressly does not govern comparisons of model responses.\"\n    },\n    {\n      \"evidence_id\": \"k:rp-tie-calibration-post@1.0:4a3c786f\",\n      \"relevant\": false,\n      \"directive\": true,\n      \"directive_quote\": \"Bring both rationales for disputed pairs to the eight-pair calibration review.\",\n      \"rationale\": \"This directs an earlier batch's calibration review. It supplies historical context, not an applicable instruction for the current batch.\"\n    }\n  ],\n  \"resolution\": [\n    {\n      \"member_id\": \"member_6b0a2b0015aa474bf50996d0\",\n      \"state\": \"UNRESOLVED\",\n      \"evidence_ids\": [\n        \"m:C_RP_GENERAL:1790856332.000018\"\n      ],\n      \"basis\": \"The QA tutor's supplied thread contains only the preference question and no answer.\"\n    },\n    {\n      \"member_id\": \"member_225803f43142caa5d3c165cf\",\n      \"state\": \"PARTIALLY_RESOLVED\",\n      \"evidence_ids\": [\n        \"m:C_RP_QA:1790913824.000016\",\n        \"m:C_RP_QA:1790913880.000113\",\n        \"m:C_RP_QA:1790913921.000226\"\n      ],\n      \"basis\": \"The QA tutor receives discussion separating compliance from correctness, including a QA tutor's request to check mandatory structure and factual correctness. The supplied thread does not choose the preferred response; the tutor's proposal is not treated as project authority.\"\n    },\n    {\n      \"member_id\": \"member_b0a066a9dcba609a9aebaec9\",\n      \"state\": \"PARTIALLY_RESOLVED\",\n      \"evidence_ids\": [\n        \"m:C_RP_GENERAL:1790932885.000015\",\n        \"m:C_RP_GENERAL:1790932935.000113\",\n        \"m:C_RP_GENERAL:1790932979.000226\",\n        \"m:C_RP_GENERAL:1790933024.000339\"\n      ],\n      \"basis\": \"The team lead gives the tutor a concrete next step: supply the exact formatting instruction for verification. The supplied thread contains neither the requested instruction nor a final preference decision.\"\n    }\n  ],\n  \"coverage\": [\n    {\n      \"need\": \"CURRENT_GUIDANCE\",\n      \"status\": \"COVERED\",\n      \"evidence_ids\": [\n        \"k:response-preference-faq@1.1:fa9b6a3d\",\n        \"k:response-preference-instructions@1.1:a71c54c7\"\n      ],\n      \"note\": \"Current project-wide guidance directly covers mandatory format, separate defect scoring and conditional referral for team lead confirmation.\"\n    },\n    {\n      \"need\": \"ANNOUNCEMENTS\",\n      \"status\": \"COVERED\",\n      \"evidence_ids\": [\n        \"k:rp-audit-manifest-post@1.0:f64eba9c\",\n        \"k:rp-tie-calibration-post@1.0:4a3c786f\"\n      ],\n      \"note\": \"Both retrieved announcements were assessed. Neither supplies current handling for this topic: one concerns administrative exports and the other an earlier batch's review.\"\n    },\n    {\n      \"need\": \"PRIOR_DECISIONS\",\n      \"status\": \"COVERED\",\n      \"evidence_ids\": [\n        \"k:rp-tie-calibration-outcome@1.0:053fe48a\"\n      ],\n      \"note\": \"The retrieved follow-up records the earlier calibration outcome and its limits, including a disputed mandatory-format case. It is history, not a standing rule or proof of an outcome in this batch.\"\n    },\n    {\n      \"need\": \"MEMBER_QUESTIONS\",\n      \"status\": \"COVERED\",\n      \"evidence_ids\": [\n        \"m:C_RP_GENERAL:1790856332.000018\",\n        \"m:C_RP_QA:1790913824.000016\",\n        \"m:C_RP_QA:1790913880.000113\",\n        \"m:C_RP_QA:1790913921.000226\",\n        \"m:C_RP_GENERAL:1790932885.000015\",\n        \"m:C_RP_GENERAL:1790932935.000113\",\n        \"m:C_RP_GENERAL:1790932979.000226\",\n        \"m:C_RP_GENERAL:1790933024.000339\"\n      ],\n      \"note\": \"The supplied threads show the questions, dimension-separation discussion and the team lead's request for the exact instruction. They do not include the full pairs or final preferences.\"\n    }\n  ],\n  \"review_note\": \"The upstream review flag for the JSON-versus-prose thread remains open: the tutor's proposed scoring approach must not be treated as authoritative guidance. Review that pair only after the prompt and both responses are supplied.\"\n}",
+        "raw_sha256": "5d1f6971763dda113ea0f746cd23df66b8f2684c85307eed41428e64a9dfcd79",
+        "http_requests": {
+          "sent": 1,
+          "blocked": 0,
+          "hosts": [
+            "api.openai.com"
+          ],
+          "responses": [
+            {
+              "status_code": 200,
+              "seconds": 44.663,
+              "model": "gpt-6.1-sol",
+              "usage": {
+                "prompt_tokens": 12230,
+                "completion_tokens": 3774,
+                "total_tokens": 16004,
+                "prompt_tokens_details": {
+                  "cached_tokens": 0,
+                  "cache_write_tokens": 12227,
+                  "audio_tokens": 0
+                },
+                "completion_tokens_details": {
+                  "reasoning_tokens": 179,
+                  "audio_tokens": 0,
+                  "accepted_prediction_tokens": 0,
+                  "rejected_prediction_tokens": 0
+                }
+              },
+              "finish_reasons": [
+                "stop"
+              ]
+            }
+          ],
+          "input_tokens": 12236,
+          "refused": null,
+          "charged_usd": 0.062200000000000005
+        },
+        "input_tokens_estimate": 12236,
+        "status": "OK"
+      },
+      {
+        "stage": "tot",
+        "schema": "ToTComparison",
+        "raw": "{\n  \"contract_version\": \"agent3-tot-comparison-v2\",\n  \"candidates\": [\n    {\n      \"candidate_id\": \"shared_reminder\",\n      \"action_type\": \"POST_ALIGNMENT\",\n      \"instruction\": \"Post a shared reminder explaining separate scoring of factual accuracy and format compliance, while keeping individual preferences pending until the actual pairs and current guidance support a decision.\",\n      \"draft_text\": \"For this batch, assess factual accuracy and instruction following separately. Check the exact prompt to establish whether the requested structure was mandatory, and identify each response's factual and instruction-following defects. There is no universal rule that accuracy or format always wins. If the prompt, both responses and current guidance do not settle the preference, send the complete pair to the team lead for confirmation. In the thread where the exact formatting instruction was requested, please supply it before weighing the responses. The tutor's proposed scoring approach in the JSON-versus-prose discussion is not authoritative guidance, and that pair remains open for review.\",\n      \"evidence_ids\": [\n        \"m:C_RP_GENERAL:1790856332.000018\",\n        \"m:C_RP_QA:1790913824.000016\",\n        \"m:C_RP_GENERAL:1790932885.000015\",\n        \"m:C_RP_GENERAL:1790933024.000339\",\n        \"m:C_RP_QA:1790913880.000113\",\n        \"k:response-preference-faq@1.1:fa9b6a3d\",\n        \"k:response-preference-instructions@1.1:a71c54c7\"\n      ],\n      \"evidence_support\": \"STRONG\",\n      \"applicability\": \"CURRENT\",\n      \"severity_fit\": \"FITS\",\n      \"rationale\": \"Three current threads raise the same scoring question, and current project guidance directly explains the procedure. A shared reminder addresses recurring uncertainty without creating a new priority rule or changing documentation that already covers the issue. This is proportionate to medium severity: the evidence shows repeated uncertainty, not established widespread incorrect labels or blocked work. It preserves the team lead's existing request and leaves individual decisions and the open review with the team lead.\"\n    },\n    {\n      \"candidate_id\": \"wait_for_case_material\",\n      \"action_type\": \"NO_ACTION\",\n      \"instruction\": \"Defer a shared announcement and ask the thread starters to provide the exact prompts and both responses before reviewing the unresolved preferences.\",\n      \"draft_text\": \"Please provide the exact prompt, including the formatting instruction, and both responses for each unresolved comparison. In the thread where the team lead already requested the instruction, please complete that request. We will use the current guidance to assess factual accuracy and instruction following separately, with team lead confirmation if the preference remains unsettled. No response is selected here, and the JSON-versus-prose pair remains open for review; a tutor's suggestion is not an authoritative decision.\",\n      \"evidence_ids\": [\n        \"m:C_RP_GENERAL:1790933024.000339\",\n        \"m:C_RP_QA:1790913824.000016\",\n        \"m:C_RP_QA:1790913921.000226\",\n        \"m:C_RP_QA:1790913880.000113\",\n        \"k:response-preference-faq@1.1:fa9b6a3d\"\n      ],\n      \"evidence_support\": \"PARTIAL\",\n      \"applicability\": \"CURRENT\",\n      \"severity_fit\": \"PARTIAL\",\n      \"rationale\": \"Waiting for the actual case material follows current guidance and the team lead's existing request, so it avoids an unsupported preference decision. However, deferring a shared explanation addresses the missing inputs more than the repeated procedural question across three threads. It is a cautious option, but less complete for the assessed medium severity.\"\n    }\n  ],\n  \"preferred_candidate_id\": \"shared_reminder\",\n  \"close_call\": false,\n  \"rationale\": \"The shared reminder is better supported because it addresses the repeated question across current threads while retaining the same case-material requirements as waiting. Current guidance already supplies the procedure; historical calibration results are not needed to justify it and do not establish a rule for this batch. This preference does not select any response, clear the open confirmation trigger or resolve the review of the tutor's proposed scoring approach. The team lead decides after reviewing the required material.\"\n}",
+        "raw_sha256": "2b72547e69cdd75ee0ad0f61b1f3f2c4b49ecc9aa1a87b1c9a3ffe12d2f59300",
+        "http_requests": {
+          "sent": 1,
+          "blocked": 0,
+          "hosts": [
+            "api.openai.com"
+          ],
+          "responses": [
+            {
+              "status_code": 200,
+              "seconds": 17.528,
+              "model": "gpt-6.1-sol",
+              "usage": {
+                "prompt_tokens": 9360,
+                "completion_tokens": 1002,
+                "total_tokens": 10362,
+                "prompt_tokens_details": {
+                  "cached_tokens": 0,
+                  "cache_write_tokens": 9357,
+                  "audio_tokens": 0
+                },
+                "completion_tokens_details": {
+                  "reasoning_tokens": 77,
+                  "audio_tokens": 0,
+                  "accepted_prediction_tokens": 0,
+                  "rejected_prediction_tokens": 0
+                }
+              },
+              "finish_reasons": [
+                "stop"
+              ]
+            }
+          ],
+          "input_tokens": 9366,
+          "refused": null,
+          "charged_usd": 0.02874
+        },
+        "input_tokens_estimate": 9366,
+        "status": "OK"
+      },
+      {
+        "stage": "grounding",
+        "schema": "GroundingJudgment",
+        "raw": "{\n  \"contract_version\": \"agent3-grounding-judgment-v4\",\n  \"verdicts\": [\n    {\n      \"statement_id\": \"claim:c1\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The cited QA tutor asks which response wins when A follows the format and B is more accurate. The author and role attribution match.\"\n    },\n    {\n      \"statement_id\": \"claim:c2\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The cited QA tutor reports a JSON-object request, describes B as prose, and asks which response is better.\"\n    },\n    {\n      \"statement_id\": \"claim:c3\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The cited tutor explicitly asks whether accuracy can outweigh ignoring the requested output structure.\"\n    },\n    {\n      \"statement_id\": \"claim:c4\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The current FAQ directly establishes separate assessment, verification of whether structure was mandatory, no universal priority rule, and conditional escalation with the prompt and both responses. The instructions reinforce grading underlying defects separately.\"\n    },\n    {\n      \"statement_id\": \"claim:c5\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The team lead explicitly requests the exact formatting instruction for QA to verify whether it was mandatory before weighing responses. The instruction is correctly limited to that tutor's thread, and both attributions match.\"\n    },\n    {\n      \"statement_id\": \"claim:c6\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The tutor proposes separate scoring, and the QA tutor asks about mandatory structure and factual correctness while distinguishing compliance from correctness. Neither selects a response.\"\n    },\n    {\n      \"statement_id\": \"claim:c7\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The prior record reports improved agreement in the reviewed sample and a retained dispute over whether an output-format constraint was mandatory. Its stated limits expressly exclude a universal priority rule or resolution of a new batch.\"\n    },\n    {\n      \"statement_id\": \"claim:c8\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"No supplied thread selects a preferred response, while the team lead gives one thread a concrete evidence-gathering step. A procedural reminder without pair-level decisions follows from the repeated questions and current FAQ.\"\n    },\n    {\n      \"statement_id\": \"summary\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The three thread starters are two distinct QA tutors and one tutor. Their questions concern format-related preference judgments, and the summary accurately describes current guidance and the team lead's limited in-thread request.\"\n    },\n    {\n      \"statement_id\": \"action\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The reminder accurately restates current project guidance, preserves conditional escalation and the existing in-thread request, and does not select responses. Its scope correctly excludes the unrelated administrative audit-export convention.\"\n    },\n    {\n      \"statement_id\": \"action:rationale\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The repeated questions support clarifying the existing procedure rather than inventing a priority rule. The proposed reminder preserves the team lead's request to inspect the exact instruction.\"\n    },\n    {\n      \"statement_id\": \"action:need\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The supplied threads still contain unresolved preference requests, including one with no reply, and do not collectively provide the complete conditional review procedure. Making that procedure explicit addresses a current handling need without treating the team lead's existing next step as absent.\"\n    },\n    {\n      \"statement_id\": \"review_note\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The open upstream flag specifically concerns treating the tutor's message as authority. The note preserves that obligation, and requiring the prompt and both responses before deciding the pair follows from the current FAQ.\"\n    },\n    {\n      \"statement_id\": \"resolution:member_6b0a2b0015aa474bf50996d0\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The complete supplied thread consists only of the QA tutor's preference question and contains no answer.\"\n    },\n    {\n      \"statement_id\": \"resolution:member_225803f43142caa5d3c165cf\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The complete thread provides discussion of separate dimensions and questions about mandatory structure and correctness, but no preference decision or authoritative endorsement of the tutor's proposal.\"\n    },\n    {\n      \"statement_id\": \"resolution:member_b0a066a9dcba609a9aebaec9\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The team lead supplies a concrete next step, but the complete thread contains neither the requested exact instruction nor a final preference decision.\"\n    },\n    {\n      \"statement_id\": \"open_question\",\n      \"verdict\": \"UNSUPPORTED\",\n      \"rationale\": \"This asks for a case-specific preference judgment after missing evidence is supplied, rather than identifying an unsettled handling or policy question. Current guidance already specifies the procedure and conditional team lead confirmation; a pending assessment is not an OPEN_QUESTION under the stated criteria.\"\n    },\n    {\n      \"statement_id\": \"severity:rationale\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"Three distinct thread starters raise related preference-scoring uncertainty across three threads. This supports recurring consequential uncertainty, while the context does not establish widespread incorrect labels, blocked work, or batch-wide failure.\"\n    },\n    {\n      \"statement_id\": \"severity:signal:MEDIUM[0]\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The three questions recur around the same format-versus-quality preference criterion, with no selected responses in the supplied threads. That supports the cited medium-severity signal without asserting actual labeling errors.\"\n    },\n    {\n      \"statement_id\": \"severity:recurrence\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The retrieved prior-batch follow-up records an earlier unresolved preference dispute involving whether an output-format constraint was mandatory. It supports historical occurrence, not a current standing rule.\"\n    },\n    {\n      \"statement_id\": \"alternative:shared_reminder\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The alternative accurately restates the current procedure and conditional escalation, preserves the team lead's request, and respects the open authority-review flag. Its scope and severity rationale remain limited to repeated uncertainty rather than established operational failure.\"\n    },\n    {\n      \"statement_id\": \"alternative:wait_for_case_material\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"Read with its instruction, the opening label defers a shared announcement rather than all follow-up. Requesting the actual prompts and responses is consistent with current guidance and the existing team lead request. The alternative appropriately acknowledges that this addresses missing inputs more directly than the repeated procedural uncertainty.\"\n    }\n  ],\n  \"action_sufficiency\": {\n    \"verdict\": \"SUFFICIENT\",\n    \"essential_statement_ids\": [\n      \"claim:c4\",\n      \"claim:c5\",\n      \"claim:c8\"\n    ],\n    \"rationale\": \"All listed premises are supported and have no announcement-handling dependencies. Current guidance supports the exact reminder and conditional escalation; the in-thread instruction supports its targeted request; and the repeated unanswered preferences justify a shared procedural clarification. Neither announcement establishes competing handling for this topic.\"\n  },\n  \"alternative_sufficiency\": [\n    {\n      \"statement_id\": \"alternative:shared_reminder\",\n      \"verdict\": \"SUFFICIENT\",\n      \"essential_statement_ids\": [\n        \"claim:c1\",\n        \"claim:c2\",\n        \"claim:c3\",\n        \"claim:c4\",\n        \"claim:c5\",\n        \"claim:c6\",\n        \"claim:c8\"\n      ],\n      \"rationale\": \"The supported premises establish the three current questions, applicable procedure, existing team lead request, nondecisive tutor discussion, and unresolved preferences. Together with the open review flag, they justify the exact shared reminder without creating authority for the tutor's suggestion or deciding any pair.\"\n    }\n  ]\n}",
+        "raw_sha256": "8f24103419e74724bd334fba2633728802fa009ccab1f5855259867f5efaf115",
+        "http_requests": {
+          "sent": 1,
+          "blocked": 0,
+          "hosts": [
+            "api.openai.com"
+          ],
+          "responses": [
+            {
+              "status_code": 200,
+              "seconds": 32.21,
+              "model": "gpt-6.1-sol",
+              "usage": {
+                "prompt_tokens": 11174,
+                "completion_tokens": 2014,
+                "total_tokens": 13188,
+                "prompt_tokens_details": {
+                  "cached_tokens": 0,
+                  "cache_write_tokens": 11171,
+                  "audio_tokens": 0
+                },
+                "completion_tokens_details": {
+                  "reasoning_tokens": 292,
+                  "audio_tokens": 0,
+                  "accepted_prediction_tokens": 0,
+                  "rejected_prediction_tokens": 0
+                }
+              },
+              "finish_reasons": [
+                "stop"
+              ]
+            }
+          ],
+          "input_tokens": 11180,
+          "refused": null,
+          "charged_usd": 0.042488
+        },
+        "input_tokens_estimate": 11180,
+        "status": "OK"
+      }
+    ],
+    "drafts": {
+      "initial": {
+        "contract_version": "agent3-advisor-draft-v7",
+        "summary": "Two QA tutors and a tutor ask how to weigh requested format against factual accuracy across three threads. Current guidance requires separate scoring and case-specific review rather than a universal tie-break rule; in one thread, the team lead has already requested the exact formatting instruction.",
+        "reasoning": "The repeated questions concern how responses should be scored, not merely a preference for writing style. A reminder can answer the shared procedural question while preserving the team lead's existing request in one thread. The retrieved FAQ already covers this issue, so no documentation change or new general priority rule is supported. The actual prompts and response pairs are still needed before deciding individual preferences.",
+        "claims": [
+          {
+            "claim_id": "c1",
+            "kind": "INCIDENT_FACT",
+            "text": "A QA tutor asks which response wins when one follows the format and another is more accurate.",
+            "evidence_ids": [
+              "m:C_RP_GENERAL:1790856332.000018"
+            ],
+            "attributions": [
+              {
+                "user_id": "U019",
+                "relation": "AUTHOR",
+                "evidence_id": "m:C_RP_GENERAL:1790856332.000018"
+              }
+            ],
+            "quote": null,
+            "quote_kind": "PARAPHRASE",
+            "material": true
+          },
+          {
+            "claim_id": "c2",
+            "kind": "INCIDENT_FACT",
+            "text": "A QA tutor reports that a prompt requested a JSON object while one response used prose, and asks which response is better.",
+            "evidence_ids": [
+              "m:C_RP_QA:1790913824.000016"
+            ],
+            "attributions": [
+              {
+                "user_id": "U007",
+                "relation": "AUTHOR",
+                "evidence_id": "m:C_RP_QA:1790913824.000016"
+              }
+            ],
+            "quote": null,
+            "quote_kind": "PARAPHRASE",
+            "material": true
+          },
+          {
+            "claim_id": "c3",
+            "kind": "INCIDENT_FACT",
+            "text": "A tutor asks whether accuracy can outweigh ignoring the user's requested output structure.",
+            "evidence_ids": [
+              "m:C_RP_GENERAL:1790932885.000015"
+            ],
+            "attributions": [
+              {
+                "user_id": "U018",
+                "relation": "AUTHOR",
+                "evidence_id": "m:C_RP_GENERAL:1790932885.000015"
+              }
+            ],
+            "quote": null,
+            "quote_kind": "PARAPHRASE",
+            "material": true
+          },
+          {
+            "claim_id": "c4",
+            "kind": "GUIDANCE",
+            "text": "Current guidance requires recording format violations separately from factual accuracy, checking whether the structure was mandatory, and avoiding a universal accuracy-versus-format priority rule. If the actual pair and applicable guidance do not settle the preference, the prompt and both responses should go to the team lead for confirmation.",
+            "evidence_ids": [
+              "k:response-preference-faq@1.1:fa9b6a3d",
+              "k:response-preference-instructions@1.1:a71c54c7"
+            ],
+            "attributions": [],
+            "quote": null,
+            "quote_kind": "PARAPHRASE",
+            "material": true
+          },
+          {
+            "claim_id": "c5",
+            "kind": "THREAD_INSTRUCTION",
+            "text": "In the tutor's thread, the team lead requests the exact formatting instruction so QA can verify whether it was mandatory before weighing the responses.",
+            "evidence_ids": [
+              "m:C_RP_GENERAL:1790933024.000339"
+            ],
+            "attributions": [
+              {
+                "user_id": "U001",
+                "relation": "AUTHOR",
+                "evidence_id": "m:C_RP_GENERAL:1790933024.000339"
+              },
+              {
+                "user_id": "U018",
+                "relation": "THREAD_STARTER",
+                "evidence_id": "m:C_RP_GENERAL:1790933024.000339"
+              }
+            ],
+            "quote": null,
+            "quote_kind": "PARAPHRASE",
+            "material": true
+          },
+          {
+            "claim_id": "c6",
+            "kind": "INCIDENT_FACT",
+            "text": "In the JSON-versus-prose thread, a tutor proposes scoring the format failure separately, and a QA tutor distinguishes correctness from compliance while asking whether the structure was mandatory and the facts correct; neither message chooses a preferred response.",
+            "evidence_ids": [
+              "m:C_RP_QA:1790913880.000113",
+              "m:C_RP_QA:1790913921.000226"
+            ],
+            "attributions": [
+              {
+                "user_id": "U018",
+                "relation": "AUTHOR",
+                "evidence_id": "m:C_RP_QA:1790913880.000113"
+              },
+              {
+                "user_id": "U014",
+                "relation": "AUTHOR",
+                "evidence_id": "m:C_RP_QA:1790913921.000226"
+              }
+            ],
+            "quote": null,
+            "quote_kind": "PARAPHRASE",
+            "material": true
+          },
+          {
+            "claim_id": "c7",
+            "kind": "HISTORY",
+            "text": "The prior-batch calibration follow-up records improved agreement in the reviewed sample but retains one disputed pair because the packet did not establish whether its output-format constraint was mandatory. It explicitly does not establish a universal accuracy-versus-format rule or settle a new batch.",
+            "evidence_ids": [
+              "k:rp-tie-calibration-outcome@1.0:053fe48a"
+            ],
+            "attributions": [],
+            "quote": null,
+            "quote_kind": "PARAPHRASE",
+            "material": true
+          },
+          {
+            "claim_id": "c8",
+            "kind": "INFERENCE",
+            "text": "The repeated preference questions remain without a selected response in the supplied threads, although one thread has already received a concrete next step from the team lead; a shared reminder should clarify the procedure without deciding the pairs.",
+            "evidence_ids": [
+              "m:C_RP_GENERAL:1790856332.000018",
+              "m:C_RP_QA:1790913824.000016",
+              "m:C_RP_QA:1790913880.000113",
+              "m:C_RP_QA:1790913921.000226",
+              "m:C_RP_GENERAL:1790932885.000015",
+              "m:C_RP_GENERAL:1790933024.000339",
+              "k:response-preference-faq@1.1:fa9b6a3d"
+            ],
+            "attributions": [
+              {
+                "user_id": "U001",
+                "relation": "AUTHOR",
+                "evidence_id": "m:C_RP_GENERAL:1790933024.000339"
+              }
+            ],
+            "quote": null,
+            "quote_kind": "PARAPHRASE",
+            "material": true
+          }
+        ],
+        "gaps": [
+          {
+            "gap_id": "g1",
+            "need": "OTHER",
+            "description": "The exact prompts and both responses are not supplied for the questioned pairs. Obtain them from the thread starters and assess mandatory structure, factual defects and the user-facing benefit before deciding preferences. No additional policy retrieval is needed to support the reminder.",
+            "follow_up": null
+          }
+        ],
+        "evidence_sufficiency": "SUFFICIENT",
+        "proposed_action": {
+          "action_type": "POST_ALIGNMENT",
+          "intervention_need": {
+            "kind": "UNRESOLVED_HANDLING_QUESTION",
+            "statement": "Repeated questions across threads still lack a selected preference or shared procedural answer, so the current case-review procedure should be made explicit without replacing the team lead's existing request.",
+            "evidence_ids": [
+              "m:C_RP_GENERAL:1790856332.000018",
+              "m:C_RP_QA:1790913824.000016",
+              "m:C_RP_QA:1790913921.000226",
+              "m:C_RP_GENERAL:1790933024.000339"
+            ]
+          },
+          "instruction": "Post a batch reminder to score format and factual accuracy separately and provide the prompt and both responses for team lead confirmation when the pair and current guidance do not settle the preference.",
+          "rationale": "The repeated questions need a shared procedure, not a new rule that format or accuracy always wins. The reminder also preserves the team lead's request to inspect the actual instruction before weighing the responses.",
+          "draft_text": "For this batch, score factual accuracy and instruction adherence separately. A required output format is not optional, but there is no universal rule that accuracy or format always wins.\n- Check the exact user instruction to establish whether the requested structure was mandatory.\n- Compare both responses and identify their factual and instruction-following defects separately.\n- If the actual pair and current guidance still do not settle the preference, provide the prompt and both responses for team lead confirmation.\nIn the thread where the team lead requested the exact formatting instruction, please supply it before weighing the responses. Do not infer a general priority rule from one example.",
+          "scope_note": "Applies to response comparison in the current batch, not administrative QA export formats. It restates current guidance and does not choose a response for any supplied case.",
+          "support_claim_ids": [
+            "c1",
+            "c2",
+            "c3",
+            "c4",
+            "c5",
+            "c6",
+            "c8"
+          ],
+          "targets": []
+        },
+        "severity": {
+          "level": "MEDIUM",
+          "rationale": "Two QA tutors and a tutor raise the same consequential scoring tradeoff across three threads. This supports recurring uncertainty about preference judgments, but not widespread incorrect labels, blocked work or a batch-wide failure.",
+          "signals": [
+            {
+              "level": "MEDIUM",
+              "signal_index": 0,
+              "signal_text": "Recurring confusion about the same rule, tool behavior, or scoring criterion that suggests meaningful workflow or labeling impact",
+              "support": "Two QA tutors and a tutor repeatedly ask whether accuracy or required format should determine the preferred response, leaving a consequential scoring choice unsettled across threads.",
+              "evidence_ids": [
+                "m:C_RP_GENERAL:1790856332.000018",
+                "m:C_RP_QA:1790913824.000016",
+                "m:C_RP_GENERAL:1790932885.000015"
+              ]
+            }
+          ],
+          "affected_reporters": [],
+          "recurrence": "FOUND",
+          "recurrence_evidence_ids": [
+            "k:rp-tie-calibration-outcome@1.0:053fe48a"
+          ],
+          "reported_recurrence_evidence_ids": []
+        },
+        "confidence": 0.92,
+        "open_confirmation": "OPEN",
+        "open_question": "For the JSON-versus-prose pair, which response should be preferred after the exact prompt and both responses establish the instruction-following and factual-accuracy defects?",
+        "open_question_evidence_ids": [
+          "m:C_RP_QA:1790913824.000016",
+          "m:C_RP_QA:1790913921.000226",
+          "k:response-preference-faq@1.1:fa9b6a3d"
+        ],
+        "source_conflicts": [],
+        "announcement_assessments": [
+          {
+            "evidence_id": "k:rp-audit-manifest-post@1.0:f64eba9c",
+            "relevant": false,
+            "directive": true,
+            "directive_quote": "For RP batch 15 weekly QA audit exports prepared from today, the manifest must be JSON rather than a prose list.",
+            "rationale": "This is a directive for the same batch, but it concerns administrative QA files and expressly does not govern comparisons of model responses."
+          },
+          {
+            "evidence_id": "k:rp-tie-calibration-post@1.0:4a3c786f",
+            "relevant": false,
+            "directive": true,
+            "directive_quote": "Bring both rationales for disputed pairs to the eight-pair calibration review.",
+            "rationale": "This directs an earlier batch's calibration review. It supplies historical context, not an applicable instruction for the current batch."
+          }
+        ],
+        "resolution": [
+          {
+            "member_id": "member_6b0a2b0015aa474bf50996d0",
+            "state": "UNRESOLVED",
+            "evidence_ids": [
+              "m:C_RP_GENERAL:1790856332.000018"
+            ],
+            "basis": "The QA tutor's supplied thread contains only the preference question and no answer."
+          },
+          {
+            "member_id": "member_225803f43142caa5d3c165cf",
+            "state": "PARTIALLY_RESOLVED",
+            "evidence_ids": [
+              "m:C_RP_QA:1790913824.000016",
+              "m:C_RP_QA:1790913880.000113",
+              "m:C_RP_QA:1790913921.000226"
+            ],
+            "basis": "The QA tutor receives discussion separating compliance from correctness, including a QA tutor's request to check mandatory structure and factual correctness. The supplied thread does not choose the preferred response; the tutor's proposal is not treated as project authority."
+          },
+          {
+            "member_id": "member_b0a066a9dcba609a9aebaec9",
+            "state": "PARTIALLY_RESOLVED",
+            "evidence_ids": [
+              "m:C_RP_GENERAL:1790932885.000015",
+              "m:C_RP_GENERAL:1790932935.000113",
+              "m:C_RP_GENERAL:1790932979.000226",
+              "m:C_RP_GENERAL:1790933024.000339"
+            ],
+            "basis": "The team lead gives the tutor a concrete next step: supply the exact formatting instruction for verification. The supplied thread contains neither the requested instruction nor a final preference decision."
+          }
+        ],
+        "coverage": [
+          {
+            "need": "CURRENT_GUIDANCE",
+            "status": "COVERED",
+            "evidence_ids": [
+              "k:response-preference-faq@1.1:fa9b6a3d",
+              "k:response-preference-instructions@1.1:a71c54c7"
+            ],
+            "note": "Current project-wide guidance directly covers mandatory format, separate defect scoring and conditional referral for team lead confirmation.",
+            "gap_id": null
+          },
+          {
+            "need": "ANNOUNCEMENTS",
+            "status": "COVERED",
+            "evidence_ids": [
+              "k:rp-audit-manifest-post@1.0:f64eba9c",
+              "k:rp-tie-calibration-post@1.0:4a3c786f"
+            ],
+            "note": "Both retrieved announcements were assessed. Neither supplies current handling for this topic: one concerns administrative exports and the other an earlier batch's review.",
+            "gap_id": null
+          },
+          {
+            "need": "PRIOR_DECISIONS",
+            "status": "COVERED",
+            "evidence_ids": [
+              "k:rp-tie-calibration-outcome@1.0:053fe48a"
+            ],
+            "note": "The retrieved follow-up records the earlier calibration outcome and its limits, including a disputed mandatory-format case. It is history, not a standing rule or proof of an outcome in this batch.",
+            "gap_id": null
+          },
+          {
+            "need": "MEMBER_QUESTIONS",
+            "status": "COVERED",
+            "evidence_ids": [
+              "m:C_RP_GENERAL:1790856332.000018",
+              "m:C_RP_QA:1790913824.000016",
+              "m:C_RP_QA:1790913880.000113",
+              "m:C_RP_QA:1790913921.000226",
+              "m:C_RP_GENERAL:1790932885.000015",
+              "m:C_RP_GENERAL:1790932935.000113",
+              "m:C_RP_GENERAL:1790932979.000226",
+              "m:C_RP_GENERAL:1790933024.000339"
+            ],
+            "note": "The supplied threads show the questions, dimension-separation discussion and the team lead's request for the exact instruction. They do not include the full pairs or final preferences.",
+            "gap_id": null
+          }
+        ],
+        "review_note": "The upstream review flag for the JSON-versus-prose thread remains open: the tutor's proposed scoring approach must not be treated as authoritative guidance. Review that pair only after the prompt and both responses are supplied."
+      },
+      "final": {
+        "contract_version": "agent3-advisor-draft-v7",
+        "summary": "Two QA tutors and a tutor ask how to weigh requested format against factual accuracy across three threads. Current guidance requires separate scoring and case-specific review rather than a universal tie-break rule; in one thread, the team lead has already requested the exact formatting instruction.",
+        "reasoning": "The repeated questions concern how responses should be scored, not merely a preference for writing style. A reminder can answer the shared procedural question while preserving the team lead's existing request in one thread. The retrieved FAQ already covers this issue, so no documentation change or new general priority rule is supported. The actual prompts and response pairs are still needed before deciding individual preferences.",
+        "claims": [
+          {
+            "claim_id": "c1",
+            "kind": "INCIDENT_FACT",
+            "text": "A QA tutor asks which response wins when one follows the format and another is more accurate.",
+            "evidence_ids": [
+              "m:C_RP_GENERAL:1790856332.000018"
+            ],
+            "attributions": [
+              {
+                "user_id": "U019",
+                "relation": "AUTHOR",
+                "evidence_id": "m:C_RP_GENERAL:1790856332.000018"
+              }
+            ],
+            "quote": null,
+            "quote_kind": "PARAPHRASE",
+            "material": true
+          },
+          {
+            "claim_id": "c2",
+            "kind": "INCIDENT_FACT",
+            "text": "A QA tutor reports that a prompt requested a JSON object while one response used prose, and asks which response is better.",
+            "evidence_ids": [
+              "m:C_RP_QA:1790913824.000016"
+            ],
+            "attributions": [
+              {
+                "user_id": "U007",
+                "relation": "AUTHOR",
+                "evidence_id": "m:C_RP_QA:1790913824.000016"
+              }
+            ],
+            "quote": null,
+            "quote_kind": "PARAPHRASE",
+            "material": true
+          },
+          {
+            "claim_id": "c3",
+            "kind": "INCIDENT_FACT",
+            "text": "A tutor asks whether accuracy can outweigh ignoring the user's requested output structure.",
+            "evidence_ids": [
+              "m:C_RP_GENERAL:1790932885.000015"
+            ],
+            "attributions": [
+              {
+                "user_id": "U018",
+                "relation": "AUTHOR",
+                "evidence_id": "m:C_RP_GENERAL:1790932885.000015"
+              }
+            ],
+            "quote": null,
+            "quote_kind": "PARAPHRASE",
+            "material": true
+          },
+          {
+            "claim_id": "c4",
+            "kind": "GUIDANCE",
+            "text": "Current guidance requires recording format violations separately from factual accuracy, checking whether the structure was mandatory, and avoiding a universal accuracy-versus-format priority rule. If the actual pair and applicable guidance do not settle the preference, the prompt and both responses should go to the team lead for confirmation.",
+            "evidence_ids": [
+              "k:response-preference-faq@1.1:fa9b6a3d",
+              "k:response-preference-instructions@1.1:a71c54c7"
+            ],
+            "attributions": [],
+            "quote": null,
+            "quote_kind": "PARAPHRASE",
+            "material": true
+          },
+          {
+            "claim_id": "c5",
+            "kind": "THREAD_INSTRUCTION",
+            "text": "In the tutor's thread, the team lead requests the exact formatting instruction so QA can verify whether it was mandatory before weighing the responses.",
+            "evidence_ids": [
+              "m:C_RP_GENERAL:1790933024.000339"
+            ],
+            "attributions": [
+              {
+                "user_id": "U001",
+                "relation": "AUTHOR",
+                "evidence_id": "m:C_RP_GENERAL:1790933024.000339"
+              },
+              {
+                "user_id": "U018",
+                "relation": "THREAD_STARTER",
+                "evidence_id": "m:C_RP_GENERAL:1790933024.000339"
+              }
+            ],
+            "quote": null,
+            "quote_kind": "PARAPHRASE",
+            "material": true
+          },
+          {
+            "claim_id": "c6",
+            "kind": "INCIDENT_FACT",
+            "text": "In the JSON-versus-prose thread, a tutor proposes scoring the format failure separately, and a QA tutor distinguishes correctness from compliance while asking whether the structure was mandatory and the facts correct; neither message chooses a preferred response.",
+            "evidence_ids": [
+              "m:C_RP_QA:1790913880.000113",
+              "m:C_RP_QA:1790913921.000226"
+            ],
+            "attributions": [
+              {
+                "user_id": "U018",
+                "relation": "AUTHOR",
+                "evidence_id": "m:C_RP_QA:1790913880.000113"
+              },
+              {
+                "user_id": "U014",
+                "relation": "AUTHOR",
+                "evidence_id": "m:C_RP_QA:1790913921.000226"
+              }
+            ],
+            "quote": null,
+            "quote_kind": "PARAPHRASE",
+            "material": true
+          },
+          {
+            "claim_id": "c7",
+            "kind": "HISTORY",
+            "text": "The prior-batch calibration follow-up records improved agreement in the reviewed sample but retains one disputed pair because the packet did not establish whether its output-format constraint was mandatory. It explicitly does not establish a universal accuracy-versus-format rule or settle a new batch.",
+            "evidence_ids": [
+              "k:rp-tie-calibration-outcome@1.0:053fe48a"
+            ],
+            "attributions": [],
+            "quote": null,
+            "quote_kind": "PARAPHRASE",
+            "material": true
+          },
+          {
+            "claim_id": "c8",
+            "kind": "INFERENCE",
+            "text": "The repeated preference questions remain without a selected response in the supplied threads, although one thread has already received a concrete next step from the team lead; a shared reminder should clarify the procedure without deciding the pairs.",
+            "evidence_ids": [
+              "m:C_RP_GENERAL:1790856332.000018",
+              "m:C_RP_QA:1790913824.000016",
+              "m:C_RP_QA:1790913880.000113",
+              "m:C_RP_QA:1790913921.000226",
+              "m:C_RP_GENERAL:1790932885.000015",
+              "m:C_RP_GENERAL:1790933024.000339",
+              "k:response-preference-faq@1.1:fa9b6a3d"
+            ],
+            "attributions": [
+              {
+                "user_id": "U001",
+                "relation": "AUTHOR",
+                "evidence_id": "m:C_RP_GENERAL:1790933024.000339"
+              }
+            ],
+            "quote": null,
+            "quote_kind": "PARAPHRASE",
+            "material": true
+          }
+        ],
+        "gaps": [
+          {
+            "gap_id": "g1",
+            "need": "OTHER",
+            "description": "The exact prompts and both responses are not supplied for the questioned pairs. Obtain them from the thread starters and assess mandatory structure, factual defects and the user-facing benefit before deciding preferences. No additional policy retrieval is needed to support the reminder.",
+            "follow_up": null
+          }
+        ],
+        "evidence_sufficiency": "SUFFICIENT",
+        "proposed_action": {
+          "action_type": "POST_ALIGNMENT",
+          "intervention_need": {
+            "kind": "UNRESOLVED_HANDLING_QUESTION",
+            "statement": "Repeated questions across threads still lack a selected preference or shared procedural answer, so the current case-review procedure should be made explicit without replacing the team lead's existing request.",
+            "evidence_ids": [
+              "m:C_RP_GENERAL:1790856332.000018",
+              "m:C_RP_QA:1790913824.000016",
+              "m:C_RP_QA:1790913921.000226",
+              "m:C_RP_GENERAL:1790933024.000339"
+            ]
+          },
+          "instruction": "Post a batch reminder to score format and factual accuracy separately and provide the prompt and both responses for team lead confirmation when the pair and current guidance do not settle the preference.",
+          "rationale": "The repeated questions need a shared procedure, not a new rule that format or accuracy always wins. The reminder also preserves the team lead's request to inspect the actual instruction before weighing the responses.",
+          "draft_text": "For this batch, score factual accuracy and instruction adherence separately. A required output format is not optional, but there is no universal rule that accuracy or format always wins.\n- Check the exact user instruction to establish whether the requested structure was mandatory.\n- Compare both responses and identify their factual and instruction-following defects separately.\n- If the actual pair and current guidance still do not settle the preference, provide the prompt and both responses for team lead confirmation.\nIn the thread where the team lead requested the exact formatting instruction, please supply it before weighing the responses. Do not infer a general priority rule from one example.",
+          "scope_note": "Applies to response comparison in the current batch, not administrative QA export formats. It restates current guidance and does not choose a response for any supplied case.",
+          "support_claim_ids": [
+            "c1",
+            "c2",
+            "c3",
+            "c4",
+            "c5",
+            "c6",
+            "c8"
+          ],
+          "targets": []
+        },
+        "severity": {
+          "level": "MEDIUM",
+          "rationale": "Two QA tutors and a tutor raise the same consequential scoring tradeoff across three threads. This supports recurring uncertainty about preference judgments, but not widespread incorrect labels, blocked work or a batch-wide failure.",
+          "signals": [
+            {
+              "level": "MEDIUM",
+              "signal_index": 0,
+              "signal_text": "Recurring confusion about the same rule, tool behavior, or scoring criterion that suggests meaningful workflow or labeling impact",
+              "support": "Two QA tutors and a tutor repeatedly ask whether accuracy or required format should determine the preferred response, leaving a consequential scoring choice unsettled across threads.",
+              "evidence_ids": [
+                "m:C_RP_GENERAL:1790856332.000018",
+                "m:C_RP_QA:1790913824.000016",
+                "m:C_RP_GENERAL:1790932885.000015"
+              ]
+            }
+          ],
+          "affected_reporters": [],
+          "recurrence": "FOUND",
+          "recurrence_evidence_ids": [
+            "k:rp-tie-calibration-outcome@1.0:053fe48a"
+          ],
+          "reported_recurrence_evidence_ids": []
+        },
+        "confidence": 0.92,
+        "open_confirmation": "OPEN",
+        "open_question": "For the JSON-versus-prose pair, which response should be preferred after the exact prompt and both responses establish the instruction-following and factual-accuracy defects?",
+        "open_question_evidence_ids": [
+          "m:C_RP_QA:1790913824.000016",
+          "m:C_RP_QA:1790913921.000226",
+          "k:response-preference-faq@1.1:fa9b6a3d"
+        ],
+        "source_conflicts": [],
+        "announcement_assessments": [
+          {
+            "evidence_id": "k:rp-audit-manifest-post@1.0:f64eba9c",
+            "relevant": false,
+            "directive": true,
+            "directive_quote": "For RP batch 15 weekly QA audit exports prepared from today, the manifest must be JSON rather than a prose list.",
+            "rationale": "This is a directive for the same batch, but it concerns administrative QA files and expressly does not govern comparisons of model responses."
+          },
+          {
+            "evidence_id": "k:rp-tie-calibration-post@1.0:4a3c786f",
+            "relevant": false,
+            "directive": true,
+            "directive_quote": "Bring both rationales for disputed pairs to the eight-pair calibration review.",
+            "rationale": "This directs an earlier batch's calibration review. It supplies historical context, not an applicable instruction for the current batch."
+          }
+        ],
+        "resolution": [
+          {
+            "member_id": "member_6b0a2b0015aa474bf50996d0",
+            "state": "UNRESOLVED",
+            "evidence_ids": [
+              "m:C_RP_GENERAL:1790856332.000018"
+            ],
+            "basis": "The QA tutor's supplied thread contains only the preference question and no answer."
+          },
+          {
+            "member_id": "member_225803f43142caa5d3c165cf",
+            "state": "PARTIALLY_RESOLVED",
+            "evidence_ids": [
+              "m:C_RP_QA:1790913824.000016",
+              "m:C_RP_QA:1790913880.000113",
+              "m:C_RP_QA:1790913921.000226"
+            ],
+            "basis": "The QA tutor receives discussion separating compliance from correctness, including a QA tutor's request to check mandatory structure and factual correctness. The supplied thread does not choose the preferred response; the tutor's proposal is not treated as project authority."
+          },
+          {
+            "member_id": "member_b0a066a9dcba609a9aebaec9",
+            "state": "PARTIALLY_RESOLVED",
+            "evidence_ids": [
+              "m:C_RP_GENERAL:1790932885.000015",
+              "m:C_RP_GENERAL:1790932935.000113",
+              "m:C_RP_GENERAL:1790932979.000226",
+              "m:C_RP_GENERAL:1790933024.000339"
+            ],
+            "basis": "The team lead gives the tutor a concrete next step: supply the exact formatting instruction for verification. The supplied thread contains neither the requested instruction nor a final preference decision."
+          }
+        ],
+        "coverage": [
+          {
+            "need": "CURRENT_GUIDANCE",
+            "status": "COVERED",
+            "evidence_ids": [
+              "k:response-preference-faq@1.1:fa9b6a3d",
+              "k:response-preference-instructions@1.1:a71c54c7"
+            ],
+            "note": "Current project-wide guidance directly covers mandatory format, separate defect scoring and conditional referral for team lead confirmation.",
+            "gap_id": null
+          },
+          {
+            "need": "ANNOUNCEMENTS",
+            "status": "COVERED",
+            "evidence_ids": [
+              "k:rp-audit-manifest-post@1.0:f64eba9c",
+              "k:rp-tie-calibration-post@1.0:4a3c786f"
+            ],
+            "note": "Both retrieved announcements were assessed. Neither supplies current handling for this topic: one concerns administrative exports and the other an earlier batch's review.",
+            "gap_id": null
+          },
+          {
+            "need": "PRIOR_DECISIONS",
+            "status": "COVERED",
+            "evidence_ids": [
+              "k:rp-tie-calibration-outcome@1.0:053fe48a"
+            ],
+            "note": "The retrieved follow-up records the earlier calibration outcome and its limits, including a disputed mandatory-format case. It is history, not a standing rule or proof of an outcome in this batch.",
+            "gap_id": null
+          },
+          {
+            "need": "MEMBER_QUESTIONS",
+            "status": "COVERED",
+            "evidence_ids": [
+              "m:C_RP_GENERAL:1790856332.000018",
+              "m:C_RP_QA:1790913824.000016",
+              "m:C_RP_QA:1790913880.000113",
+              "m:C_RP_QA:1790913921.000226",
+              "m:C_RP_GENERAL:1790932885.000015",
+              "m:C_RP_GENERAL:1790932935.000113",
+              "m:C_RP_GENERAL:1790932979.000226",
+              "m:C_RP_GENERAL:1790933024.000339"
+            ],
+            "note": "The supplied threads show the questions, dimension-separation discussion and the team lead's request for the exact instruction. They do not include the full pairs or final preferences.",
+            "gap_id": null
+          }
+        ],
+        "review_note": "The upstream review flag for the JSON-versus-prose thread remains open: the tutor's proposed scoring approach must not be treated as authoritative guidance. Review that pair only after the prompt and both responses are supplied."
+      },
+      "revised": false
+    },
+    "grounding": {
+      "structural_issues": [],
+      "action_issues": [],
+      "unsupported": [
+        "open_question"
+      ],
+      "unjudged": [],
+      "extraneous_verdicts": [],
+      "rejected": {},
+      "pending": [],
+      "action_sufficiency": {
+        "verdict": "SUFFICIENT",
+        "essential_statement_ids": [
+          "claim:c4",
+          "claim:c5",
+          "claim:c8"
+        ],
+        "rationale": "All listed premises are supported and have no announcement-handling dependencies. Current guidance supports the exact reminder and conditional escalation; the in-thread instruction supports its targeted request; and the repeated unanswered preferences justify a shared procedural clarification. Neither announcement establishes competing handling for this topic."
+      },
+      "alternative_sufficiency": {
+        "alternative:shared_reminder": {
+          "verdict": "SUFFICIENT",
+          "essential_statement_ids": [
+            "claim:c1",
+            "claim:c2",
+            "claim:c3",
+            "claim:c4",
+            "claim:c5",
+            "claim:c6",
+            "claim:c8"
+          ],
+          "rationale": "The supported premises establish the three current questions, applicable procedure, existing team lead request, nondecisive tutor discussion, and unresolved preferences. Together with the open review flag, they justify the exact shared reminder without creating authority for the tutor's suggestion or deciding any pair.",
+          "statement_id": "alternative:shared_reminder",
+          "check": "SUPPORTED"
+        }
+      },
+      "status": "FAILED",
+      "basis": "SEMANTIC",
+      "statements": [
+        {
+          "statement_id": "claim:c1",
+          "kind": "CLAIM_INCIDENT_FACT",
+          "text": "A QA tutor asks which response wins when one follows the format and another is more accurate.",
+          "blocking": true,
+          "evidence_ids": [
+            "m:C_RP_GENERAL:1790856332.000018"
+          ],
+          "attributions": [
+            {
+              "user_id": "U019",
+              "relation": "AUTHOR",
+              "evidence_id": "m:C_RP_GENERAL:1790856332.000018",
+              "role": "QA_TUTOR"
+            }
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "The cited QA tutor asks which response wins when A follows the format and B is more accurate. The author and role attribution match."
+        },
+        {
+          "statement_id": "claim:c2",
+          "kind": "CLAIM_INCIDENT_FACT",
+          "text": "A QA tutor reports that a prompt requested a JSON object while one response used prose, and asks which response is better.",
+          "blocking": true,
+          "evidence_ids": [
+            "m:C_RP_QA:1790913824.000016"
+          ],
+          "attributions": [
+            {
+              "user_id": "U007",
+              "relation": "AUTHOR",
+              "evidence_id": "m:C_RP_QA:1790913824.000016",
+              "role": "QA_TUTOR"
+            }
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "The cited QA tutor reports a JSON-object request, describes B as prose, and asks which response is better."
+        },
+        {
+          "statement_id": "claim:c3",
+          "kind": "CLAIM_INCIDENT_FACT",
+          "text": "A tutor asks whether accuracy can outweigh ignoring the user's requested output structure.",
+          "blocking": true,
+          "evidence_ids": [
+            "m:C_RP_GENERAL:1790932885.000015"
+          ],
+          "attributions": [
+            {
+              "user_id": "U018",
+              "relation": "AUTHOR",
+              "evidence_id": "m:C_RP_GENERAL:1790932885.000015",
+              "role": "TUTOR"
+            }
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "The cited tutor explicitly asks whether accuracy can outweigh ignoring the requested output structure."
+        },
+        {
+          "statement_id": "claim:c4",
+          "kind": "CLAIM_GUIDANCE",
+          "text": "Current guidance requires recording format violations separately from factual accuracy, checking whether the structure was mandatory, and avoiding a universal accuracy-versus-format priority rule. If the actual pair and applicable guidance do not settle the preference, the prompt and both responses should go to the team lead for confirmation.",
+          "blocking": true,
+          "evidence_ids": [
+            "k:response-preference-faq@1.1:fa9b6a3d",
+            "k:response-preference-instructions@1.1:a71c54c7"
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "The current FAQ directly establishes separate assessment, verification of whether structure was mandatory, no universal priority rule, and conditional escalation with the prompt and both responses. The instructions reinforce grading underlying defects separately."
+        },
+        {
+          "statement_id": "claim:c5",
+          "kind": "CLAIM_THREAD_INSTRUCTION",
+          "text": "In the tutor's thread, the team lead requests the exact formatting instruction so QA can verify whether it was mandatory before weighing the responses.",
+          "blocking": true,
+          "evidence_ids": [
+            "m:C_RP_GENERAL:1790933024.000339"
+          ],
+          "attributions": [
+            {
+              "user_id": "U001",
+              "relation": "AUTHOR",
+              "evidence_id": "m:C_RP_GENERAL:1790933024.000339",
+              "role": "TEAM_LEAD"
+            },
+            {
+              "user_id": "U018",
+              "relation": "THREAD_STARTER",
+              "evidence_id": "m:C_RP_GENERAL:1790933024.000339",
+              "role": "TUTOR"
+            }
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "The team lead explicitly requests the exact formatting instruction for QA to verify whether it was mandatory before weighing responses. The instruction is correctly limited to that tutor's thread, and both attributions match."
+        },
+        {
+          "statement_id": "claim:c6",
+          "kind": "CLAIM_INCIDENT_FACT",
+          "text": "In the JSON-versus-prose thread, a tutor proposes scoring the format failure separately, and a QA tutor distinguishes correctness from compliance while asking whether the structure was mandatory and the facts correct; neither message chooses a preferred response.",
+          "blocking": true,
+          "evidence_ids": [
+            "m:C_RP_QA:1790913880.000113",
+            "m:C_RP_QA:1790913921.000226"
+          ],
+          "attributions": [
+            {
+              "user_id": "U018",
+              "relation": "AUTHOR",
+              "evidence_id": "m:C_RP_QA:1790913880.000113",
+              "role": "TUTOR"
+            },
+            {
+              "user_id": "U014",
+              "relation": "AUTHOR",
+              "evidence_id": "m:C_RP_QA:1790913921.000226",
+              "role": "QA_TUTOR"
+            }
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "The tutor proposes separate scoring, and the QA tutor asks about mandatory structure and factual correctness while distinguishing compliance from correctness. Neither selects a response."
+        },
+        {
+          "statement_id": "claim:c7",
+          "kind": "CLAIM_HISTORY",
+          "text": "The prior-batch calibration follow-up records improved agreement in the reviewed sample but retains one disputed pair because the packet did not establish whether its output-format constraint was mandatory. It explicitly does not establish a universal accuracy-versus-format rule or settle a new batch.",
+          "blocking": true,
+          "evidence_ids": [
+            "k:rp-tie-calibration-outcome@1.0:053fe48a"
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "The prior record reports improved agreement in the reviewed sample and a retained dispute over whether an output-format constraint was mandatory. Its stated limits expressly exclude a universal priority rule or resolution of a new batch."
+        },
+        {
+          "statement_id": "claim:c8",
+          "kind": "CLAIM_INFERENCE",
+          "text": "The repeated preference questions remain without a selected response in the supplied threads, although one thread has already received a concrete next step from the team lead; a shared reminder should clarify the procedure without deciding the pairs.",
+          "blocking": true,
+          "evidence_ids": [
+            "m:C_RP_GENERAL:1790856332.000018",
+            "m:C_RP_QA:1790913824.000016",
+            "m:C_RP_QA:1790913880.000113",
+            "m:C_RP_QA:1790913921.000226",
+            "m:C_RP_GENERAL:1790932885.000015",
+            "m:C_RP_GENERAL:1790933024.000339",
+            "k:response-preference-faq@1.1:fa9b6a3d"
+          ],
+          "attributions": [
+            {
+              "user_id": "U001",
+              "relation": "AUTHOR",
+              "evidence_id": "m:C_RP_GENERAL:1790933024.000339",
+              "role": "TEAM_LEAD"
+            }
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "No supplied thread selects a preferred response, while the team lead gives one thread a concrete evidence-gathering step. A procedural reminder without pair-level decisions follows from the repeated questions and current FAQ."
+        },
+        {
+          "statement_id": "summary",
+          "kind": "SUMMARY",
+          "text": "Two QA tutors and a tutor ask how to weigh requested format against factual accuracy across three threads. Current guidance requires separate scoring and case-specific review rather than a universal tie-break rule; in one thread, the team lead has already requested the exact formatting instruction.",
+          "blocking": true,
+          "evidence_ids": [
+            "m:C_RP_GENERAL:1790856332.000018",
+            "m:C_RP_QA:1790913824.000016",
+            "m:C_RP_GENERAL:1790932885.000015",
+            "k:response-preference-faq@1.1:fa9b6a3d",
+            "k:response-preference-instructions@1.1:a71c54c7",
+            "m:C_RP_GENERAL:1790933024.000339",
+            "m:C_RP_QA:1790913880.000113",
+            "m:C_RP_QA:1790913921.000226",
+            "k:rp-tie-calibration-outcome@1.0:053fe48a"
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "The three thread starters are two distinct QA tutors and one tutor. Their questions concern format-related preference judgments, and the summary accurately describes current guidance and the team lead's limited in-thread request."
+        },
+        {
+          "statement_id": "action",
+          "kind": "ACTION",
+          "text": "Post a reminder. Instruction: Post a batch reminder to score format and factual accuracy separately and provide the prompt and both responses for team lead confirmation when the pair and current guidance do not settle the preference. Draft to copy: For this batch, score factual accuracy and instruction adherence separately. A required output format is not optional, but there is no universal rule that accuracy or format always wins.\n- Check the exact user instruction to establish whether the requested structure was mandatory.\n- Compare both responses and identify their factual and instruction-following defects separately.\n- If the actual pair and current guidance still do not settle the preference, provide the prompt and both responses for team lead confirmation.\nIn the thread where the team lead requested the exact formatting instruction, please supply it before weighing the responses. Do not infer a general priority rule from one example. Scope: Applies to response comparison in the current batch, not administrative QA export formats. It restates current guidance and does not choose a response for any supplied case.",
+          "blocking": true,
+          "evidence_ids": [
+            "m:C_RP_GENERAL:1790856332.000018",
+            "m:C_RP_QA:1790913824.000016",
+            "m:C_RP_GENERAL:1790932885.000015",
+            "k:response-preference-faq@1.1:fa9b6a3d",
+            "k:response-preference-instructions@1.1:a71c54c7",
+            "m:C_RP_GENERAL:1790933024.000339",
+            "m:C_RP_QA:1790913880.000113",
+            "m:C_RP_QA:1790913921.000226"
+          ],
+          "premises": [
+            "claim:c1",
+            "claim:c2",
+            "claim:c3",
+            "claim:c4",
+            "claim:c5",
+            "claim:c6",
+            "claim:c8"
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "The reminder accurately restates current project guidance, preserves conditional escalation and the existing in-thread request, and does not select responses. Its scope correctly excludes the unrelated administrative audit-export convention."
+        },
+        {
+          "statement_id": "action:rationale",
+          "kind": "ACTION_RATIONALE",
+          "text": "Why this helps: The repeated questions need a shared procedure, not a new rule that format or accuracy always wins. The reminder also preserves the team lead's request to inspect the actual instruction before weighing the responses.",
+          "blocking": false,
+          "evidence_ids": [
+            "m:C_RP_GENERAL:1790856332.000018",
+            "m:C_RP_QA:1790913824.000016",
+            "m:C_RP_GENERAL:1790932885.000015",
+            "k:response-preference-faq@1.1:fa9b6a3d",
+            "k:response-preference-instructions@1.1:a71c54c7",
+            "m:C_RP_GENERAL:1790933024.000339",
+            "m:C_RP_QA:1790913880.000113",
+            "m:C_RP_QA:1790913921.000226"
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "The repeated questions support clarifying the existing procedure rather than inventing a priority rule. The proposed reminder preserves the team lead's request to inspect the exact instruction."
+        },
+        {
+          "statement_id": "action:need",
+          "kind": "INTERVENTION_NEED",
+          "text": "Why intervening now is needed (an unresolved handling question): Repeated questions across threads still lack a selected preference or shared procedural answer, so the current case-review procedure should be made explicit without replacing the team lead's existing request.",
+          "blocking": false,
+          "evidence_ids": [
+            "m:C_RP_GENERAL:1790856332.000018",
+            "m:C_RP_QA:1790913824.000016",
+            "m:C_RP_QA:1790913921.000226",
+            "m:C_RP_GENERAL:1790933024.000339"
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "The supplied threads still contain unresolved preference requests, including one with no reply, and do not collectively provide the complete conditional review procedure. Making that procedure explicit addresses a current handling need without treating the team lead's existing next step as absent."
+        },
+        {
+          "statement_id": "review_note",
+          "kind": "REVIEW_NOTE",
+          "text": "Still needs review: The upstream review flag for the JSON-versus-prose thread remains open: the tutor's proposed scoring approach must not be treated as authoritative guidance. Review that pair only after the prompt and both responses are supplied.",
+          "blocking": false,
+          "evidence_ids": [
+            "m:C_RP_GENERAL:1790856332.000018",
+            "m:C_RP_QA:1790913824.000016",
+            "m:C_RP_GENERAL:1790932885.000015",
+            "k:response-preference-faq@1.1:fa9b6a3d",
+            "k:response-preference-instructions@1.1:a71c54c7",
+            "m:C_RP_GENERAL:1790933024.000339",
+            "m:C_RP_QA:1790913880.000113",
+            "m:C_RP_QA:1790913921.000226",
+            "k:rp-tie-calibration-outcome@1.0:053fe48a"
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "The open upstream flag specifically concerns treating the tutor's message as authority. The note preserves that obligation, and requiring the prompt and both responses before deciding the pair follows from the current FAQ."
+        },
+        {
+          "statement_id": "resolution:member_6b0a2b0015aa474bf50996d0",
+          "kind": "RESOLUTION",
+          "text": "Member thread member_6b0a2b0015aa474bf50996d0 is UNRESOLVED: The QA tutor's supplied thread contains only the preference question and no answer.",
+          "blocking": true,
+          "evidence_ids": [
+            "m:C_RP_GENERAL:1790856332.000018"
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "The complete supplied thread consists only of the QA tutor's preference question and contains no answer."
+        },
+        {
+          "statement_id": "resolution:member_225803f43142caa5d3c165cf",
+          "kind": "RESOLUTION",
+          "text": "Member thread member_225803f43142caa5d3c165cf is PARTIALLY_RESOLVED: The QA tutor receives discussion separating compliance from correctness, including a QA tutor's request to check mandatory structure and factual correctness. The supplied thread does not choose the preferred response; the tutor's proposal is not treated as project authority.",
+          "blocking": true,
+          "evidence_ids": [
+            "m:C_RP_QA:1790913824.000016",
+            "m:C_RP_QA:1790913880.000113",
+            "m:C_RP_QA:1790913921.000226"
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "The complete thread provides discussion of separate dimensions and questions about mandatory structure and correctness, but no preference decision or authoritative endorsement of the tutor's proposal."
+        },
+        {
+          "statement_id": "resolution:member_b0a066a9dcba609a9aebaec9",
+          "kind": "RESOLUTION",
+          "text": "Member thread member_b0a066a9dcba609a9aebaec9 is PARTIALLY_RESOLVED: The team lead gives the tutor a concrete next step: supply the exact formatting instruction for verification. The supplied thread contains neither the requested instruction nor a final preference decision.",
+          "blocking": true,
+          "evidence_ids": [
+            "m:C_RP_GENERAL:1790932885.000015",
+            "m:C_RP_GENERAL:1790932935.000113",
+            "m:C_RP_GENERAL:1790932979.000226",
+            "m:C_RP_GENERAL:1790933024.000339"
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "The team lead supplies a concrete next step, but the complete thread contains neither the requested exact instruction nor a final preference decision."
+        },
+        {
+          "statement_id": "open_question",
+          "kind": "OPEN_QUESTION",
+          "text": "The cited evidence leaves this specific question unsettled: For the JSON-versus-prose pair, which response should be preferred after the exact prompt and both responses establish the instruction-following and factual-accuracy defects?",
+          "blocking": true,
+          "evidence_ids": [
+            "m:C_RP_QA:1790913824.000016",
+            "m:C_RP_QA:1790913921.000226",
+            "k:response-preference-faq@1.1:fa9b6a3d"
+          ],
+          "verdict": "UNSUPPORTED",
+          "model_verdict": "UNSUPPORTED",
+          "rationale": "This asks for a case-specific preference judgment after missing evidence is supplied, rather than identifying an unsettled handling or policy question. Current guidance already specifies the procedure and conditional team lead confirmation; a pending assessment is not an OPEN_QUESTION under the stated criteria."
+        },
+        {
+          "statement_id": "severity:rationale",
+          "kind": "SEVERITY_RATIONALE",
+          "text": "Severity MEDIUM: Two QA tutors and a tutor raise the same consequential scoring tradeoff across three threads. This supports recurring uncertainty about preference judgments, but not widespread incorrect labels, blocked work or a batch-wide failure.",
+          "blocking": true,
+          "evidence_ids": [
+            "m:C_RP_GENERAL:1790856332.000018",
+            "m:C_RP_QA:1790913824.000016",
+            "m:C_RP_GENERAL:1790932885.000015",
+            "m:C_RP_QA:1790913880.000113",
+            "m:C_RP_QA:1790913921.000226"
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "Three distinct thread starters raise related preference-scoring uncertainty across three threads. This supports recurring consequential uncertainty, while the context does not establish widespread incorrect labels, blocked work, or batch-wide failure."
+        },
+        {
+          "statement_id": "severity:signal:MEDIUM[0]",
+          "kind": "SEVERITY_SIGNAL",
+          "text": "Rubric signal met - \"Recurring confusion about the same rule, tool behavior, or scoring criterion that suggests meaningful workflow or labeling impact\": Two QA tutors and a tutor repeatedly ask whether accuracy or required format should determine the preferred response, leaving a consequential scoring choice unsettled across threads.",
+          "blocking": true,
+          "evidence_ids": [
+            "m:C_RP_GENERAL:1790856332.000018",
+            "m:C_RP_QA:1790913824.000016",
+            "m:C_RP_GENERAL:1790932885.000015"
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "The three questions recur around the same format-versus-quality preference criterion, with no selected responses in the supplied threads. That supports the cited medium-severity signal without asserting actual labeling errors."
+        },
+        {
+          "statement_id": "severity:recurrence",
+          "kind": "HISTORICAL_RECURRENCE",
+          "text": "Retrieved records show this problem occurred before.",
+          "blocking": true,
+          "evidence_ids": [
+            "k:rp-tie-calibration-outcome@1.0:053fe48a"
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "The retrieved prior-batch follow-up records an earlier unresolved preference dispute involving whether an output-format constraint was mandatory. It supports historical occurrence, not a current standing rule."
+        },
+        {
+          "statement_id": "alternative:shared_reminder",
+          "kind": "ALTERNATIVE",
+          "text": "Post a reminder. Instruction: Post a shared reminder explaining separate scoring of factual accuracy and format compliance, while keeping individual preferences pending until the actual pairs and current guidance support a decision. Draft to copy: For this batch, assess factual accuracy and instruction following separately. Check the exact prompt to establish whether the requested structure was mandatory, and identify each response's factual and instruction-following defects. There is no universal rule that accuracy or format always wins. If the prompt, both responses and current guidance do not settle the preference, send the complete pair to the team lead for confirmation. In the thread where the exact formatting instruction was requested, please supply it before weighing the responses. The tutor's proposed scoring approach in the JSON-versus-prose discussion is not authoritative guidance, and that pair remains open for review. Why this helps: Three current threads raise the same scoring question, and current project guidance directly explains the procedure. A shared reminder addresses recurring uncertainty without creating a new priority rule or changing documentation that already covers the issue. This is proportionate to medium severity: the evidence shows repeated uncertainty, not established widespread incorrect labels or blocked work. It preserves the team lead's existing request and leaves individual decisions and the open review with the team lead.",
+          "blocking": false,
+          "evidence_ids": [
+            "m:C_RP_GENERAL:1790856332.000018",
+            "m:C_RP_QA:1790913824.000016",
+            "m:C_RP_GENERAL:1790932885.000015",
+            "m:C_RP_GENERAL:1790933024.000339",
+            "m:C_RP_QA:1790913880.000113",
+            "k:response-preference-faq@1.1:fa9b6a3d",
+            "k:response-preference-instructions@1.1:a71c54c7"
+          ],
+          "premises": [
+            "claim:c1",
+            "claim:c2",
+            "claim:c3",
+            "claim:c4",
+            "claim:c5",
+            "claim:c6",
+            "claim:c8"
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "The alternative accurately restates the current procedure and conditional escalation, preserves the team lead's request, and respects the open authority-review flag. Its scope and severity rationale remain limited to repeated uncertainty rather than established operational failure."
+        },
+        {
+          "statement_id": "alternative:wait_for_case_material",
+          "kind": "ALTERNATIVE",
+          "text": "No action needed now. Instruction: Defer a shared announcement and ask the thread starters to provide the exact prompts and both responses before reviewing the unresolved preferences. Draft to copy: Please provide the exact prompt, including the formatting instruction, and both responses for each unresolved comparison. In the thread where the team lead already requested the instruction, please complete that request. We will use the current guidance to assess factual accuracy and instruction following separately, with team lead confirmation if the preference remains unsettled. No response is selected here, and the JSON-versus-prose pair remains open for review; a tutor's suggestion is not an authoritative decision. Why this helps: Waiting for the actual case material follows current guidance and the team lead's existing request, so it avoids an unsupported preference decision. However, deferring a shared explanation addresses the missing inputs more than the repeated procedural question across three threads. It is a cautious option, but less complete for the assessed medium severity.",
+          "blocking": false,
+          "evidence_ids": [
+            "m:C_RP_GENERAL:1790933024.000339",
+            "m:C_RP_QA:1790913824.000016",
+            "m:C_RP_QA:1790913921.000226",
+            "m:C_RP_QA:1790913880.000113",
+            "k:response-preference-faq@1.1:fa9b6a3d"
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "Read with its instruction, the opening label defers a shared announcement rather than all follow-up. Requesting the actual prompts and responses is consistent with current guidance and the existing team lead request. The alternative appropriately acknowledges that this addresses missing inputs more directly than the repeated procedural uncertainty."
+        }
+      ]
+    },
+    "temporal": {
+      "status": "NONE_FOUND",
+      "findings": [],
+      "ignored_revision_states": "NOT_YET_EFFECTIVE and NOT_APPROVED revisions never compete with applicable guidance."
+    },
+    "temporal_before_grounding": {
+      "status": "NONE_FOUND",
+      "findings": [],
+      "ignored_revision_states": "NOT_YET_EFFECTIVE and NOT_APPROVED revisions never compete with applicable guidance."
+    },
+    "severity": {
+      "assessment": {
+        "level": "MEDIUM",
+        "assessment_status": "ASSESSED",
+        "rubric_version": "severity-rubric-v3-semantic-signals",
+        "rubric_content_sha256": "eccaa31a2ab84a0aa7c005216a92fc39681e1dd10107117344948235a76673f4",
+        "rubric_project_id": null,
+        "rubric_scope": "SHARED_DEFAULT",
+        "rationale": "Two QA tutors and a tutor raise the same consequential scoring tradeoff across three threads. This supports recurring uncertainty about preference judgments, but not widespread incorrect labels, blocked work or a batch-wide failure.",
+        "matched_signals": [
+          {
+            "level": "MEDIUM",
+            "signal_index": 0,
+            "signal_text": "Recurring confusion about the same rule, tool behavior, or scoring criterion that suggests meaningful workflow or labeling impact",
+            "support": "Two QA tutors and a tutor repeatedly ask whether accuracy or required format should determine the preferred response, leaving a consequential scoring choice unsettled across threads.",
+            "evidence": [
+              {
+                "kind": "slack_message",
+                "project_id": "response_preference",
+                "batch_id": "rp_batch_15",
+                "scope": "project",
+                "channel_id": "C_RP_GENERAL",
+                "thread_id": "1790856332.000018",
+                "message_id": "1790856332.000018",
+                "document_id": null,
+                "version_id": null,
+                "authoring_document_id": null,
+                "authoring_version": null,
+                "section": null,
+                "chunk_id": null,
+                "candidate_group_id": null,
+                "member_id": "member_6b0a2b0015aa474bf50996d0",
+                "artifact": null,
+                "artifact_sha256": null,
+                "quote": null,
+                "note": "m:C_RP_GENERAL:1790856332.000018"
+              },
+              {
+                "kind": "slack_message",
+                "project_id": "response_preference",
+                "batch_id": "rp_batch_15",
+                "scope": "project",
+                "channel_id": "C_RP_QA",
+                "thread_id": "1790913824.000016",
+                "message_id": "1790913824.000016",
+                "document_id": null,
+                "version_id": null,
+                "authoring_document_id": null,
+                "authoring_version": null,
+                "section": null,
+                "chunk_id": null,
+                "candidate_group_id": null,
+                "member_id": "member_225803f43142caa5d3c165cf",
+                "artifact": null,
+                "artifact_sha256": null,
+                "quote": null,
+                "note": "m:C_RP_QA:1790913824.000016"
+              },
+              {
+                "kind": "slack_message",
+                "project_id": "response_preference",
+                "batch_id": "rp_batch_15",
+                "scope": "project",
+                "channel_id": "C_RP_GENERAL",
+                "thread_id": "1790932885.000015",
+                "message_id": "1790932885.000015",
+                "document_id": null,
+                "version_id": null,
+                "authoring_document_id": null,
+                "authoring_version": null,
+                "section": null,
+                "chunk_id": null,
+                "candidate_group_id": null,
+                "member_id": "member_b0a066a9dcba609a9aebaec9",
+                "artifact": null,
+                "artifact_sha256": null,
+                "quote": null,
+                "note": "m:C_RP_GENERAL:1790932885.000015"
+              }
+            ]
+          }
+        ],
+        "evidence": [
+          {
+            "kind": "slack_message",
+            "project_id": "response_preference",
+            "batch_id": "rp_batch_15",
+            "scope": "project",
+            "channel_id": "C_RP_GENERAL",
+            "thread_id": "1790856332.000018",
+            "message_id": "1790856332.000018",
+            "document_id": null,
+            "version_id": null,
+            "authoring_document_id": null,
+            "authoring_version": null,
+            "section": null,
+            "chunk_id": null,
+            "candidate_group_id": null,
+            "member_id": "member_6b0a2b0015aa474bf50996d0",
+            "artifact": null,
+            "artifact_sha256": null,
+            "quote": null,
+            "note": "m:C_RP_GENERAL:1790856332.000018"
+          },
+          {
+            "kind": "slack_message",
+            "project_id": "response_preference",
+            "batch_id": "rp_batch_15",
+            "scope": "project",
+            "channel_id": "C_RP_QA",
+            "thread_id": "1790913824.000016",
+            "message_id": "1790913824.000016",
+            "document_id": null,
+            "version_id": null,
+            "authoring_document_id": null,
+            "authoring_version": null,
+            "section": null,
+            "chunk_id": null,
+            "candidate_group_id": null,
+            "member_id": "member_225803f43142caa5d3c165cf",
+            "artifact": null,
+            "artifact_sha256": null,
+            "quote": null,
+            "note": "m:C_RP_QA:1790913824.000016"
+          },
+          {
+            "kind": "slack_message",
+            "project_id": "response_preference",
+            "batch_id": "rp_batch_15",
+            "scope": "project",
+            "channel_id": "C_RP_GENERAL",
+            "thread_id": "1790932885.000015",
+            "message_id": "1790932885.000015",
+            "document_id": null,
+            "version_id": null,
+            "authoring_document_id": null,
+            "authoring_version": null,
+            "section": null,
+            "chunk_id": null,
+            "candidate_group_id": null,
+            "member_id": "member_b0a066a9dcba609a9aebaec9",
+            "artifact": null,
+            "artifact_sha256": null,
+            "quote": null,
+            "note": "m:C_RP_GENERAL:1790932885.000015"
+          }
+        ],
+        "occurrence": {
+          "affected_reporters": {
+            "status": "UNKNOWN",
+            "count": null,
+            "ids": [],
+            "basis": null,
+            "evidence": []
+          },
+          "affected_tasks": {
+            "status": "UNKNOWN",
+            "count": null,
+            "ids": [],
+            "basis": null,
+            "evidence": []
+          },
+          "relevant_threads": [
+            {
+              "project_id": "response_preference",
+              "batch_id": "rp_batch_15",
+              "channel_id": "C_RP_GENERAL",
+              "thread_id": "1790856332.000018",
+              "member_id": "member_6b0a2b0015aa474bf50996d0"
+            },
+            {
+              "project_id": "response_preference",
+              "batch_id": "rp_batch_15",
+              "channel_id": "C_RP_QA",
+              "thread_id": "1790913824.000016",
+              "member_id": "member_225803f43142caa5d3c165cf"
+            },
+            {
+              "project_id": "response_preference",
+              "batch_id": "rp_batch_15",
+              "channel_id": "C_RP_GENERAL",
+              "thread_id": "1790932885.000015",
+              "member_id": "member_b0a066a9dcba609a9aebaec9"
+            }
+          ],
+          "reporting_window": {
+            "start": "2026-10-01T12:05:32.000018+00:00",
+            "end": "2026-10-02T09:23:44.000339+00:00"
+          },
+          "historical_recurrence": {
+            "status": "FOUND",
+            "sources": [
+              {
+                "kind": "knowledge_source",
+                "project_id": "response_preference",
+                "batch_id": "rp_batch_14",
+                "scope": "project",
+                "channel_id": null,
+                "thread_id": null,
+                "message_id": null,
+                "document_id": "knowledge_2172da2a2ef0f5ad329ced2418a84472dbe7d939455cf84fcb1b9d27c943e47c",
+                "version_id": "version_cd04873e2b6866bd014b1f72e268367237289452d2dd33d91010fbb0709cf007",
+                "authoring_document_id": "rp-tie-calibration-outcome",
+                "authoring_version": "1.0",
+                "section": "TL assessment",
+                "chunk_id": "chunk_053fe48a76f928cacbf050b04487e1e6",
+                "candidate_group_id": null,
+                "member_id": null,
+                "artifact": null,
+                "artifact_sha256": null,
+                "quote": null,
+                "note": "k:rp-tie-calibration-outcome@1.0:053fe48a (PRIOR_DECISION; CURRENT)"
+              }
+            ],
+            "event_series_ids": []
+          },
+          "known_denominator": null,
+          "structural": {
+            "threads": 3,
+            "messages": 8,
+            "distinct_participants": 6,
+            "duplicate_threads_ignored": 0,
+            "duplicate_messages_ignored": 0,
+            "computed_from": "topic member threads (original Slack messages)",
+            "participants_are_not_affected_reporters": true
+          },
+          "semantic_identification": "ASSESSED"
+        },
+        "inherited_from": {
+          "level": "UNKNOWN",
+          "assessment_status": "UNASSESSED",
+          "assessment_deferred_to": "AGENT3",
+          "reason": "Agent 2 performs taxonomy only."
+        }
+      },
+      "issues": [],
+      "notes": [],
+      "proposal": {
+        "level": "MEDIUM",
+        "rationale": "Two QA tutors and a tutor raise the same consequential scoring tradeoff across three threads. This supports recurring uncertainty about preference judgments, but not widespread incorrect labels, blocked work or a batch-wide failure.",
+        "signals": [
+          {
+            "level": "MEDIUM",
+            "signal_index": 0,
+            "signal_text": "Recurring confusion about the same rule, tool behavior, or scoring criterion that suggests meaningful workflow or labeling impact",
+            "support": "Two QA tutors and a tutor repeatedly ask whether accuracy or required format should determine the preferred response, leaving a consequential scoring choice unsettled across threads.",
+            "evidence_ids": [
+              "m:C_RP_GENERAL:1790856332.000018",
+              "m:C_RP_QA:1790913824.000016",
+              "m:C_RP_GENERAL:1790932885.000015"
+            ]
+          }
+        ],
+        "affected_reporters": [],
+        "recurrence": "FOUND",
+        "recurrence_evidence_ids": [
+          "k:rp-tie-calibration-outcome@1.0:053fe48a"
+        ],
+        "reported_recurrence_evidence_ids": []
+      }
+    },
+    "resolution": {
+      "topic": "MIXED",
+      "members": {
+        "member_6b0a2b0015aa474bf50996d0": "UNRESOLVED",
+        "member_225803f43142caa5d3c165cf": "PARTIALLY_RESOLVED",
+        "member_b0a066a9dcba609a9aebaec9": "PARTIALLY_RESOLVED"
+      },
+      "agent1_attributed": [
+        {
+          "member_id": "member_6b0a2b0015aa474bf50996d0",
+          "state": "UNRESOLVED",
+          "agent1_verification_status": "VERIFIED",
+          "agent1_review_required": false
+        },
+        {
+          "member_id": "member_225803f43142caa5d3c165cf",
+          "state": "UNRESOLVED",
+          "agent1_verification_status": "NEEDS_REVIEW",
+          "agent1_review_required": true
+        },
+        {
+          "member_id": "member_b0a066a9dcba609a9aebaec9",
+          "state": "UNRESOLVED",
+          "agent1_verification_status": "CORRECTED",
+          "agent1_review_required": false
+        }
+      ]
+    },
+    "established_handling": [],
+    "coverage_issues": [],
+    "action_source": "DRAFT",
+    "action_notes": [],
+    "tot": {
+      "status": "COMPARED",
+      "triggers": [
+        "OPEN_CONFIRMATION"
+      ],
+      "candidates": [
+        {
+          "candidate_id": "shared_reminder",
+          "action_type": "POST_ALIGNMENT",
+          "instruction": "Post a shared reminder explaining separate scoring of factual accuracy and format compliance, while keeping individual preferences pending until the actual pairs and current guidance support a decision.",
+          "draft_text": "For this batch, assess factual accuracy and instruction following separately. Check the exact prompt to establish whether the requested structure was mandatory, and identify each response's factual and instruction-following defects. There is no universal rule that accuracy or format always wins. If the prompt, both responses and current guidance do not settle the preference, send the complete pair to the team lead for confirmation. In the thread where the exact formatting instruction was requested, please supply it before weighing the responses. The tutor's proposed scoring approach in the JSON-versus-prose discussion is not authoritative guidance, and that pair remains open for review.",
+          "evidence_ids": [
+            "m:C_RP_GENERAL:1790856332.000018",
+            "m:C_RP_QA:1790913824.000016",
+            "m:C_RP_GENERAL:1790932885.000015",
+            "m:C_RP_GENERAL:1790933024.000339",
+            "m:C_RP_QA:1790913880.000113",
+            "k:response-preference-faq@1.1:fa9b6a3d",
+            "k:response-preference-instructions@1.1:a71c54c7"
+          ],
+          "evidence_support": "STRONG",
+          "applicability": "CURRENT",
+          "severity_fit": "FITS",
+          "rationale": "Three current threads raise the same scoring question, and current project guidance directly explains the procedure. A shared reminder addresses recurring uncertainty without creating a new priority rule or changing documentation that already covers the issue. This is proportionate to medium severity: the evidence shows repeated uncertainty, not established widespread incorrect labels or blocked work. It preserves the team lead's existing request and leaves individual decisions and the open review with the team lead.",
+          "recorded_applicability": "CURRENT",
+          "unknown_evidence_ids": [],
+          "premise_ids": [
+            "c1",
+            "c2",
+            "c3",
+            "c4",
+            "c5",
+            "c6",
+            "c8"
+          ],
+          "issues": [],
+          "valid": true,
+          "grounding": "SUPPORTED",
+          "sufficiency": {
+            "verdict": "SUFFICIENT",
+            "essential_statement_ids": [
+              "claim:c1",
+              "claim:c2",
+              "claim:c3",
+              "claim:c4",
+              "claim:c5",
+              "claim:c6",
+              "claim:c8"
+            ],
+            "rationale": "The supported premises establish the three current questions, applicable procedure, existing team lead request, nondecisive tutor discussion, and unresolved preferences. Together with the open review flag, they justify the exact shared reminder without creating authority for the tutor's suggestion or deciding any pair.",
+            "statement_id": "alternative:shared_reminder",
+            "check": "SUPPORTED"
+          }
+        },
+        {
+          "candidate_id": "wait_for_case_material",
+          "action_type": "NO_ACTION",
+          "instruction": "Defer a shared announcement and ask the thread starters to provide the exact prompts and both responses before reviewing the unresolved preferences.",
+          "draft_text": "Please provide the exact prompt, including the formatting instruction, and both responses for each unresolved comparison. In the thread where the team lead already requested the instruction, please complete that request. We will use the current guidance to assess factual accuracy and instruction following separately, with team lead confirmation if the preference remains unsettled. No response is selected here, and the JSON-versus-prose pair remains open for review; a tutor's suggestion is not an authoritative decision.",
+          "evidence_ids": [
+            "m:C_RP_GENERAL:1790933024.000339",
+            "m:C_RP_QA:1790913824.000016",
+            "m:C_RP_QA:1790913921.000226",
+            "m:C_RP_QA:1790913880.000113",
+            "k:response-preference-faq@1.1:fa9b6a3d"
+          ],
+          "evidence_support": "PARTIAL",
+          "applicability": "CURRENT",
+          "severity_fit": "PARTIAL",
+          "rationale": "Waiting for the actual case material follows current guidance and the team lead's existing request, so it avoids an unsupported preference decision. However, deferring a shared explanation addresses the missing inputs more than the repeated procedural question across three threads. It is a cautious option, but less complete for the assessed medium severity.",
+          "recorded_applicability": "CURRENT",
+          "unknown_evidence_ids": [],
+          "premise_ids": [
+            "c2",
+            "c4",
+            "c5",
+            "c6",
+            "c8"
+          ],
+          "issues": [],
+          "valid": true,
+          "grounding": "SUPPORTED",
+          "sufficiency": null
+        }
+      ],
+      "model_preferred_candidate_id": "shared_reminder",
+      "close_call": false,
+      "rationale": "The shared reminder is better supported because it addresses the repeated question across current threads while retaining the same case-material requirements as waiting. Current guidance already supplies the procedure; historical calibration results are not needed to justify it and do not establish a rule for this batch. This preference does not select any response, clear the open confirmation trigger or resolve the review of the tutor's proposed scoring approach. The team lead decides after reviewing the required material.",
+      "preferred_candidate_id": "shared_reminder",
+      "grounded_candidate_ids": [
+        "shared_reminder",
+        "wait_for_case_material"
+      ],
+      "presentation": "PREFERRED_WITH_ALTERNATIVES",
+      "note": "Alternatives for the reviewer, each with its own grounding verdict; the card action and review reasons are unchanged by this comparison."
+    },
+    "evidence_ledger": {
+      "m:C_RP_GENERAL:1790856332.000018": {
+        "evidence_id": "m:C_RP_GENERAL:1790856332.000018",
+        "origin": "member_message",
+        "use": "MEMBER_REPORT",
+        "member_id": "member_6b0a2b0015aa474bf50996d0",
+        "channel_id": "C_RP_GENERAL",
+        "thread_id": "1790856332.000018",
+        "message_id": "1790856332.000018",
+        "author_id": "U019",
+        "author_name": "Yuki",
+        "author_role": "QA_TUTOR",
+        "timestamp": "2026-10-01T12:05:32.000018Z",
+        "thread_starter_id": "U019",
+        "thread_starter_role": "QA_TUTOR",
+        "reactions": [],
+        "excerpt": "Could QA clarify this case: A follows format, B is more accurate. Which wins?"
+      },
+      "m:C_RP_QA:1790913824.000016": {
+        "evidence_id": "m:C_RP_QA:1790913824.000016",
+        "origin": "member_message",
+        "use": "MEMBER_REPORT",
+        "member_id": "member_225803f43142caa5d3c165cf",
+        "channel_id": "C_RP_QA",
+        "thread_id": "1790913824.000016",
+        "message_id": "1790913824.000016",
+        "author_id": "U007",
+        "author_name": "Leo",
+        "author_role": "QA_TUTOR",
+        "timestamp": "2026-10-02T04:03:44.000016Z",
+        "thread_starter_id": "U007",
+        "thread_starter_role": "QA_TUTOR",
+        "reactions": [],
+        "excerpt": "Prompt asked for a JSON object; B explains it beautifully in prose. Which is better? (task ref RP-3824)"
+      },
+      "m:C_RP_QA:1790913880.000113": {
+        "evidence_id": "m:C_RP_QA:1790913880.000113",
+        "origin": "member_message",
+        "use": "MEMBER_REPORT",
+        "member_id": "member_225803f43142caa5d3c165cf",
+        "channel_id": "C_RP_QA",
+        "thread_id": "1790913824.000016",
+        "message_id": "1790913880.000113",
+        "author_id": "U018",
+        "author_name": "Omar",
+        "author_role": "TUTOR",
+        "timestamp": "2026-10-02T04:04:40.000113Z",
+        "thread_starter_id": "U007",
+        "thread_starter_role": "QA_TUTOR",
+        "reactions": [],
+        "excerpt": "The format requirement was explicit in the user prompt, not an optional preference. I would score the formatting failure separately from whether the facts are right."
+      },
+      "m:C_RP_QA:1790913921.000226": {
+        "evidence_id": "m:C_RP_QA:1790913921.000226",
+        "origin": "member_message",
+        "use": "MEMBER_REPORT",
+        "member_id": "member_225803f43142caa5d3c165cf",
+        "channel_id": "C_RP_QA",
+        "thread_id": "1790913824.000016",
+        "message_id": "1790913921.000226",
+        "author_id": "U014",
+        "author_name": "Linh",
+        "author_role": "QA_TUTOR",
+        "timestamp": "2026-10-02T04:05:21.000226Z",
+        "thread_starter_id": "U007",
+        "thread_starter_role": "QA_TUTOR",
+        "reactions": [],
+        "excerpt": "Was the requested structure mandatory, and were the factual statements correct independently? One response may be better on correctness but worse on compliance."
+      },
+      "m:C_RP_GENERAL:1790932885.000015": {
+        "evidence_id": "m:C_RP_GENERAL:1790932885.000015",
+        "origin": "member_message",
+        "use": "MEMBER_REPORT",
+        "member_id": "member_b0a066a9dcba609a9aebaec9",
+        "channel_id": "C_RP_GENERAL",
+        "thread_id": "1790932885.000015",
+        "message_id": "1790932885.000015",
+        "author_id": "U018",
+        "author_name": "Omar",
+        "author_role": "TUTOR",
+        "timestamp": "2026-10-02T09:21:25.000015Z",
+        "thread_starter_id": "U018",
+        "thread_starter_role": "TUTOR",
+        "reactions": [],
+        "excerpt": "Can accuracy outweigh ignoring the user's requested output structure?"
+      },
+      "m:C_RP_GENERAL:1790932935.000113": {
+        "evidence_id": "m:C_RP_GENERAL:1790932935.000113",
+        "origin": "member_message",
+        "use": "MEMBER_REPORT",
+        "member_id": "member_b0a066a9dcba609a9aebaec9",
+        "channel_id": "C_RP_GENERAL",
+        "thread_id": "1790932885.000015",
+        "message_id": "1790932935.000113",
+        "author_id": "U013",
+        "author_name": "Jun",
+        "author_role": "TUTOR",
+        "timestamp": "2026-10-02T09:22:15.000113Z",
+        "thread_starter_id": "U018",
+        "thread_starter_role": "TUTOR",
+        "reactions": [
+          {
+            "name": "thumbsup",
+            "users": [
+              {
+                "id": "U017",
+                "name": "Bea"
+              }
+            ]
+          }
+        ],
+        "excerpt": "The format requirement was explicit in the user prompt, not an optional preference."
+      },
+      "m:C_RP_GENERAL:1790932979.000226": {
+        "evidence_id": "m:C_RP_GENERAL:1790932979.000226",
+        "origin": "member_message",
+        "use": "MEMBER_REPORT",
+        "member_id": "member_b0a066a9dcba609a9aebaec9",
+        "channel_id": "C_RP_GENERAL",
+        "thread_id": "1790932885.000015",
+        "message_id": "1790932979.000226",
+        "author_id": "U019",
+        "author_name": "Yuki",
+        "author_role": "QA_TUTOR",
+        "timestamp": "2026-10-02T09:22:59.000226Z",
+        "thread_starter_id": "U018",
+        "thread_starter_role": "TUTOR",
+        "reactions": [],
+        "excerpt": "Can we separate instruction-following severity from factual-accuracy severity?"
+      },
+      "m:C_RP_GENERAL:1790933024.000339": {
+        "evidence_id": "m:C_RP_GENERAL:1790933024.000339",
+        "origin": "member_message",
+        "use": "MEMBER_REPORT",
+        "member_id": "member_b0a066a9dcba609a9aebaec9",
+        "channel_id": "C_RP_GENERAL",
+        "thread_id": "1790932885.000015",
+        "message_id": "1790933024.000339",
+        "author_id": "U001",
+        "author_name": "Alex",
+        "author_role": "TEAM_LEAD",
+        "timestamp": "2026-10-02T09:23:44.000339Z",
+        "thread_starter_id": "U018",
+        "thread_starter_role": "TUTOR",
+        "reactions": [],
+        "excerpt": "Please paste the exact formatting instruction; QA needs to verify whether it was mandatory before weighing the responses. We need to compare the actual user instruction, not only the output style."
+      },
+      "k:response-preference-faq@1.1:fa9b6a3d": {
+        "evidence_id": "k:response-preference-faq@1.1:fa9b6a3d",
+        "origin": "retrieved_source",
+        "use": "CURRENT_GUIDANCE",
+        "citation": {
+          "document_id": "knowledge_8267f474fe0a050bdbcaf6140c458ee11ad457fdc2afe9f79de12a23de8575e9",
+          "version_id": "version_6c9da15dd304e1be3d453ea1de9cbfd1e8cc54f0939ce516dd89cf0457f82a86",
+          "chunk_id": "chunk_fa9b6a3dd66908c89de9f8cf42d99e0e",
+          "authoring": "response-preference-faq@1.1",
+          "title": "Response Preference — FAQ (v1.1)",
+          "sections": [
+            "Instruction following"
+          ],
+          "source": {
+            "batch_id": null,
+            "channel_id": null,
+            "manual_key": "response-preference-faq",
+            "message_id": null,
+            "permalink": null,
+            "project_id": "response_preference",
+            "reference": null,
+            "system": "manual",
+            "thread_id": null,
+            "workspace_id": null
+          }
+        },
+        "source_type": "faq",
+        "record_kind": "faq",
+        "applicability": {
+          "state": "CURRENT",
+          "revision_state": "CURRENT",
+          "version_mode": "current",
+          "replaced_by": [],
+          "unverified_supersession": [],
+          "supersedes": [],
+          "other_revisions": []
+        },
+        "dates": {
+          "source_date": "2026-09-05T13:00:00Z",
+          "basis": "effective_at",
+          "effective_at": "2026-09-05T13:00:00Z",
+          "created_at": null,
+          "valid_until": null,
+          "expired_as_of": false,
+          "reference_time": "2026-10-02T12:00:00Z"
+        },
+        "scope": {
+          "project_id": "response_preference",
+          "batch_id": null,
+          "scope": "project",
+          "batch_relation": "project_wide"
+        },
+        "authority": {
+          "role": "TEAM_LEAD",
+          "actor": "U001",
+          "approval_status": "EXPLICIT_SOURCE_MARKER",
+          "provenance": "synthetic_manual_record"
+        },
+        "recorded_states": {
+          "status": "approved",
+          "decision_status": null,
+          "execution_status": null,
+          "outcome_status": null
+        },
+        "upstream_review": null,
+        "excerpt": "## Instruction following\n\n### Q: The prompt required JSON, but one response is well-written prose. Which response wins?\nThe required format is not optional: record its violation separately from factual accuracy. No universal tie-break rule is established for competing accuracy and instruction-following defects. If the actual pair and applicable guidance do not settle the preference, provide the prompt and both responses for TL confirmation.\n\n### Q: Can accuracy outweigh ignoring a requested output structure?\nScore the dimensions separately and identify whether the requested structure was mandatory. Do not infer a general priority rule from one example or decide without the other response's evidence."
+      },
+      "k:rp-tie-calibration-outcome@1.0:053fe48a": {
+        "evidence_id": "k:rp-tie-calibration-outcome@1.0:053fe48a",
+        "origin": "retrieved_source",
+        "use": "PRIOR_DECISION",
+        "citation": {
+          "document_id": "knowledge_2172da2a2ef0f5ad329ced2418a84472dbe7d939455cf84fcb1b9d27c943e47c",
+          "version_id": "version_cd04873e2b6866bd014b1f72e268367237289452d2dd33d91010fbb0709cf007",
+          "chunk_id": "chunk_053fe48a76f928cacbf050b04487e1e6",
+          "authoring": "rp-tie-calibration-outcome@1.0",
+          "title": "Tie calibration follow-up — improvement in the reviewed sample",
+          "sections": [
+            "TL assessment",
+            "Limit"
+          ],
+          "source": {
+            "batch_id": "rp_batch_14",
+            "channel_id": null,
+            "manual_key": "rp-tie-calibration-outcome",
+            "message_id": null,
+            "permalink": null,
+            "project_id": "response_preference",
+            "reference": null,
+            "system": "manual",
+            "thread_id": null,
+            "workspace_id": null
+          }
+        },
+        "source_type": "decision",
+        "record_kind": "follow_up",
+        "applicability": {
+          "state": "CURRENT",
+          "revision_state": "CURRENT",
+          "version_mode": "current",
+          "replaced_by": [],
+          "unverified_supersession": [],
+          "supersedes": [],
+          "other_revisions": []
+        },
+        "dates": {
+          "source_date": "2026-09-20T15:00:00Z",
+          "basis": "effective_at",
+          "effective_at": "2026-09-20T15:00:00Z",
+          "created_at": null,
+          "valid_until": null,
+          "expired_as_of": false,
+          "reference_time": "2026-10-02T12:00:00Z"
+        },
+        "scope": {
+          "project_id": "response_preference",
+          "batch_id": "rp_batch_14",
+          "scope": "project",
+          "batch_relation": "other_batch"
+        },
+        "authority": {
+          "role": "TEAM_LEAD",
+          "actor": "U001",
+          "approval_status": "NO_APPROVAL_MARKER",
+          "provenance": "synthetic_manual_record"
+        },
+        "recorded_states": {
+          "status": "reported",
+          "decision_status": "reported",
+          "execution_status": "calibration_completed",
+          "outcome_status": "improved_in_sample"
+        },
+        "upstream_review": null,
+        "excerpt": "[PRIOR RECORD (follow_up; decision_status: reported; execution_status: calibration_completed; outcome_status: improved_in_sample) - history, not a standing rule.]\n## TL assessment\nAgreement increased from two to seven of these eight pairs. RP14-C08 remained disputed because the packet did not establish whether an output-format constraint was mandatory; that pair was retained for confirmation.\n\n## Limit\nThis supports a limited calibration benefit in the reviewed sample. It does not establish independent accuracy, eliminate future disagreements, or define a universal accuracy-versus-format preference rule. A new batch needs its own evidence."
+      },
+      "k:response-preference-instructions@1.1:a71c54c7": {
+        "evidence_id": "k:response-preference-instructions@1.1:a71c54c7",
+        "origin": "retrieved_source",
+        "use": "CURRENT_GUIDANCE",
+        "citation": {
+          "document_id": "knowledge_c49652bd3dfc0e71a42597bd9128f922ba1700cc4d7eb83a39cfbaad9a43ed6d",
+          "version_id": "version_497eb858ea77dcb88133f2ba1afd5eaf08d1a1d380c3a5cad663f8f55b7d3c65",
+          "chunk_id": "chunk_a71c54c718421d30748a010a14ec54a6",
+          "authoring": "response-preference-instructions@1.1",
+          "title": "Response Preference — Instructions (v1.1)",
+          "sections": [
+            "Content-quality rubric"
+          ],
+          "source": {
+            "batch_id": null,
+            "channel_id": null,
+            "manual_key": "response-preference-instructions",
+            "message_id": null,
+            "permalink": null,
+            "project_id": "response_preference",
+            "reference": null,
+            "system": "manual",
+            "thread_id": null,
+            "workspace_id": null
+          }
+        },
+        "source_type": "guideline",
+        "record_kind": "guideline",
+        "applicability": {
+          "state": "CURRENT",
+          "revision_state": "CURRENT",
+          "version_mode": "current",
+          "replaced_by": [],
+          "unverified_supersession": [],
+          "supersedes": [],
+          "other_revisions": []
+        },
+        "dates": {
+          "source_date": "2026-08-30T13:00:00Z",
+          "basis": "effective_at",
+          "effective_at": "2026-08-30T13:00:00Z",
+          "created_at": null,
+          "valid_until": null,
+          "expired_as_of": false,
+          "reference_time": "2026-10-02T12:00:00Z"
+        },
+        "scope": {
+          "project_id": "response_preference",
+          "batch_id": null,
+          "scope": "project",
+          "batch_relation": "project_wide"
+        },
+        "authority": {
+          "role": "TEAM_LEAD",
+          "actor": "U001",
+          "approval_status": "EXPLICIT_SOURCE_MARKER",
+          "provenance": "synthetic_manual_record"
+        },
+        "recorded_states": {
+          "status": "approved",
+          "decision_status": null,
+          "execution_status": null,
+          "outcome_status": null
+        },
+        "upstream_review": null,
+        "excerpt": "## Content-quality rubric\nMajor/minor describe task-quality defects and do not determine operational incident severity.\n\n| Dimension | Major defect | Minor defect | Acceptable / no automatic penalty |\n| --- | --- | --- | --- |\n| Factual accuracy | Error changes the central conclusion or actionable answer | Nonessential background error without that effect | Accurate paraphrase or an immaterial stylistic difference |\n| Instruction adherence | Explicit required format/structure is missing | Limited violation of an actual secondary requirement | A stylistic choice that violates no requirement |\n| Citation support | Fabricated reference or materially unsupported attribution | A limited citation-detail error where the source and support remain identifiable | A valid source that supports the claim |\n| Preference | Identify a meaningful benefit; grade underlying defects separately | Do not manufacture a defect to break a tie | No meaningful quality difference supports a tie |\n\nAn inaccessible link needs a verification note; lack of access alone does not establish the error grade of the claim."
+      },
+      "k:rp-audit-manifest-post@1.0:f64eba9c": {
+        "evidence_id": "k:rp-audit-manifest-post@1.0:f64eba9c",
+        "origin": "retrieved_source",
+        "use": "ANNOUNCEMENT",
+        "citation": {
+          "document_id": "knowledge_18f64b7ceb005864013b2656c98bc98c88db8a57550f765adc0dc3053171b64b",
+          "version_id": "version_fc158ba3943f52480dfee299413d4fdafa7d60d9ed35390b9b8f46c77bafcb17",
+          "chunk_id": "chunk_f64eba9cd6e8b526d03abf787ea4feb1",
+          "authoring": "rp-audit-manifest-post@1.0",
+          "title": "Weekly audit manifest convention communicated",
+          "sections": [],
+          "source": {
+            "batch_id": "rp_batch_15",
+            "channel_id": "C_RP_ANNOUNCEMENTS",
+            "manual_key": null,
+            "message_id": "1790690400.810002",
+            "permalink": null,
+            "project_id": "response_preference",
+            "reference": null,
+            "system": "slack",
+            "thread_id": "1790690400.810002",
+            "workspace_id": null
+          }
+        },
+        "source_type": "announcement",
+        "record_kind": "channel_announcement",
+        "applicability": {
+          "state": "CURRENT",
+          "revision_state": "CURRENT",
+          "version_mode": "current",
+          "replaced_by": [],
+          "unverified_supersession": [],
+          "supersedes": [],
+          "other_revisions": []
+        },
+        "dates": {
+          "source_date": "2026-09-29T14:00:00Z",
+          "basis": "effective_at",
+          "effective_at": "2026-09-29T14:00:00Z",
+          "created_at": "2026-09-29T14:00:00.810002+00:00",
+          "valid_until": null,
+          "expired_as_of": false,
+          "reference_time": "2026-10-02T12:00:00Z"
+        },
+        "scope": {
+          "project_id": "response_preference",
+          "batch_id": "rp_batch_15",
+          "scope": "project",
+          "batch_relation": "same_batch"
+        },
+        "authority": {
+          "role": "TEAM_LEAD",
+          "actor": "U001",
+          "approval_status": "EXPLICIT_SOURCE_MARKER",
+          "provenance": "synthetic_slack_archive"
+        },
+        "recorded_states": {
+          "status": "tl_approved",
+          "decision_status": "tl_approved",
+          "execution_status": "posted",
+          "outcome_status": "not_observed"
+        },
+        "upstream_review": null,
+        "excerpt": "[ANNOUNCEMENT posted 2026-09-29T14:00:00Z by TEAM_LEAD (rp_batch_15): not established as handling for this topic until you show it is relevant and gives a directive.]\nFor RP batch 15 weekly QA audit exports prepared from today, the manifest must be JSON rather than a prose list. Use the fields batch_id, audit_date, and task_ids, and name the file rp15_audit_YYYY-MM-DD.json. This is an administrative handoff format for QA files. It does not change how we compare the model responses in a task or settle any accuracy-versus-format tradeoff in those responses."
+      },
+      "k:rp-tie-calibration-post@1.0:4a3c786f": {
+        "evidence_id": "k:rp-tie-calibration-post@1.0:4a3c786f",
+        "origin": "retrieved_source",
+        "use": "ANNOUNCEMENT",
+        "citation": {
+          "document_id": "knowledge_45310f4cdc303d3697b6589b86dfcc3def7cefd37cba2e56b4a20a01bc548841",
+          "version_id": "version_da07d09f6758e77c7a4524b72e54e3ce672614472c8509957745aa892a73961b",
+          "chunk_id": "chunk_4a3c786f92797e2e8738accda1893ab4",
+          "authoring": "rp-tie-calibration-post@1.0",
+          "title": "Tie calibration announcement",
+          "sections": [],
+          "source": {
+            "batch_id": "rp_batch_14",
+            "channel_id": "C_RP_ANNOUNCEMENTS",
+            "manual_key": null,
+            "message_id": "1789567200.700002",
+            "permalink": null,
+            "project_id": "response_preference",
+            "reference": null,
+            "system": "slack",
+            "thread_id": "1789567200.700002",
+            "workspace_id": null
+          }
+        },
+        "source_type": "announcement",
+        "record_kind": "channel_announcement",
+        "applicability": {
+          "state": "CURRENT",
+          "revision_state": "CURRENT",
+          "version_mode": "current",
+          "replaced_by": [],
+          "unverified_supersession": [],
+          "supersedes": [],
+          "other_revisions": []
+        },
+        "dates": {
+          "source_date": "2026-09-16T14:00:00Z",
+          "basis": "effective_at",
+          "effective_at": "2026-09-16T14:00:00Z",
+          "created_at": "2026-09-16T14:00:00.700002+00:00",
+          "valid_until": null,
+          "expired_as_of": false,
+          "reference_time": "2026-10-02T12:00:00Z"
+        },
+        "scope": {
+          "project_id": "response_preference",
+          "batch_id": "rp_batch_14",
+          "scope": "project",
+          "batch_relation": "other_batch"
+        },
+        "authority": {
+          "role": "TEAM_LEAD",
+          "actor": "U001",
+          "approval_status": "EXPLICIT_SOURCE_MARKER",
+          "provenance": "synthetic_slack_archive"
+        },
+        "recorded_states": {
+          "status": "tl_approved",
+          "decision_status": "tl_approved",
+          "execution_status": "posted",
+          "outcome_status": "not_observed"
+        },
+        "upstream_review": null,
+        "excerpt": "[ANNOUNCEMENT posted 2026-09-16T14:00:00Z by TEAM_LEAD (rp_batch_14): not established as handling for this topic until you show it is relevant and gives a directive.]\nPreference batch 14 calibration: choose a tie when neither answer offers a meaningful quality advantage. If choosing A or B, identify the user-facing benefit rather than saying only that it sounds nicer. Keep material factual or instruction-following defects separate. Bring both rationales for disputed pairs to the eight-pair calibration review. This message clarifies the existing criterion; it does not create a new numerical threshold."
+      }
+    },
+    "card": {
+      "contract_version": "agent3-advice-card-v3",
+      "record_type": "ADVICE_CARD",
+      "card_id": "card_0a4ca19a27cee4d5eb2bab6affb41eb0",
+      "project_id": "response_preference",
+      "topic_name": "Format adherence vs factual accuracy",
+      "card_line": "NEEDS_REVIEW",
+      "summary": "Two QA tutors and a tutor ask how to weigh requested format against factual accuracy across three threads. Current guidance requires separate scoring and case-specific review rather than a universal tie-break rule; in one thread, the team lead has already requested the exact formatting instruction.",
+      "severity": {
+        "level": "MEDIUM",
+        "assessment_status": "ASSESSED",
+        "rubric_version": "severity-rubric-v3-semantic-signals",
+        "rubric_content_sha256": "eccaa31a2ab84a0aa7c005216a92fc39681e1dd10107117344948235a76673f4",
+        "rubric_project_id": null,
+        "rubric_scope": "SHARED_DEFAULT",
+        "rationale": "Two QA tutors and a tutor raise the same consequential scoring tradeoff across three threads. This supports recurring uncertainty about preference judgments, but not widespread incorrect labels, blocked work or a batch-wide failure.",
+        "matched_signals": [
+          {
+            "level": "MEDIUM",
+            "signal_index": 0,
+            "signal_text": "Recurring confusion about the same rule, tool behavior, or scoring criterion that suggests meaningful workflow or labeling impact",
+            "support": "Two QA tutors and a tutor repeatedly ask whether accuracy or required format should determine the preferred response, leaving a consequential scoring choice unsettled across threads.",
+            "evidence": [
+              {
+                "kind": "slack_message",
+                "project_id": "response_preference",
+                "batch_id": "rp_batch_15",
+                "scope": "project",
+                "channel_id": "C_RP_GENERAL",
+                "thread_id": "1790856332.000018",
+                "message_id": "1790856332.000018",
+                "document_id": null,
+                "version_id": null,
+                "authoring_document_id": null,
+                "authoring_version": null,
+                "section": null,
+                "chunk_id": null,
+                "candidate_group_id": null,
+                "member_id": "member_6b0a2b0015aa474bf50996d0",
+                "artifact": null,
+                "artifact_sha256": null,
+                "quote": null,
+                "note": "m:C_RP_GENERAL:1790856332.000018"
+              },
+              {
+                "kind": "slack_message",
+                "project_id": "response_preference",
+                "batch_id": "rp_batch_15",
+                "scope": "project",
+                "channel_id": "C_RP_QA",
+                "thread_id": "1790913824.000016",
+                "message_id": "1790913824.000016",
+                "document_id": null,
+                "version_id": null,
+                "authoring_document_id": null,
+                "authoring_version": null,
+                "section": null,
+                "chunk_id": null,
+                "candidate_group_id": null,
+                "member_id": "member_225803f43142caa5d3c165cf",
+                "artifact": null,
+                "artifact_sha256": null,
+                "quote": null,
+                "note": "m:C_RP_QA:1790913824.000016"
+              },
+              {
+                "kind": "slack_message",
+                "project_id": "response_preference",
+                "batch_id": "rp_batch_15",
+                "scope": "project",
+                "channel_id": "C_RP_GENERAL",
+                "thread_id": "1790932885.000015",
+                "message_id": "1790932885.000015",
+                "document_id": null,
+                "version_id": null,
+                "authoring_document_id": null,
+                "authoring_version": null,
+                "section": null,
+                "chunk_id": null,
+                "candidate_group_id": null,
+                "member_id": "member_b0a066a9dcba609a9aebaec9",
+                "artifact": null,
+                "artifact_sha256": null,
+                "quote": null,
+                "note": "m:C_RP_GENERAL:1790932885.000015"
+              }
+            ]
+          }
+        ],
+        "evidence": [
+          {
+            "kind": "slack_message",
+            "project_id": "response_preference",
+            "batch_id": "rp_batch_15",
+            "scope": "project",
+            "channel_id": "C_RP_GENERAL",
+            "thread_id": "1790856332.000018",
+            "message_id": "1790856332.000018",
+            "document_id": null,
+            "version_id": null,
+            "authoring_document_id": null,
+            "authoring_version": null,
+            "section": null,
+            "chunk_id": null,
+            "candidate_group_id": null,
+            "member_id": "member_6b0a2b0015aa474bf50996d0",
+            "artifact": null,
+            "artifact_sha256": null,
+            "quote": null,
+            "note": "m:C_RP_GENERAL:1790856332.000018"
+          },
+          {
+            "kind": "slack_message",
+            "project_id": "response_preference",
+            "batch_id": "rp_batch_15",
+            "scope": "project",
+            "channel_id": "C_RP_QA",
+            "thread_id": "1790913824.000016",
+            "message_id": "1790913824.000016",
+            "document_id": null,
+            "version_id": null,
+            "authoring_document_id": null,
+            "authoring_version": null,
+            "section": null,
+            "chunk_id": null,
+            "candidate_group_id": null,
+            "member_id": "member_225803f43142caa5d3c165cf",
+            "artifact": null,
+            "artifact_sha256": null,
+            "quote": null,
+            "note": "m:C_RP_QA:1790913824.000016"
+          },
+          {
+            "kind": "slack_message",
+            "project_id": "response_preference",
+            "batch_id": "rp_batch_15",
+            "scope": "project",
+            "channel_id": "C_RP_GENERAL",
+            "thread_id": "1790932885.000015",
+            "message_id": "1790932885.000015",
+            "document_id": null,
+            "version_id": null,
+            "authoring_document_id": null,
+            "authoring_version": null,
+            "section": null,
+            "chunk_id": null,
+            "candidate_group_id": null,
+            "member_id": "member_b0a066a9dcba609a9aebaec9",
+            "artifact": null,
+            "artifact_sha256": null,
+            "quote": null,
+            "note": "m:C_RP_GENERAL:1790932885.000015"
+          }
+        ],
+        "occurrence": {
+          "affected_reporters": {
+            "status": "UNKNOWN",
+            "count": null,
+            "ids": [],
+            "basis": null,
+            "evidence": []
+          },
+          "affected_tasks": {
+            "status": "UNKNOWN",
+            "count": null,
+            "ids": [],
+            "basis": null,
+            "evidence": []
+          },
+          "relevant_threads": [
+            {
+              "project_id": "response_preference",
+              "batch_id": "rp_batch_15",
+              "channel_id": "C_RP_GENERAL",
+              "thread_id": "1790856332.000018",
+              "member_id": "member_6b0a2b0015aa474bf50996d0"
+            },
+            {
+              "project_id": "response_preference",
+              "batch_id": "rp_batch_15",
+              "channel_id": "C_RP_QA",
+              "thread_id": "1790913824.000016",
+              "member_id": "member_225803f43142caa5d3c165cf"
+            },
+            {
+              "project_id": "response_preference",
+              "batch_id": "rp_batch_15",
+              "channel_id": "C_RP_GENERAL",
+              "thread_id": "1790932885.000015",
+              "member_id": "member_b0a066a9dcba609a9aebaec9"
+            }
+          ],
+          "reporting_window": {
+            "start": "2026-10-01T12:05:32.000018+00:00",
+            "end": "2026-10-02T09:23:44.000339+00:00"
+          },
+          "historical_recurrence": {
+            "status": "FOUND",
+            "sources": [
+              {
+                "kind": "knowledge_source",
+                "project_id": "response_preference",
+                "batch_id": "rp_batch_14",
+                "scope": "project",
+                "channel_id": null,
+                "thread_id": null,
+                "message_id": null,
+                "document_id": "knowledge_2172da2a2ef0f5ad329ced2418a84472dbe7d939455cf84fcb1b9d27c943e47c",
+                "version_id": "version_cd04873e2b6866bd014b1f72e268367237289452d2dd33d91010fbb0709cf007",
+                "authoring_document_id": "rp-tie-calibration-outcome",
+                "authoring_version": "1.0",
+                "section": "TL assessment",
+                "chunk_id": "chunk_053fe48a76f928cacbf050b04487e1e6",
+                "candidate_group_id": null,
+                "member_id": null,
+                "artifact": null,
+                "artifact_sha256": null,
+                "quote": null,
+                "note": "k:rp-tie-calibration-outcome@1.0:053fe48a (PRIOR_DECISION; CURRENT)"
+              }
+            ],
+            "event_series_ids": []
+          },
+          "known_denominator": null,
+          "structural": {
+            "threads": 3,
+            "messages": 8,
+            "distinct_participants": 6,
+            "duplicate_threads_ignored": 0,
+            "duplicate_messages_ignored": 0,
+            "computed_from": "topic member threads (original Slack messages)",
+            "participants_are_not_affected_reporters": true
+          },
+          "semantic_identification": "ASSESSED"
+        },
+        "inherited_from": {
+          "level": "UNKNOWN",
+          "assessment_status": "UNASSESSED",
+          "assessment_deferred_to": "AGENT3",
+          "reason": "Agent 2 performs taxonomy only."
+        }
+      },
+      "severity_is_provisional": false,
+      "resolution_status": "MIXED",
+      "recommended_action": {
+        "action_type": "POST_ALIGNMENT",
+        "draft_text": "For this batch, score factual accuracy and instruction adherence separately. A required output format is not optional, but there is no universal rule that accuracy or format always wins.\n- Check the exact user instruction to establish whether the requested structure was mandatory.\n- Compare both responses and identify their factual and instruction-following defects separately.\n- If the actual pair and current guidance still do not settle the preference, provide the prompt and both responses for team lead confirmation.\nIn the thread where the team lead requested the exact formatting instruction, please supply it before weighing the responses. Do not infer a general priority rule from one example.",
+        "scope_note": "Applies to response comparison in the current batch, not administrative QA export formats. It restates current guidance and does not choose a response for any supplied case.",
+        "label": "Post a reminder",
+        "instruction": "Post a batch reminder to score format and factual accuracy separately and provide the prompt and both responses for team lead confirmation when the pair and current guidance do not settle the preference.",
+        "rationale": "The repeated questions need a shared procedure, not a new rule that format or accuracy always wins. The reminder also preserves the team lead's request to inspect the actual instruction before weighing the responses.",
+        "targets": [],
+        "essential_premise_ids": [
+          "claim:c4",
+          "claim:c5",
+          "claim:c8"
+        ],
+        "source": "DRAFT"
+      },
+      "reasoning": "What the evidence shows: A QA tutor asks which response wins when one follows the format and another is more accurate. A QA tutor reports that a prompt requested a JSON object while one response used prose, and asks which response is better. A tutor asks whether accuracy can outweigh ignoring the user's requested output structure. Current guidance requires recording format violations separately from factual accuracy, checking whether the structure was mandatory, and avoiding a universal accuracy-versus-format priority rule. If the actual pair and applicable guidance do not settle the preference, the prompt and both responses should go to the team lead for confirmation. In the tutor's thread, the team lead requests the exact formatting instruction so QA can verify whether it was mandatory before weighing the responses. In the JSON-versus-prose thread, a tutor proposes scoring the format failure separately, and a QA tutor distinguishes correctness from compliance while asking whether the structure was mandatory and the facts correct; neither message chooses a preferred response. The prior-batch calibration follow-up records improved agreement in the reviewed sample but retains one disputed pair because the packet did not establish whether its output-format constraint was mandatory. It explicitly does not establish a universal accuracy-versus-format rule or settle a new batch. The repeated preference questions remain without a selected response in the supplied threads, although one thread has already received a concrete next step from the team lead; a shared reminder should clarify the procedure without deciding the pairs. Thread status, read from each thread's own messages: partially resolved ×2, unresolved ×1. Agent 1's earlier labels (an input, not evidence): unresolved ×3; 1 of 3 were not verified by Agent 1. 1 advisor statement was not supported by the evidence and not shown.",
+      "supporting_sources": [
+        {
+          "kind": "knowledge_source",
+          "project_id": "response_preference",
+          "batch_id": null,
+          "scope": "project",
+          "channel_id": null,
+          "thread_id": null,
+          "message_id": null,
+          "document_id": "knowledge_8267f474fe0a050bdbcaf6140c458ee11ad457fdc2afe9f79de12a23de8575e9",
+          "version_id": "version_6c9da15dd304e1be3d453ea1de9cbfd1e8cc54f0939ce516dd89cf0457f82a86",
+          "authoring_document_id": "response-preference-faq",
+          "authoring_version": "1.1",
+          "section": "Instruction following",
+          "chunk_id": "chunk_fa9b6a3dd66908c89de9f8cf42d99e0e",
+          "candidate_group_id": null,
+          "member_id": null,
+          "artifact": null,
+          "artifact_sha256": null,
+          "quote": null,
+          "note": "k:response-preference-faq@1.1:fa9b6a3d (CURRENT_GUIDANCE; CURRENT)"
+        },
+        {
+          "kind": "knowledge_source",
+          "project_id": "response_preference",
+          "batch_id": null,
+          "scope": "project",
+          "channel_id": null,
+          "thread_id": null,
+          "message_id": null,
+          "document_id": "knowledge_c49652bd3dfc0e71a42597bd9128f922ba1700cc4d7eb83a39cfbaad9a43ed6d",
+          "version_id": "version_497eb858ea77dcb88133f2ba1afd5eaf08d1a1d380c3a5cad663f8f55b7d3c65",
+          "authoring_document_id": "response-preference-instructions",
+          "authoring_version": "1.1",
+          "section": "Content-quality rubric",
+          "chunk_id": "chunk_a71c54c718421d30748a010a14ec54a6",
+          "candidate_group_id": null,
+          "member_id": null,
+          "artifact": null,
+          "artifact_sha256": null,
+          "quote": null,
+          "note": "k:response-preference-instructions@1.1:a71c54c7 (CURRENT_GUIDANCE; CURRENT)"
+        },
+        {
+          "kind": "knowledge_source",
+          "project_id": "response_preference",
+          "batch_id": "rp_batch_14",
+          "scope": "project",
+          "channel_id": null,
+          "thread_id": null,
+          "message_id": null,
+          "document_id": "knowledge_2172da2a2ef0f5ad329ced2418a84472dbe7d939455cf84fcb1b9d27c943e47c",
+          "version_id": "version_cd04873e2b6866bd014b1f72e268367237289452d2dd33d91010fbb0709cf007",
+          "authoring_document_id": "rp-tie-calibration-outcome",
+          "authoring_version": "1.0",
+          "section": "TL assessment",
+          "chunk_id": "chunk_053fe48a76f928cacbf050b04487e1e6",
+          "candidate_group_id": null,
+          "member_id": null,
+          "artifact": null,
+          "artifact_sha256": null,
+          "quote": null,
+          "note": "k:rp-tie-calibration-outcome@1.0:053fe48a (PRIOR_DECISION; CURRENT)"
+        },
+        {
+          "kind": "slack_message",
+          "project_id": "response_preference",
+          "batch_id": "rp_batch_15",
+          "scope": "project",
+          "channel_id": "C_RP_GENERAL",
+          "thread_id": "1790856332.000018",
+          "message_id": "1790856332.000018",
+          "document_id": null,
+          "version_id": null,
+          "authoring_document_id": null,
+          "authoring_version": null,
+          "section": null,
+          "chunk_id": null,
+          "candidate_group_id": null,
+          "member_id": "member_6b0a2b0015aa474bf50996d0",
+          "artifact": null,
+          "artifact_sha256": null,
+          "quote": null,
+          "note": "m:C_RP_GENERAL:1790856332.000018"
+        },
+        {
+          "kind": "slack_message",
+          "project_id": "response_preference",
+          "batch_id": "rp_batch_15",
+          "scope": "project",
+          "channel_id": "C_RP_QA",
+          "thread_id": "1790913824.000016",
+          "message_id": "1790913824.000016",
+          "document_id": null,
+          "version_id": null,
+          "authoring_document_id": null,
+          "authoring_version": null,
+          "section": null,
+          "chunk_id": null,
+          "candidate_group_id": null,
+          "member_id": "member_225803f43142caa5d3c165cf",
+          "artifact": null,
+          "artifact_sha256": null,
+          "quote": null,
+          "note": "m:C_RP_QA:1790913824.000016"
+        },
+        {
+          "kind": "slack_message",
+          "project_id": "response_preference",
+          "batch_id": "rp_batch_15",
+          "scope": "project",
+          "channel_id": "C_RP_GENERAL",
+          "thread_id": "1790932885.000015",
+          "message_id": "1790932885.000015",
+          "document_id": null,
+          "version_id": null,
+          "authoring_document_id": null,
+          "authoring_version": null,
+          "section": null,
+          "chunk_id": null,
+          "candidate_group_id": null,
+          "member_id": "member_b0a066a9dcba609a9aebaec9",
+          "artifact": null,
+          "artifact_sha256": null,
+          "quote": null,
+          "note": "m:C_RP_GENERAL:1790932885.000015"
+        },
+        {
+          "kind": "slack_message",
+          "project_id": "response_preference",
+          "batch_id": "rp_batch_15",
+          "scope": "project",
+          "channel_id": "C_RP_GENERAL",
+          "thread_id": "1790932885.000015",
+          "message_id": "1790933024.000339",
+          "document_id": null,
+          "version_id": null,
+          "authoring_document_id": null,
+          "authoring_version": null,
+          "section": null,
+          "chunk_id": null,
+          "candidate_group_id": null,
+          "member_id": "member_b0a066a9dcba609a9aebaec9",
+          "artifact": null,
+          "artifact_sha256": null,
+          "quote": null,
+          "note": "m:C_RP_GENERAL:1790933024.000339"
+        },
+        {
+          "kind": "slack_message",
+          "project_id": "response_preference",
+          "batch_id": "rp_batch_15",
+          "scope": "project",
+          "channel_id": "C_RP_QA",
+          "thread_id": "1790913824.000016",
+          "message_id": "1790913880.000113",
+          "document_id": null,
+          "version_id": null,
+          "authoring_document_id": null,
+          "authoring_version": null,
+          "section": null,
+          "chunk_id": null,
+          "candidate_group_id": null,
+          "member_id": "member_225803f43142caa5d3c165cf",
+          "artifact": null,
+          "artifact_sha256": null,
+          "quote": null,
+          "note": "m:C_RP_QA:1790913880.000113"
+        },
+        {
+          "kind": "slack_message",
+          "project_id": "response_preference",
+          "batch_id": "rp_batch_15",
+          "scope": "project",
+          "channel_id": "C_RP_QA",
+          "thread_id": "1790913824.000016",
+          "message_id": "1790913921.000226",
+          "document_id": null,
+          "version_id": null,
+          "authoring_document_id": null,
+          "authoring_version": null,
+          "section": null,
+          "chunk_id": null,
+          "candidate_group_id": null,
+          "member_id": "member_225803f43142caa5d3c165cf",
+          "artifact": null,
+          "artifact_sha256": null,
+          "quote": null,
+          "note": "m:C_RP_QA:1790913921.000226"
+        }
+      ],
+      "related_threads": [
+        {
+          "project_id": "response_preference",
+          "batch_id": "rp_batch_15",
+          "channel_id": "C_RP_GENERAL",
+          "thread_id": "1790856332.000018",
+          "member_id": "member_6b0a2b0015aa474bf50996d0",
+          "permalink": null,
+          "display_reference": "1790856332.000018",
+          "label": "#response-preference-general, 2026-10-01, started by a QA tutor: \"Could QA clarify this case: A follows format, B is more accurate.\"",
+          "opening_text": "Could QA clarify this case: A follows format, B is more accurate. Which wins?"
+        },
+        {
+          "project_id": "response_preference",
+          "batch_id": "rp_batch_15",
+          "channel_id": "C_RP_QA",
+          "thread_id": "1790913824.000016",
+          "member_id": "member_225803f43142caa5d3c165cf",
+          "permalink": null,
+          "display_reference": "1790913824.000016",
+          "label": "#response-preference-qa, 2026-10-02, started by a QA tutor: \"Prompt asked for a JSON object; B explains it beautifully in prose.\"",
+          "opening_text": "Prompt asked for a JSON object; B explains it beautifully in prose. Which is better? (task ref RP-3824)"
+        },
+        {
+          "project_id": "response_preference",
+          "batch_id": "rp_batch_15",
+          "channel_id": "C_RP_GENERAL",
+          "thread_id": "1790932885.000015",
+          "member_id": "member_b0a066a9dcba609a9aebaec9",
+          "permalink": null,
+          "display_reference": "1790932885.000015",
+          "label": "#response-preference-general, 2026-10-02, started by a tutor: \"Can accuracy outweigh ignoring the user's requested output structure?\"",
+          "opening_text": "Can accuracy outweigh ignoring the user's requested output structure?"
+        }
+      ],
+      "confidence": 0.92,
+      "confidence_band": "HIGH",
+      "needs_review_reasons": [
+        {
+          "code": "INHERITED_FLAG",
+          "detail": "Upstream obligations remain open: inherited_agent1_review x1",
+          "obligation_ids": [],
+          "evidence": []
+        },
+        {
+          "code": "GROUNDING_FAILURE",
+          "detail": "Withheld from this card: open_question: UNSUPPORTED",
+          "obligation_ids": [],
+          "evidence": []
+        }
+      ],
+      "inherited_flags": [
+        {
+          "origin": "agent1",
+          "kind": "inherited_agent1_review",
+          "candidate_group_id": "cluster_fb1dce1eeeedc4cb",
+          "obligation_id": null,
+          "member_ids": [
+            "member_225803f43142caa5d3c165cf"
+          ],
+          "detail": "The single targeted revision failed: ValueError: The model cited authority evidence without an eligible author role or a qualifying TEAM_LEAD endorsement. Ineligible message IDs: ['1790913880.000113']"
+        }
+      ],
+      "checks": {
+        "grounding": "FAILED",
+        "temporal_conflict": "NONE_FOUND",
+        "open_confirmation": "NONE"
+      },
+      "lineage": {
+        "agent3_run_id": "agent3overnight_b57ece8d1d34b60bf27eef0ad81b372b",
+        "handoff_contract": "agent2-taxonomy-handoff-v2",
+        "agent2_export_sha256": "c417f93c65615a19d64e2e039857f42eacacc2e31dbe3df18a2ad647454d8aed",
+        "agent2_schema_version": 8,
+        "candidate_group_id": "cluster_fb1dce1eeeedc4cb",
+        "topic_id": "cluster_fb1dce1eeeedc4cb/topic_1",
+        "member_ids": [
+          "member_6b0a2b0015aa474bf50996d0",
+          "member_225803f43142caa5d3c165cf",
+          "member_b0a066a9dcba609a9aebaec9"
+        ],
+        "project_id": "response_preference",
+        "batch_id": "rp_batch_15"
+      },
+      "review_notes": [
+        "The upstream review flag for the JSON-versus-prose thread remains open: the tutor's proposed scoring approach must not be treated as authoritative guidance. Review that pair only after the prompt and both responses are supplied.",
+        "1 earlier review flag is still open on these threads.",
+        "Some advisor statements were not supported by the evidence and are not shown."
+      ]
+    },
+    "review_items": [
+      {
+        "contract_version": "agent3-model-review-item-v1",
+        "record_type": "MODEL_REVIEW_ITEM",
+        "item_id": "review_135b903cdf5f8a936db129c317c7c3b4",
+        "origin": "agent1",
+        "kind": "inherited_agent1_review",
+        "project_id": "response_preference",
+        "batch_id": "rp_batch_15",
+        "candidate_group_id": "cluster_fb1dce1eeeedc4cb",
+        "topic_id": "cluster_fb1dce1eeeedc4cb/topic_1",
+        "member_ids": [
+          "member_225803f43142caa5d3c165cf"
+        ],
+        "obligation_id": null,
+        "reason": "The single targeted revision failed: ValueError: The model cited authority evidence without an eligible author role or a qualifying TEAM_LEAD endorsement. Ineligible message IDs: ['1790913880.000113']",
+        "source_obligation": {
+          "origin": "agent1",
+          "member_id": "member_225803f43142caa5d3c165cf",
+          "project_id": "response_preference",
+          "batch_id": "rp_batch_15",
+          "channel_id": "C_RP_QA",
+          "thread_id": "1790913824.000016",
+          "candidate_group_id": "cluster_fb1dce1eeeedc4cb",
+          "candidate_sha256": "939eb689fd9e541c11b64915e4d8215bf6c8dcbfd1ec7f802cd3b1f203d53888",
+          "source_sha256": "870d530c57e2201d5f20785ca253243aa175957afe299dfb0370747ede767bcf",
+          "agent1_record": {
+            "project_id": "response_preference",
+            "batch_id": "rp_batch_15",
+            "channel_id": "C_RP_QA",
+            "thread_id": "1790913824.000016",
+            "language": null,
+            "model": "openai/gpt-4o-mini-2024-07-18",
+            "run_config_sha256": "59740f5ade5e080383c48c88b15c36f172057579dea7a5dc8df80f72147fc79b",
+            "handoff_version": 1,
+            "verification_origin": "bounded_verification",
+            "input_sha256": "870d530c57e2201d5f20785ca253243aa175957afe299dfb0370747ede767bcf",
+            "candidate_sha256": "939eb689fd9e541c11b64915e4d8215bf6c8dcbfd1ec7f802cd3b1f203d53888",
+            "source_message_ids": [
+              "1790913824.000016",
+              "1790913880.000113",
+              "1790913921.000226"
+            ],
+            "interpretation": {
+              "thread_id": "1790913824.000016",
+              "summary": "The thread discusses a prompt that requested a JSON object, and whether a response that explained the content in prose is acceptable. Leo asks which format is better, while Omar clarifies that the format requirement was explicit and should be scored separately from factual correctness. Linh questions the necessity of the requested structure and the correctness of the factual statements, suggesting that one response may excel in correctness but fail in compliance.",
+              "central_question": "Which format is better: a JSON object as requested or a prose explanation?",
+              "resolution_state": "UNRESOLVED",
+              "authoritative_response_present": false,
+              "authority_evidence_message_ids": [],
+              "resolution_rationale": "The thread does not establish a clear decision on which format is better. While there are discussions about the importance of format and correctness, no definitive conclusion is reached regarding the preference for JSON versus prose.",
+              "confidence": 0.8
+            },
+            "automated_verification_status": "NEEDS_REVIEW",
+            "verification_status": "NEEDS_REVIEW",
+            "review_required": true,
+            "revision_count": 1,
+            "provisional_fields": [
+              "summary",
+              "central_question",
+              "resolution_state",
+              "resolution_rationale",
+              "authoritative_response_present",
+              "authority_evidence_message_ids",
+              "confidence"
+            ],
+            "review_reason": "The single targeted revision failed: ValueError: The model cited authority evidence without an eligible author role or a qualifying TEAM_LEAD endorsement. Ineligible message IDs: ['1790913880.000113']",
+            "review_reasons": [
+              "The single targeted revision failed: ValueError: The model cited authority evidence without an eligible author role or a qualifying TEAM_LEAD endorsement. Ineligible message IDs: ['1790913880.000113']"
+            ],
+            "review_findings": [
+              {
+                "category": "RESOLUTION",
+                "explanation": "Independent decision coverage establishes PARTIALLY_RESOLVED; interpretation reports UNRESOLVED. Omar's reply establishes that format compliance is not optional and should be scored separately from factual correctness, indicating that failing to provide the requested JSON format is a significant issue. However, the reply does not definitively state which response is better overall, nor does it weigh the two options directly. Linh's reply is diagnostic and does not contribute a substantive answer.",
+                "evidence_message_ids": [
+                  "1790913880.000113",
+                  "1790913921.000226"
+                ],
+                "evidence_quotes": [],
+                "disputed_fields": [
+                  "resolution_state",
+                  "resolution_rationale"
+                ],
+                "origin": "automated_verification"
+              },
+              {
+                "category": "EVIDENCE",
+                "explanation": "The single targeted revision failed: ValueError: The model cited authority evidence without an eligible author role or a qualifying TEAM_LEAD endorsement. Ineligible message IDs: ['1790913880.000113']",
+                "evidence_message_ids": [],
+                "evidence_quotes": [],
+                "disputed_fields": [
+                  "summary",
+                  "central_question",
+                  "resolution_state",
+                  "resolution_rationale",
+                  "authoritative_response_present",
+                  "authority_evidence_message_ids",
+                  "confidence"
+                ],
+                "origin": "automated_verification"
+              }
+            ],
+            "content_reviews": [],
+            "review_applicability": [],
+            "lineage": {
+              "baseline_file": "D:\\Christie\\2026_AgenticAI\\threadsense\\data\\processed\\agent1_authority_fix\\interpretations.json",
+              "baseline_record_sha256": "fbe8a2906f9f5bdd2ae0282ce2bbba4b71ddd9ac7efe4af72d19d49f5bf3282b",
+              "baseline_run_config_sha256": "0d62cfd41f1c1a578ca0cc4bb7bd8761a46ac9eecb53dbd64849cc60958f0b85",
+              "baseline_model": "openai/gpt-4o-mini-2024-07-18",
+              "baseline_created_at": "2026-10-16T14:11:31.021826+00:00",
+              "source_file": "sources/870d530c57e2201d5f20785ca253243aa175957afe299dfb0370747ede767bcf.json",
+              "verification_file": "records/d03290bd973e92c1e2388ecd533e327337372e4f6754a139d82127c38cdf7577/result.json",
+              "effective_attempt": "original",
+              "original_candidate_sha256": "939eb689fd9e541c11b64915e4d8215bf6c8dcbfd1ec7f802cd3b1f203d53888",
+              "revised_candidate_sha256": null,
+              "effective_candidate_sha256": "939eb689fd9e541c11b64915e4d8215bf6c8dcbfd1ec7f802cd3b1f203d53888",
+              "original_candidate_reference": "records/d03290bd973e92c1e2388ecd533e327337372e4f6754a139d82127c38cdf7577/result.json#/result/original_interpretation",
+              "revised_candidate_reference": null,
+              "audit_history_reference": "records/d03290bd973e92c1e2388ecd533e327337372e4f6754a139d82127c38cdf7577/result.json#/result/passes"
+            }
+          },
+          "agent1_export_file": "D:\\Christie\\2026_AgenticAI\\threadsense\\data\\processed\\agent1_verified_v3\\interpretations.json",
+          "agent1_export_sha256": "06a1d8ee6f20ea16a302b340424ba4cb93b09fe037cc8f1386ef6225acff109e",
+          "agent1_lineage_base": "D:\\Christie\\2026_AgenticAI\\threadsense\\data\\processed\\agent1_verified_v3"
+        },
+        "related_card_ids": [
+          "card_0a4ca19a27cee4d5eb2bab6affb41eb0"
+        ],
+        "actions": []
+      }
+    ],
+    "coverage": {
+      "group_members_outside_this_card": [],
+      "uncarried_obligations": []
+    },
+    "budget": {
+      "consumed": {
+        "retrieval_calls": 1,
+        "model_calls": 3
+      },
+      "limits": {
+        "model_calls_per_topic": 4,
+        "model_calls_total": 28,
+        "retrieval_calls_per_topic": 6,
+        "retrieval_calls_total": 42
+      }
+    },
+    "diagnostics": [
+      {
+        "code": "WITHHELD_STATEMENT",
+        "statement_id": "open_question",
+        "kind": "OPEN_QUESTION",
+        "text": "The cited evidence leaves this specific question unsettled: For the JSON-versus-prose pair, which response should be preferred after the exact prompt and both responses establish the instruction-following and factual-accuracy defects?",
+        "verdict": "UNSUPPORTED",
+        "rationale": "This asks for a case-specific preference judgment after missing evidence is supplied, rather than identifying an unsettled handling or policy question. Current guidance already specifies the procedure and conditional team lead confirmation; a pending assessment is not an OPEN_QUESTION under the stated criteria.",
+        "blocking": true
+      }
+    ]
+  }
+}

@@ -19,7 +19,7 @@ uv run --locked --extra dev python -m pytest tests/test_x.py   # single file
 ```
 
 - Always pass a **fresh** `--basetemp .cache/pytest-<name>`: pytest wipes it at start.
-- Full suite: 811 tests, ~7.5 min, all expected to pass. Intermittent `WinError 5` on `os.replace` is a Windows file lock (see Known issues), not a code failure.
+- Full suite: 841 tests, ~9 min, all expected to pass. Intermittent `WinError 5` on `os.replace` is a Windows file lock (see Known issues), not a code failure.
 - No linter/formatter configured. No build step beyond the editable install.
 - UI tests: `npm --prefix web run build` then `npm --prefix web run test:ui` (Playwright, system Chrome; temp output
   in `TS_UI_TMP`, default `D:/tsb/ui-<time>`). Frontend deps are pinned in `web/package.json` + `package-lock.json`.
@@ -78,7 +78,21 @@ append-only SQLite rows wrapping DecisionRecord / ReviewAction (contracts `dashb
 decisions reach retrieval only via a NEW snapshot at a later cutoff (`retrieval.index.plan(decision_root=...)`;
 the active `.index/retrieval` is never modified). Open evaluation case (audio trial-outcome follow-up miss):
 `data/evaluation/agent3_open_evaluation_cases.json`. **Next: Milestone 7 (demo validation) not started; a full live
-overnight run needs a cost cap (estimate in the plan); overnight runs do not yet read a decision-inclusive snapshot.** Full plan: [docs/agent3-plan.md](docs/agent3-plan.md).
+overnight run needs a cost cap (estimate in the plan).** Milestone 7 done 2026-10-30: decisions bound to the immutable
+run instance (`run_key#run_instance`; contracts v2 with `namespace` operational/demo/test and `judgment_provenance`;
+default snapshots ingest operational = live-run decisions only); one decision record per decision (shared
+`event_series_id`, history kept); `run_agent3_overnight.py --index-dir` selects an immutable snapshot checked against
+its own manifest sources (`retrieval.index.snapshot_sources`), recorded in the run manifest with `fixture_sha256`;
+snapshots carry earlier announcements as `prior_announcement` (same ANNOUNCEMENT use as when current; Oct 2 index unchanged); prompts v6.2
+(absence wording + `ABSENCE_OVERCLAIM`); recorded-link lookup `retrieval/related.py` evaluated, not enabled. Outputs:
+`agent3_feedback_loop_offline_v1` (decision -> later overnight retrieval), `agent3_scenario_coverage_v1` (matrix
+`data/evaluation/agent3_demo_scenarios.json`), `agent3_related_lookup_eval_v1`, live `agent3_final_eval_v1` (nine
+scenarios, 30 requests, $1.56). Repair pass 2026-10-30: prompts v7 / draft v7 (`intervention_need` judged as
+`action:need` in the final grounding; NO_INTERVENTION_NEED withholds the action without failing grounding; recorded v6
+drafts replay under `LEGACY_LABELS`), bounded retrieval expansion in `ResearchTools` (type coverage + recorded-link
+related records, `retrieved_as`; off in replays), decision contract v3 `decision_origin` (DEMO_SCRIPT/TEST never
+operational), partitive-plural checker fix; live comparison `agent3_repair_eval_v1` (6 cases, 16 requests, $0.97).
+Further `--run`s are paid (ask first). Full plan: [docs/agent3-plan.md](docs/agent3-plan.md).
 - Agent 3 input: `data/processed/agent2_handoff_v2_projection/` (schema 8 / handoff v2, a zero-call projection of the v7 release; load with `advice_inputs.load_effective_view`): 81 groups / 79 topics / 161 assigned + 17 unassigned / 41 + 8 announcement-route obligations / 3 carried cautions. The frozen v7 release (handoff v1: 90 / 97 / 49 / 3 / 41) is unchanged.
 - Demo Slack input: `data/fixtures/slack_generated_demo/` (201 threads / 517 messages, cutoff `2026-10-02T12:00:00Z`); the original `slack_generated/` (200 / 516) stays unchanged.
 - LangGraph 1.2.18 (Milestone 5) and FastAPI 0.162.0 (Milestone 6) installed; frontend toolchain in `web/` (npm). Chroma is a direct dependency; BM25 is in-house.

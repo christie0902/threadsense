@@ -15,7 +15,8 @@ export async function startServer(name) {
   server.url = `http://127.0.0.1:${server.port}`
   server.start = async () => {
     server.proc = spawn('uv', ['run', '--locked', 'python', 'scripts/run_dashboard.py', '--port', String(server.port),
-      '--include-test-fixtures', '--decision-db', server.db], { cwd: REPO, stdio: 'ignore', windowsHide: true })
+      '--include-test-fixtures', '--decision-db', server.db, ...(process.env.TS_UI_ORIGIN ? ['--decision-origin', process.env.TS_UI_ORIGIN] : [])],
+    { cwd: REPO, stdio: 'ignore', windowsHide: true })
     for (let i = 0; i < 120; i++) {
       try { if ((await fetch(`${server.url}/api/health`)).ok) return } catch { /* not up yet */ }
       await new Promise(r => setTimeout(r, 500))

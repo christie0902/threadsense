@@ -22,7 +22,10 @@ WEB_DIST = ROOT/'web/dist'
 KEY_PATTERN = r'^[A-Za-z0-9_\-:.]{8,128}$'
 
 
-def create_app(*, catalog=None, store=None, fixture_root=FIXTURE_ROOT, clock=now_iso, static_dir=WEB_DIST):
+def create_app(*, catalog=None, store=None, fixture_root=FIXTURE_ROOT, clock=now_iso, static_dir=WEB_DIST,
+               decision_origin='TL_DASHBOARD'):
+    """decision_origin: TL_DASHBOARD for a team lead's own decisions; demo scripts and tests pass DEMO_SCRIPT or TEST
+    so their simulated decisions stay out of operational snapshots even on a live run's cards."""
     catalog = catalog or Catalog()
     store = store or DecisionStore()
     actors = {a['actor_id']: a for a in team_leads(fixture_root)}
@@ -36,13 +39,13 @@ def create_app(*, catalog=None, store=None, fixture_root=FIXTURE_ROOT, clock=now
         return catalog.get(run_key)
 
     def card_state(run, card_id):
-        history = store.history('card', run.key, card_id)
+        history = store.history('card', run.ref, card_id)
         return {'decisions': history, 'head': history[-1] if history else None,
                 'indexing': store.indexing({e['entry_id'] for e in history})}
 
     @app.get('/api/health')
     def health():
-        return {'status': 'ok', 'store': str(store.path), 'runs': len(catalog.runs)}
+        return {'status': 'ok', 'store': str(store.path), 'runs': len(catalog.runs), 'decision_origin': decision_origin}
 
     @app.get('/api/runs')
     def runs():
@@ -52,7 +55,7 @@ def create_app(*, catalog=None, store=None, fixture_root=FIXTURE_ROOT, clock=now
     def brief(run_key: str):
         run = run_of(run_key)
         b = run.brief
-        decided = {e['card_id'] for e in store.history('card', run.key)}
+        decided = {e['card_id'] for e in store.history('card', run.ref)}
         return {
             'run': run.summary(catalog.runs.values()), 'counts': b['counts'], 'validation_baseline': b['validation_baseline'],
             'scope': {k: v for k, v in (b.get('scope') or {}).items() if k != 'out_of_scope_work'},
@@ -94,13 +97,14 @@ def create_app(*, catalog=None, store=None, fixture_root=FIXTURE_ROOT, clock=now
     @app.get('/api/runs/{run_key}/decisions')
     def decisions(run_key: str):
         run = run_of(run_key)
-        history = store.history('card', run.key)
-        return {'decisions': history, 'indexing': store.indexing({e['entry_id'] for e in history})}
+        history = store.history('card', run.ref)
+        return {'decisions': history, 'indexing': store.indexing({e['entry_id'] for e in history}),
+                'run_instance': run.instance, 'rows_for_other_instances': store.other_instances(run.key, run.ref)}
 
     @app.get('/api/runs/{run_key}/review-queue')
     def review_queue(run_key: str):
         run = run_of(run_key)
-        actions = store.history('review', run.key)
+        actions = store.history('review', run.ref)
         items = []
         for item_id, item in run.queue.items():
             mine = [a for a in actions if a['item_id'] == item_id]
@@ -141,15 +145,16 @@ def create_app(*, catalog=None, store=None, fixture_root=FIXTURE_ROOT, clock=now
 
         def build(head, sequence, digest):
             return build_decision(run=run, card=card, request=parsed, actors=actors, sequence=sequence, head=head,
-                                  recorded_at=clock(), key=key, request_sha=digest, alternatives=run.alternatives(card_id))
+                                  recorded_at=clock(), key=key, request_sha=digest, alternatives=run.alternatives(card_id),
+                                  decision_origin=decision_origin)
 
         def index_row(db, entry):
             document = ingest(entry)  # Refuses a decision that would not survive normalization.
             db.execute('INSERT INTO indexing VALUES (?,?,?,?,?,?,?,?,?)',
                        (entry['entry_id'], document['document_id'], document['version_id'],
-                        f"{authoring_id(entry)}@{entry['sequence']}", 'PENDING', None, None, None, entry['recorded_at']))
+                        f"{authoring_id(entry)}@1", 'PENDING', None, None, None, entry['recorded_at']))
 
-        return _submit(kind='card', run_key=run.key, target_id=card_id, key=key, body=parsed.model_dump(mode='json'),
+        return _submit(kind='card', run_key=run.ref, target_id=card_id, key=key, body=parsed.model_dump(mode='json'),
                        build=build, on_insert=index_row)
 
     @app.post('/api/runs/{run_key}/review-items/{item_id}/actions')
@@ -165,9 +170,10 @@ def create_app(*, catalog=None, store=None, fixture_root=FIXTURE_ROOT, clock=now
 
         def build(head, sequence, digest):
             return build_review_action(run=run, item=run.queue[item_id], request=parsed, actors=actors, sequence=sequence,
-                                       head=head, recorded_at=clock(), key=key, request_sha=digest)
+                                       head=head, recorded_at=clock(), key=key, request_sha=digest,
+                                       decision_origin=decision_origin)
 
-        return _submit(kind='review', run_key=run.key, target_id=item_id, key=key, body=parsed.model_dump(mode='json'),
+        return _submit(kind='review', run_key=run.ref, target_id=item_id, key=key, body=parsed.model_dump(mode='json'),
                        build=build)
 
     @app.get('/api/runs/{run_key}/negative-examples')

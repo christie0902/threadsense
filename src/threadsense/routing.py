@@ -156,3 +156,13 @@ def select_activity(threads, cutoff):
         'context_messages':context_count,'selection_failures':failures,
         'limitations':['Only supplied creation and last-edit timestamps are observable.',
                       'Reaction-only activity and missing/deleted edit history are not observable.']}
+
+
+def fixture_fingerprint(fixture_root):
+    """SHA-256 over the Slack fixture files (channels/*.json, users.json) by relative path and content hash."""
+    import hashlib, json
+    from pathlib import Path
+    root = Path(fixture_root)
+    files = sorted([*root.glob('channels/*.json'), root/'users.json'])
+    body = {p.relative_to(root).as_posix(): hashlib.sha256(p.read_bytes()).hexdigest() for p in files}
+    return hashlib.sha256(json.dumps(body, sort_keys=True).encode('utf-8')).hexdigest()

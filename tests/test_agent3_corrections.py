@@ -18,6 +18,7 @@ from threadsense.agents.advisor_contracts import AdvisorDraft, GroundingJudgment
 from threadsense.agents.advisor_evidence import member_messages
 from threadsense.agents.advisor_pilot import grounding_payload, topic_packet
 from threadsense.handoff_inputs import ROOT, read_json
+from tests.test_agent3_advisor import with_need
 from tests.test_agent3_advisor import (  # noqa: F401 - fixtures reused
     RUBRIC, SCEN, Fake, codes, draft_for, make_draft, open_q, retriever, run, safety_tools, supported, view,
 )
@@ -331,8 +332,11 @@ LEAD_IN_OMAR_THREAD = 'm:C_RP_GENERAL:1790933024.000339'  # Alex (U001, team lea
 
 
 def v5(value, model):
-    """A recorded v4 output under the current contract (version label only; content unchanged)."""
-    return model.model_validate({**value, 'contract_version': model.model_fields['contract_version'].default})
+    """A recorded v4 output under the last contract its content satisfies (version label only; content unchanged):
+    recorded drafts predate the v7 intervention need, as in replay."""
+    from threadsense.agents.advisor_pilot import LEGACY_LABELS
+    label = LEGACY_LABELS.get(model.__name__) or model.model_fields['contract_version'].default
+    return model.model_validate({**value, 'contract_version': label})
 
 
 def test_observed_false_name_rejections_are_valid_relations_and_roles_pass(view):
@@ -435,8 +439,9 @@ def fallback_draft(payload):
     base = draft_for(payload, **open_q(payload))
     claims = base['claims'] + [{'claim_id': 'c3', 'kind': 'INCIDENT_FACT', 'text': 'Omar reports that audio will not play.',
                                 'evidence_ids': [named['evidence_id']]}]
-    return {**base, 'claims': claims, 'proposed_action': {'action_type': 'POST_ALIGNMENT', 'support_claim_ids': ['c2', 'c3'],
-                                                          'draft_text': 'Post the current playback handling.'}}
+    return with_need({**base, 'claims': claims, 'proposed_action': {'action_type': 'POST_ALIGNMENT', 'support_claim_ids': ['c2', 'c3'],
+                                                                    'draft_text': 'Post the current playback handling.'}},
+                     [named['evidence_id']])
 
 
 def fallback_tot(text='Post the current playback handling in the reporting threads.', close=False):
@@ -690,7 +695,7 @@ def test_rules_are_sent_once_and_prompt_version_is_recorded():
     assert WRITING_GUIDE in DRAFT_RULES and STYLE_EXAMPLES in REVISION_RULES
     assert 'STYLE ONLY, NOT EVIDENCE' in STYLE_EXAMPLES and 'never copy their facts' in STYLE_EXAMPLES
     fingerprints = prompt_fingerprints()
-    assert fingerprints['prompt_version'] == 'agent3-advisor-prompts-v6.1' and fingerprints['style_examples']
+    assert fingerprints['prompt_version'] == 'agent3-advisor-prompts-v7' and fingerprints['style_examples']
     assert INPUT_TOKEN_LIMIT == 24_000 and live_settings('openai/gpt-6.1-sol')['input_token_limit'] == 24_000
 
 

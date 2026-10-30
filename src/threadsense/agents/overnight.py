@@ -36,7 +36,8 @@ from threadsense.agents.advice_inputs import (
 from threadsense.agents.advisor_evidence import Budget, open_retriever
 from threadsense.agents.topic_pipeline import write_json
 from threadsense.handoff_inputs import ROOT, file_hash, read_json
-from threadsense.retrieval.config import FIXTURE_ROOT
+from threadsense.retrieval.config import FIXTURE_ROOT, INDEX_DIR
+from threadsense.routing import fixture_fingerprint
 from threadsense.severity_rubric import load_rubric
 
 WORKFLOW_VERSION = 'agent3-overnight-v1'
@@ -46,8 +47,12 @@ REQUESTS_TO_START = 2  # A topic needs at least its draft and its final groundin
 # What has been validated live, by prompt version (recorded in every manifest).
 VALIDATION_BASELINE = {
     'agent3-advisor-prompts-v6': 'LIVE_VALIDATED: data/experiments/agent3_readability_v1 (audio, Submit)',
-    'agent3-advisor-prompts-v6.1': 'OFFLINE_ONLY: three deterministic fixes and open_review_flags; first live use is the '
-                                   'Milestone 5 smoke test',
+    'agent3-advisor-prompts-v6.1': 'LIVE (2 topics): data/experiments/agent3_overnight_smoke_v1 (audio, Submit); its '
+                                   'possessive-plural and record-authorship fixes are offline only',
+    'agent3-advisor-prompts-v6.2': 'LIVE (9 demo scenarios): data/experiments/agent3_final_eval_v1; absence statements '
+                                   'limited to what the run retrieved',
+    'agent3-advisor-prompts-v7': 'OFFLINE_ONLY until the repair comparison: intervention need judged in final grounding; '
+                                 'summary distinctions (common vs some members, question vs report, reported vs confirmed)',
     'replay_rule': 'Replay reuses only unchanged judgments; a pending judgment is never counted as grounding PASSED.',
 }
 
@@ -195,13 +200,25 @@ class PersistentLedger(pilot.CostLedger):
 
 # ---- Runtime (heavy objects stay outside the graph state) --------------------------------------------------------
 
+def open_snapshot(index_dir):
+    """Open an immutable retrieval snapshot and check it against the sources recorded in its own manifest (knowledge
+    root, fixtures, cutoff and any TL decision namespaces). Never rebuilds or switches to another snapshot."""
+    from threadsense.retrieval.index import snapshot_sources
+    path = Path(index_dir)/'manifest.json'
+    if not path.is_file():
+        raise OvernightError(f'No complete retrieval snapshot at {index_dir}.')
+    return open_retriever(index_dir, **snapshot_sources(read_json(path)))
+
+
 class Runtime:
     def __init__(self, out_dir, *, client, cutoff, handoff=pilot.HANDOFF, fixture_root=FIXTURE_ROOT, only=None,
-                 max_requests=None, ledger=None, mode='SCRIPTED', retriever_factory=open_retriever, advise=None,
-                 release=(), settings=None):
+                 max_requests=None, ledger=None, mode='SCRIPTED', retriever_factory=None, advise=None,
+                 release=(), settings=None, index_dir=INDEX_DIR):
         self.out, self.client, self.cutoff, self.handoff, self.fixture_root = Path(out_dir), client, cutoff, Path(handoff), Path(fixture_root)
         self.only, self.max_requests, self.ledger, self.mode = (list(only) if only else None), max_requests, ledger, mode
-        self.retriever_factory, self.advise, self.release = retriever_factory, advise or pilot.advise, set(release)
+        self.index_dir, self.owns_retriever = Path(index_dir), retriever_factory is None
+        self.retriever_factory = retriever_factory or (lambda: open_snapshot(self.index_dir))
+        self.advise, self.release = advise or pilot.advise, set(release)
         self.settings = settings
         self.view = self.retriever = self.rubric = self.state = None
         self.routing = self.extraction = None
@@ -255,7 +272,24 @@ def prepare_retrieval(rt):
         outcome['in_retrieval_snapshot'] = (outcome.get('document_id') in indexed_docs
                                             or (identity['channel_id'], identity['thread_id']) in indexed_threads)
     rt.rubric = load_rubric(None)
+    rt.handoff_activity = handoff_activity(rt)
     return {}
+
+
+def handoff_activity(rt):
+    """When the handoff's discussions were posted, so a run whose window is later is labelled a replay of an earlier
+    handoff rather than newly collected Slack activity."""
+    from threadsense.routing import aware, slack_datetime
+    times = [slack_datetime(m['message_id']) for row in rt.view['records'] for member in row['members']
+             for m in (member.get('original_thread') or {}).get('messages', []) if m.get('message_id')]
+    start = aware(rt.extraction['window']['start'])
+    latest = max(times) if times else None
+    replay = latest is not None and latest < start
+    return {'first_message_at': min(times).isoformat() if times else None, 'last_message_at': latest.isoformat() if latest else None,
+            'discussion_threads_in_window': rt.extraction['discussion_threads_in_window'], 'replay_of_earlier_handoff': replay,
+            'note': ('The discussions come from an earlier Agent 2 handoff (messages up to '
+                     f"{latest.isoformat()}); none were collected in this run's window, so they are not new Slack activity."
+                     if replay else 'The discussions come from the Agent 2 handoff for this window.')}
 
 
 def _iso(value):
@@ -311,7 +345,13 @@ def fingerprints(rt, limits):
                         if (rt.handoff/'routing_manifest.json').is_file() else None},
             'announcements_sha256': _digest([o['identity'] | {'document_id': o.get('document_id'), 'version_id': o.get('version_id')}
                                              for o in rt.extraction['record_outcomes']]),
-            'index': {k: r.manifest[k] for k in ('build_fingerprint', 'chunking_version', 'corpus_fingerprint', 'cutoff')},
+            'index': {**{k: r.manifest[k] for k in ('build_fingerprint', 'chunking_version', 'corpus_fingerprint', 'cutoff')},
+                      'index_dir': _rel(r.index_dir) if getattr(r, 'index_dir', None) else None,
+                      'decision_roots': r.manifest.get('decision_roots'),
+                      'tl_decisions_included': ((r.manifest.get('corpus') or {}).get('tl_decisions') or {}).get('included', 0),
+                      'prior_announcements': (((r.manifest.get('corpus') or {}).get('current_day_announcements') or {})
+                                              .get('prior_announcements') or {}).get('extracted', 0)},
+            'fixture_sha256': fixture_fingerprint(rt.fixture_root),
             'rubric': {k: rt.rubric[k] for k in ('version', 'content_sha256')},
             'semantic_client': {'label': rt.client.label, 'fingerprint': getattr(rt.client, 'fingerprint', None),
                                 'settings': rt.settings},
@@ -523,6 +563,8 @@ def aggregate(rt):
                           'nothing (SCRIPTED_PLACEHOLDER) elsewhere; says nothing about model quality.'
                           if rt.client.label == 'SCRIPTED_MOCK' else f'Live model judgments ({rt.client.label}).'),
         'validation_baseline': VALIDATION_BASELINE, 'counts': rt.accounting['counts'],
+        'snapshot': read_json(rt.out/'run_manifest.json')['fingerprints']['index'],
+        'handoff_activity': rt.handoff_activity,
         'cards': [brief_card(c, sources.get(c['card_id'])) for c in sorted(cards, key=_card_order)],
         'scope': {'only': rt.only, 'work_items_in_scope': sum(w['in_scope'] for w in rt.work), 'work_items': len(rt.work),
                   'out_of_scope_work': rt.accounting['out_of_scope_work']},
@@ -610,6 +652,13 @@ def report(brief):
              f"{c['cards']} cards ({', '.join(f'{k} {v}' for k, v in sorted(c['cards_by_line'].items())) or 'none'}); "
              f"{c['review_queue_items']} Model Review Queue items; {c['discussion_members']} discussion members "
              f"({c['members_on_cards']} on cards); {c['announcement_route_members']} announcement-route members.", '']
+    snapshot, activity = brief.get('snapshot'), brief.get('handoff_activity')
+    if snapshot:
+        lines += [f"Retrieval snapshot `{snapshot.get('index_dir')}` (cutoff {snapshot['cutoff']}, build "
+                  f"{snapshot['build_fingerprint'][:12]}): {snapshot.get('tl_decisions_included', 0)} saved TL decisions, "
+                  f"{snapshot.get('prior_announcements', 0)} earlier announcements kept as history.", '']
+    if activity:
+        lines += [activity['note'], '']
     scope = brief['scope']
     if scope['only']:
         lines += [f"Scoped run: {scope['work_items_in_scope']} of {scope['work_items']} work items "
@@ -675,7 +724,7 @@ def run(rt):
     try:
         return build_graph(rt).invoke({}, config={'recursion_limit': 10_000})
     finally:  # Close only a snapshot this run opened (always close Chroma clients created in-process).
-        if rt.retriever_factory is open_retriever and rt.retriever is not None and getattr(rt.retriever, 'client', None) is not None:
+        if rt.owns_retriever and rt.retriever is not None and getattr(rt.retriever, 'client', None) is not None:
             try:
                 rt.retriever.client.close()
             except Exception:  # noqa: BLE001 - closing is best effort

@@ -54,32 +54,76 @@ def current_day_announcements(fixture_root, cutoff, canonical_members=None):
     return documents, receipt
 
 
-def tl_decision_documents(decision_root, cutoff):
+def prior_announcements(fixture_root, cutoff, canonical_members=None, current=()):
+    """Announcement threads whose activity all precedes this snapshot's window: earlier collections, kept as history.
+
+    Same extractor and canonical identity as when they were current-day records (captured_at and the extraction
+    window are receipts outside the version hash), so a later snapshot carries the same document versions instead of
+    dropping them or adding duplicates. Only messages created before the cutoff are kept; a message edited at or
+    after the cutoff cannot be represented as older content and is reported. Retrieval marks them
+    origin='prior_announcement'; leaving the intake window changes nothing else: recorded applicability, expiry and
+    supersession decide whether one still applies, and (like any announcement) it directs handling only once the
+    Advisor shows it is relevant and directive.
+    """
+    from copy import deepcopy
+    from threadsense.routing import epoch, slack_time, window
+    _, announcements, _ = fixture_routes(fixture_root, cutoff=None)
+    members = existing_canonical_members() if canonical_members is None else canonical_members
+    by_identity = {tuple(m[k] for k in IDENTITY): m for m in members}
+    end = epoch(window(cutoff)['cutoff'])
+    documents, failures = [], []
+    for thread in announcements:
+        key = tuple(thread.get(k) for k in IDENTITY)
+        if key in current:
+            continue
+        visible = [m for m in thread['messages'] if slack_time(m['ts']) < end]
+        if not any(m['ts'] == thread['thread_id'] for m in visible):
+            continue  # Not yet posted at this cutoff.
+        try:
+            if any(isinstance(m.get('edited'), dict) and m['edited'].get('ts') and slack_time(m['edited']['ts']) >= end
+                   for m in visible):
+                raise ValueError('Edited at/after the cutoff; prior content unavailable.')
+            item = {**deepcopy(thread), 'messages': deepcopy(visible)}
+            record = extract_announcement(item, captured_at=cutoff, canonical_member=by_identity.get(key))
+        except (ValueError, KeyError, TypeError) as error:
+            failures.append({'identity': dict(zip(IDENTITY, key)), 'error': str(error)})
+            continue
+        documents.append({**normalize_document(record), 'origin': 'prior_announcement',
+                          'source_file': f"{_rel(fixture_root, ROOT)}#{thread['channel_id']}/{thread['thread_id']}"})
+    return documents, {'extracted': len(documents), 'extraction_failures': failures}
+
+
+def tl_decision_documents(decision_roots, cutoff):
     """TL decisions exported by the dashboard store (Markdown, same parser as the knowledge store).
 
     Only decisions recorded at or before the snapshot cutoff are ingested; later ones are reported, never backdated.
+    Each root is one decision namespace (operational, demo, test); the caller chooses which are included.
     """
-    paths = sorted(Path(decision_root).rglob('*.md')) if Path(decision_root).is_dir() else []
+    roots = [Path(r) for r in decision_roots]
+    paths = sorted((p, root) for root in roots if root.is_dir() for p in root.rglob('*.md'))
     documents, after = [], []
-    for path in paths:
+    for path, decision_root in paths:
         for document in iter_documents([path]):
             if aware(document['metadata']['effective_at']) > aware(cutoff):
                 after.append({'document_id': document['document_id'], 'version_id': document['version_id'],
                               'effective_at': document['metadata']['effective_at']})
                 continue
             documents.append({**document, 'origin': 'tl_decision_store', 'source_file': _rel(path, decision_root)})
-    receipt = {'decision_root': _rel(decision_root, ROOT), 'files': len(paths), 'included': len(documents),
+    receipt = {'decision_roots': [_rel(r, ROOT) for r in roots], 'files': len(paths), 'included': len(documents),
                'after_cutoff': after}
     return documents, receipt
 
 
-def collect(knowledge_root, fixture_root, cutoff, canonical_members=None, decision_root=None):
+def collect(knowledge_root, fixture_root, cutoff, canonical_members=None, decision_roots=None):
     """Deduplicate identical (document, version) pairs; report overlapping Slack messages."""
     knowledge, shared_count = knowledge_documents(knowledge_root)
     announcements, receipt = current_day_announcements(Path(fixture_root), cutoff, canonical_members)
-    decisions, decision_receipt = tl_decision_documents(decision_root, cutoff) if decision_root else ([], None)
+    current = {tuple(d['metadata']['source'].get(k) for k in IDENTITY) for d in announcements}
+    prior, prior_receipt = prior_announcements(Path(fixture_root), cutoff, canonical_members, current)
+    receipt['prior_announcements'] = prior_receipt
+    decisions, decision_receipt = tl_decision_documents(decision_roots, cutoff) if decision_roots else ([], None)
     unique, duplicates = {}, []
-    for document in [*knowledge, *announcements, *decisions]:
+    for document in [*knowledge, *announcements, *prior, *decisions]:
         key = (document['document_id'], document['version_id'])
         if key in unique:
             duplicates.append({'document_id': key[0], 'version_id': key[1], 'source_file': document['source_file']})
@@ -93,4 +137,4 @@ def collect(knowledge_root, fixture_root, cutoff, canonical_members=None, decisi
     return documents, {'knowledge_documents': len(knowledge), 'shared_iterator_documents': shared_count,
                        'current_day_announcements': receipt, 'duplicates_removed': duplicates,
                        'overlapping_slack_messages': overlaps, 'documents': len(documents),
-                       'corpus_fingerprint': fingerprint} | ({'tl_decisions': decision_receipt} if decision_root else {})
+                       'corpus_fingerprint': fingerprint} | ({'tl_decisions': decision_receipt} if decision_roots else {})

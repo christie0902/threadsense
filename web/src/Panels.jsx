@@ -72,6 +72,12 @@ function ThreadDetail({ runKey, channel, thread }) {
         <div className="text-xs uppercase tracking-wide text-slate-500">Thread · internal view</div>
         <h2 className="text-base font-semibold">#{t.channel_name} · {t.thread_id}</h2>
         <div className="text-xs text-slate-600">{t.project_id}{t.batch_id ? ` / ${t.batch_id}` : ''}</div>
+        <div className={`mt-2 rounded border p-2 text-xs ${t.fixture_status === 'VERIFIED_ORIGINAL' ? 'border-emerald-300 bg-emerald-50' : 'border-amber-300 bg-amber-50'}`}
+          data-testid="fixture-status" data-status={t.fixture_status}>
+          {t.fixture_status === 'VERIFIED_ORIGINAL' && 'Fixture files match the fingerprint this run recorded: these are the messages the run read.'}
+          {t.fixture_status === 'CHANGED_SINCE_RUN' && 'The fixture files changed after this run. Messages below are current fixture content, not the run\'s saved evidence; saved messages are compared individually.'}
+          {t.fixture_status === 'NOT_RECORDED' && 'This run did not record a fixture fingerprint. Messages below are current fixture content, separate from the run\'s saved evidence; saved messages are compared individually.'}
+        </div>
         <div className="mt-2 rounded border border-slate-200 bg-slate-50 p-2 text-xs" data-testid="permalink-note">
           {t.permalink ? <a className="underline" href={t.permalink} target="_blank" rel="noreferrer">Open in Slack</a>
             : `No Slack permalink is stored for this thread (Slack fixture data, ${t.fixture_root}); this is an internal view of the saved messages.`}
@@ -83,6 +89,7 @@ function ThreadDetail({ runKey, channel, thread }) {
             <div className="flex flex-wrap items-center gap-2 text-xs text-slate-600">
               <span className="font-medium text-slate-800">{(m.author_role || 'participant').replaceAll('_', ' ').toLowerCase()}</span>
               <span>{m.author_id}</span><span>{when(m.posted_at)}</span>
+              {!m.in_saved_evidence && t.fixture_status !== 'VERIFIED_ORIGINAL' && <Badge className="border-amber-300 bg-amber-50 text-amber-900">current fixture content</Badge>}
               {m.in_saved_evidence && (m.matches_saved_evidence
                 ? <Badge className="border-emerald-300 bg-emerald-50 text-emerald-800">matches saved evidence</Badge>
                 : <Badge className="border-red-300 bg-red-50 text-red-800">differs from saved evidence</Badge>)}

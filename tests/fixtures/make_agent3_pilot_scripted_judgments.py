@@ -45,6 +45,8 @@ def statement_ids(draft, alternatives=()):
     ids = [f"claim:{c['claim_id']}" for c in draft['claims']] + ['summary']
     if draft.get('proposed_action') and draft['evidence_sufficiency'] != 'UNSUPPORTED':
         ids.append('action')
+        if draft['proposed_action']['action_type'] != 'NO_ACTION':
+            ids.append('action:need')  # with_need adds the intervention need to every operational action.
     ids += [f"announcement:{a['evidence_id']}" for a in draft.get('announcement_assessments', []) if a['relevant'] and a['directive']]
     ids += [f"resolution:{r['member_id']}" for r in draft.get('resolution', []) if r['state'] != 'UNKNOWN']
     ids += ['open_question'] if draft['open_confirmation'] == 'OPEN' else []
@@ -400,8 +402,25 @@ def with_coverage(draft):
                                   item('MEMBER_QUESTIONS', asked, 'Member reports and questions cited.')]}
 
 
+NEED_KIND = {'UPDATE_FAQ': 'GUIDANCE_GAP', 'UPDATE_DOCUMENTATION': 'GUIDANCE_GAP', 'ESCALATE_ENGINEERING': 'OPERATIONAL_PROBLEM',
+             'ROUTE_TO_LANGUAGE_SPECIALIST': 'UNRESOLVED_HANDLING_QUESTION', 'POST_ALIGNMENT': 'UNRESOLVED_HANDLING_QUESTION',
+             'SCHEDULE_ALIGNMENT': 'UNRESOLVED_HANDLING_QUESTION'}
+
+
+def with_need(draft):
+    """Draft v7: an operational action states its intervention need, citing the member reports among its premises."""
+    action = draft.get('proposed_action')
+    if not action or action['action_type'] == 'NO_ACTION':
+        return with_coverage(draft)
+    ids = [e for c in draft['claims'] if c['claim_id'] in action['support_claim_ids'] for e in c['evidence_ids'] if e.startswith('m:')] or         [e for c in draft['claims'] if c['kind'] == 'INCIDENT_FACT' for e in c['evidence_ids'] if e.startswith('m:')]
+    need = {'kind': NEED_KIND[action['action_type']], 'evidence_ids': list(dict.fromkeys(ids)),
+            'statement': 'The cited member reports raise a problem that their threads and the current records do not '
+                         'settle, so it needs the team lead to act.'}
+    return with_coverage({**draft, 'proposed_action': {**action, 'intervention_need': need}})
+
+
 audio_draft, audio_revision, json_draft, json_revision, pii_draft, pii_revision, korean_draft, submit_draft, repeat_draft, \
-    control_draft = map(with_coverage, (audio_draft, audio_revision, json_draft, json_revision, pii_draft, pii_revision,
+    control_draft = map(with_need, (audio_draft, audio_revision, json_draft, json_revision, pii_draft, pii_revision,
                                         korean_draft, submit_draft, repeat_draft, control_draft))
 responses = {
     'audio_playback': {'draft': audio_draft, 'revision': audio_revision, 'grounding': judged(audio_revision)},
@@ -416,11 +435,11 @@ responses = {
     'control_unsupported_payroll': {'draft': control_draft},
 }
 out = ROOT/'tests/fixtures/agent3_pilot_scripted_judgments.json'
-payload = {'version': 'agent3-pilot-scripted-judgments-v4',
+payload = {'version': 'agent3-pilot-scripted-judgments-v5',
            'purpose': 'Prepared semantic responses (draft, revision, grounding, ToT) for the offline pilot run. They exercise '
                       'the deterministic checks and routing; they are not model output and say nothing about model quality. '
-                      'Evidence IDs refer to the knowledge-chunks-v2 index; contracts are advisor draft v4 and '
-                      'grounding judgment v3.',
+                      'Evidence IDs refer to the knowledge-chunks-v2 index; drafts follow advisor draft v7 (operational '
+                      'actions state an intervention need) and grounding judgment v4.',
            'responses': responses}
 out.write_text(json.dumps(payload, ensure_ascii=False, indent=1) + '\n', encoding='utf-8')
 print('wrote', out)

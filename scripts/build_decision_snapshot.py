@@ -24,6 +24,9 @@ def main(argv=None):
     parser.add_argument('--export-dir', type=Path, default=EXPORT_DIR)
     parser.add_argument('--build', action='store_true', help='Export and build (otherwise plan only).')
     parser.add_argument('--rebuild', action='store_true', help='Replace a snapshot built from different sources.')
+    parser.add_argument('--namespace', action='append', choices=('operational', 'demo', 'test'),
+                        help='Decision namespaces to include (repeatable; default operational only: decisions on live runs). '
+                             'demo = scripted runs, test = hand-written UI fixture runs.')
     parser.add_argument('--allow-download', action='store_true', help='Permit fetching the pinned embedding model (setup only).')
     args = parser.parse_args(argv)
     from threadsense.dashboard.decisions import DecisionStore
@@ -32,11 +35,14 @@ def main(argv=None):
     if not args.decision_db.is_file():
         parser.error(f'No decision store at {args.decision_db}.')
     store = DecisionStore(args.decision_db)
+    namespaces = tuple(args.namespace or ('operational',))
     entries = store.all_card_decisions()
-    included = [e for e in entries if aware(e['recorded_at']) <= aware(args.cutoff)]
+    chosen = [e for e in entries if e['namespace'] in namespaces]
+    included = [e for e in chosen if aware(e['recorded_at']) <= aware(args.cutoff)]
     if not args.build:
-        print(json.dumps({'cutoff': args.cutoff, 'decisions': len(entries), 'would_include': len(included),
-                          'after_cutoff': [e['entry_id'] for e in entries if e not in included],
+        print(json.dumps({'cutoff': args.cutoff, 'namespaces': namespaces, 'decisions': len(entries), 'would_include': len(included),
+                          'excluded_by_namespace': len(entries) - len(chosen),
+                          'after_cutoff': [e['entry_id'] for e in chosen if e not in included],
                           'indexing': {k: v['status'] for k, v in store.indexing().items()}}, indent=2))
         return 0
     from threadsense.dashboard.decision_sources import build_snapshot
@@ -45,8 +51,12 @@ def main(argv=None):
         encoder = SentenceEncoder(allow_download=args.allow_download)
     except OSError as error:
         parser.error(f'Embedding model unavailable offline ({error}). Run once with --allow-download.')
-    print(json.dumps(build_snapshot(store, args.index_dir, cutoff=args.cutoff, encoder=encoder, export_dir=args.export_dir,
-                                    rebuild=args.rebuild), indent=2))
+    try:
+        result = build_snapshot(store, args.index_dir, cutoff=args.cutoff, encoder=encoder, export_dir=args.export_dir,
+                                rebuild=args.rebuild, namespaces=namespaces)
+    except ValueError as error:
+        parser.error(str(error))
+    print(json.dumps(result, indent=2))
     return 0
 
 

@@ -91,7 +91,18 @@ def draft_for(payload, **overrides):
             'severity': {'level': 'LOW', 'rationale': 'Contained.'}, 'confidence': 0.9, 'open_confirmation': 'NONE',
             'coverage': [{'need': n, 'status': 'NOT_APPLICABLE', 'note': 'Not needed for this test draft.'}
                          for n in ('CURRENT_GUIDANCE', 'ANNOUNCEMENTS', 'PRIOR_DECISIONS', 'MEMBER_QUESTIONS')]}
-    return {**base, **overrides}
+    return with_need({**base, **overrides}, [payload['member_evidence'][0]['evidence_id']])
+
+
+def with_need(draft, evidence_ids):
+    """Draft v7: an operational action states its intervention need; tests about other checks get a default one
+    (judged SUPPORTED by supported()). Tests about intervention need set their own."""
+    action = draft.get('proposed_action')
+    if action and action['action_type'] != 'NO_ACTION' and 'intervention_need' not in action:
+        draft = {**draft, 'proposed_action': {**action, 'intervention_need': {
+            'kind': 'UNRESOLVED_HANDLING_QUESTION', 'statement': 'The members\' handling question is not answered in the threads.',
+            'evidence_ids': evidence_ids}}}
+    return draft
 
 
 def open_q(payload, question='Which rule wins when the two current sources disagree?'):
@@ -125,9 +136,10 @@ def codes(result):
 
 
 def make_draft(**kw):
-    return AdvisorDraft.model_validate({'summary': 's', 'reasoning': 'r', 'evidence_sufficiency': 'SUFFICIENT',
-                                        'severity': {'level': 'LOW', 'rationale': 'x'}, 'confidence': 0.9,
-                                        'open_confirmation': 'NONE', **kw})
+    ids = [e for c in kw.get('claims', []) for e in c['evidence_ids']][:1] or ['m:none']
+    return AdvisorDraft.model_validate(with_need({'summary': 's', 'reasoning': 'r', 'evidence_sufficiency': 'SUFFICIENT',
+                                                  'severity': {'level': 'LOW', 'rationale': 'x'}, 'confidence': 0.9,
+                                                  'open_confirmation': 'NONE', **kw}, ids))
 
 
 # ---- Freshness, serialization, applicability (DETERMINISTIC) ---------------------------------------

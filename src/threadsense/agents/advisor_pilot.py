@@ -49,7 +49,9 @@ PILOT_VERSION = 'agent3-advisor-pilot-v6'
 # Prompt text version, recorded in every manifest with the rule fingerprints. v6: team lead-facing writing guide and two
 # STYLE ONLY examples in the draft/revision rules; display-text rules in grounding and ToT; rules sent once per request
 # (agent3_readability_v1 ran v6). v6.1: grounding also receives the open upstream review flags (open_review_flags).
-PROMPT_VERSION = 'agent3-advisor-prompts-v6.1'
+PROMPT_VERSION = 'agent3-advisor-prompts-v7'
+# Replayed recorded drafts older than v7 are read under the last contract they satisfy (no intervention_need).
+LEGACY_LABELS = {'AdvisorDraft': 'agent3-advisor-draft-v6'}
 SCENARIOS = ROOT/'data/evaluation/agent3_pilot_scenarios.json'
 HANDOFF = ROOT/'data/processed/agent2_handoff_v2_projection'
 # Per topic: draft + one revision + one ToT + final grounding = 4 model calls at most, the last always
@@ -97,10 +99,20 @@ DRAFT_RULES = (
     'Action: when the evidence supports a concrete step (post or align on current guidance, escalate, route to a '
     'specialist, update documentation), propose it with support_claim_ids naming all its premises (a judge will decide which are essential); it may be '
     'proposed even '
-    'though the card will need team lead review. That a team lead approves or executes the action is not an open '
+    'though the card will need team lead review. Any action other than NO_ACTION states intervention_need: the kind '
+    '(UNRESOLVED_HANDLING_QUESTION, GUIDANCE_GAP, APPLICABLE_PENDING_DECISION or OPERATIONAL_PROBLEM), one sentence on '
+    'why intervening now is needed, and the evidence that shows it. Infer the need from what the threads and records '
+    'show, not from keywords; nobody has to ask for intervention or say work is blocked. Handling questions that a team '
+    'lead or QA tutor already answered in the thread are not unresolved; repeated questions across threads that still '
+    'lack an answer, or answers that disagree, can be. Existing guidance does not by itself mean NO_ACTION, and "a '
+    'reminder might help" is not a need. If the evidence shows no such need (for example an observation the team lead '
+    'already handled or deliberately kept open), propose NO_ACTION. That a team lead approves or executes the action is not an open '
     'question. Set open_confirmation OPEN only for a specific question that the cited guidance and decisions leave '
     'unsettled, state it in open_question, and cite in open_question_evidence_ids the evidence showing it is unsettled; '
-    'otherwise NONE. Severity: apply the rubric unchanged; MEDIUM or HIGH must cite a rubric signal by level, index and '
+    'otherwise NONE. It must be a handling or policy question the team lead has to decide or confirm (for example which '
+    'of two current rules applies, or whether an earlier decision covers these cases). A technical cause not yet '
+    'diagnosed, diagnostic results not yet collected, an expert\'s assessment not yet given, generic uncertainty, and '
+    'earlier review flags (already carried with the card) are not open confirmations. Severity: apply the rubric unchanged; MEDIUM or HIGH must cite a rubric signal by level, index and '
     'exact text, supported by member messages; affected_reporters lists only people whose own message (cite that '
     'message) reports being affected, not everyone who replied. recurrence FOUND means historical recurrence '
     'corroborated by retrieved records (cite them in recurrence_evidence_ids); members saying it is happening again go '
@@ -124,7 +136,12 @@ WRITING_GUIDE = (
     '"tool-incident reporting". Never put evidence IDs, claim IDs, user IDs, field or enum names, rubric references, '
     'premise lists or processing details in these fields or in claim text; the evidence mapping belongs in evidence_ids, '
     'support_claim_ids, attributions and targets. Use double quotation marks only for exact quotations copied unchanged '
-    'from a cited source. Not every topic needs an announcement, or any action.')
+    'from a cited source. Not every topic needs an announcement, or any action. Summaries and claims keep apart: what '
+    'several reporters have in common versus a symptom only some of them report ("three tutors report X; one also '
+    'reports Y"); a member asking a question versus a member reporting being affected; and a reported symptom versus a '
+    'confirmed finding. Attribute each detail only to the roles whose cited messages state it. When research found nothing, say what '
+    'this run retrieved ("the records retrieved for this run do not show ..."); never state that no record, decision '
+    'or outcome exists anywhere.')
 STYLE_EXAMPLES = (
     'STYLE EXAMPLES - STYLE ONLY, NOT EVIDENCE. Both are fictional and outside every project here: never copy their facts, '
     'counts, policies, wording or actions into a real card. Excerpts of the display fields only; a real draft also carries '
@@ -170,7 +187,10 @@ GROUNDING_RULES = (
     'need not literally prescribe the action. ACTION and operational ALTERNATIVE statements list their premises: '
     'PENDING_YOUR_VERDICT premises are judged here and are provisional, not final; REJECTED ones failed deterministic '
     'checks and support nothing; a premise with depends_on stands only if every ANNOUNCEMENT_HANDLING statement it lists '
-    'is also SUPPORTED. Judge in this order: (1) announcement handling; (2) each premise\'s final status, which is your '
+    'is also SUPPORTED. INTERVENTION_NEED says why intervening now is needed: SUPPORTED only if the context shows that '
+    'reason (an unresolved handling question, a guidance gap, an applicable pending decision, or an operational problem '
+    'that needs coordination). Questions already answered in their threads are not unresolved; a general benefit ("a '
+    'reminder might help") is not a need; existing guidance does not by itself rule a need out. Judge in this order: (1) announcement handling; (2) each premise\'s final status, which is your '
     'verdict on it combined with its dependencies; (3) sufficiency. Fill action_sufficiency for the ACTION and one '
     'alternative_sufficiency entry (with its statement_id) for each ALTERNATIVE that lists premises: SUFFICIENT only if '
     'premises whose final status is SUPPORTED justify the exact text as worded, including its conditions and scope; '
@@ -183,7 +203,9 @@ GROUNDING_RULES = (
     'affected. RESOLUTION is judged against the member\'s complete thread, including messages the statement did not '
     'cite. ANNOUNCEMENT_HANDLING needs the announcement to give that directive for this topic\'s project, batch and '
     'problem (a routine reminder, schedule or example-collection note does not). OPEN_QUESTION is SUPPORTED only if the '
-    'guidance and decisions in the context really leave that specific question unsettled. Return exactly one verdict '
+    'guidance and decisions in the context really leave that specific question unsettled and it is a handling or policy '
+    'question for the team lead; a not-yet-diagnosed cause, pending diagnostic results or a pending expert assessment is '
+    'not one. Return exactly one verdict '
     'for every statement_id. The team lead reads SUMMARY, ACTION (label, instruction, draft to copy, scope and '
     'changes), ACTION_RATIONALE, REVIEW_NOTE and OPEN_QUESTION exactly as written: judge that exact text, including its '
     'conditions, uncertainty, scope and who reported, asked, confirmed or instructed; plain wording is expected, but it '
@@ -487,6 +509,7 @@ class ReplayClient:
     (sufficiency, source agreement) is PENDING, never invented."""
     label = 'REPLAY_RECORDED'
     replay = True
+    retrieval_expansion = False  # Recorded runs predate the bounded expansion; replay keeps their retrieval.
 
     def __init__(self, run_dir):
         self.run_dir, self.recorded, self.reuse_log = Path(run_dir), {}, []
@@ -510,7 +533,10 @@ class ReplayClient:
             raise LookupError(f'No recorded {stage} output for {payload["scenario_id"]}; nothing is generated in replay.')
         value = json.loads(_json_text(rec['raw'][stage]))
         default = schema.model_fields['contract_version'].default if 'contract_version' in schema.model_fields else None
-        if default and isinstance(value, dict) and value.get('contract_version') not in (None, default):
+        legacy = LEGACY_LABELS.get(schema.__name__)
+        if isinstance(value, dict) and legacy and value.get('contract_version') != default:
+            value['contract_version'] = legacy  # Recorded content predates newer requirements; it keeps the old rules.
+        elif default and isinstance(value, dict) and value.get('contract_version') not in (None, default):
             value['contract_version'] = default  # Version label only; the recorded content is unchanged.
         return json.dumps(value, ensure_ascii=False)
 
@@ -755,6 +781,7 @@ def advise(scenario, *, view, retriever, client, budget, rubric, run_id, as_of, 
     packet = topic_packet(view, scenario)
     ledger = {i['evidence_id']: i for i in member_messages(packet['members'])}
     tools = ResearchTools(retriever, project=packet['project_id'], batch=packet['batch_id'], as_of=as_of,
+                          expansion=getattr(client, 'retrieval_expansion', True),
                           budget=budget, top_k=TOP_K, ledger=ledger)
     call, topic, interpretations = Stages(client, budget, scenario['id']), _topic(packet, as_of), _interpretations(packet)
     query = initial or initial_query(packet)
