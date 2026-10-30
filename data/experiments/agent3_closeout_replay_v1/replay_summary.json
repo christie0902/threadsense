@@ -1,0 +1,458 @@
+{
+ "source": "data/experiments/agent3_closeout_v1",
+ "pilot_version": "agent3-advisor-pilot-v6",
+ "prompts_now": {
+  "prompt_version": "agent3-advisor-prompts-v6",
+  "draft_rules": "0ba713be27cfeab0917d6244298c13e47fe7d32e5a1dc5ca802e6844192b3abd",
+  "revision_rules": "69990f431f4cd8049b5d50e1805dbf243042c9d136c452718efa97dc5906f726",
+  "writing_guide": "0ff52c75fa726a201969d4c8751bf14d16806cdbdcc4bbdef71ac9de93b2aeb3",
+  "style_examples": "abd7eeaaeb50fa1fde39bb83f6f0d9b1ba5d05fdb242b37d7841fb1f8e64c1b7",
+  "grounding_rules": "107cd0ead6af7e66f28d82efec13cc7a85f3a2f568d6b9da5e85455e0438b32d",
+  "tot_rules": "1dffaa9b85c1676827443985ca045544f53cf1d36f4cd968b795ccffec7b6a14",
+  "schemas": {
+   "AdvisorDraft": "5e8ceabbf3eb50c119ae33340d231c963924deecb847e628a04c544e191a1e4c",
+   "GroundingJudgment": "a3db796b10134cffad545e5f59a4973e82d8556eae1a9110b84ac7394277f853",
+   "ToTComparison": "32f82c758944e29b4db4856e5a8d90ac91003cca2a87c152a14a2ba3284217e5"
+  },
+  "contract_versions": {
+   "draft": "agent3-advisor-draft-v6",
+   "grounding": "agent3-grounding-judgment-v4",
+   "tot": "agent3-tot-comparison-v2"
+  }
+ },
+ "prompts_recorded": {
+  "draft_rules": "8336d0a415a5989bef322026ec5c7c124718f7b766fc95e42e2e92c42384826c",
+  "revision_rules": "d76f607d16044ab4b3a0435a435087a9b6749cd9fc9fb0bb4e1a356e933f5da3",
+  "grounding_rules": "526034bd5d9cfda5466b8cb8ee4697533e6a1904b59101e8dc2303439b7ec125",
+  "tot_rules": "c709360bf2306affb3fbc78a536efc179cf3432b4a9a0442ff614e1d252c13a9",
+  "schemas": {
+   "AdvisorDraft": "70be6f4a9b569d39a21d4700d8d0f4e39057a0fa29d67e47db0ea81370308c1f",
+   "GroundingJudgment": "a3db796b10134cffad545e5f59a4973e82d8556eae1a9110b84ac7394277f853",
+   "ToTComparison": "6fe36a27285c824159932e52610909a7bbb042dd87e3bab02cdf11ed6c3768aa"
+  },
+  "contract_versions": {
+   "draft": "agent3-advisor-draft-v5",
+   "grounding": "agent3-grounding-judgment-v4",
+   "tot": "agent3-tot-comparison-v1"
+  }
+ },
+ "pilot_version_recorded": "agent3-advisor-pilot-v5",
+ "model_calls": 0,
+ "arms": {
+  "gpt-6.1-sol": {
+   "cases": [
+    {
+     "case": "audio_playback",
+     "card_line": "NEEDS_REVIEW",
+     "grounding": "FAILED",
+     "basis": "STRUCTURAL+SEMANTIC",
+     "pending": [
+      "action",
+      "alternative:alignment_now",
+      "alternative:engineering_review",
+      "alternative:wait_for_confirmation"
+     ],
+     "action_proposed": "POST_ALIGNMENT",
+     "action_verdict": "PENDING",
+     "action_on_card": null,
+     "severity": "HIGH ASSESSED",
+     "severity_issues": [],
+     "severity_notes": [],
+     "resolution": "MIXED",
+     "normalization": [],
+     "rejected": {
+      "summary": "REJECTED_RAW_ID_IN_PROSE"
+     },
+     "action_source": "DRAFT",
+     "action_notes": [
+      "No ToT fallback: preferred candidate alignment_now: text judged PENDING."
+     ],
+     "temporal": [],
+     "model_calls": [
+      [
+       "draft",
+       "OK"
+      ],
+      [
+       "revision",
+       "FAILED"
+      ],
+      [
+       "tot",
+       "OK"
+      ],
+      [
+       "grounding",
+       "OK"
+      ]
+     ]
+    },
+    {
+     "case": "json_vs_prose",
+     "card_line": "NEEDS_REVIEW",
+     "grounding": "FAILED",
+     "basis": "STRUCTURAL+SEMANTIC",
+     "pending": [
+      "action",
+      "alternative:candidate_1",
+      "alternative:candidate_2",
+      "alternative:candidate_3"
+     ],
+     "action_proposed": "POST_ALIGNMENT",
+     "action_verdict": "PENDING",
+     "action_on_card": null,
+     "severity": "MEDIUM ASSESSED",
+     "severity_issues": [],
+     "severity_notes": [
+      "Removed from severity after final grounding: reporters U018."
+     ],
+     "resolution": "UNRESOLVED",
+     "normalization": [],
+     "rejected": {
+      "summary": "REJECTED_RAW_ID_IN_PROSE"
+     },
+     "action_source": "DRAFT",
+     "action_notes": [
+      "No ToT fallback: preferred candidate candidate_1: text judged PENDING."
+     ],
+     "temporal": [],
+     "model_calls": [
+      [
+       "draft",
+       "OK"
+      ],
+      [
+       "tot",
+       "OK"
+      ],
+      [
+       "grounding",
+       "OK"
+      ]
+     ]
+    },
+    {
+     "case": "fictional_pii",
+     "card_line": "NEEDS_REVIEW",
+     "grounding": "FAILED",
+     "basis": "STRUCTURAL+SEMANTIC",
+     "pending": [
+      "action",
+      "alternative:targeted_documentation_correction",
+      "alternative:scoped_alignment_reply",
+      "alternative:wait_for_team_lead_confirmation"
+     ],
+     "action_proposed": "UPDATE_DOCUMENTATION",
+     "action_verdict": "PENDING",
+     "action_on_card": null,
+     "severity": "MEDIUM ASSESSED",
+     "severity_issues": [],
+     "severity_notes": [
+      "Removed from severity after final grounding: rationale (replaced by the supported signals)."
+     ],
+     "resolution": "MIXED",
+     "normalization": [],
+     "rejected": {
+      "summary": "REJECTED_RAW_ID_IN_PROSE",
+      "severity:rationale": "REJECTED_RAW_ID_IN_PROSE"
+     },
+     "action_source": "DRAFT",
+     "action_notes": [
+      "No ToT fallback: preferred candidate targeted_documentation_correction: text judged PENDING."
+     ],
+     "temporal": [
+      [
+       "SUPERSEDED_SOURCE_EXPLAINS_CONFLICT",
+       "RESOLVED_BY_RECORDED_SUPERSESSION"
+      ],
+      [
+       "UNEXPLAINED_SOURCE_CONFLICT",
+       "DETECTED"
+      ]
+     ],
+     "model_calls": [
+      [
+       "draft",
+       "OK"
+      ],
+      [
+       "tot",
+       "OK"
+      ],
+      [
+       "grounding",
+       "OK"
+      ]
+     ]
+    },
+    {
+     "case": "korean_register",
+     "card_line": "NEEDS_REVIEW",
+     "grounding": "FAILED",
+     "basis": "STRUCTURAL+SEMANTIC",
+     "pending": [
+      "action",
+      "alternative:A",
+      "alternative:B",
+      "alternative:C"
+     ],
+     "action_proposed": "ROUTE_TO_LANGUAGE_SPECIALIST",
+     "action_verdict": "PENDING",
+     "action_on_card": null,
+     "severity": "MEDIUM ASSESSED",
+     "severity_issues": [],
+     "severity_notes": [],
+     "resolution": "UNKNOWN",
+     "normalization": [],
+     "rejected": {
+      "summary": "REJECTED_RAW_ID_IN_PROSE"
+     },
+     "action_source": "DRAFT",
+     "action_notes": [
+      "No ToT fallback: preferred candidate A: issues ['APPLICABILITY_OVERSTATED']."
+     ],
+     "temporal": [],
+     "model_calls": [
+      [
+       "draft",
+       "OK"
+      ],
+      [
+       "tot",
+       "OK"
+      ],
+      [
+       "grounding",
+       "OK"
+      ]
+     ]
+    },
+    {
+     "case": "submit_failure",
+     "card_line": "NEEDS_REVIEW",
+     "grounding": "FAILED",
+     "basis": "STRUCTURAL+SEMANTIC",
+     "pending": [
+      "action",
+      "alternative:collect_and_route",
+      "alternative:align_collection_only",
+      "alternative:wait_for_confirmation"
+     ],
+     "action_proposed": "ESCALATE_ENGINEERING",
+     "action_verdict": "PENDING",
+     "action_on_card": null,
+     "severity": "HIGH ASSESSED",
+     "severity_issues": [],
+     "severity_notes": [],
+     "resolution": "UNRESOLVED",
+     "normalization": [],
+     "rejected": {
+      "summary": "REJECTED_RAW_ID_IN_PROSE"
+     },
+     "action_source": "DRAFT",
+     "action_notes": [
+      "No ToT fallback: preferred candidate collect_and_route: text judged PENDING."
+     ],
+     "temporal": [],
+     "model_calls": [
+      [
+       "draft",
+       "OK"
+      ],
+      [
+       "revision",
+       "FAILED"
+      ],
+      [
+       "tot",
+       "OK"
+      ],
+      [
+       "grounding",
+       "OK"
+      ]
+     ]
+    },
+    {
+     "case": "repeated_ending",
+     "card_line": "NEEDS_REVIEW",
+     "grounding": "FAILED",
+     "basis": "STRUCTURAL+SEMANTIC",
+     "pending": [
+      "alternative:A",
+      "alternative:B"
+     ],
+     "action_proposed": "POST_ALIGNMENT",
+     "action_verdict": "REJECTED_RAW_ID_IN_PROSE",
+     "action_on_card": null,
+     "severity": "HIGH ASSESSED",
+     "severity_issues": [],
+     "severity_notes": [
+      "Removed from severity after final grounding: rationale (replaced by the supported signals)."
+     ],
+     "resolution": "UNKNOWN",
+     "normalization": [],
+     "rejected": {
+      "summary": "REJECTED_RAW_ID_IN_PROSE",
+      "action": "REJECTED_RAW_ID_IN_PROSE",
+      "severity:rationale": "REJECTED_RAW_ID_IN_PROSE"
+     },
+     "action_source": "DRAFT",
+     "action_notes": [
+      "No ToT fallback: preferred candidate A: text judged PENDING."
+     ],
+     "temporal": [],
+     "model_calls": [
+      [
+       "draft",
+       "OK"
+      ],
+      [
+       "tot",
+       "OK"
+      ],
+      [
+       "grounding",
+       "OK"
+      ]
+     ]
+    }
+   ],
+   "reused_verdicts": 128,
+   "not_reused": [
+    {
+     "scenario_id": "audio_playback",
+     "statement_id": "action",
+     "reused": false,
+     "reason": "content changed"
+    },
+    {
+     "scenario_id": "audio_playback",
+     "statement_id": "alternative:alignment_now",
+     "reused": false,
+     "reason": "content changed"
+    },
+    {
+     "scenario_id": "audio_playback",
+     "statement_id": "alternative:engineering_review",
+     "reused": false,
+     "reason": "content changed"
+    },
+    {
+     "scenario_id": "audio_playback",
+     "statement_id": "alternative:wait_for_confirmation",
+     "reused": false,
+     "reason": "content changed"
+    },
+    {
+     "scenario_id": "json_vs_prose",
+     "statement_id": "action",
+     "reused": false,
+     "reason": "content changed"
+    },
+    {
+     "scenario_id": "json_vs_prose",
+     "statement_id": "alternative:candidate_1",
+     "reused": false,
+     "reason": "content changed"
+    },
+    {
+     "scenario_id": "json_vs_prose",
+     "statement_id": "alternative:candidate_2",
+     "reused": false,
+     "reason": "content changed"
+    },
+    {
+     "scenario_id": "json_vs_prose",
+     "statement_id": "alternative:candidate_3",
+     "reused": false,
+     "reason": "content changed"
+    },
+    {
+     "scenario_id": "fictional_pii",
+     "statement_id": "action",
+     "reused": false,
+     "reason": "content changed"
+    },
+    {
+     "scenario_id": "fictional_pii",
+     "statement_id": "alternative:targeted_documentation_correction",
+     "reused": false,
+     "reason": "content changed"
+    },
+    {
+     "scenario_id": "fictional_pii",
+     "statement_id": "alternative:scoped_alignment_reply",
+     "reused": false,
+     "reason": "content changed"
+    },
+    {
+     "scenario_id": "fictional_pii",
+     "statement_id": "alternative:wait_for_team_lead_confirmation",
+     "reused": false,
+     "reason": "content changed"
+    },
+    {
+     "scenario_id": "korean_register",
+     "statement_id": "action",
+     "reused": false,
+     "reason": "content changed"
+    },
+    {
+     "scenario_id": "korean_register",
+     "statement_id": "alternative:A",
+     "reused": false,
+     "reason": "content changed"
+    },
+    {
+     "scenario_id": "korean_register",
+     "statement_id": "alternative:B",
+     "reused": false,
+     "reason": "content changed"
+    },
+    {
+     "scenario_id": "korean_register",
+     "statement_id": "alternative:C",
+     "reused": false,
+     "reason": "content changed"
+    },
+    {
+     "scenario_id": "submit_failure",
+     "statement_id": "action",
+     "reused": false,
+     "reason": "content changed"
+    },
+    {
+     "scenario_id": "submit_failure",
+     "statement_id": "alternative:collect_and_route",
+     "reused": false,
+     "reason": "content changed"
+    },
+    {
+     "scenario_id": "submit_failure",
+     "statement_id": "alternative:align_collection_only",
+     "reused": false,
+     "reason": "content changed"
+    },
+    {
+     "scenario_id": "submit_failure",
+     "statement_id": "alternative:wait_for_confirmation",
+     "reused": false,
+     "reason": "content changed"
+    },
+    {
+     "scenario_id": "repeated_ending",
+     "statement_id": "alternative:A",
+     "reused": false,
+     "reason": "content changed"
+    },
+    {
+     "scenario_id": "repeated_ending",
+     "statement_id": "alternative:B",
+     "reused": false,
+     "reason": "content changed"
+    }
+   ]
+  }
+ }
+}

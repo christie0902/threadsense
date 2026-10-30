@@ -448,8 +448,10 @@ Findings, checked against the cited passages:
   as GUIDANCE; Korean: a paraphrased FAQ quote; repeated ending: an affected reporter (U017) cited
   with U013's message; JSON: MEDIUM with no rubric signal. In PII and Korean one bad quote voided the
   whole draft (nothing authorized), withholding accurate claims too.
-- **Grounding judge is lenient.** It passed claims naming people ("Yuki", "Linh") that appear only in
-  Agent 1 summaries, not the cited messages; passed audio HIGH[0] although the cited tutor messages
+- **Grounding judge is lenient.** (Corrected 2026-10-29: the names in claims, e.g. "Yuki" for U019 and
+  "Leo" for U007, were the right authors per the user directory; the defect was that v1 evidence carried
+  author IDs only, so neither the judge nor any check could verify names. Directory names and a
+  deterministic author check were added.) It passed audio HIGH[0] although the cited tutor messages
   do not state the work cannot be evaluated (the uncited TL reply does); passed a ToT option to
   "update documentation" on the strength of an instruction that does not call for it; and
   rationales often restate the statement. Resolution: the model may cite part of a thread, and the
@@ -519,6 +521,186 @@ Reviewed against the cited passages (neither model's grounding verdict is the re
   assessment instead of setting recurrence to NOT_CHECKED.
 - **ToT:** ran on Sol's two open-confirmation cases; never adopted (the drafts already had actions);
   repeated-ending options were all PARTIALLY_SUPPORTED, so none was presented as grounded.
+
+**Completion pass (2026-10-29; pilot v4, draft v4, grounding judgment v3).**
+- Action sufficiency: the blanket "every premise must pass" rule is gone. The ACTION statement shows
+  each premise with its status (SENT or the rejection code); the judge returns `action_sufficiency`
+  (SUFFICIENT/INSUFFICIENT plus the essential premise IDs). The action stands only if SUFFICIENT, the
+  essential IDs are premises of this action, and every one of them passed after dependencies.
+- Role labels: GUIDANCE resting only on thread messages that include a team lead's is relabelled to the
+  scoped `THREAD_INSTRUCTION` kind (recorded as ROLE_LABEL_CORRECTED) and judged for in-thread
+  applicability; tutor text labelled guidance still fails.
+- Recurrence: historical recurrence (FOUND) must cite retrieved records and is judged as its own
+  statement; members' "happening again" messages are reported recurrence. Severity is rebound to the
+  unchanged rubric from what passed: unsupported recurrence, signals and reporters are removed, an
+  unsupported rationale is replaced by the supported signals' wording, and a level that loses its
+  support is UNASSESSED (never lowered or defaulted).
+- CrewAI: each stage runs as a Task for a role-specific Agent (researcher, alternatives analyst,
+  grounding verifier) in a one-task Crew (max_iter 1, max_retry_limit 0, no tools, memory or planning).
+  Verified offline at the transport: one request per stage; CrewAI's forced-final-answer and
+  rate-limit retries are refused unsent; Sol requests carry no `stop`; CrewAI 1.15's
+  `cache_breakpoint` message marker (left in by its LiteLLM path) is stripped by a subclass; the
+  20,000-token input cap is checked on the exact request body; a 4xx configuration rejection or an
+  exhausted budget halts further requests while every topic still gets its card.
+- Offline replay of the six comparison outputs (`scripts/replay_agent3_comparison.py`,
+  `data/experiments/agent3_comparison_replay_v1/`): gpt-4o-mini 21 recorded verdicts reused, 6 PENDING;
+  Sol 42 reused, 27 PENDING (severity statements never judged in the original run, action sufficiency,
+  two relabelled thread instructions). Pending judgments are never invented and leave content off the card.
+
+**Acceptance pilot (2026-10-29, `data/experiments/agent3_acceptance_v1/`, gpt-6.1-sol, medium reasoning,
+standard tier).** One run, no tuning or reruns. `scripts/run_agent3_acceptance.py`.
+21 requests (cap 28), all HTTP 200 / `finish_reason: stop`, schema-valid, none blocked; no resource or
+configuration failure. 261,299 input / 54,336 output (3,761 reasoning) tokens; largest input 19,118;
+650 s model time, 677 s wall. $1.0660 of $6.00 (settled at reported usage; per scenario $0.12–0.26,
+payroll control $0.03).
+
+Reviewed against the cited sources (the pipeline's verdicts are not the reference):
+
+| Scenario | Action on card | Severity | Resolution | Notes |
+| --- | --- | --- | --- | --- |
+| audio_playback | none (withheld) | HIGH[3], 4 correct reporters, recurrence FOUND (batch-05 trial records) | MIXED | Follow-up recovered the trial approval/outcome. Action withheld because the judge named Omar's report essential and that claim was falsely rejected by the name check |
+| json_vs_prose | POST_ALIGNMENT | MEDIUM[0]; U018 (a question, not affected) correctly dropped | UNKNOWN | Optional premise rejected, action stood on the remaining premises |
+| fictional_pii | UPDATE_DOCUMENTATION: correct only help page v1.0 "Contact details" | HIGH[3] | MIXED | Example-collection note correctly rejected as a directive; a false TEMPORAL_CONFLICT (see below) |
+| korean_register | ROUTE_TO_LANGUAGE_SPECIALIST | HIGH[3], recurrence FOUND (batch-10 record) | UNKNOWN | |
+| submit_failure | none (withheld) | HIGH[0]+[3], 5 reporters | UNRESOLVED | No "same cause" claim; the open question asks whether the reports match the earlier incident. Escalation withheld (essential premise rested on a rejected announcement) |
+| repeated_ending | POST_ALIGNMENT | HIGH[3], 7 reporters | UNKNOWN | No cause asserted |
+| payroll control | no card | — | — | UNSUPPORTED |
+
+Pipeline defects found (not fixed in this pass; the run used the code as is):
+- **Name check too strict:** 3 claims rejected for naming the owner of a cited message's thread ("In
+  Omar's thread, Alex asks…"). All names were correct. Rule should also accept participants of the cited
+  messages' threads.
+- **Dependency timing:** the judge sees a premise as SENT even when its own announcement verdict will
+  void it (Submit C13), so its sufficiency can name a premise that later fails.
+- **Temporal rule too strict:** a superseded section against two agreeing current sources is reported
+  as an unexplained conflict (`len(current) == 1`).
+- **Severity level choice:** HIGH[3] ("multiple distinct people reporting a comparable problem") was
+  used for rule-confusion topics (PII, Korean) where MEDIUM[0] ("recurring confusion about the same
+  rule") fits more closely; the rubric's wording allows both, and the judge passed both.
+- **ToT:** ran on all six topics (five open questions, one conflict); never adopted, as every draft had
+  an action. Where the draft action was withheld (audio, Submit) the grounded preferred option exists only
+  in the result record.
+
+**Closeout patch (2026-10-30; pilot v5, draft v5, grounding judgment v4, AdviceCard v2).** Replaces the
+name-specific presentation work above.
+- Presentation: generated prose (summary, claims, rationales, actions, ToT candidates) refers to people by
+  role, never by name; models see canonical IDs, roles and thread starters, not display names. Claims carry
+  canonical-ID `attributions` (AUTHOR wrote the cited message, THREAD_STARTER started its thread,
+  PARTICIPANT posted in it, for participation claims only), checked against the ledger and the user
+  directory. A directory name still found in prose is checked the same way (code `NAME_RELATION_INVALID`
+  if the relation fails) and then rejected as `PERSONAL_NAME_IN_PROSE`: the card uses roles and nothing is
+  rewritten. Role wording ("the team lead instructs") must match a cited author's role; plural wording needs
+  that many distinct cited authors (or topic reporters when no member message is cited). Quotations are
+  not checked or changed. The final grounding judges the role-based text and the attributions. Card v2
+  lists related threads with a short label and the stored permalink, or the thread ID (the fixtures store
+  no permalinks). A guard reports any name left in card text (for example an Agent 2 topic title).
+- Dependency order: premises are shown to the judge as `PENDING_YOUR_VERDICT` with `depends_on` (the
+  announcement a guidance premise rests on), never as final; the rules order announcement applicability →
+  final premise status → sufficiency; essential premises are validated against the final supported set
+  (`ESSENTIAL_PREMISE_VOIDED_BY_DEPENDENCY` when the judge supported a premise its dependency voided).
+- ToT fallback: the judge also returns `alternative_sufficiency` for each operational alternative. When the
+  draft action does not reach the card, the model's preferred candidate replaces it only if it was not a close
+  call, is valid with no issue (presentation checks included), its exact text was judged SUPPORTED, and its
+  sufficiency check passed. Review reasons are unchanged.
+- Temporal: one current source still explains a superseded section by record; several applicable current
+  sources do so only if a non-blocking `SOURCE_AGREEMENT` statement is judged SUPPORTED. Uncertain
+  applicability (unresolved/unverified revisions, upstream review, an unverified announcement) or a real
+  disagreement stays DETECTED.
+- Regressions (`tests/test_agent3_corrections.py`, recorded items in
+  `tests/fixtures/agent3_acceptance_v1_cases.json`): the three observed false name rejections (the
+  relations hold), wrongly attributed participants, the Submit dependency inconsistency (recorded Sol
+  judgment → `ESSENTIAL_PREMISE_VOIDED_BY_DEPENDENCY`), a valid ToT fallback and four refusals, agreeing
+  versus disagreeing or uncertain current sources. 764 offline tests pass.
+
+Zero-call replay of the acceptance responses (`data/experiments/agent3_acceptance_replay_v1/`): 115
+recorded verdicts reused, 19 pending (18 action/alternative verdicts, whose premises are now shown
+differently, and one source agreement). All 30 recorded statements that name people are valid relations by
+canonical ID (no `NAME_RELATION_INVALID`); as v5 prose they are rejected as names. The replay cannot verify
+v5, so one live run followed.
+
+**Closeout live run (2026-10-30, `data/experiments/agent3_closeout_v1/`, same Sol arm, six topic scenarios,
+`scripts/run_agent3_closeout.py`, $3 ledger).** One run, no tuning or reruns. 18 requests sent (all HTTP 200,
+`finish_reason: stop`, schema-valid); 2 refused unsent by the input cap (audio revision 20,477 tokens,
+Submit revision 20,887). 230,556 input / 48,599 output (4,731 reasoning) tokens; 662 s model time;
+$0.9471. Reviewed against the threads:
+- No personal name in any draft or card; 57 attributions, none rejected; every role and count statement was
+  correct (for example "two QA tutors and three tutors" for Submit's five reporters; repeated ending notes one
+  tutor posting in two threads).
+- Actions on the card: audio POST_ALIGNMENT (withheld in acceptance), JSON vs prose POST_ALIGNMENT, PII
+  UPDATE_DOCUMENTATION (Contact details only), Korean ROUTE_TO_LANGUAGE_SPECIALIST, repeated ending
+  POST_ALIGNMENT. Submit: withheld; the judge itself applied the dependency order (the action's use of the
+  announcement thread rests on c7, whose announcement fails) and found it INSUFFICIENT; the ToT fallback was
+  correctly refused (preferred candidate PARTIALLY_SUPPORTED).
+- PII: the superseded help-page section against the FAQ and the verified clarification is now resolved by
+  judged agreement; the status-note conflict (no superseded material) stays DETECTED.
+- Severity: audio HIGH[0]+[3], Submit HIGH[0]+[3], repeated ending HIGH[3]; JSON vs prose MEDIUM[0] (U018
+  dropped again); PII MEDIUM[1] and Korean MEDIUM[0] (HIGH[3] in acceptance). The rubric is unchanged, so the
+  level choice for rule-confusion topics varies between runs; the wording remains a team-lead decision.
+
+Remaining defects after the closeout:
+- **Input cap blocks revisions:** v5 payloads (attributions, thread starters, longer rules) pushed the audio
+  and Submit revisions over 20,000 tokens. Their follow-up evidence was retrieved but never used; audio's open
+  question ("did the trial establish anything?") was judged unsupported because the trial outcome it asks
+  about was in that evidence. Needs a decision: raise the cap or slim the revision payload.
+- **ToT fallback not exercised live** (the one candidate it needed was correctly refused); covered offline only.
+- **Prose checks are heuristic:** directory-name, role-verb and plural patterns (English, double quotes only);
+  the final grounding remains the semantic check.
+- **Severity level choice** for rule-confusion topics (above); per-member resolution withheld for one member
+  in three scenarios (judged PARTIALLY_SUPPORTED); Korean ToT candidates overstated applicability.
+
+**Readability and state pass (2026-10-30; pilot v6, draft v6, ToT v2, AdviceCard v3, prompts v6 then v6.1).**
+- Card v3 answers what happened (`summary`), what the team lead should do (`recommended_action.label`, a fixed
+  familiar label such as "Post a reminder" or "Report a technical issue to engineering"; `instruction`, one
+  sentence), why (`rationale`) and what still needs review (`review_notes`, plain language). `draft_text` is the
+  copyable draft, separate from the instruction. Enums, claim and evidence IDs, essential premises
+  (`essential_premise_ids`), documentation targets (`targets`, by title and section) and processing errors are
+  structured fields; `needs_review_reasons` keeps the internal codes. The final grounding judges exactly the
+  displayed action text (label, instruction, draft, scope, changes), a separate non-blocking ACTION_RATIONALE and
+  REVIEW_NOTE; an unsupported rationale or note is withheld without dropping the action.
+- Display-text checks: no raw evidence/claim/user/member IDs, enum names or premise lists (`RAW_ID_IN_PROSE`); a
+  double-quoted passage of five or more words must match a cited source exactly (`QUOTE_NOT_IN_SOURCE`). Quotations
+  stay exempt from role rules and are never changed. A guard reports any ID or name left in card text.
+- Prompts: a writing guide (writing targets, not limits: summary 1-2 sentences, one-sentence instruction, 1-2
+  sentence rationale, announcement about 60-120 words) and two fictional STYLE ONLY, NOT EVIDENCE examples
+  (an image-captioning reminder, a video-timestamp escalation) in the draft and revision rules.
+  `PROMPT_VERSION` and fingerprints of the guide and examples are recorded in every manifest.
+- Truncation trace: stored card text was complete; the cuts in the shared sample came from the display script.
+  Real cuts were in storage (review-reason details at 300/900 characters, inherited Agent 1 review text at 600,
+  thread labels at 70) and in the model input (Agent 1 rationale/review reason at 400/600); serialization cut
+  nothing and every live response ended with `stop`. All of these are removed. A thread label quotes the opening
+  message's first sentence only if it is complete and at most 100 characters; `opening_text` stores the full message.
+- State: review reasons come from the final validated results. An open question the final grounding did not
+  support is no longer an OPEN_CONFIRMATION reason (it stays a withheld statement; the check reads NONE). Coverage
+  distinguishes not researched, follow-up not run, nothing new found, still missing after revision, and records
+  retrieved but not incorporated because the revision did not run. Replay reproduces a recorded stage failure with
+  its recorded class.
+- Input cap 24,000 tokens (reservation $0.212 per Sol request; acceptance worst case $5.93 of $6, other limits
+  unchanged). The rules were sent twice per request (task text and JSON body); now once.
+
+Offline first: zero-call replay of the closeout responses (`data/experiments/agent3_closeout_replay_v1/`): 128
+verdicts reused, 22 pending (changed display text). Every recorded v5 summary carried bracketed evidence IDs and
+is rejected as `RAW_ID_IN_PROSE`; audio's unsupported open question is no longer a review reason; audio's coverage
+reads "follow-up retrieved 3 item(s) but they were not incorporated (revision FAILED (RESOURCE))".
+
+Live (`data/experiments/agent3_readability_v1/`, `scripts/run_agent3_readability.py`, audio and Submit, prompts v6,
+same Sol arm): 6 requests (cap 8), all HTTP 200 / `stop`; 85,907 input / 19,596 output (1,160 reasoning) tokens;
+228 s model time; $0.3678 of $2.00. Audio's revision ran (19,009 input tokens) and used the trial records.
+- Both cards now carry an action: audio "Post a reminder" (103-word draft) and Submit "Report a technical issue to
+  engineering" (115-word draft listing the four threads by task, no shared cause asserted); Submit was withheld in
+  the acceptance and closeout runs. No name or internal ID in either card; summaries are two sentences; reporter
+  counts and roles match the threads. Submit keeps its supported open question; audio has none.
+- Found and fixed offline after the run (not rerun live): (1) "In two tutors' threads, the team lead says ..." was
+  rejected because the plural check counted the cited authors (one team lead); a possessive plural now counts the
+  threads' starters. This also withheld audio's HIGH[0] signal (severity rested on HIGH[3]). (2) A record
+  attributed to the team lead as AUTHOR was rejected; AUTHOR now holds for a record whose authority actor is that
+  user. (3) Audio's review note about open upstream flags was judged unsupported because the judge did not see the
+  flags; grounding now receives `open_review_flags` (prompts v6.1). The zero-call replay
+  (`data/experiments/agent3_readability_replay_v1/`) shows the three statements no longer rejected and pending a
+  judgment the run did not make.
+
+Remaining after this pass: the three fixes above are verified only offline; the ToT fallback is still not exercised
+live; prose and display checks are pattern-based; the severity level choice for rule-confusion topics remains a
+team-lead rubric decision.
 
 **Needs a real model evaluation (not shown by these tests):**
 - whether the Advisor names the right gaps and follow-up queries unprompted;

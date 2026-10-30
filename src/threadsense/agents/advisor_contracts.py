@@ -1,4 +1,4 @@
-"""Agent 3 Advisor pilot model I/O: draft (v3), grounding judgment (v2), shallow ToT comparison (v1).
+"""Agent 3 Advisor pilot model I/O: draft (v6), grounding judgment (v4), shallow ToT comparison (v2).
 
 These are what a model returns. They cite evidence only by the evidence_id values the
 pilot assigned in its evidence ledger; validators here are structural. Grounding,
@@ -6,7 +6,14 @@ severity binding, temporal checks and card routing happen in advisor_checks.py.
 v2 adds per-member resolution, announcement assessments and documentation targets to the
 draft, and judges every statement that can reach a card (not only claims). v3 marks quotes as
 verbatim or paraphrase, adds verified CAUSE claims, requires a specific open question with the
-evidence that leaves it open, and adds an evidence-coverage assessment.
+evidence that leaves it open, and adds an evidence-coverage assessment. Draft v4 adds scoped
+THREAD_INSTRUCTION claims (a team lead's in-thread instruction, not project guidance) and separates
+members' reports of recurrence from corroborated historical recurrence; grounding v3 adds an
+explicit judgment of whether the passed premises suffice for the exact proposed action. Draft v5 writes prose
+that refers to people by role, never by name, and records who wrote, started or took part in a thread as
+canonical-ID attributions; grounding v4 also judges the sufficiency of each reviewed ToT alternative. Draft v6
+adds the team lead-facing action instruction and rationale (draft_text is the copyable draft) and an optional review
+note; ToT v2 adds a candidate instruction.
 """
 from typing import Literal
 
@@ -19,9 +26,10 @@ Need = Literal['APPLICABLE_INSTRUCTION', 'CURRENT_HANDLING', 'PRIOR_DECISION_OUT
                'SUPERSESSION_OR_CONFLICT', 'EXPERT_ROUTING', 'OTHER']
 # INCIDENT_FACT: what members report (member Slack messages only; a report, not a verified cause).
 # CAUSE: a verified cause (needs a retrieved record or a team lead/engineer message that verifies it).
-# GUIDANCE: what applies now (current guideline/FAQ/established announcement). HISTORY: what was
+# GUIDANCE: what applies now (current guideline/FAQ/established announcement). THREAD_INSTRUCTION: a team
+# lead's instruction inside a member thread, scoped to that thread (not project guidance). HISTORY: what was
 # decided or observed before. INFERENCE: the Advisor's reasoning from cited evidence.
-ClaimKind = Literal['INCIDENT_FACT', 'CAUSE', 'GUIDANCE', 'HISTORY', 'INFERENCE']
+ClaimKind = Literal['INCIDENT_FACT', 'CAUSE', 'GUIDANCE', 'THREAD_INSTRUCTION', 'HISTORY', 'INFERENCE']
 CoverageNeed = Literal['CURRENT_GUIDANCE', 'ANNOUNCEMENTS', 'PRIOR_DECISIONS', 'MEMBER_QUESTIONS']
 DOCUMENT_ACTIONS = ('UPDATE_DOCUMENTATION', 'UPDATE_FAQ')
 
@@ -45,11 +53,21 @@ class EvidenceGap(Strict):
     follow_up: FollowUpQuery | None = None
 
 
+class Attribution(Strict):
+    """Who the claim's role wording refers to, by canonical user ID. AUTHOR: wrote the cited message (reports, asks,
+    confirms, instructs). THREAD_STARTER: started the cited message's thread. PARTICIPANT: posted in that thread
+    (only for a claim about taking part)."""
+    user_id: Text
+    relation: Literal['AUTHOR', 'THREAD_STARTER', 'PARTICIPANT']
+    evidence_id: Text
+
+
 class Claim(Strict):
     claim_id: Text
     kind: ClaimKind
-    text: Text
+    text: Text  # Role-based prose: "a tutor reports", "the team lead instructs"; never a personal name.
     evidence_ids: list[str] = Field(default_factory=list)
+    attributions: list[Attribution] = Field(default_factory=list)
     quote: str | None = None  # Optional excerpt from one cited item.
     quote_kind: Literal['VERBATIM', 'PARAPHRASE'] = 'VERBATIM'  # VERBATIM must match the source exactly.
     material: bool = True
@@ -74,8 +92,11 @@ class SeverityProposal(Strict):
     rationale: Text
     signals: list[SignalCitation] = Field(default_factory=list)
     affected_reporters: list[ReporterCitation] = Field(default_factory=list)
+    # Historical recurrence: corroborated by retrieved records only.
     recurrence: Literal['NOT_CHECKED', 'NONE_FOUND', 'FOUND'] = 'NOT_CHECKED'
     recurrence_evidence_ids: list[str] = Field(default_factory=list)
+    # Members saying it is "happening again": a report, not corroborated history.
+    reported_recurrence_evidence_ids: list[str] = Field(default_factory=list)
 
 
 class ActionTarget(Strict):
@@ -87,7 +108,9 @@ class ActionTarget(Strict):
 
 class ActionProposal(Strict):
     action_type: ActionType
-    draft_text: str | None = None
+    instruction: str | None = None  # One concrete sentence telling the team lead what to do.
+    rationale: str | None = None  # Why that helps, in 1-2 short sentences.
+    draft_text: str | None = None  # The copyable draft (announcement, escalation message, documentation wording).
     scope_note: str | None = None
     support_claim_ids: list[str] = Field(default_factory=list)
     targets: list[ActionTarget] = Field(default_factory=list)
@@ -143,8 +166,8 @@ class CoverageItem(Strict):
 
 
 class AdvisorDraft(Strict):
-    contract_version: Literal['agent3-advisor-draft-v3'] = 'agent3-advisor-draft-v3'
-    summary: Text
+    contract_version: Literal['agent3-advisor-draft-v6'] = 'agent3-advisor-draft-v6'
+    summary: Text  # What happened, 1-2 short sentences for the team lead.
     reasoning: Text
     claims: list[Claim] = Field(default_factory=list)
     gaps: list[EvidenceGap] = Field(default_factory=list)
@@ -160,6 +183,7 @@ class AdvisorDraft(Strict):
     announcement_assessments: list[AnnouncementAssessment] = Field(default_factory=list)
     resolution: list[MemberResolution] = Field(default_factory=list)
     coverage: list[CoverageItem] = Field(default_factory=list)
+    review_note: str | None = None  # Only when something specific still needs the team lead's review.
 
     @model_validator(mode='after')
     def consistent(self):
@@ -183,21 +207,38 @@ class StatementVerdict(Strict):
     rationale: Text
 
 
+class ActionSufficiency(Strict):
+    """Whether the premises that passed justify the exact proposed action (wording, conditions and scope)."""
+    verdict: Literal['SUFFICIENT', 'INSUFFICIENT']
+    essential_statement_ids: list[str] = Field(default_factory=list)  # Premises the action cannot stand without.
+    rationale: Text
+
+
+class AlternativeSufficiency(ActionSufficiency):
+    """The same sufficiency judgment for one reviewed ToT alternative (statement_id alternative:<candidate>)."""
+    statement_id: Text
+
+
 class GroundingJudgment(Strict):
     """One verdict per statement presented (claims, summary, action, severity, reporters, resolution,
-    announcement handling and ToT alternatives)."""
-    contract_version: Literal['agent3-grounding-judgment-v2'] = 'agent3-grounding-judgment-v2'
+    announcement handling, source agreement and ToT alternatives), plus the sufficiency judgment for the action
+    and for each operational alternative sent."""
+    contract_version: Literal['agent3-grounding-judgment-v4'] = 'agent3-grounding-judgment-v4'
     verdicts: list[StatementVerdict]
+    action_sufficiency: ActionSufficiency | None = None
+    alternative_sufficiency: list[AlternativeSufficiency] = Field(default_factory=list)
 
     @model_validator(mode='after')
     def distinct(self):
         _distinct([v.statement_id for v in self.verdicts], 'Verdict statement IDs')
+        _distinct([a.statement_id for a in self.alternative_sufficiency], 'Alternative sufficiency statement IDs')
         return self
 
 
 class CandidateAction(Strict):
     candidate_id: Text
     action_type: ActionType
+    instruction: str | None = None
     draft_text: Text
     evidence_ids: list[str] = Field(default_factory=list)
     evidence_support: Literal['STRONG', 'PARTIAL', 'WEAK', 'NONE']
@@ -207,7 +248,7 @@ class CandidateAction(Strict):
 
 
 class ToTComparison(Strict):
-    contract_version: Literal['agent3-tot-comparison-v1'] = 'agent3-tot-comparison-v1'
+    contract_version: Literal['agent3-tot-comparison-v2'] = 'agent3-tot-comparison-v2'
     candidates: list[CandidateAction] = Field(min_length=2, max_length=3)
     preferred_candidate_id: str | None = None
     close_call: bool

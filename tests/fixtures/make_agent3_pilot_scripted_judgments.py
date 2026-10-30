@@ -50,15 +50,20 @@ def statement_ids(draft, alternatives=()):
     ids += ['open_question'] if draft['open_confirmation'] == 'OPEN' else []
     severity = draft['severity']
     ids += ['severity:rationale'] + [f"severity:signal:{s['level']}[{s['signal_index']}]" for s in severity.get('signals', [])]
+    ids += ['severity:recurrence'] if severity.get('recurrence') == 'FOUND' else []
+    ids += ['severity:reported_recurrence'] if severity.get('reported_recurrence_evidence_ids') else []
     ids += [f'reporter:{a}' for a in dict.fromkeys(r['author_id'] for r in severity.get('affected_reporters', []))]
     return ids + [f'alternative:{c}' for c in alternatives]
 
 
 def judged(draft, alternatives=(), **overrides):
     """Prepared verdicts: SUPPORTED unless overridden as statement_id=(verdict, rationale)."""
+    action = draft.get('proposed_action') if 'action' in statement_ids(draft) else None
     return {'verdicts': [{'statement_id': i, 'verdict': overrides.get(i, ('SUPPORTED',))[0],
                           'rationale': overrides.get(i, (None, 'The cited excerpts state this directly.'))[1]}
-                         for i in statement_ids(draft, alternatives)]}
+                         for i in statement_ids(draft, alternatives)],
+            'action_sufficiency': {'verdict': 'SUFFICIENT', 'essential_statement_ids': [f'claim:{c}' for c in action['support_claim_ids']],
+                                   'rationale': 'The listed premises justify the action as worded.'} if action else None}
 
 
 # --- audio_playback -------------------------------------------------------------------------------
@@ -411,11 +416,11 @@ responses = {
     'control_unsupported_payroll': {'draft': control_draft},
 }
 out = ROOT/'tests/fixtures/agent3_pilot_scripted_judgments.json'
-payload = {'version': 'agent3-pilot-scripted-judgments-v3',
+payload = {'version': 'agent3-pilot-scripted-judgments-v4',
            'purpose': 'Prepared semantic responses (draft, revision, grounding, ToT) for the offline pilot run. They exercise '
                       'the deterministic checks and routing; they are not model output and say nothing about model quality. '
-                      'Evidence IDs refer to the knowledge-chunks-v2 index; contracts are advisor draft v3 and '
-                      'grounding judgment v2.',
+                      'Evidence IDs refer to the knowledge-chunks-v2 index; contracts are advisor draft v4 and '
+                      'grounding judgment v3.',
            'responses': responses}
 out.write_text(json.dumps(payload, ensure_ascii=False, indent=1) + '\n', encoding='utf-8')
 print('wrote', out)

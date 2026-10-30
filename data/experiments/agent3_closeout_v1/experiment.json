@@ -1,0 +1,205 @@
+{
+ "arm": "gpt-6.1-sol",
+ "settings": {
+  "model": "openai/gpt-6.1-sol",
+  "api_key_variable": "OPENAI_API_KEY",
+  "interface": "CrewAI Agent + Task + Crew per stage (role-specific agents, max_iter=1, max_retry_limit=0, no tools, no memory or planning) over crewai.LLM via LiteLLM",
+  "temperature": null,
+  "reasoning_effort": "medium",
+  "service_tier": "default",
+  "max_completion_tokens_per_call": 16384,
+  "input_token_limit": 20000,
+  "timeout_seconds": 120,
+  "response_format": "json_object",
+  "provider_sdk_max_retries": 0,
+  "model_fallback": null,
+  "http_requests_per_stage": 1,
+  "quiet_env": {
+   "CREWAI_DISABLE_TELEMETRY": "true",
+   "OTEL_SDK_DISABLED": "true",
+   "LITELLM_LOCAL_MODEL_COST_MAP": "True",
+   "CREWAI_TRACING_ENABLED": "false"
+  }
+ },
+ "prices_per_token": {
+  "input": 2e-06,
+  "output": 1e-05,
+  "cached_input": 1e-07,
+  "source": "litellm 1.105.0 local model_cost map"
+ },
+ "budget": {
+  "model_calls_per_topic": 4,
+  "model_calls_total": 24,
+  "retrieval_calls_per_topic": 6,
+  "retrieval_calls_total": 36
+ },
+ "scenarios": [
+  "audio_playback",
+  "json_vs_prose",
+  "fictional_pii",
+  "korean_register",
+  "submit_failure",
+  "repeated_ending"
+ ],
+ "cost_limit_usd": 3.0,
+ "reservation_per_request_usd": 0.20384,
+ "worst_case_all_requests_usd": 4.8922,
+ "binding_limit": "cost ledger (reservation before each request)",
+ "prompts": {
+  "draft_rules": "8336d0a415a5989bef322026ec5c7c124718f7b766fc95e42e2e92c42384826c",
+  "revision_rules": "d76f607d16044ab4b3a0435a435087a9b6749cd9fc9fb0bb4e1a356e933f5da3",
+  "grounding_rules": "526034bd5d9cfda5466b8cb8ee4697533e6a1904b59101e8dc2303439b7ec125",
+  "tot_rules": "c709360bf2306affb3fbc78a536efc179cf3432b4a9a0442ff614e1d252c13a9",
+  "schemas": {
+   "AdvisorDraft": "70be6f4a9b569d39a21d4700d8d0f4e39057a0fa29d67e47db0ea81370308c1f",
+   "GroundingJudgment": "a3db796b10134cffad545e5f59a4973e82d8556eae1a9110b84ac7394277f853",
+   "ToTComparison": "6fe36a27285c824159932e52610909a7bbb042dd87e3bab02cdf11ed6c3768aa"
+  },
+  "contract_versions": {
+   "draft": "agent3-advisor-draft-v5",
+   "grounding": "agent3-grounding-judgment-v4",
+   "tot": "agent3-tot-comparison-v1"
+  }
+ },
+ "pilot_version": "agent3-advisor-pilot-v5",
+ "baseline_run": "data/experiments/agent3_acceptance_v1",
+ "index": {
+  "build_fingerprint": "4da16f090eb5f2c61f408948f4f761b254caaf4e3a226e1e46a9574308ccc791",
+  "chunking_version": "knowledge-chunks-v2",
+  "corpus_fingerprint": "c72edb4636025692d7f278d31afec466fb55ac8e0f92c9af82aafa94bd534389",
+  "cutoff": "2026-10-02T12:00:00Z"
+ },
+ "handoff_canonical_sha256": "c417f93c65615a19d64e2e039857f42eacacc2e31dbe3df18a2ad647454d8aed",
+ "cost_ledger": {
+  "limit_usd": 3.0,
+  "spent_usd": 0.947102,
+  "reserved_usd": 0.0,
+  "requests": [
+   {
+    "label": "audio_playback:draft",
+    "reserved_usd": 0.20384,
+    "charged_usd": 0.081568,
+    "basis": "provider usage"
+   },
+   {
+    "label": "audio_playback:revision",
+    "reserved_usd": 0.20384,
+    "charged_usd": 0.0,
+    "basis": "not sent"
+   },
+   {
+    "label": "audio_playback:tot",
+    "reserved_usd": 0.20384,
+    "charged_usd": 0.040092,
+    "basis": "provider usage"
+   },
+   {
+    "label": "audio_playback:grounding",
+    "reserved_usd": 0.20384,
+    "charged_usd": 0.06512,
+    "basis": "provider usage"
+   },
+   {
+    "label": "json_vs_prose:draft",
+    "reserved_usd": 0.20384,
+    "charged_usd": 0.061438,
+    "basis": "provider usage"
+   },
+   {
+    "label": "json_vs_prose:tot",
+    "reserved_usd": 0.20384,
+    "charged_usd": 0.030234,
+    "basis": "provider usage"
+   },
+   {
+    "label": "json_vs_prose:grounding",
+    "reserved_usd": 0.20384,
+    "charged_usd": 0.044222,
+    "basis": "provider usage"
+   },
+   {
+    "label": "fictional_pii:draft",
+    "reserved_usd": 0.20384,
+    "charged_usd": 0.068706,
+    "basis": "provider usage"
+   },
+   {
+    "label": "fictional_pii:tot",
+    "reserved_usd": 0.20384,
+    "charged_usd": 0.033618,
+    "basis": "provider usage"
+   },
+   {
+    "label": "fictional_pii:grounding",
+    "reserved_usd": 0.20384,
+    "charged_usd": 0.047584,
+    "basis": "provider usage"
+   },
+   {
+    "label": "korean_register:draft",
+    "reserved_usd": 0.20384,
+    "charged_usd": 0.063654,
+    "basis": "provider usage"
+   },
+   {
+    "label": "korean_register:tot",
+    "reserved_usd": 0.20384,
+    "charged_usd": 0.030008,
+    "basis": "provider usage"
+   },
+   {
+    "label": "korean_register:grounding",
+    "reserved_usd": 0.20384,
+    "charged_usd": 0.044518,
+    "basis": "provider usage"
+   },
+   {
+    "label": "submit_failure:draft",
+    "reserved_usd": 0.20384,
+    "charged_usd": 0.08201,
+    "basis": "provider usage"
+   },
+   {
+    "label": "submit_failure:revision",
+    "reserved_usd": 0.20384,
+    "charged_usd": 0.0,
+    "basis": "not sent"
+   },
+   {
+    "label": "submit_failure:tot",
+    "reserved_usd": 0.20384,
+    "charged_usd": 0.041862,
+    "basis": "provider usage"
+   },
+   {
+    "label": "submit_failure:grounding",
+    "reserved_usd": 0.20384,
+    "charged_usd": 0.059492,
+    "basis": "provider usage"
+   },
+   {
+    "label": "repeated_ending:draft",
+    "reserved_usd": 0.20384,
+    "charged_usd": 0.074276,
+    "basis": "provider usage"
+   },
+   {
+    "label": "repeated_ending:tot",
+    "reserved_usd": 0.20384,
+    "charged_usd": 0.030724,
+    "basis": "provider usage"
+   },
+   {
+    "label": "repeated_ending:grounding",
+    "reserved_usd": 0.20384,
+    "charged_usd": 0.047976,
+    "basis": "provider usage"
+   }
+  ]
+ },
+ "http_requests": {
+  "sent": 18,
+  "blocked": 0
+ },
+ "halted": null
+}

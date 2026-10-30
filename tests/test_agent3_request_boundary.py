@@ -64,7 +64,8 @@ def provider(monkeypatch):
 
 @pytest.mark.parametrize('reply, status, blocked', [
     (reply_ok, 'OK', 0),
-    (lambda r: reply_ok(r, 'Thought: I need a tool\nAction: search\nAction Input: {"q": 1}'), 'FAILED', 0),  # No forced re-ask.
+    # CrewAI's executor answers a non-final reply with a forced-final-answer request: refused unsent.
+    (lambda r: reply_ok(r, 'Thought: I need a tool\nAction: search\nAction Input: {"q": 1}'), 'FAILED', 1),
     (reply_status(500), 'FAILED', 0),  # Provider SDK retries disabled.
     (reply_status(429), 'FAILED', 1),  # CrewAI's fixed rate-limit retry is refused before it is sent.
     (reply_connect_error, 'FAILED', 0),
@@ -95,11 +96,12 @@ def test_budget_counts_requests_one_to_one(provider):
     assert [e['status'] for e in stages.log] == ['OK'] * 4 + ['SKIPPED_BUDGET'] and len(provider.requests) == 4
 
 
-def test_a_response_that_bypasses_the_guarded_transport_stops_the_run(provider):
+def test_a_response_that_bypasses_the_guarded_transport_stops_the_run(provider, monkeypatch):
     """DETERMINISTIC. If a reply arrives without any request through the guarded transport, call accounting is
     unverifiable, so the run stops instead of recording an unmonitored call."""
     client = CrewAIClient()
-    client.llm = SimpleNamespace(call=lambda messages: VALID)
+    import crewai
+    monkeypatch.setattr(crewai.Crew, 'kickoff', lambda self, *a, **k: SimpleNamespace(raw=VALID))
     with pytest.raises(BoundaryNotObserved):
         Stages(client, Budget({}), 'scenario')('draft', {'rules': 'r'}, GroundingJudgment)
 
@@ -130,7 +132,7 @@ def test_each_arm_sends_its_model_parameters(provider):
         arm_stage(arm)('grounding', {'rules': 'r'}, GroundingJudgment)
         bodies[arm] = {k: v for k, v in provider.requests[0].items() if k != 'messages'}
     assert bodies['gpt-4o-mini'] == {'model': 'gpt-4o-mini', 'max_tokens': 4096, 'temperature': 0.0,
-                                     'response_format': {'type': 'json_object'}}
+                                     'stop': ['\nObservation:'], 'response_format': {'type': 'json_object'}}
     assert bodies['gpt-6.1-sol'] == {'model': 'gpt-6.1-sol', 'max_completion_tokens': 16384, 'reasoning_effort': 'medium',
                                      'service_tier': 'default', 'response_format': {'type': 'json_object'}}
 

@@ -1,0 +1,174 @@
+{
+ "source": "data/experiments/agent3_readability_v1",
+ "pilot_version": "agent3-advisor-pilot-v6",
+ "prompts_now": {
+  "prompt_version": "agent3-advisor-prompts-v6.1",
+  "draft_rules": "0ba713be27cfeab0917d6244298c13e47fe7d32e5a1dc5ca802e6844192b3abd",
+  "revision_rules": "69990f431f4cd8049b5d50e1805dbf243042c9d136c452718efa97dc5906f726",
+  "writing_guide": "0ff52c75fa726a201969d4c8751bf14d16806cdbdcc4bbdef71ac9de93b2aeb3",
+  "style_examples": "abd7eeaaeb50fa1fde39bb83f6f0d9b1ba5d05fdb242b37d7841fb1f8e64c1b7",
+  "grounding_rules": "a6b0d49ab5a7dc16d23e6143c29c9bd5ed10fe843be0687d37f03472ff447fdd",
+  "tot_rules": "1dffaa9b85c1676827443985ca045544f53cf1d36f4cd968b795ccffec7b6a14",
+  "schemas": {
+   "AdvisorDraft": "5e8ceabbf3eb50c119ae33340d231c963924deecb847e628a04c544e191a1e4c",
+   "GroundingJudgment": "a3db796b10134cffad545e5f59a4973e82d8556eae1a9110b84ac7394277f853",
+   "ToTComparison": "32f82c758944e29b4db4856e5a8d90ac91003cca2a87c152a14a2ba3284217e5"
+  },
+  "contract_versions": {
+   "draft": "agent3-advisor-draft-v6",
+   "grounding": "agent3-grounding-judgment-v4",
+   "tot": "agent3-tot-comparison-v2"
+  }
+ },
+ "prompts_recorded": {
+  "prompt_version": "agent3-advisor-prompts-v6",
+  "draft_rules": "0ba713be27cfeab0917d6244298c13e47fe7d32e5a1dc5ca802e6844192b3abd",
+  "revision_rules": "69990f431f4cd8049b5d50e1805dbf243042c9d136c452718efa97dc5906f726",
+  "writing_guide": "0ff52c75fa726a201969d4c8751bf14d16806cdbdcc4bbdef71ac9de93b2aeb3",
+  "style_examples": "abd7eeaaeb50fa1fde39bb83f6f0d9b1ba5d05fdb242b37d7841fb1f8e64c1b7",
+  "grounding_rules": "107cd0ead6af7e66f28d82efec13cc7a85f3a2f568d6b9da5e85455e0438b32d",
+  "tot_rules": "1dffaa9b85c1676827443985ca045544f53cf1d36f4cd968b795ccffec7b6a14",
+  "schemas": {
+   "AdvisorDraft": "5e8ceabbf3eb50c119ae33340d231c963924deecb847e628a04c544e191a1e4c",
+   "GroundingJudgment": "a3db796b10134cffad545e5f59a4973e82d8556eae1a9110b84ac7394277f853",
+   "ToTComparison": "32f82c758944e29b4db4856e5a8d90ac91003cca2a87c152a14a2ba3284217e5"
+  },
+  "contract_versions": {
+   "draft": "agent3-advisor-draft-v6",
+   "grounding": "agent3-grounding-judgment-v4",
+   "tot": "agent3-tot-comparison-v2"
+  }
+ },
+ "pilot_version_recorded": "agent3-advisor-pilot-v6",
+ "model_calls": 0,
+ "arms": {
+  "gpt-6.1-sol": {
+   "cases": [
+    {
+     "case": "audio_playback",
+     "card_line": "NEEDS_REVIEW",
+     "grounding": "FAILED",
+     "basis": "SEMANTIC",
+     "pending": [
+      "claim:c8",
+      "action",
+      "severity:signal:HIGH[0]"
+     ],
+     "action_proposed": "POST_ALIGNMENT",
+     "action_verdict": "PENDING",
+     "action_on_card": null,
+     "severity": "UNKNOWN UNASSESSED",
+     "severity_issues": [
+      "Severity pending semantic judgment of severity:signal:HIGH[0]; left UNASSESSED until judged."
+     ],
+     "severity_notes": [],
+     "resolution": "MIXED",
+     "normalization": [],
+     "rejected": {},
+     "action_source": "DRAFT",
+     "action_notes": [],
+     "temporal": [],
+     "model_calls": [
+      [
+       "draft",
+       "OK"
+      ],
+      [
+       "revision",
+       "OK"
+      ],
+      [
+       "grounding",
+       "OK"
+      ]
+     ]
+    },
+    {
+     "case": "submit_failure",
+     "card_line": "NEEDS_REVIEW",
+     "grounding": "FAILED",
+     "basis": "SEMANTIC",
+     "pending": [
+      "claim:c6",
+      "action",
+      "alternative:engineering_follow_up",
+      "alternative:diagnostics_before_handoff"
+     ],
+     "action_proposed": "ESCALATE_ENGINEERING",
+     "action_verdict": "PENDING",
+     "action_on_card": null,
+     "severity": "HIGH ASSESSED",
+     "severity_issues": [],
+     "severity_notes": [],
+     "resolution": "UNRESOLVED",
+     "normalization": [],
+     "rejected": {},
+     "action_source": "DRAFT",
+     "action_notes": [
+      "No ToT fallback: preferred candidate engineering_follow_up: text judged PENDING."
+     ],
+     "temporal": [],
+     "model_calls": [
+      [
+       "draft",
+       "OK"
+      ],
+      [
+       "tot",
+       "OK"
+      ],
+      [
+       "grounding",
+       "OK"
+      ]
+     ]
+    }
+   ],
+   "reused_verdicts": 49,
+   "not_reused": [
+    {
+     "scenario_id": "audio_playback",
+     "statement_id": "claim:c8",
+     "reused": false,
+     "reason": "recorded verdict REJECTED_PLURAL_NOT_SUPPORTED_BY_DISTINCT_AUTHORS"
+    },
+    {
+     "scenario_id": "audio_playback",
+     "statement_id": "action",
+     "reused": false,
+     "reason": "premises now shown as provisional with dependencies"
+    },
+    {
+     "scenario_id": "audio_playback",
+     "statement_id": "severity:signal:HIGH[0]",
+     "reused": false,
+     "reason": "recorded verdict REJECTED_PLURAL_NOT_SUPPORTED_BY_DISTINCT_AUTHORS"
+    },
+    {
+     "scenario_id": "submit_failure",
+     "statement_id": "claim:c6",
+     "reused": false,
+     "reason": "recorded verdict REJECTED_ATTRIBUTION_INVALID"
+    },
+    {
+     "scenario_id": "submit_failure",
+     "statement_id": "action",
+     "reused": false,
+     "reason": "premises now shown as provisional with dependencies"
+    },
+    {
+     "scenario_id": "submit_failure",
+     "statement_id": "alternative:engineering_follow_up",
+     "reused": false,
+     "reason": "premises now shown as provisional with dependencies"
+    },
+    {
+     "scenario_id": "submit_failure",
+     "statement_id": "alternative:diagnostics_before_handoff",
+     "reused": false,
+     "reason": "premises now shown as provisional with dependencies"
+    }
+   ]
+  }
+ }
+}

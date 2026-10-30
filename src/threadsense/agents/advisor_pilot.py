@@ -6,13 +6,17 @@ deterministic checks (structure, severity binding to the unchanged rubric, tempo
 priority) -> conditional shallow ToT -> ONE final semantic grounding call over every
 statement that can reach the card (claims, summary, action, severity rationale/signals,
 affected reporters, member resolution, announcement handling) and over the ToT
-alternatives -> authorization (only SUPPORTED statements reach the card) -> deterministic
-card routing. Nothing after the final grounding call can add or change a statement.
+alternatives -> authorization (only SUPPORTED statements reach the card; a withheld draft action
+may be replaced by an already-reviewed ToT candidate that passed the same checks) -> deterministic
+card routing. Nothing after the final grounding call can add or change a statement. Card prose
+refers to people by role; models see canonical IDs and roles, never display names.
 
 Every model and retrieval call is charged to a finite budget, and draft, revision and ToT
 each run only if a call stays reserved for the final grounding. Nothing is retried: the
-live client sends at most one HTTP request per stage (enforced at the transport) and a
-failed stage is recorded while the topic's members and obligations still reach a card.
+live client runs each stage as a CrewAI Task for a role-specific Agent (researcher,
+alternatives analyst, grounding verifier) and sends at most one HTTP request per stage
+(enforced at the transport, including CrewAI's forced-final-answer and rate-limit retries);
+a failed stage is recorded while the topic's members and obligations still reach a card.
 The model never calls tools itself: it names gaps and follow-up queries, and
 ResearchTools executes them within the budget.
 """
@@ -30,16 +34,22 @@ from threadsense.agents.advice_contracts import ModelReviewItem, stable_id
 from threadsense.agents.advice_inputs import coverage, load_effective_view, review_items_from_view
 from threadsense.agents.advisor_checks import (
     action_issues, agent1_resolution, announcement_issues, assemble_card, authorize, build_severity, claim_issues,
-    coverage_issues, established, grounding_result, inherited_flags, rejected_statements, sendable, statements,
-    structural_issues, temporal_check, unauthorized,
+    coverage_issues, dependencies, established, grounding_result, inherited_flags, normalize, presentation_issues,
+    rejected_statements, sendable, statements, structural_issues, temporal_check, unauthorized,
 )
 from threadsense.agents.advisor_contracts import AdvisorDraft, GroundingJudgment
-from threadsense.agents.advisor_evidence import Budget, BudgetExhausted, ResearchTools, member_messages, open_retriever
+from threadsense.agents.advisor_evidence import (
+    Budget, BudgetExhausted, ResearchTools, member_messages, model_view, open_retriever,
+)
 from threadsense.handoff_inputs import ROOT, file_hash, read_json
 from threadsense.retrieval.config import DEFAULTS
 from threadsense.severity_rubric import load_rubric
 
-PILOT_VERSION = 'agent3-advisor-pilot-v3'
+PILOT_VERSION = 'agent3-advisor-pilot-v6'
+# Prompt text version, recorded in every manifest with the rule fingerprints. v6: team lead-facing writing guide and two
+# STYLE ONLY examples in the draft/revision rules; display-text rules in grounding and ToT; rules sent once per request
+# (agent3_readability_v1 ran v6). v6.1: grounding also receives the open upstream review flags (open_review_flags).
+PROMPT_VERSION = 'agent3-advisor-prompts-v6.1'
 SCENARIOS = ROOT/'data/evaluation/agent3_pilot_scenarios.json'
 HANDOFF = ROOT/'data/processed/agent2_handoff_v2_projection'
 # Per topic: draft + one revision + one ToT + final grounding = 4 model calls at most, the last always
@@ -52,16 +62,24 @@ TOP_K = 5
 MAX_COMPLETION_TOKENS = 4096
 REQUEST_TIMEOUT_SECONDS = 120
 HTTP_REQUESTS_PER_STAGE = 1
-INPUT_TOKEN_LIMIT = 20_000  # Checked before sending (o200k estimate); the provider's count is recorded after.
+INPUT_TOKEN_LIMIT = 24_000  # Checked on the exact request body before sending (o200k); the provider's count is recorded.
 # Set before CrewAI/LiteLLM import: no telemetry export, no remote model-price download.
-QUIET_ENV = {'CREWAI_DISABLE_TELEMETRY': 'true', 'OTEL_SDK_DISABLED': 'true', 'LITELLM_LOCAL_MODEL_COST_MAP': 'True'}
+QUIET_ENV = {'CREWAI_DISABLE_TELEMETRY': 'true', 'OTEL_SDK_DISABLED': 'true', 'LITELLM_LOCAL_MODEL_COST_MAP': 'True',
+             'CREWAI_TRACING_ENABLED': 'false'}
 
 DRAFT_RULES = (
     'You are the ThreadSense Advisor preparing one topic for a team lead\'s morning brief. Use only the evidence '
-    'provided and cite it by evidence_id. Member messages (origin member_message, with author_name from the user '
-    'directory, author_role and reactions) are the only evidence for what members report. INCIDENT_FACT claims state '
-    'what members report ("Yuki reports ..."), never a verified cause; a CAUSE claim needs a retrieved record or a team '
-    'lead or engineer message that verifies it. Name a person only when you cite a message they wrote. Retrieved sources '
+    'provided and cite it by evidence_id. Member messages (origin member_message, with canonical author_id, author_role, '
+    'thread_starter_id/thread_starter_role and reactions) are the only evidence for what members report. People: refer '
+    'to them by role, never by name ("a tutor", "a QA tutor", "the team lead", "an engineer", "the thread starter"), in '
+    'every summary, claim, rationale and action. Use singular wording for one person; plural wording ("three tutors '
+    'report") only when that many distinct authors are cited. In each claim, list in attributions whom the role wording '
+    'refers to (user_id, relation, cited evidence_id): AUTHOR wrote the cited message (reports, asks, confirms, '
+    'instructs), THREAD_STARTER started that message\'s thread, PARTICIPANT only for a claim that the person took part '
+    'in the thread. Quotations are copied unchanged. INCIDENT_FACT claims state what members report ("a tutor reports '
+    '..."), never a verified cause; a CAUSE claim needs a retrieved record or a team lead or engineer message that '
+    'verifies it. A team lead\'s instruction inside a member thread is a THREAD_INSTRUCTION claim citing that message: it '
+    'applies to that thread\'s scope and is not project guidance. Retrieved sources '
     'support guidance and history according to their "use": CURRENT_GUIDANCE may support what applies now; '
     'PRIOR_DECISION and HISTORY_ONLY explain earlier decisions, outcomes or old rules and must not be presented as current '
     'guidance; UNRESOLVED_VERSION must not be resolved by you. ANNOUNCEMENT items include routine reminders, schedules '
@@ -77,13 +95,16 @@ DRAFT_RULES = (
     'could find it. Request follow-ups only for support your advice actually needs; a nonempty result list is not '
     'sufficient evidence. Do not invent causes, outcomes, approvals, counts or fixes. '
     'Action: when the evidence supports a concrete step (post or align on current guidance, escalate, route to a '
-    'specialist, update documentation), propose it with support_claim_ids naming its premises; it may be proposed even '
+    'specialist, update documentation), propose it with support_claim_ids naming all its premises (a judge will decide which are essential); it may be '
+    'proposed even '
     'though the card will need team lead review. That a team lead approves or executes the action is not an open '
     'question. Set open_confirmation OPEN only for a specific question that the cited guidance and decisions leave '
     'unsettled, state it in open_question, and cite in open_question_evidence_ids the evidence showing it is unsettled; '
     'otherwise NONE. Severity: apply the rubric unchanged; MEDIUM or HIGH must cite a rubric signal by level, index and '
     'exact text, supported by member messages; affected_reporters lists only people whose own message (cite that '
-    'message) reports being affected, not everyone who replied. Resolution: give each member a state (UNRESOLVED, '
+    'message) reports being affected, not everyone who replied. recurrence FOUND means historical recurrence '
+    'corroborated by retrieved records (cite them in recurrence_evidence_ids); members saying it is happening again go '
+    'in reported_recurrence_evidence_ids, which is a report, not corroborated history. Resolution: give each member a state (UNRESOLVED, '
     'PARTIALLY_RESOLVED, RESOLVED_IN_THREAD or UNKNOWN) from that member\'s own complete thread, citing the messages '
     'that show it; Agent 1\'s resolution label is an attributed input, often unverified, and is not evidence; one '
     'member\'s resolution says nothing about another member. UPDATE_DOCUMENTATION and UPDATE_FAQ name targets '
@@ -92,27 +113,82 @@ DRAFT_RULES = (
     'source_conflicts between evidence items that disagree. If no evidence addresses the topic, set evidence_sufficiency '
     'UNSUPPORTED and propose no operational action. Upstream review flags stay open; you cannot clear them. Everything '
     'that reaches the card is checked statement by statement against the full topic context.')
+WRITING_GUIDE = (
+    'Card writing. The team lead reads these fields exactly as you write them: summary (what happened, 1-2 short '
+    'sentences); proposed_action.instruction (one concrete sentence telling the team lead what to do); '
+    'proposed_action.rationale (why that helps, 1-2 short sentences); proposed_action.draft_text (a copyable draft suited '
+    'to the action: an announcement of about 60-120 words, with bullets when useful, or the message to send for an '
+    'escalation or referral); review_note (only when something specific still needs the team lead\'s review; otherwise '
+    'null). These are writing targets, not limits: keep necessary conditions, uncertainty, scope and who reported, asked, '
+    'confirmed or instructed. Use familiar words: "post a reminder", not "post alignment"; "report a technical issue", not '
+    '"tool-incident reporting". Never put evidence IDs, claim IDs, user IDs, field or enum names, rubric references, '
+    'premise lists or processing details in these fields or in claim text; the evidence mapping belongs in evidence_ids, '
+    'support_claim_ids, attributions and targets. Use double quotation marks only for exact quotations copied unchanged '
+    'from a cited source. Not every topic needs an announcement, or any action.')
+STYLE_EXAMPLES = (
+    'STYLE EXAMPLES - STYLE ONLY, NOT EVIDENCE. Both are fictional and outside every project here: never copy their facts, '
+    'counts, policies, wording or actions into a real card. Excerpts of the display fields only; a real draft also carries '
+    'claims, evidence_ids, support_claim_ids, attributions, severity, coverage and resolution. '
+    'Example 1 (fictional image-captioning batch). Supplied facts: two annotators ask whether captions should include '
+    'watermark text; the current captioning guideline says to omit watermarks unless the watermark is the subject of the '
+    'image. Selected action: post a reminder. summary: "Two annotators asked whether captions should include watermark '
+    'text. The current guideline already answers this." proposed_action.instruction: "Post a reminder in the batch channel '
+    'that captions leave out watermark text unless the watermark is the subject of the image." proposed_action.rationale: '
+    '"Both questions are answered by the current guideline; one reminder gives everyone the same rule before more '
+    'captions are submitted." proposed_action.draft_text: "Reminder for this batch: leave watermark text out of captions. '
+    '- Exception: describe the watermark when it is the main subject of the image. - If you are unsure, ask in this thread '
+    'before submitting. This follows the current captioning guideline; nothing else has changed." review_note: null. '
+    'Example 2 (fictional video-timestamp batch). Supplied facts: three annotators report that timestamps move by about one '
+    'second after saving; an engineer asked for task IDs; no cause is confirmed. Selected action: report a technical issue '
+    'to engineering. summary: "Three annotators report that timestamps move after saving. The cause is not confirmed." '
+    'proposed_action.instruction: "Report a technical issue to engineering with the affected task IDs and the steps that '
+    'reproduce the shift." proposed_action.rationale: "Engineering asked for task IDs; one report with reproduction steps '
+    'lets them check the save step without each annotator filing separately." proposed_action.draft_text: "Timestamps '
+    'move after saving (three reports in this batch). After saving, timestamps shift by about one second. Tasks: VID-101, '
+    'VID-117, VID-142. Steps: open the task, set a timestamp, save, reopen. The cause is not confirmed; please check the '
+    'save step." review_note: "Confirm with engineering whether tasks saved before the fix need to be re-checked."')
+DRAFT_RULES = f'{DRAFT_RULES} {WRITING_GUIDE} {STYLE_EXAMPLES}'
 REVISION_RULES = (
     'Revise your previous draft once, using the follow-up retrieval results now included in the evidence. Keep every '
     'claim cited; weaken or remove claims the evidence does not support. No further retrieval will run: leave remaining '
     'gaps with follow_up null. ' + DRAFT_RULES)
 GROUNDING_RULES = (
     'Judge each statement against the evidence it cites, read within the full context provided: every message of every '
-    'member thread (with author names, roles and reactions) and every retrieved source for this topic. Citing a source '
+    'member thread (with canonical author IDs, roles, thread starters and reactions) and every retrieved source for '
+    'this topic. Citing a source '
     'is not support. A statement is SUPPORTED only if its cited evidence states or directly entails it and nothing in '
     'the context contradicts it; PARTIALLY_SUPPORTED if a material part is missing or the context qualifies it; '
     'UNSUPPORTED otherwise. A status line marking an excerpt historical, unresolved or a prior record means it cannot '
     'support what applies now. By kind: CLAIM_INCIDENT_FACT is a report of what members say, not a verified cause; '
     'CLAIM_CAUSE needs verification in the cited evidence; a Verbatim quote must match its source, a Paraphrase must '
-    'preserve the meaning; names must match the cited messages\' authors. SUMMARY and SEVERITY_RATIONALE must follow '
+    'preserve the meaning. Prose names no one: role wording ("the team lead instructs", "a tutor reports") must match the '
+    'cited author\'s role and act (reported, asked, confirmed or instructed), plural wording needs that many distinct '
+    'cited authors, and listed attributions must hold (AUTHOR wrote the cited message, THREAD_STARTER started its '
+    'thread, PARTICIPANT posted in it). SUMMARY and SEVERITY_RATIONALE must follow '
     'from the evidence with no added cause, count or outcome. ACTION and ALTERNATIVE are recommendations: judge whether '
     'their premises are supported, whether the action applies to this topic and whether the rationale follows; a source '
-    'need not literally prescribe the action. AFFECTED_REPORTER needs that person\'s own message reporting that they are '
+    'need not literally prescribe the action. ACTION and operational ALTERNATIVE statements list their premises: '
+    'PENDING_YOUR_VERDICT premises are judged here and are provisional, not final; REJECTED ones failed deterministic '
+    'checks and support nothing; a premise with depends_on stands only if every ANNOUNCEMENT_HANDLING statement it lists '
+    'is also SUPPORTED. Judge in this order: (1) announcement handling; (2) each premise\'s final status, which is your '
+    'verdict on it combined with its dependencies; (3) sufficiency. Fill action_sufficiency for the ACTION and one '
+    'alternative_sufficiency entry (with its statement_id) for each ALTERNATIVE that lists premises: SUFFICIENT only if '
+    'premises whose final status is SUPPORTED justify the exact text as worded, including its conditions and scope; '
+    'essential_statement_ids lists the premises it cannot stand without (each must have final status SUPPORTED); '
+    'INSUFFICIENT if it relies on a rejected, unsupported or dependency-voided premise or goes beyond its premises; '
+    'action_sufficiency null if no ACTION statement is sent. SOURCE_AGREEMENT is SUPPORTED only if the named current '
+    'sources say the same thing on the point in conflict and only the superseded material differs. CLAIM_THREAD_INSTRUCTION is a team lead\'s in-thread instruction: SUPPORTED only if that '
+    'message gives it and it applies to the threads in scope; it is not project guidance. HISTORICAL_RECURRENCE needs '
+    'retrieved records of earlier occurrences; REPORTED_RECURRENCE only needs members saying it is happening again. AFFECTED_REPORTER needs that person\'s own message reporting that they are '
     'affected. RESOLUTION is judged against the member\'s complete thread, including messages the statement did not '
     'cite. ANNOUNCEMENT_HANDLING needs the announcement to give that directive for this topic\'s project, batch and '
     'problem (a routine reminder, schedule or example-collection note does not). OPEN_QUESTION is SUPPORTED only if the '
     'guidance and decisions in the context really leave that specific question unsettled. Return exactly one verdict '
-    'for every statement_id.')
+    'for every statement_id. The team lead reads SUMMARY, ACTION (label, instruction, draft to copy, scope and '
+    'changes), ACTION_RATIONALE, REVIEW_NOTE and OPEN_QUESTION exactly as written: judge that exact text, including its '
+    'conditions, uncertainty, scope and who reported, asked, confirmed or instructed; plain wording is expected, but it '
+    'must not overstate the evidence. A quoted passage must match its source exactly. open_review_flags lists the '
+    'upstream review obligations still open on these threads; a REVIEW_NOTE may rely on them.')
 
 
 class ScenarioError(ValueError):
@@ -139,6 +215,33 @@ class CostBudgetExceeded(RuntimeError):
     """Reserving this request's maximum cost would exceed the application budget; it was not sent."""
 
 
+class RecordedFailure(RuntimeError):
+    """Replay: the recorded run's stage failed; replayed with its recorded failure class (nothing is generated)."""
+
+    def __init__(self, failure_class, message):
+        super().__init__(message)
+        self.failure_class = failure_class
+
+
+class ProviderConfigurationError(RuntimeError):
+    """The provider rejected the request configuration (4xx other than rate limit or context length)."""
+
+
+# One CrewAI Agent per role; every stage runs as one Task for its role's Agent.
+STAGE_AGENTS = {
+    'researcher': ('ThreadSense Advisor researcher',
+                   'Prepare one evidence-cited advice draft for a team lead and name the research it still needs.',
+                   'You research annotation-project guidance, decisions, announcements and member threads, and you never '
+                   'go beyond the evidence provided.'),
+    'analyst': ('ThreadSense alternatives analyst', 'Compare two or three candidate actions on evidence, applicability '
+                'and severity fit.', 'You weigh options for a team lead without inventing evidence or clearing review flags.'),
+    'verifier': ('ThreadSense grounding verifier', 'Judge every statement against the full topic context and decide '
+                 'whether the passed premises justify the exact proposed action.',
+                 'You verify independently of the drafting agent; you judge and never repair.'),
+}
+STAGE_ROLE = {'draft': 'researcher', 'revision': 'researcher', 'tot': 'analyst', 'grounding': 'verifier'}
+
+
 class CostLedger:
     """Application budget across a whole experiment. Before each request its conservative maximum cost (input-token
     limit and output limit at list prices) is reserved; after it, the reservation is settled at the provider-reported
@@ -155,8 +258,10 @@ class CostLedger:
         self.reserved_usd += maximum
         return maximum
 
-    def settle(self, reservation, prices, usage, label):
-        if usage:
+    def settle(self, reservation, prices, usage, label, sent=True):
+        if not sent:
+            cost, basis = 0.0, 'not sent'
+        elif usage:
             cached = (usage.get('prompt_tokens_details') or {}).get('cached_tokens') or 0
             cost = ((usage.get('prompt_tokens', 0) - cached) * prices['input'] + cached * prices.get('cached_input', prices['input'])
                     + usage.get('completion_tokens', 0) * prices['output'])
@@ -193,8 +298,9 @@ class RequestGuard:
     """Count HTTP requests at the httpx transport for one stage and refuse any beyond `limit` before it is
     sent, whichever layer (CrewAI rate-limit retry, LiteLLM, provider SDK) attempts it. Single-threaded use."""
 
-    def __init__(self, limit=HTTP_REQUESTS_PER_STAGE):
-        self.limit, self.sent, self.blocked, self.responses = limit, [], [], []
+    def __init__(self, limit=HTTP_REQUESTS_PER_STAGE, input_token_limit=None):
+        self.limit, self.input_token_limit, self.sent, self.blocked, self.responses = limit, input_token_limit, [], [], []
+        self.refused, self.input_tokens = None, None
 
     def __enter__(self):
         import httpx
@@ -204,6 +310,13 @@ class RequestGuard:
             if len(guard.sent) >= guard.limit:
                 guard.blocked.append(str(request.url))
                 raise RequestCeilingExceeded(f'{guard.limit} HTTP request(s) per stage; {request.url} was not sent')
+            if guard.input_token_limit:  # The exact body about to be sent, framework prompt included.
+                messages = json.loads(request.content or b'{}').get('messages') or []
+                guard.input_tokens = sum(estimate_tokens(m.get('content') if isinstance(m.get('content'), str)
+                                                         else json.dumps(m.get('content'))) + 8 for m in messages)
+                if guard.input_tokens > guard.input_token_limit:
+                    guard.refused = f'{guard.input_tokens} input tokens > {guard.input_token_limit}; not sent'
+                    raise InputLimitExceeded(guard.refused)
             guard.sent.append(str(request.url))
             started = time.perf_counter()
             try:
@@ -217,6 +330,8 @@ class RequestGuard:
                 body = json.loads(response.content)
                 record.update(model=body.get('model'), usage=body.get('usage'),
                               finish_reasons=[c.get('finish_reason') for c in body.get('choices') or []])
+                if response.status_code >= 400:
+                    record['error'] = {k: (body.get('error') or {}).get(k) for k in ('type', 'code', 'param', 'message')}
             except (ValueError, AttributeError):
                 pass
             guard.responses.append(record)
@@ -231,7 +346,7 @@ class RequestGuard:
 
     def stats(self):
         return {'sent': len(self.sent), 'blocked': len(self.blocked), 'hosts': sorted({urlparse(u).netloc for u in self.sent}),
-                'responses': self.responses}
+                'responses': self.responses, 'input_tokens': self.input_tokens, 'refused': self.refused}
 
 
 class ScriptedClient:
@@ -254,27 +369,43 @@ def live_settings(model=None, *, temperature=0, max_completion_tokens=MAX_COMPLE
     default, key_name = get_model_settings()
     model = model or default
     key_name = 'OPENROUTER_API_KEY' if model.startswith('openrouter/') else key_name
-    return {'model': model, 'api_key_variable': key_name, 'interface': 'crewai.LLM.call via LiteLLM (no Agent/Crew loop, no tools)',
+    return {'model': model, 'api_key_variable': key_name,
+            'interface': 'CrewAI Agent + Task + Crew per stage (role-specific agents, max_iter=1, max_retry_limit=0, no tools, '
+                         'no memory or planning) over crewai.LLM via LiteLLM',
             'temperature': temperature, 'reasoning_effort': reasoning_effort, 'service_tier': service_tier,
             'max_completion_tokens_per_call': max_completion_tokens, 'input_token_limit': input_token_limit,
             'timeout_seconds': REQUEST_TIMEOUT_SECONDS, 'response_format': 'json_object', 'provider_sdk_max_retries': 0,
             'model_fallback': None, 'http_requests_per_stage': HTTP_REQUESTS_PER_STAGE, 'quiet_env': QUIET_ENV}
 
 
-class CrewAIClient:
-    """Live model through CrewAI's LLM: one message, one HTTP request, no retries, no tools, no fallback. Paid.
+def _provider_llm_class():
+    """CrewAI's LiteLLM path keeps its prompt-cache marker in the messages it sends (CrewAI 1.15); drop it so the
+    provider receives plain chat messages."""
+    from crewai import LLM
 
-    Measured offline (tests/test_agent3_request_boundary.py): the Agent/Crew executor sends a second
-    request when output is not a final answer, the OpenAI SDK retries 5xx/connection errors twice by
-    default, and CrewAI wraps every LLM.call in a fixed 3-attempt rate-limit retry. Hence a direct
-    LLM.call, max_retries=0, and RequestGuard, which blocks any second request before it is sent.
-    With a CostLedger, each request first reserves its maximum cost; an input over the limit is not sent."""
+    class ProviderLLM(LLM):
+        def _format_messages_for_provider(self, messages):
+            return super()._format_messages_for_provider(
+                [{k: v for k, v in m.items() if k != 'cache_breakpoint'} for m in messages] if messages else messages)
+    return ProviderLLM
+
+
+class CrewAIClient:
+    """Live model through CrewAI: each stage is one Task executed by its role's Agent in a one-task Crew (no tools,
+    max_iter=1, max_retry_limit=0, no memory or planning). Paid.
+
+    Measured offline (tests/test_agent3_request_boundary.py): CrewAI's executor sends a forced-final-answer request
+    when a reply is not a final answer, the OpenAI SDK retries 5xx/connection errors twice by default, and CrewAI wraps
+    every LLM call in a fixed 3-attempt rate-limit retry. Hence max_retries=0 and RequestGuard, which refuses any second
+    request in a stage (and any request over the input-token limit) before it is sent. With a CostLedger each request
+    first reserves its maximum cost. A configuration rejection or an exhausted budget halts later requests; every topic
+    still gets its card."""
     label = 'LIVE_MODEL'
 
     def __init__(self, settings=None, ledger=None):
         for name, value in QUIET_ENV.items():
             os.environ.setdefault(name, value)
-        from crewai import LLM
+        from crewai import Agent
         from threadsense.config import get_api_key
         self.settings, self.ledger = settings or live_settings(), ledger
         s = self.settings
@@ -291,30 +422,52 @@ class CrewAIClient:
             params['temperature'] = s['temperature']
         if s.get('service_tier'):
             params['service_tier'] = s['service_tier']
-        self.llm = LLM(**params)
-        self.fingerprint, self.last_requests, self.last_input_estimate = model, None, None
+        self.llm = _provider_llm_class()(**params)
+        self.agents = {name: Agent(role=role, goal=goal, backstory=backstory, llm=self.llm, tools=[], allow_delegation=False,
+                                   max_iter=1, max_retry_limit=0, verbose=False, respect_context_window=False)
+                       for name, (role, goal, backstory) in STAGE_AGENTS.items()}
+        self.fingerprint, self.last_requests, self.last_input_estimate, self.halted = model, None, None, None
 
     def complete(self, stage, payload, schema):
-        messages = [{'role': 'system', 'content': 'You are the ThreadSense Advisor. You advise annotation team leads and '
-                                                  'never go beyond the evidence provided. Reply with one JSON object.'},
-                    {'role': 'user', 'content': task_description(payload, schema)}]
+        from crewai import Crew, Process, Task
+        if self.halted:
+            raise self.halted
+        agent = self.agents[STAGE_ROLE[stage]]
+        task = Task(description=task_description(payload, schema), expected_output=f'One {schema.__name__} JSON object.',
+                    agent=agent)
+        crew = Crew(agents=[agent], tasks=[task], process=Process.sequential, memory=False, planning=False, verbose=False)
         self.last_requests = None
-        estimate = self.last_input_estimate = sum(estimate_tokens(m['content']) + 8 for m in messages)
-        limit = self.settings.get('input_token_limit')
-        if limit and estimate > limit:
-            raise InputLimitExceeded(f'{estimate} estimated input tokens > {limit}; not sent')
         label = f"{payload.get('scenario_id')}:{stage}"
-        reservation = self.ledger.reserve(self.prices, limit or estimate, self.settings['max_completion_tokens_per_call'],
-                                          label) if self.ledger is not None else None
-        guard = RequestGuard()
+        limit = self.settings.get('input_token_limit')
+        try:
+            reservation = self.ledger.reserve(self.prices, limit or 0, self.settings['max_completion_tokens_per_call'],
+                                              label) if self.ledger is not None else None
+        except CostBudgetExceeded as error:
+            self.halted = error  # Stop before exceeding the budget: no further requests in this run.
+            raise
+        guard, failure = RequestGuard(input_token_limit=limit), None
         try:
             with guard:
-                raw = self.llm.call(messages)
-        finally:
-            self.last_requests = guard.stats()
-            if reservation is not None:
-                usage = next((r.get('usage') for r in guard.responses if r.get('usage')), None)
-                self.last_requests['charged_usd'] = self.ledger.settle(reservation, self.prices, usage, label)
+                raw = crew.kickoff().raw
+        except Exception as error:
+            failure = error
+        self.last_requests = guard.stats()
+        self.last_input_estimate = guard.input_tokens
+        if reservation is not None:
+            usage = next((r.get('usage') for r in guard.responses if r.get('usage')), None)
+            charged = self.ledger.settle(reservation, self.prices, usage, label, sent=bool(guard.sent))
+            self.last_requests['charged_usd'] = charged
+        if guard.refused:
+            raise InputLimitExceeded(guard.refused)
+        rejected = next((r for r in guard.responses if r.get('status_code') in (400, 401, 403, 404)), None)
+        if rejected and (rejected.get('error') or {}).get('code') != 'context_length_exceeded':
+            self.halted = ProviderConfigurationError(f"{rejected['status_code']} {rejected.get('error')}")
+            raise self.halted
+        if failure is not None and guard.blocked:
+            raise RequestCeilingExceeded(f'{len(guard.blocked)} further request(s) refused after the first: '
+                                         f'{type(failure).__name__}: {str(failure)[:200]}') from failure
+        if failure is not None:
+            raise failure
         if not guard.sent:
             raise BoundaryNotObserved('The model response arrived without a request through the guarded transport.')
         if any('length' in (r.get('finish_reasons') or []) for r in guard.responses):
@@ -322,8 +475,70 @@ class CrewAIClient:
         return str(raw)
 
 
+class ReplayClient:
+    """Offline replay of a saved run: generations (draft, revision, ToT) are the recorded model outputs; a grounding
+    verdict is reused only for a statement whose kind, text, evidence and attributions, and whose full evidence
+    context, are unchanged. ACTION and ALTERNATIVE verdicts are not reused when they list premises: since pilot v5 their
+    premises are shown as provisional with their dependencies, which changes what was judged. Anything else
+    (sufficiency, source agreement) is PENDING, never invented."""
+    label = 'REPLAY_RECORDED'
+    replay = True
+
+    def __init__(self, run_dir):
+        self.run_dir, self.recorded, self.reuse_log = Path(run_dir), {}, []
+        for path in sorted((self.run_dir/'results').glob('*.json')):
+            r = read_json(path)
+            self.recorded[r['scenario']['id']] = {
+                'raw': {c['stage']: c['raw'] for c in r.get('model_calls', []) if c.get('raw')},
+                'failed': {c['stage']: c for c in r.get('model_calls', []) if c.get('status') == 'FAILED'},
+                'statements': {s['statement_id']: s for s in (r.get('grounding') or {}).get('statements', [])},
+                'context': set(r.get('evidence_ledger', {}))}
+        self.fingerprint = sha256(json.dumps({k: v['raw'] for k, v in self.recorded.items()}, sort_keys=True).encode()).hexdigest()
+
+    def complete(self, stage, payload, schema):
+        rec = self.recorded[payload['scenario_id']]
+        if stage == 'grounding':
+            return json.dumps(self._judgment(payload, rec))
+        if stage in rec['failed'] and stage not in rec['raw']:
+            failed = rec['failed'][stage]
+            raise RecordedFailure(failed.get('failure_class'), f"recorded {stage} failure: {failed.get('error')}")
+        if stage not in rec['raw']:
+            raise LookupError(f'No recorded {stage} output for {payload["scenario_id"]}; nothing is generated in replay.')
+        value = json.loads(_json_text(rec['raw'][stage]))
+        default = schema.model_fields['contract_version'].default if 'contract_version' in schema.model_fields else None
+        if default and isinstance(value, dict) and value.get('contract_version') not in (None, default):
+            value['contract_version'] = default  # Version label only; the recorded content is unchanged.
+        return json.dumps(value, ensure_ascii=False)
+
+    def _judgment(self, payload, rec):
+        context = {e['evidence_id'] for e in payload['member_threads'] + payload['retrieved_sources']}
+        verdicts = []
+        def content(x):
+            return x['kind'], x['text'], x['evidence_ids'], x.get('attributions', [])
+        for s in payload['statements']:
+            old = rec['statements'].get(s['statement_id'])
+            same = (old is not None and context == rec['context'] and old.get('model_verdict') in
+                    ('SUPPORTED', 'PARTIALLY_SUPPORTED', 'UNSUPPORTED') and content(old) == content(s) and 'premises' not in s)
+            self.reuse_log.append({'scenario_id': payload['scenario_id'], 'statement_id': s['statement_id'],
+                                   'reused': bool(same), 'reason': None if same else
+                                   'not recorded' if old is None else 'context changed' if context != rec['context'] else
+                                   'content changed' if content(old) != content(s) else
+                                   'premises now shown as provisional with dependencies' if 'premises' in s else
+                                   f"recorded verdict {old.get('model_verdict')}"})
+            if same:
+                verdicts.append({'statement_id': s['statement_id'], 'verdict': old['model_verdict'],
+                                 'rationale': old.get('rationale') or 'Recorded verdict (replay).'})
+        return {'verdicts': verdicts, 'action_sufficiency': None, 'alternative_sufficiency': []}
+
+
 def failure_class(error):
     """RESOURCE failures (input/output limit, budget, timeout, context window) are not semantic-quality results."""
+    if isinstance(error, RecordedFailure):
+        return error.failure_class
+    if isinstance(error, ProviderConfigurationError):
+        return 'CONFIGURATION'
+    if isinstance(error, RequestCeilingExceeded):
+        return 'REQUEST_CEILING'
     if isinstance(error, (InputLimitExceeded, OutputLimitReached, CostBudgetExceeded)):
         return 'RESOURCE'
     text = f'{type(error).__name__} {error}'.lower()
@@ -335,8 +550,8 @@ def failure_class(error):
 
 
 def task_description(payload, schema):
-    """Exactly what the model receives as the user message: rules plus the full JSON payload."""
-    body = json.dumps(payload, ensure_ascii=False)
+    """Exactly what the model receives as the user message: the rules once, then the JSON payload without them."""
+    body = json.dumps({k: v for k, v in payload.items() if k != 'rules'}, ensure_ascii=False)
     return f"{payload['rules']}\n\nInput JSON:\n{body}\n\nReturn exactly one JSON object for {schema.__name__} " \
            'matching output_schema. No prose outside the JSON.'
 
@@ -357,6 +572,11 @@ class Stages:
 
     def __call__(self, stage, payload, schema, reserve=0):
         entry = {'stage': stage, 'schema': schema.__name__}
+        halted = getattr(self.client, 'halted', None)
+        if halted:  # Budget or configuration stop: no further requests; topics still get cards.
+            self.log.append({**entry, 'status': 'SKIPPED_HALTED', 'failure_class': failure_class(halted),
+                             'error': f'{type(halted).__name__}: {str(halted)[:300]}'})
+            return None
         left = self.budget.remaining('model_calls')
         if left is not None and left < 1 + reserve:
             status = 'SKIPPED_RESERVED_FOR_GROUNDING' if left >= 1 else 'SKIPPED_BUDGET'
@@ -440,11 +660,11 @@ def _interpretations(packet):
         out.append({'member_id': m['member_id'], 'thread_id': m['thread_id'], 'summary': i['summary'],
                     'central_question': i['central_question'],
                     'attributed_agent1_resolution': {
-                        'state': i['resolution_state'], 'rationale': (i.get('resolution_rationale') or '')[:400],
+                        'state': i['resolution_state'], 'rationale': i.get('resolution_rationale') or '',
                         'agent1_verification_status': a.get('verification_status'),
                         'note': 'Agent 1 label, not evidence; NEEDS_REVIEW means Agent 1 did not verify it. Assess '
                                 'resolution from the member messages.'},
-                    'agent1_review_required': a['review_required'], 'agent1_review_reason': (a.get('review_reason') or '')[:600],
+                    'agent1_review_required': a['review_required'], 'agent1_review_reason': a.get('review_reason') or '',
                     'note': 'Agent 1 interpretation, not source evidence; cite member messages for incident facts.'})
     return out
 
@@ -456,7 +676,8 @@ def _topic(packet, as_of):
 
 
 def _split(ledger):
-    return ([v for v in ledger.values() if v['origin'] == 'member_message'],
+    """Model-facing evidence: member messages without display names (model_view), then retrieved sources."""
+    return ([model_view(v) for v in ledger.values() if v['origin'] == 'member_message'],
             [v for v in ledger.values() if v['origin'] == 'retrieved_source'])
 
 
@@ -467,25 +688,44 @@ def _research_payload(rules, topic, ledger, tools, rubric, interpretations):
             'limits': {'follow_up_queries': MAX_FOLLOW_UPS}}
 
 
-def grounding_payload(stmts, ledger, topic, rejected=None):
-    """Sendable statements plus the full topic context: every message of every member thread (names, roles,
-    reactions) and every retrieved source, so the draft's citations do not set the judge's evidence window."""
-    sent = sendable(stmts, rejected or {})
+def grounding_payload(stmts, ledger, topic, rejected=None, depends=None, review_flags=None):
+    """Sendable statements plus the full topic context: every message of every member thread (canonical IDs, roles,
+    thread starters, reactions) and every retrieved source, so the draft's citations do not set the judge's evidence
+    window. Premises are shown as provisional (pending the judge's own verdict) with the announcements they depend on,
+    never as final. `review_flags`: the upstream review obligations still open on these threads (a REVIEW_NOTE may
+    rely on them)."""
+    rejected, depends = rejected or {}, depends or {}
+    sent = sendable(stmts, rejected)
     members, retrieved = _split(ledger)
-    return {'rules': GROUNDING_RULES, 'topic': topic,
-            'statements': [{k: s[k] for k in ('statement_id', 'kind', 'text', 'evidence_ids')} for s in sent],
-            'member_threads': members, 'retrieved_sources': retrieved}
+
+    def premise(i):
+        out = {'statement_id': i, 'status': rejected.get(i, 'PENDING_YOUR_VERDICT')}
+        if i in depends and i not in rejected:
+            out['depends_on'] = depends[i]
+        return out
+
+    def shown(s):
+        out = {k: s[k] for k in ('statement_id', 'kind', 'text', 'evidence_ids')}
+        if s.get('attributions'):
+            out['attributions'] = s['attributions']
+        if 'premises' in s:
+            out['premises'] = [premise(i) for i in s['premises']]
+        return out
+    return {'rules': GROUNDING_RULES, 'topic': topic, 'statements': [shown(s) for s in sent],
+            'member_threads': members, 'retrieved_sources': retrieved, 'open_review_flags': list(review_flags or [])}
 
 
-def _final_grounding(call, draft, ledger, topic, stmts, structural, actions):
+def _final_grounding(call, draft, ledger, topic, stmts, structural, actions, review_flags=None):
     """Structurally rejected statements are withheld; everything else still goes to the one semantic call."""
     rejected = rejected_statements(draft, stmts, structural, actions)
     if not sendable(stmts, rejected):
         return grounding_result(draft, ledger, stmts, structural=structural, actions=actions,
                                 reason='NOTHING_CITED' if not rejected else 'ALL_STATEMENTS_REJECTED')
-    judgment = call('grounding', grounding_payload(stmts, ledger, topic, rejected), GroundingJudgment)
+    judgment = call('grounding', grounding_payload(stmts, ledger, topic, rejected, dependencies(draft, ledger), review_flags),
+                    GroundingJudgment)
     return grounding_result(draft, ledger, stmts, structural=structural, actions=actions, judgment=judgment,
-                            ran=judgment is not None, reason='GROUNDING_CALL_FAILED_OR_OVER_BUDGET')
+                            ran=judgment is not None, reason='GROUNDING_CALL_FAILED_OR_OVER_BUDGET',
+                            pending=getattr(call.client, 'replay', False))
 
 
 def _review_items(packet, card):
@@ -534,19 +774,22 @@ def advise(scenario, *, view, retriever, client, budget, rubric, run_id, as_of, 
                            AdvisorDraft, reserve=1)
             draft = revised or draft
         unfilled = [g.model_dump() for g in draft.gaps]
+    revised, normalization = draft is not first, []
+    if draft is not None:  # Role-label and recurrence corrections, recorded; never content repair.
+        draft, normalization = normalize(draft, ledger)
     flags = inherited_flags(packet['record'], packet['member_ids'], projection_gap=packet['projection_gap'])
     tot, diagnostics, temporal_pre, covered_issues, action_notes = {'status': 'NOT_TRIGGERED', 'triggers': []}, [], None, [], []
     if draft is None:
         grounding, temporal, final = {**NOT_RUN, 'status': 'NOT_RUN', 'basis': 'NO_DRAFT'}, None, unauthorized(packet)
     else:
         structural = structural_issues(draft, ledger, set(packet['member_ids']))
-        covered_issues = coverage_issues(draft, ledger)
+        covered_issues = coverage_issues(draft, ledger, follow_ups, next((e for e in call.log if e['stage'] == 'revision'), None))
         severity_notes = []
         severity, severity_issues = build_severity(draft.severity, ledger, packet, rubric, notes=severity_notes)
         temporal_pre = temporal_check(draft, ledger)
         tot = advisor_tot.compare(call, draft=draft, temporal=temporal_pre, ledger=ledger, handling=established(draft, ledger),
                                   skip=None, payload={
-            'topic': topic, 'draft': draft.model_dump(), 'evidence': list(ledger.values()),
+            'topic': topic, 'draft': draft.model_dump(), 'evidence': [model_view(v) for v in ledger.values()],
             'proposed_severity': {'level': severity.level, 'assessment_status': severity.assessment_status,
                                   'note': 'Bound to the rubric; not yet grounded.'},
             'rubric_levels': sorted(rubric['levels'])})
@@ -554,21 +797,35 @@ def advise(scenario, *, view, retriever, client, budget, rubric, run_id, as_of, 
         action_notes = [adopted] if adopted else []
         actions = action_issues(draft, ledger)
         stmts = statements(draft, ledger, severity=severity, alternatives=advisor_tot.alternatives(tot))
-        grounding = _final_grounding(call, draft, ledger, topic, stmts, structural, actions)
+        grounding = _final_grounding(call, draft, ledger, topic, stmts, structural, actions,
+                                     [{k: v for k, v in f.model_dump().items() if v} for f in flags])
         tot = advisor_tot.finalize(tot, grounding)
         final = authorize(draft, grounding, ledger, packet, severity=severity, severity_issues=severity_issues, rubric=rubric,
                           severity_notes=severity_notes)
+        if final['action'] is None:  # Selection among already-judged text only; nothing is rewritten.
+            verdict = next((s['verdict'] for s in grounding['statements'] if s['statement_id'] == 'action'), 'NOT_SENT')
+            chosen, essential, note = advisor_tot.fallback(tot, draft, verdict)
+            if chosen is not None:
+                final.update(action=chosen, essential=essential, action_scope=note,
+                             fallback_evidence=next(c['evidence_ids'] for c in tot['candidates']
+                                                    if c['candidate_id'] == tot['model_preferred_candidate_id']))
+            if note:
+                action_notes = action_notes + [note]
         final['action_notes'] = action_notes
-        # Recorded supersession is credited only to announcements the final grounding verified.
-        temporal = temporal_check(draft, ledger, final['handling'])
-        diagnostics += [{'code': 'ALTERNATIVE_NOT_GROUNDED' if w['kind'] == 'ALTERNATIVE' else 'WITHHELD_STATEMENT', **w}
-                        for w in final['withheld']]
+        # Recorded supersession is credited only to announcements the final grounding verified; several current
+        # sources explain a superseded section only if the final grounding judged that they agree.
+        temporal = temporal_check(draft, ledger, final['handling'],
+                                  {s['statement_id']: s['verdict'] for s in grounding['statements']})
+        diagnostics += normalization + [
+            {'code': 'ALTERNATIVE_NOT_GROUNDED' if w['kind'] == 'ALTERNATIVE' else 'WITHHELD_STATEMENT', **w}
+            for w in final['withheld']]
         if draft.evidence_sufficiency == 'UNSUPPORTED' and draft.proposed_action and \
                 draft.proposed_action.action_type != 'NO_ACTION':
             diagnostics.append({'code': 'UNSUPPORTED_ACTION_NOT_CARRIED', 'action': draft.proposed_action.model_dump()})
     outcome = {'draft': draft, 'ledger': ledger, 'inherited_flags': flags, 'grounding': grounding, 'temporal': temporal,
                'final': final, 'evidence_sufficiency': draft.evidence_sufficiency if draft else None,
-               'coverage_issues': covered_issues,
+               'coverage_issues': covered_issues, 'action_source': 'TOT' if action_notes and action_notes[0].startswith(
+                   'Action selected') else 'DRAFT',
                'failures': [e for e in call.log if e['status'] != 'OK']}
     try:
         card = assemble_card(outcome, packet, run_id=run_id)
@@ -587,14 +844,15 @@ def advise(scenario, *, view, retriever, client, budget, rubric, run_id, as_of, 
             'retrieval_trace': tools.trace, 'retrieval_notes': tools.notes(), 'follow_ups': follow_ups,
             'unfilled_gaps': unfilled, 'model_calls': call.log,
             'drafts': {'initial': first.model_dump() if first else None,
-                       'final': draft.model_dump() if draft else None, 'revised': draft is not first},
+                       'final': draft.model_dump() if draft else None, 'revised': revised},
             'grounding': grounding, 'temporal': temporal, 'temporal_before_grounding': temporal_pre,
             'severity': {'assessment': final['severity'].model_dump(mode='json'), 'issues': final['severity_issues'],
                          'notes': final['severity_notes'], 'proposal': draft.severity.model_dump() if draft else None},
             'resolution': {'topic': final['resolution'], 'members': final['member_resolution'],
                            'agent1_attributed': packet['agent1_resolution']},
             'established_handling': sorted(final['handling']), 'coverage_issues': covered_issues,
-            'action_source': 'TOT' if action_notes and action_notes[0].startswith('Action selected') else
+            'action_source': 'TOT_FALLBACK' if final.get('essential') is not None else
+            'TOT' if action_notes and action_notes[0].startswith('Action selected') else
             'DRAFT' if draft and draft.proposed_action else None, 'action_notes': action_notes,
             'tot': tot, 'evidence_ledger': ledger, 'card': card.model_dump(mode='json'),
             'review_items': [i.model_dump(mode='json') for i in items], 'coverage': covered,
@@ -617,7 +875,8 @@ def control(scenario, *, retriever, client, budget, rubric, as_of):
     if draft is not None:
         stmts = statements(draft, ledger)
         grounding = _final_grounding(call, draft, ledger, topic, stmts,
-                                     claim_issues(draft, ledger) + announcement_issues(draft, ledger), action_issues(draft, ledger))
+                                     claim_issues(draft, ledger) + announcement_issues(draft, ledger)
+                                     + presentation_issues(draft, ledger), action_issues(draft, ledger))
     supported = draft is not None and draft.evidence_sufficiency == 'SUFFICIENT' and grounding['status'] == 'PASSED'
     return {'scenario': scenario, 'status': 'CONTROL', 'control_outcome': 'SUPPORTED' if supported else
             'NO_DRAFT' if draft is None else 'UNSUPPORTED',
@@ -655,6 +914,9 @@ def run_pilot(*, client, retriever=None, view=None, scenarios=None, budget_limit
         'semantic_client_fingerprint': getattr(client, 'fingerprint', None),
         'live_request_settings': getattr(client, 'settings', None),
         'prompts': prompt_fingerprints(),
+        'replay': {'source': str(client.run_dir), 'reused_verdicts': sum(e['reused'] for e in client.reuse_log),
+                   'pending_or_not_reused': [e for e in client.reuse_log if not e['reused']]}
+        if getattr(client, 'replay', False) else None,
         'handoff': {'run': Path(handoff).resolve().relative_to(ROOT).as_posix() if Path(handoff).resolve().is_relative_to(ROOT)
                     else str(handoff), 'canonical_sha256': view['canonical_sha256']},
         'index': {k: retriever.manifest[k] for k in ('build_fingerprint', 'chunking_version', 'corpus_fingerprint', 'cutoff')},
@@ -676,7 +938,8 @@ def prompt_fingerprints():
     """SHA-256 of every rule text and output schema the model sees."""
     from threadsense.agents.advisor_contracts import ToTComparison
     digest = lambda text: sha256(text.encode('utf-8')).hexdigest()  # noqa: E731
-    return {'draft_rules': digest(DRAFT_RULES), 'revision_rules': digest(REVISION_RULES), 'grounding_rules': digest(GROUNDING_RULES),
+    return {'prompt_version': PROMPT_VERSION, 'draft_rules': digest(DRAFT_RULES), 'revision_rules': digest(REVISION_RULES),
+            'writing_guide': digest(WRITING_GUIDE), 'style_examples': digest(STYLE_EXAMPLES), 'grounding_rules': digest(GROUNDING_RULES),
             'tot_rules': digest(advisor_tot.RULES),
             'schemas': {s.__name__: digest(json.dumps(s.model_json_schema(), sort_keys=True))
                         for s in (AdvisorDraft, GroundingJudgment, ToTComparison)},
@@ -776,7 +1039,9 @@ def report(run):
         withheld = [d for d in r['diagnostics'] if d['code'] == 'WITHHELD_STATEMENT']
         lines += [f"Topic: {card['topic_name']} (`{card['lineage']['candidate_group_id']}`, {len(card['lineage']['member_ids'])} members)",
                   f"- Card line: **{card['card_line']}**; action: "
-                  f"{(card['recommended_action'] or {}).get('action_type')}; confidence {card['confidence']} ({card['confidence_band']})",
+                  f"{(card['recommended_action'] or {}).get('action_type')} (source {r.get('action_source')}); confidence "
+                  f"{card['confidence']} ({card['confidence_band']})",
+                  *([f"- Action notes: {'; '.join(r['action_notes'])}"] if r.get('action_notes') else []),
                   f"- Severity: {card['severity']['level']} ({card['severity']['assessment_status']}); signals "
                   f"{[f'{x['level']}[{x['signal_index']}]' for x in card['severity']['matched_signals']]}; "
                   f"affected reporters {card['severity']['occurrence']['affected_reporters']['status']} "
@@ -788,7 +1053,7 @@ def report(run):
                   f"{[i['code'] for i in g['structural_issues']] + g['action_issues'] or 'none'}; not supported "
                   f"{g['unsupported'] + g['unjudged'] or 'none'}",
                   f"- Established announcement handling: {_fmt_ids(r['established_handling'])}",
-                  f"- Withheld from the card: " + ('; '.join(f"{w['statement_id']} ({w['verdict']}): {w['text'][:140]}" for w in withheld)
+                  f"- Withheld from the card: " + ('; '.join(f"{w['statement_id']} ({w['verdict']}): {w['text']}" for w in withheld)
                                                     or 'none'),
                   f"- Temporal: {(r['temporal'] or {}).get('status')}; findings "
                   f"{[(f['code'], f['status']) for f in (r['temporal'] or {}).get('findings', [])] or 'none'}",
@@ -796,7 +1061,8 @@ def report(run):
                   + (f"; presentation {r['tot']['presentation']}; candidates "
                      f"{[(c['candidate_id'], c['action_type'], c['valid'], c['grounding'], c['issues']) for c in r['tot']['candidates']]}"
                      if r['tot']['status'] == 'COMPARED' else ''),
-                  '- Review reasons: ' + ('; '.join(f"{x['code']}: {x['detail'][:160]}" for x in card['needs_review_reasons']) or 'none'),
+                  '- Review reasons: ' + ('; '.join(f"{x['code']}: {x['detail']}" for x in card['needs_review_reasons']) or 'none'),
+                  '- Review notes (shown to the team lead): ' + (' | '.join(card.get('review_notes') or []) or 'none'),
                   f"- Inherited flags: {len(card['inherited_flags'])}; uncarried obligations "
                   f"{r['coverage']['uncarried_obligations'] or 'none'}; group members in other topics (outside this card) "
                   f"{len(r['coverage']['group_members_outside_this_card'])}",

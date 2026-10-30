@@ -384,6 +384,74 @@ class AdviceCard(Frozen):
         return self
 
 
+class RelatedThread(ThreadRef):
+    """A related problem thread as shown on a v2 card: its stored permalink, or the thread ID when none is stored."""
+    permalink: str | None = None
+    display_reference: Text
+    label: Text
+
+    @model_validator(mode='after')
+    def referenced(self):
+        if self.display_reference != (self.permalink or self.thread_id):
+            raise ValueError('A related thread shows its stored permalink, or its thread ID when none is stored.')
+        return self
+
+
+class AdviceCardV2(AdviceCard):
+    """v2: generated prose refers to people by role (canonical IDs stay in evidence and severity); related threads
+    carry a short label and their permalink or thread ID. Guardrails are v1's."""
+    contract_version: Literal['agent3-advice-card-v2'] = 'agent3-advice-card-v2'
+    related_threads: list[RelatedThread] = Field(default_factory=list)
+
+
+# TL-facing wording for each action type (v3 cards); the enum stays in action_type.
+ACTION_LABELS = {'POST_ALIGNMENT': 'Post a reminder', 'SCHEDULE_ALIGNMENT': 'Schedule a short review session',
+                 'UPDATE_DOCUMENTATION': 'Update the documentation', 'UPDATE_FAQ': 'Update the FAQ',
+                 'ESCALATE_ENGINEERING': 'Report a technical issue to engineering',
+                 'ROUTE_TO_LANGUAGE_SPECIALIST': 'Ask a language specialist to review', 'NO_ACTION': 'No action needed now'}
+
+
+class DisplayTarget(Frozen):
+    """A documentation change, readable (title, section) with its evidence ID kept for lineage."""
+    evidence_id: Text
+    title: Text
+    section: str | None = None
+    change: Literal['ADD', 'CORRECT', 'REMOVE']
+
+
+class DisplayAction(RecommendedAction):
+    """v3 card action. TL-facing: label (from the type), instruction (what to do), rationale (why it helps),
+    draft_text (the copyable draft) and scope_note. Structured, not prose: targets, essential premise IDs, source."""
+    label: Text
+    instruction: str | None = None
+    rationale: str | None = None
+    targets: list[DisplayTarget] = Field(default_factory=list)
+    essential_premise_ids: list[str] = Field(default_factory=list)
+    source: Literal['DRAFT', 'TOT', 'TOT_FALLBACK'] = 'DRAFT'
+
+    @model_validator(mode='after')
+    def labelled(self):
+        if self.label != ACTION_LABELS[self.action_type]:
+            raise ValueError('The action label is the fixed TL-facing wording for its type.')
+        return self
+
+
+class RelatedThreadV2(RelatedThread):
+    """v3: the thread's complete opening message (source text, unchanged); the label never cuts it mid-sentence."""
+    opening_text: Text
+
+
+class AdviceCardV3(AdviceCardV2):
+    """v3: TL-facing text answers what happened (summary), what to do and why (recommended_action instruction,
+    rationale, draft_text) and what still needs review (review_notes, plain language). Enums, IDs, premises and
+    processing errors stay in structured fields (needs_review_reasons, recommended_action.targets/
+    essential_premise_ids, severity, lineage) and in diagnostics."""
+    contract_version: Literal['agent3-advice-card-v3'] = 'agent3-advice-card-v3'
+    recommended_action: DisplayAction | None = None
+    related_threads: list[RelatedThreadV2] = Field(default_factory=list)
+    review_notes: list[str] = Field(default_factory=list)
+
+
 class ReviewAction(Frozen):
     action: Literal['ACCEPT', 'REJECT', 'DEFER']
     actor_id: Text

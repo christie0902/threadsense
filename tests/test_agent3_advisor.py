@@ -80,7 +80,7 @@ def first(payload, *uses):
 def draft_for(payload, **overrides):
     """A plausible structurally valid draft built only from what the payload offers."""
     guide = next((i['evidence_id'] for i in payload['retrieved_evidence'] if i['use'] == 'CURRENT_GUIDANCE'), None)
-    base = {'summary': 'Members report the issue.', 'reasoning': 'Cited guidance applies.',
+    base = {'summary': 'A member reports the problem.', 'reasoning': 'Cited guidance applies.',
             'claims': [{'claim_id': 'c1', 'kind': 'INCIDENT_FACT', 'text': 'A member reports the issue.',
                         'evidence_ids': [payload['member_evidence'][0]['evidence_id']]}] +
                       ([{'claim_id': 'c2', 'kind': 'GUIDANCE', 'text': 'Current guidance covers it.', 'evidence_ids': [guide]}]
@@ -100,10 +100,19 @@ def open_q(payload, question='Which rule wins when the two current sources disag
             'open_question_evidence_ids': [payload['member_evidence'][0]['evidence_id']]}
 
 
-def supported(payload, **overrides):
-    """Grounding judgment over the statements actually sent: SUPPORTED unless overridden by statement ID."""
+def supported(payload, essential=None, **overrides):
+    """Grounding judgment over the statements actually sent: SUPPORTED unless overridden by statement ID. For an action,
+    a SUFFICIENT judgment naming `essential` premises (default: every premise that was sent)."""
+    def passed(statement):
+        return [p['statement_id'] for p in statement.get('premises', []) if not p['status'].startswith('REJECTED')]
+    action = next((s for s in payload['statements'] if s['kind'] == 'ACTION'), None)
     return {'verdicts': [{'statement_id': s['statement_id'], 'verdict': overrides.get(s['statement_id'], 'SUPPORTED'),
-                          'rationale': 'Stated.'} for s in payload['statements']]}
+                          'rationale': 'Stated.'} for s in payload['statements']],
+            'action_sufficiency': {'verdict': 'SUFFICIENT', 'essential_statement_ids': passed(action) if essential is None
+                                   else essential, 'rationale': 'The premises justify the action.'} if action else None,
+            'alternative_sufficiency': [{'statement_id': s['statement_id'], 'verdict': 'SUFFICIENT',
+                                         'essential_statement_ids': passed(s), 'rationale': 'The premises justify it.'}
+                                        for s in payload['statements'] if s['kind'] == 'ALTERNATIVE' and passed(s)]}
 
 
 def run(scenario_id, client, retriever, view, *, budget=None, **kw):
@@ -496,7 +505,7 @@ def test_unflagged_grounded_paths_reach_recommended_action_or_observation(retrie
     card = unchecked['card']
     assert card['card_line'] == 'NEEDS_REVIEW' and codes(unchecked) == ['GROUNDING_NOT_RUN', 'OTHER', 'OTHER']
     # Nothing ungrounded is shown as established: no action, withheld summary, provisional severity.
-    assert card['recommended_action'] is None and card['summary'].startswith('Advisor summary withheld')
+    assert card['recommended_action'] is None and card['summary'].startswith("The advisor's summary is not shown")
     assert card['severity']['assessment_status'] == 'UNASSESSED' and card['supporting_sources'] == []
 
 
@@ -560,25 +569,30 @@ def test_final_grounding_covers_every_card_statement_and_is_the_last_call(retrie
     context = {e['evidence_id'] for e in sent[0]['member_threads'] + sent[0]['retrieved_sources']}
     assert context == set(result['evidence_ledger']) and context > {i for s in sent[0]['statements'] for i in s['evidence_ids']}
     card = result['card']
-    assert result['grounding']['status'] == 'PASSED' and card['summary'] == 'Members report the issue.'
+    assert result['grounding']['status'] == 'PASSED' and card['summary'] == 'A member reports the problem.'
     assert card['severity']['occurrence']['affected_reporters']['ids'] == ['U019', 'U018']
-    assert card['resolution_status'] == 'MIXED' and 'attributed input, not evidence' in card['reasoning']
+    assert card['resolution_status'] == 'MIXED' and '(an input, not evidence)' in card['reasoning']
 
     first_member = topic_packet(view, SCEN['audio_playback'])['member_ids'][0]
     partial = run('audio_playback', Fake(draft=full_draft, grounding=lambda p: supported(p, **{
         'summary': 'UNSUPPORTED', 'reporter:U018': 'UNSUPPORTED', f'resolution:{first_member}': 'PARTIALLY_SUPPORTED'})),
         retriever, view)
     card = partial['card']
-    assert card['summary'].startswith('Advisor summary withheld') and 'Members report the issue.' not in json.dumps(card)
+    assert card['summary'].startswith("The advisor's summary is not shown") and 'A member reports the problem.' not in json.dumps(card)
     assert card['severity']['occurrence']['affected_reporters']['ids'] == ['U019']
     assert partial['resolution']['members'][first_member] == 'UNKNOWN' and card['resolution_status'] == 'UNKNOWN'
     withheld = {d['statement_id']: d for d in partial['diagnostics'] if d['code'] == 'WITHHELD_STATEMENT'}
     assert set(withheld) == {'summary', 'reporter:U018', f'resolution:{first_member}'}
-    assert withheld['summary']['text'] == 'Members report the issue.' and 'GROUNDING_FAILURE' in codes(partial)
+    assert withheld['summary']['text'] == 'A member reports the problem.' and 'GROUNDING_FAILURE' in codes(partial)
 
     rationale = run('audio_playback', Fake(draft=full_draft, grounding=lambda p: supported(p, **{'severity:rationale': 'UNSUPPORTED'})),
                     retriever, view)
-    assert rationale['card']['severity']['assessment_status'] == 'UNASSESSED'
+    # An unsupported rationale is replaced by the supported signal's own wording; the level stands on that signal.
+    assert rationale['card']['severity']['assessment_status'] == 'ASSESSED'
+    assert rationale['card']['severity']['rationale'].startswith('Supported rubric signals: signal:MEDIUM[2]')
+    unsupported_signal = run('audio_playback', Fake(draft=full_draft, grounding=lambda p: supported(
+        p, **{'severity:rationale': 'UNSUPPORTED', 'severity:signal:MEDIUM[2]': 'UNSUPPORTED'})), retriever, view)
+    assert unsupported_signal['card']['severity']['assessment_status'] == 'UNASSESSED'
     only_one = run('audio_playback', Fake(draft=lambda p: full_draft(p, states={p['topic']['member_ids'][0]: 'RESOLVED_IN_THREAD'}),
                                           grounding=supported), retriever, view)
     assert only_one['card']['resolution_status'] == 'UNKNOWN'  # The other members have no supported state.
@@ -605,8 +619,8 @@ def test_tot_alternatives_need_their_own_grounding_verdict(retriever, view):
 
     def draft_only(payload):  # Verdicts for the draft's statements only, as if an earlier check were reused.
         sent.append(payload)
-        return {'verdicts': [{'statement_id': s['statement_id'], 'verdict': 'SUPPORTED', 'rationale': 'Stated.'}
-                             for s in payload['statements'] if s['kind'] != 'ALTERNATIVE']}
+        return {**supported(payload), 'verdicts': [v for v in supported(payload)['verdicts']
+                                                   if not v['statement_id'].startswith('alternative:')]}
     client = Fake(draft=open_draft, tot=tot, grounding=draft_only)
     result = run('repeated_ending', client, retriever, view)
     assert client.stages_called() == ['draft', 'tot', 'grounding']
@@ -666,7 +680,8 @@ def test_routine_reminder_announcement_is_not_current_handling(retriever, view):
     assert any(REMINDER in i for i in result['retrieval_trace'][0]['result_ids']), 'precondition: the reminder was retrieved'
     verdicts = {s['statement_id']: s for s in result['grounding']['statements']}
     assert verdicts['claim:c2']['model_verdict'] == 'SUPPORTED' and verdicts['claim:c2']['verdict'] == 'ANNOUNCEMENT_NOT_VERIFIED'
-    assert verdicts['action']['verdict'] == 'SUPPORT_CLAIM_WITHHELD'
+    # The judge supported c2 itself; its announcement dependency voided it before sufficiency was applied.
+    assert verdicts['action']['verdict'] == 'ESSENTIAL_PREMISE_VOIDED_BY_DEPENDENCY'
     assert result['grounding']['status'] == 'FAILED' and result['established_handling'] == []
     card = result['card']
     assert card['recommended_action'] is None and not any(REMINDER in (s['note'] or '') for s in card['supporting_sources'])
@@ -719,5 +734,5 @@ def test_resolution_is_per_member_from_thread_evidence_not_agent1_labels(retriev
     assert any(x['agent1_verification_status'] == 'NEEDS_REVIEW' for x in attributed)
     result = run('fictional_pii', Fake(draft=draft_for, grounding=supported), retriever, view)
     assert result['card']['resolution_status'] == 'UNKNOWN' and result['resolution']['agent1_attributed'] == attributed
-    assert 'unverified (Agent 1 NEEDS_REVIEW)' in result['card']['reasoning']
+    assert '1 of 3 were not verified by Agent 1.' in result['card']['reasoning']
     assert result['coverage']['uncarried_obligations'] == []

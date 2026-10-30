@@ -57,8 +57,9 @@ def test_scripted_pilot_runs_end_to_end_within_budget(real):
     assert 'share the cause' not in json.dumps(submit['card']) and 'claim:c5: UNSUPPORTED' in json.dumps(submit['card'])
     # PII: both announcements verified as handling; the action targets only the stale help-page section.
     assert len(pii['established_handling']) == 2
-    scope = pii['card']['recommended_action']['scope_note']
-    assert "CORRECT safety-qn-help-page@1.0 section 'Contact details'" in scope and 'instructions@' not in scope and 'faq@' not in scope
+    targets = pii['card']['recommended_action']['targets']
+    assert [(t['evidence_id'].split(':')[1], t['section'], t['change']) for t in targets] == [
+        ('safety-qn-help-page@1.0', 'Contact details', 'CORRECT')]
     # Resolution from member threads: audio is MIXED (Agent 1 recorded one PARTIALLY_RESOLVED, unverified); PII is
     # UNRESOLVED although Agent 1 recorded two members as PARTIALLY_RESOLVED.
     assert cards['audio_playback']['card']['resolution_status'] == 'MIXED'

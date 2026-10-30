@@ -1,0 +1,120 @@
+{
+ "arm": "gpt-6.1-sol",
+ "settings": {
+  "model": "openai/gpt-6.1-sol",
+  "api_key_variable": "OPENAI_API_KEY",
+  "interface": "CrewAI Agent + Task + Crew per stage (role-specific agents, max_iter=1, max_retry_limit=0, no tools, no memory or planning) over crewai.LLM via LiteLLM",
+  "temperature": null,
+  "reasoning_effort": "medium",
+  "service_tier": "default",
+  "max_completion_tokens_per_call": 16384,
+  "input_token_limit": 24000,
+  "timeout_seconds": 120,
+  "response_format": "json_object",
+  "provider_sdk_max_retries": 0,
+  "model_fallback": null,
+  "http_requests_per_stage": 1,
+  "quiet_env": {
+   "CREWAI_DISABLE_TELEMETRY": "true",
+   "OTEL_SDK_DISABLED": "true",
+   "LITELLM_LOCAL_MODEL_COST_MAP": "True",
+   "CREWAI_TRACING_ENABLED": "false"
+  }
+ },
+ "prices_per_token": {
+  "input": 2e-06,
+  "output": 1e-05,
+  "cached_input": 1e-07,
+  "source": "litellm 1.105.0 local model_cost map"
+ },
+ "budget": {
+  "model_calls_per_topic": 4,
+  "model_calls_total": 8,
+  "retrieval_calls_per_topic": 6,
+  "retrieval_calls_total": 12
+ },
+ "scenarios": [
+  "audio_playback",
+  "submit_failure"
+ ],
+ "cost_limit_usd": 2.0,
+ "reservation_per_request_usd": 0.21184,
+ "worst_case_all_requests_usd": 1.6947,
+ "binding_limit": "request count (worst case within the ledger)",
+ "prompts": {
+  "prompt_version": "agent3-advisor-prompts-v6",
+  "draft_rules": "0ba713be27cfeab0917d6244298c13e47fe7d32e5a1dc5ca802e6844192b3abd",
+  "revision_rules": "69990f431f4cd8049b5d50e1805dbf243042c9d136c452718efa97dc5906f726",
+  "writing_guide": "0ff52c75fa726a201969d4c8751bf14d16806cdbdcc4bbdef71ac9de93b2aeb3",
+  "style_examples": "abd7eeaaeb50fa1fde39bb83f6f0d9b1ba5d05fdb242b37d7841fb1f8e64c1b7",
+  "grounding_rules": "107cd0ead6af7e66f28d82efec13cc7a85f3a2f568d6b9da5e85455e0438b32d",
+  "tot_rules": "1dffaa9b85c1676827443985ca045544f53cf1d36f4cd968b795ccffec7b6a14",
+  "schemas": {
+   "AdvisorDraft": "5e8ceabbf3eb50c119ae33340d231c963924deecb847e628a04c544e191a1e4c",
+   "GroundingJudgment": "a3db796b10134cffad545e5f59a4973e82d8556eae1a9110b84ac7394277f853",
+   "ToTComparison": "32f82c758944e29b4db4856e5a8d90ac91003cca2a87c152a14a2ba3284217e5"
+  },
+  "contract_versions": {
+   "draft": "agent3-advisor-draft-v6",
+   "grounding": "agent3-grounding-judgment-v4",
+   "tot": "agent3-tot-comparison-v2"
+  }
+ },
+ "pilot_version": "agent3-advisor-pilot-v6",
+ "baseline_run": "data/experiments/agent3_closeout_v1",
+ "index": {
+  "build_fingerprint": "4da16f090eb5f2c61f408948f4f761b254caaf4e3a226e1e46a9574308ccc791",
+  "chunking_version": "knowledge-chunks-v2",
+  "corpus_fingerprint": "c72edb4636025692d7f278d31afec466fb55ac8e0f92c9af82aafa94bd534389",
+  "cutoff": "2026-10-02T12:00:00Z"
+ },
+ "handoff_canonical_sha256": "c417f93c65615a19d64e2e039857f42eacacc2e31dbe3df18a2ad647454d8aed",
+ "cost_ledger": {
+  "limit_usd": 2.0,
+  "spent_usd": 0.367774,
+  "reserved_usd": 0.0,
+  "requests": [
+   {
+    "label": "audio_playback:draft",
+    "reserved_usd": 0.21184,
+    "charged_usd": 0.072212,
+    "basis": "provider usage"
+   },
+   {
+    "label": "audio_playback:revision",
+    "reserved_usd": 0.21184,
+    "charged_usd": 0.085716,
+    "basis": "provider usage"
+   },
+   {
+    "label": "audio_playback:grounding",
+    "reserved_usd": 0.21184,
+    "charged_usd": 0.047328,
+    "basis": "provider usage"
+   },
+   {
+    "label": "submit_failure:draft",
+    "reserved_usd": 0.21184,
+    "charged_usd": 0.075628,
+    "basis": "provider usage"
+   },
+   {
+    "label": "submit_failure:tot",
+    "reserved_usd": 0.21184,
+    "charged_usd": 0.035452,
+    "basis": "provider usage"
+   },
+   {
+    "label": "submit_failure:grounding",
+    "reserved_usd": 0.21184,
+    "charged_usd": 0.051438,
+    "basis": "provider usage"
+   }
+  ]
+ },
+ "http_requests": {
+  "sent": 6,
+  "blocked": 0
+ },
+ "halted": null
+}

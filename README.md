@@ -146,7 +146,14 @@ routing. `--run --write <new-dir>` makes **paid** model calls through CrewAI (bo
 most 4 per topic, 28 per run, one HTTP request per call with no retries; the zero-call default
 prints the model and limits). `scripts/run_agent3_model_comparison.py` runs the bounded
 two-model comparison (zero calls by default; `--run --write <new-dir>` is paid, with a $3 cost
-reservation ledger). See
+reservation ledger); `scripts/replay_agent3_comparison.py` replays it, or a single run such as the
+acceptance pilot (`--source data/experiments/agent3_acceptance_v1`), offline with zero calls;
+`scripts/run_agent3_acceptance.py` runs the Sol acceptance pilot (zero calls by default; `--run` is
+paid, $6 ledger, at most 28 requests); and `scripts/run_agent3_closeout.py` reruns the six topic
+scenarios on the same arm for pilot v5 (zero calls by default; `--run` is paid, $3 ledger);
+`scripts/run_agent3_readability.py` reruns audio and Submit for pilot v6 (`--run` is paid, $2 ledger, 8 requests).
+AdviceCard v3 shows what happened, what to do, why and what needs review in plain language, referring to people
+by role; IDs, enums and premises stay in structured fields. See
 [Milestone 4](docs/agent3-plan.md#milestone-4-implemented-bounded-advisor-pilot).
 
 Inspect the historical effective handoff without regenerating it:

@@ -171,23 +171,36 @@ def user_directory(path=FIXTURE_ROOT/'users.json'):
 
 
 def member_messages(members, directory=None):
-    """Member Slack messages are the only incident-fact evidence. Display names come from the user directory."""
+    """Member Slack messages are the only incident-fact evidence. Display names come from the user directory and stay
+    internal (attribution checks); models see canonical IDs and roles (model_view). Each message records who started
+    its thread."""
     directory, items = user_directory() if directory is None else directory, []
 
     def name(user_id):
         return (directory.get(user_id) or {}).get('name')
     for member in members:
         thread = member['original_thread']
+        root = next((m for m in thread['messages'] if m['message_id'] == thread['thread_id']), None)
         for message in thread['messages']:
             items.append({'evidence_id': f"m:{thread['channel_id']}:{message['message_id']}", 'origin': 'member_message',
                           'use': 'MEMBER_REPORT', 'member_id': member['member_id'], 'channel_id': thread['channel_id'],
                           'thread_id': thread['thread_id'], 'message_id': message['message_id'],
                           'author_id': message['author_id'], 'author_name': name(message['author_id']),
                           'author_role': message['author_role'], 'timestamp': message['timestamp'],
+                          'thread_starter_id': root and root['author_id'], 'thread_starter_role': root and root['author_role'],
                           'reactions': [{'name': r.get('name'), 'users': [{'id': u, 'name': name(u)} for u in r.get('users') or []]}
                                         for r in message.get('reactions') or []],
                           'excerpt': message['text']})
     return items
+
+
+def model_view(item):
+    """What a model sees of an evidence item: people by canonical ID and role, no display names (card prose uses
+    roles). The ledger keeps the names for attribution checks."""
+    if item.get('origin') != 'member_message':
+        return item
+    return {**{k: v for k, v in item.items() if k != 'author_name'},
+            'reactions': [{'name': r['name'], 'users': [u['id'] for u in r['users']]} for r in item['reactions']]}
 
 
 class ResearchTools:

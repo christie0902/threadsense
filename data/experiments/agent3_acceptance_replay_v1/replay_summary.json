@@ -1,0 +1,478 @@
+{
+ "source": "data/experiments/agent3_acceptance_v1",
+ "pilot_version": "agent3-advisor-pilot-v5",
+ "prompts_now": {
+  "draft_rules": "8336d0a415a5989bef322026ec5c7c124718f7b766fc95e42e2e92c42384826c",
+  "revision_rules": "d76f607d16044ab4b3a0435a435087a9b6749cd9fc9fb0bb4e1a356e933f5da3",
+  "grounding_rules": "526034bd5d9cfda5466b8cb8ee4697533e6a1904b59101e8dc2303439b7ec125",
+  "tot_rules": "c709360bf2306affb3fbc78a536efc179cf3432b4a9a0442ff614e1d252c13a9",
+  "schemas": {
+   "AdvisorDraft": "70be6f4a9b569d39a21d4700d8d0f4e39057a0fa29d67e47db0ea81370308c1f",
+   "GroundingJudgment": "a3db796b10134cffad545e5f59a4973e82d8556eae1a9110b84ac7394277f853",
+   "ToTComparison": "6fe36a27285c824159932e52610909a7bbb042dd87e3bab02cdf11ed6c3768aa"
+  },
+  "contract_versions": {
+   "draft": "agent3-advisor-draft-v5",
+   "grounding": "agent3-grounding-judgment-v4",
+   "tot": "agent3-tot-comparison-v1"
+  }
+ },
+ "prompts_recorded": {
+  "draft_rules": "7cfa9385ae16a4ab8940ee4df4f8a860a14e1637d3d6bbbe2aeb4a3c3faae7da",
+  "revision_rules": "f474cf0a1bfe607ab7812d237c42e6646bff4f4e09b151fbe0d84a8a0483b20d",
+  "grounding_rules": "c71e86ecb8c69414f730577f03355e0ede43c9b147371f82ac31fe66b59882d5",
+  "tot_rules": "d72ea41fcab7ee8583d08e88f52726875e5ff717205e09e341eb7484d0d33385",
+  "schemas": {
+   "AdvisorDraft": "432161a063d5dcdf4250dc589e7314dacea1fe5b35ca401d79e41fe348da3fa2",
+   "GroundingJudgment": "ae379abaea536d77a95fbac69bd9abc3baee019fec0f4d0acd02bc2735d716d9",
+   "ToTComparison": "6fe36a27285c824159932e52610909a7bbb042dd87e3bab02cdf11ed6c3768aa"
+  },
+  "contract_versions": {
+   "draft": "agent3-advisor-draft-v4",
+   "grounding": "agent3-grounding-judgment-v3",
+   "tot": "agent3-tot-comparison-v1"
+  }
+ },
+ "pilot_version_recorded": "agent3-advisor-pilot-v4",
+ "model_calls": 0,
+ "arms": {
+  "gpt-6.1-sol": {
+   "cases": [
+    {
+     "case": "audio_playback",
+     "card_line": "NEEDS_REVIEW",
+     "grounding": "FAILED",
+     "basis": "STRUCTURAL+SEMANTIC",
+     "pending": [
+      "action",
+      "alternative:alignment_now",
+      "alternative:engineering_followup"
+     ],
+     "action_proposed": "POST_ALIGNMENT",
+     "action_verdict": "PENDING",
+     "action_on_card": null,
+     "severity": "HIGH ASSESSED",
+     "severity_issues": [],
+     "severity_notes": [],
+     "resolution": "MIXED",
+     "normalization": [],
+     "rejected": {
+      "claim:c1": "REJECTED_PERSONAL_NAME_IN_PROSE",
+      "claim:c2": "REJECTED_PERSONAL_NAME_IN_PROSE",
+      "claim:c3": "REJECTED_PERSONAL_NAME_IN_PROSE",
+      "claim:c4": "REJECTED_PERSONAL_NAME_IN_PROSE",
+      "claim:c6": "REJECTED_PERSONAL_NAME_IN_PROSE",
+      "claim:c10": "REJECTED_PERSONAL_NAME_IN_PROSE"
+     },
+     "action_source": "DRAFT",
+     "action_notes": [
+      "No ToT fallback: preferred candidate alignment_now: text judged PENDING."
+     ],
+     "temporal": [],
+     "model_calls": [
+      [
+       "draft",
+       "OK"
+      ],
+      [
+       "revision",
+       "OK"
+      ],
+      [
+       "tot",
+       "OK"
+      ],
+      [
+       "grounding",
+       "OK"
+      ]
+     ]
+    },
+    {
+     "case": "json_vs_prose",
+     "card_line": "NEEDS_REVIEW",
+     "grounding": "FAILED",
+     "basis": "STRUCTURAL+SEMANTIC",
+     "pending": [
+      "action",
+      "alternative:alignment_now",
+      "alternative:case_review_session"
+     ],
+     "action_proposed": "POST_ALIGNMENT",
+     "action_verdict": "PENDING",
+     "action_on_card": null,
+     "severity": "MEDIUM ASSESSED",
+     "severity_issues": [],
+     "severity_notes": [
+      "Removed from severity after final grounding: reporters U018."
+     ],
+     "resolution": "UNKNOWN",
+     "normalization": [],
+     "rejected": {
+      "claim:C1": "REJECTED_PERSONAL_NAME_IN_PROSE",
+      "claim:C2": "REJECTED_PERSONAL_NAME_IN_PROSE",
+      "claim:C3": "REJECTED_PERSONAL_NAME_IN_PROSE",
+      "claim:C6": "REJECTED_PERSONAL_NAME_IN_PROSE"
+     },
+     "action_source": "DRAFT",
+     "action_notes": [
+      "No ToT fallback: preferred candidate alignment_now: text judged PENDING."
+     ],
+     "temporal": [],
+     "model_calls": [
+      [
+       "draft",
+       "OK"
+      ],
+      [
+       "tot",
+       "OK"
+      ],
+      [
+       "grounding",
+       "OK"
+      ]
+     ]
+    },
+    {
+     "case": "fictional_pii",
+     "card_line": "NEEDS_REVIEW",
+     "grounding": "FAILED",
+     "basis": "STRUCTURAL+SEMANTIC",
+     "pending": [
+      "action",
+      "alternative:candidate_1",
+      "alternative:candidate_2",
+      "temporal:conflict[0]"
+     ],
+     "action_proposed": "UPDATE_DOCUMENTATION",
+     "action_verdict": "PENDING",
+     "action_on_card": null,
+     "severity": "HIGH ASSESSED",
+     "severity_issues": [],
+     "severity_notes": [],
+     "resolution": "MIXED",
+     "normalization": [],
+     "rejected": {
+      "claim:c1": "REJECTED_PERSONAL_NAME_IN_PROSE",
+      "claim:c2": "REJECTED_PERSONAL_NAME_IN_PROSE",
+      "claim:c3": "REJECTED_PERSONAL_NAME_IN_PROSE",
+      "claim:c4": "REJECTED_PERSONAL_NAME_IN_PROSE"
+     },
+     "action_source": "DRAFT",
+     "action_notes": [
+      "No ToT fallback: preferred candidate candidate_1: issues ['APPLICABILITY_OVERSTATED']."
+     ],
+     "temporal": [
+      [
+       "CURRENT_SOURCE_AGREEMENT_PENDING",
+       "DETECTED"
+      ],
+      [
+       "UNEXPLAINED_SOURCE_CONFLICT",
+       "DETECTED"
+      ]
+     ],
+     "model_calls": [
+      [
+       "draft",
+       "OK"
+      ],
+      [
+       "tot",
+       "OK"
+      ],
+      [
+       "grounding",
+       "OK"
+      ]
+     ]
+    },
+    {
+     "case": "korean_register",
+     "card_line": "NEEDS_REVIEW",
+     "grounding": "FAILED",
+     "basis": "STRUCTURAL+SEMANTIC",
+     "pending": [
+      "action",
+      "alternative:route_current_cases",
+      "alternative:post_current_guidance_alignment"
+     ],
+     "action_proposed": "ROUTE_TO_LANGUAGE_SPECIALIST",
+     "action_verdict": "PENDING",
+     "action_on_card": null,
+     "severity": "HIGH ASSESSED",
+     "severity_issues": [],
+     "severity_notes": [],
+     "resolution": "UNKNOWN",
+     "normalization": [],
+     "rejected": {
+      "claim:c1": "REJECTED_PERSONAL_NAME_IN_PROSE",
+      "claim:c2": "REJECTED_PERSONAL_NAME_IN_PROSE",
+      "claim:c3": "REJECTED_PERSONAL_NAME_IN_PROSE",
+      "claim:c5": "REJECTED_PERSONAL_NAME_IN_PROSE"
+     },
+     "action_source": "DRAFT",
+     "action_notes": [
+      "No ToT fallback: preferred candidate route_current_cases: text judged PENDING."
+     ],
+     "temporal": [],
+     "model_calls": [
+      [
+       "draft",
+       "OK"
+      ],
+      [
+       "tot",
+       "OK"
+      ],
+      [
+       "grounding",
+       "OK"
+      ]
+     ]
+    },
+    {
+     "case": "submit_failure",
+     "card_line": "NEEDS_REVIEW",
+     "grounding": "FAILED",
+     "basis": "STRUCTURAL+SEMANTIC",
+     "pending": [
+      "action",
+      "alternative:scoped_engineering_handoff",
+      "alternative:diagnostic_alignment_only"
+     ],
+     "action_proposed": "ESCALATE_ENGINEERING",
+     "action_verdict": "PENDING",
+     "action_on_card": null,
+     "severity": "HIGH ASSESSED",
+     "severity_issues": [],
+     "severity_notes": [
+      "Removed from severity after final grounding: signals severity:signal:HIGH[0]."
+     ],
+     "resolution": "UNRESOLVED",
+     "normalization": [],
+     "rejected": {
+      "claim:C1": "REJECTED_PERSONAL_NAME_IN_PROSE",
+      "claim:C2": "REJECTED_PERSONAL_NAME_IN_PROSE",
+      "claim:C3": "REJECTED_PERSONAL_NAME_IN_PROSE",
+      "claim:C4": "REJECTED_PERSONAL_NAME_IN_PROSE",
+      "claim:C5": "REJECTED_PERSONAL_NAME_IN_PROSE",
+      "claim:C7": "REJECTED_PERSONAL_NAME_IN_PROSE",
+      "claim:C8": "REJECTED_PERSONAL_NAME_IN_PROSE",
+      "claim:C9": "REJECTED_PERSONAL_NAME_IN_PROSE",
+      "severity:signal:HIGH[0]": "REJECTED_PERSONAL_NAME_IN_PROSE"
+     },
+     "action_source": "DRAFT",
+     "action_notes": [
+      "No ToT fallback: preferred candidate scoped_engineering_handoff: text judged PENDING."
+     ],
+     "temporal": [],
+     "model_calls": [
+      [
+       "draft",
+       "OK"
+      ],
+      [
+       "revision",
+       "OK"
+      ],
+      [
+       "tot",
+       "OK"
+      ],
+      [
+       "grounding",
+       "OK"
+      ]
+     ]
+    },
+    {
+     "case": "repeated_ending",
+     "card_line": "NEEDS_REVIEW",
+     "grounding": "FAILED",
+     "basis": "STRUCTURAL+SEMANTIC",
+     "pending": [
+      "action",
+      "alternative:alignment_now",
+      "alternative:engineering_investigation"
+     ],
+     "action_proposed": "POST_ALIGNMENT",
+     "action_verdict": "PENDING",
+     "action_on_card": null,
+     "severity": "HIGH ASSESSED",
+     "severity_issues": [],
+     "severity_notes": [],
+     "resolution": "UNKNOWN",
+     "normalization": [],
+     "rejected": {
+      "claim:c1": "REJECTED_PERSONAL_NAME_IN_PROSE",
+      "claim:c2": "REJECTED_PERSONAL_NAME_IN_PROSE",
+      "claim:c5": "REJECTED_PERSONAL_NAME_IN_PROSE"
+     },
+     "action_source": "DRAFT",
+     "action_notes": [
+      "No ToT fallback: preferred candidate alignment_now: text judged PENDING."
+     ],
+     "temporal": [],
+     "model_calls": [
+      [
+       "draft",
+       "OK"
+      ],
+      [
+       "tot",
+       "OK"
+      ],
+      [
+       "grounding",
+       "OK"
+      ]
+     ]
+    },
+    {
+     "case": "control_unsupported_payroll",
+     "card_line": null,
+     "grounding": "NOT_RUN",
+     "basis": "NOTHING_CITED",
+     "pending": [],
+     "action_proposed": null,
+     "action_verdict": null,
+     "action_on_card": null,
+     "severity": null,
+     "severity_issues": null,
+     "severity_notes": null,
+     "resolution": null,
+     "normalization": [],
+     "rejected": {},
+     "action_source": null,
+     "action_notes": null,
+     "temporal": [],
+     "model_calls": [
+      [
+       "draft",
+       "OK"
+      ]
+     ]
+    }
+   ],
+   "reused_verdicts": 115,
+   "not_reused": [
+    {
+     "scenario_id": "audio_playback",
+     "statement_id": "action",
+     "reused": false,
+     "reason": "premises now shown as provisional with dependencies"
+    },
+    {
+     "scenario_id": "audio_playback",
+     "statement_id": "alternative:alignment_now",
+     "reused": false,
+     "reason": "premises now shown as provisional with dependencies"
+    },
+    {
+     "scenario_id": "audio_playback",
+     "statement_id": "alternative:engineering_followup",
+     "reused": false,
+     "reason": "premises now shown as provisional with dependencies"
+    },
+    {
+     "scenario_id": "json_vs_prose",
+     "statement_id": "action",
+     "reused": false,
+     "reason": "premises now shown as provisional with dependencies"
+    },
+    {
+     "scenario_id": "json_vs_prose",
+     "statement_id": "alternative:alignment_now",
+     "reused": false,
+     "reason": "premises now shown as provisional with dependencies"
+    },
+    {
+     "scenario_id": "json_vs_prose",
+     "statement_id": "alternative:case_review_session",
+     "reused": false,
+     "reason": "premises now shown as provisional with dependencies"
+    },
+    {
+     "scenario_id": "fictional_pii",
+     "statement_id": "action",
+     "reused": false,
+     "reason": "premises now shown as provisional with dependencies"
+    },
+    {
+     "scenario_id": "fictional_pii",
+     "statement_id": "alternative:candidate_1",
+     "reused": false,
+     "reason": "premises now shown as provisional with dependencies"
+    },
+    {
+     "scenario_id": "fictional_pii",
+     "statement_id": "alternative:candidate_2",
+     "reused": false,
+     "reason": "premises now shown as provisional with dependencies"
+    },
+    {
+     "scenario_id": "fictional_pii",
+     "statement_id": "temporal:conflict[0]",
+     "reused": false,
+     "reason": "not recorded"
+    },
+    {
+     "scenario_id": "korean_register",
+     "statement_id": "action",
+     "reused": false,
+     "reason": "premises now shown as provisional with dependencies"
+    },
+    {
+     "scenario_id": "korean_register",
+     "statement_id": "alternative:route_current_cases",
+     "reused": false,
+     "reason": "premises now shown as provisional with dependencies"
+    },
+    {
+     "scenario_id": "korean_register",
+     "statement_id": "alternative:post_current_guidance_alignment",
+     "reused": false,
+     "reason": "premises now shown as provisional with dependencies"
+    },
+    {
+     "scenario_id": "submit_failure",
+     "statement_id": "action",
+     "reused": false,
+     "reason": "premises now shown as provisional with dependencies"
+    },
+    {
+     "scenario_id": "submit_failure",
+     "statement_id": "alternative:scoped_engineering_handoff",
+     "reused": false,
+     "reason": "premises now shown as provisional with dependencies"
+    },
+    {
+     "scenario_id": "submit_failure",
+     "statement_id": "alternative:diagnostic_alignment_only",
+     "reused": false,
+     "reason": "premises now shown as provisional with dependencies"
+    },
+    {
+     "scenario_id": "repeated_ending",
+     "statement_id": "action",
+     "reused": false,
+     "reason": "premises now shown as provisional with dependencies"
+    },
+    {
+     "scenario_id": "repeated_ending",
+     "statement_id": "alternative:alignment_now",
+     "reused": false,
+     "reason": "premises now shown as provisional with dependencies"
+    },
+    {
+     "scenario_id": "repeated_ending",
+     "statement_id": "alternative:engineering_investigation",
+     "reused": false,
+     "reason": "premises now shown as provisional with dependencies"
+    }
+   ]
+  }
+ }
+}
