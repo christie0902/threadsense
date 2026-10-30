@@ -65,7 +65,7 @@ HTTP_REQUESTS_PER_STAGE = 1
 INPUT_TOKEN_LIMIT = 24_000  # Checked on the exact request body before sending (o200k); the provider's count is recorded.
 # Set before CrewAI/LiteLLM import: no telemetry export, no remote model-price download.
 QUIET_ENV = {'CREWAI_DISABLE_TELEMETRY': 'true', 'OTEL_SDK_DISABLED': 'true', 'LITELLM_LOCAL_MODEL_COST_MAP': 'True',
-             'CREWAI_TRACING_ENABLED': 'false'}
+             'CREWAI_TRACING_ENABLED': 'false', 'LANGSMITH_TRACING': 'false', 'LANGCHAIN_TRACING_V2': 'false'}
 
 DRAFT_RULES = (
     'You are the ThreadSense Advisor preparing one topic for a team lead\'s morning brief. Use only the evidence '
@@ -197,6 +197,10 @@ class ScenarioError(ValueError):
 
 class RequestCeilingExceeded(RuntimeError):
     """A stage tried to send more HTTP requests than its ceiling; the extra request was not sent."""
+
+
+class RunStateError(RuntimeError):
+    """A caller's run state (budget, ledger) could not be recorded; never treated as a stage failure."""
 
 
 class BoundaryNotObserved(RuntimeError):
@@ -592,8 +596,8 @@ class Stages:
                                                'output_schema': schema.model_json_schema()}, schema)
             entry.update(raw=raw, raw_sha256=sha256(raw.encode('utf-8')).hexdigest())
             value = schema.model_validate(json.loads(_json_text(raw)))
-        except BoundaryNotObserved:
-            raise  # Unverifiable call accounting stops the run.
+        except (BoundaryNotObserved, RunStateError):
+            raise  # Unverifiable call accounting or unsaved run state stops the run.
         except Exception as error:  # Any provider, parsing or validation error: record it, never retry.
             self.log.append({**entry, **self._requests(), 'status': 'FAILED', 'failure_class': failure_class(error),
                              'error': f'{type(error).__name__}: {str(error)[:400]}'})
@@ -614,10 +618,11 @@ def topic_packet(view, scenario):
     if record is None:
         raise ScenarioError(f'Group {gid} is not in the handoff.')
     gap = None
-    if scenario.get('topic_name'):
-        topics = [t for t in record['topics'] if t['topic_name'] == scenario['topic_name']]
+    if scenario.get('topic_id') or scenario.get('topic_name'):
+        key = 'topic_id' if scenario.get('topic_id') else 'topic_name'  # The overnight workflow addresses topics by ID.
+        topics = [t for t in record['topics'] if t[key] == scenario[key]]
         if len(topics) != 1:
-            raise ScenarioError(f"Group {gid} has {len(topics)} topics named {scenario['topic_name']!r}.")
+            raise ScenarioError(f"Group {gid} has {len(topics)} topics with {key} {scenario[key]!r}.")
         topic = topics[0]
         member_ids, topic_id, label = list(topic['member_ids']), topic['topic_id'], topic['topic_name']
         preliminary = topic.get('preliminary_severity')
@@ -630,7 +635,7 @@ def topic_packet(view, scenario):
         preliminary = record.get('unassigned_preliminary_severity')
     members = sorted((m for m in record['members'] if m['member_id'] in member_ids), key=lambda m: float(m['thread_id']))
     return {'record': record, 'candidate_group_id': gid, 'topic_id': topic_id, 'topic_label': label,
-            'topic_name': scenario.get('topic_name'), 'projection_gap': gap, 'project_id': record['project_id'],
+            'topic_name': label if topic_id else None, 'projection_gap': gap, 'project_id': record['project_id'],
             'batch_id': record['batch_id'], 'member_ids': [m['member_id'] for m in members], 'members': members,
             'agent1_resolution': agent1_resolution(members),
             'preliminary_severity': preliminary, 'handoff_contract': record['taxonomy_handoff']['contract_version'],
@@ -641,8 +646,12 @@ def topic_packet(view, scenario):
 
 
 def initial_query(packet):
-    """Topic name plus the earliest member's central question (no source IDs, no answers)."""
-    question = packet['members'][0]['agent1_record']['interpretation']['central_question']
+    """Topic name plus the earliest member's central question (no source IDs, no answers). A thread that asks nothing
+    (a statement or reminder) has no central question: the earliest question is used, else the earliest member's
+    Agent 1 summary, else the topic label."""
+    interpretations = [m['agent1_record']['interpretation'] for m in packet['members']]
+    question = next((i['central_question'] for i in interpretations if i.get('central_question')), None) or next(
+        (i['summary'] for i in interpretations if i.get('summary')), None) or packet['topic_label']
     return f"{packet['topic_name']}. {question}" if packet['topic_name'] else question
 
 

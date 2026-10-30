@@ -715,19 +715,35 @@ def test_recorded_possessive_plural_counts_thread_starters(view):
         'PLURAL_NOT_SUPPORTED_BY_DISTINCT_AUTHORS']
 
 
-def test_recorded_record_authorship_uses_the_authority_actor(view):
+def test_approving_authority_does_not_establish_authorship(retriever, view):
     """DETERMINISTIC. Recorded Submit history claim attributes the September 28 handoff record to the team lead (U001)
-    as AUTHOR; the record's authority actor is U001, so it holds. Another user as its author, or a record as anyone's
-    thread, does not."""
+    as AUTHOR. The record names U001 as its approving authority, not its author, so the attribution is rejected (the
+    readability-run fix had accepted it; corrected in Milestone 5). A Slack announcement record's actor is the posting
+    message's author, so AUTHOR holds there."""
     _, ledger = members(view, 'submit_failure')
     case = READ['record_author']
     ledger.update(case['retrieved_evidence'])
-    claim = case['claim']
-    assert claim_issues(make_draft(claims=[claim]), ledger) == []
-    record = claim['attributions'][0]['evidence_id']
-    for user, relation in (('U019', 'AUTHOR'), ('U001', 'THREAD_STARTER')):
-        wrong = {**claim, 'attributions': [{'user_id': user, 'relation': relation, 'evidence_id': record}]}
-        assert [i['code'] for i in claim_issues(make_draft(claims=[wrong]), ledger)] == ['ATTRIBUTION_INVALID']
+    [issue] = claim_issues(make_draft(claims=[case['claim']]), ledger)
+    assert issue['code'] == 'ATTRIBUTION_INVALID' and 'approving authority, which does not establish authorship' in issue['detail']
+    from threadsense.agents.advisor_checks import relation_holds
+    slack = next(i for i in safety_tools(retriever).ledger.values() if (i['citation'].get('source') or {}).get('system') == 'slack'
+                 and i['authority'].get('actor'))
+    assert relation_holds(slack['authority']['actor'], 'AUTHOR', slack, ledger)
+    assert not relation_holds(slack['authority']['actor'], 'THREAD_STARTER', slack, ledger)
+
+
+@pytest.mark.parametrize('text, expected', [
+    ('The team lead wrote: "Keep it."', ['QUOTE_NOT_IN_SOURCE']),
+    ('The team lead wrote "Please paste the exact formatting instruction;"', []),
+    ('The FAQ calls it "fine".', ['QUOTE_NOT_IN_SOURCE']),
+    ('Mark it as "QN" only if needed.', []),
+])
+def test_explicitly_attributed_quotations_are_matched_regardless_of_length(view, text, expected):
+    """DETERMINISTIC. A quotation presented as someone's or something's words must match a cited source even when it is
+    short; an unattributed short term in quotes is not a source quotation."""
+    from threadsense.agents.advisor_checks import display_issues
+    _, ledger = members(view, 'json_vs_prose')
+    assert [c for c, _ in display_issues(text, [ledger[LEAD_IN_OMAR_THREAD]])] == expected
 
 
 def test_grounding_sees_the_open_review_flags_a_review_note_relies_on(retriever, view):

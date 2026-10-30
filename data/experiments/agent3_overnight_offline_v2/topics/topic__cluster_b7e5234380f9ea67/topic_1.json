@@ -1,0 +1,2658 @@
+{
+  "work_item": {
+    "candidate_group_id": "cluster_b7e5234380f9ea67",
+    "project_id": "audio_multimodal",
+    "batch_id": "audio_batch_06",
+    "work_id": "topic:cluster_b7e5234380f9ea67/topic_1",
+    "kind": "TOPIC",
+    "topic_id": "cluster_b7e5234380f9ea67/topic_1",
+    "topic_name": "Repeated final line in exported audio",
+    "member_ids": [
+      "member_7e30b0730acedd4c18fcf3a5",
+      "member_9af4caa31c6ee01df21547d4",
+      "member_a05733133a11c3689d715928",
+      "member_dfb394ecfe8f564ef2360a40",
+      "member_149de7c563b87a982aa7a9ea"
+    ],
+    "pilot_scenario": "repeated_ending",
+    "in_scope": true
+  },
+  "workflow": {
+    "outcome": "CARD",
+    "card_id": "card_59ae832444ebb13268d6bdce80642cfd",
+    "card_line": "NEEDS_REVIEW",
+    "grounding": "PASSED",
+    "stage_failures": [],
+    "semantic_source": "SCRIPTED_PILOT"
+  },
+  "result": {
+    "scenario": {
+      "id": "topic:cluster_b7e5234380f9ea67/topic_1",
+      "candidate_group_id": "cluster_b7e5234380f9ea67",
+      "focus": "Repeated final line in exported audio",
+      "topic_id": "cluster_b7e5234380f9ea67/topic_1"
+    },
+    "status": "CARD",
+    "topic": {
+      "project_id": "audio_multimodal",
+      "batch_id": "audio_batch_06",
+      "candidate_group_id": "cluster_b7e5234380f9ea67",
+      "topic_id": "cluster_b7e5234380f9ea67/topic_1",
+      "topic_label": "Repeated final line in exported audio",
+      "projection_gap": null,
+      "as_of": "2026-10-02T12:00:00Z",
+      "member_ids": [
+        "member_7e30b0730acedd4c18fcf3a5",
+        "member_9af4caa31c6ee01df21547d4",
+        "member_a05733133a11c3689d715928",
+        "member_dfb394ecfe8f564ef2360a40",
+        "member_149de7c563b87a982aa7a9ea"
+      ],
+      "initial_query": "Repeated final line in exported audio. What is the correct handling for the task where the model keeps saying the last sentence twice?"
+    },
+    "retrieval_trace": [
+      {
+        "step": 1,
+        "purpose": "initial_current_guidance",
+        "gap_id": null,
+        "query": "Repeated final line in exported audio. What is the correct handling for the task where the model keeps saying the last sentence twice?",
+        "source_types": [
+          "guideline",
+          "faq",
+          "decision",
+          "announcement"
+        ],
+        "version_mode": "current",
+        "as_of": "2026-10-02T12:00:00Z",
+        "batch": "audio_batch_06",
+        "top_k": 5,
+        "status": "DONE",
+        "mode": "hybrid",
+        "use_mmr": true,
+        "mmr_lambda": 0.9,
+        "result_ids": [
+          "k:audio-multimodal-instructions@1.3:7a5ab59d",
+          "k:audio-repeat-observation-review@1.0:ae0550d0",
+          "k:slack:C_AUDIO_ANNOUNCEMENTS:1790892000.000901:1c524924",
+          "k:audio-multimodal-faq@1.1:e9bcf43a",
+          "k:audio-multimodal-instructions@1.3:eb85357a"
+        ],
+        "new_evidence_ids": [
+          "k:audio-multimodal-instructions@1.3:7a5ab59d",
+          "k:audio-repeat-observation-review@1.0:ae0550d0",
+          "k:slack:C_AUDIO_ANNOUNCEMENTS:1790892000.000901:1c524924",
+          "k:audio-multimodal-faq@1.1:e9bcf43a",
+          "k:audio-multimodal-instructions@1.3:eb85357a"
+        ],
+        "eligible_chunks": 27
+      }
+    ],
+    "retrieval_notes": {
+      "withheld_by_version": [],
+      "version_diagnostics": []
+    },
+    "follow_ups": [],
+    "unfilled_gaps": [
+      {
+        "gap_id": "g1",
+        "need": "OTHER",
+        "description": "No downloaded-file versus player comparison is recorded for these tasks, so the cause is not established.",
+        "follow_up": null
+      }
+    ],
+    "model_calls": [
+      {
+        "stage": "draft",
+        "schema": "AdvisorDraft",
+        "raw": "{\"summary\": \"Five reports describe generated audio that speaks its final sentence twice although the transcript has it once.\", \"reasoning\": \"Instructions require locating the repeat and comparing the downloaded file with player output before calling it a generation defect; a prior report was kept as an observation for the same reason. No comparison is recorded here, so the cause is not established.\", \"claims\": [{\"claim_id\": \"c1\", \"kind\": \"INCIDENT_FACT\", \"evidence_ids\": [\"m:C_AUDIO_GENERAL:1790868894.000123\", \"m:C_AUDIO_GENERAL:1790889930.000126\", \"m:C_AUDIO_GENERAL:1790899012.002000\", \"m:C_AUDIO_GENERAL:1790915994.000122\", \"m:C_AUDIO_QA:1790923533.000125\", \"m:C_AUDIO_GENERAL:1790889987.000113\"], \"text\": \"Five reports describe the final sentence spoken twice while the transcript has it once; one reply says the repeat is in the exported audio.\"}, {\"claim_id\": \"c2\", \"kind\": \"GUIDANCE\", \"evidence_ids\": [\"k:audio-multimodal-instructions@1.3:7a5ab59d\"], \"quote\": \"Do not call it a confirmed generation defect until the available evidence distinguishes generation from playback.\", \"text\": \"Record where the phrase repeats, compare the downloaded file with player output if feasible, and do not call it a confirmed generation defect until generation is distinguished from playback.\"}, {\"claim_id\": \"c3\", \"kind\": \"HISTORY\", \"evidence_ids\": [\"k:audio-repeat-observation-review@1.0:ae0550d0\"], \"text\": \"A prior repeated-ending report was retained as an observation; the TL deferred a confirmed-loop escalation and requested a file-versus-player comparison.\"}], \"gaps\": [{\"gap_id\": \"g1\", \"need\": \"OTHER\", \"description\": \"No downloaded-file versus player comparison is recorded for these tasks, so the cause is not established.\"}], \"evidence_sufficiency\": \"INSUFFICIENT\", \"proposed_action\": {\"action_type\": \"NO_ACTION\", \"support_claim_ids\": [\"c2\", \"c3\"], \"draft_text\": \"Keep as an observation; ask reporters to note where the repeat starts and compare the downloaded file with player output.\"}, \"severity\": {\"level\": \"MEDIUM\", \"rationale\": \"The same scoring question recurs across five reports; impact is contained.\", \"signals\": [{\"level\": \"MEDIUM\", \"signal_index\": 0, \"signal_text\": \"Recurring confusion about the same rule, tool behavior, or scoring criterion that suggests meaningful workflow or labeling impact\", \"support\": \"Five reports ask how to handle the same repeated-ending behavior.\", \"evidence_ids\": [\"m:C_AUDIO_GENERAL:1790868894.000123\", \"m:C_AUDIO_GENERAL:1790889930.000126\", \"m:C_AUDIO_GENERAL:1790899012.002000\", \"m:C_AUDIO_GENERAL:1790915994.000122\", \"m:C_AUDIO_QA:1790923533.000125\"]}]}, \"confidence\": 0.55, \"open_confirmation\": \"NONE\", \"resolution\": [{\"member_id\": \"member_7e30b0730acedd4c18fcf3a5\", \"state\": \"UNRESOLVED\", \"evidence_ids\": [\"m:C_AUDIO_GENERAL:1790868894.000123\", \"m:C_AUDIO_GENERAL:1790868952.000113\", \"m:C_AUDIO_GENERAL:1790868994.000226\"], \"basis\": \"No answer in the thread; reviewers ask for a downloaded-file versus player comparison.\"}, {\"member_id\": \"member_9af4caa31c6ee01df21547d4\", \"state\": \"UNRESOLVED\", \"evidence_ids\": [\"m:C_AUDIO_GENERAL:1790889930.000126\", \"m:C_AUDIO_GENERAL:1790889987.000113\"], \"basis\": \"No answer in the thread; reviewers ask for a downloaded-file versus player comparison.\"}, {\"member_id\": \"member_a05733133a11c3689d715928\", \"state\": \"UNRESOLVED\", \"evidence_ids\": [\"m:C_AUDIO_GENERAL:1790899012.002000\", \"m:C_AUDIO_GENERAL:1790899060.000113\", \"m:C_AUDIO_GENERAL:1790899110.000226\"], \"basis\": \"No answer in the thread; reviewers ask for a downloaded-file versus player comparison.\"}, {\"member_id\": \"member_dfb394ecfe8f564ef2360a40\", \"state\": \"UNRESOLVED\", \"evidence_ids\": [\"m:C_AUDIO_GENERAL:1790915994.000122\", \"m:C_AUDIO_GENERAL:1790916048.000113\", \"m:C_AUDIO_GENERAL:1790916097.000226\"], \"basis\": \"No answer in the thread; reviewers ask for a downloaded-file versus player comparison.\"}, {\"member_id\": \"member_149de7c563b87a982aa7a9ea\", \"state\": \"UNRESOLVED\", \"evidence_ids\": [\"m:C_AUDIO_QA:1790923533.000125\", \"m:C_AUDIO_QA:1790923582.000113\"], \"basis\": \"No answer in the thread; reviewers ask for a downloaded-file versus player comparison.\"}], \"coverage\": [{\"need\": \"CURRENT_GUIDANCE\", \"status\": \"COVERED\", \"evidence_ids\": [\"k:audio-multimodal-instructions@1.3:7a5ab59d\"], \"note\": \"Current guidance cited.\"}, {\"need\": \"ANNOUNCEMENTS\", \"status\": \"NOT_APPLICABLE\", \"note\": \"Not needed for this advice.\"}, {\"need\": \"PRIOR_DECISIONS\", \"status\": \"COVERED\", \"evidence_ids\": [\"k:audio-repeat-observation-review@1.0:ae0550d0\"], \"note\": \"Earlier decisions and outcomes cited.\"}, {\"need\": \"MEMBER_QUESTIONS\", \"status\": \"COVERED\", \"evidence_ids\": [\"m:C_AUDIO_GENERAL:1790868894.000123\", \"m:C_AUDIO_GENERAL:1790889930.000126\", \"m:C_AUDIO_GENERAL:1790899012.002000\", \"m:C_AUDIO_GENERAL:1790915994.000122\", \"m:C_AUDIO_QA:1790923533.000125\", \"m:C_AUDIO_GENERAL:1790889987.000113\"], \"note\": \"Member reports and questions cited.\"}]}",
+        "raw_sha256": "cfe2e48f1364c2a0fc5a991fd192ef8d0e591e79bffe9010afee1f494cf54275",
+        "status": "OK"
+      },
+      {
+        "stage": "tot",
+        "schema": "ToTComparison",
+        "raw": "{\"candidates\": [{\"candidate_id\": \"A\", \"action_type\": \"NO_ACTION\", \"evidence_ids\": [\"k:audio-multimodal-instructions@1.3:7a5ab59d\", \"k:audio-repeat-observation-review@1.0:ae0550d0\"], \"draft_text\": \"Keep as an observation until a file-versus-player comparison exists.\", \"evidence_support\": \"STRONG\", \"applicability\": \"MIXED\", \"severity_fit\": \"FITS\", \"rationale\": \"Matches the instruction and the prior deferral.\"}, {\"candidate_id\": \"B\", \"action_type\": \"POST_ALIGNMENT\", \"evidence_ids\": [\"k:audio-multimodal-instructions@1.3:7a5ab59d\"], \"draft_text\": \"Remind tutors to timestamp the repeat and compare the downloaded file with player output.\", \"evidence_support\": \"PARTIAL\", \"applicability\": \"CURRENT\", \"severity_fit\": \"FITS\", \"rationale\": \"Restates current guidance for five recent reports.\"}, {\"candidate_id\": \"C\", \"action_type\": \"ESCALATE_ENGINEERING\", \"evidence_ids\": [], \"draft_text\": \"Escalate a confirmed TTS generation loop.\", \"evidence_support\": \"STRONG\", \"applicability\": \"CURRENT\", \"severity_fit\": \"PARTIAL\", \"rationale\": \"Several reports describe the same loop.\"}], \"preferred_candidate_id\": \"A\", \"close_call\": true, \"rationale\": \"A and B are both supported and differ only in whether to post a reminder.\"}",
+        "raw_sha256": "332350df62fd4f6f7a9f1e4cb45eda829c49b0eb999e2f9f77e5b39829232628",
+        "status": "OK"
+      },
+      {
+        "stage": "grounding",
+        "schema": "GroundingJudgment",
+        "raw": "{\"verdicts\": [{\"statement_id\": \"claim:c1\", \"verdict\": \"SUPPORTED\", \"rationale\": \"The cited excerpts state this directly.\"}, {\"statement_id\": \"claim:c2\", \"verdict\": \"SUPPORTED\", \"rationale\": \"The cited excerpts state this directly.\"}, {\"statement_id\": \"claim:c3\", \"verdict\": \"SUPPORTED\", \"rationale\": \"The cited excerpts state this directly.\"}, {\"statement_id\": \"summary\", \"verdict\": \"SUPPORTED\", \"rationale\": \"The cited excerpts state this directly.\"}, {\"statement_id\": \"action\", \"verdict\": \"SUPPORTED\", \"rationale\": \"The cited excerpts state this directly.\"}, {\"statement_id\": \"resolution:member_7e30b0730acedd4c18fcf3a5\", \"verdict\": \"SUPPORTED\", \"rationale\": \"The cited excerpts state this directly.\"}, {\"statement_id\": \"resolution:member_9af4caa31c6ee01df21547d4\", \"verdict\": \"SUPPORTED\", \"rationale\": \"The cited excerpts state this directly.\"}, {\"statement_id\": \"resolution:member_a05733133a11c3689d715928\", \"verdict\": \"SUPPORTED\", \"rationale\": \"The cited excerpts state this directly.\"}, {\"statement_id\": \"resolution:member_dfb394ecfe8f564ef2360a40\", \"verdict\": \"SUPPORTED\", \"rationale\": \"The cited excerpts state this directly.\"}, {\"statement_id\": \"resolution:member_149de7c563b87a982aa7a9ea\", \"verdict\": \"SUPPORTED\", \"rationale\": \"The cited excerpts state this directly.\"}, {\"statement_id\": \"severity:rationale\", \"verdict\": \"SUPPORTED\", \"rationale\": \"The cited excerpts state this directly.\"}, {\"statement_id\": \"severity:signal:MEDIUM[0]\", \"verdict\": \"SUPPORTED\", \"rationale\": \"The cited excerpts state this directly.\"}, {\"statement_id\": \"alternative:A\", \"verdict\": \"SUPPORTED\", \"rationale\": \"The cited excerpts state this directly.\"}, {\"statement_id\": \"alternative:B\", \"verdict\": \"SUPPORTED\", \"rationale\": \"The cited excerpts state this directly.\"}], \"action_sufficiency\": {\"verdict\": \"SUFFICIENT\", \"essential_statement_ids\": [\"claim:c2\", \"claim:c3\"], \"rationale\": \"The listed premises justify the action as worded.\"}}",
+        "raw_sha256": "b94836f00c380219f65ea6f6b3328fc9a84ab6ba70246eed5c8652bd4d05170b",
+        "status": "OK"
+      }
+    ],
+    "drafts": {
+      "initial": {
+        "contract_version": "agent3-advisor-draft-v6",
+        "summary": "Five reports describe generated audio that speaks its final sentence twice although the transcript has it once.",
+        "reasoning": "Instructions require locating the repeat and comparing the downloaded file with player output before calling it a generation defect; a prior report was kept as an observation for the same reason. No comparison is recorded here, so the cause is not established.",
+        "claims": [
+          {
+            "claim_id": "c1",
+            "kind": "INCIDENT_FACT",
+            "text": "Five reports describe the final sentence spoken twice while the transcript has it once; one reply says the repeat is in the exported audio.",
+            "evidence_ids": [
+              "m:C_AUDIO_GENERAL:1790868894.000123",
+              "m:C_AUDIO_GENERAL:1790889930.000126",
+              "m:C_AUDIO_GENERAL:1790899012.002000",
+              "m:C_AUDIO_GENERAL:1790915994.000122",
+              "m:C_AUDIO_QA:1790923533.000125",
+              "m:C_AUDIO_GENERAL:1790889987.000113"
+            ],
+            "attributions": [],
+            "quote": null,
+            "quote_kind": "VERBATIM",
+            "material": true
+          },
+          {
+            "claim_id": "c2",
+            "kind": "GUIDANCE",
+            "text": "Record where the phrase repeats, compare the downloaded file with player output if feasible, and do not call it a confirmed generation defect until generation is distinguished from playback.",
+            "evidence_ids": [
+              "k:audio-multimodal-instructions@1.3:7a5ab59d"
+            ],
+            "attributions": [],
+            "quote": "Do not call it a confirmed generation defect until the available evidence distinguishes generation from playback.",
+            "quote_kind": "VERBATIM",
+            "material": true
+          },
+          {
+            "claim_id": "c3",
+            "kind": "HISTORY",
+            "text": "A prior repeated-ending report was retained as an observation; the TL deferred a confirmed-loop escalation and requested a file-versus-player comparison.",
+            "evidence_ids": [
+              "k:audio-repeat-observation-review@1.0:ae0550d0"
+            ],
+            "attributions": [],
+            "quote": null,
+            "quote_kind": "VERBATIM",
+            "material": true
+          }
+        ],
+        "gaps": [
+          {
+            "gap_id": "g1",
+            "need": "OTHER",
+            "description": "No downloaded-file versus player comparison is recorded for these tasks, so the cause is not established.",
+            "follow_up": null
+          }
+        ],
+        "evidence_sufficiency": "INSUFFICIENT",
+        "proposed_action": {
+          "action_type": "NO_ACTION",
+          "instruction": null,
+          "rationale": null,
+          "draft_text": "Keep as an observation; ask reporters to note where the repeat starts and compare the downloaded file with player output.",
+          "scope_note": null,
+          "support_claim_ids": [
+            "c2",
+            "c3"
+          ],
+          "targets": []
+        },
+        "severity": {
+          "level": "MEDIUM",
+          "rationale": "The same scoring question recurs across five reports; impact is contained.",
+          "signals": [
+            {
+              "level": "MEDIUM",
+              "signal_index": 0,
+              "signal_text": "Recurring confusion about the same rule, tool behavior, or scoring criterion that suggests meaningful workflow or labeling impact",
+              "support": "Five reports ask how to handle the same repeated-ending behavior.",
+              "evidence_ids": [
+                "m:C_AUDIO_GENERAL:1790868894.000123",
+                "m:C_AUDIO_GENERAL:1790889930.000126",
+                "m:C_AUDIO_GENERAL:1790899012.002000",
+                "m:C_AUDIO_GENERAL:1790915994.000122",
+                "m:C_AUDIO_QA:1790923533.000125"
+              ]
+            }
+          ],
+          "affected_reporters": [],
+          "recurrence": "NOT_CHECKED",
+          "recurrence_evidence_ids": [],
+          "reported_recurrence_evidence_ids": []
+        },
+        "confidence": 0.55,
+        "open_confirmation": "NONE",
+        "open_question": null,
+        "open_question_evidence_ids": [],
+        "source_conflicts": [],
+        "announcement_assessments": [],
+        "resolution": [
+          {
+            "member_id": "member_7e30b0730acedd4c18fcf3a5",
+            "state": "UNRESOLVED",
+            "evidence_ids": [
+              "m:C_AUDIO_GENERAL:1790868894.000123",
+              "m:C_AUDIO_GENERAL:1790868952.000113",
+              "m:C_AUDIO_GENERAL:1790868994.000226"
+            ],
+            "basis": "No answer in the thread; reviewers ask for a downloaded-file versus player comparison."
+          },
+          {
+            "member_id": "member_9af4caa31c6ee01df21547d4",
+            "state": "UNRESOLVED",
+            "evidence_ids": [
+              "m:C_AUDIO_GENERAL:1790889930.000126",
+              "m:C_AUDIO_GENERAL:1790889987.000113"
+            ],
+            "basis": "No answer in the thread; reviewers ask for a downloaded-file versus player comparison."
+          },
+          {
+            "member_id": "member_a05733133a11c3689d715928",
+            "state": "UNRESOLVED",
+            "evidence_ids": [
+              "m:C_AUDIO_GENERAL:1790899012.002000",
+              "m:C_AUDIO_GENERAL:1790899060.000113",
+              "m:C_AUDIO_GENERAL:1790899110.000226"
+            ],
+            "basis": "No answer in the thread; reviewers ask for a downloaded-file versus player comparison."
+          },
+          {
+            "member_id": "member_dfb394ecfe8f564ef2360a40",
+            "state": "UNRESOLVED",
+            "evidence_ids": [
+              "m:C_AUDIO_GENERAL:1790915994.000122",
+              "m:C_AUDIO_GENERAL:1790916048.000113",
+              "m:C_AUDIO_GENERAL:1790916097.000226"
+            ],
+            "basis": "No answer in the thread; reviewers ask for a downloaded-file versus player comparison."
+          },
+          {
+            "member_id": "member_149de7c563b87a982aa7a9ea",
+            "state": "UNRESOLVED",
+            "evidence_ids": [
+              "m:C_AUDIO_QA:1790923533.000125",
+              "m:C_AUDIO_QA:1790923582.000113"
+            ],
+            "basis": "No answer in the thread; reviewers ask for a downloaded-file versus player comparison."
+          }
+        ],
+        "coverage": [
+          {
+            "need": "CURRENT_GUIDANCE",
+            "status": "COVERED",
+            "evidence_ids": [
+              "k:audio-multimodal-instructions@1.3:7a5ab59d"
+            ],
+            "note": "Current guidance cited.",
+            "gap_id": null
+          },
+          {
+            "need": "ANNOUNCEMENTS",
+            "status": "NOT_APPLICABLE",
+            "evidence_ids": [],
+            "note": "Not needed for this advice.",
+            "gap_id": null
+          },
+          {
+            "need": "PRIOR_DECISIONS",
+            "status": "COVERED",
+            "evidence_ids": [
+              "k:audio-repeat-observation-review@1.0:ae0550d0"
+            ],
+            "note": "Earlier decisions and outcomes cited.",
+            "gap_id": null
+          },
+          {
+            "need": "MEMBER_QUESTIONS",
+            "status": "COVERED",
+            "evidence_ids": [
+              "m:C_AUDIO_GENERAL:1790868894.000123",
+              "m:C_AUDIO_GENERAL:1790889930.000126",
+              "m:C_AUDIO_GENERAL:1790899012.002000",
+              "m:C_AUDIO_GENERAL:1790915994.000122",
+              "m:C_AUDIO_QA:1790923533.000125",
+              "m:C_AUDIO_GENERAL:1790889987.000113"
+            ],
+            "note": "Member reports and questions cited.",
+            "gap_id": null
+          }
+        ],
+        "review_note": null
+      },
+      "final": {
+        "contract_version": "agent3-advisor-draft-v6",
+        "summary": "Five reports describe generated audio that speaks its final sentence twice although the transcript has it once.",
+        "reasoning": "Instructions require locating the repeat and comparing the downloaded file with player output before calling it a generation defect; a prior report was kept as an observation for the same reason. No comparison is recorded here, so the cause is not established.",
+        "claims": [
+          {
+            "claim_id": "c1",
+            "kind": "INCIDENT_FACT",
+            "text": "Five reports describe the final sentence spoken twice while the transcript has it once; one reply says the repeat is in the exported audio.",
+            "evidence_ids": [
+              "m:C_AUDIO_GENERAL:1790868894.000123",
+              "m:C_AUDIO_GENERAL:1790889930.000126",
+              "m:C_AUDIO_GENERAL:1790899012.002000",
+              "m:C_AUDIO_GENERAL:1790915994.000122",
+              "m:C_AUDIO_QA:1790923533.000125",
+              "m:C_AUDIO_GENERAL:1790889987.000113"
+            ],
+            "attributions": [],
+            "quote": null,
+            "quote_kind": "VERBATIM",
+            "material": true
+          },
+          {
+            "claim_id": "c2",
+            "kind": "GUIDANCE",
+            "text": "Record where the phrase repeats, compare the downloaded file with player output if feasible, and do not call it a confirmed generation defect until generation is distinguished from playback.",
+            "evidence_ids": [
+              "k:audio-multimodal-instructions@1.3:7a5ab59d"
+            ],
+            "attributions": [],
+            "quote": "Do not call it a confirmed generation defect until the available evidence distinguishes generation from playback.",
+            "quote_kind": "VERBATIM",
+            "material": true
+          },
+          {
+            "claim_id": "c3",
+            "kind": "HISTORY",
+            "text": "A prior repeated-ending report was retained as an observation; the TL deferred a confirmed-loop escalation and requested a file-versus-player comparison.",
+            "evidence_ids": [
+              "k:audio-repeat-observation-review@1.0:ae0550d0"
+            ],
+            "attributions": [],
+            "quote": null,
+            "quote_kind": "VERBATIM",
+            "material": true
+          }
+        ],
+        "gaps": [
+          {
+            "gap_id": "g1",
+            "need": "OTHER",
+            "description": "No downloaded-file versus player comparison is recorded for these tasks, so the cause is not established.",
+            "follow_up": null
+          }
+        ],
+        "evidence_sufficiency": "INSUFFICIENT",
+        "proposed_action": {
+          "action_type": "NO_ACTION",
+          "instruction": null,
+          "rationale": null,
+          "draft_text": "Keep as an observation; ask reporters to note where the repeat starts and compare the downloaded file with player output.",
+          "scope_note": null,
+          "support_claim_ids": [
+            "c2",
+            "c3"
+          ],
+          "targets": []
+        },
+        "severity": {
+          "level": "MEDIUM",
+          "rationale": "The same scoring question recurs across five reports; impact is contained.",
+          "signals": [
+            {
+              "level": "MEDIUM",
+              "signal_index": 0,
+              "signal_text": "Recurring confusion about the same rule, tool behavior, or scoring criterion that suggests meaningful workflow or labeling impact",
+              "support": "Five reports ask how to handle the same repeated-ending behavior.",
+              "evidence_ids": [
+                "m:C_AUDIO_GENERAL:1790868894.000123",
+                "m:C_AUDIO_GENERAL:1790889930.000126",
+                "m:C_AUDIO_GENERAL:1790899012.002000",
+                "m:C_AUDIO_GENERAL:1790915994.000122",
+                "m:C_AUDIO_QA:1790923533.000125"
+              ]
+            }
+          ],
+          "affected_reporters": [],
+          "recurrence": "NOT_CHECKED",
+          "recurrence_evidence_ids": [],
+          "reported_recurrence_evidence_ids": []
+        },
+        "confidence": 0.55,
+        "open_confirmation": "NONE",
+        "open_question": null,
+        "open_question_evidence_ids": [],
+        "source_conflicts": [],
+        "announcement_assessments": [],
+        "resolution": [
+          {
+            "member_id": "member_7e30b0730acedd4c18fcf3a5",
+            "state": "UNRESOLVED",
+            "evidence_ids": [
+              "m:C_AUDIO_GENERAL:1790868894.000123",
+              "m:C_AUDIO_GENERAL:1790868952.000113",
+              "m:C_AUDIO_GENERAL:1790868994.000226"
+            ],
+            "basis": "No answer in the thread; reviewers ask for a downloaded-file versus player comparison."
+          },
+          {
+            "member_id": "member_9af4caa31c6ee01df21547d4",
+            "state": "UNRESOLVED",
+            "evidence_ids": [
+              "m:C_AUDIO_GENERAL:1790889930.000126",
+              "m:C_AUDIO_GENERAL:1790889987.000113"
+            ],
+            "basis": "No answer in the thread; reviewers ask for a downloaded-file versus player comparison."
+          },
+          {
+            "member_id": "member_a05733133a11c3689d715928",
+            "state": "UNRESOLVED",
+            "evidence_ids": [
+              "m:C_AUDIO_GENERAL:1790899012.002000",
+              "m:C_AUDIO_GENERAL:1790899060.000113",
+              "m:C_AUDIO_GENERAL:1790899110.000226"
+            ],
+            "basis": "No answer in the thread; reviewers ask for a downloaded-file versus player comparison."
+          },
+          {
+            "member_id": "member_dfb394ecfe8f564ef2360a40",
+            "state": "UNRESOLVED",
+            "evidence_ids": [
+              "m:C_AUDIO_GENERAL:1790915994.000122",
+              "m:C_AUDIO_GENERAL:1790916048.000113",
+              "m:C_AUDIO_GENERAL:1790916097.000226"
+            ],
+            "basis": "No answer in the thread; reviewers ask for a downloaded-file versus player comparison."
+          },
+          {
+            "member_id": "member_149de7c563b87a982aa7a9ea",
+            "state": "UNRESOLVED",
+            "evidence_ids": [
+              "m:C_AUDIO_QA:1790923533.000125",
+              "m:C_AUDIO_QA:1790923582.000113"
+            ],
+            "basis": "No answer in the thread; reviewers ask for a downloaded-file versus player comparison."
+          }
+        ],
+        "coverage": [
+          {
+            "need": "CURRENT_GUIDANCE",
+            "status": "COVERED",
+            "evidence_ids": [
+              "k:audio-multimodal-instructions@1.3:7a5ab59d"
+            ],
+            "note": "Current guidance cited.",
+            "gap_id": null
+          },
+          {
+            "need": "ANNOUNCEMENTS",
+            "status": "NOT_APPLICABLE",
+            "evidence_ids": [],
+            "note": "Not needed for this advice.",
+            "gap_id": null
+          },
+          {
+            "need": "PRIOR_DECISIONS",
+            "status": "COVERED",
+            "evidence_ids": [
+              "k:audio-repeat-observation-review@1.0:ae0550d0"
+            ],
+            "note": "Earlier decisions and outcomes cited.",
+            "gap_id": null
+          },
+          {
+            "need": "MEMBER_QUESTIONS",
+            "status": "COVERED",
+            "evidence_ids": [
+              "m:C_AUDIO_GENERAL:1790868894.000123",
+              "m:C_AUDIO_GENERAL:1790889930.000126",
+              "m:C_AUDIO_GENERAL:1790899012.002000",
+              "m:C_AUDIO_GENERAL:1790915994.000122",
+              "m:C_AUDIO_QA:1790923533.000125",
+              "m:C_AUDIO_GENERAL:1790889987.000113"
+            ],
+            "note": "Member reports and questions cited.",
+            "gap_id": null
+          }
+        ],
+        "review_note": null
+      },
+      "revised": false
+    },
+    "grounding": {
+      "structural_issues": [],
+      "action_issues": [],
+      "unsupported": [],
+      "unjudged": [],
+      "extraneous_verdicts": [],
+      "rejected": {},
+      "pending": [],
+      "action_sufficiency": {
+        "verdict": "SUFFICIENT",
+        "essential_statement_ids": [
+          "claim:c2",
+          "claim:c3"
+        ],
+        "rationale": "The listed premises justify the action as worded."
+      },
+      "alternative_sufficiency": {
+        "alternative:B": {
+          "check": "SUFFICIENCY_NOT_JUDGED"
+        }
+      },
+      "status": "PASSED",
+      "basis": "SEMANTIC",
+      "statements": [
+        {
+          "statement_id": "claim:c1",
+          "kind": "CLAIM_INCIDENT_FACT",
+          "text": "Five reports describe the final sentence spoken twice while the transcript has it once; one reply says the repeat is in the exported audio.",
+          "blocking": true,
+          "evidence_ids": [
+            "m:C_AUDIO_GENERAL:1790868894.000123",
+            "m:C_AUDIO_GENERAL:1790889930.000126",
+            "m:C_AUDIO_GENERAL:1790899012.002000",
+            "m:C_AUDIO_GENERAL:1790915994.000122",
+            "m:C_AUDIO_QA:1790923533.000125",
+            "m:C_AUDIO_GENERAL:1790889987.000113"
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "The cited excerpts state this directly."
+        },
+        {
+          "statement_id": "claim:c2",
+          "kind": "CLAIM_GUIDANCE",
+          "text": "Record where the phrase repeats, compare the downloaded file with player output if feasible, and do not call it a confirmed generation defect until generation is distinguished from playback. Verbatim quote: \"Do not call it a confirmed generation defect until the available evidence distinguishes generation from playback.\"",
+          "blocking": true,
+          "evidence_ids": [
+            "k:audio-multimodal-instructions@1.3:7a5ab59d"
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "The cited excerpts state this directly."
+        },
+        {
+          "statement_id": "claim:c3",
+          "kind": "CLAIM_HISTORY",
+          "text": "A prior repeated-ending report was retained as an observation; the TL deferred a confirmed-loop escalation and requested a file-versus-player comparison.",
+          "blocking": true,
+          "evidence_ids": [
+            "k:audio-repeat-observation-review@1.0:ae0550d0"
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "The cited excerpts state this directly."
+        },
+        {
+          "statement_id": "summary",
+          "kind": "SUMMARY",
+          "text": "Five reports describe generated audio that speaks its final sentence twice although the transcript has it once.",
+          "blocking": true,
+          "evidence_ids": [
+            "m:C_AUDIO_GENERAL:1790868894.000123",
+            "m:C_AUDIO_GENERAL:1790889930.000126",
+            "m:C_AUDIO_GENERAL:1790899012.002000",
+            "m:C_AUDIO_GENERAL:1790915994.000122",
+            "m:C_AUDIO_QA:1790923533.000125",
+            "m:C_AUDIO_GENERAL:1790889987.000113",
+            "k:audio-multimodal-instructions@1.3:7a5ab59d",
+            "k:audio-repeat-observation-review@1.0:ae0550d0"
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "The cited excerpts state this directly."
+        },
+        {
+          "statement_id": "action",
+          "kind": "ACTION",
+          "text": "No action needed now. Draft to copy: Keep as an observation; ask reporters to note where the repeat starts and compare the downloaded file with player output.",
+          "blocking": true,
+          "evidence_ids": [
+            "k:audio-multimodal-instructions@1.3:7a5ab59d",
+            "k:audio-repeat-observation-review@1.0:ae0550d0"
+          ],
+          "premises": [
+            "claim:c2",
+            "claim:c3"
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "The cited excerpts state this directly."
+        },
+        {
+          "statement_id": "resolution:member_7e30b0730acedd4c18fcf3a5",
+          "kind": "RESOLUTION",
+          "text": "Member thread member_7e30b0730acedd4c18fcf3a5 is UNRESOLVED: No answer in the thread; reviewers ask for a downloaded-file versus player comparison.",
+          "blocking": true,
+          "evidence_ids": [
+            "m:C_AUDIO_GENERAL:1790868894.000123",
+            "m:C_AUDIO_GENERAL:1790868952.000113",
+            "m:C_AUDIO_GENERAL:1790868994.000226"
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "The cited excerpts state this directly."
+        },
+        {
+          "statement_id": "resolution:member_9af4caa31c6ee01df21547d4",
+          "kind": "RESOLUTION",
+          "text": "Member thread member_9af4caa31c6ee01df21547d4 is UNRESOLVED: No answer in the thread; reviewers ask for a downloaded-file versus player comparison.",
+          "blocking": true,
+          "evidence_ids": [
+            "m:C_AUDIO_GENERAL:1790889930.000126",
+            "m:C_AUDIO_GENERAL:1790889987.000113"
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "The cited excerpts state this directly."
+        },
+        {
+          "statement_id": "resolution:member_a05733133a11c3689d715928",
+          "kind": "RESOLUTION",
+          "text": "Member thread member_a05733133a11c3689d715928 is UNRESOLVED: No answer in the thread; reviewers ask for a downloaded-file versus player comparison.",
+          "blocking": true,
+          "evidence_ids": [
+            "m:C_AUDIO_GENERAL:1790899012.002000",
+            "m:C_AUDIO_GENERAL:1790899060.000113",
+            "m:C_AUDIO_GENERAL:1790899110.000226"
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "The cited excerpts state this directly."
+        },
+        {
+          "statement_id": "resolution:member_dfb394ecfe8f564ef2360a40",
+          "kind": "RESOLUTION",
+          "text": "Member thread member_dfb394ecfe8f564ef2360a40 is UNRESOLVED: No answer in the thread; reviewers ask for a downloaded-file versus player comparison.",
+          "blocking": true,
+          "evidence_ids": [
+            "m:C_AUDIO_GENERAL:1790915994.000122",
+            "m:C_AUDIO_GENERAL:1790916048.000113",
+            "m:C_AUDIO_GENERAL:1790916097.000226"
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "The cited excerpts state this directly."
+        },
+        {
+          "statement_id": "resolution:member_149de7c563b87a982aa7a9ea",
+          "kind": "RESOLUTION",
+          "text": "Member thread member_149de7c563b87a982aa7a9ea is UNRESOLVED: No answer in the thread; reviewers ask for a downloaded-file versus player comparison.",
+          "blocking": true,
+          "evidence_ids": [
+            "m:C_AUDIO_QA:1790923533.000125",
+            "m:C_AUDIO_QA:1790923582.000113"
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "The cited excerpts state this directly."
+        },
+        {
+          "statement_id": "severity:rationale",
+          "kind": "SEVERITY_RATIONALE",
+          "text": "Severity MEDIUM: The same scoring question recurs across five reports; impact is contained.",
+          "blocking": true,
+          "evidence_ids": [
+            "m:C_AUDIO_GENERAL:1790868894.000123",
+            "m:C_AUDIO_GENERAL:1790889930.000126",
+            "m:C_AUDIO_GENERAL:1790899012.002000",
+            "m:C_AUDIO_GENERAL:1790915994.000122",
+            "m:C_AUDIO_QA:1790923533.000125",
+            "m:C_AUDIO_GENERAL:1790889987.000113"
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "The cited excerpts state this directly."
+        },
+        {
+          "statement_id": "severity:signal:MEDIUM[0]",
+          "kind": "SEVERITY_SIGNAL",
+          "text": "Rubric signal met - \"Recurring confusion about the same rule, tool behavior, or scoring criterion that suggests meaningful workflow or labeling impact\": Five reports ask how to handle the same repeated-ending behavior.",
+          "blocking": true,
+          "evidence_ids": [
+            "m:C_AUDIO_GENERAL:1790868894.000123",
+            "m:C_AUDIO_GENERAL:1790889930.000126",
+            "m:C_AUDIO_GENERAL:1790899012.002000",
+            "m:C_AUDIO_GENERAL:1790915994.000122",
+            "m:C_AUDIO_QA:1790923533.000125"
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "The cited excerpts state this directly."
+        },
+        {
+          "statement_id": "alternative:A",
+          "kind": "ALTERNATIVE",
+          "text": "No action needed now. Draft to copy: Keep as an observation until a file-versus-player comparison exists. Why this helps: Matches the instruction and the prior deferral.",
+          "blocking": false,
+          "evidence_ids": [
+            "k:audio-multimodal-instructions@1.3:7a5ab59d",
+            "k:audio-repeat-observation-review@1.0:ae0550d0"
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "The cited excerpts state this directly."
+        },
+        {
+          "statement_id": "alternative:B",
+          "kind": "ALTERNATIVE",
+          "text": "Post a reminder. Draft to copy: Remind tutors to timestamp the repeat and compare the downloaded file with player output. Why this helps: Restates current guidance for five recent reports.",
+          "blocking": false,
+          "evidence_ids": [
+            "k:audio-multimodal-instructions@1.3:7a5ab59d"
+          ],
+          "premises": [
+            "claim:c2"
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "The cited excerpts state this directly."
+        }
+      ]
+    },
+    "temporal": {
+      "status": "NONE_FOUND",
+      "findings": [],
+      "ignored_revision_states": "NOT_YET_EFFECTIVE and NOT_APPROVED revisions never compete with applicable guidance."
+    },
+    "temporal_before_grounding": {
+      "status": "NONE_FOUND",
+      "findings": [],
+      "ignored_revision_states": "NOT_YET_EFFECTIVE and NOT_APPROVED revisions never compete with applicable guidance."
+    },
+    "severity": {
+      "assessment": {
+        "level": "MEDIUM",
+        "assessment_status": "ASSESSED",
+        "rubric_version": "severity-rubric-v3-semantic-signals",
+        "rubric_content_sha256": "eccaa31a2ab84a0aa7c005216a92fc39681e1dd10107117344948235a76673f4",
+        "rubric_project_id": null,
+        "rubric_scope": "SHARED_DEFAULT",
+        "rationale": "The same scoring question recurs across five reports; impact is contained.",
+        "matched_signals": [
+          {
+            "level": "MEDIUM",
+            "signal_index": 0,
+            "signal_text": "Recurring confusion about the same rule, tool behavior, or scoring criterion that suggests meaningful workflow or labeling impact",
+            "support": "Five reports ask how to handle the same repeated-ending behavior.",
+            "evidence": [
+              {
+                "kind": "slack_message",
+                "project_id": "audio_multimodal",
+                "batch_id": "audio_batch_06",
+                "scope": "project",
+                "channel_id": "C_AUDIO_GENERAL",
+                "thread_id": "1790868894.000123",
+                "message_id": "1790868894.000123",
+                "document_id": null,
+                "version_id": null,
+                "authoring_document_id": null,
+                "authoring_version": null,
+                "section": null,
+                "chunk_id": null,
+                "candidate_group_id": null,
+                "member_id": "member_7e30b0730acedd4c18fcf3a5",
+                "artifact": null,
+                "artifact_sha256": null,
+                "quote": null,
+                "note": "m:C_AUDIO_GENERAL:1790868894.000123"
+              },
+              {
+                "kind": "slack_message",
+                "project_id": "audio_multimodal",
+                "batch_id": "audio_batch_06",
+                "scope": "project",
+                "channel_id": "C_AUDIO_GENERAL",
+                "thread_id": "1790889930.000126",
+                "message_id": "1790889930.000126",
+                "document_id": null,
+                "version_id": null,
+                "authoring_document_id": null,
+                "authoring_version": null,
+                "section": null,
+                "chunk_id": null,
+                "candidate_group_id": null,
+                "member_id": "member_9af4caa31c6ee01df21547d4",
+                "artifact": null,
+                "artifact_sha256": null,
+                "quote": null,
+                "note": "m:C_AUDIO_GENERAL:1790889930.000126"
+              },
+              {
+                "kind": "slack_message",
+                "project_id": "audio_multimodal",
+                "batch_id": "audio_batch_06",
+                "scope": "project",
+                "channel_id": "C_AUDIO_GENERAL",
+                "thread_id": "1790899012.002000",
+                "message_id": "1790899012.002000",
+                "document_id": null,
+                "version_id": null,
+                "authoring_document_id": null,
+                "authoring_version": null,
+                "section": null,
+                "chunk_id": null,
+                "candidate_group_id": null,
+                "member_id": "member_a05733133a11c3689d715928",
+                "artifact": null,
+                "artifact_sha256": null,
+                "quote": null,
+                "note": "m:C_AUDIO_GENERAL:1790899012.002000"
+              },
+              {
+                "kind": "slack_message",
+                "project_id": "audio_multimodal",
+                "batch_id": "audio_batch_06",
+                "scope": "project",
+                "channel_id": "C_AUDIO_GENERAL",
+                "thread_id": "1790915994.000122",
+                "message_id": "1790915994.000122",
+                "document_id": null,
+                "version_id": null,
+                "authoring_document_id": null,
+                "authoring_version": null,
+                "section": null,
+                "chunk_id": null,
+                "candidate_group_id": null,
+                "member_id": "member_dfb394ecfe8f564ef2360a40",
+                "artifact": null,
+                "artifact_sha256": null,
+                "quote": null,
+                "note": "m:C_AUDIO_GENERAL:1790915994.000122"
+              },
+              {
+                "kind": "slack_message",
+                "project_id": "audio_multimodal",
+                "batch_id": "audio_batch_06",
+                "scope": "project",
+                "channel_id": "C_AUDIO_QA",
+                "thread_id": "1790923533.000125",
+                "message_id": "1790923533.000125",
+                "document_id": null,
+                "version_id": null,
+                "authoring_document_id": null,
+                "authoring_version": null,
+                "section": null,
+                "chunk_id": null,
+                "candidate_group_id": null,
+                "member_id": "member_149de7c563b87a982aa7a9ea",
+                "artifact": null,
+                "artifact_sha256": null,
+                "quote": null,
+                "note": "m:C_AUDIO_QA:1790923533.000125"
+              }
+            ]
+          }
+        ],
+        "evidence": [
+          {
+            "kind": "slack_message",
+            "project_id": "audio_multimodal",
+            "batch_id": "audio_batch_06",
+            "scope": "project",
+            "channel_id": "C_AUDIO_GENERAL",
+            "thread_id": "1790868894.000123",
+            "message_id": "1790868894.000123",
+            "document_id": null,
+            "version_id": null,
+            "authoring_document_id": null,
+            "authoring_version": null,
+            "section": null,
+            "chunk_id": null,
+            "candidate_group_id": null,
+            "member_id": "member_7e30b0730acedd4c18fcf3a5",
+            "artifact": null,
+            "artifact_sha256": null,
+            "quote": null,
+            "note": "m:C_AUDIO_GENERAL:1790868894.000123"
+          },
+          {
+            "kind": "slack_message",
+            "project_id": "audio_multimodal",
+            "batch_id": "audio_batch_06",
+            "scope": "project",
+            "channel_id": "C_AUDIO_GENERAL",
+            "thread_id": "1790889930.000126",
+            "message_id": "1790889930.000126",
+            "document_id": null,
+            "version_id": null,
+            "authoring_document_id": null,
+            "authoring_version": null,
+            "section": null,
+            "chunk_id": null,
+            "candidate_group_id": null,
+            "member_id": "member_9af4caa31c6ee01df21547d4",
+            "artifact": null,
+            "artifact_sha256": null,
+            "quote": null,
+            "note": "m:C_AUDIO_GENERAL:1790889930.000126"
+          },
+          {
+            "kind": "slack_message",
+            "project_id": "audio_multimodal",
+            "batch_id": "audio_batch_06",
+            "scope": "project",
+            "channel_id": "C_AUDIO_GENERAL",
+            "thread_id": "1790899012.002000",
+            "message_id": "1790899012.002000",
+            "document_id": null,
+            "version_id": null,
+            "authoring_document_id": null,
+            "authoring_version": null,
+            "section": null,
+            "chunk_id": null,
+            "candidate_group_id": null,
+            "member_id": "member_a05733133a11c3689d715928",
+            "artifact": null,
+            "artifact_sha256": null,
+            "quote": null,
+            "note": "m:C_AUDIO_GENERAL:1790899012.002000"
+          },
+          {
+            "kind": "slack_message",
+            "project_id": "audio_multimodal",
+            "batch_id": "audio_batch_06",
+            "scope": "project",
+            "channel_id": "C_AUDIO_GENERAL",
+            "thread_id": "1790915994.000122",
+            "message_id": "1790915994.000122",
+            "document_id": null,
+            "version_id": null,
+            "authoring_document_id": null,
+            "authoring_version": null,
+            "section": null,
+            "chunk_id": null,
+            "candidate_group_id": null,
+            "member_id": "member_dfb394ecfe8f564ef2360a40",
+            "artifact": null,
+            "artifact_sha256": null,
+            "quote": null,
+            "note": "m:C_AUDIO_GENERAL:1790915994.000122"
+          },
+          {
+            "kind": "slack_message",
+            "project_id": "audio_multimodal",
+            "batch_id": "audio_batch_06",
+            "scope": "project",
+            "channel_id": "C_AUDIO_QA",
+            "thread_id": "1790923533.000125",
+            "message_id": "1790923533.000125",
+            "document_id": null,
+            "version_id": null,
+            "authoring_document_id": null,
+            "authoring_version": null,
+            "section": null,
+            "chunk_id": null,
+            "candidate_group_id": null,
+            "member_id": "member_149de7c563b87a982aa7a9ea",
+            "artifact": null,
+            "artifact_sha256": null,
+            "quote": null,
+            "note": "m:C_AUDIO_QA:1790923533.000125"
+          }
+        ],
+        "occurrence": {
+          "affected_reporters": {
+            "status": "UNKNOWN",
+            "count": null,
+            "ids": [],
+            "basis": null,
+            "evidence": []
+          },
+          "affected_tasks": {
+            "status": "UNKNOWN",
+            "count": null,
+            "ids": [],
+            "basis": null,
+            "evidence": []
+          },
+          "relevant_threads": [
+            {
+              "project_id": "audio_multimodal",
+              "batch_id": "audio_batch_06",
+              "channel_id": "C_AUDIO_GENERAL",
+              "thread_id": "1790868894.000123",
+              "member_id": "member_7e30b0730acedd4c18fcf3a5"
+            },
+            {
+              "project_id": "audio_multimodal",
+              "batch_id": "audio_batch_06",
+              "channel_id": "C_AUDIO_GENERAL",
+              "thread_id": "1790889930.000126",
+              "member_id": "member_9af4caa31c6ee01df21547d4"
+            },
+            {
+              "project_id": "audio_multimodal",
+              "batch_id": "audio_batch_06",
+              "channel_id": "C_AUDIO_GENERAL",
+              "thread_id": "1790899012.002000",
+              "member_id": "member_a05733133a11c3689d715928"
+            },
+            {
+              "project_id": "audio_multimodal",
+              "batch_id": "audio_batch_06",
+              "channel_id": "C_AUDIO_GENERAL",
+              "thread_id": "1790915994.000122",
+              "member_id": "member_dfb394ecfe8f564ef2360a40"
+            },
+            {
+              "project_id": "audio_multimodal",
+              "batch_id": "audio_batch_06",
+              "channel_id": "C_AUDIO_QA",
+              "thread_id": "1790923533.000125",
+              "member_id": "member_149de7c563b87a982aa7a9ea"
+            }
+          ],
+          "reporting_window": {
+            "start": "2026-10-01T15:34:54.000123+00:00",
+            "end": "2026-10-02T06:46:22.000113+00:00"
+          },
+          "historical_recurrence": {
+            "status": "NOT_CHECKED",
+            "sources": [],
+            "event_series_ids": []
+          },
+          "known_denominator": null,
+          "structural": {
+            "threads": 5,
+            "messages": 13,
+            "distinct_participants": 10,
+            "duplicate_threads_ignored": 0,
+            "duplicate_messages_ignored": 0,
+            "computed_from": "topic member threads (original Slack messages)",
+            "participants_are_not_affected_reporters": true
+          },
+          "semantic_identification": "ASSESSED"
+        },
+        "inherited_from": {
+          "level": "UNKNOWN",
+          "assessment_status": "UNASSESSED",
+          "assessment_deferred_to": "AGENT3",
+          "reason": "Agent 2 performs taxonomy only."
+        }
+      },
+      "issues": [],
+      "notes": [],
+      "proposal": {
+        "level": "MEDIUM",
+        "rationale": "The same scoring question recurs across five reports; impact is contained.",
+        "signals": [
+          {
+            "level": "MEDIUM",
+            "signal_index": 0,
+            "signal_text": "Recurring confusion about the same rule, tool behavior, or scoring criterion that suggests meaningful workflow or labeling impact",
+            "support": "Five reports ask how to handle the same repeated-ending behavior.",
+            "evidence_ids": [
+              "m:C_AUDIO_GENERAL:1790868894.000123",
+              "m:C_AUDIO_GENERAL:1790889930.000126",
+              "m:C_AUDIO_GENERAL:1790899012.002000",
+              "m:C_AUDIO_GENERAL:1790915994.000122",
+              "m:C_AUDIO_QA:1790923533.000125"
+            ]
+          }
+        ],
+        "affected_reporters": [],
+        "recurrence": "NOT_CHECKED",
+        "recurrence_evidence_ids": [],
+        "reported_recurrence_evidence_ids": []
+      }
+    },
+    "resolution": {
+      "topic": "UNRESOLVED",
+      "members": {
+        "member_7e30b0730acedd4c18fcf3a5": "UNRESOLVED",
+        "member_9af4caa31c6ee01df21547d4": "UNRESOLVED",
+        "member_a05733133a11c3689d715928": "UNRESOLVED",
+        "member_dfb394ecfe8f564ef2360a40": "UNRESOLVED",
+        "member_149de7c563b87a982aa7a9ea": "UNRESOLVED"
+      },
+      "agent1_attributed": [
+        {
+          "member_id": "member_7e30b0730acedd4c18fcf3a5",
+          "state": "UNRESOLVED",
+          "agent1_verification_status": "CORRECTED",
+          "agent1_review_required": false
+        },
+        {
+          "member_id": "member_9af4caa31c6ee01df21547d4",
+          "state": "UNRESOLVED",
+          "agent1_verification_status": "VERIFIED",
+          "agent1_review_required": false
+        },
+        {
+          "member_id": "member_a05733133a11c3689d715928",
+          "state": "UNRESOLVED",
+          "agent1_verification_status": "NEEDS_REVIEW",
+          "agent1_review_required": true
+        },
+        {
+          "member_id": "member_dfb394ecfe8f564ef2360a40",
+          "state": "UNRESOLVED",
+          "agent1_verification_status": "CORRECTED",
+          "agent1_review_required": false
+        },
+        {
+          "member_id": "member_149de7c563b87a982aa7a9ea",
+          "state": "UNRESOLVED",
+          "agent1_verification_status": "VERIFIED",
+          "agent1_review_required": false
+        }
+      ]
+    },
+    "established_handling": [],
+    "coverage_issues": [],
+    "action_source": "DRAFT",
+    "action_notes": [],
+    "tot": {
+      "status": "COMPARED",
+      "triggers": [
+        "LOW_CONFIDENCE"
+      ],
+      "candidates": [
+        {
+          "candidate_id": "A",
+          "action_type": "NO_ACTION",
+          "instruction": null,
+          "draft_text": "Keep as an observation until a file-versus-player comparison exists.",
+          "evidence_ids": [
+            "k:audio-multimodal-instructions@1.3:7a5ab59d",
+            "k:audio-repeat-observation-review@1.0:ae0550d0"
+          ],
+          "evidence_support": "STRONG",
+          "applicability": "MIXED",
+          "severity_fit": "FITS",
+          "rationale": "Matches the instruction and the prior deferral.",
+          "recorded_applicability": "MIXED",
+          "unknown_evidence_ids": [],
+          "premise_ids": [
+            "c2",
+            "c3"
+          ],
+          "issues": [],
+          "valid": true,
+          "grounding": "SUPPORTED",
+          "sufficiency": null
+        },
+        {
+          "candidate_id": "B",
+          "action_type": "POST_ALIGNMENT",
+          "instruction": null,
+          "draft_text": "Remind tutors to timestamp the repeat and compare the downloaded file with player output.",
+          "evidence_ids": [
+            "k:audio-multimodal-instructions@1.3:7a5ab59d"
+          ],
+          "evidence_support": "PARTIAL",
+          "applicability": "CURRENT",
+          "severity_fit": "FITS",
+          "rationale": "Restates current guidance for five recent reports.",
+          "recorded_applicability": "CURRENT",
+          "unknown_evidence_ids": [],
+          "premise_ids": [
+            "c2"
+          ],
+          "issues": [],
+          "valid": true,
+          "grounding": "SUPPORTED",
+          "sufficiency": {
+            "check": "SUFFICIENCY_NOT_JUDGED"
+          }
+        },
+        {
+          "candidate_id": "C",
+          "action_type": "ESCALATE_ENGINEERING",
+          "instruction": null,
+          "draft_text": "Escalate a confirmed TTS generation loop.",
+          "evidence_ids": [],
+          "evidence_support": "STRONG",
+          "applicability": "CURRENT",
+          "severity_fit": "PARTIAL",
+          "rationale": "Several reports describe the same loop.",
+          "recorded_applicability": "UNCLEAR",
+          "unknown_evidence_ids": [],
+          "premise_ids": [],
+          "issues": [
+            "SUPPORT_WITHOUT_EVIDENCE",
+            "APPLICABILITY_OVERSTATED"
+          ],
+          "valid": false,
+          "grounding": "NOT_PRESENTED_INVALID",
+          "sufficiency": null
+        }
+      ],
+      "model_preferred_candidate_id": "A",
+      "close_call": true,
+      "rationale": "A and B are both supported and differ only in whether to post a reminder.",
+      "preferred_candidate_id": "A",
+      "grounded_candidate_ids": [
+        "A",
+        "B"
+      ],
+      "presentation": "SURFACE_GROUNDED_ALTERNATIVES",
+      "note": "Alternatives for the reviewer, each with its own grounding verdict; the card action and review reasons are unchanged by this comparison."
+    },
+    "evidence_ledger": {
+      "m:C_AUDIO_GENERAL:1790868894.000123": {
+        "evidence_id": "m:C_AUDIO_GENERAL:1790868894.000123",
+        "origin": "member_message",
+        "use": "MEMBER_REPORT",
+        "member_id": "member_7e30b0730acedd4c18fcf3a5",
+        "channel_id": "C_AUDIO_GENERAL",
+        "thread_id": "1790868894.000123",
+        "message_id": "1790868894.000123",
+        "author_id": "U007",
+        "author_name": "Leo",
+        "author_role": "QA_TUTOR",
+        "timestamp": "2026-10-01T15:34:54.000123Z",
+        "thread_starter_id": "U007",
+        "thread_starter_role": "QA_TUTOR",
+        "reactions": [],
+        "excerpt": "[Task review]\nIssue: Model keeps saying the last sentence twice lol.\nQuestion: what is the correct handling for this task?"
+      },
+      "m:C_AUDIO_GENERAL:1790868952.000113": {
+        "evidence_id": "m:C_AUDIO_GENERAL:1790868952.000113",
+        "origin": "member_message",
+        "use": "MEMBER_REPORT",
+        "member_id": "member_7e30b0730acedd4c18fcf3a5",
+        "channel_id": "C_AUDIO_GENERAL",
+        "thread_id": "1790868894.000123",
+        "message_id": "1790868952.000113",
+        "author_id": "U002",
+        "author_name": "Mina",
+        "author_role": "QA_TUTOR",
+        "timestamp": "2026-10-01T15:35:52.000113Z",
+        "thread_starter_id": "U007",
+        "thread_starter_role": "QA_TUTOR",
+        "reactions": [],
+        "excerpt": "Can you compare the downloaded file with the player output? An audio-generation loop and a browser playback loop need different escalation paths."
+      },
+      "m:C_AUDIO_GENERAL:1790868994.000226": {
+        "evidence_id": "m:C_AUDIO_GENERAL:1790868994.000226",
+        "origin": "member_message",
+        "use": "MEMBER_REPORT",
+        "member_id": "member_7e30b0730acedd4c18fcf3a5",
+        "channel_id": "C_AUDIO_GENERAL",
+        "thread_id": "1790868894.000123",
+        "message_id": "1790868994.000226",
+        "author_id": "U006",
+        "author_name": "Priya",
+        "author_role": "TEAM_LEAD",
+        "timestamp": "2026-10-01T15:36:34.000226Z",
+        "thread_starter_id": "U007",
+        "thread_starter_role": "QA_TUTOR",
+        "reactions": [],
+        "excerpt": "First establish whether the repetition exists in the file itself or only in the LT player. An audio-generation loop and a browser playback loop need different escalation paths."
+      },
+      "m:C_AUDIO_GENERAL:1790889930.000126": {
+        "evidence_id": "m:C_AUDIO_GENERAL:1790889930.000126",
+        "origin": "member_message",
+        "use": "MEMBER_REPORT",
+        "member_id": "member_9af4caa31c6ee01df21547d4",
+        "channel_id": "C_AUDIO_GENERAL",
+        "thread_id": "1790889930.000126",
+        "message_id": "1790889930.000126",
+        "author_id": "U017",
+        "author_name": "Bea",
+        "author_role": "TUTOR",
+        "timestamp": "2026-10-01T21:25:30.000126Z",
+        "thread_starter_id": "U017",
+        "thread_starter_role": "TUTOR",
+        "reactions": [],
+        "excerpt": "[Task review]\nIssue: TTS output repeats a line near the end.\nQuestion: what is the correct handling for this task?"
+      },
+      "m:C_AUDIO_GENERAL:1790889987.000113": {
+        "evidence_id": "m:C_AUDIO_GENERAL:1790889987.000113",
+        "origin": "member_message",
+        "use": "MEMBER_REPORT",
+        "member_id": "member_9af4caa31c6ee01df21547d4",
+        "channel_id": "C_AUDIO_GENERAL",
+        "thread_id": "1790889930.000126",
+        "message_id": "1790889987.000113",
+        "author_id": "U013",
+        "author_name": "Jun",
+        "author_role": "TUTOR",
+        "timestamp": "2026-10-01T21:26:27.000113Z",
+        "thread_starter_id": "U017",
+        "thread_starter_role": "TUTOR",
+        "reactions": [],
+        "excerpt": "The final sentence repeats in the exported audio, not just during playback."
+      },
+      "m:C_AUDIO_GENERAL:1790899012.002000": {
+        "evidence_id": "m:C_AUDIO_GENERAL:1790899012.002000",
+        "origin": "member_message",
+        "use": "MEMBER_REPORT",
+        "member_id": "member_a05733133a11c3689d715928",
+        "channel_id": "C_AUDIO_GENERAL",
+        "thread_id": "1790899012.002000",
+        "message_id": "1790899012.002000",
+        "author_id": "U017",
+        "author_name": "Bea",
+        "author_role": "TUTOR",
+        "timestamp": "2026-10-01T23:56:52.002000Z",
+        "thread_starter_id": "U017",
+        "thread_starter_role": "TUTOR",
+        "reactions": [],
+        "excerpt": "Anyone else seeing this? The voice loops the final line twice, no sign of a player glitch. (task ref AUDIO-9012)"
+      },
+      "m:C_AUDIO_GENERAL:1790899060.000113": {
+        "evidence_id": "m:C_AUDIO_GENERAL:1790899060.000113",
+        "origin": "member_message",
+        "use": "MEMBER_REPORT",
+        "member_id": "member_a05733133a11c3689d715928",
+        "channel_id": "C_AUDIO_GENERAL",
+        "thread_id": "1790899012.002000",
+        "message_id": "1790899060.000113",
+        "author_id": "U011",
+        "author_name": "Rina",
+        "author_role": "TUTOR",
+        "timestamp": "2026-10-01T23:57:40.000113Z",
+        "thread_starter_id": "U017",
+        "thread_starter_role": "TUTOR",
+        "reactions": [],
+        "excerpt": "The transcript has one ending but the actual recording speaks it twice."
+      },
+      "m:C_AUDIO_GENERAL:1790899110.000226": {
+        "evidence_id": "m:C_AUDIO_GENERAL:1790899110.000226",
+        "origin": "member_message",
+        "use": "MEMBER_REPORT",
+        "member_id": "member_a05733133a11c3689d715928",
+        "channel_id": "C_AUDIO_GENERAL",
+        "thread_id": "1790899012.002000",
+        "message_id": "1790899110.000226",
+        "author_id": "U008",
+        "author_name": "Hana",
+        "author_role": "QA_TUTOR",
+        "timestamp": "2026-10-01T23:58:30.000226Z",
+        "thread_starter_id": "U017",
+        "thread_starter_role": "TUTOR",
+        "reactions": [],
+        "excerpt": "Can you compare the downloaded file with the player output? An audio-generation loop and a browser playback loop need different escalation paths."
+      },
+      "m:C_AUDIO_GENERAL:1790915994.000122": {
+        "evidence_id": "m:C_AUDIO_GENERAL:1790915994.000122",
+        "origin": "member_message",
+        "use": "MEMBER_REPORT",
+        "member_id": "member_dfb394ecfe8f564ef2360a40",
+        "channel_id": "C_AUDIO_GENERAL",
+        "thread_id": "1790915994.000122",
+        "message_id": "1790915994.000122",
+        "author_id": "U018",
+        "author_name": "Omar",
+        "author_role": "TUTOR",
+        "timestamp": "2026-10-02T04:39:54.000122Z",
+        "thread_starter_id": "U018",
+        "thread_starter_role": "TUTOR",
+        "reactions": [],
+        "excerpt": "Audio model keeps doubling the ending even though the transcript doesn't."
+      },
+      "m:C_AUDIO_GENERAL:1790916048.000113": {
+        "evidence_id": "m:C_AUDIO_GENERAL:1790916048.000113",
+        "origin": "member_message",
+        "use": "MEMBER_REPORT",
+        "member_id": "member_dfb394ecfe8f564ef2360a40",
+        "channel_id": "C_AUDIO_GENERAL",
+        "thread_id": "1790915994.000122",
+        "message_id": "1790916048.000113",
+        "author_id": "U014",
+        "author_name": "Linh",
+        "author_role": "QA_TUTOR",
+        "timestamp": "2026-10-02T04:40:48.000113Z",
+        "thread_starter_id": "U018",
+        "thread_starter_role": "TUTOR",
+        "reactions": [
+          {
+            "name": "thinking_face",
+            "users": [
+              {
+                "id": "U015",
+                "name": "Carla"
+              }
+            ]
+          }
+        ],
+        "excerpt": "Can you compare the downloaded file with the player output?"
+      },
+      "m:C_AUDIO_GENERAL:1790916097.000226": {
+        "evidence_id": "m:C_AUDIO_GENERAL:1790916097.000226",
+        "origin": "member_message",
+        "use": "MEMBER_REPORT",
+        "member_id": "member_dfb394ecfe8f564ef2360a40",
+        "channel_id": "C_AUDIO_GENERAL",
+        "thread_id": "1790915994.000122",
+        "message_id": "1790916097.000226",
+        "author_id": "U006",
+        "author_name": "Priya",
+        "author_role": "TEAM_LEAD",
+        "timestamp": "2026-10-02T04:41:37.000226Z",
+        "thread_starter_id": "U018",
+        "thread_starter_role": "TUTOR",
+        "reactions": [],
+        "excerpt": "First establish whether the repetition exists in the file itself or only in the LT player."
+      },
+      "m:C_AUDIO_QA:1790923533.000125": {
+        "evidence_id": "m:C_AUDIO_QA:1790923533.000125",
+        "origin": "member_message",
+        "use": "MEMBER_REPORT",
+        "member_id": "member_149de7c563b87a982aa7a9ea",
+        "channel_id": "C_AUDIO_QA",
+        "thread_id": "1790923533.000125",
+        "message_id": "1790923533.000125",
+        "author_id": "U002",
+        "author_name": "Mina",
+        "author_role": "QA_TUTOR",
+        "timestamp": "2026-10-02T06:45:33.000125Z",
+        "thread_starter_id": "U002",
+        "thread_starter_role": "QA_TUTOR",
+        "reactions": [],
+        "excerpt": "Model keeps saying the last sentence twice lol. (task ref AUDIO-3533)"
+      },
+      "m:C_AUDIO_QA:1790923582.000113": {
+        "evidence_id": "m:C_AUDIO_QA:1790923582.000113",
+        "origin": "member_message",
+        "use": "MEMBER_REPORT",
+        "member_id": "member_149de7c563b87a982aa7a9ea",
+        "channel_id": "C_AUDIO_QA",
+        "thread_id": "1790923533.000125",
+        "message_id": "1790923582.000113",
+        "author_id": "U010",
+        "author_name": "Avery",
+        "author_role": "TUTOR",
+        "timestamp": "2026-10-02T06:46:22.000113Z",
+        "thread_starter_id": "U002",
+        "thread_starter_role": "QA_TUTOR",
+        "reactions": [
+          {
+            "name": "thinking_face",
+            "users": [
+              {
+                "id": "U018",
+                "name": "Omar"
+              }
+            ]
+          }
+        ],
+        "excerpt": "The final sentence repeats in the exported audio, not just during playback. Please note where the repeated words begin and whether they occur in the transcript."
+      },
+      "k:audio-multimodal-instructions@1.3:7a5ab59d": {
+        "evidence_id": "k:audio-multimodal-instructions@1.3:7a5ab59d",
+        "origin": "retrieved_source",
+        "use": "CURRENT_GUIDANCE",
+        "citation": {
+          "document_id": "knowledge_3057c26d60654a68d0b76c025ba216366dd48f3e97b64f5aae68364a45170b8a",
+          "version_id": "version_03e4c185c65cbfbe35dccab040cc429ac6887e3cb0edc4f52cb5ea5a56970a24",
+          "chunk_id": "chunk_7a5ab59d9fc3e6054d7e7141693ea05f",
+          "authoring": "audio-multimodal-instructions@1.3",
+          "title": "Audio Multimodal — Instructions (v1.3)",
+          "sections": [
+            "Language and repeated audio"
+          ],
+          "source": {
+            "batch_id": null,
+            "channel_id": null,
+            "manual_key": "audio-multimodal-instructions",
+            "message_id": null,
+            "permalink": null,
+            "project_id": "audio_multimodal",
+            "reference": null,
+            "system": "manual",
+            "thread_id": null,
+            "workspace_id": null
+          }
+        },
+        "source_type": "guideline",
+        "record_kind": "guideline",
+        "applicability": {
+          "state": "CURRENT",
+          "revision_state": "CURRENT",
+          "version_mode": "current",
+          "replaced_by": [],
+          "unverified_supersession": [],
+          "supersedes": [],
+          "other_revisions": []
+        },
+        "dates": {
+          "source_date": "2026-09-15T13:00:00Z",
+          "basis": "effective_at",
+          "effective_at": "2026-09-15T13:00:00Z",
+          "created_at": null,
+          "valid_until": null,
+          "expired_as_of": false,
+          "reference_time": "2026-10-02T12:00:00Z"
+        },
+        "scope": {
+          "project_id": "audio_multimodal",
+          "batch_id": null,
+          "scope": "project",
+          "batch_relation": "project_wide"
+        },
+        "authority": {
+          "role": "TEAM_LEAD",
+          "actor": "U006",
+          "approval_status": "EXPLICIT_SOURCE_MARKER",
+          "provenance": "synthetic_manual_record"
+        },
+        "recorded_states": {
+          "status": "approved",
+          "decision_status": null,
+          "execution_status": null,
+          "outcome_status": null
+        },
+        "upstream_review": null,
+        "excerpt": "## Language and repeated audio\nConfirm the requested language and any permitted switching before recording a language mismatch. A familiar accent or an ordinary loanword is not automatically a defect.\n\nWhen a phrase repeats, record where it occurs. If feasible, compare the downloaded file with player output. Do not call it a confirmed generation defect until the available evidence distinguishes generation from playback."
+      },
+      "k:audio-repeat-observation-review@1.0:ae0550d0": {
+        "evidence_id": "k:audio-repeat-observation-review@1.0:ae0550d0",
+        "origin": "retrieved_source",
+        "use": "PRIOR_DECISION",
+        "citation": {
+          "document_id": "knowledge_ab54b881b410b811d30b6755b3f03a93630cb02ff92bed49a00eebb6beba1631",
+          "version_id": "version_5a5f26377845f31ca6d86c95f37e4bd29cf834448ba7150c26bcff755640f4b6",
+          "chunk_id": "chunk_ae0550d0ca581c1d6e6ceced6f910af9",
+          "authoring": "audio-repeat-observation-review@1.0",
+          "title": "Repeated ending retained as an observation",
+          "sections": [
+            "Evidence",
+            "Suggested advice",
+            "TL decision",
+            "State"
+          ],
+          "source": {
+            "batch_id": "audio_batch_06",
+            "channel_id": null,
+            "manual_key": "audio-repeat-observation-review",
+            "message_id": null,
+            "permalink": null,
+            "project_id": "audio_multimodal",
+            "reference": null,
+            "system": "manual",
+            "thread_id": null,
+            "workspace_id": null
+          }
+        },
+        "source_type": "decision",
+        "record_kind": "advice_review",
+        "applicability": {
+          "state": "CURRENT",
+          "revision_state": "CURRENT",
+          "version_mode": "current",
+          "replaced_by": [],
+          "unverified_supersession": [],
+          "supersedes": [],
+          "other_revisions": []
+        },
+        "dates": {
+          "source_date": "2026-09-29T14:00:00Z",
+          "basis": "effective_at",
+          "effective_at": "2026-09-29T14:00:00Z",
+          "created_at": null,
+          "valid_until": null,
+          "expired_as_of": false,
+          "reference_time": "2026-10-02T12:00:00Z"
+        },
+        "scope": {
+          "project_id": "audio_multimodal",
+          "batch_id": "audio_batch_06",
+          "scope": "project",
+          "batch_relation": "same_batch"
+        },
+        "authority": {
+          "role": "TEAM_LEAD",
+          "actor": "U006",
+          "approval_status": "NO_APPROVAL_MARKER",
+          "provenance": "synthetic_manual_record"
+        },
+        "recorded_states": {
+          "status": "tl_deferred",
+          "decision_status": "tl_deferred",
+          "execution_status": "evidence_requested",
+          "outcome_status": "undetermined"
+        },
+        "upstream_review": null,
+        "excerpt": "[PRIOR RECORD (advice_review; decision_status: tl_deferred; execution_status: evidence_requested; outcome_status: undetermined) - history, not a standing rule.]\n# Repeated ending retained as an observation\n\n## Evidence\nA06-REP-14 was reported as speaking the last phrase twice although its transcript showed the phrase once. The review packet contained a player screenshot and the transcript, but no downloaded recording or comparison on a second player.\n\n## Suggested advice\nA simulated Advisor card proposed escalating a confirmed audio-generation loop.\n\n## TL decision\nPriya deferred that claim and retained the report as a model/process observation. Request a downloaded-file versus player comparison when available. A repeated phrase in the player does not yet locate the defect in the generated file.\n\nNo FAQ rule change or confirmed model-defect announcement was approved. If the additional evidence establishes a generation defect or material operational impact, reassess the intervention.\n\n## State\nThe observation is open. There is no completed diagnostic comparison or engineering escalation in this record."
+      },
+      "k:slack:C_AUDIO_ANNOUNCEMENTS:1790892000.000901:1c524924": {
+        "evidence_id": "k:slack:C_AUDIO_ANNOUNCEMENTS:1790892000.000901:1c524924",
+        "origin": "retrieved_source",
+        "use": "ANNOUNCEMENT",
+        "citation": {
+          "document_id": "knowledge_5ed9124870dd8eefcb7205ccae406532b720c5974c8e33d94d542f1be6fe1bbb",
+          "version_id": "version_c7bc2edadbceff5bc2c01006e29f074c0a8434cc5b94d61a6d1542d2a2b2aa38",
+          "chunk_id": "chunk_1c5249242466a37751b706dd99a73e9c",
+          "authoring": null,
+          "title": "Slack announcement in audio-multimodal-announcements at 2026-10-01T22:00:00.000901+00:00",
+          "sections": [],
+          "source": {
+            "batch_id": "audio_batch_06",
+            "channel_id": "C_AUDIO_ANNOUNCEMENTS",
+            "manual_key": null,
+            "message_id": "1790892000.000901",
+            "permalink": null,
+            "project_id": "audio_multimodal",
+            "reference": null,
+            "system": "slack",
+            "thread_id": "1790892000.000901",
+            "workspace_id": null
+          }
+        },
+        "source_type": "announcement",
+        "record_kind": "announcement",
+        "applicability": {
+          "state": "CURRENT",
+          "revision_state": "CURRENT",
+          "version_mode": "current",
+          "replaced_by": [],
+          "unverified_supersession": [],
+          "supersedes": [],
+          "other_revisions": []
+        },
+        "dates": {
+          "source_date": "2026-10-01T22:00:00.000901+00:00",
+          "basis": "created_at",
+          "effective_at": null,
+          "created_at": "2026-10-01T22:00:00.000901+00:00",
+          "valid_until": null,
+          "expired_as_of": false,
+          "reference_time": "2026-10-02T12:00:00Z"
+        },
+        "scope": {
+          "project_id": "audio_multimodal",
+          "batch_id": "audio_batch_06",
+          "scope": "project",
+          "batch_relation": "same_batch"
+        },
+        "authority": {
+          "role": "TEAM_LEAD",
+          "actor": "U006",
+          "approval_status": "UNKNOWN",
+          "provenance": null
+        },
+        "recorded_states": {
+          "status": null,
+          "decision_status": null,
+          "execution_status": null,
+          "outcome_status": null
+        },
+        "upstream_review": null,
+        "excerpt": "[ANNOUNCEMENT posted 2026-10-01T22:00:00.000901+00:00 by TEAM_LEAD (audio_batch_06): not established as handling for this topic until you show it is relevant and gives a directive.]\nAudio batch 06 — playback handling reminder: if the LT player never starts, including a visible waveform with no playback, report the task ID, browser/error state, and whether another clip plays. Treat this as a tool incident. Do not score unavailable audio as a model-quality failure or choose content QN solely because playback is unavailable. This is handling guidance, not confirmation that the player has been fixed; retain the details needed to reproduce the incident."
+      },
+      "k:audio-multimodal-faq@1.1:e9bcf43a": {
+        "evidence_id": "k:audio-multimodal-faq@1.1:e9bcf43a",
+        "origin": "retrieved_source",
+        "use": "CURRENT_GUIDANCE",
+        "citation": {
+          "document_id": "knowledge_1f550e377f9c310f57f03e5bf482f810999d822a9cf4b1db3be5f2557678f15e",
+          "version_id": "version_66a170bbd46011e80d06da6d0bf5ec8b73486a84c13e015f60222fa711e05727",
+          "chunk_id": "chunk_e9bcf43a020b06861273547bf398f71b",
+          "authoring": "audio-multimodal-faq@1.1",
+          "title": "Audio Multimodal — FAQ (v1.1)",
+          "sections": [
+            "Scoring"
+          ],
+          "source": {
+            "batch_id": null,
+            "channel_id": null,
+            "manual_key": "audio-multimodal-faq",
+            "message_id": null,
+            "permalink": null,
+            "project_id": "audio_multimodal",
+            "reference": null,
+            "system": "manual",
+            "thread_id": null,
+            "workspace_id": null
+          }
+        },
+        "source_type": "faq",
+        "record_kind": "faq",
+        "applicability": {
+          "state": "CURRENT",
+          "revision_state": "CURRENT",
+          "version_mode": "current",
+          "replaced_by": [],
+          "unverified_supersession": [],
+          "supersedes": [],
+          "other_revisions": []
+        },
+        "dates": {
+          "source_date": "2026-09-20T13:00:00Z",
+          "basis": "effective_at",
+          "effective_at": "2026-09-20T13:00:00Z",
+          "created_at": null,
+          "valid_until": null,
+          "expired_as_of": false,
+          "reference_time": "2026-10-02T12:00:00Z"
+        },
+        "scope": {
+          "project_id": "audio_multimodal",
+          "batch_id": null,
+          "scope": "project",
+          "batch_relation": "project_wide"
+        },
+        "authority": {
+          "role": "TEAM_LEAD",
+          "actor": "U006",
+          "approval_status": "EXPLICIT_SOURCE_MARKER",
+          "provenance": "synthetic_manual_record"
+        },
+        "recorded_states": {
+          "status": "approved",
+          "decision_status": null,
+          "execution_status": null,
+          "outcome_status": null
+        },
+        "upstream_review": null,
+        "excerpt": "## Scoring\n\n### Q: How should I score mild clipping?\nBrief, localized clipping with clear speech is a minor defect. Timestamp the affected span. For continuous artifacts or unclear impact, ask QA to review intelligibility and scope; do not decide from duration alone.\n\n### Q: The transcript and audio disagree. What do I do?\nRecord the exact mismatch as a correspondence issue. Distinguish a recording error from a reference-transcript error; do not classify the mismatch as a playback failure.\n\n### Q: How much speaker overlap is allowed before the transcription fails?\nMark the overlapping or unintelligible interval and preserve the usable remainder. Timestamp the span. Do not infer a whole-clip failure from a short affected interval."
+      },
+      "k:audio-multimodal-instructions@1.3:eb85357a": {
+        "evidence_id": "k:audio-multimodal-instructions@1.3:eb85357a",
+        "origin": "retrieved_source",
+        "use": "CURRENT_GUIDANCE",
+        "citation": {
+          "document_id": "knowledge_3057c26d60654a68d0b76c025ba216366dd48f3e97b64f5aae68364a45170b8a",
+          "version_id": "version_03e4c185c65cbfbe35dccab040cc429ac6887e3cb0edc4f52cb5ea5a56970a24",
+          "chunk_id": "chunk_eb85357a2c0b0e254c4f95c9d38a0bae",
+          "authoring": "audio-multimodal-instructions@1.3",
+          "title": "Audio Multimodal — Instructions (v1.3)",
+          "sections": [
+            "Overlap and transcript correspondence"
+          ],
+          "source": {
+            "batch_id": null,
+            "channel_id": null,
+            "manual_key": "audio-multimodal-instructions",
+            "message_id": null,
+            "permalink": null,
+            "project_id": "audio_multimodal",
+            "reference": null,
+            "system": "manual",
+            "thread_id": null,
+            "workspace_id": null
+          }
+        },
+        "source_type": "guideline",
+        "record_kind": "guideline",
+        "applicability": {
+          "state": "CURRENT",
+          "revision_state": "CURRENT",
+          "version_mode": "current",
+          "replaced_by": [],
+          "unverified_supersession": [],
+          "supersedes": [],
+          "other_revisions": []
+        },
+        "dates": {
+          "source_date": "2026-09-15T13:00:00Z",
+          "basis": "effective_at",
+          "effective_at": "2026-09-15T13:00:00Z",
+          "created_at": null,
+          "valid_until": null,
+          "expired_as_of": false,
+          "reference_time": "2026-10-02T12:00:00Z"
+        },
+        "scope": {
+          "project_id": "audio_multimodal",
+          "batch_id": null,
+          "scope": "project",
+          "batch_relation": "project_wide"
+        },
+        "authority": {
+          "role": "TEAM_LEAD",
+          "actor": "U006",
+          "approval_status": "EXPLICIT_SOURCE_MARKER",
+          "provenance": "synthetic_manual_record"
+        },
+        "recorded_states": {
+          "status": "approved",
+          "decision_status": null,
+          "execution_status": null,
+          "outcome_status": null
+        },
+        "upstream_review": null,
+        "excerpt": "## Overlap and transcript correspondence\nMark the overlapping or unintelligible interval. Keep usable portions of the clip and timestamp the affected span. Distinguish words missing from the audio from mistakes in the reference transcript."
+      }
+    },
+    "card": {
+      "contract_version": "agent3-advice-card-v3",
+      "record_type": "ADVICE_CARD",
+      "card_id": "card_59ae832444ebb13268d6bdce80642cfd",
+      "project_id": "audio_multimodal",
+      "topic_name": "Repeated final line in exported audio",
+      "card_line": "NEEDS_REVIEW",
+      "summary": "Five reports describe generated audio that speaks its final sentence twice although the transcript has it once.",
+      "severity": {
+        "level": "MEDIUM",
+        "assessment_status": "ASSESSED",
+        "rubric_version": "severity-rubric-v3-semantic-signals",
+        "rubric_content_sha256": "eccaa31a2ab84a0aa7c005216a92fc39681e1dd10107117344948235a76673f4",
+        "rubric_project_id": null,
+        "rubric_scope": "SHARED_DEFAULT",
+        "rationale": "The same scoring question recurs across five reports; impact is contained.",
+        "matched_signals": [
+          {
+            "level": "MEDIUM",
+            "signal_index": 0,
+            "signal_text": "Recurring confusion about the same rule, tool behavior, or scoring criterion that suggests meaningful workflow or labeling impact",
+            "support": "Five reports ask how to handle the same repeated-ending behavior.",
+            "evidence": [
+              {
+                "kind": "slack_message",
+                "project_id": "audio_multimodal",
+                "batch_id": "audio_batch_06",
+                "scope": "project",
+                "channel_id": "C_AUDIO_GENERAL",
+                "thread_id": "1790868894.000123",
+                "message_id": "1790868894.000123",
+                "document_id": null,
+                "version_id": null,
+                "authoring_document_id": null,
+                "authoring_version": null,
+                "section": null,
+                "chunk_id": null,
+                "candidate_group_id": null,
+                "member_id": "member_7e30b0730acedd4c18fcf3a5",
+                "artifact": null,
+                "artifact_sha256": null,
+                "quote": null,
+                "note": "m:C_AUDIO_GENERAL:1790868894.000123"
+              },
+              {
+                "kind": "slack_message",
+                "project_id": "audio_multimodal",
+                "batch_id": "audio_batch_06",
+                "scope": "project",
+                "channel_id": "C_AUDIO_GENERAL",
+                "thread_id": "1790889930.000126",
+                "message_id": "1790889930.000126",
+                "document_id": null,
+                "version_id": null,
+                "authoring_document_id": null,
+                "authoring_version": null,
+                "section": null,
+                "chunk_id": null,
+                "candidate_group_id": null,
+                "member_id": "member_9af4caa31c6ee01df21547d4",
+                "artifact": null,
+                "artifact_sha256": null,
+                "quote": null,
+                "note": "m:C_AUDIO_GENERAL:1790889930.000126"
+              },
+              {
+                "kind": "slack_message",
+                "project_id": "audio_multimodal",
+                "batch_id": "audio_batch_06",
+                "scope": "project",
+                "channel_id": "C_AUDIO_GENERAL",
+                "thread_id": "1790899012.002000",
+                "message_id": "1790899012.002000",
+                "document_id": null,
+                "version_id": null,
+                "authoring_document_id": null,
+                "authoring_version": null,
+                "section": null,
+                "chunk_id": null,
+                "candidate_group_id": null,
+                "member_id": "member_a05733133a11c3689d715928",
+                "artifact": null,
+                "artifact_sha256": null,
+                "quote": null,
+                "note": "m:C_AUDIO_GENERAL:1790899012.002000"
+              },
+              {
+                "kind": "slack_message",
+                "project_id": "audio_multimodal",
+                "batch_id": "audio_batch_06",
+                "scope": "project",
+                "channel_id": "C_AUDIO_GENERAL",
+                "thread_id": "1790915994.000122",
+                "message_id": "1790915994.000122",
+                "document_id": null,
+                "version_id": null,
+                "authoring_document_id": null,
+                "authoring_version": null,
+                "section": null,
+                "chunk_id": null,
+                "candidate_group_id": null,
+                "member_id": "member_dfb394ecfe8f564ef2360a40",
+                "artifact": null,
+                "artifact_sha256": null,
+                "quote": null,
+                "note": "m:C_AUDIO_GENERAL:1790915994.000122"
+              },
+              {
+                "kind": "slack_message",
+                "project_id": "audio_multimodal",
+                "batch_id": "audio_batch_06",
+                "scope": "project",
+                "channel_id": "C_AUDIO_QA",
+                "thread_id": "1790923533.000125",
+                "message_id": "1790923533.000125",
+                "document_id": null,
+                "version_id": null,
+                "authoring_document_id": null,
+                "authoring_version": null,
+                "section": null,
+                "chunk_id": null,
+                "candidate_group_id": null,
+                "member_id": "member_149de7c563b87a982aa7a9ea",
+                "artifact": null,
+                "artifact_sha256": null,
+                "quote": null,
+                "note": "m:C_AUDIO_QA:1790923533.000125"
+              }
+            ]
+          }
+        ],
+        "evidence": [
+          {
+            "kind": "slack_message",
+            "project_id": "audio_multimodal",
+            "batch_id": "audio_batch_06",
+            "scope": "project",
+            "channel_id": "C_AUDIO_GENERAL",
+            "thread_id": "1790868894.000123",
+            "message_id": "1790868894.000123",
+            "document_id": null,
+            "version_id": null,
+            "authoring_document_id": null,
+            "authoring_version": null,
+            "section": null,
+            "chunk_id": null,
+            "candidate_group_id": null,
+            "member_id": "member_7e30b0730acedd4c18fcf3a5",
+            "artifact": null,
+            "artifact_sha256": null,
+            "quote": null,
+            "note": "m:C_AUDIO_GENERAL:1790868894.000123"
+          },
+          {
+            "kind": "slack_message",
+            "project_id": "audio_multimodal",
+            "batch_id": "audio_batch_06",
+            "scope": "project",
+            "channel_id": "C_AUDIO_GENERAL",
+            "thread_id": "1790889930.000126",
+            "message_id": "1790889930.000126",
+            "document_id": null,
+            "version_id": null,
+            "authoring_document_id": null,
+            "authoring_version": null,
+            "section": null,
+            "chunk_id": null,
+            "candidate_group_id": null,
+            "member_id": "member_9af4caa31c6ee01df21547d4",
+            "artifact": null,
+            "artifact_sha256": null,
+            "quote": null,
+            "note": "m:C_AUDIO_GENERAL:1790889930.000126"
+          },
+          {
+            "kind": "slack_message",
+            "project_id": "audio_multimodal",
+            "batch_id": "audio_batch_06",
+            "scope": "project",
+            "channel_id": "C_AUDIO_GENERAL",
+            "thread_id": "1790899012.002000",
+            "message_id": "1790899012.002000",
+            "document_id": null,
+            "version_id": null,
+            "authoring_document_id": null,
+            "authoring_version": null,
+            "section": null,
+            "chunk_id": null,
+            "candidate_group_id": null,
+            "member_id": "member_a05733133a11c3689d715928",
+            "artifact": null,
+            "artifact_sha256": null,
+            "quote": null,
+            "note": "m:C_AUDIO_GENERAL:1790899012.002000"
+          },
+          {
+            "kind": "slack_message",
+            "project_id": "audio_multimodal",
+            "batch_id": "audio_batch_06",
+            "scope": "project",
+            "channel_id": "C_AUDIO_GENERAL",
+            "thread_id": "1790915994.000122",
+            "message_id": "1790915994.000122",
+            "document_id": null,
+            "version_id": null,
+            "authoring_document_id": null,
+            "authoring_version": null,
+            "section": null,
+            "chunk_id": null,
+            "candidate_group_id": null,
+            "member_id": "member_dfb394ecfe8f564ef2360a40",
+            "artifact": null,
+            "artifact_sha256": null,
+            "quote": null,
+            "note": "m:C_AUDIO_GENERAL:1790915994.000122"
+          },
+          {
+            "kind": "slack_message",
+            "project_id": "audio_multimodal",
+            "batch_id": "audio_batch_06",
+            "scope": "project",
+            "channel_id": "C_AUDIO_QA",
+            "thread_id": "1790923533.000125",
+            "message_id": "1790923533.000125",
+            "document_id": null,
+            "version_id": null,
+            "authoring_document_id": null,
+            "authoring_version": null,
+            "section": null,
+            "chunk_id": null,
+            "candidate_group_id": null,
+            "member_id": "member_149de7c563b87a982aa7a9ea",
+            "artifact": null,
+            "artifact_sha256": null,
+            "quote": null,
+            "note": "m:C_AUDIO_QA:1790923533.000125"
+          }
+        ],
+        "occurrence": {
+          "affected_reporters": {
+            "status": "UNKNOWN",
+            "count": null,
+            "ids": [],
+            "basis": null,
+            "evidence": []
+          },
+          "affected_tasks": {
+            "status": "UNKNOWN",
+            "count": null,
+            "ids": [],
+            "basis": null,
+            "evidence": []
+          },
+          "relevant_threads": [
+            {
+              "project_id": "audio_multimodal",
+              "batch_id": "audio_batch_06",
+              "channel_id": "C_AUDIO_GENERAL",
+              "thread_id": "1790868894.000123",
+              "member_id": "member_7e30b0730acedd4c18fcf3a5"
+            },
+            {
+              "project_id": "audio_multimodal",
+              "batch_id": "audio_batch_06",
+              "channel_id": "C_AUDIO_GENERAL",
+              "thread_id": "1790889930.000126",
+              "member_id": "member_9af4caa31c6ee01df21547d4"
+            },
+            {
+              "project_id": "audio_multimodal",
+              "batch_id": "audio_batch_06",
+              "channel_id": "C_AUDIO_GENERAL",
+              "thread_id": "1790899012.002000",
+              "member_id": "member_a05733133a11c3689d715928"
+            },
+            {
+              "project_id": "audio_multimodal",
+              "batch_id": "audio_batch_06",
+              "channel_id": "C_AUDIO_GENERAL",
+              "thread_id": "1790915994.000122",
+              "member_id": "member_dfb394ecfe8f564ef2360a40"
+            },
+            {
+              "project_id": "audio_multimodal",
+              "batch_id": "audio_batch_06",
+              "channel_id": "C_AUDIO_QA",
+              "thread_id": "1790923533.000125",
+              "member_id": "member_149de7c563b87a982aa7a9ea"
+            }
+          ],
+          "reporting_window": {
+            "start": "2026-10-01T15:34:54.000123+00:00",
+            "end": "2026-10-02T06:46:22.000113+00:00"
+          },
+          "historical_recurrence": {
+            "status": "NOT_CHECKED",
+            "sources": [],
+            "event_series_ids": []
+          },
+          "known_denominator": null,
+          "structural": {
+            "threads": 5,
+            "messages": 13,
+            "distinct_participants": 10,
+            "duplicate_threads_ignored": 0,
+            "duplicate_messages_ignored": 0,
+            "computed_from": "topic member threads (original Slack messages)",
+            "participants_are_not_affected_reporters": true
+          },
+          "semantic_identification": "ASSESSED"
+        },
+        "inherited_from": {
+          "level": "UNKNOWN",
+          "assessment_status": "UNASSESSED",
+          "assessment_deferred_to": "AGENT3",
+          "reason": "Agent 2 performs taxonomy only."
+        }
+      },
+      "severity_is_provisional": false,
+      "resolution_status": "UNRESOLVED",
+      "recommended_action": {
+        "action_type": "NO_ACTION",
+        "draft_text": "Keep as an observation; ask reporters to note where the repeat starts and compare the downloaded file with player output.",
+        "scope_note": null,
+        "label": "No action needed now",
+        "instruction": null,
+        "rationale": null,
+        "targets": [],
+        "essential_premise_ids": [
+          "claim:c2",
+          "claim:c3"
+        ],
+        "source": "DRAFT"
+      },
+      "reasoning": "What the evidence shows: Five reports describe the final sentence spoken twice while the transcript has it once; one reply says the repeat is in the exported audio. Record where the phrase repeats, compare the downloaded file with player output if feasible, and do not call it a confirmed generation defect until generation is distinguished from playback. A prior repeated-ending report was retained as an observation; the TL deferred a confirmed-loop escalation and requested a file-versus-player comparison. Thread status, read from each thread's own messages: unresolved ×5. Agent 1's earlier labels (an input, not evidence): unresolved ×5; 1 of 5 were not verified by Agent 1.",
+      "supporting_sources": [
+        {
+          "kind": "knowledge_source",
+          "project_id": "audio_multimodal",
+          "batch_id": null,
+          "scope": "project",
+          "channel_id": null,
+          "thread_id": null,
+          "message_id": null,
+          "document_id": "knowledge_3057c26d60654a68d0b76c025ba216366dd48f3e97b64f5aae68364a45170b8a",
+          "version_id": "version_03e4c185c65cbfbe35dccab040cc429ac6887e3cb0edc4f52cb5ea5a56970a24",
+          "authoring_document_id": "audio-multimodal-instructions",
+          "authoring_version": "1.3",
+          "section": "Language and repeated audio",
+          "chunk_id": "chunk_7a5ab59d9fc3e6054d7e7141693ea05f",
+          "candidate_group_id": null,
+          "member_id": null,
+          "artifact": null,
+          "artifact_sha256": null,
+          "quote": null,
+          "note": "k:audio-multimodal-instructions@1.3:7a5ab59d (CURRENT_GUIDANCE; CURRENT)"
+        },
+        {
+          "kind": "knowledge_source",
+          "project_id": "audio_multimodal",
+          "batch_id": "audio_batch_06",
+          "scope": "project",
+          "channel_id": null,
+          "thread_id": null,
+          "message_id": null,
+          "document_id": "knowledge_ab54b881b410b811d30b6755b3f03a93630cb02ff92bed49a00eebb6beba1631",
+          "version_id": "version_5a5f26377845f31ca6d86c95f37e4bd29cf834448ba7150c26bcff755640f4b6",
+          "authoring_document_id": "audio-repeat-observation-review",
+          "authoring_version": "1.0",
+          "section": "Evidence",
+          "chunk_id": "chunk_ae0550d0ca581c1d6e6ceced6f910af9",
+          "candidate_group_id": null,
+          "member_id": null,
+          "artifact": null,
+          "artifact_sha256": null,
+          "quote": null,
+          "note": "k:audio-repeat-observation-review@1.0:ae0550d0 (PRIOR_DECISION; CURRENT)"
+        },
+        {
+          "kind": "slack_message",
+          "project_id": "audio_multimodal",
+          "batch_id": "audio_batch_06",
+          "scope": "project",
+          "channel_id": "C_AUDIO_GENERAL",
+          "thread_id": "1790868894.000123",
+          "message_id": "1790868894.000123",
+          "document_id": null,
+          "version_id": null,
+          "authoring_document_id": null,
+          "authoring_version": null,
+          "section": null,
+          "chunk_id": null,
+          "candidate_group_id": null,
+          "member_id": "member_7e30b0730acedd4c18fcf3a5",
+          "artifact": null,
+          "artifact_sha256": null,
+          "quote": null,
+          "note": "m:C_AUDIO_GENERAL:1790868894.000123"
+        },
+        {
+          "kind": "slack_message",
+          "project_id": "audio_multimodal",
+          "batch_id": "audio_batch_06",
+          "scope": "project",
+          "channel_id": "C_AUDIO_GENERAL",
+          "thread_id": "1790889930.000126",
+          "message_id": "1790889930.000126",
+          "document_id": null,
+          "version_id": null,
+          "authoring_document_id": null,
+          "authoring_version": null,
+          "section": null,
+          "chunk_id": null,
+          "candidate_group_id": null,
+          "member_id": "member_9af4caa31c6ee01df21547d4",
+          "artifact": null,
+          "artifact_sha256": null,
+          "quote": null,
+          "note": "m:C_AUDIO_GENERAL:1790889930.000126"
+        },
+        {
+          "kind": "slack_message",
+          "project_id": "audio_multimodal",
+          "batch_id": "audio_batch_06",
+          "scope": "project",
+          "channel_id": "C_AUDIO_GENERAL",
+          "thread_id": "1790899012.002000",
+          "message_id": "1790899012.002000",
+          "document_id": null,
+          "version_id": null,
+          "authoring_document_id": null,
+          "authoring_version": null,
+          "section": null,
+          "chunk_id": null,
+          "candidate_group_id": null,
+          "member_id": "member_a05733133a11c3689d715928",
+          "artifact": null,
+          "artifact_sha256": null,
+          "quote": null,
+          "note": "m:C_AUDIO_GENERAL:1790899012.002000"
+        },
+        {
+          "kind": "slack_message",
+          "project_id": "audio_multimodal",
+          "batch_id": "audio_batch_06",
+          "scope": "project",
+          "channel_id": "C_AUDIO_GENERAL",
+          "thread_id": "1790915994.000122",
+          "message_id": "1790915994.000122",
+          "document_id": null,
+          "version_id": null,
+          "authoring_document_id": null,
+          "authoring_version": null,
+          "section": null,
+          "chunk_id": null,
+          "candidate_group_id": null,
+          "member_id": "member_dfb394ecfe8f564ef2360a40",
+          "artifact": null,
+          "artifact_sha256": null,
+          "quote": null,
+          "note": "m:C_AUDIO_GENERAL:1790915994.000122"
+        },
+        {
+          "kind": "slack_message",
+          "project_id": "audio_multimodal",
+          "batch_id": "audio_batch_06",
+          "scope": "project",
+          "channel_id": "C_AUDIO_QA",
+          "thread_id": "1790923533.000125",
+          "message_id": "1790923533.000125",
+          "document_id": null,
+          "version_id": null,
+          "authoring_document_id": null,
+          "authoring_version": null,
+          "section": null,
+          "chunk_id": null,
+          "candidate_group_id": null,
+          "member_id": "member_149de7c563b87a982aa7a9ea",
+          "artifact": null,
+          "artifact_sha256": null,
+          "quote": null,
+          "note": "m:C_AUDIO_QA:1790923533.000125"
+        },
+        {
+          "kind": "slack_message",
+          "project_id": "audio_multimodal",
+          "batch_id": "audio_batch_06",
+          "scope": "project",
+          "channel_id": "C_AUDIO_GENERAL",
+          "thread_id": "1790889930.000126",
+          "message_id": "1790889987.000113",
+          "document_id": null,
+          "version_id": null,
+          "authoring_document_id": null,
+          "authoring_version": null,
+          "section": null,
+          "chunk_id": null,
+          "candidate_group_id": null,
+          "member_id": "member_9af4caa31c6ee01df21547d4",
+          "artifact": null,
+          "artifact_sha256": null,
+          "quote": null,
+          "note": "m:C_AUDIO_GENERAL:1790889987.000113"
+        }
+      ],
+      "related_threads": [
+        {
+          "project_id": "audio_multimodal",
+          "batch_id": "audio_batch_06",
+          "channel_id": "C_AUDIO_GENERAL",
+          "thread_id": "1790868894.000123",
+          "member_id": "member_7e30b0730acedd4c18fcf3a5",
+          "permalink": null,
+          "display_reference": "1790868894.000123",
+          "label": "#audio-multimodal-general, 2026-10-01, started by a QA tutor: \"Issue: Model keeps saying the last sentence twice lol.\"",
+          "opening_text": "[Task review]\nIssue: Model keeps saying the last sentence twice lol.\nQuestion: what is the correct handling for this task?"
+        },
+        {
+          "project_id": "audio_multimodal",
+          "batch_id": "audio_batch_06",
+          "channel_id": "C_AUDIO_GENERAL",
+          "thread_id": "1790889930.000126",
+          "member_id": "member_9af4caa31c6ee01df21547d4",
+          "permalink": null,
+          "display_reference": "1790889930.000126",
+          "label": "#audio-multimodal-general, 2026-10-01, started by a tutor: \"Issue: TTS output repeats a line near the end.\"",
+          "opening_text": "[Task review]\nIssue: TTS output repeats a line near the end.\nQuestion: what is the correct handling for this task?"
+        },
+        {
+          "project_id": "audio_multimodal",
+          "batch_id": "audio_batch_06",
+          "channel_id": "C_AUDIO_GENERAL",
+          "thread_id": "1790899012.002000",
+          "member_id": "member_a05733133a11c3689d715928",
+          "permalink": null,
+          "display_reference": "1790899012.002000",
+          "label": "#audio-multimodal-general, 2026-10-01, started by a tutor: \"Anyone else seeing this?\"",
+          "opening_text": "Anyone else seeing this? The voice loops the final line twice, no sign of a player glitch. (task ref AUDIO-9012)"
+        },
+        {
+          "project_id": "audio_multimodal",
+          "batch_id": "audio_batch_06",
+          "channel_id": "C_AUDIO_GENERAL",
+          "thread_id": "1790915994.000122",
+          "member_id": "member_dfb394ecfe8f564ef2360a40",
+          "permalink": null,
+          "display_reference": "1790915994.000122",
+          "label": "#audio-multimodal-general, 2026-10-02, started by a tutor: \"Audio model keeps doubling the ending even though the transcript doesn't.\"",
+          "opening_text": "Audio model keeps doubling the ending even though the transcript doesn't."
+        },
+        {
+          "project_id": "audio_multimodal",
+          "batch_id": "audio_batch_06",
+          "channel_id": "C_AUDIO_QA",
+          "thread_id": "1790923533.000125",
+          "member_id": "member_149de7c563b87a982aa7a9ea",
+          "permalink": null,
+          "display_reference": "1790923533.000125",
+          "label": "#audio-multimodal-qa, 2026-10-02, started by a QA tutor: \"Model keeps saying the last sentence twice lol.\"",
+          "opening_text": "Model keeps saying the last sentence twice lol. (task ref AUDIO-3533)"
+        }
+      ],
+      "confidence": 0.55,
+      "confidence_band": "LOW",
+      "needs_review_reasons": [
+        {
+          "code": "LOW_CONFIDENCE",
+          "detail": "Advisor confidence 0.55 is below 0.60.",
+          "obligation_ids": [],
+          "evidence": []
+        },
+        {
+          "code": "INHERITED_FLAG",
+          "detail": "Upstream obligations remain open: assisted_content_review x1, inherited_agent1_review x1",
+          "obligation_ids": [
+            "05f5bc0b505f9475f543d13b88c1ceca5ab8e93341a1edd6f56d5b23f467eb6f"
+          ],
+          "evidence": []
+        },
+        {
+          "code": "OTHER",
+          "detail": "Evidence insufficient: No downloaded-file versus player comparison is recorded for these tasks, so the cause is not established.",
+          "obligation_ids": [],
+          "evidence": []
+        }
+      ],
+      "inherited_flags": [
+        {
+          "origin": "agent1",
+          "kind": "inherited_agent1_review",
+          "candidate_group_id": "cluster_b7e5234380f9ea67",
+          "obligation_id": null,
+          "member_ids": [
+            "member_a05733133a11c3689d715928"
+          ],
+          "detail": "The single targeted revision failed: ValueError: The model cited authority evidence without an eligible author role or a qualifying TEAM_LEAD endorsement. Ineligible message IDs: ['1790899060.000113']"
+        },
+        {
+          "origin": "assisted_content_review",
+          "kind": "assisted_content_review",
+          "candidate_group_id": "cluster_b7e5234380f9ea67",
+          "obligation_id": "05f5bc0b505f9475f543d13b88c1ceca5ab8e93341a1edd6f56d5b23f467eb6f",
+          "member_ids": [],
+          "detail": "The exported-audio title over-specifies the location of repetition for members still comparing file and player."
+        }
+      ],
+      "checks": {
+        "grounding": "PASSED",
+        "temporal_conflict": "NONE_FOUND",
+        "open_confirmation": "NONE"
+      },
+      "lineage": {
+        "agent3_run_id": "agent3overnight_78cb0a290ce6215fe1cf5df4abbacc8b",
+        "handoff_contract": "agent2-taxonomy-handoff-v2",
+        "agent2_export_sha256": "c417f93c65615a19d64e2e039857f42eacacc2e31dbe3df18a2ad647454d8aed",
+        "agent2_schema_version": 8,
+        "candidate_group_id": "cluster_b7e5234380f9ea67",
+        "topic_id": "cluster_b7e5234380f9ea67/topic_1",
+        "member_ids": [
+          "member_7e30b0730acedd4c18fcf3a5",
+          "member_9af4caa31c6ee01df21547d4",
+          "member_a05733133a11c3689d715928",
+          "member_dfb394ecfe8f564ef2360a40",
+          "member_149de7c563b87a982aa7a9ea"
+        ],
+        "project_id": "audio_multimodal",
+        "batch_id": "audio_batch_06"
+      },
+      "review_notes": [
+        "The advisor's confidence is low.",
+        "2 earlier review flags are still open on these threads.",
+        "Some evidence the advisor needed is missing."
+      ]
+    },
+    "review_items": [
+      {
+        "contract_version": "agent3-model-review-item-v1",
+        "record_type": "MODEL_REVIEW_ITEM",
+        "item_id": "review_9d20ed872d018f64ffb30bd9f5632a39",
+        "origin": "agent1",
+        "kind": "inherited_agent1_review",
+        "project_id": "audio_multimodal",
+        "batch_id": "audio_batch_06",
+        "candidate_group_id": "cluster_b7e5234380f9ea67",
+        "topic_id": "cluster_b7e5234380f9ea67/topic_1",
+        "member_ids": [
+          "member_a05733133a11c3689d715928"
+        ],
+        "obligation_id": null,
+        "reason": "The single targeted revision failed: ValueError: The model cited authority evidence without an eligible author role or a qualifying TEAM_LEAD endorsement. Ineligible message IDs: ['1790899060.000113']",
+        "source_obligation": {
+          "origin": "agent1",
+          "member_id": "member_a05733133a11c3689d715928",
+          "project_id": "audio_multimodal",
+          "batch_id": "audio_batch_06",
+          "channel_id": "C_AUDIO_GENERAL",
+          "thread_id": "1790899012.002000",
+          "candidate_group_id": "cluster_b7e5234380f9ea67",
+          "candidate_sha256": "68bc11349aa6c8b1898c54cafbcd64c11d29ab3d260574c8885258ae9f62167f",
+          "source_sha256": "028caed3d97c28d8014c3accc7724ae989d72d7fa2d62ac59166b0da1d8bc9fc",
+          "agent1_record": {
+            "project_id": "audio_multimodal",
+            "batch_id": "audio_batch_06",
+            "channel_id": "C_AUDIO_GENERAL",
+            "thread_id": "1790899012.002000",
+            "language": null,
+            "model": "openai/gpt-4o-mini-2024-07-18",
+            "run_config_sha256": "59740f5ade5e080383c48c88b15c36f172057579dea7a5dc8df80f72147fc79b",
+            "handoff_version": 1,
+            "verification_origin": "bounded_verification",
+            "input_sha256": "028caed3d97c28d8014c3accc7724ae989d72d7fa2d62ac59166b0da1d8bc9fc",
+            "candidate_sha256": "68bc11349aa6c8b1898c54cafbcd64c11d29ab3d260574c8885258ae9f62167f",
+            "source_message_ids": [
+              "1790899012.002000",
+              "1790899060.000113",
+              "1790899110.000226"
+            ],
+            "interpretation": {
+              "thread_id": "1790899012.002000",
+              "summary": "Bea reports an issue where the voice in a recording loops the final line twice, indicating no player glitch. Rina confirms that the transcript has one ending, but the recording repeats it. Hana suggests comparing the downloaded file with the player output, noting that different types of loops require different escalation paths.",
+              "central_question": "Is anyone else seeing this issue with the voice looping the final line twice?",
+              "resolution_state": "UNRESOLVED",
+              "authoritative_response_present": false,
+              "authority_evidence_message_ids": [],
+              "resolution_rationale": "The thread discusses the issue of the voice looping but does not provide a substantive answer or resolution to the problem. There are suggestions for further investigation, but no conclusion is reached regarding the requested decision.",
+              "confidence": 0.8
+            },
+            "automated_verification_status": "NEEDS_REVIEW",
+            "verification_status": "NEEDS_REVIEW",
+            "review_required": true,
+            "revision_count": 1,
+            "provisional_fields": [
+              "summary",
+              "central_question",
+              "resolution_state",
+              "resolution_rationale",
+              "authoritative_response_present",
+              "authority_evidence_message_ids",
+              "confidence"
+            ],
+            "review_reason": "The single targeted revision failed: ValueError: The model cited authority evidence without an eligible author role or a qualifying TEAM_LEAD endorsement. Ineligible message IDs: ['1790899060.000113']",
+            "review_reasons": [
+              "The single targeted revision failed: ValueError: The model cited authority evidence without an eligible author role or a qualifying TEAM_LEAD endorsement. Ineligible message IDs: ['1790899060.000113']"
+            ],
+            "review_findings": [
+              {
+                "category": "RESOLUTION",
+                "explanation": "Independent decision coverage establishes PARTIALLY_RESOLVED; interpretation reports UNRESOLVED. Rina's reply provides partial corroboration that the recording repeats the final line, but does not explicitly confirm that she personally observed the same looping behavior as described by Bea. No other reply directly answers the root request.",
+                "evidence_message_ids": [
+                  "1790899060.000113",
+                  "1790899110.000226"
+                ],
+                "evidence_quotes": [],
+                "disputed_fields": [
+                  "resolution_state",
+                  "resolution_rationale"
+                ],
+                "origin": "automated_verification"
+              },
+              {
+                "category": "EVIDENCE",
+                "explanation": "The single targeted revision failed: ValueError: The model cited authority evidence without an eligible author role or a qualifying TEAM_LEAD endorsement. Ineligible message IDs: ['1790899060.000113']",
+                "evidence_message_ids": [],
+                "evidence_quotes": [],
+                "disputed_fields": [
+                  "summary",
+                  "central_question",
+                  "resolution_state",
+                  "resolution_rationale",
+                  "authoritative_response_present",
+                  "authority_evidence_message_ids",
+                  "confidence"
+                ],
+                "origin": "automated_verification"
+              }
+            ],
+            "content_reviews": [],
+            "review_applicability": [],
+            "lineage": {
+              "baseline_file": "D:\\Christie\\2026_AgenticAI\\threadsense\\data\\processed\\agent1_authority_fix\\interpretations.json",
+              "baseline_record_sha256": "294acaa7dcf57ee1d196922143e1ad514131ea9fbf71b5614e31ffe53882fbc2",
+              "baseline_run_config_sha256": "0d62cfd41f1c1a578ca0cc4bb7bd8761a46ac9eecb53dbd64849cc60958f0b85",
+              "baseline_model": "openai/gpt-4o-mini-2024-07-18",
+              "baseline_created_at": "2026-10-16T14:13:23.353325+00:00",
+              "source_file": "sources/028caed3d97c28d8014c3accc7724ae989d72d7fa2d62ac59166b0da1d8bc9fc.json",
+              "verification_file": "records/8be543cba8f42d4cebbb4e939c5df034cac66fa5e1343bab222b3d6294326568/result.json",
+              "effective_attempt": "original",
+              "original_candidate_sha256": "68bc11349aa6c8b1898c54cafbcd64c11d29ab3d260574c8885258ae9f62167f",
+              "revised_candidate_sha256": null,
+              "effective_candidate_sha256": "68bc11349aa6c8b1898c54cafbcd64c11d29ab3d260574c8885258ae9f62167f",
+              "original_candidate_reference": "records/8be543cba8f42d4cebbb4e939c5df034cac66fa5e1343bab222b3d6294326568/result.json#/result/original_interpretation",
+              "revised_candidate_reference": null,
+              "audit_history_reference": "records/8be543cba8f42d4cebbb4e939c5df034cac66fa5e1343bab222b3d6294326568/result.json#/result/passes"
+            }
+          },
+          "agent1_export_file": "D:\\Christie\\2026_AgenticAI\\threadsense\\data\\processed\\agent1_verified_v3\\interpretations.json",
+          "agent1_export_sha256": "06a1d8ee6f20ea16a302b340424ba4cb93b09fe037cc8f1386ef6225acff109e",
+          "agent1_lineage_base": "D:\\Christie\\2026_AgenticAI\\threadsense\\data\\processed\\agent1_verified_v3"
+        },
+        "related_card_ids": [
+          "card_59ae832444ebb13268d6bdce80642cfd"
+        ],
+        "actions": []
+      },
+      {
+        "contract_version": "agent3-model-review-item-v1",
+        "record_type": "MODEL_REVIEW_ITEM",
+        "item_id": "review_a445ccc5a4bf0b8f8a90d7dbd079aa18",
+        "origin": "assisted_content_review",
+        "kind": "assisted_content_review",
+        "project_id": "audio_multimodal",
+        "batch_id": "audio_batch_06",
+        "candidate_group_id": "cluster_b7e5234380f9ea67",
+        "topic_id": null,
+        "member_ids": [],
+        "obligation_id": "05f5bc0b505f9475f543d13b88c1ceca5ab8e93341a1edd6f56d5b23f467eb6f",
+        "reason": "The exported-audio title over-specifies the location of repetition for members still comparing file and player.",
+        "source_obligation": {
+          "origin": "assisted_content_review",
+          "obligation_id": "05f5bc0b505f9475f543d13b88c1ceca5ab8e93341a1edd6f56d5b23f467eb6f",
+          "candidate_group_id": "cluster_b7e5234380f9ea67",
+          "binding": {
+            "input_file_sha256": "75abccfa392aa8fb28e228387ac2a91856ac9461e9d40049c1eaf4ad56b4cdcd",
+            "raw_draft_sha256": "8ff18bb336c2107731243a5fd8cc6c4c062abe3c8edfe169a9a1b92116cccc7f",
+            "export_result_sha256": "8c1e3eab44376f86bae5f23c3b2b9fd28ff318cad2269b758b02d23e15eabc64"
+          },
+          "finding": {
+            "kind": "TAXONOMY_NAMING_CAUTION",
+            "affected_fields": [
+              "topics[0].topic_name"
+            ],
+            "summary": "The exported-audio title over-specifies the location of repetition for members still comparing file and player.",
+            "detail": "\"Repeated final line in exported audio\" fits confirmed-file members, but members 1 and 4 still need to distinguish file repetition from LT playback. Repeated-ending membership is coherent. Neither the title nor recurrence establishes the location or cause for every member.",
+            "scope": "Nonblocking naming caution; no membership correction or policy/answer validation.",
+            "canonical_member_evidence": [
+              {
+                "member_id": "member_7e30b0730acedd4c18fcf3a5",
+                "full_identity": {
+                  "project_id": "audio_multimodal",
+                  "batch_id": "audio_batch_06",
+                  "channel_id": "C_AUDIO_GENERAL",
+                  "thread_id": "1790868894.000123"
+                },
+                "candidate_sha256": "48fa7e2febe39a984f79c56160208519dcb4288d1e0efdb132e120f89e99c5d5",
+                "source_sha256": "7397f734af9e2f4bbfb8e5fd8f7e5b85853fd4fbfe3b1e08b784fc210a7a0931",
+                "summary": "Leo reported an issue where the model repeats the last sentence twice and asked for the correct handling for this task. Mina suggested comparing the downloaded file with the player output, noting that different escalation paths are needed for audio-generation and browser playback loops. Priya, a team lead, advised first establishing whether the repetition occurs in the file or only in the LT player, reiterating the need for different escalation paths based on the source of the issue.",
+                "central_question": "What is the correct handling for the task where the model keeps saying the last sentence twice?"
+              },
+              {
+                "member_id": "member_dfb394ecfe8f564ef2360a40",
+                "full_identity": {
+                  "project_id": "audio_multimodal",
+                  "batch_id": "audio_batch_06",
+                  "channel_id": "C_AUDIO_GENERAL",
+                  "thread_id": "1790915994.000122"
+                },
+                "candidate_sha256": "cc21a1c95fdb52b2bb61f3788e434bb29eb5be8784ea5ec05569a42012971f6b",
+                "source_sha256": "bb1db2470db4c78654452cbc3d24d8f7557f3e225e0b8ab69f0750fa678879a2",
+                "summary": "Omar reported that the audio model is doubling the ending of the audio, despite the transcript not reflecting this issue. Linh suggested comparing the downloaded file with the player output. Priya, the team lead, advised first establishing whether the repetition occurs in the file itself or only in the LT player.",
+                "central_question": "What is causing the audio model to double the ending even though the transcript does not?"
+              }
+            ],
+            "nonblocking": true,
+            "requires_new_model_call": false,
+            "membership_defect_observed": false
+          },
+          "provenance": [
+            {
+              "file": "D:/Christie/2026_AgenticAI/threadsense/data/processed/agent2_handoff_v2_projection/carried_review_supplement.json",
+              "sha256": "2f36269317265f90cd70404e76d056ca5f0da279ba8967cbf4c81b17519e33de",
+              "origin": "Naming cautions carried from the registered v7 taxonomy review by exact match; not a new review"
+            }
+          ]
+        },
+        "related_card_ids": [
+          "card_59ae832444ebb13268d6bdce80642cfd"
+        ],
+        "actions": []
+      }
+    ],
+    "coverage": {
+      "group_members_outside_this_card": [],
+      "uncarried_obligations": []
+    },
+    "budget": {
+      "consumed": {
+        "retrieval_calls": 1,
+        "model_calls": 3
+      },
+      "limits": {
+        "model_calls_per_topic": 4,
+        "model_calls_total": 28,
+        "retrieval_calls_per_topic": 6,
+        "retrieval_calls_total": 42
+      }
+    },
+    "diagnostics": []
+  }
+}

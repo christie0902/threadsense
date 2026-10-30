@@ -1,6 +1,6 @@
 # Agent 3 — Plan
 
-**Status:** Milestones 2, 3 and 4 implemented (2026-10-29): contracts, rubric binding and Markdown
+**Status:** Milestone 5 (overnight LangGraph workflow) implemented 2026-10-30; milestones 2, 3 and 4 implemented (2026-10-29): contracts, rubric binding and Markdown
 ingestion; shared retrieval; a bounded Advisor pilot, hardened (final statement-level grounding,
 announcement applicability, member-level resolution, request-boundary limits) and validated
 offline with scripted semantic judgments (no live model run yet). Milestone 1 audit not yet written up. Agent 3 consumes the Agent 2
@@ -741,3 +741,119 @@ team-lead rubric decision.
   holding the freshly written file in the repo tree, but the comparison is not conclusive (one-sided
   Fisher p about 0.12) and the process was not identified. The runner is fingerprinted, so it is
   unchanged; use a `--basetemp` outside the repo.
+
+## Milestone 5 (implemented 2026-10-30): overnight workflow
+
+`src/threadsense/agents/overnight.py` (`agent3-overnight-v1`), runner `scripts/run_agent3_overnight.py`, tests
+`tests/test_agent3_overnight.py`. LangGraph 1.2.18 (added with `uv add`, `pyproject.toml` + `uv.lock`).
+
+**Validation baseline (recorded in every run manifest).** Prompts v6 are live-validated
+(`agent3_readability_v1`); v6.1 (open review flags in grounding, plus three deterministic fixes) was offline-only
+until the smoke run below. Replay reuses only unchanged judgments, and a pending judgment never counts as
+grounding PASSED (the accounting step checks every card). Two invariants confirmed and tested:
+- **Approving authority is not authorship.** A manual record's `authority.actor_id` is its approver; AUTHOR holds
+  for a retrieved record only when it is a Slack message record (actor = the message author). This corrects the
+  readability-pass fix, which had accepted the team lead as author of the September 28 handoff record.
+- **Explicitly attributed quotations are matched regardless of length** ("the team lead wrote: ...",
+  "the FAQ calls it ..."); unattributed quotations are matched from five words.
+
+**Graph** (sequential; heavy objects stay in a runtime object, graph state is a cursor and stop reason):
+
+```mermaid
+graph TD;
+  START --> load_handoff --> extract_announcements --> prepare_retrieval --> plan_work;
+  plan_work -.-> process_topic; plan_work -.-> validate_accounting;
+  process_topic -.-> process_topic; process_topic -.-> validate_accounting;
+  validate_accounting --> aggregate --> persist --> END;
+```
+
+- `load_handoff`: `load_effective_view` plus `accounting_issues` (refuses an invalid handoff) and the routing
+  manifest's announcement-route members.
+- `extract_announcements`: the run window's announcements through `source_ingestion.fixture_routes` and
+  `extraction_report` (zero calls, canonical source IDs, validated but not stored). Discussion threads are only
+  counted; nothing goes to Agent 1.
+- `prepare_retrieval`: opens the snapshot once (freshness check) and refuses a run cutoff different from the
+  snapshot cutoff. Each window announcement is checked in the snapshot by canonical document ID or thread.
+- `plan_work`: one work item per Agent 2 topic and one per projection-gap group (its unassigned members under the
+  existing "no Agent 2 topic" label; no taxonomy invented). `--only` scopes a run; the rest are OUT_OF_SCOPE.
+  Freezes the run manifest.
+- `process_topic`: `advisor_pilot.advise` unchanged: research, conditional ToT, final grounding and routing stay
+  inside it; the graph makes no model call. Before a topic: room for two requests (draft and grounding) in the run
+  request ceiling and the cost ledger, else this and later topics are UNPROCESSED_BUDGET. A topic that raises is
+  TOPIC_FAILED (PIPELINE, SCENARIO or PERSISTENCE) with members and review items kept. Stage failures keep the
+  Advisor's classes (PROVIDER, SCHEMA, RESOURCE, CONFIGURATION, REQUEST_CEILING); no retries.
+- `validate_accounting`: a disposition for every discussion member, unassigned member, inherited obligation,
+  announcement-route member and obligation and naming caution, from the inputs; the Model Review Queue (all upstream
+  obligations, linked to cards by ID, separate from the cards).
+- `aggregate` / `persist`: `morning_brief.json` and `morning_brief.md` from validated card fields only (no
+  generation call), `cards.json`, `review_queue.json`, `accounting.json`, `diagnostics.json` (withheld statements,
+  structural issues, stage failures), `topics/<work>.json`, `graph.mmd`.
+
+**Persistence and resume** (run artifacts; LangGraph's own checkpointer is not used, so no second store):
+`run_manifest.json` freezes the cutoff, window, handoff/routing/announcement/index/rubric/prompt fingerprints,
+client and limits; a resume with any change refuses. `progress/run_state.json` holds the budget counters and cost
+ledger, saved before each request and after each settlement. A reservation still open at interruption is charged
+in full on resume. Completed topics are reused without requests. A topic interrupted mid-run
+(`progress/in_flight/`) is INTERRUPTED_UNCERTAIN and resent only with `--resume DIR --release WORK_ID`. A failed
+save of the run state stops the run (PERSISTENCE) rather than send unrecorded requests.
+
+**Commands.**
+```sh
+uv run --locked python scripts/run_agent3_overnight.py --cutoff 2026-10-02T12:00:00Z            # zero calls: plan, worst case, graph
+uv run --locked python scripts/run_agent3_overnight.py --cutoff 2026-10-02T12:00:00Z --scripted --write <new-dir>
+uv run --locked python scripts/run_agent3_overnight.py --cutoff 2026-10-02T12:00:00Z --run --write <new-dir> \
+    --only audio_playback --only submit_failure --max-requests 8 --max-cost 2                      # PAID
+uv run --locked python scripts/run_agent3_overnight.py --resume <dir> [--release WORK_ID]
+```
+
+**Offline full handoff** (`data/experiments/agent3_overnight_offline_v2/`, SCRIPTED_MOCK: prepared pilot
+judgments for the 6 pilot topics, a placeholder that judges nothing for the other 81). Status COMPLETE,
+accounting COMPLETE, 0 issues, 25 s, 260 scripted calls, 0 HTTP requests. Counts derived from the inputs:
+- 87 work items (79 topics, 8 projection-gap groups), 87 cards (all NEEDS_REVIEW);
+- 178 discussion members (161 assigned, 17 unassigned), all on cards;
+- 22 announcement-route members with 8 obligations;
+- 41 inherited Agent 1 obligations and 3 naming cautions: 52 Model Review Queue items;
+- 23 window announcements, 23 in the snapshot.
+
+The first offline run (`agent3_overnight_offline_v1`) found a real defect and showed the isolation working: a
+projection-gap group whose first member asks no question (12 handoff members have no central question) failed on a
+None retrieval query, was recorded TOPIC_FAILED with its members, and the other 86 completed. The initial query
+now falls back to the earliest question, then the earliest summary, then the topic label.
+
+Exercised in tests (HashEncoder index, scripted): one topic raising (COMPLETE_WITH_FAILURES); a 5-request ceiling
+(third topic UNPROCESSED_BUDGET, the second topic's ToT skipped to keep its grounding call); interruption during
+grounding and resume (first topic reused with no call, interrupted topic not resent, budget not reset, explicit
+release); changed budget, scope or cutoff refused; an open reservation charged on resume; an unsaved run state
+stopping the run.
+
+**Live smoke** (`data/experiments/agent3_overnight_smoke_v1/`, gpt-6.1-sol, prompts v6.1, audio and Submit,
+`--max-requests 8 --max-cost 2`): 8 requests, all HTTP 200 / `stop`, 0 blocked; 123,186 input / 27,918 output
+(1,484 reasoning) tokens; $0.5256. Both revisions ran (18,434 and 19,489 input tokens). Accounting COMPLETE for all
+178 members (8 on the two cards, 170 out of scope), 52 review items.
+- Audio: "Report a technical issue to engineering" (the readability run chose "Post a reminder"; the model chose
+  differently). HIGH[3], 4 reporters, MIXED. No names or IDs in card text. Its review note about the open flags was
+  judged SUPPORTED: the v6.1 `open_review_flags` fix works live. The follow-up retrieved the trial approval but not
+  the trial-outcome record (a different query than earlier runs), so the card says the outcome is not established
+  in the available records, and its coverage note says nothing further was found. Accurate for what was retrieved,
+  but a recall miss.
+- Submit: "Report a technical issue to engineering", HIGH[0]+[3], 5 reporters, open question about the earlier
+  incident kept. The announcement-as-handling statement was again correctly withheld.
+- The possessive-plural and record-authorship cases did not occur, so those checks are verified offline only.
+- Its topic results use the nested file path of the first version (`topics/topic__<group>/topic_<n>.json`);
+  later runs write flat names, and a resume still finds the nested ones.
+
+**Full live run estimate** (87 work items, same arm). Observed per topic: $0.16–0.18 mean, $0.26 max; 3.0–3.3
+requests; about 110 s model time. Expect about $14–16 (upper bound about $23 at the observed maximum), about 260–290
+requests, about 2.5–3 hours sequential. Worst-case reservation: 348 requests × $0.212 = $73.72, so set
+`--max-cost` (for example $25–30) as the binding limit; topics beyond it are recorded UNPROCESSED_BUDGET. The pilot
+topics are among the larger ones; the other topics are unmeasured.
+
+**Limitations.**
+- Sequential only; LangGraph checkpointing is not used (durable state is the run directory).
+- Announcements are extracted and checked against the snapshot, but the snapshot is built separately
+  (`build_retrieval_index.py`); the run refuses a mismatched cutoff rather than rebuilding.
+- Follow-up retrieval recall depends on the model's query (audio's outcome record was missed once).
+- Prose and display checks are pattern-based; the ToT fallback is still not exercised live; severity level choice
+  for rule-confusion topics remains a TL rubric decision.
+- Run-state saves inside the VS Code-watched repo can hit the Windows `WinError 5` lock; such a run stops as
+  PERSISTENCE (resume it, or write runs outside the repo).

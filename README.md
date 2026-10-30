@@ -153,7 +153,10 @@ paid, $6 ledger, at most 28 requests); and `scripts/run_agent3_closeout.py` reru
 scenarios on the same arm for pilot v5 (zero calls by default; `--run` is paid, $3 ledger);
 `scripts/run_agent3_readability.py` reruns audio and Submit for pilot v6 (`--run` is paid, $2 ledger, 8 requests).
 AdviceCard v3 shows what happened, what to do, why and what needs review in plain language, referring to people
-by role; IDs, enums and premises stay in structured fields. See
+by role; IDs, enums and premises stay in structured fields. The overnight workflow (LangGraph) runs the whole
+handoff: `scripts/run_agent3_overnight.py --cutoff <ISO>` (zero calls: plan and worst case), `--scripted --write
+<dir>` (offline), `--run --write <dir> --max-requests N --max-cost USD` (paid), `--resume <dir>`; it writes a
+morning brief (`morning_brief.json`/`.md`), cards, Model Review Queue, accounting and diagnostics. See
 [Milestone 4](docs/agent3-plan.md#milestone-4-implemented-bounded-advisor-pilot).
 
 Inspect the historical effective handoff without regenerating it:

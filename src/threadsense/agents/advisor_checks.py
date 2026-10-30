@@ -95,18 +95,24 @@ RAW_ID = re.compile(r'\b[mk]:[A-Za-z0-9_.:@-]+|\bclaim:\w+|\bmember_[0-9a-f]{8,}
                     r'|\b[A-Z][A-Z0-9]+(?:_[A-Z0-9]+)+\b|\b[Ee]ssential premises?\b')
 QUOTED = re.compile(r'"([^"]+)"|\u201c([^\u201d]+)\u201d')
 QUOTE_MIN_WORDS = 5
+# Words that present the next quotation as someone's or something's exact words ("the team lead wrote: ...").
+ATTRIBUTION_CUE = re.compile(r'(?:\b(?:says?|said|writes?|wrote|states?|stated|asks?|asked|instructs?|instructed|replies|'
+                             r'replied|reads?|notes?|noted|posts?|posted|announces?|announced|quotes?|quoted|calls? it|'
+                             r'called it)\b[^"“.]{0,15}|:\s*)$', re.I)
 
 
 def display_issues(text, items):
-    """Team lead-facing text: no raw evidence/claim/user/member IDs, enum names or premise lists outside quotations;
-    a quoted passage of five or more words is a source quotation and must match a cited item exactly."""
+    """Team lead-facing text: no raw evidence/claim/user/member IDs, enum names or premise lists outside quotations.
+    A quoted passage of five or more words, or any quotation explicitly attributed to a person or source ("the team lead
+    wrote: ..."), is a source quotation and must match a cited item exactly."""
     issues, cited = [], [i for i in items if i]
     found = sorted(set(RAW_ID.findall(_unquoted(text))))
     if found:
         issues.append(('RAW_ID_IN_PROSE', f'Internal identifiers in display text: {found}.'))
     for match in QUOTED.finditer(text or ''):
         quote = match.group(1) or match.group(2)
-        if len(quote.split()) >= QUOTE_MIN_WORDS and not _verbatim(quote.strip(' .,;:'), cited):
+        attributed = bool(ATTRIBUTION_CUE.search(text[:match.start()]))
+        if (attributed or len(quote.split()) >= QUOTE_MIN_WORDS) and not _verbatim(quote.strip(' .,;:'), cited):
             issues.append(('QUOTE_NOT_IN_SOURCE', f'Quoted passage is not verbatim in a cited source: "{quote}".'))
             break
     return issues
@@ -125,10 +131,12 @@ def _directory_names():
 
 
 def relation_holds(user_id, relation, item, ledger):
-    """AUTHOR wrote the message (for a retrieved record: is its recorded authority actor); THREAD_STARTER started its
-    thread; PARTICIPANT posted anywhere in that thread."""
+    """AUTHOR wrote the message; THREAD_STARTER started its thread; PARTICIPANT posted anywhere in that thread. For a
+    retrieved record, AUTHOR holds only for a Slack message record, whose recorded actor is the message's author; a
+    manual record's actor is its approving authority, and approving a record does not establish authorship."""
     if item and item.get('origin') == 'retrieved_source':
-        return relation == 'AUTHOR' and (item.get('authority') or {}).get('actor') == user_id
+        return (relation == 'AUTHOR' and ((item.get('citation') or {}).get('source') or {}).get('system') == 'slack'
+                and (item.get('authority') or {}).get('actor') == user_id)
     if not item or item.get('origin') != 'member_message':
         return False
     if relation == 'AUTHOR':
@@ -195,8 +203,11 @@ def prose_issues(text, items, ledger, attributions=()):
             issues.append(('UNKNOWN_PERSON', f'{a.user_id} is not in the user directory.'))
         elif not relation_holds(a.user_id, a.relation, item, ledger):
             held = [r for r in ('AUTHOR', 'THREAD_STARTER', 'PARTICIPANT') if relation_holds(a.user_id, r, item, ledger)]
+            approver = (item or {}).get('origin') == 'retrieved_source' and (item.get('authority') or {}).get('actor') == a.user_id
             issues.append(('ATTRIBUTION_INVALID', f'{a.user_id} is not {a.relation} of {a.evidence_id}'
-                           + (f' (only {", ".join(held)})' if held else '') + '.'))
+                           + (f' (only {", ".join(held)})' if held else '')
+                           + (' (the recorded approving authority, which does not establish authorship)' if approver else '')
+                           + '.'))
     return issues
 
 
