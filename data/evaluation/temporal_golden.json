@@ -1,0 +1,921 @@
+{
+ "version": "temporal-golden-v1",
+ "recorded": "2026-10-30",
+ "purpose": "Temporal precedence golden set: 15 controlled cases. Labels were written from the rules below before the evaluator existed and are not derived from the implementation. Sources here are evaluation material, never indexed into data/knowledge; the evaluator builds a separate throwaway snapshot per case.",
+ "label_rules": {
+  "baseline": "The source(s) whose rule applies to the question at as_of. Empty with decision ABSTAIN when the records cannot decide.",
+  "temporal_status": {
+   "NO_CONFLICT": "No competing source was ever applicable to the question at as_of in scope (not yet published or effective, unapproved draft, other project or batch, or not a directive).",
+   "RESOLVED_BY_RECORD": "A competing source that is or was applicable in scope is overridden by recorded precedence (newer approved revision, recorded supersession, expiry).",
+   "UNRESOLVED": "Recorded dates, approvals and supersession cannot decide, or the guidance leaves the question open."
+  },
+  "temporal_review_required": "True when a team lead must settle precedence or an open question before acting.",
+  "documentation_update_target": "A published source that still states a rule the records show is no longer current (it should be corrected); null otherwise. A superseded revision kept as history is not a target.",
+  "must_not_win": "Sources that would be a false override if chosen as the baseline.",
+  "prepared_judgments": "Semantic inputs the drafting/grounding models would provide (which sources the draft cites on the question, which pairs state different rules, announcement relevance/directive, current-source agreement, open question). Labelled PREPARED; they never name the expected winner. A conflict is only declared between sources present in the bundle the draft saw."
+ },
+ "defaults": {
+  "project": "golden_temporal",
+  "batch": "gold_batch_1",
+  "as_of": "2026-10-02T12:00:00Z"
+ },
+ "cases": [
+  {
+   "id": "T01_newer_approved_revision",
+   "question": "How many reviewers must sign off a disputed label?",
+   "sources": [
+    {
+     "sid": "G_v1",
+     "type": "instructions",
+     "document_id": "gt01-review-guide",
+     "version": "1.0",
+     "status": "approved",
+     "effective_at": "2026-09-01T09:00:00Z",
+     "sections": {
+      "Sign-off": "A disputed label needs one reviewer sign-off."
+     }
+    },
+    {
+     "sid": "G_v2",
+     "type": "instructions",
+     "document_id": "gt01-review-guide",
+     "version": "2.0",
+     "status": "approved",
+     "effective_at": "2026-09-20T09:00:00Z",
+     "sections": {
+      "Sign-off": "A disputed label needs two reviewer sign-offs."
+     }
+    }
+   ],
+   "prepared_judgments": {
+    "cited": [
+     "G_v1",
+     "G_v2"
+    ],
+    "conflicts": [
+     [
+      "G_v1",
+      "G_v2"
+     ]
+    ]
+   },
+   "expected": {
+    "decision": "DECIDED",
+    "baseline": [
+     "G_v2"
+    ],
+    "temporal_status": "RESOLVED_BY_RECORD",
+    "temporal_review_required": false,
+    "documentation_update_target": null,
+    "must_not_win": [
+     "G_v1"
+    ],
+    "rationale": "Same lineage; the newer approved revision was effective before as_of and replaces the older one, which stays history."
+   }
+  },
+  {
+   "id": "T02_authorized_tl_directive",
+   "question": "May fictional phone numbers stay unquarantined?",
+   "sources": [
+    {
+     "sid": "G",
+     "type": "instructions",
+     "document_id": "gt02-safety-guide",
+     "version": "1.0",
+     "status": "approved",
+     "effective_at": "2026-08-01T09:00:00Z",
+     "sections": {
+      "Contact details": "Quarantine any task containing a phone number.",
+      "Context": "Keep surrounding context with flagged tasks."
+     }
+    },
+    {
+     "sid": "D",
+     "type": "decision",
+     "record_kind": "advice_review",
+     "document_id": "gt02-tl-directive",
+     "version": "1.0",
+     "status": "tl_approved",
+     "decision_status": "tl_approved",
+     "execution_status": "posted",
+     "outcome_status": "not_observed",
+     "effective_at": "2026-09-10T13:00:00Z",
+     "supersedes": [
+      {
+       "document_id": "gt02-safety-guide",
+       "version": "1.0",
+       "section": "Contact details"
+      }
+     ],
+     "sections": {
+      "TL decision": "A phone number that is clearly invented inside a fictional story does not by itself require quarantine."
+     }
+    }
+   ],
+   "prepared_judgments": {
+    "cited": [
+     "G",
+     "D"
+    ],
+    "conflicts": [
+     [
+      "G",
+      "D"
+     ]
+    ]
+   },
+   "expected": {
+    "decision": "DECIDED",
+    "baseline": [
+     "D"
+    ],
+    "temporal_status": "RESOLVED_BY_RECORD",
+    "temporal_review_required": false,
+    "documentation_update_target": {
+     "sid": "G",
+     "section": "Contact details"
+    },
+    "must_not_win": [
+     "G"
+    ],
+    "rationale": "An approved, effective team-lead record declares that it supersedes the guide's Contact details section; the guide still prints the old rule, so it is the update target."
+   },
+   "question_section": {
+    "G": "Contact details"
+   }
+  },
+  {
+   "id": "T03_same_day_distinct_times",
+   "question": "Which export format do audit files use?",
+   "sources": [
+    {
+     "sid": "F_am",
+     "type": "faq",
+     "document_id": "gt03-audit-faq",
+     "version": "1.0",
+     "status": "approved",
+     "effective_at": "2026-09-25T09:00:00+02:00",
+     "sections": {
+      "Export": "### Q: Which export format?\nUse CSV."
+     }
+    },
+    {
+     "sid": "F_pm",
+     "type": "faq",
+     "document_id": "gt03-audit-faq",
+     "version": "1.1",
+     "status": "approved",
+     "effective_at": "2026-09-25T15:30:00+02:00",
+     "sections": {
+      "Export": "### Q: Which export format?\nUse JSON lines."
+     }
+    }
+   ],
+   "prepared_judgments": {
+    "cited": [
+     "F_am",
+     "F_pm"
+    ],
+    "conflicts": [
+     [
+      "F_am",
+      "F_pm"
+     ]
+    ]
+   },
+   "expected": {
+    "decision": "DECIDED",
+    "baseline": [
+     "F_pm"
+    ],
+    "temporal_status": "RESOLVED_BY_RECORD",
+    "temporal_review_required": false,
+    "documentation_update_target": null,
+    "must_not_win": [
+     "F_am"
+    ],
+    "rationale": "Same day, distinct timezone-aware times (07:00Z vs 13:30Z); the later approved revision applies."
+   }
+  },
+  {
+   "id": "T04_tied_timestamps",
+   "question": "What is the minimum clip length for review?",
+   "sources": [
+    {
+     "sid": "G_a",
+     "type": "instructions",
+     "document_id": "gt04-clip-guide",
+     "version": "1.0",
+     "status": "approved",
+     "effective_at": "2026-09-15T10:00:00Z",
+     "sections": {
+      "Length": "Clips under 5 seconds are skipped."
+     }
+    },
+    {
+     "sid": "G_b",
+     "type": "instructions",
+     "document_id": "gt04-clip-guide",
+     "version": "1.1",
+     "status": "approved",
+     "effective_at": "2026-09-15T12:00:00+02:00",
+     "sections": {
+      "Length": "Clips under 3 seconds are skipped."
+     }
+    }
+   ],
+   "prepared_judgments": {
+    "cited": [
+     "G_a",
+     "G_b"
+    ],
+    "conflicts": [
+     [
+      "G_a",
+      "G_b"
+     ]
+    ]
+   },
+   "expected": {
+    "decision": "ABSTAIN",
+    "baseline": [],
+    "temporal_status": "UNRESOLVED",
+    "temporal_review_required": true,
+    "documentation_update_target": null,
+    "must_not_win": [
+     "G_a",
+     "G_b"
+    ],
+    "rationale": "Both revisions take effect at the same instant (10:00Z written two ways) and disagree; version numbers do not establish precedence."
+   }
+  },
+  {
+   "id": "T05_missing_dates",
+   "question": "Should duplicated prompts be flagged?",
+   "sources": [
+    {
+     "sid": "J_1",
+     "type": "json_guideline",
+     "document_id": "gt05-dup-guide",
+     "version": "1.0",
+     "status": "approved",
+     "manual_key": "gt05-dup-guide",
+     "text": "## Duplicates\nFlag duplicated prompts."
+    },
+    {
+     "sid": "J_2",
+     "type": "json_guideline",
+     "document_id": "gt05-dup-guide",
+     "version": "1.1",
+     "status": "approved",
+     "manual_key": "gt05-dup-guide",
+     "text": "## Duplicates\nDo not flag duplicated prompts; merge them."
+    }
+   ],
+   "prepared_judgments": {
+    "cited": [
+     "J_1",
+     "J_2"
+    ],
+    "conflicts": [
+     [
+      "J_1",
+      "J_2"
+     ]
+    ]
+   },
+   "expected": {
+    "decision": "ABSTAIN",
+    "baseline": [],
+    "temporal_status": "UNRESOLVED",
+    "temporal_review_required": true,
+    "documentation_update_target": null,
+    "must_not_win": [
+     "J_1",
+     "J_2"
+    ],
+    "rationale": "Two approved revisions with no recorded dates; nothing establishes which applies."
+   }
+  },
+  {
+   "id": "T06_announcement_after_as_of",
+   "question": "Is the overnight queue paused?",
+   "sources": [
+    {
+     "sid": "G",
+     "type": "instructions",
+     "document_id": "gt06-queue-guide",
+     "version": "1.0",
+     "status": "approved",
+     "effective_at": "2026-09-01T09:00:00Z",
+     "sections": {
+      "Queue": "The overnight queue runs every night."
+     }
+    },
+    {
+     "sid": "A",
+     "type": "announcement",
+     "document_id": "gt06-pause-note",
+     "version": "1.0",
+     "status": "approved",
+     "effective_at": "2026-10-03T08:00:00Z",
+     "sections": {
+      "Notice": "The overnight queue is paused from today."
+     }
+    }
+   ],
+   "prepared_judgments": {
+    "cited": [
+     "G",
+     "A"
+    ],
+    "conflicts": [
+     [
+      "G",
+      "A"
+     ]
+    ],
+    "announcements": {
+     "A": {
+      "relevant": true,
+      "directive": true,
+      "quote": "The overnight queue is paused from today."
+     }
+    }
+   },
+   "expected": {
+    "decision": "DECIDED",
+    "baseline": [
+     "G"
+    ],
+    "temporal_status": "NO_CONFLICT",
+    "temporal_review_required": false,
+    "documentation_update_target": null,
+    "must_not_win": [
+     "A"
+    ],
+    "rationale": "The announcement is published after as_of; it cannot be known or applied at as_of."
+   }
+  },
+  {
+   "id": "T07_future_effective_announcement",
+   "question": "Which rubric version applies to scoring?",
+   "sources": [
+    {
+     "sid": "G",
+     "type": "instructions",
+     "document_id": "gt07-rubric-guide",
+     "version": "1.0",
+     "status": "approved",
+     "effective_at": "2026-09-01T09:00:00Z",
+     "sections": {
+      "Rubric": "Score with rubric version 4."
+     }
+    },
+    {
+     "sid": "A",
+     "type": "announcement",
+     "document_id": "gt07-rubric-note",
+     "version": "1.0",
+     "status": "approved",
+     "published_at": "2026-09-30T09:00:00Z",
+     "effective_at": "2026-10-05T00:00:00Z",
+     "sections": {
+      "Notice": "From October 5, score with rubric version 5."
+     }
+    }
+   ],
+   "prepared_judgments": {
+    "cited": [
+     "G",
+     "A"
+    ],
+    "conflicts": [
+     [
+      "G",
+      "A"
+     ]
+    ],
+    "announcements": {
+     "A": {
+      "relevant": true,
+      "directive": true,
+      "quote": "From October 5, score with rubric version 5."
+     }
+    }
+   },
+   "expected": {
+    "decision": "DECIDED",
+    "baseline": [
+     "G"
+    ],
+    "temporal_status": "NO_CONFLICT",
+    "temporal_review_required": false,
+    "documentation_update_target": null,
+    "must_not_win": [
+     "A"
+    ],
+    "rationale": "Published before as_of but effective after it; publication does not make it current."
+   }
+  },
+  {
+   "id": "T08_section_only_supersession",
+   "question": "Must flagged tasks keep their surrounding context?",
+   "sources": [
+    {
+     "sid": "G",
+     "type": "instructions",
+     "document_id": "gt08-safety-guide",
+     "version": "1.0",
+     "status": "approved",
+     "effective_at": "2026-08-01T09:00:00Z",
+     "sections": {
+      "Contact details": "Quarantine any task containing a phone number.",
+      "Context": "Keep the surrounding context with every flagged task."
+     }
+    },
+    {
+     "sid": "C",
+     "type": "announcement",
+     "document_id": "gt08-contact-clarification",
+     "version": "1.0",
+     "status": "approved",
+     "effective_at": "2026-09-10T13:00:00Z",
+     "supersedes": [
+      {
+       "document_id": "gt08-safety-guide",
+       "version": "1.0",
+       "section": "Contact details"
+      }
+     ],
+     "sections": {
+      "Clarification": "Invented phone numbers in fiction do not require quarantine."
+     }
+    }
+   ],
+   "question_section": {
+    "G": "Context"
+   },
+   "prepared_judgments": {
+    "cited": [
+     "G"
+    ],
+    "conflicts": []
+   },
+   "expected": {
+    "decision": "DECIDED",
+    "baseline": [
+     "G"
+    ],
+    "temporal_status": "NO_CONFLICT",
+    "temporal_review_required": false,
+    "documentation_update_target": null,
+    "must_not_win": [],
+    "rationale": "Only the Contact details section is superseded; the Context section still applies."
+   }
+  },
+  {
+   "id": "T09_superseded_section_vs_agreeing_sources",
+   "question": "Do invented phone numbers in fiction require quarantine?",
+   "sources": [
+    {
+     "sid": "H",
+     "type": "instructions",
+     "document_id": "gt09-help-page",
+     "version": "1.0",
+     "status": "partially_superseded",
+     "effective_at": "2026-08-01T09:00:00Z",
+     "sections": {
+      "Contact details": "Quarantine any task containing a phone number, even if invented.",
+      "Other": "Report broken links."
+     }
+    },
+    {
+     "sid": "C",
+     "type": "announcement",
+     "document_id": "gt09-clarification",
+     "version": "1.0",
+     "status": "approved",
+     "effective_at": "2026-09-10T13:00:00Z",
+     "supersedes": [
+      {
+       "document_id": "gt09-help-page",
+       "version": "1.0",
+       "section": "Contact details"
+      }
+     ],
+     "sections": {
+      "Clarification": "Invented phone numbers in fiction do not require quarantine."
+     }
+    },
+    {
+     "sid": "I",
+     "type": "instructions",
+     "document_id": "gt09-instructions",
+     "version": "2.0",
+     "status": "approved",
+     "effective_at": "2026-09-12T09:00:00Z",
+     "sections": {
+      "Contact details": "A clearly invented number in a fictional story does not require quarantine; flag real-looking numbers."
+     }
+    }
+   ],
+   "prepared_judgments": {
+    "cited": [
+     "H",
+     "C",
+     "I"
+    ],
+    "conflicts": [
+     [
+      "H",
+      "C",
+      "I"
+     ]
+    ],
+    "agreement": "SUPPORTED",
+    "announcements": {
+     "C": {
+      "relevant": true,
+      "directive": true,
+      "quote": "Invented phone numbers in fiction do not require quarantine."
+     }
+    }
+   },
+   "expected": {
+    "decision": "DECIDED",
+    "baseline": [
+     "C",
+     "I"
+    ],
+    "temporal_status": "RESOLVED_BY_RECORD",
+    "temporal_review_required": false,
+    "documentation_update_target": {
+     "sid": "H",
+     "section": "Contact details"
+    },
+    "must_not_win": [
+     "H"
+    ],
+    "rationale": "The help-page section is superseded by record; the two current sources agree. The help page still publishes the old rule."
+   },
+   "question_section": {
+    "H": "Contact details"
+   }
+  },
+  {
+   "id": "T10_unapproved_newer_draft",
+   "question": "How long may a review stay open?",
+   "sources": [
+    {
+     "sid": "G",
+     "type": "instructions",
+     "document_id": "gt10-sla-guide",
+     "version": "1.0",
+     "status": "approved",
+     "effective_at": "2026-09-01T09:00:00Z",
+     "sections": {
+      "SLA": "Reviews close within 48 hours."
+     }
+    },
+    {
+     "sid": "G_draft",
+     "type": "instructions",
+     "document_id": "gt10-sla-guide",
+     "version": "1.1",
+     "status": "draft",
+     "effective_at": "2026-09-25T09:00:00Z",
+     "sections": {
+      "SLA": "Reviews close within 24 hours."
+     }
+    },
+    {
+     "sid": "D_unexec",
+     "type": "decision",
+     "record_kind": "advice_review",
+     "document_id": "gt10-sla-decision",
+     "version": "1.0",
+     "status": "tl_approved",
+     "decision_status": "tl_approved",
+     "execution_status": "not_executed",
+     "outcome_status": "not_observed",
+     "effective_at": "2026-09-28T09:00:00Z",
+     "sections": {
+      "TL decision": "Approved drafting a 12-hour SLA reminder; not yet posted."
+     }
+    }
+   ],
+   "prepared_judgments": {
+    "cited": [
+     "G",
+     "G_draft",
+     "D_unexec"
+    ],
+    "conflicts": [
+     [
+      "G",
+      "G_draft"
+     ],
+     [
+      "G",
+      "D_unexec"
+     ]
+    ]
+   },
+   "expected": {
+    "decision": "DECIDED",
+    "baseline": [
+     "G"
+    ],
+    "temporal_status": "NO_CONFLICT",
+    "temporal_review_required": false,
+    "documentation_update_target": null,
+    "must_not_win": [
+     "G_draft",
+     "D_unexec"
+    ],
+    "rationale": "An unapproved draft revision never competes; an approved but unexecuted decision is history, not policy."
+   }
+  },
+  {
+   "id": "T11_wrong_project_or_batch",
+   "question": "Which language must responses use?",
+   "sources": [
+    {
+     "sid": "G",
+     "type": "instructions",
+     "document_id": "gt11-language-guide",
+     "version": "1.0",
+     "status": "approved",
+     "effective_at": "2026-09-01T09:00:00Z",
+     "sections": {
+      "Language": "Respond in the prompt's language."
+     }
+    },
+    {
+     "sid": "X_project",
+     "type": "instructions",
+     "document_id": "gt11-other-guide",
+     "version": "1.0",
+     "status": "approved",
+     "effective_at": "2026-09-20T09:00:00Z",
+     "project": "golden_other",
+     "sections": {
+      "Language": "Always respond in English."
+     }
+    },
+    {
+     "sid": "X_batch",
+     "type": "decision",
+     "record_kind": "advice_review",
+     "document_id": "gt11-batch9-decision",
+     "version": "1.0",
+     "status": "tl_approved",
+     "decision_status": "tl_approved",
+     "execution_status": "posted",
+     "outcome_status": "not_observed",
+     "effective_at": "2026-09-22T09:00:00Z",
+     "batch": "gold_batch_9",
+     "sections": {
+      "TL decision": "For batch 9 only, respond in English."
+     }
+    }
+   ],
+   "prepared_judgments": {
+    "cited": [
+     "G",
+     "X_project",
+     "X_batch"
+    ],
+    "conflicts": [
+     [
+      "G",
+      "X_project"
+     ],
+     [
+      "G",
+      "X_batch"
+     ]
+    ]
+   },
+   "expected": {
+    "decision": "DECIDED",
+    "baseline": [
+     "G"
+    ],
+    "temporal_status": "NO_CONFLICT",
+    "temporal_review_required": false,
+    "documentation_update_target": null,
+    "must_not_win": [
+     "X_project",
+     "X_batch"
+    ],
+    "rationale": "The other-project guide is out of scope; the batch-9 decision applies to another batch only."
+   }
+  },
+  {
+   "id": "T12_routine_announcement",
+   "question": "When is a label disputed?",
+   "sources": [
+    {
+     "sid": "G",
+     "type": "instructions",
+     "document_id": "gt12-dispute-guide",
+     "version": "1.0",
+     "status": "approved",
+     "effective_at": "2026-09-01T09:00:00Z",
+     "sections": {
+      "Disputes": "A label is disputed when two reviewers disagree."
+     }
+    },
+    {
+     "sid": "A",
+     "type": "announcement",
+     "document_id": "gt12-calendar-note",
+     "version": "1.0",
+     "status": "approved",
+     "effective_at": "2026-10-01T09:00:00Z",
+     "sections": {
+      "Notice": "Calibration meeting this afternoon at 3 pm."
+     }
+    }
+   ],
+   "prepared_judgments": {
+    "cited": [
+     "G",
+     "A"
+    ],
+    "conflicts": [],
+    "announcements": {
+     "A": {
+      "relevant": false,
+      "directive": false
+     }
+    }
+   },
+   "expected": {
+    "decision": "DECIDED",
+    "baseline": [
+     "G"
+    ],
+    "temporal_status": "NO_CONFLICT",
+    "temporal_review_required": false,
+    "documentation_update_target": null,
+    "must_not_win": [
+     "A"
+    ],
+    "rationale": "A newer routine notice changes no instruction."
+   }
+  },
+  {
+   "id": "T13_expired_temporary_directive",
+   "question": "Can reviewers reload a stuck player?",
+   "sources": [
+    {
+     "sid": "G",
+     "type": "instructions",
+     "document_id": "gt13-player-guide",
+     "version": "1.0",
+     "status": "approved",
+     "effective_at": "2026-08-01T09:00:00Z",
+     "sections": {
+      "Player": "Report a stuck player as a technical issue; do not reload repeatedly."
+     }
+    },
+    {
+     "sid": "D_temp",
+     "type": "decision",
+     "record_kind": "advice_review",
+     "document_id": "gt13-reload-trial",
+     "version": "1.0",
+     "status": "tl_approved",
+     "decision_status": "tl_approved",
+     "execution_status": "posted",
+     "outcome_status": "not_observed",
+     "effective_at": "2026-08-24T14:00:00Z",
+     "valid_until": "2026-08-28T21:00:00Z",
+     "sections": {
+      "TL decision": "Trial: reviewers may reload a stuck player once until August 28."
+     }
+    }
+   ],
+   "prepared_judgments": {
+    "cited": [
+     "G",
+     "D_temp"
+    ],
+    "conflicts": [
+     [
+      "G",
+      "D_temp"
+     ]
+    ]
+   },
+   "expected": {
+    "decision": "DECIDED",
+    "baseline": [
+     "G"
+    ],
+    "temporal_status": "RESOLVED_BY_RECORD",
+    "temporal_review_required": false,
+    "documentation_update_target": null,
+    "must_not_win": [
+     "D_temp"
+    ],
+    "rationale": "The temporary directive expired before as_of; the guide applies again."
+   }
+  },
+  {
+   "id": "T14_announcement_outside_intake_window",
+   "question": "Where should playback failures be reported?",
+   "sources": [
+    {
+     "sid": "G",
+     "type": "instructions",
+     "document_id": "gt14-report-guide",
+     "version": "1.0",
+     "status": "approved",
+     "effective_at": "2026-09-01T09:00:00Z",
+     "sections": {
+      "Scoring": "Score only content you can hear."
+     }
+    },
+    {
+     "sid": "S",
+     "type": "slack_announcement",
+     "channel_id": "C_GOLD_ANN",
+     "ts": "1790683200.000100",
+     "user": "U_GOLD_TL",
+     "text": "Playback failures: report the task ID and browser state in the batch incident thread."
+    }
+   ],
+   "prepared_judgments": {
+    "cited": [
+     "S"
+    ],
+    "conflicts": [],
+    "announcements": {
+     "S": {
+      "relevant": true,
+      "directive": true,
+      "quote": "Playback failures: report the task ID and browser state in the batch incident thread."
+     }
+    }
+   },
+   "expected": {
+    "decision": "DECIDED",
+    "baseline": [
+     "S"
+    ],
+    "temporal_status": "NO_CONFLICT",
+    "temporal_review_required": false,
+    "documentation_update_target": null,
+    "must_not_win": [],
+    "rationale": "Posted three days before as_of (outside the 24-hour intake window) and never superseded or expired; it still directs handling."
+   }
+  },
+  {
+   "id": "T15_open_confirmation",
+   "question": "Does format or factual accuracy win for this pair?",
+   "sources": [
+    {
+     "sid": "F",
+     "type": "faq",
+     "document_id": "gt15-preference-faq",
+     "version": "1.0",
+     "status": "approved",
+     "effective_at": "2026-09-01T09:00:00Z",
+     "sections": {
+      "Preference": "### Q: Format or accuracy?\nNo universal tie-break; if the pair does not settle it, the team lead confirms."
+     }
+    }
+   ],
+   "prepared_judgments": {
+    "cited": [
+     "F"
+    ],
+    "conflicts": [],
+    "open_question": "SUPPORTED"
+   },
+   "expected": {
+    "decision": "ABSTAIN",
+    "baseline": [],
+    "temporal_status": "UNRESOLVED",
+    "temporal_review_required": true,
+    "documentation_update_target": null,
+    "must_not_win": [],
+    "rationale": "The guidance itself leaves the case to team-lead confirmation; no source decides it."
+   }
+  }
+ ],
+ "prepared_judgment_corrections": [
+  {
+   "date": "2026-10-30",
+   "cases": [
+    "T02_authorized_tl_directive",
+    "T09_superseded_section_vs_agreeing_sources"
+   ],
+   "change": "question_section added: the draft cites only the section that addresses the question (as T08 already did). The first run cited every chunk of a multi-section source, which put an unrelated current section of the help page into T09's baseline. Expected outcomes unchanged."
+  }
+ ]
+}

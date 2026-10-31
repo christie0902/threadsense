@@ -19,7 +19,7 @@ uv run --locked --extra dev python -m pytest tests/test_x.py   # single file
 ```
 
 - Always pass a **fresh** `--basetemp .cache/pytest-<name>`: pytest wipes it at start.
-- Full suite: 841 tests, ~9 min, all expected to pass. Intermittent `WinError 5` on `os.replace` is a Windows file lock (see Known issues), not a code failure.
+- Full suite: 866 tests, ~9 min, all expected to pass. Intermittent `WinError 5` on `os.replace` is a Windows file lock (see Known issues), not a code failure.
 - No linter/formatter configured. No build step beyond the editable install.
 - UI tests: `npm --prefix web run build` then `npm --prefix web run test:ui` (Playwright, system Chrome; temp output
   in `TS_UI_TMP`, default `D:/tsb/ui-<time>`). Frontend deps are pinned in `web/package.json` + `package-lock.json`.
@@ -92,7 +92,10 @@ scenarios, 30 requests, $1.56). Repair pass 2026-10-30: prompts v7 / draft v7 (`
 drafts replay under `LEGACY_LABELS`), bounded retrieval expansion in `ResearchTools` (type coverage + recorded-link
 related records, `retrieved_as`; off in replays), decision contract v3 `decision_origin` (DEMO_SCRIPT/TEST never
 operational), partitive-plural checker fix; live comparison `agent3_repair_eval_v1` (6 cases, 16 requests, $0.97).
-Further `--run`s are paid (ask first). Full plan: [docs/agent3-plan.md](docs/agent3-plan.md).
+Repair pass 2 (offline): prompts v8 / draft v8 (`action_choice` ToT trigger), ToT v3 (`advisor_tot.select`: incumbent,
+pre-grounding replacement, close calls kept), `temporal_decision` + non-competing recorded states in `temporal_check`,
+member disagreement is not a source conflict, temporal golden set `data/evaluation/temporal_golden.json` with
+`scripts/evaluate_temporal.py` (14/15; T02 policy gap). Further `--run`s are paid (ask first). Full plan: [docs/agent3-plan.md](docs/agent3-plan.md).
 - Agent 3 input: `data/processed/agent2_handoff_v2_projection/` (schema 8 / handoff v2, a zero-call projection of the v7 release; load with `advice_inputs.load_effective_view`): 81 groups / 79 topics / 161 assigned + 17 unassigned / 41 + 8 announcement-route obligations / 3 carried cautions. The frozen v7 release (handoff v1: 90 / 97 / 49 / 3 / 41) is unchanged.
 - Demo Slack input: `data/fixtures/slack_generated_demo/` (201 threads / 517 messages, cutoff `2026-10-02T12:00:00Z`); the original `slack_generated/` (200 / 516) stays unchanged.
 - LangGraph 1.2.18 (Milestone 5) and FastAPI 0.162.0 (Milestone 6) installed; frontend toolchain in `web/` (npm). Chroma is a direct dependency; BM25 is in-house.

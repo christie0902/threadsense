@@ -185,7 +185,7 @@ def test_selected_tot_candidate_becomes_the_action_without_clearing_flags(retrie
     def tot(close=False, members_only=False):
         def response(payload):
             guide = payload['draft']['claims'][-1 if not members_only else 0]['evidence_ids']
-            return {'candidates': [
+            return {'contract_version': 'agent3-tot-comparison-v2', 'candidates': [
                 {'candidate_id': 'A', 'action_type': 'POST_ALIGNMENT', 'draft_text': 'Post the current scoring guidance.',
                  'evidence_ids': guide, 'evidence_support': 'STRONG', 'applicability': 'CURRENT', 'severity_fit': 'FITS',
                  'rationale': 'Current guidance answers the question.'},
@@ -447,7 +447,7 @@ def fallback_draft(payload):
 def fallback_tot(text='Post the current playback handling in the reporting threads.', close=False):
     def response(payload):
         guide = payload['draft']['claims'][1]['evidence_ids']
-        return {'candidates': [
+        return {'contract_version': 'agent3-tot-comparison-v2', 'candidates': [
             {'candidate_id': 'A', 'action_type': 'POST_ALIGNMENT', 'draft_text': text, 'evidence_ids': guide,
              'evidence_support': 'STRONG', 'applicability': 'CURRENT', 'severity_fit': 'FITS', 'rationale': 'Current guidance applies.'},
             {'candidate_id': 'B', 'action_type': 'NO_ACTION', 'draft_text': 'Wait for the team lead.', 'evidence_ids': guide,
@@ -695,7 +695,7 @@ def test_rules_are_sent_once_and_prompt_version_is_recorded():
     assert WRITING_GUIDE in DRAFT_RULES and STYLE_EXAMPLES in REVISION_RULES
     assert 'STYLE ONLY, NOT EVIDENCE' in STYLE_EXAMPLES and 'never copy their facts' in STYLE_EXAMPLES
     fingerprints = prompt_fingerprints()
-    assert fingerprints['prompt_version'] == 'agent3-advisor-prompts-v7' and fingerprints['style_examples']
+    assert fingerprints['prompt_version'] == 'agent3-advisor-prompts-v8' and fingerprints['style_examples']
     assert INPUT_TOKEN_LIMIT == 24_000 and live_settings('openai/gpt-6.1-sol')['input_token_limit'] == 24_000
 
 

@@ -23,6 +23,7 @@ model; **test fixture** = hand-written, labelled data):
 | TL decision -> later snapshot -> overnight retrieval (M7) | offline (scripted judgments; real embeddings in the demo) | `agent3_feedback_loop_offline_v1`, `tests/test_agent3_feedback_loop.py` |
 | Demo scenario matrix (M7) | live for all nine (final eval); scripted for the six pilot topics; three were placeholder-only before | `agent3_scenario_coverage_v1` |
 | Repair pass: prompts v7 (intervention need, summary distinctions, open-question definition), retrieval expansion | live once on six cases (16 requests, $0.97); NO_INTERVENTION_NEED path and partitive fix offline only | `agent3_repair_eval_v1`, `agent3_repair_comparison_v1` |
+| Repair pass 2: prompts v8, ToT v3 selection, temporal decision fixes | offline only (prepared judgments; temporal golden set 14/15) | `tests/test_agent3_tot_v3.py`, `agent3_temporal_golden_v1` |
 
 Open evaluation cases (not used for tuning) are in `data/evaluation/agent3_open_evaluation_cases.json`; the first is
 the audio trial-outcome follow-up retrieval miss from the live smoke run (investigated in Milestone 7).
@@ -1214,3 +1215,73 @@ accounting COMPLETE; no stage failure.
 Checks before the paid run: focused tests, browser 10 passed, retrieval evaluation unchanged, full suite (two
 integration failures from a fixture-builder bug, fixed and re-run). Final full suite after the partitive fix: 841
 passed (temp dirs on D:/tsb).
+
+## Repair pass 2 (2026-10-30): ToT expansion, interpretation checks, temporal golden set
+
+Offline only (no paid calls). Prompts `agent3-advisor-prompts-v8`, draft `agent3-advisor-draft-v8`, ToT
+`agent3-tot-comparison-v3`; recorded v6/v7 drafts and v2 comparisons replay under their original rules
+(`LEGACY_LABELS`, version-allowed labels kept).
+
+**ToT (inside the Advisor; one comparison call, four-request topic ceiling, reserved grounding call unchanged).**
+New trigger ACTION_CHOICE: the draft's `action_choice` names at least two different action types, the unresolved
+tradeoff and cited evidence (and includes the draft's own action); it is judged as a non-blocking `tot:action_choice`
+statement for the record and never becomes a review reason. Imagined alternatives, inherited flags or unknown causes
+do not trigger. Comparison v3: the incumbent (the draft action, verbatim; otherwise flagged `INCUMBENT_NOT_VERBATIM`),
+NO_ACTION when plausible, per-candidate intervention need, need strength, temporal/scope consistency, proportionality,
+unresolved assumptions, and a decision (KEEP_INCUMBENT, REPLACE_INCUMBENT, CLOSE_CALL). `select`: a clearly preferred,
+valid, issue-free candidate sharing evidence with the draft's claims replaces even an operational incumbent before
+the final grounding (exact text, evidence, premises and need move together); the grounding judges the selected
+action and every remaining valid candidate, the displaced incumbent included; a close call keeps the incumbent;
+operational candidates resting only on historical sources (`HISTORICAL_ONLY_SUPPORT`) or stating no need are never
+selected; the fallback does not resend a selected candidate that was withheld. Selection never changes review reasons;
+NO_ACTION does not by itself make an Observation card.
+
+**Interpretation checks.**
+- TL confirmation: the need was supported (repeated handling questions, one thread unanswered) while the open question
+  failed because the FAQ already answers the procedure (score separately; no universal tie-break; give the team lead
+  the prompt and both responses when the pair does not settle it) and the team lead's requested input was still
+  missing. Not a policy gap. Prompt clarified: a confirmation guidance assigns to the team lead counts once its inputs
+  exist.
+- QA misalignment: the baseline's two "source conflicts" were QA tutors disagreeing with each other (member evidence),
+  not sources; the removed conflict was false, not hidden by retrieval (the missing RP status note is an
+  example-collection note). Semantic conflicts do come only from the draft; fix: member-only conflicts are recorded as
+  MEMBER_DISAGREEMENT and never become a temporal conflict.
+- Already announced: reminder -> escalation; both acceptable and both follow the 22:00 announcement's directive;
+  labels unchanged. Gap found and fixed: the intervention-need statement now gets the role/count/name prose checks.
+- Audio: replay (`scripts/replay_overnight_topic.py`, zero calls, identical evidence context): 27 verdicts reused; the
+  formerly rejected claim and the action are PENDING (never judged), so the card still shows no action. Needs one live
+  grounding call to settle.
+- Observation-only blueprint discrepancy (ESCALATE_ENGINEERING per thread) remains visible; labels unchanged.
+
+**Temporal golden set** (`data/evaluation/temporal_golden.json`, 15 cases, labels written before the evaluator;
+`scripts/evaluate_temporal.py` builds each controlled bundle into a throwaway snapshot through production ingestion,
+indexing and version eligibility, retrieves it complete, applies PREPARED semantic judgments, and calls
+`temporal_check` and the new production `temporal_decision`, which exposes the baseline decision from existing
+signals without its own date comparison). Report: `data/experiments/agent3_temporal_golden_v1/report.json`.
+
+| Metric | First run | Final |
+| --- | --- | --- |
+| Joint accuracy | 10/15 | 14/15 |
+| Decisive-baseline accuracy | 7/12 | 11/12 |
+| Correct abstention | 3/3 | 3/3 |
+| False overrides | 0/15 | 0/15 |
+| Update-target accuracy | 14/15 | 14/15 |
+| Input-order dependent cases | none | none |
+| Always-abstain policy (joint / decisive) | 3/15 / 0/12 | 3/15 / 0/12 |
+
+Changes between runs: two production fixes (records out of the running by recorded state - expired, superseded,
+other-batch decision, unexecuted decision, unapproved or not-yet-effective revision - no longer make an unexplained
+conflict; an executed in-scope decision still does), the evaluator now runs the Advisor's history-mode supersession
+check as production does, `temporal_decision` no longer counts an unapproved revision as overridden, and one
+correction to prepared inputs (T02, T09 cite only the section that addresses the question; recorded in the file).
+One intermediate run had a false override (T09) caused by that harness defect. Remaining mismatch, T02: an approved,
+executed, effective TL decision record that declares it supersedes a guidance section is never current
+(PRIOR_DECISION), although version selection honours its supersession; production abstains with review (safe, no
+override). Whether executed TL decisions become current handling is a policy decision.
+
+**Checks.** Full suite 866 passed (an intermediate run caught a regression in the non-competing rule - two current
+sources in conflict were settled - fixed with a regression test); browser 10 passed; retrieval evaluation unchanged.
+
+**Live verification still needed (smallest set):** audio (pending premise and action after the partitive fix);
+observation-only and QA misalignment under prompts v8 (action choice, ToT selection on real drafts); TL confirmation
+(open-confirmation wording); one topic whose draft states an action choice, to see a live v3 comparison and selection.

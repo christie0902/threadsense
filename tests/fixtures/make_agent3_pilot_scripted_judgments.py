@@ -175,7 +175,7 @@ json_revision = {**json_draft, 'gaps': [json_draft['gaps'][1]], 'claims': json_c
     {'claim_id': 'c4', 'kind': 'HISTORY', 'evidence_ids': ['k:rp-audit-manifest-approval@1.0:67038303'],
      'text': 'The JSON audit-manifest approval concerns export files and creates no preference rule for scored responses.'}],
     'proposed_action': {**json_draft['proposed_action'], 'support_claim_ids': ['c2', 'c3']}}
-json_tot = {'candidates': [
+json_tot = {'contract_version': 'agent3-tot-comparison-v2', 'candidates': [
     {'candidate_id': 'A', 'action_type': 'NO_ACTION', 'evidence_ids': ['k:response-preference-faq@1.1:fa9b6a3d',
                                                                         'k:rp-format-rule-rejected@1.0:59d718d7'],
      'draft_text': 'Hold for TL confirmation with the exact prompt and both responses.', 'evidence_support': 'STRONG',
@@ -360,7 +360,7 @@ repeat_draft = {
     'confidence': 0.55, 'open_confirmation': 'NONE',
     'resolution': resolution('repeated_ending', {}, {'default': 'No answer in the thread; reviewers ask for a downloaded-file '
                                                                 'versus player comparison.'})}
-repeat_tot = {'candidates': [
+repeat_tot = {'contract_version': 'agent3-tot-comparison-v2', 'candidates': [
     {'candidate_id': 'A', 'action_type': 'NO_ACTION', 'evidence_ids': ['k:audio-multimodal-instructions@1.3:7a5ab59d',
                                                                         'k:audio-repeat-observation-review@1.0:ae0550d0'],
      'draft_text': 'Keep as an observation until a file-versus-player comparison exists.', 'evidence_support': 'STRONG',

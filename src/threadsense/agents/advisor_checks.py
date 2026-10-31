@@ -400,6 +400,9 @@ def presentation_issues(draft, ledger):
                       support, True))
         if action.rationale:
             texts.append(('action:rationale', action.rationale, support, True))
+        need = getattr(action, 'intervention_need', None)
+        if need is not None:  # Judged (roles, counts, names) though not displayed.
+            texts.append(('action:need', need.statement, need.evidence_ids, False))
     if draft.review_note:
         texts.append(('review_note', draft.review_note, _review_note_evidence(draft), True))
     texts += [(f'announcement:{a.evidence_id}', a.rationale, [a.evidence_id], False) for a in draft.announcement_assessments]
@@ -532,6 +535,11 @@ def statements(draft, ledger, *, severity=None, alternatives=(), handling=None):
     if draft.review_note:
         add('review_note', 'REVIEW_NOTE', f'Still needs review: {draft.review_note}', _review_note_evidence(draft),
             blocking=False)
+    choice = getattr(draft, 'action_choice', None)
+    if choice is not None:  # The ToT trigger, judged for the record; it never becomes a review reason.
+        add('tot:action_choice', 'ACTION_CHOICE', 'The evidence leaves a real choice between '
+            + ', '.join(ACTION_LABELS[a].lower() for a in dict.fromkeys(choice.competing_actions)) + f': {choice.tradeoff}',
+            choice.evidence_ids, blocking=False)
     for a in draft.announcement_assessments:
         if a.relevant and a.directive:
             add(f'announcement:{a.evidence_id}', 'ANNOUNCEMENT_HANDLING', 'This announcement applies to this topic and '
@@ -561,9 +569,12 @@ def statements(draft, ledger, *, severity=None, alternatives=(), handling=None):
             add(f'reporter:{author}', 'AFFECTED_REPORTER',
                 f'{author} reports, in their own cited message, being affected by this problem.', ids)
     for c in alternatives:
+        need = c.get('intervention_need') or {}
         add(f"alternative:{c['candidate_id']}", 'ALTERNATIVE', f"{ACTION_LABELS[c['action_type']]}."
             + (f" Instruction: {c['instruction']}" if c.get('instruction') else '')
-            + f" Draft to copy: {c['draft_text']} Why this helps: {c['rationale']}", c['evidence_ids'], blocking=False)
+            + f" Draft to copy: {c['draft_text']} Why this helps: {c['rationale']}"
+            + (f" Why intervening now is needed ({NEED_KINDS[need['kind']]}): {need['statement']}" if need else ''),
+            c['evidence_ids'] + list(need.get('evidence_ids') or []), blocking=False)
         if c['action_type'] != 'NO_ACTION':
             out[-1]['premises'] = [f'claim:{i}' for i in c.get('premise_ids', [])]
     for i, current, older, conflict in agreement_candidates(draft, ledger, handling):
@@ -704,6 +715,38 @@ def _superseded_conflict(conflict, ledger, handling):
     return current, older
 
 
+NOT_EXECUTED = frozenset({'not_executed', 'not_yet_executed'})
+
+
+def _not_competing(items, handling):
+    """(current IDs, {other ID: reason}) when the conflict has current items and every other item is out of the
+    running by recorded state alone: expired, a superseded revision or section, a decision record for another batch,
+    or an approved decision not executed (history, not policy). Anything uncertain, or an executed in-scope decision,
+    keeps the conflict reviewable. None otherwise. No date comparison happens here."""
+    current = [i['evidence_id'] for i in items if i['use'] in CURRENT_USES or i['evidence_id'] in handling]
+    # Several current sources in conflict are a real conflict (agreement is judged separately, _superseded_conflict).
+    if len(current) != 1 or len(items) < 2 or any(_uncertain(i) for i in items):
+        return None
+    reasons = {}
+    for item in items:
+        if item['evidence_id'] in current:
+            continue
+        a, dates, scope, states = item.get('applicability') or {}, item.get('dates') or {}, item.get('scope') or {}, item.get('recorded_states') or {}
+        if item['use'] == 'HISTORY_ONLY' and dates.get('expired_as_of'):
+            reasons[item['evidence_id']] = 'EXPIRED'
+        elif item['use'] == 'HISTORY_ONLY' and a.get('state') in ('SUPERSEDED_REVISION', 'SECTION_SUPERSEDED'):
+            reasons[item['evidence_id']] = a['state']
+        elif a.get('state') in ('NOT_APPROVED', 'NOT_YET_EFFECTIVE'):  # Never competes (versions.py).
+            reasons[item['evidence_id']] = a['state']
+        elif item['use'] == 'PRIOR_DECISION' and scope.get('batch_relation') == 'other_batch':
+            reasons[item['evidence_id']] = 'OTHER_BATCH_DECISION'
+        elif item['use'] == 'PRIOR_DECISION' and states.get('execution_status') in NOT_EXECUTED:
+            reasons[item['evidence_id']] = 'DECISION_NOT_EXECUTED'
+        else:
+            return None
+    return current, reasons
+
+
 def agreement_candidates(draft, ledger, handling=None):
     """Conflicts that recorded supersession would explain if their several current sources agree: (index, current IDs,
     older IDs, conflict). With one current source the record settles it; with several, the final grounding judges
@@ -726,6 +769,12 @@ def temporal_check(draft, ledger, handling=None, verdicts=None):
     findings = []
     for index, conflict in enumerate(draft.source_conflicts):
         items = [ledger.get(i) for i in conflict.evidence_ids]
+        if items and all(item is not None and item.get('origin') == 'member_message' for item in items):
+            # Members disagreeing with each other is reported evidence (a claim), not a conflict between sources with
+            # recorded dates or applicability; it never makes a temporal conflict.
+            findings.append({'status': 'NOT_A_SOURCE_CONFLICT', 'code': 'MEMBER_DISAGREEMENT', 'evidence_ids': conflict.evidence_ids,
+                             'detail': conflict.description})
+            continue
         if any(item is None for item in items):
             findings.append({'status': 'DETECTED', 'code': 'CONFLICT_CITES_UNKNOWN_EVIDENCE',
                              'evidence_ids': conflict.evidence_ids, 'detail': conflict.description})
@@ -733,7 +782,12 @@ def temporal_check(draft, ledger, handling=None, verdicts=None):
         found = _superseded_conflict(conflict, ledger, handling)
         base = {'evidence_ids': conflict.evidence_ids, 'detail': conflict.description}
         if found is None:
-            findings.append({'status': 'DETECTED', 'code': 'UNEXPLAINED_SOURCE_CONFLICT', **base})
+            settled = _not_competing(items, handling)
+            if settled:
+                findings.append({'status': 'RESOLVED_BY_RECORDED_STATE', 'code': 'OTHER_SOURCES_DO_NOT_COMPETE', **base,
+                                 'current': settled[0], 'not_competing': settled[1]})
+            else:
+                findings.append({'status': 'DETECTED', 'code': 'UNEXPLAINED_SOURCE_CONFLICT', **base})
             continue
         current = [c['evidence_id'] for c in found[0]]
         agreement = None if len(current) == 1 else (verdicts or {}).get(f'temporal:conflict[{index}]', 'NOT_YET_JUDGED')
@@ -757,6 +811,43 @@ def temporal_check(draft, ledger, handling=None, verdicts=None):
     return {'status': 'DETECTED' if any(f['status'] == 'DETECTED' for f in findings) else 'NONE_FOUND',
             'findings': findings,
             'ignored_revision_states': 'NOT_YET_EFFECTIVE and NOT_APPROVED revisions never compete with applicable guidance.'}
+
+
+def temporal_decision(draft, ledger, temporal, *, handling=(), open_question_supported=False, withheld=()):
+    """The baseline decision behind a temporal result, from signals production already computed: each cited item's
+    use (version eligibility, expiry, announcement verification), the temporal findings, the open-question verdict and
+    what version selection withheld. No date comparison happens here (revision order is versions.py's).
+
+    Returns decision DECIDED (baseline = the applicable cited items) or ABSTAIN; temporal_status NO_CONFLICT,
+    RESOLVED_BY_RECORD or UNRESOLVED; review_required; and update_targets (published sections a baseline item
+    supersedes by record)."""
+    cited = list(dict.fromkeys(e for c in draft.claims for e in c.evidence_ids if e in ledger))
+    current = [e for e in cited if ledger[e]['use'] in CURRENT_USES or e in handling]
+    resolved = [f for f in temporal['findings'] if f['status'] == 'RESOLVED_BY_RECORDED_SUPERSESSION' or (
+        f['status'] == 'RESOLVED_BY_RECORDED_STATE' and set(f['not_competing'].values()) & {'EXPIRED', 'SUPERSEDED_REVISION', 'SECTION_SUPERSEDED'})]
+    authoring = {(ledger[e]['citation'] or {}).get('authoring') for e in current} - {None}
+    lineages = {a.split('@')[0] for a in authoring}
+    # Recorded precedence decided against a competitor: a revision of a baseline lineage withheld as superseded, a
+    # section a baseline item supersedes, or a cited item that is history by recorded state (superseded or expired).
+    # `withheld`: the research tools' withheld_by_version entries (advisor_evidence.withheld_item).
+    superseded_revisions = [w for w in withheld if w['state'] == 'SUPERSEDED_REVISION'
+                            and (w.get('authoring') or '@').split('@')[0] in lineages]
+    replaced_sections = [w for w in withheld if w['state'] == 'SECTION_SUPERSEDED' and any(
+        r['replaced_by'] in authoring for r in w.get('replaced_by') or [])]
+    # Overridden by record means expired or superseded; an unapproved or not-yet-effective revision never applied.
+    expired_or_old = [e for e in cited if ledger[e]['use'] == 'HISTORY_ONLY' and (
+        (ledger[e].get('dates') or {}).get('expired_as_of')
+        or (ledger[e].get('applicability') or {}).get('state') in ('SUPERSEDED_REVISION', 'SECTION_SUPERSEDED'))]
+    targets = [{'authoring': w.get('authoring'), 'section': r.get('section'), 'replaced_by': r['replaced_by']}
+               for w in replaced_sections for r in w.get('replaced_by') or [] if r.get('section') and r['replaced_by'] in authoring]
+    abstain = (temporal['status'] == 'DETECTED' or open_question_supported or not current)
+    status = ('UNRESOLVED' if abstain else 'RESOLVED_BY_RECORD'
+              if resolved or superseded_revisions or replaced_sections or expired_or_old else 'NO_CONFLICT')
+    return {'decision': 'ABSTAIN' if abstain else 'DECIDED', 'baseline': [] if abstain else current,
+            'temporal_status': status, 'review_required': abstain,
+            'reason': ('temporal conflict detected' if temporal['status'] == 'DETECTED' else 'open question supported'
+                       if open_question_supported else 'no applicable cited source' if not current else None),
+            'update_targets': targets}
 
 
 def evidence_ref(item, packet, handling=()):

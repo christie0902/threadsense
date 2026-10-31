@@ -49,9 +49,9 @@ PILOT_VERSION = 'agent3-advisor-pilot-v6'
 # Prompt text version, recorded in every manifest with the rule fingerprints. v6: team lead-facing writing guide and two
 # STYLE ONLY examples in the draft/revision rules; display-text rules in grounding and ToT; rules sent once per request
 # (agent3_readability_v1 ran v6). v6.1: grounding also receives the open upstream review flags (open_review_flags).
-PROMPT_VERSION = 'agent3-advisor-prompts-v7'
+PROMPT_VERSION = 'agent3-advisor-prompts-v8'
 # Replayed recorded drafts older than v7 are read under the last contract they satisfy (no intervention_need).
-LEGACY_LABELS = {'AdvisorDraft': 'agent3-advisor-draft-v6'}
+LEGACY_LABELS = {'AdvisorDraft': 'agent3-advisor-draft-v6', 'ToTComparison': 'agent3-tot-comparison-v2'}
 SCENARIOS = ROOT/'data/evaluation/agent3_pilot_scenarios.json'
 HANDOFF = ROOT/'data/processed/agent2_handoff_v2_projection'
 # Per topic: draft + one revision + one ToT + final grounding = 4 model calls at most, the last always
@@ -112,7 +112,12 @@ DRAFT_RULES = (
     'otherwise NONE. It must be a handling or policy question the team lead has to decide or confirm (for example which '
     'of two current rules applies, or whether an earlier decision covers these cases). A technical cause not yet '
     'diagnosed, diagnostic results not yet collected, an expert\'s assessment not yet given, generic uncertainty, and '
-    'earlier review flags (already carried with the card) are not open confirmations. Severity: apply the rubric unchanged; MEDIUM or HIGH must cite a rubric signal by level, index and '
+    'earlier review flags (already carried with the card) are not open confirmations. A confirmation that current '
+    'guidance assigns to the team lead is one once its required inputs are available; while inputs the team lead '
+    'requested are still missing, say so instead. action_choice: fill it only when the evidence leaves a real choice '
+    'between intervening and observing, or between materially different interventions (e.g. a reminder versus an '
+    'escalation): name the competing action types and the tradeoff the evidence does not settle, citing it. Imagining '
+    'an alternative, an earlier review flag, or a root cause nobody knows yet is not such a choice; otherwise null. Severity: apply the rubric unchanged; MEDIUM or HIGH must cite a rubric signal by level, index and '
     'exact text, supported by member messages; affected_reporters lists only people whose own message (cite that '
     'message) reports being affected, not everyone who replied. recurrence FOUND means historical recurrence '
     'corroborated by retrieved records (cite them in recurrence_evidence_ids); members saying it is happening again go '
@@ -187,7 +192,8 @@ GROUNDING_RULES = (
     'need not literally prescribe the action. ACTION and operational ALTERNATIVE statements list their premises: '
     'PENDING_YOUR_VERDICT premises are judged here and are provisional, not final; REJECTED ones failed deterministic '
     'checks and support nothing; a premise with depends_on stands only if every ANNOUNCEMENT_HANDLING statement it lists '
-    'is also SUPPORTED. INTERVENTION_NEED says why intervening now is needed: SUPPORTED only if the context shows that '
+    'is also SUPPORTED. ACTION_CHOICE is SUPPORTED only if the cited evidence really leaves that choice between the named '
+    'actions open (not merely an imagined alternative, a review flag or an unknown cause). INTERVENTION_NEED says why intervening now is needed: SUPPORTED only if the context shows that '
     'reason (an unresolved handling question, a guidance gap, an applicable pending decision, or an operational problem '
     'that needs coordination). Questions already answered in their threads are not unresolved; a general benefit ("a '
     'reminder might help") is not a need; existing guidance does not by itself rule a need out. Judge in this order: (1) announcement handling; (2) each premise\'s final status, which is your '
@@ -509,12 +515,16 @@ class ReplayClient:
     (sufficiency, source agreement) is PENDING, never invented."""
     label = 'REPLAY_RECORDED'
     replay = True
-    retrieval_expansion = False  # Recorded runs predate the bounded expansion; replay keeps their retrieval.
+    retrieval_expansion = False  # Set per recorded run in __init__ (True only if that run used the expansion).
 
     def __init__(self, run_dir):
         self.run_dir, self.recorded, self.reuse_log = Path(run_dir), {}, []
-        for path in sorted((self.run_dir/'results').glob('*.json')):
-            r = read_json(path)
+        # Pilot runs keep results/<scenario>.json; overnight runs keep topics/<work>.json with the result inside.
+        results = [read_json(p) for p in sorted((self.run_dir/'results').glob('*.json'))] + [
+            r['result'] for r in (read_json(p) for p in sorted((self.run_dir/'topics').rglob('*.json'))) if r.get('result')]
+        # Replay retrieves as the recorded run did: with the bounded expansion only if the run used it.
+        self.retrieval_expansion = any(e.get('retrieved_as') for r in results for e in (r.get('evidence_ledger') or {}).values())
+        for r in results:
             self.recorded[r['scenario']['id']] = {
                 'raw': {c['stage']: c['raw'] for c in r.get('model_calls', []) if c.get('raw')},
                 'failed': {c['stage']: c for c in r.get('model_calls', []) if c.get('status') == 'FAILED'},
@@ -534,7 +544,8 @@ class ReplayClient:
         value = json.loads(_json_text(rec['raw'][stage]))
         default = schema.model_fields['contract_version'].default if 'contract_version' in schema.model_fields else None
         legacy = LEGACY_LABELS.get(schema.__name__)
-        if isinstance(value, dict) and legacy and value.get('contract_version') != default:
+        allowed = set(getattr(schema.model_fields['contract_version'].annotation, '__args__', ())) if default else set()
+        if isinstance(value, dict) and legacy and value.get('contract_version') not in allowed:
             value['contract_version'] = legacy  # Recorded content predates newer requirements; it keeps the old rules.
         elif default and isinstance(value, dict) and value.get('contract_version') not in (None, default):
             value['contract_version'] = default  # Version label only; the recorded content is unchanged.
@@ -829,7 +840,7 @@ def advise(scenario, *, view, retriever, client, budget, rubric, run_id, as_of, 
             'proposed_severity': {'level': severity.level, 'assessment_status': severity.assessment_status,
                                   'note': 'Bound to the rubric; not yet grounded.'},
             'rubric_levels': sorted(rubric['levels'])})
-        draft, adopted = advisor_tot.adopt(tot, draft)  # A selected candidate may become the action; flags untouched.
+        draft, adopted = advisor_tot.select(tot, draft)  # A selected candidate may become the action; flags untouched.
         action_notes = [adopted] if adopted else []
         actions = action_issues(draft, ledger)
         stmts = statements(draft, ledger, severity=severity, alternatives=advisor_tot.alternatives(tot))

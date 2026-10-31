@@ -620,7 +620,7 @@ def test_tot_alternatives_need_their_own_grounding_verdict(retriever, view):
 
     def tot(payload):
         member, known = payload['draft']['claims'][0]['evidence_ids'][0], payload['draft']['claims'][-1]['evidence_ids'][0]
-        return {'candidates': [
+        return {'contract_version': 'agent3-tot-comparison-v2', 'candidates': [
             {'candidate_id': 'A', 'action_type': 'NO_ACTION', 'draft_text': 'Wait for TL confirmation.', 'evidence_ids': [known],
              'evidence_support': 'STRONG', 'applicability': 'UNCLEAR', 'severity_fit': 'FITS', 'rationale': 'Follows the draft.'},
             {'candidate_id': 'B', 'action_type': 'ESCALATE_ENGINEERING', 'evidence_ids': [member],

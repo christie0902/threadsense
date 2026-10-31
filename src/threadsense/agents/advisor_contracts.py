@@ -15,7 +15,10 @@ canonical-ID attributions; grounding v4 also judges the sufficiency of each revi
 adds the team lead-facing action instruction and rationale (draft_text is the copyable draft) and an optional review
 note; ToT v2 adds a candidate instruction. Draft v7 requires an operational action to state its intervention need (why
 acting now is needed, from the evidence); the final grounding judges it like any statement. Recorded v6 drafts keep
-the v6 rules.
+the v6 rules. Draft v8 adds action_choice: a meaningful choice between intervention and observation, or between
+materially different interventions, that the evidence leaves open (a ToT trigger). ToT v3 marks the incumbent (the
+draft's own action, verbatim) and assesses each candidate's intervention need, temporal and scope consistency,
+proportionality and unresolved assumptions, with an explicit decision (keep the incumbent, replace it, or close call).
 """
 from typing import Literal
 
@@ -120,6 +123,20 @@ class InterventionNeed(Strict):
     evidence_ids: list[str] = Field(min_length=1)
 
 
+class ActionChoice(Strict):
+    """A choice the evidence leaves open between intervention and observation, or materially different interventions.
+    Imagining an alternative, an inherited review flag or an unknown root cause is not such a choice."""
+    competing_actions: list[ActionType] = Field(min_length=2)
+    tradeoff: Text
+    evidence_ids: list[str] = Field(min_length=1)
+
+    @model_validator(mode='after')
+    def different(self):
+        if len(set(self.competing_actions)) < 2:
+            raise ValueError('An action choice names at least two different action types.')
+        return self
+
+
 class ActionProposal(Strict):
     action_type: ActionType
     intervention_need: InterventionNeed | None = None  # Required (draft v7) for any action other than NO_ACTION.
@@ -181,7 +198,8 @@ class CoverageItem(Strict):
 
 
 class AdvisorDraft(Strict):
-    contract_version: Literal['agent3-advisor-draft-v7', 'agent3-advisor-draft-v6'] = 'agent3-advisor-draft-v7'
+    contract_version: Literal['agent3-advisor-draft-v8', 'agent3-advisor-draft-v7', 'agent3-advisor-draft-v6'] = \
+        'agent3-advisor-draft-v8'
     summary: Text  # What happened, 1-2 short sentences for the team lead.
     reasoning: Text
     claims: list[Claim] = Field(default_factory=list)
@@ -199,6 +217,7 @@ class AdvisorDraft(Strict):
     resolution: list[MemberResolution] = Field(default_factory=list)
     coverage: list[CoverageItem] = Field(default_factory=list)
     review_note: str | None = None  # Only when something specific still needs the team lead's review.
+    action_choice: ActionChoice | None = None  # Draft v8: a real choice between actions that the evidence leaves open.
 
     @model_validator(mode='after')
     def consistent(self):
@@ -210,7 +229,7 @@ class AdvisorDraft(Strict):
         if self.proposed_action and set(self.proposed_action.support_claim_ids) - set(claims):
             raise ValueError('Action support must reference claims in this draft.')
         action = self.proposed_action
-        if (self.contract_version == 'agent3-advisor-draft-v7' and action is not None and action.action_type != 'NO_ACTION'
+        if (self.contract_version != 'agent3-advisor-draft-v6' and action is not None and action.action_type != 'NO_ACTION'
                 and action.intervention_need is None):
             raise ValueError('An operational action states its intervention_need (why intervening now is needed, with '
                              'the evidence that shows it); otherwise propose NO_ACTION.')
@@ -265,14 +284,22 @@ class CandidateAction(Strict):
     applicability: Literal['CURRENT', 'HISTORICAL_ONLY', 'MIXED', 'UNCLEAR']
     severity_fit: Literal['FITS', 'PARTIAL', 'POOR', 'UNKNOWN']
     rationale: Text
+    # v3 (defaults keep recorded v2 candidates valid):
+    incumbent: bool = False  # The draft's own action, copied verbatim.
+    intervention_need: InterventionNeed | None = None  # Required for an operational candidate in v3.
+    need_strength: Literal['STRONG', 'PARTIAL', 'WEAK', 'NONE'] | None = None
+    temporal_scope: Literal['CONSISTENT', 'ISSUE', 'UNCLEAR'] | None = None
+    proportionality: Literal['FITS', 'EXCESSIVE', 'INSUFFICIENT', 'UNCLEAR'] | None = None
+    unresolved_assumptions: list[str] = Field(default_factory=list)
 
 
 class ToTComparison(Strict):
-    contract_version: Literal['agent3-tot-comparison-v2'] = 'agent3-tot-comparison-v2'
+    contract_version: Literal['agent3-tot-comparison-v3', 'agent3-tot-comparison-v2'] = 'agent3-tot-comparison-v3'
     candidates: list[CandidateAction] = Field(min_length=2, max_length=3)
     preferred_candidate_id: str | None = None
     close_call: bool
     rationale: Text
+    decision: Literal['KEEP_INCUMBENT', 'REPLACE_INCUMBENT', 'CLOSE_CALL'] | None = None  # v3
 
     @model_validator(mode='after')
     def consistent(self):
@@ -280,4 +307,8 @@ class ToTComparison(Strict):
         _distinct(ids, 'Candidate IDs')
         if self.preferred_candidate_id is not None and self.preferred_candidate_id not in ids:
             raise ValueError('The preferred candidate must be one of the candidates.')
+        if sum(c.incumbent for c in self.candidates) > 1:
+            raise ValueError('At most one candidate is the incumbent draft action.')
+        if self.decision == 'CLOSE_CALL' and not self.close_call:
+            raise ValueError('A close-call decision sets close_call.')
         return self

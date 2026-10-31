@@ -29,7 +29,7 @@ def test_absence_statements_are_limited_to_what_the_run_retrieved(text, flagged)
 def test_coverage_note_and_prompt_describe_this_runs_retrieval():
     note = _coverage_note('PRIOR_DECISIONS: found no new evidence')
     assert "this run's searches retrieved nothing further" in note and 'does not show no such record exists' in note
-    assert PROMPT_VERSION == 'agent3-advisor-prompts-v7' and 'what this run retrieved' in WRITING_GUIDE
+    assert PROMPT_VERSION == 'agent3-advisor-prompts-v8' and 'what this run retrieved' in WRITING_GUIDE
 
 
 @pytest.fixture(scope='module')
