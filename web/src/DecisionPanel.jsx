@@ -110,7 +110,7 @@ export default function DecisionPanel({ runKey, card, alternatives, allowed, act
         <DecisionSummary entry={head} indexing={state.indexing} />
         {older.length > 0 && <details className="text-xs"><summary className="cursor-pointer text-slate-400">Earlier decisions ({older.length})</summary>
           <div className="mt-2 space-y-2">{older.map(e => <DecisionSummary key={e.entry_id} entry={e} indexing={state.indexing} current={false} />)}</div></details>}
-        <button type="button" className="link text-xs" disabled={!actor} onClick={() => setRevising(true)}>Record a new decision (supersedes this one)</button>
+        <button type="button" className="link text-xs" onClick={() => setRevising(true)}>Record a new decision (supersedes this one)</button>
       </div>
     )
   }
@@ -161,22 +161,22 @@ function DecisionForm({ runKey, card, alternatives, allowed, actor, head, onCanc
   if (!open) {
     return (
       <div className="flex flex-wrap items-center gap-3" data-testid="decision-area">
-        <button type="button" className="btn-primary" disabled={!actor} onClick={() => setOpen(true)}>
+        <button type="button" className="btn-primary" onClick={() => setOpen(true)}>
           {card.card_line === 'RECOMMENDED_ACTION' ? 'Approve…' : 'Resolve…'}
         </button>
         {onCancel && <button type="button" className="btn btn-sm" onClick={onCancel}>Cancel</button>}
-        <span className="text-[11px] text-slate-500">{actor ? 'Saves your decision only. Nothing is posted or executed.' : NO_SESSION}</span>
+        <span className={`text-[11px] ${actor ? 'text-slate-500' : 'text-amber-200/90'}`}>{actor ? 'Saves your decision only. Nothing is posted or executed.' : `${NO_SESSION} You can review the options; saving needs the server started with a team lead.`}</span>
       </div>
     )
   }
   return (
-    <form className="space-y-3 rounded-xl border border-cyan-400/20 bg-ink-850/80 p-4 text-sm" data-testid="decision-form"
+    <form className="space-y-4 rounded-xl border border-cyan-400/20 bg-ink-850/80 p-4 text-sm sm:p-5" data-testid="decision-form"
       onSubmit={e => { e.preventDefault(); if (ready) save(body()) }}>
       {allowed.length > 1 && (
-        <fieldset className="flex flex-wrap gap-2">
+        <fieldset className="flex flex-wrap gap-2.5">
           <legend className="eyebrow mb-1.5">Resolution</legend>
           {allowed.map(k => (
-            <label key={k} className="flex cursor-pointer items-center gap-1.5 rounded-lg border border-white/10 px-2.5 py-1 text-sm text-slate-200 has-[:checked]:border-cyan-400/60 has-[:checked]:bg-cyan-400/10">
+            <label key={k} className="flex cursor-pointer items-center gap-2 rounded-lg border border-white/10 bg-white/[0.02] px-3 py-1.5 text-sm text-slate-200 transition hover:-translate-y-px hover:border-cyan-300/40 hover:bg-white/[0.06] hover:text-white active:translate-y-0 active:scale-[0.98] has-[:checked]:border-cyan-400/60 has-[:checked]:bg-cyan-400/10 has-[:checked]:text-white has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-cyan-300/50">
               <input type="radio" className="accent-cyan-400" name={`kind-${card.card_id}`} value={k} checked={kind === k} onChange={() => { setKind(k); setSourceId(null) }} />
               {RESOLUTIONS[k].label}
             </label>

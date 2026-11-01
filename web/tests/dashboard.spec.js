@@ -40,9 +40,17 @@ test('approve -> refresh -> restart keeps exactly one decision, never executed',
   await open(page, FIXTURE)
   const box = cardBox(page, card.topic_name)
   await details(box, 'Action & draft')
-  await box.getByRole('button', { name: 'Copy draft' }).click()
+  const copyButton = box.getByRole('button', { name: 'Copy draft' })
+  const draftBefore = await box.getByTestId('action-draft').boundingBox()
+  await copyButton.click()
   await expect(box.getByTestId('copy-note')).toHaveText('Copied to your clipboard. Nothing was posted.')
+  // The note sits below its button and does not move the draft.
+  const [note, button] = [await box.getByTestId('copy-note').boundingBox(), await copyButton.boundingBox()]
+  expect(note.y).toBeGreaterThanOrEqual(button.y + button.height)
+  expect(await box.getByTestId('action-draft').boundingBox()).toEqual(draftBefore)
   expect(posts).toEqual([]) // copying is not posting
+  await box.getByTestId('card-collapse').click()
+  await expect(box.getByTestId('card-detail')).toHaveCount(0)
   await box.getByRole('button', { name: 'Approve…' }).click()
   await expect(box.getByTestId('form-text-origin')).toHaveText('Model-grounded text (unchanged)')
   await box.getByTestId('save-decision').click()

@@ -1,4 +1,7 @@
-import { useState } from 'react'
+import { AnimatePresence, motion, useReducedMotion } from 'framer-motion'
+import { useEffect, useRef, useState } from 'react'
+import copilotFace from './assets/copilot-face.webp'
+import copilotFigure from './assets/copilot.webp'
 
 export const LINE_LABELS = { RECOMMENDED_ACTION: 'Recommended action', NEEDS_REVIEW: 'Needs review', OBSERVATION: 'Observation' }
 
@@ -49,16 +52,28 @@ export function NotCurrent({ label }) {
   return <Badge tone="rose" data-testid="superseded-label">{label}</Badge>
 }
 
+/** The confirmation floats directly below the button, so it never pushes neighbouring fields around. */
 export function CopyButton({ text, what = 'draft' }) {
   const [state, setState] = useState(null)
+  const timer = useRef(null)
+  useEffect(() => () => clearTimeout(timer.current), [])
   const copy = async () => {
     try { await navigator.clipboard.writeText(text); setState('ok') } catch { setState('failed') }
+    clearTimeout(timer.current)
+    timer.current = setTimeout(() => setState(null), 4000)
   }
   return (
-    <span className="inline-flex flex-wrap items-center gap-2">
+    <span className="relative inline-flex">
       <button type="button" onClick={copy} className="btn btn-sm"><Icon name="copy" className="h-3.5 w-3.5" />Copy {what}</button>
-      {state === 'ok' && <span className="text-xs text-slate-400" data-testid="copy-note">Copied to your clipboard. Nothing was posted.</span>}
-      {state === 'failed' && <span className="text-xs text-red-300">Copy failed; select the text instead.</span>}
+      <AnimatePresence>
+        {state && (
+          <motion.span key={state} role="status" initial={{ opacity: 0, y: -4 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}
+            className={`absolute right-0 top-full z-10 mt-1.5 whitespace-nowrap rounded-lg border px-2.5 py-1 text-[11px] shadow-lg shadow-black/40 ${state === 'ok' ? 'border-emerald-400/30 bg-ink-850 text-emerald-200' : 'border-red-400/40 bg-ink-850 text-red-200'}`}
+            data-testid={state === 'ok' ? 'copy-note' : 'copy-failed'}>
+            {state === 'ok' ? 'Copied to your clipboard. Nothing was posted.' : 'Copy failed; select the text instead.'}
+          </motion.span>
+        )}
+      </AnimatePresence>
     </span>
   )
 }
@@ -132,5 +147,32 @@ export function Orb({ className = 'h-9 w-9', busy = false }) {
       </svg>
       <span className="absolute h-[34%] w-[34%] rounded-full bg-gradient-to-br from-cyan-300 to-indigo-400 shadow-[0_0_16px_rgba(103,232,249,0.8)]" />
     </span>
+  )
+}
+
+/** The co-pilot avatar for the header. It marks who prepared the brief; it is not a live process indicator. */
+export function CopilotAvatar({ className = 'h-10 w-10' }) {
+  const still = useReducedMotion()
+  return (
+    <motion.span className={`relative inline-block shrink-0 ${className}`} whileHover={still ? undefined : { rotate: -6, scale: 1.06 }}
+      transition={{ type: 'spring', stiffness: 300, damping: 14 }} aria-hidden="true">
+      <span className="absolute -inset-1 rounded-full bg-cyan-400/25 blur-md animate-breathe" />
+      <img src={copilotFace} alt="" className="relative h-full w-full rounded-full object-cover ring-1 ring-cyan-300/40" />
+      <span className="absolute -bottom-0.5 -right-0.5 h-2.5 w-2.5 rounded-full border-2 border-ink-950 bg-emerald-400" />
+    </motion.span>
+  )
+}
+
+/** The full figure for the hero: a slow float, a breathing floor glow and a small wave on hover. */
+export function CopilotFigure({ className = 'h-48' }) {
+  const still = useReducedMotion()
+  return (
+    <div className={`relative ${className}`} aria-hidden="true">
+      <span className="absolute inset-x-6 bottom-1 h-6 rounded-[50%] bg-cyan-400/30 blur-xl animate-breathe" />
+      <motion.img src={copilotFigure} alt="" draggable="false"
+        className="relative h-full w-auto select-none [mask-image:radial-gradient(closest-side,#000_72%,transparent)]"
+        animate={still ? undefined : { y: [0, -6, 0] }} transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
+        whileHover={still ? undefined : { rotate: [0, -3, 3, -2, 0], transition: { duration: 0.9 } }} />
+    </div>
   )
 }

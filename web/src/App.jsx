@@ -4,7 +4,7 @@ import { getJSON } from './api.js'
 import CardView from './CardView.jsx'
 import SidePanel from './Panels.jsx'
 import ReviewQueue from './ReviewQueue.jsx'
-import { Badge, Details, Icon, Orb, when, words } from './ui.jsx'
+import { Badge, CopilotAvatar, CopilotFigure, Details, Icon, Orb, when, words } from './ui.jsx'
 
 // Needs review first: it is what the team lead has to look at.
 const GROUPS = [
@@ -102,6 +102,25 @@ function TopicTable({ rows }) {
   )
 }
 
+const EMPTY_TEXT = {
+  NEEDS_REVIEW: 'No card in this run needs a team lead.',
+  RECOMMENDED_ACTION: 'This run produced no recommended-action cards.',
+  OBSERVATION: 'This run produced no observation cards.',
+}
+/** An honest empty line: the count is what the run saved, so explain the zero instead of filling it. */
+function EmptyLine({ line, resolved, total, fixture, onOpen }) {
+  const why = resolved ? `All ${resolved} resolved.`
+    : line !== 'NEEDS_REVIEW' && total ? 'A card that has any review reason (for example an inherited Agent 1 flag or high severity) is listed under Needs review instead.' : ''
+  return (
+    <div className="panel-inset flex flex-wrap items-center gap-x-3 gap-y-1 px-4 py-3 text-sm text-slate-400 lg:col-span-2" data-testid={`empty-${line}`}>
+      <span>{resolved ? 'Nothing active.' : EMPTY_TEXT[line]} <span className="text-slate-500">{why}</span></span>
+      {!resolved && line !== 'NEEDS_REVIEW' && fixture && (
+        <button type="button" className="link text-xs" onClick={() => onOpen(fixture.run_key)}>See how one looks in the labelled test fixture</button>
+      )}
+    </div>
+  )
+}
+
 function RunBanner({ run }) {
   const [label, text, style, dot] = MODE_BANNERS[run.mode] || ['Unknown run mode', '', 'border-white/10 bg-white/[0.03]', 'bg-slate-400']
   return (
@@ -177,11 +196,11 @@ export default function App() {
     <div className="min-h-screen">
       <header className="sticky top-0 z-20 border-b border-white/[0.06] bg-ink-950/75 px-4 py-2.5 backdrop-blur-xl" style={{ top: 'env(safe-area-inset-top, 0px)' }}>
         <div className="mx-auto flex max-w-6xl flex-wrap items-center gap-x-4 gap-y-2">
-          <div className="mr-auto flex items-center gap-3">
-            <Orb />
+          <div className="mr-auto flex items-center gap-3" data-testid="copilot">
+            <CopilotAvatar />
             <div className="leading-tight">
               <h1 className="font-display text-lg font-semibold tracking-tight text-white">Thread<span className="text-cyan-300">Sense</span></h1>
-              <div className="text-[10px] font-semibold uppercase tracking-[0.22em] text-cyan-300/70">Morning brief</div>
+              <div className="text-[10px] font-semibold uppercase tracking-[0.22em] text-cyan-300/70">AI co-pilot · <span className="text-slate-400">{brief ? 'brief ready' : 'loading'}</span></div>
             </div>
           </div>
           <label className="flex items-center gap-2 text-[11px] text-slate-500">Run
@@ -227,11 +246,11 @@ export default function App() {
 
             {tab === 'brief' && (
               <>
-                <section className="panel relative overflow-hidden p-6" data-testid="hero">
+                <section className="panel relative overflow-hidden p-6 md:min-h-[13rem] md:pr-56" data-testid="hero">
                   <div className="pointer-events-none absolute -right-16 -top-20 h-64 w-64 rounded-full bg-cyan-400/10 blur-3xl" aria-hidden="true" />
-                  <div className="pointer-events-none absolute right-8 top-1/2 hidden -translate-y-1/2 opacity-80 md:block" aria-hidden="true"><Orb className="h-24 w-24" /></div>
+                  <div className="absolute -bottom-2 right-6 hidden md:block"><CopilotFigure className="h-52" /></div>
                   <div className="relative max-w-2xl">
-                    <div className="eyebrow inline-flex items-center gap-1.5 text-cyan-300/80"><Icon name="spark" className="h-3.5 w-3.5" />Prepared overnight · cutoff {when(run.cutoff)}</div>
+                    <div className="eyebrow inline-flex items-center gap-1.5 text-cyan-300/80"><Icon name="spark" className="h-3.5 w-3.5" />Your co-pilot prepared this overnight · cutoff {when(run.cutoff)}</div>
                     <h2 className="mt-2 font-display text-2xl font-semibold tracking-tight text-white sm:text-[1.7rem]">
                       Good morning{session?.name ? `, ${session.name}` : ''}. <span className="text-cyan-300">Here's what needs you today.</span>
                     </h2>
@@ -297,7 +316,8 @@ export default function App() {
                           {live.map(c => <CardView key={c.card.card_id} runKey={runKey} item={c} actor={actor} decisionState={byCard[c.card.card_id]} wide={live.length === 1}
                             onDecisionChanged={loadDecisions} openPanel={setPanel} />)}
                         </AnimatePresence>
-                        {live.length === 0 && <div className="text-sm text-slate-500">None active.</div>}
+                        {live.length === 0 && <EmptyLine line={line} resolved={resolved.length} total={cards.length}
+                          fixture={runs?.find(r => r.mode === 'TEST_FIXTURE' && r.run_key !== runKey)} onOpen={k => { setRunKey(k); setProject(''); setPanel(null) }} />}
                       </div>
                       {resolved.length > 0 && (
                         <details className="group panel-inset p-3" data-testid={`resolved-${line}`}>

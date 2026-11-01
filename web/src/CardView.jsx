@@ -1,5 +1,5 @@
 import { AnimatePresence, motion } from 'framer-motion'
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import { getJSON } from './api.js'
 import DecisionPanel from './DecisionPanel.jsx'
 import { Badge, CopyButton, Icon, Json, LINE_LABELS, LINE_TONES, NotCurrent, SeverityBadge, SourceBadge, words } from './ui.jsx'
@@ -11,7 +11,7 @@ function Section({ label, children, testid }) {
   return (
     <div>
       <div className="eyebrow">{label}</div>
-      <div className="prose-pre mt-1 text-sm leading-relaxed text-slate-200" data-testid={testid}>{children}</div>
+      <div className="prose-pre mt-1.5 text-sm leading-relaxed text-slate-200" data-testid={testid}>{children}</div>
     </div>
   )
 }
@@ -19,7 +19,7 @@ function Section({ label, children, testid }) {
 function ActionTab({ action, alternatives, closeCall }) {
   const shown = action && action.action_type !== 'NO_ACTION'
   return (
-    <div className="space-y-4">
+    <div className="space-y-6">
       {shown && action.rationale && <Section label="Why" testid="action-rationale">{action.rationale}</Section>}
       {shown && action.draft_text && (
         <div>
@@ -27,22 +27,34 @@ function ActionTab({ action, alternatives, closeCall }) {
             <span className="eyebrow">Draft to copy</span>
             <CopyButton text={action.draft_text} />
           </div>
-          <div className="quote mt-1.5" data-testid="action-draft">{action.draft_text}</div>
+          <div className="quote mt-2" data-testid="action-draft">{action.draft_text}</div>
         </div>
       )}
-      {shown && action.scope_note && <div className="prose-pre text-xs text-slate-400">{action.scope_note}</div>}
+      {shown && action.scope_note && <div className="prose-pre text-xs leading-relaxed text-slate-400">{action.scope_note}</div>}
       {alternatives.length > 0 && (
-        <div className="rounded-xl border border-indigo-400/20 bg-indigo-400/[0.06] p-3" data-testid="alternatives">
+        <section className="rounded-2xl border border-indigo-400/20 bg-indigo-400/[0.05] p-4 sm:p-6" data-testid="alternatives">
           <div className="eyebrow text-indigo-300" data-testid="alternatives-heading">{closeCall ? 'Closely matched options (none preferred)' : 'Supported alternatives'}</div>
-          {alternatives.map(a => (
-            <div key={a.candidate_id} className="mt-3 space-y-1 text-sm">
-              <div className="font-medium text-white">{a.label}{a.preferred_by_comparison ? ' (preferred in the comparison)' : ''}</div>
-              {a.instruction && <div className="prose-pre text-slate-300">{a.instruction}</div>}
-              {a.rationale && <div className="prose-pre text-xs text-slate-400"><b className="text-slate-300">Why:</b> {a.rationale}</div>}
-              {a.draft_text && <div className="flex flex-wrap items-start gap-2"><div className="quote flex-1">{a.draft_text}</div><CopyButton text={a.draft_text} /></div>}
-            </div>
-          ))}
-        </div>
+          <div className="mt-4 space-y-4">
+            {alternatives.map((a, i) => (
+              <div key={a.candidate_id} className="rounded-xl border border-white/[0.07] bg-ink-950/40 p-4 sm:p-5">
+                <div className="flex items-start gap-3">
+                  <span className="grid h-6 w-6 shrink-0 place-items-center rounded-full bg-indigo-400/15 text-[11px] font-semibold text-indigo-200">{i + 1}</span>
+                  <div className="min-w-0 flex-1 space-y-3">
+                    <div className="font-medium leading-snug text-white">{a.label}{a.preferred_by_comparison ? ' (preferred in the comparison)' : ''}</div>
+                    {a.instruction && <div className="prose-pre text-sm leading-relaxed text-slate-300">{a.instruction}</div>}
+                    {a.rationale && <div className="prose-pre text-xs leading-relaxed text-slate-400"><b className="text-slate-300">Why:</b> {a.rationale}</div>}
+                    {a.draft_text && (
+                      <div className="space-y-2 pt-1">
+                        <div className="flex items-center justify-between gap-3"><span className="eyebrow">Alternative draft</span><CopyButton text={a.draft_text} /></div>
+                        <div className="quote">{a.draft_text}</div>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
       )}
       {!shown && alternatives.length === 0 && <div className="text-sm text-slate-400">No action text on this card.</div>}
     </div>
@@ -125,6 +137,13 @@ export default function CardView({ runKey, item, actor, decisionState, onDecisio
   const action = card.recommended_action
   const closeCall = alternatives.some(a => a.closely_matched)
   const [open, setOpen] = useState(false)
+  const ref = useRef(null)
+  // Collapsing a long card can leave the viewport below it; bring its header back into view.
+  const toggle = () => {
+    if (open && ref.current && ref.current.getBoundingClientRect().top < 0)
+      ref.current.scrollIntoView({ block: 'start', behavior: 'smooth' })
+    setOpen(!open)
+  }
   const tabs = [
     ...((action && action.action_type !== 'NO_ACTION') || alternatives.length ? [['action', 'Action & draft']] : []),
     ...(card.review_notes.length ? [['review', `Review notes (${card.review_notes.length})`]] : []),
@@ -142,10 +161,10 @@ export default function CardView({ runKey, item, actor, decisionState, onDecisio
   const reasons = card.needs_review_reasons || []
 
   return (
-    <motion.article layout initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, height: 0 }}
-      className={`panel relative self-start overflow-hidden ${open || wide ? 'lg:col-span-2' : ''}`} data-testid="card" data-card-id={card.card_id} data-card-line={card.card_line}>
+    <motion.article ref={ref} layout initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, height: 0 }}
+      className={`panel relative scroll-mt-20 self-start overflow-hidden ${open || wide ? 'lg:col-span-2' : ''}`} data-testid="card" data-card-id={card.card_id} data-card-line={card.card_line}>
       <span className={`absolute inset-y-0 left-0 w-[3px] ${ACCENTS[card.card_line]}`} aria-hidden="true" />
-      <div className="p-5 pl-6">
+      <div className="p-5 pl-6 sm:p-6 sm:pl-7">
         <header className="flex flex-wrap items-start gap-3">
           <div className="min-w-0 flex-1">
             <div className="flex flex-wrap items-center gap-1.5">
@@ -156,11 +175,18 @@ export default function CardView({ runKey, item, actor, decisionState, onDecisio
             </div>
             <h3 className="mt-2.5 font-display text-lg font-semibold leading-snug text-white" data-testid="card-topic">{card.topic_name}</h3>
           </div>
-          <SeverityBadge severity={card.severity} />
+          <div className="flex items-center gap-2">
+            <SeverityBadge severity={card.severity} />
+            {open && (
+              <button type="button" className="btn btn-sm" onClick={toggle} title="Collapse back to the summary" data-testid="card-collapse">
+                Collapse<Icon name="close" className="h-3.5 w-3.5" />
+              </button>
+            )}
+          </div>
         </header>
 
         <div className={open || wide ? 'lg:grid lg:grid-cols-[minmax(0,1.2fr)_minmax(0,1fr)] lg:items-start lg:gap-6' : ''}>
-        <p className={`prose-pre mt-2 text-sm leading-relaxed text-slate-300 ${open ? '' : 'line-clamp-3'}`} data-testid="card-summary">{card.summary}</p>
+        <p className={`prose-pre mt-3 text-sm leading-relaxed text-slate-300 ${open ? '' : 'line-clamp-3'}`} data-testid="card-summary">{card.summary}</p>
 
         {action && action.action_type !== 'NO_ACTION' && (
           <div className={`mt-4 flex items-start gap-3 rounded-xl border border-cyan-400/15 bg-cyan-400/[0.05] p-3 ${open || wide ? 'lg:mt-2' : ''}`}>
@@ -188,7 +214,7 @@ export default function CardView({ runKey, item, actor, decisionState, onDecisio
           <span className="inline-flex items-center gap-1.5"><Icon name="thread" className="h-3.5 w-3.5" />{card.related_threads.length} threads</span>
           <span className="inline-flex items-center gap-1.5"><Icon name="doc" className="h-3.5 w-3.5" />{sourceCount} cited sources</span>
           {alternatives.length > 0 && <span className="inline-flex items-center gap-1.5"><Icon name="layers" className="h-3.5 w-3.5" />{alternatives.length} alternatives</span>}
-          <button type="button" className="btn btn-sm ml-auto" aria-expanded={open} data-testid="card-expand" onClick={() => setOpen(!open)}>
+          <button type="button" className="btn btn-sm ml-auto" aria-expanded={open} data-testid="card-expand" onClick={toggle}>
             {open ? 'Hide details' : 'Details & evidence'}<Icon name="chevron" className={`h-3.5 w-3.5 transition ${open ? 'rotate-90' : ''}`} />
           </button>
         </div>
@@ -203,12 +229,12 @@ export default function CardView({ runKey, item, actor, decisionState, onDecisio
                     className={`rounded-lg px-3 py-1.5 text-xs font-medium transition ${tab === t ? 'bg-white/[0.08] text-white' : 'text-slate-400 hover:text-slate-200'}`}>{label}</button>
                 ))}
               </div>
-              <div className="pt-4" role="tabpanel">
+              <div className="pt-5" role="tabpanel">
                 {tab === 'action' && <ActionTab action={action} alternatives={alternatives} closeCall={closeCall} />}
                 {tab === 'review' && (
-                  <ul className="space-y-2" data-testid="review-notes">
+                  <ul className="space-y-3" data-testid="review-notes">
                     {card.review_notes.map((n, i) => (
-                      <li key={i} className="prose-pre flex gap-2 text-sm text-slate-200"><Icon name="flag" className="mt-0.5 h-3.5 w-3.5 shrink-0 text-amber-300" />{n}</li>
+                      <li key={i} className="prose-pre flex gap-2.5 text-sm leading-relaxed text-slate-200"><Icon name="flag" className="mt-0.5 h-3.5 w-3.5 shrink-0 text-amber-300" />{n}</li>
                     ))}
                   </ul>
                 )}
@@ -220,7 +246,7 @@ export default function CardView({ runKey, item, actor, decisionState, onDecisio
           )}
         </AnimatePresence>
 
-        <div className="mt-4" data-testid="decision-block">
+        <div className="mt-5 border-t border-white/[0.06] pt-4" data-testid="decision-block">
           <DecisionPanel runKey={runKey} card={card} alternatives={alternatives} allowed={allowed} actor={actor}
             state={decisionState} onChanged={onDecisionChanged} />
         </div>
