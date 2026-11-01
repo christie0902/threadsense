@@ -5,6 +5,12 @@
 VARIANT current   repository code (the build closes its Chroma client before verifying and reopening)
 VARIANT unclosed  the pre-fix lifecycle: the build's client stays in Chroma's per-path system cache and the
                   in-process Retriever reuses it
+VARIANT second_open         build, open a Retriever, then open a second Retriever on the same path while the first
+                            is alive (the sequence of test_stale_or_incompatible_index_is_refused_once_before_research)
+VARIANT second_open_closed  the same, but the first Retriever's client is closed before the second open
+Measured 2026-10-31 before Retriever closed its client in its constructor: second_open 3/40 and 6/120 failures, all on
+the second open (same "Nothing found on disk" error); second_open_closed 0/40 and 0/120. With the constructor closing
+its client, second_open is the closed sequence by construction.
 Each iteration uses its own directory under ROOT (keep ROOT short and outside the repo on Windows). Prints one
 JSON line per iteration and a summary. Measured 2026-10-29 (ChromaDB 1.5.9, Windows): unclosed failed 10/320
 cycles with "Error creating hnsw segment reader: Nothing found on disk" (also without the subprocess check);
@@ -34,7 +40,7 @@ def main(variant, n, root):
             client.close = lambda: None  # Keep the build's system cached, as `del client` did.
             return client
         index_mod.chroma_client = unclosed
-    elif variant != 'current':
+    elif variant not in {'current', 'second_open', 'second_open_closed'}:
         raise SystemExit(f'Unknown variant {variant!r}')
     failures = 0
     for i in range(n):
@@ -42,7 +48,11 @@ def main(variant, n, root):
         started = time.perf_counter()
         try:
             build_index(path, encoder=HashEncoder())
-            Retriever(path, encoder=HashEncoder())
+            first = Retriever(path, encoder=HashEncoder())
+            if variant.startswith('second_open'):
+                if variant == 'second_open_closed':
+                    first.client.close()
+                Retriever(path, encoder=HashEncoder())
             status, detail = 'OK', None
         except Exception as error:  # noqa: BLE001 - every failure is recorded
             failures += 1

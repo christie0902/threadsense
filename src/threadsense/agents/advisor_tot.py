@@ -16,6 +16,12 @@ then judges the selected action and every remaining valid candidate, the displac
 keeps the incumbent; historical-only support never becomes a current operational action; selecting NO_ACTION removes
 the operational action but routing (inherited flags, other review reasons) is unchanged. Recorded v2 comparisons keep
 the original `adopt` behaviour.
+
+After the final grounding (`choice_after_grounding`): a close call matters only if it survives. When the comparison
+was a close call and at least two materially different options (different action types) are still viable - the card
+action, and reviewed candidates whose exact text was judged SUPPORTED with a passing sufficiency check (NO_ACTION needs
+no intervention need and no premises) - the choice is UNRESOLVED: both stay visible, neither is presented as
+preferred, and the card goes to Needs Review. The ACTION_CHOICE trigger itself is never a review reason.
 """
 from threadsense.agents.advice_contracts import LOW_CONFIDENCE_BELOW
 from threadsense.agents.advisor_checks import CURRENT_USES, KNOWLEDGE_USES, display_issues, prose_issues
@@ -218,6 +224,26 @@ def finalize(tot, grounding):
             'SURFACE_GROUNDED_ALTERNATIVES' if grounded else 'NO_GROUNDED_ALTERNATIVES',
             'note': 'Alternatives for the reviewer, each with its own grounding verdict; the card action and review '
                     'reasons are unchanged by this comparison.'}
+
+
+def choice_after_grounding(tot, action):
+    """Whether a close call survives the final grounding. `action`: the card action after authorization and fallback
+    (None if none). Returns status NOT_COMPARED, NOT_A_CLOSE_CALL, RESOLVED_BY_GROUNDING (fewer than two materially
+    different options remain viable) or UNRESOLVED, with the viable options (card action first)."""
+    if tot['status'] != 'COMPARED':
+        return {'status': 'NOT_COMPARED', 'viable': []}
+    viable = [] if action is None else [{'candidate_id': None, 'action_type': action.action_type, 'source': 'CARD_ACTION'}]
+    for c in tot['candidates']:
+        if action is not None and c['action_type'] == action.action_type and (c.get('draft_text') or '').strip() == (
+                action.draft_text or '').strip():
+            continue  # The card action itself (the incumbent, or the selected or fallback candidate).
+        sufficient = c['action_type'] == 'NO_ACTION' or ((c.get('sufficiency') or {}).get('check') == 'SUPPORTED')
+        if c['valid'] and not c['issues'] and c.get('grounding') == 'SUPPORTED' and sufficient:
+            viable.append({'candidate_id': c['candidate_id'], 'action_type': c['action_type'], 'source': 'TOT_CANDIDATE'})
+    close = bool(tot['close_call'] or tot.get('decision') == 'CLOSE_CALL')
+    distinct = len({v['action_type'] for v in viable}) >= 2
+    return {'status': 'NOT_A_CLOSE_CALL' if not close else 'UNRESOLVED' if distinct else 'RESOLVED_BY_GROUNDING',
+            'viable': viable}
 
 
 def fallback(tot, draft, verdict):

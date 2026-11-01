@@ -11,9 +11,10 @@ temporal_decision (advisor_checks). This script compares and reports; it contain
 Metrics: joint accuracy (decision, baseline, status, review and update target all correct), decisive-baseline
 accuracy, correct abstention, false overrides (a must_not_win source chosen), update-target accuracy, plus the same
 metrics for an always-abstain policy (which must fail every decisive case), timezone/effective-date/section checks
-and input-order independence (each bundle also run in reverse order).
+and input-order independence (each bundle also run in reverse order). Cases with expected.policy labels (evidence use,
+governing sources, enactment gaps) are also scored on those, separately from joint accuracy.
 
-  uv run --locked python scripts/evaluate_temporal.py [--tmp D:/tsb/temporal] [--write <new path>]
+  uv run --locked python scripts/evaluate_temporal.py [--golden <file>] [--tmp D:/tsb/temporal] [--write <new path>]
 """
 import argparse
 from hashlib import sha256
@@ -59,9 +60,10 @@ def markdown(src, defaults):
              'document_type': src['type'], 'project_id': src.get('project', defaults['project']), 'scope': 'project',
              'batch_id': src.get('batch', defaults['batch']) if src['type'] in ('decision', 'announcement') else None,
              'version': src['version'], 'effective_at': src['effective_at'], 'status': src['status'],
-             'authority': {'actor_id': 'U_GOLD_TL', 'role': 'TEAM_LEAD', 'provenance': 'temporal_golden'},
+             'authority': {'actor_id': 'U_GOLD_TL', 'role': src.get('authority_role', 'TEAM_LEAD'), 'provenance': 'temporal_golden'},
              'source': {'system': 'manual', 'manual_key': src['document_id']}, 'synthetic': True}
-    for key in ('record_kind', 'decision_status', 'execution_status', 'outcome_status', 'valid_until', 'published_at'):
+    for key in ('record_kind', 'decision_status', 'execution_status', 'outcome_status', 'valid_until', 'published_at',
+                'source_refs', 'event_series_id'):
         if src.get(key):
             front[key] = src[key]
     if src['type'] == 'announcement':
@@ -176,7 +178,10 @@ def run_case(case, defaults, tmp, order):
         for t in decision['update_targets']:
             sid = next((src['sid'] for src in case['sources'] if t['authoring'] == f"{src.get('document_id')}@{src.get('version')}"), None)
             targets.append({'sid': sid, 'section': t['section']})
+        by_authoring = {f"{src.get('document_id')}@{src.get('version')}": src['sid'] for src in case['sources']}
         return {'decision': decision['decision'], 'baseline': sorted({to_sid[e] for e in decision['baseline']}),
+                'governing_sources': [by_authoring.get(g, g) for g in decision['governing_sources']],
+                'enactment_gaps': {to_sid[g['evidence_id']]: g['missing'] for g in decision['enactment_gaps']},
                 'temporal_status': decision['temporal_status'], 'temporal_review_required': decision['review_required'],
                 'documentation_update_target': targets[0] if targets else None, 'reason': decision['reason'],
                 'temporal_findings': [(f['code'], f['status']) for f in temporal['findings']],
@@ -189,7 +194,7 @@ def run_case(case, defaults, tmp, order):
 
 def score(cases, actual):
     rows, totals = [], {'joint': 0, 'decisive': 0, 'decisive_correct': 0, 'abstain': 0, 'abstain_correct': 0,
-                        'false_overrides': 0, 'target_correct': 0, 'cases': len(cases)}
+                        'false_overrides': 0, 'target_correct': 0, 'cases': len(cases), 'policy': 0, 'policy_correct': 0}
     for case in cases:
         e, a = case['expected'], actual[case['id']]
         fields = ('decision', 'baseline', 'temporal_status', 'temporal_review_required', 'documentation_update_target')
@@ -205,7 +210,14 @@ def score(cases, actual):
         else:
             totals['abstain'] += 1
             totals['abstain_correct'] += a['decision'] == 'ABSTAIN'
-        rows.append({'id': case['id'], 'ok': not mismatch, 'mismatch': mismatch, 'false_override': false_override})
+        row = {'id': case['id'], 'ok': not mismatch, 'mismatch': mismatch, 'false_override': false_override}
+        if e.get('policy') and 'uses' in a:  # Labelled policy fields; an always-abstain stand-in has none to score.
+            got = {'uses': {s: a['uses'].get(s) for s in e['policy']['uses']}, 'governing_sources': a['governing_sources'],
+                   'enactment_gaps': a['enactment_gaps']}
+            row['policy_mismatch'] = {f: {'expected': v, 'actual': got[f]} for f, v in e['policy'].items() if got[f] != v}
+            totals['policy'] += 1
+            totals['policy_correct'] += not row['policy_mismatch']
+        rows.append(row)
     return totals, rows
 
 
@@ -213,6 +225,7 @@ def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument('--tmp', type=Path, default=None, help='Scratch directory outside the repository (default: system temp).')
     parser.add_argument('--write', type=Path, help='New path for the JSON report.')
+    parser.add_argument('--golden', type=Path, default=GOLDEN, help='Golden file (default: temporal_golden.json).')
     args = parser.parse_args(argv)
     if args.write and args.write.exists():
         parser.error('--write must be a new path.')
@@ -220,7 +233,8 @@ def main(argv=None):
     if tmp.resolve().is_relative_to(ROOT):
         parser.error('Use a scratch directory outside the repository.')
     sys.stdout.reconfigure(encoding='utf-8')
-    golden = json.loads(GOLDEN.read_text(encoding='utf-8'))
+    golden_bytes = args.golden.read_bytes()
+    golden = json.loads(golden_bytes)
     cases, defaults = golden['cases'], golden['defaults']
     forward, reverse = (lambda xs: list(xs)), (lambda xs: list(reversed(list(xs))))
     actual, order_issues = {}, []
@@ -234,13 +248,14 @@ def main(argv=None):
     abstain_only = {c['id']: {'decision': 'ABSTAIN', 'baseline': [], 'temporal_status': 'UNRESOLVED',
                               'temporal_review_required': True, 'documentation_update_target': None} for c in cases}
     abstain_totals, _ = score(cases, abstain_only)
-    report = {'golden': golden['version'], 'metrics': {
+    report = {'golden': golden['version'], 'golden_sha256': sha256(golden_bytes).hexdigest(), 'metrics': {
         'joint_accuracy': f"{totals['joint']}/{totals['cases']}",
         'decisive_baseline_accuracy': f"{totals['decisive_correct']}/{totals['decisive']}",
         'correct_abstention': f"{totals['abstain_correct']}/{totals['abstain']}",
         'false_overrides': f"{totals['false_overrides']}/{totals['cases']}",
         'update_target_accuracy': f"{totals['target_correct']}/{totals['cases']}",
-        'input_order_dependent_cases': order_issues},
+        'input_order_dependent_cases': order_issues,
+        **({'policy_field_accuracy': f"{totals['policy_correct']}/{totals['policy']}"} if totals['policy'] else {})},
         'always_abstain_policy': {'joint_accuracy': f"{abstain_totals['joint']}/{abstain_totals['cases']}",
                                   'decisive_baseline_accuracy': f"{abstain_totals['decisive_correct']}/{abstain_totals['decisive']}"},
         'cases': [{**r, 'actual': actual[r['id']]} for r in rows]}
@@ -249,7 +264,10 @@ def main(argv=None):
     for r in report['cases']:
         if not r['ok']:
             print(f"MISMATCH {r['id']}: {r['mismatch']} | findings {r['actual']['temporal_findings']} | uses {r['actual']['uses']} "
-                  f"| withheld {r['actual']['withheld']} | not retrieved {r['actual']['not_retrieved']}")
+                  f"| withheld {r['actual']['withheld']} | not retrieved {r['actual']['not_retrieved']} "
+                  f"| reason {r['actual']['reason']} | enactment gaps {r['actual']['enactment_gaps']}")
+        if r.get('policy_mismatch'):
+            print(f"POLICY MISMATCH {r['id']}: {r['policy_mismatch']}")
     if args.write:
         args.write.parent.mkdir(parents=True, exist_ok=True)
         args.write.write_text(json.dumps(report, ensure_ascii=False, indent=1, default=str) + '\n', encoding='utf-8')

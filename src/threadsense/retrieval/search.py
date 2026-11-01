@@ -82,19 +82,24 @@ class Retriever:
                 raise RetrievalIndexError(f'{name}.json differs from the manifest; rebuild.')
         self.chunks = {c['chunk_id']: c for c in json.loads((self.index_dir/'chunks.json').read_text(encoding='utf-8'))}
         self._documents = None
+        # Dense search is exact cosine over the embeddings stored in Chroma (see DENSE_SEARCH), so Chroma is read only
+        # here and the client is closed before the constructor returns or raises. An open client keeps its Chroma
+        # system cached per path; a later open of the same path in this process reused it and intermittently failed to
+        # read the HNSW segment ("Nothing found on disk"; tests/repro_chroma_reopen.py second_open).
         self.client = chroma_client(self.index_dir/'chroma')
-        self.collections = {name: self.client.get_collection(name) for name in COLLECTION_NAMES}
-        # Dense search is exact cosine over the embeddings stored in Chroma (see DENSE_SEARCH).
         self.vectors, counts = {}, {}
-        for name, collection in self.collections.items():
-            got = collection.get(include=['embeddings'])
-            counts[name] = len(got['ids'])
-            self.vectors.update({k: [float(x) for x in v] for k, v in zip(got['ids'], got['embeddings'])})
+        try:
+            for name in COLLECTION_NAMES:
+                got = self.client.get_collection(name).get(include=['embeddings'])
+                counts[name] = len(got['ids'])
+                self.vectors.update({k: [float(x) for x in v] for k, v in zip(got['ids'], got['embeddings'])})
+        finally:
+            self.client.close()  # Idempotent: callers' own close() stays a no-op.
         if counts != self.manifest['collection_chunks'] or set(self.vectors) != set(self.chunks):
             raise RetrievalIndexError(f'Chroma contents {counts} differ from the manifest/sidecar; rebuild.')
         if any(len(v) != self.manifest['embedding']['dimension'] for v in self.vectors.values()):
             raise RetrievalIndexError('Stored embedding dimension differs from the manifest; rebuild.')
-        self.versions = VersionIndex(self.chunks)
+        self.versions = VersionIndex(self.chunks, refs_of=self.source_refs)
         self.bm25 = BM25({k: c['indexed_text'] for k, c in self.chunks.items()},
                          k1=DEFAULTS['bm25_k1'], b=DEFAULTS['bm25_b'])
         self._encoder = encoder
@@ -122,6 +127,10 @@ class Retriever:
             self._documents = json.loads((self.index_dir/'documents.json').read_text(encoding='utf-8'))
         return self._documents[f'{document_id}@{version_id}']
 
+    def source_refs(self, document_id, version_id):
+        """Recorded source_refs of one source version (links only; never inferred)."""
+        return self.document(document_id, version_id)['metadata']['source_metadata'].get('source_refs') or []
+
     def eligible(self, project, **filters):
         """Filter-eligible chunks with their scope/date/version annotations (no ranking)."""
         return self.select(project, **filters)['eligible']
@@ -139,19 +148,23 @@ class Retriever:
             lineage = lineage_of(chunk)
             seen.add(lineage)
             state = states.get(chunk['version_id'])
-            applied, unresolved = self.versions.section_supersession(chunk, states)
+            applied, unresolved = self.versions.section_supersession(chunk, states, reference, filters.get('batch'))
+            replaced = ('SECTION_WITHDRAWN' if all(a['withdrawn'] for a in applied) else 'SECTION_SUPERSEDED') if applied else None
+            revision = self.versions.lineages[lineage].get(chunk['version_id'])
             unverified += [{'chunk_id': key, **u} for u in unresolved]
             siblings = [self.versions.describe(r, states) for v, r in self.versions.lineages[lineage].items()
                         if v != chunk['version_id']]
             info = {'mode': version_mode, 'lineage': list(lineage), 'state': state,
                     # One label for consumers: a current revision whose section was replaced is not applicable.
-                    'applicability': 'SECTION_SUPERSEDED' if applied and state in CURRENT_STATES else state,
+                    'applicability': replaced if applied and state in CURRENT_STATES else state,
                     'reference_time': reference, 'reference_basis': 'as_of' if filters.get('as_of') else 'index_cutoff',
                     'other_revisions': siblings, 'section_superseded_by': applied, 'unverified_supersession': unresolved,
-                    'supersedes': chunk['supersession']['document_supersedes']}
+                    'supersedes': chunk['supersession']['document_supersedes'],
+                    # Decision records only: whether recorded evidence makes this decision current handling.
+                    'enactment': self.versions.enactment(revision, states, reference, filters.get('batch')) if revision else None}
             if version_mode == 'current' and (state not in CURRENT_STATES or applied):
                 withheld.append({'chunk_id': key, 'citation': chunk['citation'], 'sections': chunk['sections'],
-                                 'state': 'SECTION_SUPERSEDED' if state in CURRENT_STATES else state,
+                                 'state': replaced if state in CURRENT_STATES else state,
                                  'section_superseded_by': applied})
                 del keep[key]
                 continue

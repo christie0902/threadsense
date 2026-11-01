@@ -19,7 +19,7 @@ uv run --locked --extra dev python -m pytest tests/test_x.py   # single file
 ```
 
 - Always pass a **fresh** `--basetemp .cache/pytest-<name>`: pytest wipes it at start.
-- Full suite: 866 tests, ~9 min, all expected to pass. Intermittent `WinError 5` on `os.replace` is a Windows file lock (see Known issues), not a code failure.
+- Full suite: 931 tests, ~11 min, all expected to pass. Intermittent `WinError 5` on `os.replace` is a Windows file lock (see Known issues), not a code failure.
 - No linter/formatter configured. No build step beyond the editable install.
 - UI tests: `npm --prefix web run build` then `npm --prefix web run test:ui` (Playwright, system Chrome; temp output
   in `TS_UI_TMP`, default `D:/tsb/ui-<time>`). Frontend deps are pinned in `web/package.json` + `package-lock.json`.
@@ -95,7 +95,22 @@ operational), partitive-plural checker fix; live comparison `agent3_repair_eval_
 Repair pass 2 (offline): prompts v8 / draft v8 (`action_choice` ToT trigger), ToT v3 (`advisor_tot.select`: incumbent,
 pre-grounding replacement, close calls kept), `temporal_decision` + non-competing recorded states in `temporal_check`,
 member disagreement is not a source conflict, temporal golden set `data/evaluation/temporal_golden.json` with
-`scripts/evaluate_temporal.py` (14/15; T02 policy gap). Further `--run`s are paid (ask first). Full plan: [docs/agent3-plan.md](docs/agent3-plan.md).
+`scripts/evaluate_temporal.py` (14/15; T02 policy gap). Repair pass 3: enacted-decision eligibility in
+`retrieval/versions.py` (`ENACTED_DECISION` use; unenacted supersession stays flagged; WITHDRAWN states), close calls
+surviving grounding go to Needs Review (`advisor_tot.choice_after_grounding`), grounding v5 source consistency (prompts
+v9); golden v2 14/15 (T02 lacks enactment evidence); live `agent3_policy_eval_v1` (4 cases, 8 requests, $0.46).
+Cleanup 2026-10-31 (offline): policy-aligned temporal benchmark `data/evaluation/temporal_golden_policy_v1.json` (17
+cases; T02 split into negative T02N + positive T02A/T02E; v1 file and its 14/15 reports unchanged; report
+`agent3_temporal_policy_v1`, 17/17, not comparable to v1); sentence-level summary judgment (draft v9 `summary_sentences`,
+prompts v10: each sentence condenses named claims, is judged as `summary:sN` and shown only if SUPPORTED); `Retriever`
+closes its Chroma client inside its constructor.
+Live summary check `agent3_summary_eval_v1` (JSON-versus-prose + Submit, 4 requests, $0.25): group sentences accurate;
+one Submit sentence withheld while the other was shown; Submit action withheld this run; revision blocked by the input cap.
+Submit repair (prompts v11, evidence view v2): compact model-facing evidence (revision request 24,405 -> 20,344 tokens,
+`scripts/measure_revision_request.py`, `agent3_revision_payload_v1`), authorship separate from authority, destination rules,
+stricter replay reuse; live `agent3_submit_repair_v1` (2 requests, $0.13): summary 3/3 shown, action still withheld
+(engineer request mislabelled THREAD_INSTRUCTION).
+Further `--run`s are paid (ask first). Full plan: [docs/agent3-plan.md](docs/agent3-plan.md).
 - Agent 3 input: `data/processed/agent2_handoff_v2_projection/` (schema 8 / handoff v2, a zero-call projection of the v7 release; load with `advice_inputs.load_effective_view`): 81 groups / 79 topics / 161 assigned + 17 unassigned / 41 + 8 announcement-route obligations / 3 carried cautions. The frozen v7 release (handoff v1: 90 / 97 / 49 / 3 / 41) is unchanged.
 - Demo Slack input: `data/fixtures/slack_generated_demo/` (201 threads / 517 messages, cutoff `2026-10-02T12:00:00Z`); the original `slack_generated/` (200 / 516) stays unchanged.
 - LangGraph 1.2.18 (Milestone 5) and FastAPI 0.162.0 (Milestone 6) installed; frontend toolchain in `web/` (npm). Chroma is a direct dependency; BM25 is in-house.
@@ -112,5 +127,5 @@ member disagreement is not a source conflict, temporal golden set `data/evaluati
 - `data/knowledge/severity_rubric.py` (TL-owned; don't edit policy text): `severity-rubric-v3-semantic-signals`. `get_rubric_for_project` returns the shared default for every project (`rubric_scope: SHARED_DEFAULT`).
 - `data/evaluation/domain_lexicon.json` duplicates `data/knowledge/domain_lexicon.json` (evaluation copy is not a model input).
 - Agent 3 plan refers to `mock_knowledge/`; the repo uses `data/knowledge/`.
-- ChromaDB 1.5.9 HNSW queries intermittently fail ("Nothing found on disk"); retrieval ranks dense results by exact cosine over Chroma-stored embeddings instead. Don't switch back to `collection.query` without retesting. The same error on `collection.get()` when opening an index right after a same-process build was traced (2026-10-29) to `build_index` leaving its client in Chroma's per-path system cache (`del` does not close it); fixed with `client.close()`. Reproducer `tests/repro_chroma_reopen.py`: unclosed 10/320 failures, closed 0/260. Always `close()` Chroma clients you create in-process.
+- ChromaDB 1.5.9 HNSW queries intermittently fail ("Nothing found on disk"); retrieval ranks dense results by exact cosine over Chroma-stored embeddings instead. Don't switch back to `collection.query` without retesting. The same error on `collection.get()` when opening an index right after a same-process build was traced (2026-10-29) to `build_index` leaving its client in Chroma's per-path system cache (`del` does not close it); fixed with `client.close()`. Reproducer `tests/repro_chroma_reopen.py`: unclosed 10/320 failures, closed 0/260. Always `close()` Chroma clients you create in-process. A second recurrence (2026-10-31) was different: a second `Retriever` on the same path while the first was alive shared its cached Chroma system and failed the same way (`second_open` 3/40, 6/120; closed first 0/120); `Retriever` now reads the embeddings and closes its client before its constructor returns or raises (0/120 after). `tests/test_retrieval_client_lifetime.py` checks that no system stays cached.
 - 8 projected Agent 2 groups have no reusable taxonomy (their saved v7 responses also covered announcement members); their 17 members stay unassigned until a new run or an approved projection rule.

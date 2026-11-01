@@ -1,0 +1,102 @@
+{
+  "workflow_version": "agent3-overnight-v1",
+  "run_id": "agent3overnight_23af3683733bb6be2abe30950844f507",
+  "fingerprints": {
+    "workflow_version": "agent3-overnight-v1",
+    "pilot_version": "agent3-advisor-pilot-v6",
+    "prompts": {
+      "prompt_version": "agent3-advisor-prompts-v10",
+      "draft_rules": "318589e26a714d2a59d4fafb30451035fbc8cf766309ad994a4bd051d1d0bf4a",
+      "revision_rules": "2f666b833268200f8ede5cdbb3ccc076fff0a87f11bca03e25a334a1e65d0060",
+      "writing_guide": "9633fd1e5a71fbd044e41344f453dc3772399d319d22bee9e560a500932f4b69",
+      "style_examples": "50765190723c2f782ea2201fbb77dbb8ff4b94a110163faac6e6da0be35e6084",
+      "grounding_rules": "aff0f5f44b71e8657fc5cc1a20d52865fffedda8337bc3c295952a57f8327cc4",
+      "tot_rules": "bec9ea8d68df9476726287e28bfa5307be3269a9a030dc416d62df24ee6861b3",
+      "schemas": {
+        "AdvisorDraft": "303ae0686c4d76a3c14e28e4e7c915f5279978570cf5925036c0443bca49cca5",
+        "GroundingJudgment": "50af5a9b3754699fbba71a24c3c6decee744411e9159b79ec3bd068d2691e38d",
+        "ToTComparison": "a94ba343f3f12d220f9e9807ad7a2e59793ab29c02e06669756d94e3da1a181f"
+      },
+      "contract_versions": {
+        "draft": "agent3-advisor-draft-v9",
+        "grounding": "agent3-grounding-judgment-v5",
+        "tot": "agent3-tot-comparison-v3"
+      }
+    },
+    "cutoff": "2026-10-02T12:00:00Z",
+    "window": {
+      "start": "2026-10-01T12:00:00+00:00",
+      "cutoff": "2026-10-02T12:00:00+00:00",
+      "interval": "[start, cutoff)"
+    },
+    "handoff": {
+      "run": "data/processed/agent2_handoff_v2_projection",
+      "canonical_sha256": "c417f93c65615a19d64e2e039857f42eacacc2e31dbe3df18a2ad647454d8aed",
+      "routing_manifest_sha256": "6aec682fe46df0174bacccabf1be70970593a352be072e8fd47ed7d4b0a57203"
+    },
+    "announcements_sha256": "dfcf79a87764e5ab05c39b84da6bb537535a5a9cec1cd9e63cdc61cf61101223",
+    "index": {
+      "build_fingerprint": "4da16f090eb5f2c61f408948f4f761b254caaf4e3a226e1e46a9574308ccc791",
+      "chunking_version": "knowledge-chunks-v2",
+      "corpus_fingerprint": "c72edb4636025692d7f278d31afec466fb55ac8e0f92c9af82aafa94bd534389",
+      "cutoff": "2026-10-02T12:00:00Z",
+      "index_dir": ".index/retrieval",
+      "decision_roots": null,
+      "tl_decisions_included": 0,
+      "prior_announcements": 0
+    },
+    "fixture_sha256": "5aeec07c1fc403e633c1d140767eb9fe94f5f06968640dedd0c73c82fb65f258",
+    "rubric": {
+      "version": "severity-rubric-v3-semantic-signals",
+      "content_sha256": "eccaa31a2ab84a0aa7c005216a92fc39681e1dd10107117344948235a76673f4"
+    },
+    "semantic_client": {
+      "label": "LIVE_MODEL",
+      "fingerprint": "openai/gpt-6.1-sol",
+      "settings": {
+        "model": "openai/gpt-6.1-sol",
+        "api_key_variable": "OPENAI_API_KEY",
+        "interface": "CrewAI Agent + Task + Crew per stage (role-specific agents, max_iter=1, max_retry_limit=0, no tools, no memory or planning) over crewai.LLM via LiteLLM",
+        "temperature": null,
+        "reasoning_effort": "medium",
+        "service_tier": "default",
+        "max_completion_tokens_per_call": 16384,
+        "input_token_limit": 24000,
+        "timeout_seconds": 120,
+        "response_format": "json_object",
+        "provider_sdk_max_retries": 0,
+        "model_fallback": null,
+        "http_requests_per_stage": 1,
+        "quiet_env": {
+          "CREWAI_DISABLE_TELEMETRY": "true",
+          "OTEL_SDK_DISABLED": "true",
+          "LITELLM_LOCAL_MODEL_COST_MAP": "True",
+          "CREWAI_TRACING_ENABLED": "false",
+          "LANGSMITH_TRACING": "false",
+          "LANGCHAIN_TRACING_V2": "false"
+        }
+      }
+    },
+    "mode": "LIVE",
+    "only": [
+      "topic:cluster_fb1dce1eeeedc4cb/topic_1",
+      "gap:routed_440e64c7fbdcc49f"
+    ],
+    "budget_limits": {
+      "model_calls_per_topic": 4,
+      "retrieval_calls_per_topic": 6,
+      "model_calls_total": 8,
+      "retrieval_calls_total": 12
+    },
+    "cost_limit_usd": 2.0,
+    "work_plan_sha256": "e7187e50cb9ec5c3495232cb9fe869a034de43cc74ff6317924c085735df9846"
+  },
+  "validation_baseline": {
+    "agent3-advisor-prompts-v6": "LIVE_VALIDATED: data/experiments/agent3_readability_v1 (audio, Submit)",
+    "agent3-advisor-prompts-v6.1": "LIVE (2 topics): data/experiments/agent3_overnight_smoke_v1 (audio, Submit); its possessive-plural and record-authorship fixes are offline only",
+    "agent3-advisor-prompts-v6.2": "LIVE (9 demo scenarios): data/experiments/agent3_final_eval_v1; absence statements limited to what the run retrieved",
+    "agent3-advisor-prompts-v7": "OFFLINE_ONLY until the repair comparison: intervention need judged in final grounding; summary distinctions (common vs some members, question vs report, reported vs confirmed)",
+    "replay_rule": "Replay reuses only unchanged judgments; a pending judgment is never counted as grounding PASSED."
+  },
+  "resumed": false
+}

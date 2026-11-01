@@ -18,7 +18,7 @@ from threadsense.agents.advisor_contracts import GroundingJudgment
 from threadsense.agents.advisor_evidence import Budget
 from threadsense.agents.advisor_pilot import BoundaryNotObserved, CrewAIClient, Stages
 
-VALID = '{"verdicts": []}'
+VALID = '{"verdicts": [], "source_consistency": {}}'  # The smallest valid grounding v5 reply.
 
 
 def completion(content):

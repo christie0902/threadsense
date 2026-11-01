@@ -164,23 +164,29 @@ class Run:
 
     def alternatives(self, card_id):
         """ToT alternatives the final grounding call judged SUPPORTED and SUFFICIENT, with no recorded prose or display
-        issue (advisor_tot.check_candidates), other than the card's action."""
+        issue (advisor_tot.check_candidates), other than the card's action. When a close call survived the final
+        grounding (tot.choice_after_grounding UNRESOLVED), its viable options are marked closely_matched (a viable
+        NO_ACTION included) and none is shown as preferred."""
         result = (self.topics.get(card_id) or {}).get('result') or {}
         tot, grounding = result.get('tot') or {}, result.get('grounding') or {}
         judged = grounding.get('alternative_sufficiency') or {}
         statements = {s['statement_id']: s for s in grounding.get('statements') or []}
         shown = (self.cards[card_id].get('recommended_action') or {}).get('draft_text')
+        choice = tot.get('choice_after_grounding') or {}
+        matched = {v['candidate_id'] for v in choice.get('viable') or []} if choice.get('status') == 'UNRESOLVED' else set()
         out = []
         for c in tot.get('candidates') or []:
             sid = f"alternative:{c['candidate_id']}"
             j = judged.get(sid) or {}
-            if j.get('check') != 'SUPPORTED' or j.get('verdict') != 'SUFFICIENT' or (statements.get(sid) or {}).get('verdict') != 'SUPPORTED':
+            if c['candidate_id'] not in matched and (j.get('check') != 'SUPPORTED' or j.get('verdict') != 'SUFFICIENT'
+                                                     or (statements.get(sid) or {}).get('verdict') != 'SUPPORTED'):
                 continue
             if c.get('issues') or c.get('draft_text') == shown:
                 continue
             out.append({'candidate_id': c['candidate_id'], 'action_type': c['action_type'], 'label': ACTION_LABELS[c['action_type']],
                         'instruction': c.get('instruction'), 'draft_text': c.get('draft_text'), 'rationale': c.get('rationale'),
-                        'preferred_by_comparison': c['candidate_id'] == tot.get('preferred_candidate_id')})
+                        'preferred_by_comparison': not matched and c['candidate_id'] == tot.get('preferred_candidate_id'),
+                        'closely_matched': c['candidate_id'] in matched})
         return out
 
     def ledger(self, card_id):

@@ -1,0 +1,36 @@
+{
+ "report": "report.json (this directory). Earlier reports unchanged: agent3_temporal_golden_v1/report.json and agent3_temporal_golden_v2/report.json (temporal-golden-v1, 14/15).",
+ "benchmark": {
+  "file": "data/evaluation/temporal_golden_policy_v1.json",
+  "version": "temporal-golden-policy-v1",
+  "sha256": "86ff05b49d7fb24b23d3f4c21edf31806273df5bb9483ba64b4c30b42f9c4933",
+  "cases": 17,
+  "comparability": "A different benchmark from temporal-golden-v1 (17 cases: 14 unchanged, T02 replaced by three). The result below is NOT an improvement on the unchanged benchmark, which stays 14/15 with the same production code (rerun 2026-10-31 as a control: identical metrics, T02 the only mismatch)."
+ },
+ "result": {
+  "joint_accuracy": "17/17",
+  "decisive_baseline_accuracy": "13/13",
+  "correct_abstention": "4/4",
+  "false_overrides": "0/17",
+  "update_target_accuracy": "17/17",
+  "input_order_dependent_cases": [],
+  "policy_field_accuracy": "3/3"
+ },
+ "always_abstain_policy": {
+  "joint_accuracy": "4/17",
+  "decisive_baseline_accuracy": "0/13"
+ },
+ "dataset_and_policy_change": [
+  "temporal_golden.json (temporal-golden-v1) is unchanged: fixture, labels and reports kept.",
+  "Recorded mismatch: T02's v1 label (DECIDED with D, RESOLVED_BY_RECORD, update target G Contact details) requires enactment evidence that T02 does not contain (execution_status 'posted' on an advice_review record, outcome not_observed, no linked announcement or guideline).",
+  "New file temporal_golden_policy_v1.json, labels written from the documented enactment policy before it was evaluated: T02N (T02 as recorded, negative: ABSTAIN, UNRESOLVED, review required, no update target, D and G must not win); T02A (the existing linked-announcement variant: DECIDED, baseline A and D, governing source A, update target G); T02E (the existing policy_enacted variant: DECIDED, baseline D, governing source D, update target G). T02A also declares the guide-versus-announcement difference as a prepared conflict, which the test variant did not.",
+  "Policy stated explicitly (enactment_policy in the file): an eligible older guideline under an unverified replacement stays eligible evidence (current, flagged) but is not permitted as a provisional decided baseline; the case abstains for team-lead confirmation until the supersession claim is resolved. Basis: the v1 label rule UNRESOLVED (\"recorded dates, approvals and supersession cannot decide\") and the clarified enactment policy, not implementation output.",
+  "New optional expected.policy labels (evidence use per source, governing sources, enactment gaps), scored separately as policy_field_accuracy; joint accuracy keeps the v1 fields."
+ ],
+ "harness_changes": [
+  "scripts/evaluate_temporal.py: --golden <file> (default unchanged); policy_field_accuracy for cases with expected.policy; golden_sha256 in the report; policy mismatches printed. No precedence logic added."
+ ],
+ "production_changes": [
+  "None in this pass for temporal precedence: the same code scores 14/15 on temporal-golden-v1 and 17/17 on temporal-golden-policy-v1. (Production changes made in this pass concern summary display and Chroma client lifetime; see docs/agent3-plan.md, Reliability and evaluation cleanup.)"
+ ]
+}

@@ -113,7 +113,8 @@ def placeholder(stage, payload):
                                 'evidence_support': 'NONE', 'applicability': 'UNCLEAR', 'severity_fit': 'UNKNOWN',
                                 'rationale': note} for c in ('placeholder_a', 'placeholder_b')],
                 'preferred_candidate_id': None, 'close_call': True, 'rationale': note}
-    return {'verdicts': [], 'action_sufficiency': None, 'alternative_sufficiency': []}  # Nothing judged.
+    return {'contract_version': 'agent3-grounding-judgment-v4', 'verdicts': [], 'action_sufficiency': None,
+            'alternative_sufficiency': []}  # Nothing judged (and no source-consistency assessment).
 
 
 # ---- Persistent budget and ledger ------------------------------------------------------------------------------

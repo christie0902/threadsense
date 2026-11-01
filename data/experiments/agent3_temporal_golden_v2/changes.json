@@ -1,0 +1,33 @@
+{
+ "report": "report.json (this directory); previous report unchanged at data/experiments/agent3_temporal_golden_v1/report.json",
+ "golden_file": "data/evaluation/temporal_golden.json unchanged (labels, cases and prepared judgments as in v1)",
+ "result": {
+  "joint_accuracy": "14/15 (v1: 14/15)",
+  "decisive_baseline_accuracy": "11/12",
+  "correct_abstention": "3/3",
+  "false_overrides": "0/15",
+  "update_target_accuracy": "14/15",
+  "input_order_dependent_cases": [],
+  "always_abstain_policy": "3/15 joint, 0/12 decisive"
+ },
+ "clarified_policy": [
+  "A TL decision supports current handling only when recorded evidence establishes: explicit TL approval by an authorized role (TEAM_LEAD); in-scope project/batch; effective at or before as_of; a recorded policy change (the decision declares the guidance it supersedes, or records execution_status policy_enacted); enactment (a later, current, in-scope announcement posted by a team lead or a current guideline whose source_refs link the decision - preferred and named as the governing source - or execution_status policy_enacted); no expiry, supersession or withdrawal.",
+  "Approval alone, an approved but unexecuted record, generic progress states (posted, executed, completed, routed), a completed operational action (escalation, documentation work, a calibration exercise) and copying a draft are not enactment.",
+  "A decision that declares supersession without established enactment does not supersede: the old guidance stays current, flagged as unverified supersession (SUPERSEDING_DECISION_NOT_ENACTED), and the case abstains for review.",
+  "Explicit withdrawal with no replacement (a latest guidance revision with status withdrawn, or a supersedes entry marked withdrawn: true from an applicable source) is not unverified supersession: the withdrawn guidance is history (WITHDRAWN / SECTION_WITHDRAWN), no earlier revision becomes current again, and the baseline abstains with reason 'guidance withdrawn without replacement'."
+ ],
+ "production_changes": [
+  "retrieval/versions.py: VersionIndex.enactment (recorded fields only; linked sources via Retriever.source_refs); supersession declared by a decision applies only when it is enacted; WITHDRAWN revision state and WITHDRAWN_WITHOUT_REPLACEMENT diagnostic; withdrawn section references.",
+  "retrieval/search.py: version info carries enactment; SECTION_WITHDRAWN applicability and withheld state.",
+  "agents/advisor_evidence.py: ENACTED_DECISION use (document type and recorded states unchanged); status lines for enacted decisions (governing source), unenacted decisions that declare supersession, and withdrawal.",
+  "agents/advisor_checks.py: ENACTED_DECISION is a current use (claims, coverage, ToT applicability, temporal checks); non-competing records include withdrawn guidance and decisions out of the running by recorded enactment gaps (other batch, not approved, unauthorized, not yet effective, expired, superseded, withdrawn) - a decision that merely lacks enactment evidence still competes (reviewable); temporal_decision reports governing_sources, enactment_gaps and precise reasons (unverified supersession, withdrawal)."
+ ],
+ "harness_changes": [
+  "scripts/evaluate_temporal.py passes source_refs, event_series_id and an optional authority_role through to the throwaway bundle (needed for enactment variants in tests; no golden case uses them), and reports governing_sources, enactment_gaps and the reason for mismatches."
+ ],
+ "T02": {
+  "outcome": "ABSTAIN (safe; no false override). v1: ABSTAIN because the decision was never current while its approval alone already withheld the guide section. v2: the guide section stays current with its supersession flagged as unverified; reason 'supersession not verified ... SUPERSEDING_DECISION_NOT_ENACTED, missing NO_ENACTMENT_EVIDENCE'.",
+  "recorded_evidence": "record_kind advice_review; decision_status tl_approved by TEAM_LEAD; effective 2026-09-10T13:00Z (before as_of); in scope; declares it supersedes gt02-safety-guide 1.0 'Contact details'; execution_status posted; outcome not_observed; no valid_until.",
+  "missing_evidence": "Enactment of the policy change: no announcement or updated guideline in the bundle links the decision, and 'posted' on an advice-review record is a generic progress state that does not say the rule change itself was put into effect. The expected label (DECIDED with D) is not supported by the recorded evidence under the clarified policy; the label is left unchanged and the case is reported as a mismatch rather than satisfied by inventing enactment. Variants in tests/test_agent3_enactment.py show the same case DECIDED once a linked posted TL announcement or policy_enacted is recorded."
+ }
+}

@@ -19,6 +19,13 @@ the v6 rules. Draft v8 adds action_choice: a meaningful choice between intervent
 materially different interventions, that the evidence leaves open (a ToT trigger). ToT v3 marks the incumbent (the
 draft's own action, verbatim) and assesses each candidate's intervention need, temporal and scope consistency,
 proportionality and unresolved assumptions, with an explicit decision (keep the incumbent, replace it, or close call).
+Grounding v5 adds source_consistency: the final grounding call's own assessment of whether the governing sources it
+is shown agree or conflict on the topic's question, independent of the draft's declared conflicts (with the cited
+sources and the scope of any disagreement), plus a check of each declared conflict. Recorded v4 judgments replay with
+no assessment (NOT_ASSESSED), never as "no conflict". Draft v9 may write the summary as summary_sentences: each
+sentence names the claims it condenses (its evidence and attributions are theirs) and the earlier sentences it refers
+back to, and is judged and shown on its own; `summary` is then their text joined. A draft without sentences keeps one
+summary statement judged as a whole.
 """
 from typing import Literal
 
@@ -197,10 +204,19 @@ class CoverageItem(Strict):
         return self
 
 
+class SummarySentence(Strict):
+    """One independently complete summary sentence (draft v9). support_claim_ids: the claims it condenses (its
+    evidence and attributions); depends_on: 1-based positions of earlier sentences it refers back to."""
+    text: Text
+    support_claim_ids: list[str] = Field(min_length=1)
+    depends_on: list[int] = Field(default_factory=list)
+
+
 class AdvisorDraft(Strict):
-    contract_version: Literal['agent3-advisor-draft-v8', 'agent3-advisor-draft-v7', 'agent3-advisor-draft-v6'] = \
-        'agent3-advisor-draft-v8'
-    summary: Text  # What happened, 1-2 short sentences for the team lead.
+    contract_version: Literal['agent3-advisor-draft-v9', 'agent3-advisor-draft-v8', 'agent3-advisor-draft-v7',
+                              'agent3-advisor-draft-v6'] = 'agent3-advisor-draft-v9'
+    summary: Text | None = None  # What happened, 1-2 short sentences for the team lead (with sentences: their text).
+    summary_sentences: list[SummarySentence] = Field(default_factory=list, max_length=3)
     reasoning: Text
     claims: list[Claim] = Field(default_factory=list)
     gaps: list[EvidenceGap] = Field(default_factory=list)
@@ -228,6 +244,18 @@ class AdvisorDraft(Strict):
         _distinct([r.member_id for r in self.resolution], 'Resolution member IDs')
         if self.proposed_action and set(self.proposed_action.support_claim_ids) - set(claims):
             raise ValueError('Action support must reference claims in this draft.')
+        for n, s in enumerate(self.summary_sentences, 1):
+            if set(s.support_claim_ids) - set(claims):
+                raise ValueError(f'Summary sentence {n} must condense claims in this draft.')
+            if any(not 1 <= d < n for d in s.depends_on):
+                raise ValueError(f'Summary sentence {n} may depend only on earlier sentences.')
+        if self.summary_sentences:
+            joined = ' '.join(s.text.strip() for s in self.summary_sentences)
+            if self.summary is not None and ' '.join(self.summary.split()) != ' '.join(joined.split()):
+                raise ValueError('summary must be the summary sentences joined (or omitted).')
+            self.summary = joined
+        elif not (self.summary or '').strip():
+            raise ValueError('A draft states a summary (or summary_sentences).')
         action = self.proposed_action
         if (self.contract_version != 'agent3-advisor-draft-v6' and action is not None and action.action_type != 'NO_ACTION'
                 and action.intervention_need is None):
@@ -258,19 +286,56 @@ class AlternativeSufficiency(ActionSufficiency):
     statement_id: Text
 
 
+class SourceRelation(Strict):
+    """Governing sources that address the same point: AGREE or CONFLICT (with the scope of the disagreement)."""
+    evidence_ids: list[str] = Field(min_length=2)
+    relation: Literal['AGREE', 'CONFLICT']
+    point: Text  # The question or rule both address.
+    disagreement_scope: str | None = None  # CONFLICT: what exactly differs (cases, batch, section), in plain words.
+    rationale: Text
+
+    @model_validator(mode='after')
+    def scoped(self):
+        _distinct(self.evidence_ids, 'Source relation evidence IDs')
+        if self.relation == 'CONFLICT' and not (self.disagreement_scope or '').strip():
+            raise ValueError('A CONFLICT states the scope of the disagreement.')
+        return self
+
+
+class DeclaredConflictCheck(Strict):
+    """The judge's check of one conflict the draft declared (by its index in declared_conflicts)."""
+    conflict_index: int = Field(ge=0)
+    verdict: Literal['CONFIRMED', 'SOURCES_AGREE', 'UNDETERMINED']
+    rationale: Text
+
+
+class SourceConsistency(Strict):
+    assessed_evidence_ids: list[str] = Field(default_factory=list)  # The governing sources the judge compared.
+    relations: list[SourceRelation] = Field(default_factory=list)
+    declared_conflict_checks: list[DeclaredConflictCheck] = Field(default_factory=list)
+
+    @model_validator(mode='after')
+    def distinct(self):
+        _distinct([c.conflict_index for c in self.declared_conflict_checks], 'Declared conflict indexes')
+        return self
+
+
 class GroundingJudgment(Strict):
     """One verdict per statement presented (claims, summary, action, severity, reporters, resolution,
     announcement handling, source agreement and ToT alternatives), plus the sufficiency judgment for the action
-    and for each operational alternative sent."""
-    contract_version: Literal['agent3-grounding-judgment-v4'] = 'agent3-grounding-judgment-v4'
+    and for each operational alternative sent. v5: source_consistency (required)."""
+    contract_version: Literal['agent3-grounding-judgment-v5', 'agent3-grounding-judgment-v4'] = 'agent3-grounding-judgment-v5'
     verdicts: list[StatementVerdict]
     action_sufficiency: ActionSufficiency | None = None
     alternative_sufficiency: list[AlternativeSufficiency] = Field(default_factory=list)
+    source_consistency: SourceConsistency | None = None
 
     @model_validator(mode='after')
     def distinct(self):
         _distinct([v.statement_id for v in self.verdicts], 'Verdict statement IDs')
         _distinct([a.statement_id for a in self.alternative_sufficiency], 'Alternative sufficiency statement IDs')
+        if self.contract_version != 'agent3-grounding-judgment-v4' and self.source_consistency is None:
+            raise ValueError('source_consistency is required: compare the governing sources even when no conflict is declared.')
         return self
 
 

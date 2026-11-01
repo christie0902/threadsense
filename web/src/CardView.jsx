@@ -18,6 +18,7 @@ function Paragraph({ label, children, testid }) {
 export default function CardView({ runKey, item, actor, decisionState, onDecisionChanged, openPanel }) {
   const { card, alternatives, cited_evidence: cited, allowed_decisions: allowed, semantic_source: source } = item
   const action = card.recommended_action
+  const closeCall = alternatives.some(a => a.closely_matched)
   const [detail, setDetail] = useState(null)
   const [detailError, setDetailError] = useState(null)
   const loadDetail = () => {
@@ -41,7 +42,7 @@ export default function CardView({ runKey, item, actor, decisionState, onDecisio
 
       {action && action.action_type !== 'NO_ACTION' && (
         <div className="mt-3 rounded border border-slate-200 bg-slate-50 p-3">
-          <div className="text-xs font-semibold uppercase tracking-wide text-slate-500">What to do</div>
+          <div className="text-xs font-semibold uppercase tracking-wide text-slate-500" data-testid="action-heading">{closeCall ? 'One option (closely matched; choose one)' : 'What to do'}</div>
           <div className="mt-0.5 text-sm font-semibold" data-testid="action-label">{action.label}</div>
           {action.instruction && <div className="prose-pre mt-1 text-sm" data-testid="action-instruction">{action.instruction}</div>}
           {action.rationale && <Paragraph label="Why" testid="action-rationale">{action.rationale}</Paragraph>}
@@ -70,7 +71,7 @@ export default function CardView({ runKey, item, actor, decisionState, onDecisio
 
       {alternatives.length > 0 && (
         <div className="mt-3 rounded border border-indigo-200 bg-indigo-50 p-3" data-testid="alternatives">
-          <div className="text-xs font-semibold uppercase tracking-wide text-indigo-700">Supported alternatives</div>
+          <div className="text-xs font-semibold uppercase tracking-wide text-indigo-700" data-testid="alternatives-heading">{closeCall ? 'Closely matched options (none preferred)' : 'Supported alternatives'}</div>
           {alternatives.map(a => (
             <div key={a.candidate_id} className="mt-2 text-sm">
               <div className="font-medium">{a.label}{a.preferred_by_comparison ? ' (preferred in the comparison)' : ''}</div>

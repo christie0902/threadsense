@@ -123,7 +123,11 @@ def supported(payload, essential=None, **overrides):
                                    else essential, 'rationale': 'The premises justify the action.'} if action else None,
             'alternative_sufficiency': [{'statement_id': s['statement_id'], 'verdict': 'SUFFICIENT',
                                          'essential_statement_ids': passed(s), 'rationale': 'The premises justify it.'}
-                                        for s in payload['statements'] if s['kind'] == 'ALTERNATIVE' and passed(s)]}
+                                        for s in payload['statements'] if s['kind'] == 'ALTERNATIVE' and passed(s)],
+            # Grounding v5: the governing sources were compared; no conflict found, declared conflicts confirmed.
+            'source_consistency': {'assessed_evidence_ids': payload.get('governing_sources', []), 'relations': [],
+                                   'declared_conflict_checks': [{'conflict_index': c['conflict_index'], 'verdict': 'CONFIRMED',
+                                                                 'rationale': 'Prepared.'} for c in payload.get('declared_conflicts', [])]}}
 
 
 def run(scenario_id, client, retriever, view, *, budget=None, **kw):
@@ -184,18 +188,21 @@ def test_model_receives_applicability_beside_each_excerpt(retriever):
     tools = safety_tools(retriever)
     payload = _research_payload(DRAFT_RULES, {'project_id': 'safety_classification'}, tools.ledger, tools, RUBRIC, [])
     sent = sent_payload(task_description({**payload, 'output_schema': {}}, AdvisorDraft))
-    old = next(i for i in sent['retrieved_evidence'] if i['citation']['authoring'] == 'safety-qn-help-page@1.0'
+    old = next(i for i in sent['retrieved_evidence'] if i['citation'].get('authoring') == 'safety-qn-help-page@1.0'
                and i['citation']['sections'] == ['Contact details'])
     assert old['use'] == 'HISTORY_ONLY' and old['applicability']['state'] == 'SECTION_SUPERSEDED'
     assert old['applicability']['replaced_by'][0]['replaced_by'] == 'safety-fictional-pii-clarification@1.0'
     status = old['excerpt'].split('\n', 1)[0]
     assert status.startswith('[HISTORICAL - NOT CURRENT GUIDANCE') and 'safety-fictional-pii-clarification@1.0' in status
-    assert all(old['citation'][k] for k in ('document_id', 'version_id', 'chunk_id', 'authoring', 'title', 'source'))
-    assert old['dates']['source_date'] and old['dates']['reference_time'] == retriever.manifest['cutoff']
-    assert old['scope'] == {'project_id': 'safety_classification', 'batch_id': None, 'scope': 'project', 'batch_relation': 'project_wide'}
-    assert set(old['authority']) == {'role', 'actor', 'approval_status', 'provenance'}
+    # Evidence view v2: source identity without internal storage IDs (the ledger keeps them for the checks).
+    assert set(old['citation']) == {'authoring', 'title', 'sections', 'source'} and all(old['citation'].values())
+    assert all(tools.ledger[old['evidence_id']]['citation'][k] for k in ('document_id', 'version_id', 'chunk_id'))
+    assert old['dates']['source_date'] and 'reference_time' not in old['dates']  # every date is read against topic.as_of
+    assert old['scope'] == {'project_id': 'safety_classification', 'scope': 'project', 'batch_relation': 'project_wide'}  # no batch
+    assert set(old['authority']) == {'role', 'actor', 'actor_relation', 'approval_status', 'provenance'}
+    assert old['authority']['actor_relation'] == 'RECORD_AUTHORITY' and old['authorship'] == {'verified': False, 'basis': 'NO_AUTHOR_RECORDED'}
     assert old['recorded_states']['status'] == 'partially_superseded'
-    clarification = next(i for i in sent['retrieved_evidence'] if i['citation']['authoring'] == 'safety-fictional-pii-clarification@1.0')
+    clarification = next(i for i in sent['retrieved_evidence'] if i['citation'].get('authoring') == 'safety-fictional-pii-clarification@1.0')
     assert clarification['use'] == 'ANNOUNCEMENT' and clarification['applicability']['supersedes'][0]['section'] == 'Contact details'
     assert clarification['excerpt'].startswith('[ANNOUNCEMENT posted') and clarification['authority']['approval_status']
     [withheld] = [w for w in sent['retrieval_notes']['withheld_by_version'] if w['authoring'] == 'safety-qn-help-page@1.0']
@@ -262,7 +269,7 @@ def test_structural_failures_reject_only_their_statements(retriever, view):
 @pytest.mark.parametrize('judgment, expected', [
     (lambda p: supported(p), 'PASSED'),
     (lambda p: supported(p, **{'claim:c2': 'PARTIALLY_SUPPORTED'}), 'FAILED'),
-    (lambda p: {'verdicts': supported(p)['verdicts'][:1]}, 'FAILED'),
+    (lambda p: {**supported(p), 'verdicts': supported(p)['verdicts'][:1]}, 'FAILED'),
     (lambda p: supported(p, action='UNSUPPORTED'), 'FAILED'),
     (lambda p: supported(p, summary='UNSUPPORTED'), 'FAILED'),
 ])

@@ -17,9 +17,11 @@ SOURCE_TYPES = ('guideline', 'faq', 'decision', 'announcement')
 # How an item may be used. CURRENT_GUIDANCE supports "what applies now"; an ANNOUNCEMENT does so only once
 # the draft establishes (and grounding verifies) that it is relevant and directs handling for this topic.
 # Routine reminders, schedules and example-collection notes are announcements too. CURRENT_HANDLING is that
-# established state; the ledger never assigns it by source type.
-USES = ('CURRENT_GUIDANCE', 'CURRENT_HANDLING', 'ANNOUNCEMENT', 'PRIOR_DECISION', 'HISTORY_ONLY', 'UNRESOLVED_VERSION',
-        'MEMBER_REPORT')
+# established state; the ledger never assigns it by source type. ENACTED_DECISION is a decision record whose
+# enactment as policy is established by recorded evidence (retrieval.versions.VersionIndex.enactment); it keeps its
+# document type and recorded states, and a linked announcement or guideline is named as the governing source.
+USES = ('CURRENT_GUIDANCE', 'CURRENT_HANDLING', 'ANNOUNCEMENT', 'ENACTED_DECISION', 'PRIOR_DECISION', 'HISTORY_ONLY',
+        'UNRESOLVED_VERSION', 'MEMBER_REPORT')
 
 
 class StaleIndexError(RuntimeError):
@@ -81,7 +83,7 @@ def knowledge_evidence_id(result):
 
 
 def use_of(result):
-    """Deterministic use category from version applicability, record kind and expiry."""
+    """Deterministic use category from version applicability, record kind, expiry and decision enactment."""
     applicability = result['version']['applicability']
     if applicability == 'UNRESOLVED':
         return 'UNRESOLVED_VERSION'
@@ -90,12 +92,15 @@ def use_of(result):
     kind = result['metadata']['document_type']
     if kind in ('guideline', 'faq'):
         return 'CURRENT_GUIDANCE'
-    return 'ANNOUNCEMENT' if kind == 'announcement' else 'PRIOR_DECISION'
+    if kind == 'announcement':
+        return 'ANNOUNCEMENT'
+    return 'ENACTED_DECISION' if (result['version'].get('enactment') or {}).get('status') == 'ENACTED' else 'PRIOR_DECISION'
 
 
 def _replacements(version):
     return [{'replaced_by': s['superseding']['authoring'], 'section': s.get('section'),
-             'replacement_effective': s.get('superseding_date')} for s in version['section_superseded_by']]
+             'replacement_effective': s.get('superseding_date'), **({'withdrawn': True} if s.get('withdrawn') else {})}
+            for s in version['section_superseded_by']]
 
 
 def banner(result, use):
@@ -103,9 +108,12 @@ def banner(result, use):
     version, m = result['version'], result['metadata']
     if use == 'HISTORY_ONLY':
         reasons = []
-        if version['applicability'] == 'SECTION_SUPERSEDED':
-            reasons += [f"section '{r['section']}' superseded by {r['replaced_by']} (effective {r['replacement_effective']})"
+        if version['applicability'] in ('SECTION_SUPERSEDED', 'SECTION_WITHDRAWN'):
+            reasons += [f"section '{r['section']}' " + (f"withdrawn by {r['replaced_by']} with no replacement" if r.get('withdrawn')
+                        else f"superseded by {r['replaced_by']}") + f" (effective {r['replacement_effective']})"
                         for r in _replacements(version)]
+        elif version['applicability'] == 'WITHDRAWN':
+            reasons.append('withdrawn with no replacement; no earlier revision applies')
         elif version['applicability'] != 'CURRENT':
             reasons.append(f"revision state {version['applicability']}")
         if result.get('expired_as_of'):
@@ -118,9 +126,19 @@ def banner(result, use):
         return (f"[ANNOUNCEMENT posted {m['source_date']} by {m['authority_role'] or 'unknown role'} "
                 f"({m['batch_id'] or m['scope']}{earlier}): not established as handling for this topic until you show it is "
                 'relevant and gives a directive.]')
+    states = '; '.join(f"{k}: {m[k]}" for k in ('decision_status', 'execution_status', 'outcome_status') if m.get(k))
+    kind = m['authoring_record_kind'] or m['record_kind']
+    if use == 'ENACTED_DECISION':
+        e = version['enactment']
+        governing = ', '.join(e['governing_sources'])
+        return (f"[ENACTED TL DECISION ({kind}; {states}): approved by {m['authority_role']}, effective {m['source_date']}, "
+                f"enacted per {e['basis'].replace('_', ' ').lower()}; governing source: {governing}. It applies within its "
+                'recorded scope; cite the governing source for the current rule.]')
     if use == 'PRIOR_DECISION':
-        states = '; '.join(f"{k}: {m[k]}" for k in ('decision_status', 'execution_status', 'outcome_status') if m.get(k))
-        return f"[PRIOR RECORD ({m['authoring_record_kind'] or m['record_kind']}; {states or 'no recorded states'}) - history, not a standing rule.]"
+        e = version.get('enactment') or {}
+        declared = (f" It declares that it supersedes guidance, but its enactment is not established ({', '.join(e['missing'])});"
+                    ' that guidance still applies, flagged for review.' if e.get('missing') and version['supersedes'] else '')
+        return f"[PRIOR RECORD ({kind}; {states or 'no recorded states'}) - history, not a standing rule.{declared}]"
     return None
 
 
@@ -138,7 +156,7 @@ def evidence_item(result, evidence_id):
         'applicability': {'state': version['applicability'], 'revision_state': version['state'],
                           'version_mode': version['mode'], 'replaced_by': _replacements(version),
                           'unverified_supersession': version['unverified_supersession'],
-                          'supersedes': version['supersedes'],
+                          'supersedes': version['supersedes'], 'enactment': version.get('enactment'),
                           'other_revisions': [{k: r[k] for k in ('authoring', 'date', 'status', 'state')}
                                               for r in version['other_revisions']]},
         'dates': {'source_date': m['source_date'], 'basis': m['source_date_basis'], 'effective_at': m['effective_at'],
@@ -146,8 +164,9 @@ def evidence_item(result, evidence_id):
                   'reference_time': version['reference_time']},
         'scope': {'project_id': m['project_id'], 'batch_id': m['batch_id'], 'scope': m['scope'],
                   'batch_relation': result.get('batch_relation')},
-        'authority': {'role': m['authority_role'], 'actor': m['authority_actor'], 'approval_status': m['approval_status'],
-                      'provenance': m['authority_provenance']},
+        'authority': {'role': m['authority_role'], 'actor': m['authority_actor'], 'actor_relation': actor_relation(citation),
+                      'approval_status': m['approval_status'], 'provenance': m['authority_provenance']},
+        'authorship': authorship(citation, m['authority_actor']),
         'recorded_states': {k: m[k] for k in ('status', 'decision_status', 'execution_status', 'outcome_status')},
         'upstream_review': {'review_required': m['review_required'], 'review_reasons': m['review_reasons']}
             if m['review_required'] else None,
@@ -166,8 +185,8 @@ def withheld_item(entry):
     citation = entry['citation']
     return {'authoring': citation['authoring'], 'document_id': citation['document_id'], 'version_id': citation['version_id'],
             'sections': entry['sections'], 'state': entry['state'],
-            'replaced_by': [{'replaced_by': s['superseding']['authoring'], 'section': s.get('section')}
-                            for s in entry['section_superseded_by']],
+            'replaced_by': [{'replaced_by': s['superseding']['authoring'], 'section': s.get('section'),
+                             **({'withdrawn': True} if s.get('withdrawn') else {})} for s in entry['section_superseded_by']],
             'note': 'Withheld from current-guidance results before ranking; retrievable with version_mode=history.'}
 
 
@@ -202,13 +221,54 @@ def member_messages(members, directory=None):
     return items
 
 
+def actor_relation(citation):
+    """What a retrieved record's authority actor is to it. A Slack record's actor is the message's author; a manual
+    record's actor approved, decided or recorded it (its recorded authority), which does not make them its author."""
+    return 'MESSAGE_AUTHOR' if ((citation or {}).get('source') or {}).get('system') == 'slack' else 'RECORD_AUTHORITY'
+
+
+def authorship(citation, actor):
+    """Verified authorship of a retrieved record, separate from its authority. Only a Slack record names its author
+    (the message's author); a manual record records none, so its author stays unknown rather than its approver."""
+    if actor_relation(citation) == 'MESSAGE_AUTHOR' and actor:
+        return {'author_id': actor, 'verified': True, 'basis': 'SLACK_MESSAGE_AUTHOR'}
+    return {'author_id': None, 'verified': False, 'basis': 'NO_AUTHOR_RECORDED'}
+
+
+# The model-facing evidence representation (draft, revision, ToT and grounding all receive it). v2: no internal storage
+# IDs (document, version and chunk hashes; evidence_id and authoring identify a source), no null or empty fields, no
+# copies of values carried elsewhere in the same item or payload, and verified authorship separate from authority.
+EVIDENCE_VIEW_VERSION = 'agent3-evidence-view-v2'
+
+
+def _compact(value):
+    """Drop null, empty-list and empty-dict values at every depth; every other value is unchanged."""
+    if isinstance(value, dict):
+        out = {k: _compact(v) for k, v in value.items()}
+        return {k: v for k, v in out.items() if v is not None and v != [] and v != {}}
+    if isinstance(value, list):
+        return [_compact(v) for v in value]
+    return value
+
+
 def model_view(item):
     """What a model sees of an evidence item: people by canonical ID and role, no display names (card prose uses
-    roles). The ledger keeps the names for attribution checks."""
-    if item.get('origin') != 'member_message':
-        return item
-    return {**{k: v for k, v in item.items() if k != 'author_name'},
-            'reactions': [{'name': r['name'], 'users': [u['id'] for u in r['users']]} for r in item['reactions']]}
+    roles); source text, citation identity, applicability, dates, scope, authority, authorship and recorded states
+    in compact form. The ledger keeps every field (names and storage IDs included) for the deterministic checks."""
+    if item.get('origin') == 'member_message':
+        # channel_id and message_id are spelled out in evidence_id (m:<channel>:<message>).
+        return _compact({**{k: v for k, v in item.items() if k not in ('author_name', 'channel_id', 'message_id')},
+                         'reactions': [{'name': r['name'], 'users': [u['id'] for u in r['users']]} for r in item['reactions']]})
+    citation, applicability = item.get('citation') or {}, dict(item.get('applicability') or {})
+    if applicability.get('enactment'):  # 'recorded' repeats recorded_states, dates, scope and authority.
+        applicability['enactment'] = {k: v for k, v in applicability['enactment'].items() if k != 'recorded'}
+    return _compact({
+        **item, 'applicability': applicability,
+        'citation': {'authoring': citation.get('authoring'), 'title': citation.get('title'), 'sections': citation.get('sections'),
+                     # Project and batch are in scope.
+                     'source': {k: v for k, v in (citation.get('source') or {}).items() if k not in ('project_id', 'batch_id')}},
+        # Every date is read against the topic's as_of (reference_time is always that value).
+        'dates': {k: v for k, v in (item.get('dates') or {}).items() if k != 'reference_time'}})
 
 
 GUIDANCE_TYPES = ('guideline', 'faq')

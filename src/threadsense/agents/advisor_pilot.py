@@ -34,12 +34,12 @@ from threadsense.agents.advice_contracts import ModelReviewItem, stable_id
 from threadsense.agents.advice_inputs import coverage, load_effective_view, review_items_from_view
 from threadsense.agents.advisor_checks import (
     action_issues, agent1_resolution, announcement_issues, assemble_card, authorize, build_severity, claim_issues,
-    coverage_issues, dependencies, established, grounding_result, inherited_flags, normalize, presentation_issues,
-    rejected_statements, sendable, statements, structural_issues, temporal_check, unauthorized,
+    coverage_issues, dependencies, established, governing_sources, grounding_result, inherited_flags, normalize,
+    presentation_issues, rejected_statements, sendable, statements, structural_issues, temporal_check, unauthorized,
 )
 from threadsense.agents.advisor_contracts import AdvisorDraft, GroundingJudgment
 from threadsense.agents.advisor_evidence import (
-    Budget, BudgetExhausted, ResearchTools, member_messages, model_view, open_retriever,
+    EVIDENCE_VIEW_VERSION, Budget, BudgetExhausted, ResearchTools, member_messages, model_view, open_retriever,
 )
 from threadsense.handoff_inputs import ROOT, file_hash, read_json
 from threadsense.retrieval.config import DEFAULTS
@@ -49,9 +49,15 @@ PILOT_VERSION = 'agent3-advisor-pilot-v6'
 # Prompt text version, recorded in every manifest with the rule fingerprints. v6: team lead-facing writing guide and two
 # STYLE ONLY examples in the draft/revision rules; display-text rules in grounding and ToT; rules sent once per request
 # (agent3_readability_v1 ran v6). v6.1: grounding also receives the open upstream review flags (open_review_flags).
-PROMPT_VERSION = 'agent3-advisor-prompts-v8'
+# v10: summary written as independently judged sentences (draft v9), each condensing named claims; a sentence that
+# groups several people states only what each of them said. v11: compact evidence view (EVIDENCE_VIEW_VERSION) with
+# verified authorship separate from authority; actions keep recommendation, destination and premises apart (a named
+# destination needs its own support); summary facts with different evidence get their own sentences (up to 3); the
+# revision omits the STYLE ONLY examples; output schemas are sent without their generated titles.
+PROMPT_VERSION = 'agent3-advisor-prompts-v11'
 # Replayed recorded drafts older than v7 are read under the last contract they satisfy (no intervention_need).
-LEGACY_LABELS = {'AdvisorDraft': 'agent3-advisor-draft-v6', 'ToTComparison': 'agent3-tot-comparison-v2'}
+LEGACY_LABELS = {'AdvisorDraft': 'agent3-advisor-draft-v6', 'ToTComparison': 'agent3-tot-comparison-v2',
+                 'GroundingJudgment': 'agent3-grounding-judgment-v4'}
 SCENARIOS = ROOT/'data/evaluation/agent3_pilot_scenarios.json'
 HANDOFF = ROOT/'data/processed/agent2_handoff_v2_projection'
 # Per topic: draft + one revision + one ToT + final grounding = 4 model calls at most, the last always
@@ -83,12 +89,20 @@ DRAFT_RULES = (
     'verifies it. A team lead\'s instruction inside a member thread is a THREAD_INSTRUCTION claim citing that message: it '
     'applies to that thread\'s scope and is not project guidance. Retrieved sources '
     'support guidance and history according to their "use": CURRENT_GUIDANCE may support what applies now; '
+    'ENACTED_DECISION is a team lead decision whose enactment as policy is on record: it may support what applies now '
+    'within its recorded scope, and its status line names the governing source (cite that announcement or guideline '
+    'too when it is in the evidence); '
     'PRIOR_DECISION and HISTORY_ONLY explain earlier decisions, outcomes or old rules and must not be presented as current '
-    'guidance; UNRESOLVED_VERSION must not be resolved by you. ANNOUNCEMENT items include routine reminders, schedules '
+    'guidance (an approved, posted or executed decision is still a prior record unless its use is ENACTED_DECISION); '
+    'withdrawn guidance has no replacement and does not apply; UNRESOLVED_VERSION must not be resolved by you. ANNOUNCEMENT items include routine reminders, schedules '
     'and example-collection notes: before a GUIDANCE claim relies on one, list it in announcement_assessments as relevant '
     '(same project, batch and problem) and directive (it tells people what to do), quoting the directing sentence '
     'verbatim; otherwise mark it not relevant or not directive. Read each excerpt with its status line, dates, scope, '
-    'authority and recorded states. A quote with quote_kind VERBATIM must be copied exactly from one cited excerpt; '
+    'authority, authorship and recorded states. Authorship is separate from authority: authorship.author_id is the '
+    'verified author (a Slack record\'s message author); author_id absent with verified false means the record names '
+    'no author, and its authority actor (actor_relation RECORD_AUTHORITY) approved, decided or recorded it without '
+    'being its author. Write "the earlier handoff records ..." rather than naming who wrote it, and list an AUTHOR '
+    'attribution for a retrieved record only when its authorship is verified. A quote with quote_kind VERBATIM must be copied exactly from one cited excerpt; '
     'otherwise set quote_kind PARAPHRASE. '
     'Coverage: before advising, fill coverage for CURRENT_GUIDANCE, ANNOUNCEMENTS, PRIOR_DECISIONS (earlier decisions, '
     'trials and their outcomes) and MEMBER_QUESTIONS (what members asked, including references to earlier workarounds or '
@@ -99,7 +113,12 @@ DRAFT_RULES = (
     'Action: when the evidence supports a concrete step (post or align on current guidance, escalate, route to a '
     'specialist, update documentation), propose it with support_claim_ids naming all its premises (a judge will decide which are essential); it may be '
     'proposed even '
-    'though the card will need team lead review. Any action other than NO_ACTION states intervention_need: the kind '
+    'though the card will need team lead review. Keep apart what the action recommends (e.g. escalate to engineering), '
+    'where or through whom it goes (a named thread, channel, person or queue) and its premises: the recommendation may '
+    'follow from supported incident evidence, but a named destination is a claim of its own and needs a premise whose '
+    'evidence establishes that route. An example-collection or status note asks people where to post examples; it '
+    'does not make that thread an engineering intake route. When no evidence names the route, leave the destination '
+    'unspecified ("report it to engineering") rather than choosing one. Any action other than NO_ACTION states intervention_need: the kind '
     '(UNRESOLVED_HANDLING_QUESTION, GUIDANCE_GAP, APPLICABLE_PENDING_DECISION or OPERATIONAL_PROBLEM), one sentence on '
     'why intervening now is needed, and the evidence that shows it. Infer the need from what the threads and records '
     'show, not from keywords; nobody has to ask for intervention or say work is blocked. Handling questions that a team '
@@ -131,8 +150,15 @@ DRAFT_RULES = (
     'UNSUPPORTED and propose no operational action. Upstream review flags stay open; you cannot clear them. Everything '
     'that reaches the card is checked statement by statement against the full topic context.')
 WRITING_GUIDE = (
-    'Card writing. The team lead reads these fields exactly as you write them: summary (what happened, 1-2 short '
-    'sentences); proposed_action.instruction (one concrete sentence telling the team lead what to do); '
+    'Card writing. The team lead reads these fields exactly as you write them: summary_sentences (what happened, usually '
+    '1-2 short sentences, up to 3 when needed; leave summary null: it is their text joined). Each summary sentence is '
+    'judged and shown on its own, so make each one complete; list the claims it condenses in support_claim_ids and, in '
+    'depends_on, the positions (1, 2, ...) of earlier sentences it refers back to ("this", "their questions"). A '
+    'sentence says nothing its claims do not support, and one unsupported part withholds the whole sentence: give facts '
+    'with different evidence their own sentences (what members report; current handling or what the team lead has '
+    'asked for; what earlier records show) rather than joining unrelated facts to stay within two sentences. A sentence whose subject is several people ("three tutors ask ...") states only what '
+    'each of them asked or reported: when their questions or reports differ, say how ("a QA tutor asks X; two others '
+    'ask Y") or use wording that covers each one, as the claims do; proposed_action.instruction (one concrete sentence telling the team lead what to do); '
     'proposed_action.rationale (why that helps, 1-2 short sentences); proposed_action.draft_text (a copyable draft suited '
     'to the action: an announcement of about 60-120 words, with bullets when useful, or the message to send for an '
     'escalation or referral); review_note (only when something specific still needs the team lead\'s review; otherwise '
@@ -153,8 +179,9 @@ STYLE_EXAMPLES = (
     'claims, evidence_ids, support_claim_ids, attributions, severity, coverage and resolution. '
     'Example 1 (fictional image-captioning batch). Supplied facts: two annotators ask whether captions should include '
     'watermark text; the current captioning guideline says to omit watermarks unless the watermark is the subject of the '
-    'image. Selected action: post a reminder. summary: "Two annotators asked whether captions should include watermark '
-    'text. The current guideline already answers this." proposed_action.instruction: "Post a reminder in the batch channel '
+    'image. Selected action: post a reminder. summary_sentences: "Two annotators asked whether captions should include '
+    'watermark text." (condenses the two annotators\' question claim), "The current guideline already answers this." '
+    '(condenses the guidance claim; depends on sentence 1). proposed_action.instruction: "Post a reminder in the batch channel '
     'that captions leave out watermark text unless the watermark is the subject of the image." proposed_action.rationale: '
     '"Both questions are answered by the current guideline; one reminder gives everyone the same rule before more '
     'captions are submitted." proposed_action.draft_text: "Reminder for this batch: leave watermark text out of captions. '
@@ -162,18 +189,22 @@ STYLE_EXAMPLES = (
     'before submitting. This follows the current captioning guideline; nothing else has changed." review_note: null. '
     'Example 2 (fictional video-timestamp batch). Supplied facts: three annotators report that timestamps move by about one '
     'second after saving; an engineer asked for task IDs; no cause is confirmed. Selected action: report a technical issue '
-    'to engineering. summary: "Three annotators report that timestamps move after saving. The cause is not confirmed." '
+    'to engineering. summary_sentences: "Three annotators report that timestamps move after saving.", "The cause is not '
+    'confirmed." (depends on sentence 1). '
     'proposed_action.instruction: "Report a technical issue to engineering with the affected task IDs and the steps that '
     'reproduce the shift." proposed_action.rationale: "Engineering asked for task IDs; one report with reproduction steps '
     'lets them check the save step without each annotator filing separately." proposed_action.draft_text: "Timestamps '
     'move after saving (three reports in this batch). After saving, timestamps shift by about one second. Tasks: VID-101, '
     'VID-117, VID-142. Steps: open the task, set a timestamp, save, reopen. The cause is not confirmed; please check the '
     'save step." review_note: "Confirm with engineering whether tasks saved before the fix need to be re-checked."')
-DRAFT_RULES = f'{DRAFT_RULES} {WRITING_GUIDE} {STYLE_EXAMPLES}'
+RESEARCH_RULES = DRAFT_RULES
+DRAFT_RULES = f'{RESEARCH_RULES} {WRITING_GUIDE} {STYLE_EXAMPLES}'
+# The revision keeps every rule and the full writing guide; it omits only the STYLE ONLY examples (no constraints, and
+# the previous draft already shows the card's style).
 REVISION_RULES = (
     'Revise your previous draft once, using the follow-up retrieval results now included in the evidence. Keep every '
     'claim cited; weaken or remove claims the evidence does not support. No further retrieval will run: leave remaining '
-    'gaps with follow_up null. ' + DRAFT_RULES)
+    f'gaps with follow_up null. {RESEARCH_RULES} {WRITING_GUIDE}')
 GROUNDING_RULES = (
     'Judge each statement against the evidence it cites, read within the full context provided: every message of every '
     'member thread (with canonical author IDs, roles, thread starters and reactions) and every retrieved source for '
@@ -186,10 +217,18 @@ GROUNDING_RULES = (
     'preserve the meaning. Prose names no one: role wording ("the team lead instructs", "a tutor reports") must match the '
     'cited author\'s role and act (reported, asked, confirmed or instructed), plural wording needs that many distinct '
     'cited authors, and listed attributions must hold (AUTHOR wrote the cited message, THREAD_STARTER started its '
-    'thread, PARTICIPANT posted in it). SUMMARY and SEVERITY_RATIONALE must follow '
-    'from the evidence with no added cause, count or outcome. ACTION and ALTERNATIVE are recommendations: judge whether '
+    'thread, PARTICIPANT posted in it). A retrieved record\'s authorship is separate from its authority: an approver or '
+    'recorder (actor_relation RECORD_AUTHORITY) is not its author, and a record whose authorship is not verified names '
+    'no author. SUMMARY and SEVERITY_RATIONALE must follow '
+    'from the evidence with no added cause, count or outcome. A SUMMARY sentence (statement_id summary:s1, summary:s2, '
+    '...) is judged on its own and shown only if SUPPORTED; its attributions name the people its role wording refers '
+    'to, and wording that groups several people is SUPPORTED only if what it says they asked or reported is stated in '
+    'each of their cited messages. A SUMMARY sentence with depends_on is read after the sentences it lists (for words '
+    'such as "this" or "their"), but judged only on what it adds.ACTION and ALTERNATIVE are recommendations: judge whether '
     'their premises are supported, whether the action applies to this topic and whether the rationale follows; a source '
-    'need not literally prescribe the action. ACTION and operational ALTERNATIVE statements list their premises: '
+    'need not literally prescribe the action. A destination the action names (a thread, channel, person or queue it '
+    'goes to or through) needs a premise establishing that route; an example-collection or status note does not; an '
+    'action that leaves its destination unspecified is not insufficient for that reason. ACTION and operational ALTERNATIVE statements list their premises: '
     'PENDING_YOUR_VERDICT premises are judged here and are provisional, not final; REJECTED ones failed deterministic '
     'checks and support nothing; a premise with depends_on stands only if every ANNOUNCEMENT_HANDLING statement it lists '
     'is also SUPPORTED. ACTION_CHOICE is SUPPORTED only if the cited evidence really leaves that choice between the named '
@@ -216,7 +255,17 @@ GROUNDING_RULES = (
     'changes), ACTION_RATIONALE, REVIEW_NOTE and OPEN_QUESTION exactly as written: judge that exact text, including its '
     'conditions, uncertainty, scope and who reported, asked, confirmed or instructed; plain wording is expected, but it '
     'must not overstate the evidence. A quoted passage must match its source exactly. open_review_flags lists the '
-    'upstream review obligations still open on these threads; a REVIEW_NOTE may rely on them.')
+    'upstream review obligations still open on these threads; a REVIEW_NOTE may rely on them. '
+    'Source consistency (always fill source_consistency, even when the draft declares no conflict): compare the '
+    'governing_sources that address the handling question of this topic with each other, independently of the draft. List '
+    'sources that state the same rule as AGREE, and sources that state different rules for the same cases as CONFLICT '
+    'with the point and disagreement_scope (which cases, batch or section differ). assessed_evidence_ids lists the '
+    'governing sources you compared; relations may be empty when they address different points. Only governing sources '
+    'count: historical, superseded, expired or withdrawn material, prior records and member messages are not current '
+    'sources, an announcement governs only if it directs handling for this topic, and members disagreeing with each '
+    'other is not a source conflict. For each entry in declared_conflicts give one declared_conflict_checks entry: '
+    'CONFIRMED (the cited sources state different rules on that point), SOURCES_AGREE (they say the same thing; only '
+    'wording or detail differs) or UNDETERMINED.')
 
 
 class ScenarioError(ValueError):
@@ -509,8 +558,9 @@ class CrewAIClient:
 
 class ReplayClient:
     """Offline replay of a saved run: generations (draft, revision, ToT) are the recorded model outputs; a grounding
-    verdict is reused only for a statement whose kind, text, evidence and attributions, and whose full evidence
-    context, are unchanged. ACTION and ALTERNATIVE verdicts are not reused when they list premises: since pilot v5 their
+    verdict is reused only for a statement whose kind, text, evidence, attributions and dependencies, and whose full
+    evidence context, are unchanged, and only while the grounding call's other inputs are those of the recorded run (its
+    rules, the evidence view and the sent schema; read from the run's manifest, missing counts as changed). ACTION and ALTERNATIVE verdicts are not reused when they list premises: since pilot v5 their
     premises are shown as provisional with their dependencies, which changes what was judged. Anything else
     (sufficiency, source agreement) is PENDING, never invented."""
     label = 'REPLAY_RECORDED'
@@ -531,6 +581,9 @@ class ReplayClient:
                 'statements': {s['statement_id']: s for s in (r.get('grounding') or {}).get('statements', [])},
                 'context': set(r.get('evidence_ledger', {}))}
         self.fingerprint = sha256(json.dumps({k: v['raw'] for k, v in self.recorded.items()}, sort_keys=True).encode()).hexdigest()
+        manifest = next((read_json(p) for p in (self.run_dir/'run_manifest.json', self.run_dir/'manifest.json') if p.is_file()), {})
+        prompts = (manifest.get('fingerprints') or manifest).get('prompts') or {}
+        self.grounding_inputs_same = grounding_inputs(prompts) == grounding_inputs(prompt_fingerprints())
 
     def complete(self, stage, payload, schema):
         rec = self.recorded[payload['scenario_id']]
@@ -554,22 +607,31 @@ class ReplayClient:
     def _judgment(self, payload, rec):
         context = {e['evidence_id'] for e in payload['member_threads'] + payload['retrieved_sources']}
         verdicts = []
-        def content(x):
-            return x['kind'], x['text'], x['evidence_ids'], x.get('attributions', [])
+        def content(x):  # A summary sentence's dependencies are part of what was judged.
+            return x['kind'], x['text'], x['evidence_ids'], x.get('attributions', []), x.get('depends_on', [])
         for s in payload['statements']:
             old = rec['statements'].get(s['statement_id'])
-            same = (old is not None and context == rec['context'] and old.get('model_verdict') in
+            same = (old is not None and self.grounding_inputs_same and context == rec['context'] and old.get('model_verdict') in
                     ('SUPPORTED', 'PARTIALLY_SUPPORTED', 'UNSUPPORTED') and content(old) == content(s) and 'premises' not in s)
             self.reuse_log.append({'scenario_id': payload['scenario_id'], 'statement_id': s['statement_id'],
                                    'reused': bool(same), 'reason': None if same else
-                                   'not recorded' if old is None else 'context changed' if context != rec['context'] else
+                                   'not recorded' if old is None else
+                                   'grounding rules, evidence view or schema changed since the recorded run'
+                                   if not self.grounding_inputs_same else 'context changed' if context != rec['context'] else
                                    'content changed' if content(old) != content(s) else
                                    'premises now shown as provisional with dependencies' if 'premises' in s else
                                    f"recorded verdict {old.get('model_verdict')}"})
             if same:
                 verdicts.append({'statement_id': s['statement_id'], 'verdict': old['model_verdict'],
                                  'rationale': old.get('rationale') or 'Recorded verdict (replay).'})
-        return {'verdicts': verdicts, 'action_sufficiency': None, 'alternative_sufficiency': []}
+        # Recorded judgments predate the source-consistency assessment: it stays NOT_ASSESSED, never "no conflict".
+        return {'contract_version': 'agent3-grounding-judgment-v4', 'verdicts': verdicts, 'action_sufficiency': None,
+                'alternative_sufficiency': []}
+
+
+def grounding_inputs(prompts):
+    """What the grounding call receives besides the statements and evidence: its rules, the evidence view and schema."""
+    return prompts.get('grounding_rules'), prompts.get('evidence_view'), (prompts.get('sent_schemas') or {}).get('GroundingJudgment')
 
 
 def failure_class(error):
@@ -595,6 +657,19 @@ def task_description(payload, schema):
     body = json.dumps({k: v for k, v in payload.items() if k != 'rules'}, ensure_ascii=False)
     return f"{payload['rules']}\n\nInput JSON:\n{body}\n\nReturn exactly one JSON object for {schema.__name__} " \
            'matching output_schema. No prose outside the JSON.'
+
+
+def sent_schema(schema):
+    """The output schema as sent: the JSON schema without the titles pydantic generates for every model and field
+    (field names, types, enums, constraints, required lists and descriptions unchanged)."""
+    def strip(node, mapping=False):
+        if isinstance(node, dict):
+            return {k: strip(v, k in ('properties', '$defs') and not mapping) for k, v in node.items()
+                    if mapping or not (k == 'title' and isinstance(v, str))}
+        if isinstance(node, list):
+            return [strip(v) for v in node]
+        return node
+    return strip(schema.model_json_schema())
 
 
 def _json_text(raw):
@@ -630,7 +705,7 @@ class Stages:
             return None
         try:
             raw = self.client.complete(stage, {**payload, 'scenario_id': self.scenario_id, 'stage': stage,
-                                               'output_schema': schema.model_json_schema()}, schema)
+                                               'output_schema': sent_schema(schema)}, schema)
             entry.update(raw=raw, raw_sha256=sha256(raw.encode('utf-8')).hexdigest())
             value = schema.model_validate(json.loads(_json_text(raw)))
         except (BoundaryNotObserved, RunStateError):
@@ -722,9 +797,9 @@ def _topic(packet, as_of):
 
 
 def _split(ledger):
-    """Model-facing evidence: member messages without display names (model_view), then retrieved sources."""
+    """Model-facing evidence (model_view): member messages without display names, then retrieved sources."""
     return ([model_view(v) for v in ledger.values() if v['origin'] == 'member_message'],
-            [v for v in ledger.values() if v['origin'] == 'retrieved_source'])
+            [model_view(v) for v in ledger.values() if v['origin'] == 'retrieved_source'])
 
 
 def _research_payload(rules, topic, ledger, tools, rubric, interpretations):
@@ -734,12 +809,13 @@ def _research_payload(rules, topic, ledger, tools, rubric, interpretations):
             'limits': {'follow_up_queries': MAX_FOLLOW_UPS}}
 
 
-def grounding_payload(stmts, ledger, topic, rejected=None, depends=None, review_flags=None):
+def grounding_payload(stmts, ledger, topic, rejected=None, depends=None, review_flags=None, declared=None):
     """Sendable statements plus the full topic context: every message of every member thread (canonical IDs, roles,
     thread starters, reactions) and every retrieved source, so the draft's citations do not set the judge's evidence
     window. Premises are shown as provisional (pending the judge's own verdict) with the announcements they depend on,
     never as final. `review_flags`: the upstream review obligations still open on these threads (a REVIEW_NOTE may
-    rely on them)."""
+    rely on them). `declared`: the draft's source conflicts, which the judge checks; it also compares the governing
+    sources on its own (source_consistency)."""
     rejected, depends = rejected or {}, depends or {}
     sent = sendable(stmts, rejected)
     members, retrieved = _split(ledger)
@@ -754,11 +830,16 @@ def grounding_payload(stmts, ledger, topic, rejected=None, depends=None, review_
         out = {k: s[k] for k in ('statement_id', 'kind', 'text', 'evidence_ids')}
         if s.get('attributions'):
             out['attributions'] = s['attributions']
+        if s.get('depends_on'):
+            out['depends_on'] = s['depends_on']
         if 'premises' in s:
             out['premises'] = [premise(i) for i in s['premises']]
         return out
     return {'rules': GROUNDING_RULES, 'topic': topic, 'statements': [shown(s) for s in sent],
-            'member_threads': members, 'retrieved_sources': retrieved, 'open_review_flags': list(review_flags or [])}
+            'member_threads': members, 'retrieved_sources': retrieved, 'open_review_flags': list(review_flags or []),
+            'governing_sources': governing_sources(ledger), 'declared_conflicts': [
+                {'conflict_index': i, 'evidence_ids': c.evidence_ids, 'description': c.description}
+                for i, c in enumerate(declared or [])]}
 
 
 def _final_grounding(call, draft, ledger, topic, stmts, structural, actions, review_flags=None):
@@ -767,8 +848,8 @@ def _final_grounding(call, draft, ledger, topic, stmts, structural, actions, rev
     if not sendable(stmts, rejected):
         return grounding_result(draft, ledger, stmts, structural=structural, actions=actions,
                                 reason='NOTHING_CITED' if not rejected else 'ALL_STATEMENTS_REJECTED')
-    judgment = call('grounding', grounding_payload(stmts, ledger, topic, rejected, dependencies(draft, ledger), review_flags),
-                    GroundingJudgment)
+    judgment = call('grounding', grounding_payload(stmts, ledger, topic, rejected, dependencies(draft, ledger), review_flags,
+                                                   draft.source_conflicts), GroundingJudgment)
     return grounding_result(draft, ledger, stmts, structural=structural, actions=actions, judgment=judgment,
                             ran=judgment is not None, reason='GROUNDING_CALL_FAILED_OR_OVER_BUDGET',
                             pending=getattr(call.client, 'replay', False))
@@ -817,7 +898,7 @@ def advise(scenario, *, view, retriever, client, budget, rubric, run_id, as_of, 
                                'new_evidence_ids': sorted(set(ledger) - before)})
         if any(f['status'] == 'DONE' for f in follow_ups):
             payload = _research_payload(REVISION_RULES, topic, ledger, tools, rubric, interpretations)
-            revised = call('revision', {**payload, 'previous_draft': draft.model_dump(), 'follow_ups': follow_ups},
+            revised = call('revision', {**payload, 'previous_draft': draft.model_dump(exclude_none=True), 'follow_ups': follow_ups},
                            AdvisorDraft, reserve=1)
             draft = revised or draft
         unfilled = [g.model_dump() for g in draft.gaps]
@@ -859,10 +940,13 @@ def advise(scenario, *, view, retriever, client, budget, rubric, run_id, as_of, 
             if note:
                 action_notes = action_notes + [note]
         final['action_notes'] = action_notes
+        tot['choice_after_grounding'] = advisor_tot.choice_after_grounding(tot, final['action'])
         # Recorded supersession is credited only to announcements the final grounding verified; several current
-        # sources explain a superseded section only if the final grounding judged that they agree.
+        # sources explain a superseded section only if the final grounding judged that they agree. Conflicts the final
+        # grounding found on its own reach routing here (the comparison ran before; it is not re-run).
         temporal = temporal_check(draft, ledger, final['handling'],
-                                  {s['statement_id']: s['verdict'] for s in grounding['statements']})
+                                  {s['statement_id']: s['verdict'] for s in grounding['statements']},
+                                  grounding.get('source_consistency'))
         diagnostics += normalization + [
             {'code': 'ALTERNATIVE_NOT_GROUNDED' if w['kind'] == 'ALTERNATIVE' else 'WITHHELD_STATEMENT', **w}
             for w in final['withheld']]
@@ -871,7 +955,8 @@ def advise(scenario, *, view, retriever, client, budget, rubric, run_id, as_of, 
             diagnostics.append({'code': 'UNSUPPORTED_ACTION_NOT_CARRIED', 'action': draft.proposed_action.model_dump()})
     outcome = {'draft': draft, 'ledger': ledger, 'inherited_flags': flags, 'grounding': grounding, 'temporal': temporal,
                'final': final, 'evidence_sufficiency': draft.evidence_sufficiency if draft else None,
-               'coverage_issues': covered_issues, 'action_source': 'TOT' if action_notes and action_notes[0].startswith(
+               'coverage_issues': covered_issues, 'action_choice': tot.get('choice_after_grounding'),
+               'action_source': 'TOT' if action_notes and action_notes[0].startswith(
                    'Action selected') else 'DRAFT',
                'failures': [e for e in call.log if e['status'] != 'OK']}
     try:
@@ -990,6 +1075,9 @@ def prompt_fingerprints():
             'tot_rules': digest(advisor_tot.RULES),
             'schemas': {s.__name__: digest(json.dumps(s.model_json_schema(), sort_keys=True))
                         for s in (AdvisorDraft, GroundingJudgment, ToTComparison)},
+            'sent_schemas': {s.__name__: digest(json.dumps(sent_schema(s), sort_keys=True))
+                             for s in (AdvisorDraft, GroundingJudgment, ToTComparison)},
+            'evidence_view': EVIDENCE_VIEW_VERSION,
             'contract_versions': {'draft': AdvisorDraft.model_fields['contract_version'].default,
                                   'grounding': GroundingJudgment.model_fields['contract_version'].default,
                                   'tot': ToTComparison.model_fields['contract_version'].default}}
@@ -1025,7 +1113,7 @@ def plan(*, retriever=None, view=None, scenarios=None, handoff=HANDOFF):
         found = tools.search(query, purpose='initial_current_guidance')
         topic = {'project_id': project, 'batch_id': batch, 'as_of': as_of} if packet is None else _topic(packet, as_of)
         payload = _research_payload(DRAFT_RULES, topic, ledger, tools, rubric, [] if packet is None else _interpretations(packet))
-        tokens, counter = _tokens(task_description({**payload, 'output_schema': AdvisorDraft.model_json_schema()}, AdvisorDraft))
+        tokens, counter = _tokens(task_description({**payload, 'output_schema': sent_schema(AdvisorDraft)}, AdvisorDraft))
         rows.append({'id': scenario['id'], 'status': 'PLANNED', 'project_id': project, 'batch_id': batch,
                      'topic': None if packet is None else packet['topic_label'],
                      'member_ids': [] if packet is None else packet['member_ids'], 'initial_query': query,

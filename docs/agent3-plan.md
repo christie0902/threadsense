@@ -24,6 +24,8 @@ model; **test fixture** = hand-written, labelled data):
 | Demo scenario matrix (M7) | live for all nine (final eval); scripted for the six pilot topics; three were placeholder-only before | `agent3_scenario_coverage_v1` |
 | Repair pass: prompts v7 (intervention need, summary distinctions, open-question definition), retrieval expansion | live once on six cases (16 requests, $0.97); NO_INTERVENTION_NEED path and partitive fix offline only | `agent3_repair_eval_v1`, `agent3_repair_comparison_v1` |
 | Repair pass 2: prompts v8, ToT v3 selection, temporal decision fixes | offline only (prepared judgments; temporal golden set 14/15) | `tests/test_agent3_tot_v3.py`, `agent3_temporal_golden_v1` |
+| Repair pass 3: enacted-decision eligibility, close-call routing, grounding source consistency (prompts v9, grounding v5) | offline (golden 14/15, T02 lacks enactment evidence); live once on four cases (8 requests, $0.46): audio action resolved, NO_ACTION kept; action choice, replacement and grounding-found conflicts unobserved live | `agent3_temporal_golden_v2`, `agent3_policy_eval_v1` |
+| Reliability and evaluation cleanup: policy-aligned temporal golden set, sentence-level summary judgment (draft v9, prompts v10), Retriever closes its Chroma client | offline only: temporal-golden-v1 still 14/15; temporal-golden-policy-v1 17/17 (different benchmark); summary fix needs a new live judgment; Chroma second-open 6/120 -> 0/120 | `temporal_golden_policy_v1.json`, `agent3_temporal_policy_v1`, `tests/test_agent3_summary_sentences.py` |
 
 Open evaluation cases (not used for tuning) are in `data/evaluation/agent3_open_evaluation_cases.json`; the first is
 the audio trial-outcome follow-up retrieval miss from the live smoke run (investigated in Milestone 7).
@@ -1285,3 +1287,184 @@ sources in conflict were settled - fixed with a regression test); browser 10 pas
 **Live verification still needed (smallest set):** audio (pending premise and action after the partitive fix);
 observation-only and QA misalignment under prompts v8 (action choice, ToT selection on real drafts); TL confirmation
 (open-confirmation wording); one topic whose draft states an action choice, to see a live v3 comparison and selection.
+
+## Repair pass 3 (2026-10-31): enacted-decision eligibility, close-call routing, source consistency, live check
+
+Prompts `agent3-advisor-prompts-v9`, grounding `agent3-grounding-judgment-v5` (recorded v4 judgments replay with the
+assessment NOT_ASSESSED, never as "no conflict"; `LEGACY_LABELS` gains GroundingJudgment v4). Corpus, rubric, golden
+labels, scenario labels and obligations unchanged; active index unchanged (eligibility is computed at query time).
+
+**1. Enacted policy decisions** (`retrieval/versions.py` `VersionIndex.enactment`, used by supersession, ledger use,
+temporal checks, grounding and ToT alike). A decision supports current handling (ledger use `ENACTED_DECISION`, its
+document type and recorded states unchanged) only with: explicit TL approval by an authorized role; in-scope batch;
+effective at as_of; a recorded policy change (declares the guidance it supersedes, or `policy_enacted`); enactment (a
+later current announcement posted by a team lead or a current guideline that links it through source_refs - named as
+the governing source - or `policy_enacted`); no expiry, supersession or withdrawal. Approval alone, approved-but-
+unexecuted records, generic states (posted, executed, completed) and completed operational actions are not enactment.
+A decision that declares supersession without enactment no longer supersedes: the guidance stays current, flagged
+`SUPERSEDING_DECISION_NOT_ENACTED` (reviewable). Withdrawal is separate: a latest revision with status `withdrawn`, or a
+supersedes entry `withdrawn: true`, makes the guidance history (WITHDRAWN / SECTION_WITHDRAWN) with no earlier revision
+coming back; the baseline abstains with "guidance withdrawn without replacement". Audit of the real corpus: none of 24
+decision records is enacted; three approvals linked by later posted announcements (documentation sync, tie
+calibration, audit manifest) are operational (`NOT_A_POLICY_CHANGE`), which is why the policy-change condition exists.
+
+**T02** (inspected): approved, effective, in scope, declares it supersedes the guide's Contact details section, but its
+only execution record is `posted` on an advice review and no announcement or guideline links it. Enactment evidence is
+missing, so it still abstains (now: guide current, supersession unverified). Label unchanged; not satisfied by
+inventing evidence. Variants (tests) decide it once a linked posted TL announcement or `policy_enacted` is recorded.
+
+**Temporal golden set v2** (`data/experiments/agent3_temporal_golden_v2/report.json`, change notes `changes.json`
+separating production fixes, harness changes and the clarified policy; v1 report kept): joint 14/15, decisive 11/12,
+abstention 3/3, false overrides 0/15, update targets 14/15, no input-order dependence; always-abstain 3/15 / 0/12.
+
+**2. Close calls after grounding** (`advisor_tot.choice_after_grounding`): when the comparison was a close call and at
+least two materially different options (different action types) remain viable after final grounding (the card action;
+candidates with SUPPORTED text and a passing sufficiency check; NO_ACTION needs neither need nor premises), the choice
+is UNRESOLVED: Needs Review (`OTHER`, "Unresolved action choice ..."), the incumbent kept but not preferred, the
+dashboard heads both as closely matched options. A close call that grounding narrows to one option, same-type wordings
+and clear comparisons are not review reasons; ACTION_CHOICE alone never is. Tested on an unflagged record (no inherited
+flag, HIGH severity or other reason).
+
+**3. Source consistency in the final grounding** (no extra call): the judge compares the governing sources (current
+guidance, enacted decisions, announcements) on its own and checks each declared conflict. Reported conflicts pass the
+same eligibility rules (member messages, unverified announcements, superseded/expired/withdrawn or out-of-running
+records are not current-source conflicts); a current-source conflict reaches routing as `SOURCE_CONFLICT_FOUND_IN_GROUNDING`
+(origin FINAL_GROUNDING, `considered_by_tot: false`, card note says the comparison did not consider it); a declared
+conflict the judge finds agreeing is `RESOLVED_BY_SOURCE_AGREEMENT`; recorded supersession still settles by record.
+
+**Checks.** Focused suites; new `tests/test_agent3_enactment.py` (17, production ingestion) and
+`tests/test_agent3_policy_routing.py` (17); full suite 900 tests: 897 passed, 3 failed - two request-boundary tests
+whose minimal fake grounding reply was no longer a valid v5 judgment (test reply updated, both pass) and one
+intermittent Chroma "Nothing found on disk" (passes on rerun); browser 10 passed; retrieval evaluation unchanged.
+
+**Live verification** (`data/experiments/agent3_policy_eval_v1/`, Sol arm, `--max-requests 16 --max-cost 4`, zero
+retries, run once; four cases): 8 requests (4 drafts, 4 groundings), 0 blocked, 0 failed, 105,965 input / 24,900
+output tokens, **$0.4609**; accounting COMPLETE; all 4 cards Needs Review (inherited flags on every card); 0
+uncarried obligations (review queue 41 + 8 + 3).
+
+| Check | Result |
+| --- | --- |
+| Audio pending premise and action | Resolved live: the partitive claim ("One of the tutors also reports ...") and the escalation SUPPORTED with sufficient premises and need; action shown. Card also HIGH and one announcement statement PARTIALLY_SUPPORTED (a status note treated as directive) |
+| Justified NO_ACTION (observation-only) | Preserved: NO_ACTION, grounding PASSED, only the inherited-flag reason |
+| Confirmation / conflict reasons | QA misalignment: no declared conflict; the judge found the two current sources agree and excluded the batch-14 announcement and prior records; no temporal reason. TL confirmation: no open confirmation (missing inputs stated in the review note), action and need SUPPORTED; summary PARTIALLY_SUPPORTED (attribution across starters) |
+| Natural action-choice triggering | Not observed: no draft stated an action choice; ToT ran on none of the four |
+| Candidate selection / replacement / close call | Unobserved live (no comparison ran); offline tests only |
+| Grounding-found source conflict | Unobserved live (all four assessments AGREE); offline paired tests only |
+| Enacted decision | None in the corpus by design; offline only |
+| Inherited obligations | All carried |
+
+## Reliability and evaluation cleanup (2026-10-31): T02 policy alignment, summary attribution, Chroma reopen
+
+No paid calls. Frozen experiments, corpus, rubric, scenario labels and `temporal_golden.json` unchanged.
+
+**1. T02 and the policy-aligned golden set (dataset/policy change, not a production improvement).** temporal-golden-v1
+and its 14/15 reports are unchanged; rerun as a control with the current code: identical (T02 the only mismatch).
+Exact mismatch: T02's label (DECIDED with D, RESOLVED_BY_RECORD, update target G Contact details) needs D to be
+enacted, and T02 records no enactment (`posted` on an advice review, outcome not_observed, nothing linking it).
+New benchmark `data/evaluation/temporal_golden_policy_v1.json` (17 cases: the other 14 identical, guarded by
+`tests/test_temporal_golden_policy.py`; labels written from the policy before it was run): T02N (T02 as recorded,
+negative), T02A (the linked-announcement variant; also declares the guide-versus-announcement difference) and T02E
+(the `policy_enacted` variant), with expected baselines, review states, update targets and policy labels (evidence use,
+governing source, enactment gaps). Stated policy: an older guideline under an unverified replacement stays eligible
+evidence (current, flagged) but is **not** a provisional decided baseline; the case abstains for team-lead
+confirmation (label rule UNRESOLVED: approvals and supersession cannot decide) and has no update target. Report
+`data/experiments/agent3_temporal_policy_v1/` (`changes.json` separates dataset/policy, harness and production):
+joint 17/17, decisive 13/13, abstention 4/4, false overrides 0/17, update targets 17/17, policy fields 3/3, no order
+dependence; always-abstain 4/17 / 0/13. Not comparable to the 14/15 (different cases). Harness: `evaluate_temporal.py
+--golden`, policy-field scoring, golden hash in the report.
+
+**2. TL-summary attribution.** Recorded failures (three, two live runs): `agent3_policy_eval_v1` and
+`agent3_final_eval_v1` JSON-versus-prose ("Two QA tutors and a tutor ask how to weigh requested format against
+factual accuracy"), and `agent3_final_eval_v1` Submit ("Two QA tutors and three tutors report that Submit stays
+disabled or does nothing"). Checked against the messages: U019 ("A follows format, B is more accurate") and U018
+("Can accuracy outweigh ignoring the user's requested output structure?") ask about accuracy; U007 ("asked for a JSON
+object; B explains it beautifully in prose") asks about format versus presentation - factual correctness appears only
+in a later reply by U014. The judge was right: the summary turned individual questions into one shared pattern and
+gave the most specific member's wording to every author, while claim c1 kept the questions apart (SUPPORTED). The
+Submit case is the same pattern (U002: "does not let me submit the pair", no control behavior). Cause: the summary was
+one free-text statement with no link to the claims it condenses (judged against every material claim's evidence,
+without attributions), and one unsupported sentence withheld the whole summary (the second, supported sentence was
+lost). Fix (prompts v10, draft v9): `summary_sentences`, each naming the claims it condenses (its evidence and
+attributions; plural wording is counted against those authors only) and the earlier sentences it refers back to; each
+is a statement (`summary:s1`, ...) in the existing final grounding call; the card shows SUPPORTED sentences whose
+claims and earlier sentences are shown, never rewritten; any withheld sentence still fails grounding and routes to
+review. Writing guide: a sentence that groups several people states only what each of them asked or reported. Drafts
+without sentences (recorded v8, scripted fixtures, placeholders) keep one whole-summary statement. Replay reuses a
+verdict only for unchanged kind, text, evidence, attributions, dependencies and context: the recorded draft replays
+PARTIALLY_SUPPORTED; the same words as sentences are unjudged. Regressions `tests/test_agent3_summary_sentences.py`
+(15). Whether the model now writes better group sentences is unverified: it needs a new live judgment.
+
+**3. Chroma recurrence.** First-run failure (full suite 2026-10-31, `--basetemp D:/tsb/pytest-full1`, outside the
+repo): `tests/test_agent3_advisor.py::test_stale_or_incompatible_index_is_refused_once_before_research`,
+`InternalError: Error executing plan: Internal error: Error creating hnsw segment reader: Nothing found on disk` at
+`Retriever.__init__` `collection.get` via `open_retriever` (the captured log kept the frames from `open_retriever`
+down). The kept temp directory shows the FAQ edit applied and the manifest unchanged: the **second** `open_retriever`
+of the same path failed while the first retriever was alive, after the first open had flushed the HNSW files
+(written 0.13-0.18 s after the build's recorded built_at). Not the 2026-10-29 build->open failure (that path closes its client):
+a second `PersistentClient` on a path shares the live client's cached Chroma system, and reading through it
+intermittently fails. Reproducer variants `second_open` / `second_open_closed` (`tests/repro_chroma_reopen.py`):
+second_open 3/40 and 6/120 failed; first client closed first 0/40 and 0/120; all failures on the second open. Fix: `Retriever` reads
+the embeddings and closes its client in `finally` before the constructor returns or raises (it never used Chroma
+afterwards), so no system outlives an open, including on refusal paths; no retry, sleep or cache clearing. After the
+fix: second_open 0/120. Lifecycle tests `tests/test_retrieval_client_lifetime.py` (3).
+
+**Checks.** Focused retrieval, Agent 3 and dashboard suites first run 292 passed; full suite first run 920 passed, 0 failed (no reruns); browser 10 passed. No browser-visible change (the card still receives one summary string).
+
+**Live summary verification** (`data/experiments/agent3_summary_eval_v1/`, run once; prompts v10, draft v9, Sol medium,
+default tier, 24k input / 16,384 output, `--max-requests 8 --max-cost 2`, zero retries; work items and members identical
+to `agent3_final_eval_v1` / `agent3_policy_eval_v1` / `agent3_overnight_smoke_v1`): 4 requests (2 drafts, 2
+groundings), 60,497 input / 12,719 output tokens, **$0.2482**; Submit revision not sent (InputLimitExceeded 24,405 >
+24,000, RESOURCE, not charged); accounting COMPLETE, review queue 52 (41 + 8 + 3), ToT not triggered.
+JSON-versus-prose: both sentences SUPPORTED and shown unchanged; the group sentence uses wording that covers all three
+askers ("requested format and other response strengths"); the reminder action SUPPORTED and shown. Submit: s1 (five
+reporters, symptoms listed as alternatives rather than given to everyone) SUPPORTED and shown; s2 (team lead's four
+diagnostic requests + earlier handoff) PARTIALLY_SUPPORTED and withheld - its prose is accurate, but it condenses claim
+c7, rejected for an invalid AUTHOR attribution on a retrieved record, which the sentence inherited; the supported c5
+content was lost with it. Partial-summary retention observed live. New result: the Submit action (engineering report)
+was withheld this time (PARTIALLY_SUPPORTED, INSUFFICIENT: it routes collection into an announcement thread judged not
+to direct handling); earlier runs showed ESCALATE_ENGINEERING.
+
+## Submit repair (2026-10-31): revision payload, record authorship, action destinations, summary coupling
+
+Prompts `agent3-advisor-prompts-v11`, evidence view `agent3-evidence-view-v2` (both fingerprinted; `sent_schemas` digests
+added). No new stage; grounding unchanged in strength; corpus, rubric, labels, obligations and active index unchanged.
+
+**Payload.** The refused Submit revision was rebuilt offline (`scripts/measure_revision_request.py`: recorded draft,
+same snapshot and follow-ups, captured at the HTTP transport, RequestGuard's count): 24,405 tokens exactly as refused
+-> **20,344** (headroom 3,656; cap unchanged). Report `data/experiments/agent3_revision_payload_v1/report.json`. By part
+(before -> after): retrieved evidence 8,296 -> 5,691 (excerpt text 1,641 unchanged; internal storage hashes, nulls,
+empty fields and duplicate copies removed from the model view), output schema 3,745 -> 3,055 (generated titles only),
+member threads 2,834 -> 2,419 (channel/message IDs already in evidence_id; text unchanged), rules 2,459 -> 2,199
+(revision omits the STYLE ONLY examples; new rules added), prior draft 4,332 -> 4,241 (nulls); rubric, Agent 1
+interpretations/review flags, follow-ups and topic unchanged. The same compact view reaches draft, ToT and grounding;
+the ledger keeps every field for the checks.
+
+**Authorship.** Agent-facing `authority.actor` meant "message author" for Slack records and "approver/recorder" for
+manual ones (corpus audit: 6/6 Slack actor = author; 34/34 manual records name no author). Items now carry
+`authority.actor_relation` (MESSAGE_AUTHOR / RECORD_AUTHORITY) and `authorship` (verified author, or
+NO_AUTHOR_RECORDED); draft and grounding rules say an approver is not an author. The AUTHOR rule is unchanged.
+
+**Destinations.** Rules keep an action's recommendation, destination and premises apart: a named destination needs its
+own supporting premise; an example-collection note is not an intake route; an unspecified destination is allowed and
+not a sufficiency failure. Actions are still shown as generated or withheld whole.
+
+**Summary coupling.** Writing guide: facts with different evidence (reports; current handling or the team lead's
+requests; earlier records) get their own sentences, up to 3.
+
+**Replay.** A recorded verdict is reused only if, besides unchanged statement content and context, the run's grounding
+rules, evidence view and sent grounding schema equal the current ones (from its manifest); earlier runs therefore replay
+PENDING under v11.
+
+**Checks.** `tests/test_agent3_submit_repairs.py` (12); full suite first run 930 passed, 1 failed (an old assertion
+that the revision includes the style examples - the intended change; updated, file 57/57); browser 10 passed.
+
+**Live Submit** (`data/experiments/agent3_submit_repair_v1/`, Sol medium, default tier, 24k / 16,384, `--max-requests 4
+--max-cost 1`, run once): 2 requests (draft 13,789 and grounding 14,185 provider input tokens), 27,974 input / 7,413
+output tokens, **$0.1301**; no follow-ups, so no revision was requested (live revision behaviour unobserved; the
+reconstructed request is the evidence it fits); ToT not triggered; accounting COMPLETE, review queue 52. All three
+summary sentences SUPPORTED and shown unchanged (reports; the team lead's requests in all four threads; the earlier
+handoff "records" - no authorship claimed, history in its own sentence). The action left its destination unspecified
+(scope note: the announcement thread collects examples, not an intake route) but was withheld again
+(PARTIALLY_SUPPORTED, INSUFFICIENT): its task mappings and the error/time request come from the engineer's messages,
+whose claim was rejected because the draft labelled an engineer's request a THREAD_INSTRUCTION (team lead only) - the
+same mislabel as the previous run. Remaining failure, not fixed in this pass.

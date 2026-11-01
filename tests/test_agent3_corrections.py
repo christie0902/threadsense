@@ -54,7 +54,8 @@ def test_recorded_misquote_rejects_only_that_claim(retriever, view):
     stmts = statements(draft, ledger)
     sent = {s['statement_id'] for s in sendable(stmts, rejected_statements(draft, stmts, structural))}
     assert sent == {'claim:incident_fact_1', 'claim:incident_fact_2', 'summary'}
-    judgment = GroundingJudgment(verdicts=[{'statement_id': s, 'verdict': 'SUPPORTED', 'rationale': 'Stated.'} for s in sent])
+    judgment = GroundingJudgment(contract_version='agent3-grounding-judgment-v4',
+                                 verdicts=[{'statement_id': s, 'verdict': 'SUPPORTED', 'rationale': 'Stated.'} for s in sent])
     result = grounding_result(draft, ledger, stmts, structural=structural, judgment=judgment, ran=True)
     verdicts = {s['statement_id']: s['verdict'] for s in result['statements']}
     assert verdicts['claim:incident_fact_1'] == verdicts['claim:incident_fact_2'] == 'SUPPORTED'
@@ -683,7 +684,7 @@ def test_stored_text_is_never_cut(retriever, view):
 
 def test_rules_are_sent_once_and_prompt_version_is_recorded():
     """DETERMINISTIC. The task text carries the rules once (the JSON body no longer repeats them); the draft and revision
-    rules include the writing guide and the two STYLE ONLY examples; the prompt version is fingerprinted; the input
+    rules include the writing guide, the draft rules also the two STYLE ONLY examples (v11: the revision omits them); the prompt version is fingerprinted; the input
     cap is 24,000 tokens."""
     from threadsense.agents.advisor_contracts import AdvisorDraft
     from threadsense.agents.advisor_pilot import (
@@ -692,10 +693,11 @@ def test_rules_are_sent_once_and_prompt_version_is_recorded():
     )
     text = task_description({'rules': DRAFT_RULES, 'topic': {}}, AdvisorDraft)
     assert text.count(DRAFT_RULES) == 1 and '"rules"' not in text
-    assert WRITING_GUIDE in DRAFT_RULES and STYLE_EXAMPLES in REVISION_RULES
+    assert WRITING_GUIDE in DRAFT_RULES and WRITING_GUIDE in REVISION_RULES
+    assert STYLE_EXAMPLES in DRAFT_RULES and STYLE_EXAMPLES not in REVISION_RULES
     assert 'STYLE ONLY, NOT EVIDENCE' in STYLE_EXAMPLES and 'never copy their facts' in STYLE_EXAMPLES
     fingerprints = prompt_fingerprints()
-    assert fingerprints['prompt_version'] == 'agent3-advisor-prompts-v8' and fingerprints['style_examples']
+    assert fingerprints['prompt_version'] == 'agent3-advisor-prompts-v11' and fingerprints['style_examples']
     assert INPUT_TOKEN_LIMIT == 24_000 and live_settings('openai/gpt-6.1-sol')['input_token_limit'] == 24_000
 
 

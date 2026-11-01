@@ -48,14 +48,16 @@ from threadsense.agents.advice_inputs import structural_occurrence
 from threadsense.agents.advisor_evidence import user_directory
 from threadsense.severity_rubric import signal_reference_issues
 
-CURRENT_USES = {'CURRENT_GUIDANCE', 'CURRENT_HANDLING'}
+# ENACTED_DECISION: a decision record whose enactment as policy is established by record (advisor_evidence.use_of).
+CURRENT_USES = {'CURRENT_GUIDANCE', 'CURRENT_HANDLING', 'ENACTED_DECISION'}
 STALE_USES = {'HISTORY_ONLY', 'UNRESOLVED_VERSION'}
 KNOWLEDGE_USES = CURRENT_USES | STALE_USES | {'ANNOUNCEMENT', 'PRIOR_DECISION'}
-BANNERED_USES = STALE_USES | {'ANNOUNCEMENT', 'PRIOR_DECISION'}
+BANNERED_USES = STALE_USES | {'ANNOUNCEMENT', 'PRIOR_DECISION', 'ENACTED_DECISION'}
+WITHDRAWN_STATES = ('WITHDRAWN', 'SECTION_WITHDRAWN')
 RESOLUTION_STATES = ('UNRESOLVED', 'PARTIALLY_RESOLVED', 'RESOLVED_IN_THREAD')
 VERIFYING_ROLES = {'TEAM_LEAD', 'ENGINEER'}
 COVERAGE_USES = {'CURRENT_GUIDANCE': CURRENT_USES, 'ANNOUNCEMENTS': {'ANNOUNCEMENT'},
-                 'PRIOR_DECISIONS': {'PRIOR_DECISION', 'HISTORY_ONLY'}, 'MEMBER_QUESTIONS': {'MEMBER_REPORT'}}
+                 'PRIOR_DECISIONS': {'PRIOR_DECISION', 'ENACTED_DECISION', 'HISTORY_ONLY'}, 'MEMBER_QUESTIONS': {'MEMBER_REPORT'}}
 
 
 def _norm(text):
@@ -383,6 +385,42 @@ def action_issues(draft, ledger):
     return issues
 
 
+def summary_parts(draft):
+    """The summary's statements: one per summary sentence (draft v9; the evidence and attributions of the claims it
+    condenses, the earlier sentences it refers back to), else the whole summary citing every material claim."""
+    claims = {c.claim_id: c for c in draft.claims}
+    sentences = getattr(draft, 'summary_sentences', None) or []
+    if not sentences:
+        return [{'statement_id': 'summary', 'text': draft.summary, 'claim_ids': [],
+                 'evidence_ids': [e for c in draft.claims if c.material for e in c.evidence_ids],
+                 'attributions': [], 'depends_on': []}]
+    parts = []
+    for n, s in enumerate(sentences, 1):
+        support = [claims[i] for i in s.support_claim_ids]
+        attributions = list({(a.user_id, a.relation, a.evidence_id): a for c in support for a in c.attributions}.values())
+        parts.append({'statement_id': f'summary:s{n}', 'text': s.text, 'claim_ids': list(s.support_claim_ids),
+                      'evidence_ids': [e for c in support for e in c.evidence_ids], 'attributions': attributions,
+                      'depends_on': [f'summary:s{d}' for d in s.depends_on]})
+    return parts
+
+
+def shown_summary(draft, ok):
+    """The summary the card may show: SUPPORTED sentences whose condensed claims are SUPPORTED and whose earlier
+    sentences are shown; never rewritten. Returns (text or None, [(statement_id, why withheld)] for SUPPORTED
+    sentences withheld by a dependency)."""
+    shown, held = [], []
+    for p in summary_parts(draft):
+        if not ok(p['statement_id']):
+            continue
+        missing = [f'claim:{c}' for c in p['claim_ids'] if not ok(f'claim:{c}')] + [
+            d for d in p['depends_on'] if d not in {s['statement_id'] for s in shown}]
+        if missing:
+            held.append((p['statement_id'], 'depends on withheld ' + ', '.join(missing)))
+        else:
+            shown.append(p)
+    return (' '.join(p['text'] for p in shown) or None), held
+
+
 def presentation_issues(draft, ledger):
     """Prose checks for every non-claim statement that can reach the card (claims are checked in claim_issues)."""
     claims = {c.claim_id: c for c in draft.claims}
@@ -390,8 +428,9 @@ def presentation_issues(draft, ledger):
     def cited(ids):
         return [ledger.get(e) for e in ids if e in ledger]
     material = [e for c in draft.claims if c.material for e in c.evidence_ids]
-    # (statement, text, cited evidence, shown to the team lead as written)
-    texts = [('summary', draft.summary, material, True)]
+    # (statement, text, cited evidence, shown to the team lead as written); a summary sentence is counted against
+    # the authors of the claims it condenses.
+    texts = [(p['statement_id'], p['text'], p['evidence_ids'], True) for p in summary_parts(draft)]
     action = draft.proposed_action
     if action is not None:
         support = [e for i in action.support_claim_ids if i in claims for e in claims[i].evidence_ids] + [
@@ -517,7 +556,14 @@ def statements(draft, ledger, *, severity=None, alternatives=(), handling=None):
             directory = user_directory()
             out[-1]['attributions'] = [{**a.model_dump(), 'role': (directory.get(a.user_id) or {}).get('role')}
                                        for a in c.attributions]
-    add('summary', 'SUMMARY', draft.summary, [e for c in draft.claims if c.material for e in c.evidence_ids])
+    for p in summary_parts(draft):  # Each summary sentence is judged on its own (draft v9).
+        add(p['statement_id'], 'SUMMARY', p['text'], p['evidence_ids'])
+        if p['attributions']:
+            directory = user_directory()
+            out[-1]['attributions'] = [{**a.model_dump(), 'role': (directory.get(a.user_id) or {}).get('role')}
+                                       for a in p['attributions']]
+        if p['depends_on']:
+            out[-1]['depends_on'] = p['depends_on']
     action = draft.proposed_action
     # A bare NO_ACTION (no text) states nothing to judge; anything with text or an operation is judged.
     if action is not None and draft.evidence_sufficiency != 'UNSUPPORTED' and (action.action_type != 'NO_ACTION' or action.draft_text):
@@ -651,7 +697,9 @@ def grounding_result(draft, ledger, stmts, *, structural=(), actions=(), judgmen
     unjudged_label = 'PENDING' if pending else 'NOT_JUDGED'
     result = {'structural_issues': list(structural), 'action_issues': list(actions), 'unsupported': [], 'unjudged': [],
               'extraneous_verdicts': [], 'rejected': rejected, 'pending': [],
-              'action_sufficiency': judgment.action_sufficiency.model_dump() if ran and judgment.action_sufficiency else None}
+              'action_sufficiency': judgment.action_sufficiency.model_dump() if ran and judgment.action_sufficiency else None,
+              'source_consistency': judgment.source_consistency.model_dump()
+              if ran and getattr(judgment, 'source_consistency', None) else None}
     given = {v.statement_id: v for v in judgment.verdicts} if ran else {}
     raw = {s['statement_id']: rejected.get(s['statement_id']) or ('NO_EVIDENCE' if not s['evidence_ids'] else
            given[s['statement_id']].verdict if s['statement_id'] in given else unjudged_label) for s in stmts}
@@ -716,6 +764,19 @@ def _superseded_conflict(conflict, ledger, handling):
 
 
 NOT_EXECUTED = frozenset({'not_executed', 'not_yet_executed'})
+# Recorded enactment gaps that take a decision out of the running (retrieval.versions.VersionIndex.enactment). A
+# decision that is approved, in scope and effective but merely lacks enactment evidence (NO_ENACTMENT_EVIDENCE) still
+# competes: whether it was enacted is for the team lead, so the conflict stays reviewable.
+DECISION_OUT_OF_RUNNING = {'OUT_OF_SCOPE': 'OTHER_BATCH_DECISION', 'NO_TL_APPROVAL': 'DECISION_NOT_APPROVED',
+                           'APPROVER_NOT_AUTHORIZED': 'DECISION_APPROVER_NOT_AUTHORIZED',
+                           'NOT_YET_EFFECTIVE': 'DECISION_NOT_YET_EFFECTIVE', 'EXPIRED': 'EXPIRED',
+                           'SUPERSEDED': 'DECISION_SUPERSEDED', 'WITHDRAWN': 'DECISION_WITHDRAWN'}
+
+
+def enactment_gap(item):
+    """The recorded enactment assessment of a decision item that is not current handling, or None."""
+    e = (item.get('applicability') or {}).get('enactment')
+    return e if e and e['status'] != 'ENACTED' else None
 
 
 def _not_competing(items, handling):
@@ -732,16 +793,20 @@ def _not_competing(items, handling):
         if item['evidence_id'] in current:
             continue
         a, dates, scope, states = item.get('applicability') or {}, item.get('dates') or {}, item.get('scope') or {}, item.get('recorded_states') or {}
+        gap = enactment_gap(item) if item['use'] == 'PRIOR_DECISION' else None
+        decisive = [DECISION_OUT_OF_RUNNING[m] for m in (gap or {}).get('missing', []) if m in DECISION_OUT_OF_RUNNING]
         if item['use'] == 'HISTORY_ONLY' and dates.get('expired_as_of'):
             reasons[item['evidence_id']] = 'EXPIRED'
-        elif item['use'] == 'HISTORY_ONLY' and a.get('state') in ('SUPERSEDED_REVISION', 'SECTION_SUPERSEDED'):
+        elif item['use'] == 'HISTORY_ONLY' and a.get('state') in ('SUPERSEDED_REVISION', 'SECTION_SUPERSEDED', *WITHDRAWN_STATES):
             reasons[item['evidence_id']] = a['state']
         elif a.get('state') in ('NOT_APPROVED', 'NOT_YET_EFFECTIVE'):  # Never competes (versions.py).
             reasons[item['evidence_id']] = a['state']
         elif item['use'] == 'PRIOR_DECISION' and scope.get('batch_relation') == 'other_batch':
             reasons[item['evidence_id']] = 'OTHER_BATCH_DECISION'
         elif item['use'] == 'PRIOR_DECISION' and states.get('execution_status') in NOT_EXECUTED:
-            reasons[item['evidence_id']] = 'DECISION_NOT_EXECUTED'
+            reasons[item['evidence_id']] = 'DECISION_NOT_EXECUTED'  # Approved but explicitly not carried out.
+        elif decisive:
+            reasons[item['evidence_id']] = decisive[0]
         else:
             return None
     return current, reasons
@@ -760,12 +825,16 @@ def agreement_candidates(draft, ledger, handling=None):
     return out
 
 
-def temporal_check(draft, ledger, handling=None, verdicts=None):
+def temporal_check(draft, ledger, handling=None, verdicts=None, consistency=None):
     """Temporal priority from recorded dates/supersession only; never resolves by itself. `handling`: the
     announcements accepted as current (defaults to those the draft establishes, before grounding). `verdicts`: final
     statement verdicts; several agreeing current sources explain a superseded section only if their SOURCE_AGREEMENT
-    statement is SUPPORTED. Real disagreement or uncertain applicability stays DETECTED (reviewable)."""
+    statement is SUPPORTED. `consistency`: the final grounding's own source-consistency assessment (grounding v5;
+    None before grounding or for recorded v4 judgments): conflicts it finds go through the same eligibility rules
+    (source_consistency_findings), and a declared conflict between current sources it judges SOURCES_AGREE is resolved.
+    Real disagreement or uncertain applicability stays DETECTED (reviewable)."""
     handling = established(draft, ledger) if handling is None else handling
+    checks = {c['conflict_index']: c['verdict'] for c in (consistency or {}).get('declared_conflict_checks') or []}
     findings = []
     for index, conflict in enumerate(draft.source_conflicts):
         items = [ledger.get(i) for i in conflict.evidence_ids]
@@ -783,11 +852,16 @@ def temporal_check(draft, ledger, handling=None, verdicts=None):
         base = {'evidence_ids': conflict.evidence_ids, 'detail': conflict.description}
         if found is None:
             settled = _not_competing(items, handling)
+            gaps = {i['evidence_id']: enactment_gap(i)['missing'] for i in items if i['use'] == 'PRIOR_DECISION' and enactment_gap(i)}
             if settled:
                 findings.append({'status': 'RESOLVED_BY_RECORDED_STATE', 'code': 'OTHER_SOURCES_DO_NOT_COMPETE', **base,
                                  'current': settled[0], 'not_competing': settled[1]})
+            elif checks.get(index) == 'SOURCES_AGREE' and not any(_uncertain(i) for i in items):
+                findings.append({'status': 'RESOLVED_BY_SOURCE_AGREEMENT', 'code': 'DECLARED_CONFLICT_SOURCES_AGREE', **base,
+                                 'origin': 'FINAL_GROUNDING'})
             else:
-                findings.append({'status': 'DETECTED', 'code': 'UNEXPLAINED_SOURCE_CONFLICT', **base})
+                findings.append({'status': 'DETECTED', 'code': 'UNEXPLAINED_SOURCE_CONFLICT', **base,
+                                 **({'enactment_not_established': gaps} if gaps else {})})
             continue
         current = [c['evidence_id'] for c in found[0]]
         agreement = None if len(current) == 1 else (verdicts or {}).get(f'temporal:conflict[{index}]', 'NOT_YET_JUDGED')
@@ -799,6 +873,7 @@ def temporal_check(draft, ledger, handling=None, verdicts=None):
             findings.append({'status': 'DETECTED', 'code': 'CURRENT_SOURCE_AGREEMENT_' + (
                 agreement if agreement in ('PENDING', 'NOT_YET_JUDGED') else 'NOT_ESTABLISHED'), **base,
                 'current': current, 'agreement': agreement})
+    findings += source_consistency_findings(consistency, draft, ledger, handling)
     cited = {e for c in draft.claims for e in c.evidence_ids if e in ledger}
     for evidence_id in sorted(cited):
         item = ledger[evidence_id]
@@ -810,7 +885,66 @@ def temporal_check(draft, ledger, handling=None, verdicts=None):
                              'detail': str(item['applicability']['unverified_supersession'])})
     return {'status': 'DETECTED' if any(f['status'] == 'DETECTED' for f in findings) else 'NONE_FOUND',
             'findings': findings,
+            'source_consistency': 'NOT_ASSESSED' if consistency is None else 'ASSESSED',
             'ignored_revision_states': 'NOT_YET_EFFECTIVE and NOT_APPROVED revisions never compete with applicable guidance.'}
+
+
+def governing_sources(ledger, handling=()):
+    """Retrieved items the final grounding compares for consistency: current guidance, enacted decisions and
+    announcements (an announcement governs only once verified as handling; the judge sees its status line)."""
+    return [e for e, i in ledger.items() if i['origin'] == 'retrieved_source'
+            and (i['use'] in CURRENT_USES | {'ANNOUNCEMENT'} or e in handling)]
+
+
+def source_consistency_findings(consistency, draft, ledger, handling):
+    """Conflicts the final grounding found among governing sources on its own, under the same eligibility rules as
+    declared conflicts: member messages are reported evidence, not sources; announcements not verified as handling,
+    expired, superseded, withdrawn or out-of-running records do not compete; two or more current sources (or uncertain
+    applicability) stay DETECTED. A conflict already declared by the draft is judged there, not twice. Each finding
+    records origin FINAL_GROUNDING and considered_by_tot false: the option comparison ran before it was found."""
+    out, declared = [], [set(c.evidence_ids) for c in draft.source_conflicts]
+    for r in (consistency or {}).get('relations') or []:
+        if r['relation'] != 'CONFLICT':
+            continue
+        ids = list(r['evidence_ids'])
+        base = {'evidence_ids': ids, 'detail': f"{r['point']} - differs on: {r['disagreement_scope']}",
+                'scope': r['disagreement_scope'], 'origin': 'FINAL_GROUNDING', 'considered_by_tot': False}
+        if any(set(ids) <= d for d in declared):
+            continue
+        items = [ledger.get(i) for i in ids]
+        if any(i is None for i in items):
+            out.append({'status': 'NOT_ROUTED', 'code': 'GROUNDING_CONFLICT_CITES_UNKNOWN_EVIDENCE', **base})
+            continue
+        sources = [i for i in items if i['origin'] != 'member_message']
+        unverified = [i['evidence_id'] for i in sources if i['use'] == 'ANNOUNCEMENT' and i['evidence_id'] not in handling]
+        sources = [i for i in sources if i['evidence_id'] not in unverified]
+        if len(sources) < 2:
+            out.append({'status': 'NOT_A_SOURCE_CONFLICT', 'code': 'ANNOUNCEMENT_NOT_ESTABLISHED' if unverified else
+                        'MEMBER_DISAGREEMENT', **base})
+            continue
+        current = [i for i in sources if i['use'] in CURRENT_USES or i['evidence_id'] in handling]
+        found = None if len(current) > 1 else _superseded_conflict(_Conflict([i['evidence_id'] for i in sources]), ledger, handling)
+        settled = None if len(current) > 1 or found else _not_competing(sources, handling)
+        if len(current) > 1 or any(_uncertain(i) for i in sources):
+            out.append({'status': 'DETECTED', 'code': 'SOURCE_CONFLICT_FOUND_IN_GROUNDING', **base,
+                        'current': [i['evidence_id'] for i in current]})
+        elif found:
+            out.append({'status': 'NOT_A_CURRENT_CONFLICT', 'code': 'HISTORICAL_DIFFERENCE', **base,
+                        'current': [c['evidence_id'] for c in found[0]], 'older': [o['evidence_id'] for o in found[1]]})
+        elif settled:
+            out.append({'status': 'NOT_A_CURRENT_CONFLICT', 'code': 'OTHER_SOURCES_DO_NOT_COMPETE', **base,
+                        'current': settled[0], 'not_competing': settled[1]})
+        elif not current and all(i['use'] in ('HISTORY_ONLY', 'PRIOR_DECISION') for i in sources):
+            out.append({'status': 'NOT_A_CURRENT_CONFLICT', 'code': 'HISTORICAL_DIFFERENCE', **base})
+        else:  # e.g. a current source against an approved, in-scope decision whose enactment is not established
+            out.append({'status': 'DETECTED', 'code': 'SOURCE_CONFLICT_FOUND_IN_GROUNDING', **base,
+                        'current': [i['evidence_id'] for i in current]})
+    return out
+
+
+class _Conflict:
+    def __init__(self, evidence_ids):
+        self.evidence_ids = evidence_ids
 
 
 def temporal_decision(draft, ledger, temporal, *, handling=(), open_question_supported=False, withheld=()):
@@ -819,8 +953,10 @@ def temporal_decision(draft, ledger, temporal, *, handling=(), open_question_sup
     what version selection withheld. No date comparison happens here (revision order is versions.py's).
 
     Returns decision DECIDED (baseline = the applicable cited items) or ABSTAIN; temporal_status NO_CONFLICT,
-    RESOLVED_BY_RECORD or UNRESOLVED; review_required; and update_targets (published sections a baseline item
-    supersedes by record)."""
+    RESOLVED_BY_RECORD or UNRESOLVED; review_required; update_targets (published sections a baseline item
+    supersedes by record); governing_sources (for an enacted decision in the baseline, the linked announcement or
+    guideline preferred as the governing source, else the decision itself) and enactment_gaps (cited decisions that
+    are not current handling, with the missing evidence)."""
     cited = list(dict.fromkeys(e for c in draft.claims for e in c.evidence_ids if e in ledger))
     current = [e for e in cited if ledger[e]['use'] in CURRENT_USES or e in handling]
     resolved = [f for f in temporal['findings'] if f['status'] == 'RESOLVED_BY_RECORDED_SUPERSESSION' or (
@@ -834,20 +970,29 @@ def temporal_decision(draft, ledger, temporal, *, handling=(), open_question_sup
                             and (w.get('authoring') or '@').split('@')[0] in lineages]
     replaced_sections = [w for w in withheld if w['state'] == 'SECTION_SUPERSEDED' and any(
         r['replaced_by'] in authoring for r in w.get('replaced_by') or [])]
-    # Overridden by record means expired or superseded; an unapproved or not-yet-effective revision never applied.
+    # Overridden by record means expired, superseded or withdrawn; an unapproved or not-yet-effective revision never
+    # applied.
     expired_or_old = [e for e in cited if ledger[e]['use'] == 'HISTORY_ONLY' and (
         (ledger[e].get('dates') or {}).get('expired_as_of')
-        or (ledger[e].get('applicability') or {}).get('state') in ('SUPERSEDED_REVISION', 'SECTION_SUPERSEDED'))]
+        or (ledger[e].get('applicability') or {}).get('state') in ('SUPERSEDED_REVISION', 'SECTION_SUPERSEDED', *WITHDRAWN_STATES))]
+    withdrawn = [e for e in cited if (ledger[e].get('applicability') or {}).get('state') in WITHDRAWN_STATES]
+    unverified = [f for f in temporal['findings'] if f['status'] == 'DETECTED' and f['code'] == 'UNVERIFIED_SUPERSESSION_CITED']
+    governing = list(dict.fromkeys(g for e in current if ledger[e]['use'] == 'ENACTED_DECISION'
+                                   for g in ledger[e]['applicability']['enactment']['governing_sources']))
+    gaps = [{'evidence_id': e, 'missing': enactment_gap(ledger[e])['missing']} for e in cited
+            if ledger[e]['use'] == 'PRIOR_DECISION' and enactment_gap(ledger[e])]
     targets = [{'authoring': w.get('authoring'), 'section': r.get('section'), 'replaced_by': r['replaced_by']}
                for w in replaced_sections for r in w.get('replaced_by') or [] if r.get('section') and r['replaced_by'] in authoring]
     abstain = (temporal['status'] == 'DETECTED' or open_question_supported or not current)
     status = ('UNRESOLVED' if abstain else 'RESOLVED_BY_RECORD'
               if resolved or superseded_revisions or replaced_sections or expired_or_old else 'NO_CONFLICT')
+    reason = (('supersession not verified: ' + '; '.join(f['detail'] for f in unverified)) if unverified else
+              'temporal conflict detected' if temporal['status'] == 'DETECTED' else 'open question supported'
+              if open_question_supported else 'guidance withdrawn without replacement' if not current and withdrawn else
+              'no applicable cited source' if not current else None)
     return {'decision': 'ABSTAIN' if abstain else 'DECIDED', 'baseline': [] if abstain else current,
-            'temporal_status': status, 'review_required': abstain,
-            'reason': ('temporal conflict detected' if temporal['status'] == 'DETECTED' else 'open question supported'
-                       if open_question_supported else 'no applicable cited source' if not current else None),
-            'update_targets': targets}
+            'temporal_status': status, 'review_required': abstain, 'reason': reason, 'update_targets': targets,
+            'governing_sources': [] if abstain else governing, 'enactment_gaps': gaps}
 
 
 def evidence_ref(item, packet, handling=()):
@@ -971,15 +1116,20 @@ def authorize(draft, grounding, ledger, packet, *, severity, severity_issues, ru
     states = {r.member_id: r.state for r in draft.resolution if ok(f'resolution:{r.member_id}')}
     resolution = topic_resolution(packet['member_ids'], states)
     withheld = [s for s in grounding['statements'] if s['verdict'] != 'SUPPORTED']
+    summary, held = shown_summary(draft, ok)
+    texts = {s['statement_id']: s for s in grounding['statements']}
+    withheld += [{**texts[sid], 'withheld_because': why} for sid, why in held]
     return {'claims': claims, 'action': action, 'handling': handling, 'severity': severity, 'severity_issues': issues,
-            'severity_notes': notes, 'summary': draft.summary if ok('summary') else None, 'resolution': resolution,
+            'severity_notes': notes, 'summary': summary, 'resolution': resolution,
             'action_rationale': action.rationale if action and ok('action:rationale') else None,
             'review_note': draft.review_note if ok('review_note') else None,
             'open_question_supported': ok('open_question') if draft.open_confirmation == 'OPEN' else None,
             'open_question_verdict': verdict.get('open_question'),
             'member_resolution': {m: states.get(m, 'UNKNOWN') for m in packet['member_ids']},
             'withheld': [{'statement_id': s['statement_id'], 'kind': s['kind'], 'text': s['text'], 'verdict': s['verdict'],
-                          'rationale': s.get('rationale'), 'blocking': s['blocking']} for s in withheld]}
+                          'rationale': s.get('rationale'), 'blocking': s['blocking'],
+                          **({'withheld_because': s['withheld_because']} if s.get('withheld_because') else {})}
+                         for s in withheld]}
 
 
 def _signal_id(s):
@@ -1057,7 +1207,8 @@ def _reasoning(final, packet):
     """Plain-language reasoning from what passed grounding; statement IDs and verdicts stay in diagnostics."""
     lines = [c.text for c in final['claims']]
     counts = Counter(final['member_resolution'].values())
-    withheld = [w for w in final['withheld'] if w['kind'] != 'ALTERNATIVE']
+    withheld = [w for w in final['withheld'] if w['kind'] != 'ALTERNATIVE' and not w.get('withheld_because')]
+    held = [w for w in final['withheld'] if w.get('withheld_because')]
     parts = ['What the evidence shows: ' + ' '.join(lines) if lines else 'No advisor finding was supported by the evidence.',
              "Thread status, read from each thread's own messages: "
              + ', '.join(f'{_plain(k)} \u00d7{n}' for k, n in sorted(counts.items())) + '.',
@@ -1067,6 +1218,9 @@ def _reasoning(final, packet):
     if withheld:
         parts.append(f'{len(withheld)} advisor statement{"s were" if len(withheld) != 1 else " was"} not supported by the '
                      'evidence and not shown.')
+    if held:
+        parts.append(f'{len(held)} summary sentence{"s were" if len(held) != 1 else " was"} not shown because '
+                     f'{"they depend" if len(held) != 1 else "it depends"} on text that was not shown.')
     return ' '.join(parts)
 
 
@@ -1118,6 +1272,10 @@ def assemble_card(outcome, packet, *, run_id):
     if temporal and temporal['status'] == 'DETECTED':
         reason('TEMPORAL_CONFLICT', '; '.join(f"{f['code']}: {f['detail']}" for f in temporal['findings'] if f['status'] == 'DETECTED'),
                'Sources disagree on a point, and the records do not settle which applies; confirm before acting.')
+        for f in temporal['findings']:
+            if f['status'] == 'DETECTED' and f.get('origin') == 'FINAL_GROUNDING':
+                notes.append(f"The final evidence check found that current sources differ on: {f['scope']}. This was found "
+                             'after the options were compared, so the comparison did not consider it.')
     if grounding['status'] == 'FAILED':
         detail = [f"{s['statement_id']}: {s['verdict']}" for s in grounding['statements']
                   if s['blocking'] and s['statement_id'] in grounding['unsupported'] + grounding['unjudged']]
@@ -1131,6 +1289,13 @@ def assemble_card(outcome, packet, *, run_id):
         reason('OPEN_CONFIRMATION', draft.open_question, f'Open question: {draft.open_question}')
     open_check = ('OPEN' if final['open_question_supported'] else 'NOT_CHECKED' if verdict in ('PENDING', 'NOT_JUDGED')
                   else 'NONE') if draft and draft.open_confirmation == 'OPEN' else (draft.open_confirmation if draft else 'NOT_CHECKED')
+    choice = outcome.get('action_choice') or {}
+    if choice.get('status') == 'UNRESOLVED':  # A close call that survived the final grounding; neither option preferred.
+        options = [ACTION_LABELS[v['action_type']] for v in choice['viable']]
+        reason('OTHER', 'Unresolved action choice: closely matched options remain viable after final grounding: '
+               + '; '.join(f"{v['source']} {v['candidate_id'] or 'card action'} ({v['action_type']})" for v in choice['viable']),
+               'The evidence supports more than one option and none is clearly better: ' + ' or '.join(
+                   dict.fromkeys(o.lower() for o in options)) + '. Choose one; the options are shown together.')
     for issue in outcome.get('coverage_issues') or []:
         reason('OTHER', f'Evidence coverage incomplete: {issue}', _coverage_note(issue))
     sufficiency = outcome.get('evidence_sufficiency')

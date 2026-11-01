@@ -61,7 +61,8 @@ def statement_ids(draft, alternatives=()):
 def judged(draft, alternatives=(), **overrides):
     """Prepared verdicts: SUPPORTED unless overridden as statement_id=(verdict, rationale)."""
     action = draft.get('proposed_action') if 'action' in statement_ids(draft) else None
-    return {'verdicts': [{'statement_id': i, 'verdict': overrides.get(i, ('SUPPORTED',))[0],
+    return {'contract_version': 'agent3-grounding-judgment-v4',  # Prepared before the source-consistency assessment.
+            'verdicts': [{'statement_id': i, 'verdict': overrides.get(i, ('SUPPORTED',))[0],
                           'rationale': overrides.get(i, (None, 'The cited excerpts state this directly.'))[1]}
                          for i in statement_ids(draft, alternatives)],
             'action_sufficiency': {'verdict': 'SUFFICIENT', 'essential_statement_ids': [f'claim:{c}' for c in action['support_claim_ids']],
