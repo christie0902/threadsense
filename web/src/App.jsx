@@ -4,20 +4,21 @@ import { getJSON } from './api.js'
 import CardView from './CardView.jsx'
 import SidePanel from './Panels.jsx'
 import ReviewQueue from './ReviewQueue.jsx'
-import { Badge, Details, when } from './ui.jsx'
+import { Badge, Details, Icon, Orb, when, words } from './ui.jsx'
 
+// Needs review first: it is what the team lead has to look at.
 const GROUPS = [
-  ['RECOMMENDED_ACTION', 'Recommended actions'],
-  ['OBSERVATION', 'Observations'],
-  ['NEEDS_REVIEW', 'Needs review'],
+  ['NEEDS_REVIEW', 'Needs review', 'bg-amber-400'],
+  ['RECOMMENDED_ACTION', 'Recommended actions', 'bg-emerald-400'],
+  ['OBSERVATION', 'Observations', 'bg-violet-400'],
 ]
 const MODE_BANNERS = {
-  LIVE: ['Live run', 'Card text comes from live model judgments that passed the final grounding check.', 'border-emerald-300 bg-emerald-50 text-emerald-900'],
-  SCRIPTED: ['Scripted run, not model output', 'Prepared judgments for the pilot topics and a placeholder that judges nothing elsewhere. It shows the workflow, not model quality.', 'border-amber-400 bg-amber-50 text-amber-900'],
-  TEST_FIXTURE: ['Test fixture, not model output', 'Hand-written cards for dashboard states that no saved run has. Decisions here are for testing.', 'border-fuchsia-400 bg-fuchsia-50 text-fuchsia-900'],
+  LIVE: ['Live run', 'Card text comes from live model judgments that passed the final grounding check.', 'border-emerald-400/25 bg-emerald-400/[0.06]', 'bg-emerald-400'],
+  SCRIPTED: ['Scripted run, not model output', 'Prepared judgments for the pilot topics and a placeholder that judges nothing elsewhere. It shows the workflow, not model quality.', 'border-amber-400/30 bg-amber-400/[0.07]', 'bg-amber-400'],
+  TEST_FIXTURE: ['Test fixture, not model output', 'Hand-written cards for dashboard states that no saved run has. Decisions here are for testing.', 'border-fuchsia-400/30 bg-fuchsia-400/[0.07]', 'bg-fuchsia-400'],
 }
-const OUTCOME_STYLES = { TOPIC_FAILED: 'text-red-800 bg-red-50', UNPROCESSED_BUDGET: 'text-amber-900 bg-amber-50',
-  UNPROCESSED_RUN_STOPPED: 'text-amber-900 bg-amber-50', INTERRUPTED_UNCERTAIN: 'text-amber-900 bg-amber-50', OUT_OF_SCOPE: 'text-slate-500' }
+const OUTCOME_STYLES = { TOPIC_FAILED: 'text-red-300', UNPROCESSED_BUDGET: 'text-amber-200', UNPROCESSED_RUN_STOPPED: 'text-amber-200',
+  INTERRUPTED_UNCERTAIN: 'text-amber-200', OUT_OF_SCOPE: 'text-slate-500' }
 
 function readHash() {
   const p = new URLSearchParams(window.location.hash.slice(1))
@@ -38,22 +39,36 @@ function writeHash(s) {
   if (window.location.hash !== next) window.history.replaceState(null, '', next)
 }
 
-function Tile({ label, value, tone = '', testid }) {
+const plural = (n, one, many = `${one}s`) => `${n} ${n === 1 ? one : many}`
+
+function Metric({ icon, label, value, caption, tone, onClick, testid }) {
+  const Tag = onClick ? 'button' : 'div'
   return (
-    <div className={`rounded border border-slate-200 bg-white px-3 py-2 ${tone}`} data-testid={testid}>
-      <div className="text-xl font-semibold tabular-nums">{value}</div>
-      <div className="text-xs text-slate-600">{label}</div>
-    </div>
+    <Tag type={onClick ? 'button' : undefined} onClick={onClick} data-testid={testid}
+      className={`panel flex items-center gap-3 p-3 text-left sm:gap-4 sm:p-4 ${onClick ? 'transition hover:border-white/15' : ''}`}>
+      <span className={`hidden h-11 w-11 shrink-0 sm:grid place-items-center rounded-full border ${tone.ring}`}><Icon name={icon} className={`h-5 w-5 ${tone.text}`} /></span>
+      <span className="min-w-0">
+        <span className="block text-xs font-medium text-slate-400">{label}</span>
+        <span className={`block font-display text-2xl font-semibold sm:text-3xl tabular-nums leading-tight ${value ? tone.text : 'text-slate-500'}`}>{value}</span>
+        {caption && <span className="block truncate text-[11px] text-slate-500">{caption}</span>}
+      </span>
+    </Tag>
   )
+}
+const TONES = {
+  amber: { ring: 'border-amber-400/30 bg-amber-400/10', text: 'text-amber-300' },
+  emerald: { ring: 'border-emerald-400/30 bg-emerald-400/10', text: 'text-emerald-300' },
+  red: { ring: 'border-red-400/30 bg-red-500/10', text: 'text-red-300' },
+  cyan: { ring: 'border-cyan-400/30 bg-cyan-400/10', text: 'text-cyan-300' },
 }
 
 function Briefing({ markdown }) {
-  if (!markdown) return null
+  if (!markdown) return <div className="text-slate-500">This run saved no readable brief.</div>
   const blocks = markdown.split(/\n\s*\n/).filter(b => !b.startsWith('# '))
-  const inline = t => t.split(/(\*\*[^*]+\*\*)/).map((part, i) => part.startsWith('**') ? <b key={i}>{part.slice(2, -2)}</b> : part)
+  const inline = t => t.split(/(\*\*[^*]+\*\*)/).map((part, i) => part.startsWith('**') ? <b key={i} className="text-slate-100">{part.slice(2, -2)}</b> : part)
   return (
-    <div className="space-y-2 text-sm text-slate-800" data-testid="briefing">
-      {blocks.map((b, i) => b.startsWith('## ') ? <div key={i} className="font-semibold">{b.slice(3)}</div>
+    <div className="space-y-2 text-sm leading-relaxed text-slate-300" data-testid="briefing">
+      {blocks.map((b, i) => b.startsWith('## ') ? <div key={i} className="font-semibold text-slate-100">{b.slice(3)}</div>
         : b.split('\n').every(l => l.startsWith('- ')) ? <ul key={i} className="list-disc pl-5">{b.split('\n').map((l, j) => <li key={j}>{inline(l.slice(2))}</li>)}</ul>
           : <p key={i}>{inline(b)}</p>)}
     </div>
@@ -68,42 +83,58 @@ function TopicTable({ rows }) {
   return (
     <div className="overflow-x-auto">
       <table className="w-full text-left text-sm" data-testid="topic-table">
-        <thead className="text-xs text-slate-500"><tr><th className="py-1 pr-2">Topic</th><th className="pr-2">Project</th><th className="pr-2">Outcome</th><th className="pr-2">Card</th><th>Members</th></tr></thead>
+        <thead className="text-[11px] uppercase tracking-wider text-slate-500"><tr><th className="py-1.5 pr-3 font-medium">Topic</th><th className="pr-3 font-medium">Project</th><th className="pr-3 font-medium">Outcome</th><th className="pr-3 font-medium">Card</th><th className="font-medium">Members</th></tr></thead>
         <tbody>
           {shown.map(r => (
-            <tr key={r.work_id || r.card_id} className={`border-t border-slate-100 ${OUTCOME_STYLES[r.outcome] || ''}`} data-testid="topic-row" data-outcome={r.outcome}>
-              <td className="py-1 pr-2">{r.topic_name || <span className="font-mono text-xs">{r.work_id}</span>}
-                {r.detail && <div className="text-xs">{r.failure_class ? `${r.failure_class}: ` : ''}{r.detail}</div>}</td>
-              <td className="pr-2 text-xs">{r.project_id}</td>
-              <td className="pr-2 text-xs">{r.outcome.replaceAll('_', ' ').toLowerCase()}</td>
-              <td className="pr-2 text-xs">{r.card_line ? r.card_line.replaceAll('_', ' ').toLowerCase() : '-'}</td>
+            <tr key={r.work_id || r.card_id} className={`border-t border-white/[0.05] ${OUTCOME_STYLES[r.outcome] || 'text-slate-200'}`} data-testid="topic-row" data-outcome={r.outcome}>
+              <td className="py-1.5 pr-3">{r.topic_name || <span className="font-mono text-xs">{r.work_id}</span>}
+                {r.detail && <div className="text-xs opacity-80">{r.failure_class ? `${r.failure_class}: ` : ''}{r.detail}</div>}</td>
+              <td className="pr-3 text-xs">{r.project_id}</td>
+              <td className="pr-3 text-xs">{words(r.outcome)}</td>
+              <td className="pr-3 text-xs">{r.card_line ? words(r.card_line) : '-'}</td>
               <td className="text-xs tabular-nums">{r.members}{r.review_items_kept ? ` (+${r.review_items_kept} review items kept)` : ''}</td>
             </tr>
           ))}
         </tbody>
       </table>
-      {sorted.length > 12 && <button type="button" className="mt-1 text-xs underline" onClick={() => setAll(!all)}>{all ? 'Show fewer' : `Show all ${sorted.length} work items`}</button>}
+      {sorted.length > 12 && <button type="button" className="link mt-2 text-xs" onClick={() => setAll(!all)}>{all ? 'Show fewer' : `Show all ${sorted.length} work items`}</button>}
     </div>
+  )
+}
+
+function RunBanner({ run }) {
+  const [label, text, style, dot] = MODE_BANNERS[run.mode] || ['Unknown run mode', '', 'border-white/10 bg-white/[0.03]', 'bg-slate-400']
+  return (
+    <section className={`rounded-xl border px-4 py-3 ${style}`} data-testid="run-banner" data-mode={run.mode}>
+      <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5">
+        <span className="inline-flex items-center gap-2 text-sm font-semibold text-white"><span className={`h-2 w-2 rounded-full ${dot} animate-breathe`} />{label}</span>
+        <Badge data-testid="run-status">{words(run.status)}</Badge>
+        <span className="text-xs text-slate-400"><Icon name="clock" className="mr-1 inline h-3.5 w-3.5 -translate-y-px" />Cutoff {when(run.cutoff)} · window {when(run.window.start)} to {when(run.window.cutoff)}</span>
+      </div>
+      <div className="mt-1.5 text-xs leading-relaxed text-slate-300">{text} {run.mode !== 'LIVE' && run.semantic_note}</div>
+      <div className="mt-1 text-[11px] text-slate-500">Run <code className="font-mono text-slate-400">{run.run_key}</code> ({run.run_id}){run.scope_only ? ` · scoped to ${run.scope_only.join(', ')}` : ''}.
+        {run.shares_run_id_with.length > 0 && <span className="text-amber-200/90"> Another directory ({run.shares_run_id_with.join(', ')}) has the same run ID; it is a separate run and is never combined with this one.</span>}</div>
+    </section>
   )
 }
 
 export default function App() {
   const initial = readHash()
   const [runs, setRuns] = useState(null)
-  const [actors, setActors] = useState([])
+  const [session, setSession] = useState(undefined)
   const [runKey, setRunKey] = useState(initial.run)
   const [project, setProject] = useState(initial.project)
   const [tab, setTab] = useState(initial.tab)
   const [panel, setPanel] = useState(initial.panel)
-  const [actor, setActor] = useState(() => { try { return localStorage.getItem('threadsense.actor') || '' } catch { return '' } })
+  const [lineFilter, setLineFilter] = useState('ALL')
   const [brief, setBrief] = useState(null)
   const [decisions, setDecisions] = useState({ decisions: [], indexing: {} })
   const [queue, setQueue] = useState([])
   const [error, setError] = useState(null)
+  const actor = session?.actor_id || ''
 
-  useEffect(() => { getJSON('/api/runs').then(d => { setRuns(d.runs); setActors(d.actors); if (!runKey && d.runs.length) setRunKey(d.runs[0].run_key) }).catch(e => setError(String(e.message))) }, [])
+  useEffect(() => { getJSON('/api/runs').then(d => { setRuns(d.runs); setSession(d.session || null); if (!runKey && d.runs.length) setRunKey(d.runs[0].run_key) }).catch(e => setError(String(e.message))) }, [])
   useEffect(() => { writeHash({ run: runKey, project, tab, panel }) }, [runKey, project, tab, panel])
-  useEffect(() => { try { localStorage.setItem('threadsense.actor', actor) } catch { /* per-viewer convenience only */ } }, [actor])
 
   const loadDecisions = useCallback(() => runKey && getJSON(`/api/runs/${encodeURIComponent(runKey)}/decisions`).then(setDecisions), [runKey])
   const loadQueue = useCallback(() => runKey && getJSON(`/api/runs/${encodeURIComponent(runKey)}/review-queue`).then(d => setQueue(d.items)), [runKey])
@@ -113,6 +144,7 @@ export default function App() {
     getJSON(`/api/runs/${encodeURIComponent(runKey)}/brief`).then(setBrief).catch(e => setError(String(e.message)))
     loadDecisions(); loadQueue()
   }, [runKey])
+  const closePanel = useCallback(() => setPanel(null), [])
 
   const byCard = useMemo(() => {
     const out = {}
@@ -129,104 +161,149 @@ export default function App() {
   const cardTopics = Object.fromEntries((brief?.cards || []).map(c => [c.card.card_id, c.card.topic_name]))
   const projects = runs?.find(r => r.run_key === runKey)?.projects || []
   const openQueue = queueRows.filter(r => r.review_state === 'OPEN').length
-  const [banner, bannerText, bannerStyle] = MODE_BANNERS[run?.mode] || ['Unknown run mode', '', 'border-slate-300 bg-white']
   const counts = brief?.counts || {}
+  const active = cards.filter(c => !byCard[c.card.card_id])
+  const activeIn = line => active.filter(c => c.card.card_line === line).length
+  const highActive = active.filter(c => c.card.severity.level === 'HIGH').length
+  const totalIn = line => cards.filter(c => c.card.card_line === line).length
+
+  const headline = !cards.length ? `No cards${project ? ` in ${project}` : ''} in this run.`
+    : !active.length ? 'Every card in this run has a saved decision.'
+      : [activeIn('NEEDS_REVIEW') && `${plural(activeIn('NEEDS_REVIEW'), 'card needs', 'cards need')} your review`,
+        activeIn('RECOMMENDED_ACTION') && `${plural(activeIn('RECOMMENDED_ACTION'), 'recommended action')} ready to approve`,
+        activeIn('OBSERVATION') && `${plural(activeIn('OBSERVATION'), 'observation')} to keep in view`].filter(Boolean).join(', ') + '.'
 
   return (
     <div className="min-h-screen">
-      <header className="sticky top-0 z-20 border-b border-slate-200 bg-white/95 px-4 py-2 backdrop-blur">
-        <div className="mx-auto flex max-w-6xl flex-wrap items-center gap-3">
-          <h1 className="mr-auto text-lg font-semibold">ThreadSense morning brief</h1>
-          <label className="text-xs">Run
-            <select className="ml-1 max-w-[22rem] rounded border border-slate-300 px-1 py-0.5 text-sm" value={runKey || ''} data-testid="run-select"
+      <header className="sticky top-0 z-20 border-b border-white/[0.06] bg-ink-950/75 px-4 py-2.5 backdrop-blur-xl" style={{ top: 'env(safe-area-inset-top, 0px)' }}>
+        <div className="mx-auto flex max-w-6xl flex-wrap items-center gap-x-4 gap-y-2">
+          <div className="mr-auto flex items-center gap-3">
+            <Orb />
+            <div className="leading-tight">
+              <h1 className="font-display text-lg font-semibold tracking-tight text-white">Thread<span className="text-cyan-300">Sense</span></h1>
+              <div className="text-[10px] font-semibold uppercase tracking-[0.22em] text-cyan-300/70">Morning brief</div>
+            </div>
+          </div>
+          <label className="flex items-center gap-2 text-[11px] text-slate-500">Run
+            <select className="field max-w-[19rem] text-xs" value={runKey || ''} data-testid="run-select"
               onChange={e => { setRunKey(e.target.value); setPanel(null); setProject('') }}>
               {(runs || []).map(r => <option key={r.run_key} value={r.run_key}>{r.run_key} · {r.mode.toLowerCase()} · {r.status.toLowerCase()}</option>)}
             </select>
           </label>
-          <label className="text-xs">Project
-            <select className="ml-1 rounded border border-slate-300 px-1 py-0.5 text-sm" value={project} onChange={e => setProject(e.target.value)} data-testid="project-select">
+          <label className="flex items-center gap-2 text-[11px] text-slate-500">Project
+            <select className="field text-xs" value={project} onChange={e => setProject(e.target.value)} data-testid="project-select">
               <option value="">All projects</option>
               {projects.map(p => <option key={p} value={p}>{p}</option>)}
             </select>
           </label>
-          <label className="text-xs">Acting as
-            <select className="ml-1 rounded border border-slate-300 px-1 py-0.5 text-sm" value={actor} onChange={e => setActor(e.target.value)} data-testid="actor-select">
-              <option value="">Choose…</option>
-              {actors.map(a => <option key={a.actor_id} value={a.actor_id}>{a.name} ({a.actor_id}, team lead)</option>)}
-            </select>
-          </label>
+          {session !== undefined && (
+            <div className={`flex items-center gap-2 rounded-full border py-1 pl-1 pr-3 ${session ? 'border-white/10 bg-white/[0.04]' : 'border-red-400/40 bg-red-500/10'}`}
+              data-testid="session-user" title={session ? 'Signed in for this local session. The identity is fixed by the server.' : undefined}>
+              <span className={`grid h-7 w-7 place-items-center rounded-full text-xs font-semibold ${session ? 'bg-gradient-to-br from-cyan-300 to-indigo-400 text-ink-950' : 'bg-red-400/20 text-red-200'}`}>
+                {session ? (session.name || session.actor_id).slice(0, 1) : '!'}
+              </span>
+              <span className="leading-tight">
+                <span className="block text-xs font-medium text-white">{session ? `${session.name || session.actor_id}` : 'No team-lead session'}</span>
+                <span className="flex items-center gap-1 text-[10px] text-slate-400">{session ? <><Icon name="lock" className="h-2.5 w-2.5" />Team lead · {session.actor_id}</> : 'Decisions disabled'}</span>
+              </span>
+            </div>
+          )}
         </div>
       </header>
 
-      <main className="mx-auto max-w-6xl space-y-4 px-4 py-4">
-        {error && <div className="rounded border border-red-300 bg-red-50 p-3 text-sm text-red-900">{error}</div>}
-        {!brief && !error && <div className="text-sm text-slate-600">Loading…</div>}
+      <main className="mx-auto max-w-6xl space-y-5 px-4 pb-16 pt-5">
+        {error && <div className="rounded-xl border border-red-400/40 bg-red-500/10 p-3 text-sm text-red-100">{error}</div>}
+        {!brief && !error && <div className="flex items-center gap-3 py-16 text-sm text-slate-400"><Orb busy className="h-6 w-6" />Loading the brief…</div>}
         {brief && (
           <>
-            <section className={`rounded border p-3 ${bannerStyle}`} data-testid="run-banner" data-mode={run.mode}>
-              <div className="flex flex-wrap items-center gap-2">
-                <span className="font-semibold">{banner}</span>
-                <Badge className="border-current bg-white/60" data-testid="run-status">{run.status.replaceAll('_', ' ').toLowerCase()}</Badge>
-                <span className="text-xs">Cutoff {when(run.cutoff)} · window {when(run.window.start)} to {when(run.window.cutoff)}</span>
-              </div>
-              <div className="mt-1 text-xs">{bannerText} {run.mode !== 'LIVE' && run.semantic_note}</div>
-              <div className="mt-1 text-xs">Run <code>{run.run_key}</code> ({run.run_id}){run.scope_only ? ` · scoped to ${run.scope_only.join(', ')}` : ''}.
-                {run.shares_run_id_with.length > 0 && <> Another directory ({run.shares_run_id_with.join(', ')}) has the same run ID; it is a separate run and is never combined with this one.</>}</div>
-            </section>
+            <RunBanner run={run} />
 
-            <nav className="flex gap-2 border-b border-slate-200">
+            <nav className="flex gap-1 border-b border-white/[0.06]">
               {[['brief', 'Morning brief'], ['queue', `Model Review Queue (${openQueue} open)`]].map(([t, label]) => (
                 <button key={t} type="button" onClick={() => setTab(t)} data-testid={`tab-${t}`}
-                  className={`-mb-px border-b-2 px-3 py-1.5 text-sm ${tab === t ? 'border-sky-700 font-semibold text-sky-800' : 'border-transparent text-slate-600'}`}>{label}</button>
+                  className={`-mb-px border-b-2 px-3 py-2 text-sm transition ${tab === t ? 'border-cyan-300 font-semibold text-white' : 'border-transparent text-slate-400 hover:text-slate-200'}`}>{label}</button>
               ))}
             </nav>
 
             {tab === 'brief' && (
               <>
-                <section className="grid grid-cols-2 gap-2 sm:grid-cols-4 lg:grid-cols-8" data-testid="overview">
-                  <Tile label="Cards" value={counts.cards ?? 0} testid="tile-cards" />
-                  {GROUPS.map(([line, label]) => <Tile key={line} label={label} value={(counts.cards_by_line || {})[line] || 0} />)}
-                  <Tile label="Failed topics" value={run.failed} tone={run.failed ? 'bg-red-50' : ''} testid="tile-failed" />
-                  <Tile label="Unprocessed" value={run.unprocessed} tone={run.unprocessed ? 'bg-amber-50' : ''} testid="tile-unprocessed" />
-                  <Tile label="Out of scope" value={run.out_of_scope} testid="tile-out-of-scope" />
-                  <Tile label="Model review items" value={counts.review_queue_items ?? 0} />
+                <section className="panel relative overflow-hidden p-6" data-testid="hero">
+                  <div className="pointer-events-none absolute -right-16 -top-20 h-64 w-64 rounded-full bg-cyan-400/10 blur-3xl" aria-hidden="true" />
+                  <div className="pointer-events-none absolute right-8 top-1/2 hidden -translate-y-1/2 opacity-80 md:block" aria-hidden="true"><Orb className="h-24 w-24" /></div>
+                  <div className="relative max-w-2xl">
+                    <div className="eyebrow inline-flex items-center gap-1.5 text-cyan-300/80"><Icon name="spark" className="h-3.5 w-3.5" />Prepared overnight · cutoff {when(run.cutoff)}</div>
+                    <h2 className="mt-2 font-display text-2xl font-semibold tracking-tight text-white sm:text-[1.7rem]">
+                      Good morning{session?.name ? `, ${session.name}` : ''}. <span className="text-cyan-300">Here's what needs you today.</span>
+                    </h2>
+                    <p className="mt-2 text-sm leading-relaxed text-slate-300" data-testid="headline">
+                      {headline}{highActive > 0 && ` ${highActive} ${highActive === 1 ? 'is' : 'are'} high severity.`}
+                      {openQueue > 0 && ` ${plural(openQueue, 'model-review flag')} open in the queue.`}
+                    </p>
+                  </div>
                 </section>
-                <div className="text-xs text-slate-600">
-                  {counts.discussion_members} discussion members ({counts.members_on_cards} on cards) · {counts.announcement_route_members} announcement-route members ·
-                  {' '}{counts.window_announcements} announcements in the window ({counts.window_announcements_in_snapshot} in the retrieval snapshot) · accounting {brief.accounting?.status?.toLowerCase()}
+
+                <section className="grid grid-cols-2 gap-3 lg:grid-cols-4" data-testid="overview">
+                  <Metric icon="alert" label="Needs review" value={activeIn('NEEDS_REVIEW')} tone={TONES.amber} testid="tile-needs-review"
+                    caption={totalIn('NEEDS_REVIEW') - activeIn('NEEDS_REVIEW') ? `${totalIn('NEEDS_REVIEW') - activeIn('NEEDS_REVIEW')} resolved` : 'awaiting your decision'} />
+                  <Metric icon="spark" label="Recommended actions" value={activeIn('RECOMMENDED_ACTION')} tone={TONES.emerald} testid="tile-recommended"
+                    caption={totalIn('RECOMMENDED_ACTION') - activeIn('RECOMMENDED_ACTION') ? `${totalIn('RECOMMENDED_ACTION') - activeIn('RECOMMENDED_ACTION')} resolved` : 'ready to approve'} />
+                  <Metric icon="shield" label="High severity" value={highActive} tone={TONES.red} caption="active cards, team rubric" testid="tile-high" />
+                  <Metric icon="queue" label="Model review flags" value={openQueue} tone={TONES.cyan} caption="open · view the queue" onClick={() => setTab('queue')} testid="tile-queue" />
+                </section>
+
+                <div className="flex flex-wrap items-center gap-x-5 gap-y-1 px-1 text-xs text-slate-500">
+                  <span data-testid="tile-cards">Cards <b className="tabular-nums text-slate-300">{counts.cards ?? 0}</b></span>
+                  <span data-testid="tile-failed" className={run.failed ? 'text-red-300' : ''}>Failed topics <b className="tabular-nums">{run.failed}</b></span>
+                  <span data-testid="tile-unprocessed" className={run.unprocessed ? 'text-amber-200' : ''}>Unprocessed <b className="tabular-nums">{run.unprocessed}</b></span>
+                  <span data-testid="tile-out-of-scope">Out of scope <b className="tabular-nums text-slate-300">{run.out_of_scope}</b></span>
+                  <span title={`${counts.announcement_route_members} announcement-route members · ${counts.window_announcements} announcements in the window (${counts.window_announcements_in_snapshot} in the retrieval snapshot)`}>
+                    {counts.discussion_members} discussion members ({counts.members_on_cards} on cards) · accounting {brief.accounting?.status?.toLowerCase()}
+                  </span>
                 </div>
 
-                <Details summary="Saved briefing (from the run's morning_brief.md)" testid="briefing-details"><Briefing markdown={brief.briefing_markdown} /></Details>
-                <Details summary={`Topic summary (${topics.length} work items${project ? ` in ${project}` : ''})`} testid="topics-details"><TopicTable rows={topics} /></Details>
-
                 {brief.incomplete_work.length > 0 && (
-                  <section className="rounded border border-red-200 bg-red-50 p-3" data-testid="incomplete-work">
-                    <div className="text-sm font-semibold text-red-900">Incomplete work ({brief.incomplete_work.length}): members and review items are kept, but these topics have no card</div>
-                    <ul className="mt-1 list-disc pl-5 text-sm">
-                      {brief.incomplete_work.map(w => <li key={w.work_id}><b>{w.outcome.replaceAll('_', ' ').toLowerCase()}</b>: {w.topic_name || w.work_id}{w.failure_class ? ` (${w.failure_class})` : ''} - {w.detail || w.error}</li>)}
+                  <section className="rounded-xl border border-red-400/30 bg-red-500/[0.07] p-4" data-testid="incomplete-work">
+                    <div className="flex items-center gap-2 text-sm font-semibold text-red-200"><Icon name="alert" />Incomplete work ({brief.incomplete_work.length}): members and review items are kept, but these topics have no card</div>
+                    <ul className="mt-2 list-disc space-y-0.5 pl-6 text-sm text-red-100/90">
+                      {brief.incomplete_work.map(w => <li key={w.work_id}><b>{words(w.outcome)}</b>: {w.topic_name || w.work_id}{w.failure_class ? ` (${w.failure_class})` : ''} - {w.detail || w.error}</li>)}
                     </ul>
                   </section>
                 )}
 
-                {GROUPS.map(([line, label]) => {
+                <div className="flex flex-wrap items-center justify-between gap-3 pt-2">
+                  <h2 className="eyebrow inline-flex items-center gap-2"><Icon name="layers" className="h-3.5 w-3.5" />Advice cards</h2>
+                  <div className="inline-flex flex-wrap gap-1 rounded-xl border border-white/[0.06] bg-ink-950/50 p-1 text-xs" data-testid="line-filter">
+                    {[['ALL', 'All', active.length], ...GROUPS.map(([line, label]) => [line, label, activeIn(line)])].map(([key, label, n]) => (
+                      <button key={key} type="button" onClick={() => setLineFilter(key)} aria-pressed={lineFilter === key}
+                        className={`rounded-lg px-3 py-1.5 font-medium transition ${lineFilter === key ? 'bg-white/[0.08] text-white' : 'text-slate-400 hover:text-slate-200'}`}>
+                        {label} <span className="ml-1 tabular-nums text-slate-500">{n}</span>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {GROUPS.filter(([line]) => lineFilter === 'ALL' || lineFilter === line).map(([line, label, dot]) => {
                   const group = cards.filter(c => c.card.card_line === line)
-                  const active = group.filter(c => !byCard[c.card.card_id])
+                  const live = group.filter(c => !byCard[c.card.card_id])
                   const resolved = group.filter(c => byCard[c.card.card_id])
                   return (
-                    <section key={line} data-testid={`group-${line}`}>
-                      <h2 className="mb-2 text-base font-semibold">{label} <span className="text-sm font-normal text-slate-500">({active.length} active{line !== 'OBSERVATION' ? `, ${resolved.length} resolved` : ''})</span></h2>
-                      <div className="space-y-3" data-testid={`active-${line}`}>
+                    <section key={line} data-testid={`group-${line}`} className="space-y-3">
+                      <h3 className="flex items-center gap-2 text-sm font-semibold text-slate-100">
+                        <span className={`h-2 w-2 rounded-full ${dot}`} />{label}
+                        <span className="font-normal text-slate-500">({live.length} active{line !== 'OBSERVATION' ? `, ${resolved.length} resolved` : ''})</span>
+                      </h3>
+                      <div className="grid gap-4 lg:grid-cols-2" data-testid={`active-${line}`}>
                         <AnimatePresence initial={false}>
-                          {active.map(c => <CardView key={c.card.card_id} runKey={runKey} item={c} actor={actor} decisionState={byCard[c.card.card_id]}
+                          {live.map(c => <CardView key={c.card.card_id} runKey={runKey} item={c} actor={actor} decisionState={byCard[c.card.card_id]} wide={live.length === 1}
                             onDecisionChanged={loadDecisions} openPanel={setPanel} />)}
                         </AnimatePresence>
-                        {active.length === 0 && <div className="text-sm text-slate-500">None active.</div>}
+                        {live.length === 0 && <div className="text-sm text-slate-500">None active.</div>}
                       </div>
                       {resolved.length > 0 && (
-                        <details className="mt-3 rounded border border-slate-200 bg-white p-2" data-testid={`resolved-${line}`}>
-                          <summary className="cursor-pointer text-sm font-medium text-slate-700">Resolved ({resolved.length}): out of the active worklist; original card, review reasons and evidence unchanged</summary>
-                          <div className="mt-2 space-y-3">
-                            {resolved.map(c => <CardView key={c.card.card_id} runKey={runKey} item={c} actor={actor} decisionState={byCard[c.card.card_id]}
+                        <details className="group panel-inset p-3" data-testid={`resolved-${line}`}>
+                          <summary className="cursor-pointer text-sm font-medium text-slate-300">Resolved ({resolved.length}): out of the active worklist; original card, review reasons and evidence unchanged</summary>
+                          <div className="mt-3 grid gap-4 lg:grid-cols-2">
+                            {resolved.map(c => <CardView key={c.card.card_id} runKey={runKey} item={c} actor={actor} decisionState={byCard[c.card.card_id]} wide={resolved.length === 1}
                               onDecisionChanged={loadDecisions} openPanel={setPanel} />)}
                           </div>
                         </details>
@@ -234,13 +311,21 @@ export default function App() {
                     </section>
                   )
                 })}
+
+                <div className="space-y-2 pt-2">
+                  <Details summary="Saved briefing (from the run's morning_brief.md)" testid="briefing-details"><Briefing markdown={brief.briefing_markdown} /></Details>
+                  <Details summary={`Topic summary (${topics.length} work items${project ? ` in ${project}` : ''})`} testid="topics-details"><TopicTable rows={topics} /></Details>
+                </div>
               </>
             )}
             {tab === 'queue' && <ReviewQueue runKey={runKey} rows={queueRows} actor={actor} onChanged={loadQueue} cardTopics={cardTopics} />}
           </>
         )}
       </main>
-      {runKey && <SidePanel runKey={runKey} panel={panel} openPanel={setPanel} onClose={() => setPanel(null)} />}
+      <footer className="border-t border-white/[0.05] px-4 py-4 text-center text-[11px] text-slate-600" style={{ paddingBottom: 'calc(1rem + env(safe-area-inset-bottom, 0px))' }}>
+        ThreadSense · local dashboard without authentication · decisions are saved, never posted or executed
+      </footer>
+      {runKey && <SidePanel runKey={runKey} panel={panel} openPanel={setPanel} onClose={closePanel} />}
     </div>
   )
 }

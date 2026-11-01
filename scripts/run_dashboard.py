@@ -24,6 +24,9 @@ def main(argv=None):
     parser.add_argument('--decision-db', type=Path, default=STORE_PATH, help='SQLite decision store (created if missing).')
     parser.add_argument('--decision-origin', choices=('TL_DASHBOARD', 'DEMO_SCRIPT', 'TEST'), default='TL_DASHBOARD',
                         help='Who records decisions here; DEMO_SCRIPT/TEST keep them out of operational snapshots.')
+    parser.add_argument('--team-lead', default='U006',
+                        help='The team lead this dashboard session acts for (default U006, Priya). The UI offers no '
+                             'other identity and the API refuses decisions from any other ID.')
     args = parser.parse_args(argv)
     if args.host not in ('127.0.0.1', 'localhost', '::1'):
         parser.error('The dashboard has no authentication; serve it on localhost only.')
@@ -32,8 +35,9 @@ def main(argv=None):
     from threadsense.dashboard.decisions import DecisionStore
     from threadsense.dashboard.runs import Catalog
     app = create_app(catalog=Catalog(args.runs or RUN_ROOTS, include_fixtures=args.include_test_fixtures),
-                     store=DecisionStore(args.decision_db), decision_origin=args.decision_origin)
-    print(f'Decision store: {args.decision_db}', flush=True)
+                     store=DecisionStore(args.decision_db), decision_origin=args.decision_origin,
+                     session_actor=args.team_lead)
+    print(f'Decision store: {args.decision_db}; acting as team lead {args.team_lead}', flush=True)
     uvicorn.run(app, host=args.host, port=args.port, log_level='warning')
     return 0
 

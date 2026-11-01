@@ -124,8 +124,8 @@ results.
   - No full live run of all 87 work items has been done. It needs a cost cap; the estimate is in Milestone 5 of the
     plan.
   - Live coverage is nine topics at most.
-- **Local-demo authentication.** The dashboard has no authentication. "Acting as" a team lead (U001, U006) is trusted,
-  and the server runs on localhost only. Decision namespaces follow the run mode and the `--decision-origin` flag, not
+- **Local-demo authentication.** The dashboard has no authentication. Each server session is fixed to one team lead
+  (`--team-lead`, default U006; see section 7), and that identity is trusted. The server runs on localhost only. Decision namespaces follow the run mode and the `--decision-origin` flag, not
   a user role. Approvals record intent only; nothing is posted, sent or executed.
 - **Retrieval recall.**
   - A bounded related-record expansion is enabled during prior-decision research (history mode, decision records
@@ -192,3 +192,20 @@ frozen evidence or saved run changed, and no test rerun is needed.
 | Per-run scenario coverage report (new; reads saved runs, one row per run, merges nothing; not an evaluation run) | `data/experiments/agent3_scenario_coverage_v2/` |
 | Corrections: baseline wording, settled policy versus pending decisions, optional live checks, this section | `docs/agent3-acceptance.md`, `docs/agent3-demo-walkthrough.md` |
 | Corrections: release scope (local demo); related-record expansion is enabled and distinguished from the Milestone 7 experiment; exact review queue breakdown (41 / 8 / 3 naming cautions); projection gaps reclassified as an engineering/data follow-up; card-line claims limited to the recorded live evaluations; walkthrough provenance per step, fresh rehearsal database, approval does not establish an outcome | `docs/agent3-acceptance.md`, `docs/agent3-demo-walkthrough.md` |
+
+### Dashboard change after the baseline (2026-11-01, implementation)
+
+Unlike the rows above, this changes code. It touches only the dashboard; no agent, prompt, contract, saved run or
+frozen evidence changed, and the results in sections 2–4 are unaffected.
+
+- **Session lock:** the dashboard serves one team lead's session. `run_dashboard.py --team-lead` defaults to U006
+  (Priya), and `create_app(session_actor=...)` offers only that identity. The API refuses decisions and review actions
+  recorded under any other ID with 403 `NOT_SESSION_USER`. The "Acting as" selector is gone. This is still local
+  identity, not authentication.
+- **UI redesign:** a dark, summary-first layout (`web/src`). Cards show the topic, severity, action and review reasons
+  first; the draft, alternatives, review notes, sources, all evidence and technical details sit behind a per-card
+  expander. Sources and threads open in a modal drawer. Every provenance label, withheld-text rule and
+  "not executed" statement is unchanged.
+- **Checks:** `tests/test_dashboard.py` passes 28/28, including a new session-lock test, and the feedback-loop and
+  policy-routing files pass 22/22. The Playwright suite, updated for the expander and lock, passes 11/11 (10 existing
+  tests plus a new session test). The full 962-test suite was not rerun for this change.

@@ -15,7 +15,12 @@ async function open(page, run, extra = '') {
   await page.goto(`${server.url}/#run=${run}${extra}`)
   await page.reload() // hash-only navigation does not reload the app
   await expect(page.getByTestId('run-banner')).toBeVisible()
-  await page.getByTestId('actor-select').selectOption('U006')
+  await expect(page.getByTestId('session-user')).toContainText('Priya')
+}
+// Card details sit behind the card's expander, one tab at a time.
+async function details(box, tab) {
+  if (await box.getByTestId('card-detail').count() === 0) await box.getByTestId('card-expand').click()
+  if (tab) await box.getByRole('tab', { name: tab }).click()
 }
 async function decisionsFor(run, cardId) {
   const all = (await server.api(`/api/runs/${run}/decisions`)).decisions
@@ -34,6 +39,7 @@ test('approve -> refresh -> restart keeps exactly one decision, never executed',
   const card = await cardId(FIXTURE, c => c.card_line === 'RECOMMENDED_ACTION')
   await open(page, FIXTURE)
   const box = cardBox(page, card.topic_name)
+  await details(box, 'Action & draft')
   await box.getByRole('button', { name: 'Copy draft' }).click()
   await expect(box.getByTestId('copy-note')).toHaveText('Copied to your clipboard. Nothing was posted.')
   expect(posts).toEqual([]) // copying is not posting
@@ -120,7 +126,7 @@ test('a lost response is recovered by a safe retry, without a duplicate', async 
   expect(saved).toHaveLength(1)
   expect(saved[0].decision.tl_response.severity_override).toEqual({ proposed: 'HIGH', tl_selected: 'MEDIUM', reason: 'Known workaround limits the impact for this batch.' })
   await expect(box.getByText('the rubric is unchanged')).toBeVisible()
-  await expect(box.locator('header')).toContainText('Severity high') // the card's assessment is not rewritten
+  await expect(box.locator('header')).toContainText('High severity') // the card's assessment is not rewritten
 })
 
 test('each structured resolution saves its own decision and leaves cards unchanged', async ({ page }) => {
@@ -170,6 +176,7 @@ test('each structured resolution saves its own decision and leaves cards unchang
 
   await open(page, FIXTURE)
   box = cardBox(page, alt.topic_name)
+  await details(box, 'Action & draft')
   await expect(box.getByTestId('alternatives')).toContainText('Update the FAQ')
   await box.getByRole('button', { name: 'Resolve…' }).click()
   await box.getByLabel('Confirm FAQ update').check()
@@ -187,10 +194,10 @@ test('each structured resolution saves its own decision and leaves cards unchang
 test('a stale edit is shown as a conflict, not saved over the newer decision', async ({ browser }) => {
   server = await startServer('stale')
   const card = await cardId(FIXTURE, c => c.card_line === 'RECOMMENDED_ACTION')
-  const [a, b] = [await browser.newPage(), await browser.newPage()]
+  const [a, b] = [await browser.newPage(), await browser.newPage()] // two tabs of the same team lead's session
   for (const p of [a, b]) {
     await p.goto(`${server.url}/#run=${FIXTURE}`)
-    await p.getByTestId('actor-select').selectOption(p === a ? 'U006' : 'U001')
+    await expect(p.getByTestId('session-user')).toContainText('Priya')
     await cardBox(p, card.topic_name).getByRole('button', { name: 'Approve…' }).click()
   }
   await cardBox(a, card.topic_name).getByTestId('save-decision').click()
@@ -246,7 +253,7 @@ test('source and thread views come from saved evidence and keep superseded label
   expect(target).not.toBeNull()
   await open(page, V2, `&project=${target.card.project_id}`)
   const box = page.locator(`[data-card-id="${target.card.card_id}"]`)
-  await box.getByTestId('all-evidence').locator('summary').click()
+  await details(box, 'All evidence')
   const row = box.getByTestId('all-evidence').locator('li', { hasText: target.evidence.title }).filter({ has: page.getByTestId('superseded-label') }).first()
   await expect(row.getByTestId('superseded-label')).toContainText('Superseded section')
   await row.getByRole('button').click()
@@ -261,6 +268,7 @@ test('source and thread views come from saved evidence and keep superseded label
 
   await open(page, SMOKE)
   const audio = cardBox(page, 'LT audio player playback failure')
+  await details(audio, 'Sources & threads')
   await audio.getByTestId('thread-link').first().click()
   const thread = page.getByTestId('thread-detail')
   await expect(thread.getByTestId('permalink-note')).toContainText('No Slack permalink is stored')
@@ -272,6 +280,7 @@ test('source and thread views come from saved evidence and keep superseded label
   await page.reload() // deep link reopens the same view
   await expect(page.getByTestId('thread-detail')).toBeVisible()
   await page.getByRole('button', { name: 'Close' }).click()
+  await details(audio, 'Sources & threads') // the reload collapsed the card
   await audio.getByTestId('source-link').first().click()
   await expect(page.getByTestId('evidence-detail')).toContainText('saved evidence')
 })
@@ -361,4 +370,22 @@ test('two runs with the same run_id and card_id keep separate decisions, also af
     expect(await decisionsFor(V2, card.card_id)).toEqual([])
     expect((await decisionsFor(V1, card.card_id)).map(d => [d.kind, d.run_instance])).toEqual([['DISMISS', v1.run_instance]])
   }
+})
+
+test('the session is locked to one team lead: no identity switch, other IDs refused', async ({ page }) => {
+  server = await startServer('session')
+  const card = await cardId(FIXTURE, c => c.card_line === 'RECOMMENDED_ACTION')
+  await open(page, FIXTURE)
+  await expect(page.getByTestId('actor-select')).toHaveCount(0)
+  await expect(page.getByTestId('session-user')).toContainText('U006')
+  const listing = await server.api('/api/runs')
+  expect(listing.actors.map(a => a.actor_id)).toEqual(['U006'])
+  const status = await page.evaluate(async url => (await fetch(url, { method: 'POST', body: JSON.stringify({ kind: 'APPROVE_ACTION', actor_id: 'U001' }),
+    headers: { 'Content-Type': 'application/json', 'Idempotency-Key': 'ui-test-session-1' } })).status, `${server.url}/api/runs/${FIXTURE}/cards/${card.card_id}/decisions`)
+  expect(status).toBe(403)
+  const box = cardBox(page, card.topic_name)
+  await box.getByRole('button', { name: 'Approve…' }).click()
+  await box.getByTestId('save-decision').click()
+  await expect(box.getByTestId('save-success')).toBeVisible()
+  expect((await decisionsFor(FIXTURE)).map(d => d.actor_id)).toEqual(['U006'])
 })

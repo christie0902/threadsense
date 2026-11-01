@@ -462,3 +462,24 @@ def test_approved_unexecuted_decisions_are_history_not_policy(env, catalog):
                                                                            top_k=30)['results'] if r['metadata']['origin'] == 'tl_decision_store']
     assert hits and {use_of(r) for r in hits} == {'PRIOR_DECISION'} and hits[0]['collection'] == 'decisions'
     assert 'execution_status: not_executed' in banner(hits[0], 'PRIOR_DECISION') and 'not a standing rule' in banner(hits[0], 'PRIOR_DECISION')
+
+
+def test_session_is_locked_to_one_team_lead(tmp_path, catalog):
+    """The runner always serves one team lead's session: the UI is offered only that identity, and the API refuses
+    decisions and review actions recorded under any other team lead's ID."""
+    client = TestClient(create_app(catalog=catalog, store=DecisionStore(tmp_path/'store.sqlite3'), clock=Clock(),
+                                   static_dir=tmp_path/'none', session_actor='U006'))
+    listing = client.get('/api/runs').json()
+    assert listing['session'] == {'actor_id': 'U006', 'name': 'Priya', 'role': 'TEAM_LEAD'}
+    assert [a['actor_id'] for a in listing['actors']] == ['U006']
+    card = next(c for c in catalog.get(FIXTURE).cards.values() if c['card_line'] == 'RECOMMENDED_ACTION')
+    other = post(client, FIXTURE, card['card_id'], {'kind': 'APPROVE_ACTION', 'actor_id': 'U001'}, 'lock1')
+    assert (other.status_code, other.json()['code']) == (403, 'NOT_SESSION_USER')
+    item = next(iter(catalog.get(FIXTURE).queue))
+    review = client.post(f'/api/runs/{FIXTURE}/review-items/{item}/actions', headers={'Idempotency-Key': 'test-lock2'},
+                         json={'action': 'ACCEPT', 'actor_id': 'U001'})
+    assert review.status_code == 403
+    assert client.get(f'/api/runs/{FIXTURE}/decisions').json()['decisions'] == []
+    assert post(client, FIXTURE, card['card_id'], {'kind': 'APPROVE_ACTION', 'actor_id': 'U006'}, 'lock3').status_code == 201
+    with pytest.raises(ValueError, match='not a recorded team lead'):
+        create_app(catalog=catalog, store=DecisionStore(tmp_path/'other.sqlite3'), session_actor='U019')

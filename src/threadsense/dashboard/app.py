@@ -23,12 +23,20 @@ KEY_PATTERN = r'^[A-Za-z0-9_\-:.]{8,128}$'
 
 
 def create_app(*, catalog=None, store=None, fixture_root=FIXTURE_ROOT, clock=now_iso, static_dir=WEB_DIST,
-               decision_origin='TL_DASHBOARD'):
+               decision_origin='TL_DASHBOARD', session_actor=None):
     """decision_origin: TL_DASHBOARD for a team lead's own decisions; demo scripts and tests pass DEMO_SCRIPT or TEST
-    so their simulated decisions stay out of operational snapshots even on a live run's cards."""
+    so their simulated decisions stay out of operational snapshots even on a live run's cards.
+
+    session_actor: the team lead this server acts for (the runner always sets it). Only that team lead is offered to
+    the UI and only that ID may record decisions or review actions; None leaves the API open to every recorded team
+    lead (backend tests). Local identity only: there is still no authentication."""
     catalog = catalog or Catalog()
     store = store or DecisionStore()
     actors = {a['actor_id']: a for a in team_leads(fixture_root)}
+    if session_actor is not None:
+        if session_actor not in actors:
+            raise ValueError(f'{session_actor} is not a recorded team lead.')
+        actors = {session_actor: actors[session_actor]}
     app = FastAPI(title='ThreadSense morning brief', docs_url='/api/docs', openapi_url='/api/openapi.json')
 
     @app.exception_handler(RunNotFound)
@@ -45,11 +53,13 @@ def create_app(*, catalog=None, store=None, fixture_root=FIXTURE_ROOT, clock=now
 
     @app.get('/api/health')
     def health():
-        return {'status': 'ok', 'store': str(store.path), 'runs': len(catalog.runs), 'decision_origin': decision_origin}
+        return {'status': 'ok', 'store': str(store.path), 'runs': len(catalog.runs), 'decision_origin': decision_origin,
+                'session_actor': session_actor}
 
     @app.get('/api/runs')
     def runs():
-        return {'runs': catalog.summaries(), 'actors': list(actors.values())}
+        return {'runs': catalog.summaries(), 'actors': list(actors.values()),
+                'session': actors[session_actor] if session_actor else None}
 
     @app.get('/api/runs/{run_key}/brief')
     def brief(run_key: str):
@@ -120,6 +130,12 @@ def create_app(*, catalog=None, store=None, fixture_root=FIXTURE_ROOT, clock=now
                                       'detail': 'Send an Idempotency-Key header (8-128 letters, digits, - _ : .).'})
         return value
 
+    def _session_check(actor_id):
+        if session_actor is not None and actor_id != session_actor:
+            return JSONResponse({'code': 'NOT_SESSION_USER',
+                                 'detail': f'This dashboard records decisions for {session_actor} only.'}, status_code=403)
+        return None
+
     def _submit(**kwargs):
         try:
             response, replayed = store.submit(**kwargs)
@@ -142,6 +158,8 @@ def create_app(*, catalog=None, store=None, fixture_root=FIXTURE_ROOT, clock=now
             parsed = DecisionRequest.model_validate(body)
         except ValidationError as error:
             return JSONResponse({'code': 'INVALID_DECISION', 'detail': _message(error)}, status_code=422)
+        if refused := _session_check(parsed.actor_id):
+            return refused
 
         def build(head, sequence, digest):
             return build_decision(run=run, card=card, request=parsed, actors=actors, sequence=sequence, head=head,
@@ -167,6 +185,8 @@ def create_app(*, catalog=None, store=None, fixture_root=FIXTURE_ROOT, clock=now
             parsed = ReviewRequest.model_validate(await _json(request))
         except ValidationError as error:
             return JSONResponse({'code': 'INVALID_DECISION', 'detail': _message(error)}, status_code=422)
+        if refused := _session_check(parsed.actor_id):
+            return refused
 
         def build(head, sequence, digest):
             return build_review_action(run=run, item=run.queue[item_id], request=parsed, actors=actors, sequence=sequence,

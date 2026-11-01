@@ -2,9 +2,15 @@ import { useState } from 'react'
 import { useIdempotentSave } from './api.js'
 import { Badge, Details, Json, when } from './ui.jsx'
 
-const STATE_STYLES = { OPEN: 'border-amber-300 bg-amber-50 text-amber-900', ACCEPTED: 'border-emerald-300 bg-emerald-50 text-emerald-900',
-  REJECTED: 'border-rose-300 bg-rose-50 text-rose-900' }
+const STATE_TONES = { OPEN: 'amber', ACCEPTED: 'emerald', REJECTED: 'rose' }
 const EFFECTS = { ACCEPT: 'resolved for this run', REJECT: 'recorded as a negative example', DEFER: 'kept open' }
+const KIND_LABELS = {
+  inherited_agent1_review: 'Agent 1 obligation (discussion)',
+  inherited_agent1_review_announcement_route: 'Agent 1 obligation (announcement route)',
+  assisted_content_review: 'Agent 2 assisted review',
+}
+const kindLabel = item => (item.kind === 'assisted_content_review' && JSON.stringify(item.source_obligation).includes('TAXONOMY_NAMING_CAUTION')
+  ? 'Agent 2 naming caution' : KIND_LABELS[item.kind] || item.kind.replaceAll('_', ' '))
 
 function ReviewItem({ runKey, row, actor, onChanged, cardTopics }) {
   const { item, review_state: state, entries, head } = row
@@ -15,35 +21,34 @@ function ReviewItem({ runKey, row, actor, onChanged, cardTopics }) {
     if (entry) { setNote(''); onChanged(); }
   }
   return (
-    <li className="rounded border border-slate-200 bg-white p-3" data-testid="review-item" data-item-id={item.item_id}>
-      <div className="flex flex-wrap items-center gap-2">
-        <Badge className={STATE_STYLES[state]} data-testid="review-state">{state.toLowerCase()}</Badge>
-        <Badge className="border-slate-300 bg-white">{item.origin}</Badge>
-        <Badge className="border-slate-300 bg-white">{item.kind.replaceAll('_', ' ')}</Badge>
-        <Badge className="border-slate-300 bg-white">{item.project_id}</Badge>
-        <span className="text-xs text-slate-500">{item.member_ids.length} member(s)</span>
+    <li className="panel p-4" data-testid="review-item" data-item-id={item.item_id}>
+      <div className="flex flex-wrap items-center gap-1.5">
+        <Badge tone={STATE_TONES[state]} data-testid="review-state">{state.toLowerCase()}</Badge>
+        <Badge tone="cyan" title={`${item.origin} · ${item.kind}`}>{kindLabel(item)}</Badge>
+        <Badge>{item.project_id}</Badge>
+        <span className="text-[11px] text-slate-500">{item.member_ids.length} member(s)</span>
       </div>
-      <div className="prose-pre mt-2 text-sm">{item.reason}</div>
-      {item.related_card_ids.length > 0 && <div className="mt-1 text-xs text-slate-600">Related card: {item.related_card_ids.map(id => cardTopics[id] || id).join('; ')} (not changed by these actions)</div>}
+      <div className="prose-pre mt-2 line-clamp-3 text-sm leading-relaxed text-slate-200 hover:line-clamp-none">{item.reason}</div>
+      {item.related_card_ids.length > 0 && <div className="mt-1 text-xs text-slate-400">Related card: {item.related_card_ids.map(id => cardTopics[id] || id).join('; ')} (not changed by these actions)</div>}
       {entries.length > 0 && (
-        <ol className="mt-2 space-y-0.5 text-xs text-slate-700" data-testid="review-history">
-          {entries.map(e => <li key={e.entry_id}>{when(e.action.acted_at)} · {e.action.actor_id}: <b>{e.action.action.toLowerCase()}</b> ({EFFECTS[e.action.action]}){e.action.note ? ` - ${e.action.note}` : ''}</li>)}
+        <ol className="mt-2 space-y-0.5 text-xs text-slate-400" data-testid="review-history">
+          {entries.map(e => <li key={e.entry_id}>{when(e.action.acted_at)} · {e.action.actor_id}: <b className="text-slate-200">{e.action.action.toLowerCase()}</b> ({EFFECTS[e.action.action]}){e.action.note ? ` - ${e.action.note}` : ''}</li>)}
         </ol>
       )}
-      <div className="mt-2 flex flex-wrap items-center gap-2">
-        <input className="min-w-[12rem] flex-1 rounded border border-slate-300 px-2 py-0.5 text-sm" placeholder="Note (optional)" value={note} onChange={e => { setNote(e.target.value); reset() }} />
+      <div className="mt-3 flex flex-wrap items-center gap-2">
+        <input className="field min-w-[12rem] flex-1" placeholder="Note (optional)" value={note} onChange={e => { setNote(e.target.value); reset() }} />
         {['ACCEPT', 'REJECT', 'DEFER'].map(a => (
           <button key={a} type="button" disabled={!actor || save.phase === 'saving'} onClick={() => act(a)} data-testid={`review-${a.toLowerCase()}`}
-            className="rounded border border-slate-300 bg-white px-2 py-0.5 text-sm hover:bg-slate-100 disabled:opacity-50">
+            className="btn btn-sm">
             {a === 'ACCEPT' ? 'Accept' : a === 'REJECT' ? 'Reject (negative example)' : 'Defer'}
           </button>
         ))}
       </div>
-      {save.phase === 'uncertain' && <div className="mt-1 text-xs text-amber-800" data-testid="save-uncertain">Not confirmed; the action may or may not be saved. Click the same action again: it reuses the request key and cannot be saved twice.</div>}
-      {save.phase === 'conflict' && <div className="mt-1 text-xs text-red-800" data-testid="save-conflict">Not saved: another action was recorded on this item meanwhile. <button className="underline" onClick={() => { reset(); onChanged() }}>Refresh</button></div>}
-      {save.phase === 'rejected' && <div className="mt-1 text-xs text-red-800">Not saved: {save.detail}</div>}
-      {save.phase === 'saved' && <div className="mt-1 text-xs text-emerald-800" data-testid="review-saved">Saved: {save.entry.action.action.toLowerCase()} ({EFFECTS[save.entry.action.action]}). AdviceCards are unchanged.</div>}
-      <div className="mt-2"><Details summary="Upstream record (verbatim)"><Json value={item.source_obligation} /></Details></div>
+      {save.phase === 'uncertain' && <div className="mt-2 text-xs text-amber-200" data-testid="save-uncertain">Not confirmed; the action may or may not be saved. Click the same action again: it reuses the request key and cannot be saved twice.</div>}
+      {save.phase === 'conflict' && <div className="mt-2 text-xs text-red-300" data-testid="save-conflict">Not saved: another action was recorded on this item meanwhile. <button className="link" onClick={() => { reset(); onChanged() }}>Refresh</button></div>}
+      {save.phase === 'rejected' && <div className="mt-2 text-xs text-red-300">Not saved: {save.detail}</div>}
+      {save.phase === 'saved' && <div className="mt-2 text-xs text-emerald-200" data-testid="review-saved">Saved: {save.entry.action.action.toLowerCase()} ({EFFECTS[save.entry.action.action]}). AdviceCards are unchanged.</div>}
+      <div className="mt-3"><Details summary="Upstream record (verbatim)"><Json value={item.source_obligation} /></Details></div>
     </li>
   )
 }
@@ -53,19 +58,20 @@ export default function ReviewQueue({ runKey, rows, actor, onChanged, cardTopics
   const shown = rows.filter(r => show === 'ALL' || r.review_state === show)
   const counts = rows.reduce((acc, r) => ({ ...acc, [r.review_state]: (acc[r.review_state] || 0) + 1 }), {})
   return (
-    <section data-testid="review-queue">
-      <p className="mb-2 text-sm text-slate-600">
-        Upstream model-output flags (Agent 1/2 and assisted review), kept separate from the operational cards.
-        Accept resolves the flag for this run, Reject records a negative example, Defer keeps it open. None of these change an AdviceCard.
+    <section data-testid="review-queue" className="space-y-4">
+      <p className="max-w-3xl text-sm text-slate-400">
+        Flags on upstream model output (Agent 1 obligations and Agent 2 naming cautions), kept apart from the cards.
+        Accept resolves a flag for this run, Reject records a negative example, Defer keeps it open. None of these change a card.
       </p>
-      <div className="mb-3 flex gap-2 text-sm">
+      <div className="inline-flex flex-wrap gap-1 rounded-xl border border-white/[0.06] bg-ink-950/50 p-1 text-sm">
         {['OPEN', 'ACCEPTED', 'REJECTED', 'ALL'].map(s => (
-          <button key={s} type="button" onClick={() => setShow(s)} className={`rounded px-2 py-0.5 ${show === s ? 'bg-slate-800 text-white' : 'bg-white border border-slate-300'}`}>
+          <button key={s} type="button" onClick={() => setShow(s)}
+            className={`rounded-lg px-3 py-1 first-letter:uppercase transition ${show === s ? 'bg-white/[0.08] text-white' : 'text-slate-400 hover:text-slate-200'}`}>
             {s.toLowerCase()} ({s === 'ALL' ? rows.length : counts[s] || 0})
           </button>
         ))}
       </div>
-      <ul className="space-y-2">{shown.map(r => <ReviewItem key={r.item.item_id} runKey={runKey} row={r} actor={actor} onChanged={onChanged} cardTopics={cardTopics} />)}</ul>
+      <ul className="space-y-3">{shown.map(r => <ReviewItem key={r.item.item_id} runKey={runKey} row={r} actor={actor} onChanged={onChanged} cardTopics={cardTopics} />)}</ul>
       {shown.length === 0 && <div className="text-sm text-slate-500">No items.</div>}
     </section>
   )

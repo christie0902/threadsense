@@ -23,7 +23,7 @@ DEMO_SCRIPT`: it puts rehearsal decisions in the `demo` namespace, so default op
 uv run --locked python scripts/run_dashboard.py --include-test-fixtures \
   --runs data/experiments --runs data/experiments/agent3_feedback_loop_offline_v2 \
   --decision-db D:/tsb/demo-<YYYYMMDD>-r<N>.sqlite3 --decision-origin DEMO_SCRIPT
-# open http://127.0.0.1:8000 ; act as Priya (U006) or Alex (U001)
+# open http://127.0.0.1:8000 ; the session is locked to Priya (U006, team lead); --team-lead picks another TL at startup
 ```
 
 On PowerShell, write the command on one line (drop the `\`).
@@ -46,7 +46,8 @@ Show:
   - Also show the copyable draft, the scope note and the rationale.
 - **Needs Review reasons:** HIGH severity and inherited Agent 1 flags. Point out that the action is shown but the card
   still needs a team lead. No statement was withheld on this card.
-- **Evidence:** 21 items, 16 cited. Open:
+- **Evidence:** 21 items, 16 cited. Click **Details & evidence**: the draft is on the "Action & draft" tab, the cited
+  sources and threads on "Sources & threads", and every item on "All evidence". Open:
   - the project instructions section "Tool incidents and submission" (current guidance);
   - the October 1 announcement (governs example collection only; described as a source fact, not as a route);
   - the September 28 engineering handoff (prior record: history, not current handling);
@@ -88,7 +89,7 @@ Supporting offline evidence, if asked (these are not live accuracy):
 
 ## 4. A TL decision saved once (not executed)
 
-On the Submit card from step 1 (LIVE run `agent3_recipient_routing_v1`), acting as Priya (U006), choose **Route to an
+On the Submit card from step 1 (LIVE run `agent3_recipient_routing_v1`), as Priya (U006, the session's team lead), click **Resolve…** and choose **Route to an
 expert → Engineering** and save. The card's judgment is live (`judgment_provenance LIVE_MODEL`), but the decision is a
 rehearsal recorded in the `demo` namespace (`DEMO_SCRIPT`), not operational history.
 

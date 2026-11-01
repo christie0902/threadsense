@@ -1,6 +1,22 @@
 /** @type {import('tailwindcss').Config} */
 export default {
   content: ['./index.html', './src/**/*.{js,jsx}'],
-  theme: { extend: {} },
+  theme: {
+    extend: {
+      colors: {
+        ink: { 950: '#05080f', 900: '#0a0f1a', 850: '#0e1522', 800: '#131c2c', 700: '#1c2738' },
+      },
+      fontFamily: {
+        sans: ['"Segoe UI Variable Text"', '"Segoe UI"', 'Inter', 'system-ui', '-apple-system', 'Roboto', 'sans-serif'],
+        display: ['"Segoe UI Variable Display"', '"Segoe UI"', 'Inter', 'system-ui', 'sans-serif'],
+        mono: ['"Cascadia Code"', 'ui-monospace', 'SFMono-Regular', 'Consolas', 'monospace'],
+      },
+      keyframes: {
+        drift: { '0%,100%': { transform: 'rotate(0deg) scale(1)' }, '50%': { transform: 'rotate(180deg) scale(1.04)' } },
+        breathe: { '0%,100%': { opacity: '0.55' }, '50%': { opacity: '1' } },
+      },
+      animation: { drift: 'drift 36s linear infinite', breathe: 'breathe 4.5s ease-in-out infinite' },
+    },
+  },
   plugins: [],
 }
