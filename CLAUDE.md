@@ -42,7 +42,8 @@ uv run --locked --extra dev python -m pytest tests/test_x.py   # single file
 - `data/fixtures/slack_generated/` — pipeline input (12 channels). `data/fixtures/slack/` is the old seed set used only by `main.py` and the generator.
 - `data/knowledge/` — knowledge store (instructions, faq, decisions/<project>, `domain_lexicon.json`, `severity_rubric.py`).
 - `data/processed/`, `data/experiments/` — frozen run outputs. `data/metadata/` — hash-bound review registries.
-- `docs/` — Agent1/Agent2 summaries, `announcement-routing.md` (current data flow), `agent3-plan.md`, `repository-cleanup.md`.
+- `docs/` — Agent1/Agent2 summaries, `announcement-routing.md` (current data flow), `agent3-plan.md`, `repository-cleanup.md`,
+  `agent3-acceptance.md` (acceptance report, scenario coverage, limitations) and `agent3-demo-walkthrough.md` (zero-call dashboard demo).
 
 ## Conventions
 
