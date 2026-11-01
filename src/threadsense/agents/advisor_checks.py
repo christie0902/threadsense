@@ -20,8 +20,9 @@
   announcement handling, member resolution, severity rationale and signals, affected
   reporters) plus ToT alternatives, judged by ONE final semantic grounding call;
 - normalization before checks: a GUIDANCE label on content that rests only on a team lead's thread
-  messages is corrected to the scoped THREAD_INSTRUCTION role (recorded), and members' "happening
-  again" messages cited as historical recurrence become reported recurrence;
+  messages is corrected to the scoped THREAD_INSTRUCTION role, a THREAD_INSTRUCTION label on a
+  participant's correctly attributed request becomes INCIDENT_FACT (both recorded, text unchanged), and
+  members' "happening again" messages cited as historical recurrence become reported recurrence;
 - dependency order: announcement applicability -> final premise status -> action sufficiency. The judge
   sees each premise as pending its own verdict, with the announcement it depends on; essential premises
   are validated against the final supported set (a premise its dependency voids is not supported). The
@@ -241,10 +242,38 @@ def established(draft, ledger):
             and _verbatim(a.directive_quote, [ledger[a.evidence_id]])}
 
 
+# Present-handling wording: a source fact about historical material must not say it applies now.
+PRESENT_HANDLING = re.compile(r'\b(?:currently|current|now|in effect|still applies|applies)\b', re.I)
+# Wording that asserts authority or names the team lead: a claim using it is never relabelled as a participant's request.
+AUTHORITY_WORDING = re.compile(r'\b(?:team\s+leads?|instruct\w*|requires|requiring|required\s+to|direct(?:s|ed|ing|ive)?|approv\w*|mandat\w*|must|'
+                               r'polic\w*|rules?|guidance)\b', re.I)
+
+
+def participant_request(claim, items, ledger):
+    """A THREAD_INSTRUCTION label on what is only a participant's attributed request: every cited item is a member
+    message by someone other than a team lead; the attributions name exactly those authors (AUTHOR, valid); the
+    unchanged prose names the requester by a role those authors hold and passes every prose check; and nothing in it
+    names a team lead or asserts authority. Anything mixed or ambiguous is left to the existing checks."""
+    if not items or None in items or any(i['origin'] != 'member_message' or i.get('author_role') == 'TEAM_LEAD' for i in items):
+        return False
+    authors = {i['author_id'] for i in items}
+    if not claim.attributions or any(a.relation != 'AUTHOR' for a in claim.attributions) or \
+            {a.user_id for a in claim.attributions} != authors:
+        return False
+    prose = _unquoted(claim.text)
+    roles = [m.group(1).lower() for m in ROLE_ACTOR.finditer(prose)]
+    cited_roles = {i.get('author_role') for i in items}
+    return (bool(roles) and all(ROLE_WORDS[r] & cited_roles for r in roles) and not AUTHORITY_WORDING.search(prose)
+            and not prose_issues(claim.text, items, ledger, claim.attributions))
+
+
 def normalize(draft, ledger):
     """Deterministic corrections before checking, each recorded: (1) a GUIDANCE claim with no current source or
     established announcement whose cited evidence is all member messages including a team lead's is relabelled
-    THREAD_INSTRUCTION (scoped to its thread; still judged); tutor-only "guidance" is left to fail. (2) member
+    THREAD_INSTRUCTION (scoped to its thread; still judged); tutor-only "guidance" is left to fail. (2) a
+    THREAD_INSTRUCTION label on a participant's attributed request (participant_request: no team lead message, the
+    prose already names the requester correctly, no authority wording) becomes INCIDENT_FACT, a reported request with
+    no authority; the text is unchanged and still judged. Wrong actors or asserted authority keep failing. (3) member
     messages cited as historical recurrence move to reported recurrence; records stay historical."""
     notes, claims, handling = [], [], established(draft, ledger)
     for c in draft.claims:
@@ -254,6 +283,12 @@ def normalize(draft, ledger):
             notes.append({'code': 'ROLE_LABEL_CORRECTED', 'statement_id': f'claim:{c.claim_id}', 'from': 'GUIDANCE',
                           'to': 'THREAD_INSTRUCTION', 'detail': 'Cites only thread messages, including a team lead\'s.'})
             c = c.model_copy(update={'kind': 'THREAD_INSTRUCTION'})
+        elif c.kind == 'THREAD_INSTRUCTION' and participant_request(c, items, ledger):
+            roles = sorted({i['author_role'] for i in items})
+            notes.append({'code': 'REQUEST_KIND_CORRECTED', 'statement_id': f'claim:{c.claim_id}', 'from': 'THREAD_INSTRUCTION',
+                          'to': 'INCIDENT_FACT', 'detail': f"Cites only {', '.join(roles)} messages and names that requester; "
+                                                           'a participant\'s request is a reported thread fact, not a team lead instruction.'})
+            c = c.model_copy(update={'kind': 'INCIDENT_FACT'})
         claims.append(c)
     s = draft.severity
     members = [e for e in s.recurrence_evidence_ids if ledger.get(e, {}).get('origin') == 'member_message']
@@ -311,6 +346,13 @@ def claim_issues(draft, ledger):
             issue(claim, 'THREAD_INSTRUCTION_WITHOUT_TEAM_LEAD', "A thread instruction cites the team lead's own message.")
         if claim.kind == 'HISTORY' and not uses & KNOWLEDGE_USES:
             issue(claim, 'HISTORY_WITHOUT_RECORD', 'History claims cite retrieved records.')
+        if claim.kind == 'SOURCE_FACT':  # Describes retrieved sources; grants no authority and keeps their dates.
+            if any(i['origin'] != 'retrieved_source' for i in items):
+                issue(claim, 'SOURCE_FACT_NEEDS_RETRIEVED_SOURCE', 'Source facts describe retrieved sources only; member '
+                                                                   'messages are incident facts.')
+            if uses & STALE_USES and PRESENT_HANDLING.search(_unquoted(claim.text)):
+                issue(claim, 'SOURCE_FACT_PRESENTS_HISTORY_AS_CURRENT',
+                      'A historical or unresolved source is described as what applies now.')
         # A paraphrase is judged semantically; only a quote presented as verbatim must match exactly.
         if claim.quote and claim.quote_kind == 'VERBATIM' and not _verbatim(claim.quote, items):
             issue(claim, 'QUOTE_NOT_VERBATIM', 'Quote presented as verbatim is not in any cited excerpt.')
@@ -437,8 +479,9 @@ def presentation_issues(draft, ledger):
             t.evidence_id for t in action.targets]
         texts.append(('action', ' '.join(x for x in (action.instruction, action.draft_text, action.scope_note) if x),
                       support, True))
-        if action.rationale:
-            texts.append(('action:rationale', action.rationale, support, True))
+        if action.rationale:  # The rationale may also draw on context claims (not premises).
+            context = [e for i in getattr(action, 'context_claim_ids', []) if i in claims for e in claims[i].evidence_ids]
+            texts.append(('action:rationale', action.rationale, support + context, True))
         need = getattr(action, 'intervention_need', None)
         if need is not None:  # Judged (roles, counts, names) though not displayed.
             texts.append(('action:need', need.statement, need.evidence_ids, False))
@@ -570,9 +613,10 @@ def statements(draft, ledger, *, severity=None, alternatives=(), handling=None):
         support = [e for c in draft.claims if c.claim_id in action.support_claim_ids for e in c.evidence_ids]
         add('action', 'ACTION', _action_text(action, ledger), support + [t.evidence_id for t in action.targets])
         out[-1]['premises'] = [f'claim:{i}' for i in action.support_claim_ids]
-        if action.rationale:
+        if action.rationale:  # Judged and shown on its own: premises plus the context claims only it draws on.
+            context = [e for c in draft.claims if c.claim_id in getattr(action, 'context_claim_ids', []) for e in c.evidence_ids]
             add('action:rationale', 'ACTION_RATIONALE', f'Why this helps: {action.rationale}',
-                support + [t.evidence_id for t in action.targets], blocking=False)
+                support + [t.evidence_id for t in action.targets] + context, blocking=False)
         need = getattr(action, 'intervention_need', None)
         if need is not None and action.action_type != 'NO_ACTION':
             # Non-blocking for the card's grounding status; the action stands only if this is SUPPORTED.

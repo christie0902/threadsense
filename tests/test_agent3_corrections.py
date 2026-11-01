@@ -697,7 +697,7 @@ def test_rules_are_sent_once_and_prompt_version_is_recorded():
     assert STYLE_EXAMPLES in DRAFT_RULES and STYLE_EXAMPLES not in REVISION_RULES
     assert 'STYLE ONLY, NOT EVIDENCE' in STYLE_EXAMPLES and 'never copy their facts' in STYLE_EXAMPLES
     fingerprints = prompt_fingerprints()
-    assert fingerprints['prompt_version'] == 'agent3-advisor-prompts-v11' and fingerprints['style_examples']
+    assert fingerprints['prompt_version'] == 'agent3-advisor-prompts-v14' and fingerprints['style_examples']
     assert INPUT_TOKEN_LIMIT == 24_000 and live_settings('openai/gpt-6.1-sol')['input_token_limit'] == 24_000
 
 

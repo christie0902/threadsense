@@ -1468,3 +1468,82 @@ handoff "records" - no authorship claimed, history in its own sentence). The act
 (PARTIALLY_SUPPORTED, INSUFFICIENT): its task mappings and the error/time request come from the engineer's messages,
 whose claim was rejected because the draft labelled an engineer's request a THREAD_INSTRUCTION (team lead only) - the
 same mislabel as the previous run. Remaining failure, not fixed in this pass.
+
+## Request classification (2026-10-31): participant requests versus team-lead instructions
+
+Prompts `agent3-advisor-prompts-v12`, evidence view `agent3-evidence-view-v3`. The claim that withheld the Submit action in
+`agent3_submit_repair_v1` (c5) was a category-only error: its prose ("An engineer requests the LT error state and time
+for tasks RP-3412 and RP-5337 ...") and attributions (U016, ENGINEER, author of both cited messages) were correct; only
+its kind said THREAD_INSTRUCTION, which needs a team lead's own message. No new kind: a request or question by anyone
+but a team lead is an INCIDENT_FACT naming the requester (reported, no authority); member messages carry
+`instruction_authority` (THREAD_SCOPE for a team lead, else NONE); one sentence each in the draft and grounding rules.
+Before grounding, `normalize` relabels THREAD_INSTRUCTION -> INCIDENT_FACT (recorded `REQUEST_KIND_CORRECTED`, text
+unchanged) only when every cited message is by a non-team-lead, the attributions name exactly those authors, the prose
+names the requester by their role, passes every prose check and contains no team-lead mention or authority wording;
+wrong actors, asserted authority, wrong attributions, unnamed requesters and claims citing a team lead keep the existing
+rule. Action-premise validation never required a claim kind; the judge still decides sufficiency. Tests
+`tests/test_agent3_request_kinds.py` (13). Full suite first run 944 passed. Reconstructed Submit revision under v12:
+20,511 tokens (headroom 3,489).
+
+**Live Submit** (`data/experiments/agent3_request_kind_v1/`, Sol, `--max-requests 4 --max-cost 1`, run once): 3 requests
+(draft 13,956, revision 20,258, grounding 17,007 provider input tokens; the revision ran live and fit), 51,221 input /
+11,920 output tokens, **$0.2216**; ToT not triggered; accounting COMPLETE, review queue 52. The engineer's request was
+drafted as INCIDENT_FACT by the model (no normalization needed) and SUPPORTED. Summary 3/3 SUPPORTED and shown
+unchanged. The action (escalate; destination explicitly unspecified) was withheld again: PARTIALLY_SUPPORTED /
+INSUFFICIENT because its premises also listed c11, a correct description of the example-collection announcement filed as
+GUIDANCE, whose announcement dependency is unsupported (dependency-voided); the scope note's announcement clause rests on
+it. The instruction and draft text are supported by c1-c8. Remaining failure, not fixed: describing a non-governing
+announcement as GUIDANCE and listing it as an action premise.
+
+## Source facts and action dependencies (2026-10-31)
+
+Prompts `agent3-advisor-prompts-v13`, draft `agent3-advisor-draft-v10`. In `agent3_request_kind_v1`, c11 ("The team lead's
+same-batch Submit announcement directs people to keep examples in its thread ...; it does not name that thread as an
+engineering intake route") only described the announcement, but was filed as GUIDANCE, so it was voided when the
+announcement was not verified as governing handling; the judge left it out of the essential premises yet ruled the action
+insufficient because the scope note leaned on it. Survey of saved live runs: Submit carried a failed announcement-dependent
+GUIDANCE premise in acceptance_v1 (essential, ESSENTIAL_PREMISE_NOT_PASSED), closeout_v1, summary_eval_v1 and
+request_kind_v1; other topics' failed optional premises were already tolerated when the judge found the action sufficient.
+Changes: SOURCE_FACT claims (retrieved sources only; describes with status and dates; grants no handling, procedure or
+destination; never voided by announcement applicability; a historical source described as current is rejected); an
+announcement governs only what it directs (an example-collection request governs where examples go, not escalation);
+`ActionProposal.context_claim_ids` for claims only the rationale draws on (judged with the separately shown rationale,
+not premises); scope_note holds only conditions the action depends on; the judge is told a listed premise the exact text
+does not rely on is not essential. No automatic reclassification of rejected GUIDANCE. Tests
+`tests/test_agent3_source_facts.py` (11). Full suite first run 955 passed. Reconstructed Submit revision: 20,695 tokens.
+
+**Live Submit** (`data/experiments/agent3_source_fact_v1/`, Sol, `--max-requests 4 --max-cost 1`, run once): 2 requests
+(draft 14,134, grounding 14,864 provider input tokens), 28,998 input / 8,083 output tokens, **$0.1388**; no follow-ups
+or revision; ToT not triggered; accounting COMPLETE, review queue 52. The announcement description was drafted as
+SOURCE_FACT (c9), SUPPORTED, used only as rationale context; the announcement handling was SUPPORTED as governing example
+collection only. Summary 3/3 SUPPORTED and shown unchanged; the engineer's request stayed INCIDENT_FACT (SUPPORTED). The
+action (collect the requested diagnostics, then report to engineering; destination unnamed) was withheld:
+PARTIALLY_SUPPORTED / INSUFFICIENT with all six listed premises SUPPORTED and essential - the judge treated "report to
+engineering" itself as a destination needing an established route (the intervention need and review note were judged
+PARTIALLY_SUPPORTED for the same reason; the rationale was SUPPORTED). New failure caused by the v11 grounding wording: it
+says a named destination needs a premise but, unlike the draft rules, does not say the recommendation's recipient
+("escalate to engineering") is not a destination. Not changed in this pass (no rerun).
+
+## Recipient and route rule (2026-11-01, prompts v14)
+
+agent3_source_fact_v1 withheld "report to engineering" because the v13 grounding rules required a premise establishing a
+route for any destination, while the draft rules allowed an unspecified one. v14 sends one rule (`ROUTING_RULE`) verbatim
+in the draft, revision and grounding instructions: a proposed functional recipient (engineering, a specialist) is
+justified by supported incident evidence showing a problem that needs its expertise, without evidence of an intake
+route, and naming the recipient justifies nothing by itself; a concrete route, or a claim that a route is designated,
+official or mandatory, needs its own premise; the recommendation stays advisory and unknown routes stay unspecified. The
+grounding text adds that ACTION, ALTERNATIVE, INTERVENTION_NEED, ACTION_RATIONALE and REVIEW_NOTE judge a recipient on
+the incident evidence, never on an intake route on record. No schema, claim kind, stage or deterministic check changed;
+replay does not reuse v13 grounding verdicts (rules digest changed). Tests `tests/test_agent3_recipient_routing.py` (7:
+recorded rejection, rule in rendered draft and grounding requests, supported escalation shown, unsupported official
+intake channel rejected as a premise or as insufficiency, an escalation the judge rejects is withheld). Full suite first
+run 962 passed. Reconstructed Submit revision about 20,780 tokens.
+
+**Live Submit** (`data/experiments/agent3_recipient_routing_v1/`, Sol, `--max-requests 4 --max-cost 1`, run once): 2
+requests (28,704 input / 7,942 output tokens), **$0.1368**; no follow-ups, revision or ToT; accounting COMPLETE, review
+queue 52. Every statement SUPPORTED; action ESCALATE_ENGINEERING SUFFICIENT (essential c1-c7; "No concrete engineering
+route is asserted") and displayed: "Collect the requested diagnostic details for these reports and report the
+submission problem to engineering." The announcement description (c11, SOURCE_FACT, context only) SUPPORTED with the
+announcement governing example collection only. Summary 2/2 shown. Card line NEEDS_REVIEW (HIGH severity, inherited
+flags). Independent check: the instruction, draft, scope note and rationale match the member messages, the team lead's
+requests, the engineer's RP-3412/RP-5337 requests and the project instructions; no route or shared cause is asserted.

@@ -19,7 +19,7 @@ uv run --locked --extra dev python -m pytest tests/test_x.py   # single file
 ```
 
 - Always pass a **fresh** `--basetemp .cache/pytest-<name>`: pytest wipes it at start.
-- Full suite: 931 tests, ~11 min, all expected to pass. Intermittent `WinError 5` on `os.replace` is a Windows file lock (see Known issues), not a code failure.
+- Full suite: 962 tests, ~11 min, all expected to pass. Intermittent `WinError 5` on `os.replace` is a Windows file lock (see Known issues), not a code failure.
 - No linter/formatter configured. No build step beyond the editable install.
 - UI tests: `npm --prefix web run build` then `npm --prefix web run test:ui` (Playwright, system Chrome; temp output
   in `TS_UI_TMP`, default `D:/tsb/ui-<time>`). Frontend deps are pinned in `web/package.json` + `package-lock.json`.
@@ -110,6 +110,15 @@ Submit repair (prompts v11, evidence view v2): compact model-facing evidence (re
 `scripts/measure_revision_request.py`, `agent3_revision_payload_v1`), authorship separate from authority, destination rules,
 stricter replay reuse; live `agent3_submit_repair_v1` (2 requests, $0.13): summary 3/3 shown, action still withheld
 (engineer request mislabelled THREAD_INSTRUCTION).
+Request classification (prompts v12, evidence view v3): non-team-lead requests are INCIDENT_FACT; recorded pre-grounding
+relabel for category-only mismatches; live `agent3_request_kind_v1` (3 requests, $0.22): request SUPPORTED, summary 3/3,
+action still withheld (announcement description filed as GUIDANCE listed as a premise).
+Source facts (prompts v13, draft v10): SOURCE_FACT claims, announcements govern only what they direct, action
+context_claim_ids; live `agent3_source_fact_v1` (2 requests, $0.14): description accepted, summary 3/3, action withheld
+because the judge treated "report to engineering" as an unestablished destination (v11 grounding wording gap).
+Recipient/route rule (prompts v14, one `ROUTING_RULE` in draft and grounding): a functional recipient needs incident
+evidence, not an intake route; concrete or mandatory routes need their own premise; live `agent3_recipient_routing_v1`
+(2 requests, $0.14): every statement SUPPORTED, escalation to engineering displayed.
 Further `--run`s are paid (ask first). Full plan: [docs/agent3-plan.md](docs/agent3-plan.md).
 - Agent 3 input: `data/processed/agent2_handoff_v2_projection/` (schema 8 / handoff v2, a zero-call projection of the v7 release; load with `advice_inputs.load_effective_view`): 81 groups / 79 topics / 161 assigned + 17 unassigned / 41 + 8 announcement-route obligations / 3 carried cautions. The frozen v7 release (handoff v1: 90 / 97 / 49 / 3 / 41) is unchanged.
 - Demo Slack input: `data/fixtures/slack_generated_demo/` (201 threads / 517 messages, cutoff `2026-10-02T12:00:00Z`); the original `slack_generated/` (200 / 516) stays unchanged.

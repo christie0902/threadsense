@@ -238,7 +238,8 @@ def authorship(citation, actor):
 # The model-facing evidence representation (draft, revision, ToT and grounding all receive it). v2: no internal storage
 # IDs (document, version and chunk hashes; evidence_id and authoring identify a source), no null or empty fields, no
 # copies of values carried elsewhere in the same item or payload, and verified authorship separate from authority.
-EVIDENCE_VIEW_VERSION = 'agent3-evidence-view-v2'
+# v3: each member message states its instruction_authority (THREAD_SCOPE for a team lead, else NONE).
+EVIDENCE_VIEW_VERSION = 'agent3-evidence-view-v3'
 
 
 def _compact(value):
@@ -256,9 +257,11 @@ def model_view(item):
     roles); source text, citation identity, applicability, dates, scope, authority, authorship and recorded states
     in compact form. The ledger keeps every field (names and storage IDs included) for the deterministic checks."""
     if item.get('origin') == 'member_message':
-        # channel_id and message_id are spelled out in evidence_id (m:<channel>:<message>).
+        # channel_id and message_id are spelled out in evidence_id (m:<channel>:<message>). instruction_authority: only a
+        # team lead's message can instruct (within its thread); anyone else's request or question is a reported fact.
         return _compact({**{k: v for k, v in item.items() if k not in ('author_name', 'channel_id', 'message_id')},
-                         'reactions': [{'name': r['name'], 'users': [u['id'] for u in r['users']]} for r in item['reactions']]})
+                         'reactions': [{'name': r['name'], 'users': [u['id'] for u in r['users']]} for r in item['reactions']],
+                         'instruction_authority': 'THREAD_SCOPE' if item.get('author_role') == 'TEAM_LEAD' else 'NONE'})
     citation, applicability = item.get('citation') or {}, dict(item.get('applicability') or {})
     if applicability.get('enactment'):  # 'recorded' repeats recorded_states, dates, scope and authority.
         applicability['enactment'] = {k: v for k, v in applicability['enactment'].items() if k != 'recorded'}

@@ -125,11 +125,11 @@ def test_rules_tell_draft_and_judge_that_approval_is_not_authorship():
 # --- 3. Action destinations -----------------------------------------------------------------------------------------
 
 def test_rules_separate_the_recommendation_from_its_destination():
-    for rules in (DRAFT_RULES, REVISION_RULES):
-        assert 'a named destination is a claim of its own' in rules
-        assert 'does not make that thread an engineering intake route' in rules and 'leave the destination unspecified' in rules
-    assert 'needs a premise establishing that route' in GROUNDING_RULES
-    assert 'leaves its destination unspecified is not insufficient' in GROUNDING_RULES
+    """v14 states this as one shared recipient/route rule (tests/test_agent3_recipient_routing.py)."""
+    for rules in (DRAFT_RULES, REVISION_RULES, GROUNDING_RULES):
+        assert 'is a claim of its own and needs a premise whose evidence establishes it' in rules
+        assert 'does not make that thread an intake route' in rules and 'leave it unspecified' in rules
+    assert 'leaves the concrete route unspecified is not PARTIALLY_SUPPORTED, UNSUPPORTED or insufficient' in GROUNDING_RULES
 
 
 def escalation_draft(instruction):

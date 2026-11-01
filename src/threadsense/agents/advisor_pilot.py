@@ -53,8 +53,16 @@ PILOT_VERSION = 'agent3-advisor-pilot-v6'
 # groups several people states only what each of them said. v11: compact evidence view (EVIDENCE_VIEW_VERSION) with
 # verified authorship separate from authority; actions keep recommendation, destination and premises apart (a named
 # destination needs its own support); summary facts with different evidence get their own sentences (up to 3); the
-# revision omits the STYLE ONLY examples; output schemas are sent without their generated titles.
-PROMPT_VERSION = 'agent3-advisor-prompts-v11'
+# revision omits the STYLE ONLY examples; output schemas are sent without their generated titles. v12: a request or
+# question by anyone but a team lead (instruction_authority NONE) is an INCIDENT_FACT naming the requester, never a
+# THREAD_INSTRUCTION (evidence view v3). v13 (draft v10): SOURCE_FACT describes a retrieved source without granting it
+# authority; an announcement governs only what it directs; action premises are what instruction, draft and scope note
+# rely on, while context only the rationale draws on goes in context_claim_ids (judged with the rationale).
+# v14: one recipient/route rule (ROUTING_RULE), sent verbatim to draft, revision and grounding: a functional recipient
+# is justified by incident evidence and the expertise needed, without intake-route evidence; a concrete route, or a
+# claim that one is designated or mandatory, needs its own premise (agent3_source_fact_v1 withheld "report to
+# engineering" for lacking an established route).
+PROMPT_VERSION = 'agent3-advisor-prompts-v14'
 # Replayed recorded drafts older than v7 are read under the last contract they satisfy (no intervention_need).
 LEGACY_LABELS = {'AdvisorDraft': 'agent3-advisor-draft-v6', 'ToTComparison': 'agent3-tot-comparison-v2',
                  'GroundingJudgment': 'agent3-grounding-judgment-v4'}
@@ -75,6 +83,16 @@ INPUT_TOKEN_LIMIT = 24_000  # Checked on the exact request body before sending (
 QUIET_ENV = {'CREWAI_DISABLE_TELEMETRY': 'true', 'OTEL_SDK_DISABLED': 'true', 'LITELLM_LOCAL_MODEL_COST_MAP': 'True',
              'CREWAI_TRACING_ENABLED': 'false', 'LANGSMITH_TRACING': 'false', 'LANGCHAIN_TRACING_V2': 'false'}
 
+ROUTING_RULE = (
+    'Recipients and routes: keep apart what an action recommends, the functional recipient it proposes (engineering, a '
+    'specialist, a QA reviewer) and any concrete route it names (a specific thread, channel, person or queue it goes to '
+    'or through). A proposed functional recipient is justified by supported incident evidence showing a problem that '
+    'needs that recipient\'s expertise; evidence of an established intake route is not required, and mentioning the '
+    'recipient justifies nothing by itself. A concrete route, or a claim that a route is designated, official or '
+    'mandatory, is a claim of its own and needs a premise whose evidence establishes it; an example-collection or '
+    'status note asks people where to post examples and does not make that thread an intake route. The recommendation '
+    'stays advisory (the team lead decides; it need not be shown to be the required or only next step): when no '
+    'evidence names the concrete route, leave it unspecified ("report it to engineering") rather than choosing one.')
 DRAFT_RULES = (
     'You are the ThreadSense Advisor preparing one topic for a team lead\'s morning brief. Use only the evidence '
     'provided and cite it by evidence_id. Member messages (origin member_message, with canonical author_id, author_role, '
@@ -87,7 +105,10 @@ DRAFT_RULES = (
     'in the thread. Quotations are copied unchanged. INCIDENT_FACT claims state what members report ("a tutor reports '
     '..."), never a verified cause; a CAUSE claim needs a retrieved record or a team lead or engineer message that '
     'verifies it. A team lead\'s instruction inside a member thread is a THREAD_INSTRUCTION claim citing that message: it '
-    'applies to that thread\'s scope and is not project guidance. Retrieved sources '
+    'applies to that thread\'s scope and is not project guidance. A request or question from anyone else (member '
+    'messages with instruction_authority NONE: an engineer, QA tutor or tutor) is an INCIDENT_FACT naming who asked '
+    '("an engineer asks for the error state on task X"): a reported request with no authority; it may still be a premise. '
+    'Retrieved sources '
     'support guidance and history according to their "use": CURRENT_GUIDANCE may support what applies now; '
     'ENACTED_DECISION is a team lead decision whose enactment as policy is on record: it may support what applies now '
     'within its recorded scope, and its status line names the governing source (cite that announcement or guideline '
@@ -97,7 +118,11 @@ DRAFT_RULES = (
     'withdrawn guidance has no replacement and does not apply; UNRESOLVED_VERSION must not be resolved by you. ANNOUNCEMENT items include routine reminders, schedules '
     'and example-collection notes: before a GUIDANCE claim relies on one, list it in announcement_assessments as relevant '
     '(same project, batch and problem) and directive (it tells people what to do), quoting the directing sentence '
-    'verbatim; otherwise mark it not relevant or not directive. Read each excerpt with its status line, dates, scope, '
+    'verbatim; otherwise mark it not relevant or not directive. An announcement governs only what it directs: a request '
+    'to post examples in a thread governs where examples go, not escalation or an engineering route. To say what any '
+    'retrieved source says without relying on it as current handling, write a SOURCE_FACT claim citing it ("the batch '
+    'announcement asks for examples in its thread"); it keeps the source\'s status and dates and establishes no '
+    'procedure, authority or destination. Read each excerpt with its status line, dates, scope, '
     'authority, authorship and recorded states. Authorship is separate from authority: authorship.author_id is the '
     'verified author (a Slack record\'s message author); author_id absent with verified false means the record names '
     'no author, and its authority actor (actor_relation RECORD_AUTHORITY) approved, decided or recorded it without '
@@ -111,14 +136,11 @@ DRAFT_RULES = (
     'could find it. Request follow-ups only for support your advice actually needs; a nonempty result list is not '
     'sufficient evidence. Do not invent causes, outcomes, approvals, counts or fixes. '
     'Action: when the evidence supports a concrete step (post or align on current guidance, escalate, route to a '
-    'specialist, update documentation), propose it with support_claim_ids naming all its premises (a judge will decide which are essential); it may be '
+    'specialist, update documentation), propose it with support_claim_ids naming its premises: the claims the instruction, draft and scope note rely '
+    'on, including any destination or condition (a judge will decide which are essential); claims only the rationale '
+    'draws on (why another route or source does not apply, background) go in context_claim_ids; it may be '
     'proposed even '
-    'though the card will need team lead review. Keep apart what the action recommends (e.g. escalate to engineering), '
-    'where or through whom it goes (a named thread, channel, person or queue) and its premises: the recommendation may '
-    'follow from supported incident evidence, but a named destination is a claim of its own and needs a premise whose '
-    'evidence establishes that route. An example-collection or status note asks people where to post examples; it '
-    'does not make that thread an engineering intake route. When no evidence names the route, leave the destination '
-    'unspecified ("report it to engineering") rather than choosing one. Any action other than NO_ACTION states intervention_need: the kind '
+    'though the card will need team lead review. ' + ROUTING_RULE + ' Any action other than NO_ACTION states intervention_need: the kind '
     '(UNRESOLVED_HANDLING_QUESTION, GUIDANCE_GAP, APPLICABLE_PENDING_DECISION or OPERATIONAL_PROBLEM), one sentence on '
     'why intervening now is needed, and the evidence that shows it. Infer the need from what the threads and records '
     'show, not from keywords; nobody has to ask for intervention or say work is blocked. Handling questions that a team '
@@ -159,7 +181,8 @@ WRITING_GUIDE = (
     'asked for; what earlier records show) rather than joining unrelated facts to stay within two sentences. A sentence whose subject is several people ("three tutors ask ...") states only what '
     'each of them asked or reported: when their questions or reports differ, say how ("a QA tutor asks X; two others '
     'ask Y") or use wording that covers each one, as the claims do; proposed_action.instruction (one concrete sentence telling the team lead what to do); '
-    'proposed_action.rationale (why that helps, 1-2 short sentences); proposed_action.draft_text (a copyable draft suited '
+    'proposed_action.rationale (why that helps and any explanatory context, 1-2 short sentences; judged and shown on '
+    'its own); proposed_action.scope_note (only conditions and limits the action depends on); proposed_action.draft_text (a copyable draft suited '
     'to the action: an announcement of about 60-120 words, with bullets when useful, or the message to send for an '
     'escalation or referral); review_note (only when something specific still needs the team lead\'s review; otherwise '
     'null). These are writing targets, not limits: keep necessary conditions, uncertainty, scope and who reported, asked, '
@@ -213,6 +236,8 @@ GROUNDING_RULES = (
     'the context contradicts it; PARTIALLY_SUPPORTED if a material part is missing or the context qualifies it; '
     'UNSUPPORTED otherwise. A status line marking an excerpt historical, unresolved or a prior record means it cannot '
     'support what applies now. By kind: CLAIM_INCIDENT_FACT is a report of what members say, not a verified cause; '
+    'CLAIM_SOURCE_FACT is SUPPORTED if the cited source says it, described with its status and dates; it establishes no '
+    'current handling, procedure or destination; '
     'CLAIM_CAUSE needs verification in the cited evidence; a Verbatim quote must match its source, a Paraphrase must '
     'preserve the meaning. Prose names no one: role wording ("the team lead instructs", "a tutor reports") must match the '
     'cited author\'s role and act (reported, asked, confirmed or instructed), plural wording needs that many distinct '
@@ -226,9 +251,11 @@ GROUNDING_RULES = (
     'each of their cited messages. A SUMMARY sentence with depends_on is read after the sentences it lists (for words '
     'such as "this" or "their"), but judged only on what it adds.ACTION and ALTERNATIVE are recommendations: judge whether '
     'their premises are supported, whether the action applies to this topic and whether the rationale follows; a source '
-    'need not literally prescribe the action. A destination the action names (a thread, channel, person or queue it '
-    'goes to or through) needs a premise establishing that route; an example-collection or status note does not; an '
-    'action that leaves its destination unspecified is not insufficient for that reason. ACTION and operational ALTERNATIVE statements list their premises: '
+    'need not literally prescribe the action. ' + ROUTING_RULE + ' Judge a proposed recipient the same way in ACTION, '
+    'ALTERNATIVE, INTERVENTION_NEED, ACTION_RATIONALE and REVIEW_NOTE: on whether the incident evidence shows a problem '
+    'that needs that recipient\'s expertise, never on whether an intake route is on record; a statement that proposes a '
+    'recipient and leaves the concrete route unspecified is not PARTIALLY_SUPPORTED, UNSUPPORTED or insufficient for '
+    'that reason. ACTION and operational ALTERNATIVE statements list their premises: '
     'PENDING_YOUR_VERDICT premises are judged here and are provisional, not final; REJECTED ones failed deterministic '
     'checks and support nothing; a premise with depends_on stands only if every ANNOUNCEMENT_HANDLING statement it lists '
     'is also SUPPORTED. ACTION_CHOICE is SUPPORTED only if the cited evidence really leaves that choice between the named '
@@ -240,14 +267,18 @@ GROUNDING_RULES = (
     'alternative_sufficiency entry (with its statement_id) for each ALTERNATIVE that lists premises: SUFFICIENT only if '
     'premises whose final status is SUPPORTED justify the exact text as worded, including its conditions and scope; '
     'essential_statement_ids lists the premises it cannot stand without (each must have final status SUPPORTED); '
-    'INSUFFICIENT if it relies on a rejected, unsupported or dependency-voided premise or goes beyond its premises; '
+    'INSUFFICIENT if its exact text relies on a rejected, unsupported or dependency-voided premise or goes beyond its '
+    'premises; a listed premise the text does not rely on is not essential, and its failure alone does not make the '
+    'action insufficient. ACTION_RATIONALE is judged separately and may also cite context claims; '
     'action_sufficiency null if no ACTION statement is sent. SOURCE_AGREEMENT is SUPPORTED only if the named current '
-    'sources say the same thing on the point in conflict and only the superseded material differs. CLAIM_THREAD_INSTRUCTION is a team lead\'s in-thread instruction: SUPPORTED only if that '
+    'sources say the same thing on the point in conflict and only the superseded material differs. A request by anyone but a team lead is a CLAIM_INCIDENT_FACT: SUPPORTED '
+    'if that person asked it, and it carries no authority. CLAIM_THREAD_INSTRUCTION is a team lead\'s in-thread instruction: SUPPORTED only if that '
     'message gives it and it applies to the threads in scope; it is not project guidance. HISTORICAL_RECURRENCE needs '
     'retrieved records of earlier occurrences; REPORTED_RECURRENCE only needs members saying it is happening again. AFFECTED_REPORTER needs that person\'s own message reporting that they are '
     'affected. RESOLUTION is judged against the member\'s complete thread, including messages the statement did not '
     'cite. ANNOUNCEMENT_HANDLING needs the announcement to give that directive for this topic\'s project, batch and '
-    'problem (a routine reminder, schedule or example-collection note does not). OPEN_QUESTION is SUPPORTED only if the '
+    'problem, and it governs only what it directs (a request to post examples governs where examples go, not '
+    'escalation or an intake route); a routine reminder or schedule directs nothing for the topic. OPEN_QUESTION is SUPPORTED only if the '
     'guidance and decisions in the context really leave that specific question unsettled and it is a handling or policy '
     'question for the team lead; a not-yet-diagnosed cause, pending diagnostic results or a pending expert assessment is '
     'not one. Return exactly one verdict '

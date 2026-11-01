@@ -25,7 +25,9 @@ sources and the scope of any disagreement), plus a check of each declared confli
 no assessment (NOT_ASSESSED), never as "no conflict". Draft v9 may write the summary as summary_sentences: each
 sentence names the claims it condenses (its evidence and attributions are theirs) and the earlier sentences it refers
 back to, and is judged and shown on its own; `summary` is then their text joined. A draft without sentences keeps one
-summary statement judged as a whole.
+summary statement judged as a whole. Draft v10 adds SOURCE_FACT claims (what a retrieved source says, described with
+its status and dates, without asserting that it governs current handling, a procedure or a destination) and
+ActionProposal.context_claim_ids (claims only the action's rationale draws on: explanatory context, not premises).
 """
 from typing import Literal
 
@@ -37,11 +39,13 @@ SourceType = Literal['guideline', 'faq', 'decision', 'announcement']
 Need = Literal['APPLICABLE_INSTRUCTION', 'CURRENT_HANDLING', 'PRIOR_DECISION_OUTCOME', 'RECURRENCE',
                'SUPERSESSION_OR_CONFLICT', 'EXPERT_ROUTING', 'OTHER']
 # INCIDENT_FACT: what members report (member Slack messages only; a report, not a verified cause).
+# A request or question by anyone but a team lead is an INCIDENT_FACT too (reported, without authority).
 # CAUSE: a verified cause (needs a retrieved record or a team lead/engineer message that verifies it).
 # GUIDANCE: what applies now (current guideline/FAQ/established announcement). THREAD_INSTRUCTION: a team
 # lead's instruction inside a member thread, scoped to that thread (not project guidance). HISTORY: what was
-# decided or observed before. INFERENCE: the Advisor's reasoning from cited evidence.
-ClaimKind = Literal['INCIDENT_FACT', 'CAUSE', 'GUIDANCE', 'THREAD_INSTRUCTION', 'HISTORY', 'INFERENCE']
+# decided or observed before. INFERENCE: the Advisor's reasoning from cited evidence. SOURCE_FACT (draft v10): what a
+# retrieved source says (retrieved sources only), read with its status and dates; it describes and grants nothing.
+ClaimKind = Literal['INCIDENT_FACT', 'CAUSE', 'GUIDANCE', 'THREAD_INSTRUCTION', 'HISTORY', 'INFERENCE', 'SOURCE_FACT']
 CoverageNeed = Literal['CURRENT_GUIDANCE', 'ANNOUNCEMENTS', 'PRIOR_DECISIONS', 'MEMBER_QUESTIONS']
 DOCUMENT_ACTIONS = ('UPDATE_DOCUMENTATION', 'UPDATE_FAQ')
 
@@ -151,13 +155,16 @@ class ActionProposal(Strict):
     rationale: str | None = None  # Why that helps, in 1-2 short sentences.
     draft_text: str | None = None  # The copyable draft (announcement, escalation message, documentation wording).
     scope_note: str | None = None
-    support_claim_ids: list[str] = Field(default_factory=list)
+    support_claim_ids: list[str] = Field(default_factory=list)  # Premises: what instruction, draft and scope note rely on.
     targets: list[ActionTarget] = Field(default_factory=list)
+    context_claim_ids: list[str] = Field(default_factory=list)  # Draft v10: claims only the rationale draws on.
 
     @model_validator(mode='after')
     def targeted(self):
         if self.action_type in DOCUMENT_ACTIONS and not self.targets:
             raise ValueError(f'{self.action_type} names the source and section it changes.')
+        if set(self.context_claim_ids) & set(self.support_claim_ids):
+            raise ValueError('A claim is either a premise of the action or context for its rationale, not both.')
         return self
 
 
@@ -213,8 +220,8 @@ class SummarySentence(Strict):
 
 
 class AdvisorDraft(Strict):
-    contract_version: Literal['agent3-advisor-draft-v9', 'agent3-advisor-draft-v8', 'agent3-advisor-draft-v7',
-                              'agent3-advisor-draft-v6'] = 'agent3-advisor-draft-v9'
+    contract_version: Literal['agent3-advisor-draft-v10', 'agent3-advisor-draft-v9', 'agent3-advisor-draft-v8',
+                              'agent3-advisor-draft-v7', 'agent3-advisor-draft-v6'] = 'agent3-advisor-draft-v10'
     summary: Text | None = None  # What happened, 1-2 short sentences for the team lead (with sentences: their text).
     summary_sentences: list[SummarySentence] = Field(default_factory=list, max_length=3)
     reasoning: Text
@@ -244,6 +251,13 @@ class AdvisorDraft(Strict):
         _distinct([r.member_id for r in self.resolution], 'Resolution member IDs')
         if self.proposed_action and set(self.proposed_action.support_claim_ids) - set(claims):
             raise ValueError('Action support must reference claims in this draft.')
+        if self.proposed_action and set(self.proposed_action.context_claim_ids) - set(claims):
+            raise ValueError('Action context must reference claims in this draft.')
+        older = self.contract_version in ('agent3-advisor-draft-v6', 'agent3-advisor-draft-v7', 'agent3-advisor-draft-v8',
+                                          'agent3-advisor-draft-v9')
+        if older and (any(c.kind == 'SOURCE_FACT' for c in self.claims) or
+                      (self.proposed_action and self.proposed_action.context_claim_ids)):
+            raise ValueError('SOURCE_FACT claims and action context claims need draft v10.')
         for n, s in enumerate(self.summary_sentences, 1):
             if set(s.support_claim_ids) - set(claims):
                 raise ValueError(f'Summary sentence {n} must condense claims in this draft.')
