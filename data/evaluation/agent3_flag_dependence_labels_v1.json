@@ -1,0 +1,37 @@
+{
+  "version": "agent3-flag-dependence-labels-v1",
+  "recorded": "2026-11-04",
+  "label_type": "HUMAN_ASSESSMENT",
+  "purpose": "Evaluation labels from the 2026-11-04 shadow audit of the proposed flag-dependence routing rule (docs/agent3-plan.md). Assessed by reading saved runs, Agent 1 records and source text; not produced by any pipeline stage and never a model input or a production verdict.",
+  "definitions": {
+    "AFFECTS": "The disputed interpretation could change a displayed claim, action, severity, resolution or a decision-relevant omission.",
+    "INDEPENDENT": "Saved evidence establishes what the flag disputes and shows the card's displayed conclusions do not depend on it.",
+    "UNKNOWN": "The saved record is too coarse to decide.",
+    "PRESERVED": "Not classified: a projection gap keeps its own routing rule."
+  },
+  "cases": [
+    {"scenario": "faq_edge_case", "run": "agent3_policy_eval_v1", "prompt_version": "v9", "topic_id": "cluster_6b59d13144282285/topic_2", "flags": [
+      {"obligation_key": "agent1:member_8ce5853bbd6b1a416c28b76f", "label": "INDEPENDENT", "basis": "Content review disputes a failed-workaround summary; claim c1 states the opposite ('do not establish that they tried that workaround'), which the message text settles."},
+      {"obligation_key": "agent1:member_943da52557c55ff31ee76f89", "label": "AFFECTS", "basis": "Resolution dispute (RESOLVED_IN_THREAD vs PARTIALLY_RESOLVED); the card records PARTIALLY_RESOLVED for this member."}]},
+    {"scenario": "tl_confirmation", "run": "agent3_summary_eval_v1", "prompt_version": "v10", "topic_id": "cluster_fb1dce1eeeedc4cb/topic_1", "flags": [
+      {"obligation_key": "agent1:member_225803f43142caa5d3c165cf", "label": "INDEPENDENT", "basis": "Resolution dispute over a tutor's advice to score format separately. Every element of the action is in the current FAQ; the topic state is MIXED under either reading; both readings leave the preference question undecided, so the intervention need holds; the member basis mentions the tutor's suggestion."}]},
+    {"scenario": "instruction_conflict", "run": "agent3_final_eval_v1", "prompt_version": "v6.2", "topic_id": "cluster_9378eb54bc546fcd/topic_1", "flags": [
+      {"obligation_key": "agent1:member_b26b6a34827bebdc9e52666f", "label": "UNKNOWN", "basis": "Only an unavailable evidence audit and a failed revision are recorded; no specific dispute."}]},
+    {"scenario": "language_routing", "run": "agent3_final_eval_v1", "prompt_version": "v6.2", "topic_id": "cluster_3b950ad40b12ab58/topic_1", "flags": [
+      {"obligation_key": "agent1:member_74e92dc600ce9bbc7f5bfc91", "label": "AFFECTS", "basis": "Resolution dispute over a tutor's reply; the topic state UNRESOLVED would become MIXED under the other reading."}]},
+    {"scenario": "technical_escalation", "run": "agent3_writing_eval_v17_v1", "prompt_version": "v17", "topic_id": null, "flags": [
+      {"obligation_key": "agent1:member_92cea4511885f2a7a0f35d94", "label": "INDEPENDENT", "basis": "Disputes only Agent 1's 'why' framing of the central question; the card states the report as the source establishes it."},
+      {"obligation_key": "agent1:member_ea9f29f60a529c3654667b12", "label": "INDEPENDENT", "basis": "Central question framing and the team lead's message cited as an answer; the card treats that message as an instruction and keeps the thread UNRESOLVED."},
+      {"obligation_key": null, "kind": "projection_gap", "label": "PRESERVED", "basis": "Projection gap keeps its own routing rule."}]},
+    {"scenario": "already_announced", "run": "agent3_repair_eval_v1", "prompt_version": "v7", "topic_id": "cluster_e6a79dfad226e738/topic_2", "flags": []},
+    {"scenario": "qa_misalignment", "run": "agent3_writing_eval_v17_v1", "prompt_version": "v17", "topic_id": "cluster_f944891544b06f79/topic_2", "flags": [
+      {"obligation_key": "agent1:member_0886e8fe7e7d998c1077ff10", "label": "INDEPENDENT", "basis": "Disputes only Agent 1's central-question framing; the card describes the calibration request as the source establishes it."},
+      {"obligation_key": "agent1:member_42af0c53b9dee102697caa09", "label": "AFFECTS", "basis": "Disputes whether a QA tutor's answer resolves the thread; the card records RESOLVED_IN_THREAD and its scope note says to preserve the earlier answers."}]},
+    {"scenario": "observation_only", "run": "agent3_policy_eval_v1", "prompt_version": "v9", "topic_id": "cluster_b7e5234380f9ea67/topic_1", "flags": [
+      {"obligation_key": "agent1:member_a05733133a11c3689d715928", "label": "AFFECTS", "basis": "Disputes whether a tutor's reply is a personal observation; the card counts it among the reporters ('five tutors')."},
+      {"obligation_key": "content:05f5bc0b505f9475f543d13b88c1ceca5ab8e93341a1edd6f56d5b23f467eb6f", "label": "AFFECTS", "basis": "The naming caution disputes the displayed title 'Repeated final line in exported audio'."}]},
+    {"scenario": "upstream_flags", "run": "agent3_final_eval_v1", "prompt_version": "v6.2", "topic_id": "cluster_db20d884110726af/topic_1", "flags": [
+      {"obligation_key": "agent1:member_c0e209a71f0bd7157b85d5f4", "label": "AFFECTS", "basis": "Resolution dispute; the member's state feeds the topic state."},
+      {"obligation_key": "agent1:member_312342420c2338d5fbce8532", "label": "UNKNOWN", "basis": "Only an unavailable evidence audit is recorded; no specific dispute."}]}
+  ]
+}

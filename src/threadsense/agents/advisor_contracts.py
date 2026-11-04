@@ -29,7 +29,7 @@ summary statement judged as a whole. Draft v10 adds SOURCE_FACT claims (what a r
 its status and dates, without asserting that it governs current handling, a procedure or a destination) and
 ActionProposal.context_claim_ids (claims only the action's rationale draws on: explanatory context, not premises).
 """
-from typing import Literal
+from typing import Any, Literal
 
 from pydantic import Field, model_validator
 
@@ -351,6 +351,38 @@ class GroundingJudgment(Strict):
         if self.contract_version != 'agent3-grounding-judgment-v4' and self.source_consistency is None:
             raise ValueError('source_consistency is required: compare the governing sources even when no conflict is declared.')
         return self
+
+
+class FlagImpactJudgment(Strict):
+    """The judge's assessment of one inherited flag (flag_id from flag_impacts) against the statements it judged."""
+    flag_id: Text
+    impact: Literal['AFFECTS', 'INDEPENDENT', 'UNKNOWN']
+    element_ids: list[str] = Field(default_factory=list)  # Statement IDs or title / thread_status / topic_resolution.
+    explanation: Text
+    independence_basis: str | None = None  # INDEPENDENT: why correcting the disputed reading leaves the card justified.
+
+
+class GroundingJudgmentV6(GroundingJudgment):
+    """v6: the v5 judgment plus one flag_impacts entry per flag sent (opt-in shadow assessment). Entries are parsed one
+    by one (agents/flag_impact.py), so a malformed or duplicated entry makes only that flag UNKNOWN and never fails the
+    statement verdicts. A replay of a run recorded before v6 keeps the v4 label."""
+    contract_version: Literal['agent3-grounding-judgment-v6', 'agent3-grounding-judgment-v4'] = 'agent3-grounding-judgment-v6'
+    flag_impacts: list[Any] = Field(default_factory=list, json_schema_extra={
+        'items': FlagImpactJudgment.model_json_schema(),
+        'description': 'One entry per flag in flag_impacts (FlagImpactJudgment).'})
+
+
+class FlagImpactJudgmentV2(FlagImpactJudgment):
+    """v2: finding_ids names the open findings (F1, F2, ...) the judgment accounts for."""
+    finding_ids: list[str] = Field(default_factory=list)
+
+
+class GroundingJudgmentV7(GroundingJudgment):
+    """v7: as v6, with FlagImpactJudgmentV2 entries (findings accounted for by ID). Replays keep the v4 label."""
+    contract_version: Literal['agent3-grounding-judgment-v7', 'agent3-grounding-judgment-v4'] = 'agent3-grounding-judgment-v7'
+    flag_impacts: list[Any] = Field(default_factory=list, json_schema_extra={
+        'items': FlagImpactJudgmentV2.model_json_schema(),
+        'description': 'One entry per flag in flag_impacts (FlagImpactJudgmentV2).'})
 
 
 class CandidateAction(Strict):

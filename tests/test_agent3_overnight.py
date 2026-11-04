@@ -197,6 +197,28 @@ def test_resume_refuses_changed_inputs_or_configuration(retriever, view, tmp_pat
         overnight.run(other)
 
 
+def test_flag_impact_option_reaches_the_advisor_and_the_manifest(retriever, view, tmp_path):
+    """Off by default: advise gets no flag_impact argument and the manifest has no flag_impact key (older manifests
+    resume unchanged). On: every topic is advised with flag_impact=True, the manifest records it, a resume without it
+    refuses, and the request count per topic is unchanged."""
+    ids = first_topics(view, 1)
+    seen = []
+
+    def advise(scenario, **kw):
+        seen.append(kw.get('flag_impact'))
+        return pilot.advise(scenario, **kw)
+    off, on = Placeholder(), Placeholder()
+    overnight.run(runtime(tmp_path/'off', retriever, client=off, only=ids, advise=advise))
+    overnight.run(runtime(tmp_path/'on', retriever, client=on, only=ids, advise=advise, flag_impact=True))
+    assert seen == [None, True] and len(off.calls) == len(on.calls)
+    assert 'flag_impact' not in read_json(tmp_path/'off'/'run_manifest.json')['fingerprints']
+    assert read_json(tmp_path/'on'/'run_manifest.json')['fingerprints']['flag_impact'] is True
+    [topic] = (tmp_path/'on'/'topics').glob('*.json')
+    assert read_json(topic)['result']['flag_impact']['status'] in ('ASSESSED', 'NOT_ASSESSED')
+    with pytest.raises(overnight.OvernightError, match='flag_impact'):
+        overnight.run(runtime(tmp_path/'on', retriever, only=ids))
+
+
 def test_uncertain_request_is_charged_on_resume_and_the_budget_is_kept(tmp_path):
     """A reservation still open when the run stopped is charged in full on resume (never assumed unsent)."""
     path, limits = tmp_path/'state.json', {'model_calls_total': 8}

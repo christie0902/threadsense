@@ -106,9 +106,26 @@ function Item({ item, openPanel, openQueueItem }) {
               <div className="mt-0.5 text-xs leading-relaxed text-slate-400">{f.check}</div>
               <Refs links={f.links} openPanel={openPanel} openQueueItem={openQueueItem} />
               {f.queue_note && <div className="mt-1 text-[11px] text-slate-500">{f.queue_note}</div>}
-              {f.upstream_detail && (
+              {f.finding?.findings?.length > 0 && (
+                <details className="mt-1 text-[11px]" data-testid="upstream-finding"><summary className="cursor-pointer text-slate-500 hover:text-slate-300">
+                  {f.finding.recovery === 'NOT_NARROWED' ? 'Upstream check failed without naming what is disputed' : 'What the upstream check disputed'} (verbatim; may name people)</summary>
+                  {f.finding.findings.map((x, j) => (
+                    <div key={j} className="prose-pre mt-1 text-slate-400"><span className="text-slate-500">{x.fields.join(', ')}: </span>{x.text}</div>
+                  ))}
+                  {f.finding.earlier?.map((x, j) => (
+                    <div key={`e${j}`} className="mt-1 text-slate-500" data-testid="earlier-finding">
+                      Earlier attempt ({{OPEN: 'still open', UNCERTAIN: 'unclear whether corrected', CORRECTED: 'corrected', SUPERSEDED: 'superseded'}[x.status]}): <span className="prose-pre text-slate-400">{x.fields.join(', ')}: {x.text}</span> <span>{x.basis}</span>
+                    </div>
+                  ))}
+                  {f.finding.attempt_errors?.length > 0 && (
+                    <div className="mt-1 text-slate-500">Also recorded (a failed attempt, not the dispute): {f.finding.attempt_errors.map(e => e.text).join(' | ')}</div>
+                  )}
+                </details>
+              )}
+              {f.upstream_detail && !f.finding?.findings?.length && (
                 <details className="mt-1 text-[11px]"><summary className="cursor-pointer text-slate-500 hover:text-slate-300">Upstream record (verbatim; may name people)</summary>
-                  <div className="prose-pre mt-1 text-slate-400">{f.upstream_detail}</div></details>
+                  <div className="prose-pre mt-1 text-slate-400">{f.upstream_detail}</div>
+                  {f.finding?.note && <div className="mt-1 text-slate-500">{f.finding.note}</div>}</details>
               )}
             </li>
           ))}

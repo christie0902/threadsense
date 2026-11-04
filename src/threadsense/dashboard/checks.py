@@ -6,6 +6,8 @@ saved evidence links them: a research gap joins the open question when evidence 
 question; the advisor's note joins the question when both cite the same retrieved source, or a flag when the note
 cites a message in that flagged thread. Every original reason, verdict and link stays in the review view's `items`.
 """
+from threadsense.agents.advice_contracts import GROUPING_LABEL
+
 COVERAGE_WORDS = {'PRIOR_DECISIONS': 'earlier decisions and their outcomes', 'CURRENT_GUIDANCE': 'current guidance',
                   'ANNOUNCEMENTS': 'announcements', 'MEMBER_QUESTIONS': "members' questions"}
 ORDER = ('QUESTION', 'CHOICE', 'CONFLICT', 'WITHHELD', 'FLAG', 'GAP', 'STEP', 'WORDING', 'CONFIDENCE', 'SEVERITY', 'NOTE')
@@ -22,8 +24,8 @@ FLAG_TEXT = {
                                 'thread itself before relying on it.'),
     'inherited_agent1_review_announcement_route': ('Flagged thread', 'An earlier automated summary of this announcement '
                                                    'thread was not verified. Read it before relying on it.'),
-    'projection_gap': ('Grouping not confirmed', 'These threads were grouped without an assigned topic. Check that they '
-                       'belong together.'),
+    'projection_gap': (GROUPING_LABEL, 'These threads were grouped without an assigned topic. Check that they belong '
+                       'together; this is not an upstream review obligation.'),
     'assisted_content_review': ('Content finding', 'A content review raised a finding on this group.'),
 }
 
@@ -91,7 +93,8 @@ def build_checks(card, result, ledger, view):
         kinds = {}
         for f in item.get('flags') or []:  # Flags of the same recorded kind are one check, each thread listed.
             kinds.setdefault(f['kind'], []).append(f)
-        flagged_all = {l['thread'] for f in item.get('flags') or [] for l in f['links'] if l['kind'] == 'thread'}
+        upstream = [f for f in item.get('flags') or [] if f['kind'] != 'projection_gap']  # Grouping is not a reading.
+        flagged_all = {l['thread'] for f in upstream for l in f['links'] if l['kind'] == 'thread'}
         for n, (kind, flags) in enumerate(kinds.items()):
             heading, text = FLAG_TEXT.get(kind, ('Flagged upstream', 'An earlier review flag is still open here.'))
             threads = [l for f in flags for l in f['links'] if l['kind'] == 'thread']
@@ -106,8 +109,8 @@ def build_checks(card, result, ledger, view):
                 links += [labelled(l) for l in f['links'] if l['kind'] == 'queue']
             check = {'kind': 'FLAG', 'heading': heading, 'text': text, 'text_origin': 'UI', 'links': links,
                      'more_links': 0 if single else max(0, len(threads) - 3), 'related': []}
-            if passed and n == 0:
-                total = len(item.get('flags') or [])
+            if passed and upstream and kind == upstream[0]['kind']:
+                total = len(upstream)
                 check['related'].append('The summary and recommendation passed the evidence check; '
                                         + ('the flags concern' if total > 1 else 'the flag concerns')
                                         + " an earlier step's reading of "

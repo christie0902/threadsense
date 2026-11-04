@@ -162,7 +162,7 @@ def test_projection_gap_cards_display_a_fallback_title_and_keep_the_saved_label(
     assert run.topics[card['card_id']]['work_item']['kind'] == 'PROJECTION_GAP'
     assert run.display_title(card['card_id']) == 'Threads awaiting a topic'
     assert card['topic_name'].startswith('Unassigned members of routed_440e64c7fbdcc49f')  # Saved card unchanged.
-    assert any(c['kind'] == 'FLAG' and c['heading'] == 'Grouping not confirmed' for c in run.review(card['card_id'])['checks'])
+    assert any(c['kind'] == 'FLAG' and c['heading'] == 'Topic grouping needs review' for c in run.review(card['card_id'])['checks'])
     for run in catalog.runs.values():  # The normal topic path keeps the saved topic name.
         for card_id, card in run.cards.items():
             if card['lineage'].get('topic_id'):

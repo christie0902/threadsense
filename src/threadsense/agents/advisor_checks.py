@@ -42,7 +42,7 @@ import re
 from pydantic import ValidationError
 
 from threadsense.agents.advice_contracts import (
-    ACTION_LABELS, AdviceCardV3, CountEvidence, EvidenceRef, InheritedFlag, OccurrenceEvidence, RelatedThreadV2,
+    ACTION_LABELS, GROUPING_LABEL, AdviceCardV3, CountEvidence, EvidenceRef, InheritedFlag, OccurrenceEvidence, RelatedThreadV2,
     ReviewReason, SeverityAssessment, SignalMatch, stable_id, unassessed_severity,
 )
 from threadsense.agents.advice_inputs import structural_occurrence
@@ -1309,9 +1309,15 @@ def assemble_card(outcome, packet, *, run_id):
     if severity.level == 'HIGH':
         reason('HIGH_SEVERITY', 'Assessed HIGH under the shared default rubric.', 'Severity is high under the team rubric.')
     if flags:
-        kinds = Counter(f.kind for f in flags)
-        reason('INHERITED_FLAG', 'Upstream obligations remain open: ' + ', '.join(f'{k} x{n}' for k, n in sorted(kinds.items())),
-               f'{len(flags)} earlier review flag{"s are" if len(flags) != 1 else " is"} still open on these threads.',
+        # A projection gap is a card-only grouping condition (no queue obligation), described apart from Agent 1/2 flags.
+        upstream = [f for f in flags if f.kind != 'projection_gap']
+        kinds = Counter(f.kind for f in upstream)
+        details = ['Upstream obligations remain open: ' + ', '.join(f'{k} x{n}' for k, n in sorted(kinds.items()))] if kinds else []
+        notes_ = [f'{len(upstream)} earlier review flag{"s are" if len(upstream) != 1 else " is"} still open on these threads.'] if upstream else []
+        if len(upstream) < len(flags):
+            details.append(f'{GROUPING_LABEL} (projection gap; carried on the card, no queue obligation)')
+            notes_.append(f'{GROUPING_LABEL}: these threads have no assigned topic.')
+        reason('INHERITED_FLAG', '; '.join(details), ' '.join(notes_),
                obligation_ids=sorted({f.obligation_id for f in flags if f.obligation_id}))
     if temporal and temporal['status'] == 'DETECTED':
         reason('TEMPORAL_CONFLICT', '; '.join(f"{f['code']}: {f['detail']}" for f in temporal['findings'] if f['status'] == 'DETECTED'),

@@ -1,0 +1,267 @@
+{
+ "label": "PREPARED SEMANTIC JUDGMENTS: hand-written stand-ins for the judge's flag_impacts entries, written to exercise the deterministic validation (agents/flag_impact.validate). Not model output and not a claim about what a model would return.",
+ "recorded": "2026-11-04",
+ "cases": {
+  "json_vs_prose_independent": {
+   "run": "agent3_summary_eval_v1",
+   "topic_id": "cluster_fb1dce1eeeedc4cb/topic_1",
+   "note": "Every displayed reference assessed, but the card counts the member's disputed state in its thread status.",
+   "judgments": [
+    {
+     "flag_id": "flag_135b903cdf5f8a936db129c317c7c3b4",
+     "impact": "INDEPENDENT",
+     "element_ids": [
+      "action",
+      "action:need",
+      "summary:s1",
+      "resolution:member_225803f43142caa5d3c165cf",
+      "thread_status",
+      "topic_resolution"
+     ],
+     "explanation": "The finding disputes whether a tutor's advice partly answered the JSON-versus-prose question; the action restates the current FAQ.",
+     "independence_basis": "Under either reading the preference question is undecided, so the need holds; every action element is in the current FAQ; the topic stays MIXED.",
+     "finding_ids": [
+      "F1"
+     ]
+    }
+   ],
+   "expected": {
+    "flag_135b903cdf5f8a936db129c317c7c3b4": "AFFECTS"
+   }
+  },
+  "json_vs_prose_need_not_assessed": {
+   "run": "agent3_summary_eval_v1",
+   "topic_id": "cluster_fb1dce1eeeedc4cb/topic_1",
+   "judgments": [
+    {
+     "flag_id": "flag_135b903cdf5f8a936db129c317c7c3b4",
+     "impact": "INDEPENDENT",
+     "element_ids": [
+      "resolution:member_225803f43142caa5d3c165cf",
+      "thread_status",
+      "topic_resolution"
+     ],
+     "explanation": "The action restates the current FAQ.",
+     "independence_basis": "Current guidance supports the action.",
+     "finding_ids": [
+      "F1"
+     ]
+    }
+   ],
+   "expected": {
+    "flag_135b903cdf5f8a936db129c317c7c3b4": "UNKNOWN"
+   }
+  },
+  "json_vs_prose_invalid_element": {
+   "run": "agent3_summary_eval_v1",
+   "topic_id": "cluster_fb1dce1eeeedc4cb/topic_1",
+   "judgments": [
+    {
+     "flag_id": "flag_135b903cdf5f8a936db129c317c7c3b4",
+     "impact": "AFFECTS",
+     "element_ids": [
+      "action:premise:c99"
+     ],
+     "explanation": "Names an element the card does not have."
+    }
+   ],
+   "expected": {
+    "flag_135b903cdf5f8a936db129c317c7c3b4": "UNKNOWN"
+   }
+  },
+  "json_vs_prose_malformed": {
+   "run": "agent3_summary_eval_v1",
+   "topic_id": "cluster_fb1dce1eeeedc4cb/topic_1",
+   "judgments": [
+    {
+     "flag_id": "flag_135b903cdf5f8a936db129c317c7c3b4",
+     "impact": "MAYBE",
+     "explanation": "Not a valid impact."
+    }
+   ],
+   "expected": {
+    "flag_135b903cdf5f8a936db129c317c7c3b4": "UNKNOWN"
+   }
+  },
+  "json_vs_prose_duplicate": {
+   "run": "agent3_summary_eval_v1",
+   "topic_id": "cluster_fb1dce1eeeedc4cb/topic_1",
+   "judgments": [
+    {
+     "flag_id": "flag_135b903cdf5f8a936db129c317c7c3b4",
+     "impact": "AFFECTS",
+     "element_ids": [
+      "thread_status"
+     ],
+     "explanation": "First entry."
+    },
+    {
+     "flag_id": "flag_135b903cdf5f8a936db129c317c7c3b4",
+     "impact": "INDEPENDENT",
+     "element_ids": [
+      "action"
+     ],
+     "explanation": "Second entry.",
+     "independence_basis": "x"
+    }
+   ],
+   "expected": {
+    "flag_135b903cdf5f8a936db129c317c7c3b4": "UNKNOWN"
+   }
+  },
+  "repeated_ending": {
+   "run": "agent3_policy_eval_v1",
+   "topic_id": "cluster_b7e5234380f9ea67/topic_1",
+   "judgments": [
+    {
+     "flag_id": "flag_9d20ed872d018f64ffb30bd9f5632a39",
+     "impact": "AFFECTS",
+     "element_ids": [
+      "claim:c1",
+      "claim:c3",
+      "reporter:U011",
+      "summary",
+      "thread_status"
+     ],
+     "explanation": "The finding questions whether the reply is a personal observation; the card counts it among the reporters."
+    },
+    {
+     "flag_id": "flag_15a6bbd45a49ff8b339a508bb91f7766",
+     "impact": "AFFECTS",
+     "element_ids": [
+      "title"
+     ],
+     "explanation": "The caution disputes the displayed title's location of the repetition."
+    }
+   ],
+   "expected": {
+    "flag_9d20ed872d018f64ffb30bd9f5632a39": "AFFECTS",
+    "flag_15a6bbd45a49ff8b339a508bb91f7766": "AFFECTS"
+   }
+  },
+  "audit_unavailable": {
+   "run": "agent3_final_eval_v1",
+   "topic_id": "cluster_9378eb54bc546fcd/topic_1",
+   "judgments": [
+    {
+     "flag_id": "flag_a5874cdb80c65b514a8b4611dc38c9b1",
+     "impact": "INDEPENDENT",
+     "element_ids": [
+      "summary",
+      "action"
+     ],
+     "explanation": "The card follows current guidance.",
+     "independence_basis": "The documentation update rests on the guidance.",
+     "finding_ids": [
+      "F1"
+     ]
+    }
+   ],
+   "expected": {
+    "flag_a5874cdb80c65b514a8b4611dc38c9b1": "UNKNOWN"
+   }
+  },
+  "tie_displayed_member_mixed_topic": {
+   "run": "agent3_writing_eval_v17_v1",
+   "topic_id": "cluster_f944891544b06f79/topic_2",
+   "note": "The topic stays MIXED for every state of member_42af, but the card counts its disputed RESOLVED_IN_THREAD state.",
+   "judgments": [
+    {
+     "flag_id": "flag_4e3e3ce94ee96df81ece44da0fb0da4f",
+     "impact": "INDEPENDENT",
+     "element_ids": [
+      "action",
+      "action:rationale",
+      "claim:c3",
+      "resolution:member_42af0c53b9dee102697caa09",
+      "review_note",
+      "severity:rationale",
+      "thread_status",
+      "topic_resolution"
+     ],
+     "explanation": "The finding disputes whether the QA tutor's answer resolves the thread.",
+     "independence_basis": "The topic stays MIXED and the review is scheduled either way.",
+     "finding_ids": [
+      "F1",
+      "F2"
+     ]
+    },
+    {
+     "flag_id": "flag_06e1381c31326fb163ea485a102ad4c3",
+     "impact": "INDEPENDENT",
+     "element_ids": [
+      "action",
+      "action:need",
+      "action:rationale",
+      "claim:c1",
+      "claim:c4",
+      "claim:c5",
+      "review_note",
+      "severity:rationale",
+      "severity:reported_recurrence",
+      "severity:signal:HIGH[3]",
+      "summary:s1",
+      "summary:s2"
+     ],
+     "explanation": "The finding disputes only Agent 1's wording of the central question.",
+     "independence_basis": "No statement repeats Agent 1's question; each cites the source messages for what they say.",
+     "finding_ids": [
+      "F1"
+     ]
+    }
+   ],
+   "expected": {
+    "flag_4e3e3ce94ee96df81ece44da0fb0da4f": "AFFECTS",
+    "flag_06e1381c31326fb163ea485a102ad4c3": "INDEPENDENT"
+   }
+  },
+  "tie_state_in_diagnostics_only": {
+   "run": "agent3_overnight_offline_v2",
+   "topic_id": "cluster_f944891544b06f79/topic_2",
+   "note": "Scripted run: member_42af's state exists only in the draft (diagnostics); the card shows UNKNOWN. The second flag has no judgment. v2: UNKNOWN, because this older run records no sentence-to-claim links (record gap), so dependency coverage is incomplete; the member-state rule itself is tested with the gap removed (test_agent3_flag_impact).",
+   "judgments": [
+    {
+     "flag_id": "flag_4e3e3ce94ee96df81ece44da0fb0da4f",
+     "impact": "INDEPENDENT",
+     "element_ids": [
+      "resolution:member_42af0c53b9dee102697caa09",
+      "topic_resolution"
+     ],
+     "explanation": "The disputed state was not shown on the card.",
+     "independence_basis": "The card shows this member as unknown; the draft's state feeds no displayed count, topic state or statement.",
+     "finding_ids": [
+      "F1",
+      "F2"
+     ]
+    }
+   ],
+   "expected": {
+    "flag_4e3e3ce94ee96df81ece44da0fb0da4f": "UNKNOWN",
+    "flag_06e1381c31326fb163ea485a102ad4c3": "UNKNOWN"
+   }
+  },
+  "tie_state_in_diagnostics_not_assessed": {
+   "run": "agent3_overnight_offline_v2",
+   "topic_id": "cluster_f944891544b06f79/topic_2",
+   "judgments": [
+    {
+     "flag_id": "flag_4e3e3ce94ee96df81ece44da0fb0da4f",
+     "impact": "INDEPENDENT",
+     "element_ids": [
+      "title"
+     ],
+     "explanation": "Unrelated to the title.",
+     "independence_basis": "The title does not mention resolution.",
+     "finding_ids": [
+      "F1",
+      "F2"
+     ]
+    }
+   ],
+   "expected": {
+    "flag_4e3e3ce94ee96df81ece44da0fb0da4f": "UNKNOWN"
+   }
+  }
+ },
+ "v2_note": "2026-11-04: INDEPENDENT entries name the open findings they account for (finding_ids, FlagImpactJudgmentV2); cases marked v2 were added for the reliability pass. Still PREPARED, not model output."
+}

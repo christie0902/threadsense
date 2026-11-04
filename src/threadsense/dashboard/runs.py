@@ -12,6 +12,8 @@ import json
 from pathlib import Path
 
 from threadsense.agents.advice_contracts import ACTION_LABELS, AdviceCardV3, ModelReviewItem
+from threadsense.agents.flag_impact import NOT_ASSESSED_NOTE, flag_id
+from threadsense.agents.flag_provenance import FlagSource, dependencies
 from threadsense.dashboard.review import review_view
 from threadsense.retrieval.config import FIXTURE_ROOT
 from threadsense.routing import ROOT, fixture_fingerprint, slack_datetime
@@ -216,7 +218,23 @@ class Run:
     def review(self, card_id):
         """What the team lead needs to check on this card (dashboard.review), from the saved card, topic result and queue."""
         queue = [i.model_dump(mode='json') for i in self.queue.values() if card_id in i.related_card_ids]
-        return review_view(self.cards[card_id], (self.topics.get(card_id) or {}).get('result'), queue)
+        provenance = [p.model_dump(mode='json') for p in self.flag_source.provenance(self.cards[card_id])]
+        return review_view(self.cards[card_id], (self.topics.get(card_id) or {}).get('result'), queue, provenance)
+
+    @cached_property
+    def flag_source(self):
+        """The run's binding to the handoff it recorded (agents/flag_provenance); read-only."""
+        return FlagSource(self.path, self.ref)
+
+    def flags(self, card_id):
+        """Each inherited flag's upstream provenance and its references through the displayed card."""
+        card, result = self.card(card_id), (self.topics.get(card_id) or {}).get('result')
+        record = (result or {}).get('flag_impact') or {'status': 'NOT_ASSESSED', 'note': NOT_ASSESSED_NOTE}
+        assessed = {a['flag_id']: a for a in record.get('assessments') or []}
+        return [{'provenance': p.model_dump(mode='json'),
+                 'dependencies': dependencies(card, result, p, self.flag_source).model_dump(mode='json'),
+                 'impact': assessed.get(flag_id(p.model_dump())) or {'status': record['status'], 'note': record.get('note')}}
+                for p in self.flag_source.provenance(card)]
 
     def ledger(self, card_id):
         return ((self.topics.get(card_id) or {}).get('result') or {}).get('evidence_ledger') or {}

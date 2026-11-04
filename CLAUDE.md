@@ -124,6 +124,20 @@ Refinement 2026-11-04 (offline): dashboard "What to review" panel (`dashboard/re
 draft in the overview, provenance per card; prompts v15 (writing guide only, not validated live); opt-in adaptive
 research `agents/advisor_research.py` (`advise(research_mode='react')`, off by default) with offline comparison
 `agent3_react_comparison_v1` (recorded-link expansion already recovers the audio outcome).
+Flag provenance (2026-11-04, offline): `agents/flag_provenance.py` (FlagProvenance / CardDependencies v1, derived from
+each run's own handoff binding; card bytes unchanged), projection gaps shown as "Topic grouping needs review" (no queue
+item), human labels `data/evaluation/agent3_flag_dependence_labels_v1.json`, report `scripts/report_flag_dependence.py`.
+Production routing unchanged; code never records a flag as independent.
+Flag-impact assessment (offline shadow): opt-in `advise(flag_impact=True)` adds `flag_impacts` to the one grounding request
+(GroundingJudgmentV6), validated by `agents/flag_impact.py` into a bound FlagImpactRecord; routing ignores it. New runs save
+the exact Agent 1 context sent to drafting (`agent1_context`, boundary-checked). Largest grounding request with it: 20,627 / 24,000.
+Live shadow `agent3_flag_impact_live_v1` (`run_agent3_overnight.py --flag-impact`; JSON-versus-prose, tie, repeated ending;
+6 requests, $0.37): 5 flags, 4 AFFECTS agreed with the source check; the tie central-question INDEPENDENT became UNKNOWN
+because `action:context` was not catalogued. Reliability pass (offline, closeout): one element catalogue
+(`flag_impact.catalogue`), discarded-attempt findings kept as PriorFinding (FlagProvenance v2: OPEN / CORRECTED / SUPERSEDED /
+UNCERTAIN), FlagImpactAssessment/Record v2 with finding_ids and deterministic references, grounding v7; recorded live flag
+judgments need a new judgment (statement verdicts stay reusable). Report and corrections to the live review:
+`data/experiments/agent3_flag_impact_reliability_v1/`. **Feature status: experimental, opt-in, shadow only; routing unchanged.**
 Further `--run`s are paid (ask first). Full plan: [docs/agent3-plan.md](docs/agent3-plan.md).
 - Agent 3 input: `data/processed/agent2_handoff_v2_projection/` (schema 8 / handoff v2, a zero-call projection of the v7 release; load with `advice_inputs.load_effective_view`): 81 groups / 79 topics / 161 assigned + 17 unassigned / 41 + 8 announcement-route obligations / 3 carried cautions. The frozen v7 release (handoff v1: 90 / 97 / 49 / 3 / 41) is unchanged.
 - Demo Slack input: `data/fixtures/slack_generated_demo/` (201 threads / 517 messages, cutoff `2026-10-02T12:00:00Z`); the original `slack_generated/` (200 / 516) stays unchanged.

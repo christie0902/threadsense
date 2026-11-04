@@ -10,6 +10,8 @@ checks the retrieval snapshot, and prints the work plan, the worst-case request/
   --release WORK_ID           with --resume: explicitly process an interrupted topic again (its earlier request may
                               have been sent and charged)
   --only ID                   restrict to work items (work ID, topic ID or pilot scenario ID); repeatable
+  --flag-impact               shadow evaluation: add the flag-impact assessment to the reserved grounding request
+                              (recorded per topic; routing ignores it; off by default)
 
 The run cutoff is explicit and must equal the retrieval snapshot's cutoff. Per topic: at most 4 model calls (one HTTP
 request each, zero retries), 6 retrievals, 24,000 input tokens per request. Every run writes a new directory.
@@ -32,7 +34,7 @@ def live_settings():
     return pilot.live_settings(**module.ARMS[ARM])
 
 
-def build_runtime(out, mode, *, cutoff, only, max_requests, max_cost, release=(), index_dir=None):
+def build_runtime(out, mode, *, cutoff, only, max_requests, max_cost, release=(), index_dir=None, flag_impact=False):
     from threadsense.agents import advisor_pilot as pilot
     from threadsense.agents import overnight
     if mode == 'LIVE':
@@ -42,9 +44,11 @@ def build_runtime(out, mode, *, cutoff, only, max_requests, max_cost, release=()
         ledger = overnight.PersistentLedger(max_cost, per_request)
         client = pilot.CrewAIClient(settings, ledger=ledger)
         return overnight.Runtime(out, client=client, cutoff=cutoff, only=only, max_requests=max_requests, ledger=ledger,
-                                 mode=mode, release=release, settings=settings, index_dir=index_dir or overnight.INDEX_DIR)
+                                 mode=mode, release=release, settings=settings, index_dir=index_dir or overnight.INDEX_DIR,
+                                 flag_impact=flag_impact)
     return overnight.Runtime(out, client=overnight.HandoffScriptedClient(), cutoff=cutoff, only=only,
-                             max_requests=max_requests, mode=mode, release=release, index_dir=index_dir or overnight.INDEX_DIR)
+                             max_requests=max_requests, mode=mode, release=release, index_dir=index_dir or overnight.INDEX_DIR,
+                             flag_impact=flag_impact)
 
 
 def main(argv=None):
@@ -57,6 +61,7 @@ def main(argv=None):
     parser.add_argument('--resume', type=Path, help='Existing run directory to continue.')
     parser.add_argument('--only', action='append', help='Work ID, topic ID or pilot scenario ID (repeatable).')
     parser.add_argument('--max-requests', type=int, help='Run-wide HTTP request ceiling.')
+    parser.add_argument('--flag-impact', action='store_true', help='Shadow flag-impact assessment in the grounding request.')
     parser.add_argument('--max-cost', type=float, help='Run-wide dollar budget (live).')
     parser.add_argument('--release', action='append', default=[], help='With --resume: reprocess this interrupted work ID.')
     parser.add_argument('--index-dir', type=Path, help='Retrieval snapshot (default .index/retrieval); its cutoff must equal '
@@ -69,14 +74,16 @@ def main(argv=None):
     from threadsense.agents import overnight
     from threadsense.handoff_inputs import read_json
     if args.resume:
-        if args.write or args.scripted or args.run or args.only or args.max_requests or args.max_cost or args.cutoff or args.index_dir:
+        if args.write or args.scripted or args.run or args.only or args.max_requests or args.max_cost or args.cutoff or args.index_dir \
+                or args.flag_impact:
             parser.error('--resume takes its options from the run manifest; pass only --release.')
         saved = read_json(args.resume/'run_manifest.json')['fingerprints']
         if not saved['index'].get('index_dir'):
             parser.error('This run predates recorded snapshot paths; it cannot be resumed safely. Start a new run directory.')
         rt = build_runtime(args.resume, saved['mode'], cutoff=saved['cutoff'], only=saved['only'],
                            max_requests=saved['budget_limits']['model_calls_total'], max_cost=saved['cost_limit_usd'],
-                           release=args.release, index_dir=overnight.ROOT/saved['index']['index_dir']
+                           release=args.release, flag_impact=saved.get('flag_impact', False),
+                           index_dir=overnight.ROOT/saved['index']['index_dir']
                            if not Path(saved['index']['index_dir']).is_absolute() else Path(saved['index']['index_dir']))
     else:
         if not args.cutoff:
@@ -99,7 +106,7 @@ def main(argv=None):
             if per_request * overnight.REQUESTS_TO_START > args.max_cost:
                 parser.error(f'--max-cost ${args.max_cost} cannot cover one topic (two reservations of ${per_request:.4f}).')
         rt = build_runtime(args.write, mode, cutoff=args.cutoff, only=args.only, max_requests=args.max_requests,
-                           max_cost=args.max_cost, index_dir=args.index_dir)
+                           max_cost=args.max_cost, index_dir=args.index_dir, flag_impact=args.flag_impact)
     try:
         state = overnight.run(rt)
     except overnight.OvernightError as error:

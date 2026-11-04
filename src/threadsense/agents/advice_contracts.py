@@ -615,3 +615,197 @@ class AnnouncementRecord(Frozen):
     @property
     def version_id(self):
         return self.source.version_id
+
+
+# Flag provenance and card dependencies (derived, read-only; agents/flag_provenance.py). Keyed by run instance, card and
+# flag index; the saved card and its InheritedFlag bytes are never changed.
+FLAG_PROVENANCE_VERSION = 'agent3-flag-provenance-v1'
+CARD_DEPENDENCIES_VERSION = 'agent3-card-dependencies-v1'
+GROUPING_LABEL = 'Topic grouping needs review'
+
+
+class SourceArtifact(Frozen):
+    path: str
+    pointer: str | None = None
+    sha256: str | None = None
+
+
+class UpstreamFinding(Frozen):
+    """One recorded finding, verbatim. PROCESS_FAILURE: the check itself failed, so no specific dispute was narrowed."""
+    origin: Literal['agent1_verification', 'agent1_content_review', 'agent2_content_caution']
+    attempt: Literal['original', 'revision'] | None = None
+    category: Text
+    nature: Literal['SUBSTANTIVE', 'PROCESS_FAILURE']
+    disputed_fields: list[str] = Field(default_factory=list)
+    message_ids: list[str] = Field(default_factory=list)
+    member_ids: list[str] = Field(default_factory=list)
+    explanation: Text
+    source: SourceArtifact
+
+
+class AttemptError(Frozen):
+    """A revision failure or a check of the attempt that was not kept; never the substantive finding."""
+    stage: Literal['REVISION_FAILED', 'NON_EFFECTIVE_ATTEMPT']
+    attempt: Literal['original', 'revision'] | None = None
+    text: Text
+    source: SourceArtifact
+
+
+class FlagProvenance(Frozen):
+    contract_version: Literal['agent3-flag-provenance-v1'] = FLAG_PROVENANCE_VERSION
+    run_ref: str
+    card_id: str | None = None  # None while the card is being assembled (in-flight grounding).
+    flag_index: int
+    origin: Literal['agent1', 'agent2', 'assisted_content_review']
+    kind: Text
+    candidate_group_id: str
+    member_ids: list[str] = Field(default_factory=list)
+    obligation_id: str | None = None
+    category: Literal['UPSTREAM_REVIEW', 'CONTENT_CAUTION', 'TOPIC_GROUPING']
+    label: Text
+    obligation_key: str | None = None
+    queue_item_id: str | None = None
+    effective_attempt: Literal['original', 'revision'] | None = None
+    findings: list[UpstreamFinding] = Field(default_factory=list)
+    attempt_errors: list[AttemptError] = Field(default_factory=list)
+    recovery: Literal['RECOVERED', 'NOT_NARROWED', 'UNAVAILABLE', 'NOT_APPLICABLE']
+    recovery_note: str | None = None
+    card_detail: str | None = None
+    card_detail_is: Literal['FINDING', 'ATTEMPT_ERROR', 'GROUPING_NOTE', 'UNMATCHED'] | None = None
+
+    @model_validator(mode='after')
+    def consistent(self):
+        if self.category == 'TOPIC_GROUPING' and (self.queue_item_id or self.findings or self.recovery != 'NOT_APPLICABLE'):
+            raise ValueError('A projection gap has no queue item and no upstream finding.')
+        if self.recovery == 'RECOVERED' and not any(f.nature == 'SUBSTANTIVE' for f in self.findings):
+            raise ValueError('RECOVERED requires a substantive finding.')
+        return self
+
+
+class PriorFinding(Frozen):
+    """A substantive finding of the attempt Agent 1 did not keep, with what the record establishes about it:
+    OPEN: it applies to the kept interpretation (same disputed values, or a coverage state the kept one still differs
+    from); CORRECTED: the kept revision changed the disputed values (to the state the finding named, where it named one)
+    and the revision's own check raised nothing on them; SUPERSEDED: the kept attempt's check disputes the same fields
+    again (that finding is open), or the finding disputes values only the discarded revision held; UNCERTAIN: the record
+    cannot establish either (a later check silently accepting an unchanged value is not a correction)."""
+    finding: UpstreamFinding
+    status: Literal['OPEN', 'CORRECTED', 'SUPERSEDED', 'UNCERTAIN']
+    basis: Text
+    changed_fields: list[str] = Field(default_factory=list)
+    unchanged_fields: list[str] = Field(default_factory=list)
+
+
+class FlagProvenanceV2(FlagProvenance):
+    """v2: v1 plus the finding history of the discarded attempt (PriorFinding). Its process failures and the attempt's
+    own error stay AttemptErrors; a failed revision stays REVISION_FAILED."""
+    contract_version: Literal['agent3-flag-provenance-v2'] = 'agent3-flag-provenance-v2'
+    finding_history: list[PriorFinding] = Field(default_factory=list)
+
+    def open_findings(self):
+        """Every finding still unresolved for this flag: the kept attempt's, then OPEN and UNCERTAIN prior ones."""
+        return [*self.findings, *(h.finding for h in self.finding_history if h.status in ('OPEN', 'UNCERTAIN'))]
+
+
+DependencyElement = Literal['TITLE', 'TOPIC_MEMBERSHIP', 'THREAD_STATUS', 'SUMMARY', 'CLAIM', 'ACTION', 'ACTION_PREMISE', 'ACTION_CONTEXT',
+                            'ACTION_RATIONALE', 'ACTION_NEED', 'SEVERITY', 'REPORTER', 'MEMBER_RESOLUTION',
+                            'TOPIC_RESOLUTION', 'REVIEW_NOTE', 'ALTERNATIVE', 'OPEN_QUESTION', 'RETRIEVAL_QUERY',
+                            'DRAFT_INPUT', 'OTHER']
+
+
+class DependencyLink(Frozen):
+    """What the records establish between a disputed field/message and one card element. Code never records
+    independence: INVARIANT is only the exact topic-resolution aggregation, SAME_THREAD is not a dependence, and
+    NOT_ESTABLISHED means the records cannot decide."""
+    element: DependencyElement
+    element_id: str
+    relation: Literal['DIRECT', 'DERIVED', 'SAME_THREAD', 'INVARIANT', 'NOT_ESTABLISHED']
+    displayed: bool
+    via: list[str] = Field(default_factory=list)
+    note: str | None = None
+
+
+class ResolutionInput(Frozen):
+    member_id: str
+    state: str
+    flagged: bool
+    states_changing_topic: list[str] = Field(default_factory=list)
+
+
+class CardDependencies(Frozen):
+    contract_version: Literal['agent3-card-dependencies-v1'] = CARD_DEPENDENCIES_VERSION
+    run_ref: str
+    card_id: str | None = None
+    flag_index: int
+    links: list[DependencyLink] = Field(default_factory=list)
+    topic_resolution: str | None = None
+    resolution_inputs: list[ResolutionInput] = Field(default_factory=list)
+    record_gaps: list[str] = Field(default_factory=list)
+
+
+# Flag-impact assessment (shadow): the final grounding call's judgment of each inherited flag, validated
+# deterministically (agents/flag_impact.py). Routing does not read it in this version.
+FLAG_IMPACT_VERSION = 'agent3-flag-impact-v1'
+FLAG_IMPACT_RECORD_VERSION = 'agent3-flag-impact-record-v1'
+
+
+class FlagImpactAssessment(Frozen):
+    """One flag's validated impact. `impact` is what review would use; `model_impact` is what the judge returned.
+    AFFECTS and UNKNOWN retain review; a projection gap keeps its own requirement (GROUPING_RULE)."""
+    contract_version: Literal['agent3-flag-impact-v1'] = FLAG_IMPACT_VERSION
+    flag_id: str
+    kind: Text
+    status: Literal['ASSESSED', 'NOT_ASSESSED', 'GROUPING_RULE']
+    impact: Literal['AFFECTS', 'INDEPENDENT', 'UNKNOWN']
+    model_impact: Literal['AFFECTS', 'INDEPENDENT', 'UNKNOWN'] | None = None
+    element_ids: list[str] = Field(default_factory=list)
+    explanation: str | None = None
+    independence_basis: str | None = None
+    validation_issues: list[str] = Field(default_factory=list)
+    judgment_source: Literal['MODEL', 'PREPARED', 'REPLAY', 'NONE']
+    retains_review: bool
+
+    @model_validator(mode='after')
+    def conservative(self):
+        if self.retains_review != (self.impact != 'INDEPENDENT' or self.status == 'GROUPING_RULE'):
+            raise ValueError('Only an INDEPENDENT flag outside the grouping rule may release review.')
+        if self.impact == 'INDEPENDENT' and not (self.status == 'ASSESSED' and (self.independence_basis or '').strip()
+                                                  and self.element_ids):
+            raise ValueError('INDEPENDENT needs an assessed judgment naming elements and a basis.')
+        return self
+
+
+class FlagImpactRecord(Frozen):
+    """All flag assessments for one card, bound to what was judged and to the displayed card. A replay reuses a
+    recorded judgment only when `inputs_sha256` is unchanged; `card_text_sha256` is the assembled card's text."""
+    contract_version: Literal['agent3-flag-impact-record-v1'] = FLAG_IMPACT_RECORD_VERSION
+    status: Literal['ASSESSED', 'NOT_ASSESSED']
+    card_id: str | None = None
+    inputs_sha256: str | None = None
+    evidence_sha256: str | None = None
+    provenance_sha256: str | None = None
+    card_text_sha256: str | None = None
+    assessments: list[FlagImpactAssessment] = Field(default_factory=list)
+    note: str | None = None
+
+
+FLAG_IMPACT_VERSION_V2 = 'agent3-flag-impact-v2'
+FLAG_IMPACT_RECORD_VERSION_V2 = 'agent3-flag-impact-record-v2'
+
+
+class FlagImpactAssessmentV2(FlagImpactAssessment):
+    """v2: which unresolved findings the judgment accounted for, and the deterministic references kept beside it.
+    `reference_ids` are the displayed elements the dependency links reference (DIRECT, DERIVED, NOT_ESTABLISHED);
+    `unassessed_reference_ids` those the judgment did not name. AFFECTS element lists name known effects and are not
+    exhaustive; INDEPENDENT must account for every open finding and every reference."""
+    contract_version: Literal['agent3-flag-impact-v2'] = FLAG_IMPACT_VERSION_V2
+    finding_ids: list[str] = Field(default_factory=list)
+    open_finding_ids: list[str] = Field(default_factory=list)
+    uncertain_finding_ids: list[str] = Field(default_factory=list)
+    reference_ids: list[str] = Field(default_factory=list)
+    unassessed_reference_ids: list[str] = Field(default_factory=list)
+
+
+class FlagImpactRecordV2(FlagImpactRecord):
+    contract_version: Literal['agent3-flag-impact-record-v2'] = FLAG_IMPACT_RECORD_VERSION_V2
+    assessments: list[FlagImpactAssessmentV2] = Field(default_factory=list)

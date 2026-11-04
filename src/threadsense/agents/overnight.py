@@ -214,13 +214,14 @@ def open_snapshot(index_dir):
 class Runtime:
     def __init__(self, out_dir, *, client, cutoff, handoff=pilot.HANDOFF, fixture_root=FIXTURE_ROOT, only=None,
                  max_requests=None, ledger=None, mode='SCRIPTED', retriever_factory=None, advise=None,
-                 release=(), settings=None, index_dir=INDEX_DIR):
+                 release=(), settings=None, index_dir=INDEX_DIR, flag_impact=False):
         self.out, self.client, self.cutoff, self.handoff, self.fixture_root = Path(out_dir), client, cutoff, Path(handoff), Path(fixture_root)
         self.only, self.max_requests, self.ledger, self.mode = (list(only) if only else None), max_requests, ledger, mode
         self.index_dir, self.owns_retriever = Path(index_dir), retriever_factory is None
         self.retriever_factory = retriever_factory or (lambda: open_snapshot(self.index_dir))
         self.advise, self.release = advise or pilot.advise, set(release)
         self.settings = settings
+        self.flag_impact = flag_impact  # opt-in shadow flag-impact assessment (advise(flag_impact=True))
         self.view = self.retriever = self.rubric = self.state = None
         self.routing = self.extraction = None
         self.work, self.results, self.outcomes = [], {}, {}
@@ -358,7 +359,8 @@ def fingerprints(rt, limits):
                                 'settings': rt.settings},
             'mode': rt.mode, 'only': rt.only, 'budget_limits': limits,
             'cost_limit_usd': rt.ledger.limit_usd if rt.ledger is not None else None,
-            'work_plan_sha256': _digest([{k: w[k] for k in ('work_id', 'member_ids', 'in_scope')} for w in rt.work])}
+            'work_plan_sha256': _digest([{k: w[k] for k in ('work_id', 'member_ids', 'in_scope')} for w in rt.work]),
+            **({'flag_impact': True} if rt.flag_impact else {})}
 
 
 def _rel(path):
@@ -372,7 +374,8 @@ def freeze(rt, limits):
     current = fingerprints(rt, limits)
     if path.exists():
         saved = read_json(path)
-        changed = sorted(k for k in current if _digest(current[k]) != _digest(saved['fingerprints'].get(k)))
+        changed = sorted(k for k in current.keys() | saved['fingerprints'].keys()
+                         if _digest(current.get(k)) != _digest(saved['fingerprints'].get(k)))
         if changed:
             raise OvernightError(f'Cannot resume {rt.out}: changed since the run started: {changed}. Start a new run directory.')
         return {**saved, 'resumed': True}
@@ -420,7 +423,8 @@ def process_topic(rt, state):
                 **({'topic_id': item['topic_id']} if item['topic_id'] else {})}
     try:
         result = rt.advise(scenario, view=rt.view, retriever=rt.retriever, client=rt.client, budget=rt.state.budget,
-                           rubric=rt.rubric, run_id=run_id(rt), as_of=rt.retriever.manifest['cutoff'])
+                           rubric=rt.rubric, run_id=run_id(rt), as_of=rt.retriever.manifest['cutoff'],
+                           **({'flag_impact': True} if rt.flag_impact else {}))
         AdviceCardV3.model_validate(result['card'])
         failed = [c for c in result['model_calls'] if c['status'] != 'OK']
         workflow = {'outcome': 'CARD_WITH_STAGE_FAILURES' if failed else 'CARD', 'card_id': result['card']['card_id'],

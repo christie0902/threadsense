@@ -13,16 +13,18 @@ handling question or a close choice for the team lead) and OTHER.
 """
 import re
 
+from threadsense.agents.advice_contracts import GROUPING_LABEL
 from threadsense.dashboard.checks import build_checks
 
-REVIEW_VIEW_VERSION = 'dashboard-review-view-v2'
+REVIEW_VIEW_VERSION = 'dashboard-review-view-v3'
 REVIEW_NOTE_PREFIX = 'Still needs review: '
 
 # Plain-language notes that assemble_card adds for each review reason (advisor_checks.assemble_card). They repeat the
 # reason, so the review view shows the reason once instead of listing these again.
 REASON_NOTES = (
     r"The advisor's confidence is low\.$", r'The advisor produced no usable draft',
-    r'Severity is high under the team rubric\.$', r'\d+ earlier review flags? (are|is) still open on these threads\.$',
+    r'Severity is high under the team rubric\.$', r'\d+ earlier review flags? (are|is) still open on these threads\.',
+    r'Topic grouping needs review: these threads have no assigned topic\.$',
     r'Sources disagree on a point, and the records do not settle which applies', r'Some advisor statements were not supported',
     r"The advisor's statements could not be checked against the evidence", r'Open question: ',
     r'The evidence supports more than one option and none is clearly better', r'Research on ', r'The advisor did not fully check ',
@@ -47,13 +49,13 @@ FLAG_CHECKS = {
                                'its summary.',
     'inherited_agent1_review_announcement_route': "Agent 1's reading of this announcement-route thread was not verified. "
                                                   'Read it before relying on its summary.',
-    'projection_gap': 'Agent 2 did not assign these threads to a topic; they are grouped by the projection only. Check '
-                      'that they belong together.',
+    'projection_gap': 'Agent 2 did not assign these threads to a topic; the projection grouped them. Check that they '
+                      'belong together. This is a grouping condition on the card, not an Agent 1/2 review obligation.',
     'assisted_content_review': 'An assisted content review raised a finding on this group; check it.',
 }
 FLAG_LABELS = {'inherited_agent1_review': 'Agent 1 interpretation not verified',
                'inherited_agent1_review_announcement_route': 'Agent 1 interpretation not verified (announcement route)',
-               'projection_gap': 'No Agent 2 topic (projection gap)', 'assisted_content_review': 'Assisted content review finding'}
+               'projection_gap': GROUPING_LABEL, 'assisted_content_review': 'Assisted content review finding'}
 TEMPORAL_CODES = {'SUPERSEDED_GUIDANCE': 'A cited source has been replaced', 'SOURCE_CONFLICT': 'Current sources disagree',
                   'UNRESOLVED_VERSION': 'Competing revisions could not be ordered'}
 
@@ -174,19 +176,36 @@ def _ref_ids(refs):
     return [(r.get('note') or '').split(' ')[0] for r in refs or [] if r.get('note')]
 
 
-def _flags_item(card, links):
+def _finding_view(prov):
+    """The upstream finding behind a flag (agents/flag_provenance), kept apart from revision errors."""
+    if prov is None:
+        return None
+    return {'recovery': prov['recovery'], 'note': prov.get('recovery_note'), 'card_detail_is': prov.get('card_detail_is'),
+            'findings': [{'category': f['category'], 'nature': f['nature'], 'fields': f['disputed_fields'],
+                          'text': f['explanation'], 'source': f['source']['path']} for f in prov['findings']],
+            'attempt_errors': [{'stage': e['stage'], 'text': e['text']} for e in prov['attempt_errors']],
+            'earlier': [{'status': h['status'], 'fields': h['finding']['disputed_fields'], 'text': h['finding']['explanation'],
+                         'basis': h['basis']} for h in prov.get('finding_history') or []]}
+
+
+def _flags_item(card, links, provenance=None):
     flags = card.get('inherited_flags') or []
     entries = []
-    for f in flags:
+    for i, f in enumerate(flags):
+        prov = (provenance or [None] * len(flags))[i] if provenance and len(provenance) == len(flags) else None
         threads = [t for t in (links.thread_of_member(m) for m in f.get('member_ids') or []) if t]
         queue = links.queue_items(f)
-        entries.append({'kind': f['kind'], 'label': FLAG_LABELS.get(f['kind'], _words(f['kind'])),
+        gap = f['kind'] == 'projection_gap'
+        entries.append({'kind': f['kind'], 'label': FLAG_LABELS.get(f['kind'], _words(f['kind'])), 'grouping': gap,
                         'check': FLAG_CHECKS.get(f['kind'], 'An upstream review flag is still open; check it.'),
-                        'links': threads + queue, 'upstream_detail': f.get('detail'),
-                        'queue_note': None if queue else 'No Model Review Queue item: this flag is carried on the card only.'})
-    n = len(flags)
-    return {'category': 'INHERITED', 'title': f'{n} earlier review flag{"s are" if n != 1 else " is"} still open' if n
-            else 'Earlier review flags are still open', 'field': 'Related threads',
+                        'links': threads + queue, 'upstream_detail': f.get('detail'), 'finding': _finding_view(prov),
+                        'queue_note': None if queue else 'No Model Review Queue item: a grouping condition carried on the card '
+                                      'only.' if gap else 'No Model Review Queue item: this flag is carried on the card only.'})
+    n = sum(not e['grouping'] for e in entries)
+    parts = [f'{n} earlier review flag{"s are" if n != 1 else " is"} still open'] if n else []
+    parts += [GROUPING_LABEL.lower() if parts else GROUPING_LABEL] if any(e['grouping'] for e in entries) else []
+    return {'category': 'INHERITED', 'title': '; '.join(parts) if parts else 'Earlier review flags are still open',
+            'field': 'Related threads',
             'check': 'Upstream checks on these threads were not completed. The card does not clear them.',
             'flags': entries, 'unavailable': None if flags else 'This run did not save which flags are open.'}
 
@@ -251,7 +270,7 @@ def _other_item(reason):
     return {'category': 'OTHER', 'title': 'Other review reason', 'field': None, 'check': detail}
 
 
-def review_view(card, result=None, queue=()):
+def review_view(card, result=None, queue=(), provenance=None):
     """The card's review panel: one entry per final review reason, the advisor's own review note (if the final
     evidence check supported it), withheld statements, and notes that are not tied to a reason."""
     links = Links(card, (result or {}).get('evidence_ledger'), queue)
@@ -262,7 +281,7 @@ def review_view(card, result=None, queue=()):
         if code == 'HIGH_SEVERITY':
             item = _severity_item(card, links)
         elif code == 'INHERITED_FLAG':
-            item = _flags_item(card, links)
+            item = _flags_item(card, links, provenance)
         elif code == 'GROUNDING_FAILURE':
             item = _grounding_item(reason, held, links)
         elif code == 'GROUNDING_NOT_RUN':

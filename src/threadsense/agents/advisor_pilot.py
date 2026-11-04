@@ -29,7 +29,7 @@ from urllib.parse import urlparse
 
 from pydantic import ValidationError
 
-from threadsense.agents import advisor_research, advisor_tot
+from threadsense.agents import advisor_research, advisor_tot, flag_impact as impact
 from threadsense.agents.advice_contracts import ModelReviewItem, stable_id
 from threadsense.agents.advice_inputs import coverage, load_effective_view, review_items_from_view
 from threadsense.agents.advisor_checks import (
@@ -37,10 +37,11 @@ from threadsense.agents.advisor_checks import (
     coverage_issues, dependencies, established, governing_sources, grounding_result, inherited_flags, normalize,
     presentation_issues, rejected_statements, sendable, statements, structural_issues, temporal_check, unauthorized,
 )
-from threadsense.agents.advisor_contracts import AdvisorDraft, GroundingJudgment
+from threadsense.agents.advisor_contracts import AdvisorDraft, GroundingJudgment, GroundingJudgmentV7
 from threadsense.agents.advisor_evidence import (
     EVIDENCE_VIEW_VERSION, Budget, BudgetExhausted, ResearchTools, member_messages, model_view, open_retriever,
 )
+from threadsense.agents.flag_provenance import FlagSource
 from threadsense.handoff_inputs import ROOT, file_hash, read_json
 from threadsense.retrieval.config import DEFAULTS
 from threadsense.severity_rubric import load_rubric
@@ -456,7 +457,7 @@ class RequestGuard:
 
     def __init__(self, limit=HTTP_REQUESTS_PER_STAGE, input_token_limit=None):
         self.limit, self.input_token_limit, self.sent, self.blocked, self.responses = limit, input_token_limit, [], [], []
-        self.refused, self.input_tokens = None, None
+        self.refused, self.input_tokens, self.sent_text = None, None, None
 
     def __enter__(self):
         import httpx
@@ -466,8 +467,11 @@ class RequestGuard:
             if len(guard.sent) >= guard.limit:
                 guard.blocked.append(str(request.url))
                 raise RequestCeilingExceeded(f'{guard.limit} HTTP request(s) per stage; {request.url} was not sent')
+            messages = json.loads(request.content or b'{}').get('messages') or []
+            # The message text as it leaves the process (request-boundary record of what the model was given).
+            guard.sent_text = '\n'.join(m['content'] if isinstance(m.get('content'), str) else json.dumps(m.get('content'))
+                                        for m in messages)
             if guard.input_token_limit:  # The exact body about to be sent, framework prompt included.
-                messages = json.loads(request.content or b'{}').get('messages') or []
                 guard.input_tokens = sum(estimate_tokens(m.get('content') if isinstance(m.get('content'), str)
                                                          else json.dumps(m.get('content'))) + 8 for m in messages)
                 if guard.input_tokens > guard.input_token_limit:
@@ -592,7 +596,7 @@ class CrewAIClient:
         task = Task(description=task_description(payload, schema), expected_output=f'One {schema.__name__} JSON object.',
                     agent=agent)
         crew = Crew(agents=[agent], tasks=[task], process=Process.sequential, memory=False, planning=False, verbose=False)
-        self.last_requests = None
+        self.last_requests, self.last_sent_text = None, None
         label = f"{payload.get('scenario_id')}:{stage}"
         limit = self.settings.get('input_token_limit')
         try:
@@ -608,7 +612,7 @@ class CrewAIClient:
         except Exception as error:
             failure = error
         self.last_requests = guard.stats()
-        self.last_input_estimate = guard.input_tokens
+        self.last_input_estimate, self.last_sent_text = guard.input_tokens, guard.sent_text
         if reservation is not None:
             usage = next((r.get('usage') for r in guard.responses if r.get('usage')), None)
             charged = self.ledger.settle(reservation, self.prices, usage, label, sent=bool(guard.sent))
@@ -654,11 +658,12 @@ class ReplayClient:
                 'raw': {c['stage']: c['raw'] for c in r.get('model_calls', []) if c.get('raw')},
                 'failed': {c['stage']: c for c in r.get('model_calls', []) if c.get('status') == 'FAILED'},
                 'statements': {s['statement_id']: s for s in (r.get('grounding') or {}).get('statements', [])},
-                'context': set(r.get('evidence_ledger', {}))}
+                'context': set(r.get('evidence_ledger', {})), 'flag_impact': r.get('flag_impact')}
         self.fingerprint = sha256(json.dumps({k: v['raw'] for k, v in self.recorded.items()}, sort_keys=True).encode()).hexdigest()
         manifest = next((read_json(p) for p in (self.run_dir/'run_manifest.json', self.run_dir/'manifest.json') if p.is_file()), {})
         prompts = (manifest.get('fingerprints') or manifest).get('prompts') or {}
         self.grounding_inputs_same = grounding_inputs(prompts) == grounding_inputs(prompt_fingerprints())
+        self.flag_rules_same = prompts.get('flag_impact') == flag_impact_fingerprint()
 
     def complete(self, stage, payload, schema):
         rec = self.recorded[payload['scenario_id']]
@@ -700,8 +705,18 @@ class ReplayClient:
                 verdicts.append({'statement_id': s['statement_id'], 'verdict': old['model_verdict'],
                                  'rationale': old.get('rationale') or 'Recorded verdict (replay).'})
         # Recorded judgments predate the source-consistency assessment: it stays NOT_ASSESSED, never "no conflict".
-        return {'contract_version': 'agent3-grounding-judgment-v4', 'verdicts': verdicts, 'action_sufficiency': None,
-                'alternative_sufficiency': []}
+        out = {'contract_version': 'agent3-grounding-judgment-v4', 'verdicts': verdicts, 'action_sufficiency': None,
+               'alternative_sufficiency': []}
+        if 'flag_impacts' in payload:  # Reused only for the same flag inputs, statements, evidence and rules.
+            saved = rec.get('flag_impact') or {}
+            same = (self.flag_rules_same and saved.get('status') == 'ASSESSED'
+                    and saved.get('inputs_sha256') == impact.inputs_digest(payload))
+            self.reuse_log.append({'scenario_id': payload['scenario_id'], 'statement_id': 'flag_impacts', 'reused': same,
+                                   'reason': None if same else 'no flag-impact judgment recorded'
+                                   if saved.get('status') != 'ASSESSED' else 'flag-impact rules changed'
+                                   if not self.flag_rules_same else 'flag-impact inputs changed'})
+            out['flag_impacts'] = impact.recorded_judgments(saved) if same else []
+        return out
 
 
 def grounding_inputs(prompts):
@@ -756,10 +771,23 @@ def _json_text(raw):
 
 class Stages:
     """Budgeted model stages for one topic; zero retries, failures recorded and returned as None.
-    `reserve` holds back calls for later stages (the final grounding call)."""
+    `reserve` holds back calls for later stages (the final grounding call). The Agent 1 context handed to a stage is
+    kept verbatim once per content hash (`agent1_context`), and each call records that hash and whether the text was
+    in the HTTP body actually sent (IN_HTTP_BODY), absent from it, or no HTTP request was made (offline clients)."""
 
     def __init__(self, client, budget, scenario_id):
         self.client, self.budget, self.scenario_id, self.log = client, budget, scenario_id, []
+        self.context = {}
+
+    def agent1_context(self):
+        return [{'sha256': k, 'content': v} for k, v in self.context.items()]
+
+    def _context(self, entry, text):
+        if text is not None:
+            sent = getattr(self.client, 'last_sent_text', None)
+            entry['agent1_context']['boundary'] = (('IN_HTTP_BODY' if text in sent else 'NOT_IN_HTTP_BODY') if sent
+                                                   else 'NO_HTTP_REQUEST')
+        return entry
 
     def __call__(self, stage, payload, schema, reserve=0):
         entry = {'stage': stage, 'schema': schema.__name__}
@@ -778,6 +806,12 @@ class Stages:
         except BudgetExhausted as error:
             self.log.append({**entry, 'status': 'SKIPPED_BUDGET', 'error': str(error)})
             return None
+        text = None
+        if payload.get('agent1_interpretations') is not None:  # Serialized as task_description embeds it.
+            text = json.dumps(payload['agent1_interpretations'], ensure_ascii=False)
+            key = sha256(text.encode('utf-8')).hexdigest()
+            self.context.setdefault(key, payload['agent1_interpretations'])
+            entry['agent1_context'] = {'sha256': key}
         try:
             raw = self.client.complete(stage, {**payload, 'scenario_id': self.scenario_id, 'stage': stage,
                                                'output_schema': sent_schema(schema)}, schema)
@@ -786,10 +820,10 @@ class Stages:
         except (BoundaryNotObserved, RunStateError):
             raise  # Unverifiable call accounting or unsaved run state stops the run.
         except Exception as error:  # Any provider, parsing or validation error: record it, never retry.
-            self.log.append({**entry, **self._requests(), 'status': 'FAILED', 'failure_class': failure_class(error),
-                             'error': f'{type(error).__name__}: {str(error)[:400]}'})
+            self.log.append({**self._context(entry, text), **self._requests(), 'status': 'FAILED',
+                             'failure_class': failure_class(error), 'error': f'{type(error).__name__}: {str(error)[:400]}'})
             return None
-        self.log.append({**entry, **self._requests(), 'status': 'OK'})
+        self.log.append({**self._context(entry, text), **self._requests(), 'status': 'OK'})
         return value
 
     def _requests(self):
@@ -917,17 +951,26 @@ def grounding_payload(stmts, ledger, topic, rejected=None, depends=None, review_
                 for i, c in enumerate(declared or [])]}
 
 
-def _final_grounding(call, draft, ledger, topic, stmts, structural, actions, review_flags=None):
-    """Structurally rejected statements are withheld; everything else still goes to the one semantic call."""
+def _final_grounding(call, draft, ledger, topic, stmts, structural, actions, review_flags=None, flag_inputs=None):
+    """Structurally rejected statements are withheld; everything else still goes to the one semantic call.
+    `flag_inputs` (opt-in shadow assessment): the same call also judges each flag's impact (GroundingJudgmentV7);
+    the judge's raw entries and the payload they were judged on come back under `_flag_impact`."""
     rejected = rejected_statements(draft, stmts, structural, actions)
     if not sendable(stmts, rejected):
         return grounding_result(draft, ledger, stmts, structural=structural, actions=actions,
                                 reason='NOTHING_CITED' if not rejected else 'ALL_STATEMENTS_REJECTED')
-    judgment = call('grounding', grounding_payload(stmts, ledger, topic, rejected, dependencies(draft, ledger), review_flags,
-                                                   draft.source_conflicts), GroundingJudgment)
-    return grounding_result(draft, ledger, stmts, structural=structural, actions=actions, judgment=judgment,
-                            ran=judgment is not None, reason='GROUNDING_CALL_FAILED_OR_OVER_BUDGET',
-                            pending=getattr(call.client, 'replay', False))
+    payload, schema = grounding_payload(stmts, ledger, topic, rejected, dependencies(draft, ledger), review_flags,
+                                        draft.source_conflicts), GroundingJudgment
+    if flag_inputs is not None:
+        payload, schema = {**payload, 'rules': f'{GROUNDING_RULES}\n\n{impact.FLAG_IMPACT_RULES}',
+                           'flag_impacts': flag_inputs}, GroundingJudgmentV7
+    judgment = call('grounding', payload, schema)
+    result = grounding_result(draft, ledger, stmts, structural=structural, actions=actions, judgment=judgment,
+                              ran=judgment is not None, reason='GROUNDING_CALL_FAILED_OR_OVER_BUDGET',
+                              pending=getattr(call.client, 'replay', False))
+    if flag_inputs is not None:
+        result['_flag_impact'] = {'raw': None if judgment is None else list(judgment.flag_impacts), 'payload': payload}
+    return result
 
 
 def _review_items(packet, card):
@@ -975,10 +1018,13 @@ def _adaptive(call, tools, draft, ledger, topic, rubric, interpretations, budget
     return final, advisor_research.follow_up_entries(run['steps']), record
 
 
-def advise(scenario, *, view, retriever, client, budget, rubric, run_id, as_of, initial=None, research_mode='batch'):
+def advise(scenario, *, view, retriever, client, budget, rubric, run_id, as_of, initial=None, research_mode='batch',
+           flag_impact=False):
     """One topic. Never raises for model or budget problems; ScenarioError only for a missing topic.
     `initial` replaces the derived initial query (used to test recovery from an incomplete first pass).
-    `research_mode` 'react' is the opt-in adaptive follow-up experiment (advisor_research); 'batch' is production."""
+    `research_mode` 'react' is the opt-in adaptive follow-up experiment (advisor_research); 'batch' is production.
+    `flag_impact` (opt-in shadow evaluation, off in production): the final grounding call also assesses each inherited
+    flag (agents/flag_impact); the validated record is saved as `flag_impact` and routing does not read it."""
     if research_mode not in advisor_research.RESEARCH_MODES:
         raise ValueError(f'research_mode must be one of {advisor_research.RESEARCH_MODES}.')
     budget.start_topic()
@@ -1022,6 +1068,7 @@ def advise(scenario, *, view, retriever, client, budget, rubric, run_id, as_of, 
         draft, normalization = normalize(draft, ledger)
     flags = inherited_flags(packet['record'], packet['member_ids'], projection_gap=packet['projection_gap'])
     tot, diagnostics, temporal_pre, covered_issues, action_notes = {'status': 'NOT_TRIGGERED', 'triggers': []}, [], None, [], []
+    prepared, flag_raw = None, None
     if draft is None:
         grounding, temporal, final = {**NOT_RUN, 'status': 'NOT_RUN', 'basis': 'NO_DRAFT'}, None, unauthorized(packet)
     else:
@@ -1040,8 +1087,13 @@ def advise(scenario, *, view, retriever, client, budget, rubric, run_id, as_of, 
         action_notes = [adopted] if adopted else []
         actions = action_issues(draft, ledger)
         stmts = statements(draft, ledger, severity=severity, alternatives=advisor_tot.alternatives(tot))
+        if flag_impact:
+            prepared = impact.prepare(FlagSource.from_view(view, run_id), flags, packet=packet, draft=draft, stmts=stmts,
+                                      ledger=ledger, topic=topic, query=query, agent1_context=call.agent1_context())
         grounding = _final_grounding(call, draft, ledger, topic, stmts, structural, actions,
-                                     [{k: v for k, v in f.model_dump().items() if v} for f in flags])
+                                     [{k: v for k, v in f.model_dump().items() if v} for f in flags],
+                                     flag_inputs=prepared['inputs'] if prepared else None)
+        flag_raw = grounding.pop('_flag_impact', None)
         tot = advisor_tot.finalize(tot, grounding)
         final = authorize(draft, grounding, ledger, packet, severity=severity, severity_issues=severity_issues, rubric=rubric,
                           severity_notes=severity_notes)
@@ -1082,6 +1134,18 @@ def advise(scenario, *, view, retriever, client, budget, rubric, run_id, as_of, 
                               'grounding': {**NOT_RUN, 'status': 'NOT_RUN', 'basis': 'CARD_ASSEMBLY_FAILED'},
                               'failures': outcome['failures'] + [{'stage': 'card_assembly', 'status': 'FAILED', 'error': 'see diagnostics'}]},
                              packet, run_id=run_id)
+    flag_record = None
+    if flag_impact:
+        if prepared is None or flag_raw is None or flag_raw['raw'] is None:
+            flag_record = impact.not_assessed('The final grounding call did not run or failed; no flag was assessed.')
+        else:
+            judged_by = ('REPLAY' if getattr(client, 'replay', False) else
+                         'MODEL' if isinstance(client, CrewAIClient) else 'PREPARED')
+            verdicts = {s['statement_id']: s['verdict'] for s in grounding['statements']}
+            assessed = impact.validate(flag_raw['raw'], prepared, verdicts=verdicts,
+                                       member_states=final['member_resolution'], source=judged_by)
+            flag_record = impact.record(assessed, prepared, payload=flag_raw['payload'], ledger=ledger,
+                                        card=card.model_dump(mode='json'))
     items = _review_items(packet, card)
     covered = coverage({'records': [packet['record']]}, cards=[card], review_items=items)
     # Members of the group's other topics are outside this scenario (not lost); obligations must all be carried.
@@ -1090,7 +1154,8 @@ def advise(scenario, *, view, retriever, client, budget, rubric, run_id, as_of, 
     return {'scenario': scenario, 'status': 'CARD', 'topic': {**topic, 'initial_query': query},
             'retrieval_trace': tools.trace, 'retrieval_notes': tools.notes(), 'follow_ups': follow_ups,
             **({'adaptive_research': adaptive} if adaptive is not None else {}),
-            'unfilled_gaps': unfilled, 'model_calls': call.log,
+            'unfilled_gaps': unfilled, 'model_calls': call.log, 'agent1_context': call.agent1_context(),
+            **({'flag_impact': flag_record.model_dump(mode='json')} if flag_record else {}),
             'drafts': {'initial': first.model_dump() if first else None,
                        'final': draft.model_dump() if draft else None, 'revised': revised},
             'grounding': grounding, 'temporal': temporal, 'temporal_before_grounding': temporal_pre,
@@ -1182,6 +1247,14 @@ def run_pilot(*, client, retriever=None, view=None, scenarios=None, budget_limit
     return {'manifest': manifest, 'results': results}
 
 
+def flag_impact_fingerprint():
+    """What the opt-in flag-impact assessment adds to the grounding call: its rules and the v7 schema as sent."""
+    digest = lambda text: sha256(text.encode('utf-8')).hexdigest()  # noqa: E731
+    return {'rules': digest(impact.FLAG_IMPACT_RULES),
+            'sent_schema': digest(json.dumps(sent_schema(GroundingJudgmentV7), sort_keys=True)),
+            'assessment': impact.FlagImpactAssessment.model_fields['contract_version'].default}
+
+
 def prompt_fingerprints():
     """SHA-256 of every rule text and output schema the model sees."""
     from threadsense.agents.advisor_contracts import ToTComparison
@@ -1193,7 +1266,7 @@ def prompt_fingerprints():
                         for s in (AdvisorDraft, GroundingJudgment, ToTComparison)},
             'sent_schemas': {s.__name__: digest(json.dumps(sent_schema(s), sort_keys=True))
                              for s in (AdvisorDraft, GroundingJudgment, ToTComparison)},
-            'evidence_view': EVIDENCE_VIEW_VERSION,
+            'evidence_view': EVIDENCE_VIEW_VERSION, 'flag_impact': flag_impact_fingerprint(),
             'contract_versions': {'draft': AdvisorDraft.model_fields['contract_version'].default,
                                   'grounding': GroundingJudgment.model_fields['contract_version'].default,
                                   'tot': ToTComparison.model_fields['contract_version'].default}}

@@ -427,6 +427,13 @@ test('closed cards are easy to scan; an opened card leads with what to check, wi
   for (const boilerplate of ['Concerns:', 'from the final checks', 'severity-rubric', 'final evidence check supported', 'review this card'])
     await expect(checks).not.toContainText(boilerplate)
   await expect(box.getByTestId('all-reasons')).not.toHaveAttribute('open', '')
+  // Flag provenance: the upstream dispute is shown, not the failed revision; the projection gap is described apart.
+  await expect(checks.locator('[data-kind=FLAG]').filter({ hasText: 'Topic grouping needs review' })).toHaveCount(1)
+  await box.getByTestId('all-reasons').locator(':scope > summary').click()
+  const review = box.getByTestId('what-to-review')
+  await expect(review).toContainText('2 earlier review flags are still open; topic grouping needs review')
+  await expect(review.getByTestId('upstream-finding').first()).toContainText('What the upstream check disputed')
+  await box.getByTestId('all-reasons').locator(':scope > summary').click()
   await box.getByRole('tab', { name: 'Technical' }).click()
   await expect(box.getByTestId('saved-title')).toContainText(submit.topic_name) // the saved label is kept here
   await box.getByRole('tab', { name: 'Action & draft' }).click()

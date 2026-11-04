@@ -1680,6 +1680,271 @@ next-day report). No overstated hedge was written, so none was rejected. Remaini
 v15 (v9 MEDIUM); "tie threshold" kept from the team lead's own wording; the summary omits the tutor's report (it is in
 the draft); "wait for the inputs" repeated in instruction, scope note and review note. Submit: grounding PASSED; bullets
 kept, task references correct (the "every field" tutor placed in the RP-3325 thread); route commentary gone from the scope
-note; summary again names the symptom range. Residual: the team lead's request list still includes "errors" (the team
-lead asked for task ID, required-field state and exact button behavior; the error request is the engineer's and is
-also attached correctly to RP-3412/RP-5337); the rationale mentions "the browser-zoom review" without context.
+note; summary again names the symptom range. Residual: the rationale mentions "the browser-zoom review" without context. (Corrected 2026-11-04: "I am
+collecting task IDs, required-field states, errors and exact button behavior" is a proposed step in the team lead's
+voice, not a claim that the team lead requested errors; it follows the current instructions ("If Submit fails,
+capture the task ID, required-field state, error and exact button behavior"), cited by premise c7, while the team
+lead's thread request (c5) and the engineer's task-specific request (c6) stay separate. Not a defect.)
+
+## Needs Review routing audit (2026-11-04, zero calls, saved results)
+
+Nine demo scenarios (`data/evaluation/agent3_demo_scenarios.json`), each from its latest saved live run (different runs and
+prompt versions; not one evaluation): faq_edge_case `agent3_policy_eval_v1` (v9); tl_confirmation `agent3_summary_eval_v1`
+(v10); instruction_conflict, language_routing, upstream_flags `agent3_final_eval_v1` (v6.2); technical_escalation,
+qa_misalignment `agent3_writing_eval_v17_v1` (v17); already_announced `agent3_repair_eval_v1` (v7); observation_only
+`agent3_policy_eval_v1` (v9). All nine are NEEDS_REVIEW, and all nine would stay there on HIGH_SEVERITY or INHERITED_FLAG
+alone (`advice_contracts.required_review_codes`): inherited flags on 8, HIGH severity on 4, already_announced on HIGH alone.
+A supported action is displayed on 8 (observation_only has none). Confidence 0.83-0.95 on every card, including the three
+with grounding FAILED; LOW_CONFIDENCE (< 0.60) never fired.
+
+Confidence: `AdvisorDraft.confidence` is a model-supplied float with no field description; the only instruction is
+"Severity, confidence, resolution and evidence sufficiency are separate judgments". It is not judged by the final
+grounding, not recomputed after statements or the action are withheld, and copied to the card unchanged. Uses:
+LOW_CONFIDENCE reason (< 0.60; literal in `assemble_card`, constant `LOW_CONFIDENCE_BELOW` elsewhere), ToT trigger, and
+the LOW/MODERATE/HIGH band (0.60 / 0.85). What it measures (recommendation, evidence completeness, or the draft overall)
+is undefined. Thresholds unchanged.
+
+Correction (projection gap, confirmed in the saved Submit record `agent3_writing_eval_v17_v1`): the projection gap is not
+a separate routing reason. The card has one INHERITED_FLAG reason covering three flags (two Agent 1, one Agent 2
+`projection_gap`). The projection gap is also not an upstream review obligation: each run's Model Review Queue holds 52
+items (41 Agent 1 discussion + 8 announcement-route + 3 content cautions) and none is a projection gap; the gap is carried
+only by the card flag and `accounting.json` `projection_gaps` (8). The card's wording "Upstream obligations remain open:
+... projection_gap x1" and "3 earlier review flags" therefore overstates it as an obligation.
+
+## Flag-dependence routing rule, shadow evaluation (2026-11-04, zero calls, saved results)
+
+Proposed rule: an inherited flag keeps the card in Needs Review when it **affects** the card (the disputed
+interpretation could change a displayed claim, action, severity, resolution or a decision-relevant omission) or its
+effect is **unknown**. An **independent** flag stays visible on the card and its obligation stays in the Model Review
+Queue. Everything else is unchanged (HIGH severity, projection gaps, grounding, other reasons); a Recommended Action is
+still advisory and needs TL approval. Classified from the Agent 1 record's `review_findings` (disputed fields and
+evidence), the card's claims, member resolutions and action, and the cited source text. Script outside the repo
+(`D:/tsb/shadow/shadow.py`); production routing and saved runs untouched (68 files hash-identical before and after).
+
+| Scenario | Run (prompts) | Flags | Current -> proposed | Remaining reasons |
+|---|---|---|---|---|
+| faq_edge_case | policy_eval_v1 (v9) | failed-workaround summary: Independent; QN / resolution dispute: Affects | NR -> NR | HIGH, flag, grounding |
+| tl_confirmation | summary_eval_v1 (v10) | tutor-advice resolution dispute: Independent | NR -> **Recommended** | none |
+| instruction_conflict | final_eval_v1 (v6.2) | audit unavailable, no specific dispute: Unknown | NR -> NR | flag, source conflict, grounding |
+| language_routing | final_eval_v1 (v6.2) | tutor-advice resolution dispute: Affects | NR -> NR | flag, open confirmation |
+| technical_escalation | writing_eval_v17_v1 (v17) | two central-question / authority disputes: Independent; projection gap: preserved | NR -> NR | HIGH, flag (projection gap) |
+| already_announced | repair_eval_v1 (v7) | none | NR -> NR | HIGH, grounding |
+| qa_misalignment | writing_eval_v17_v1 (v17) | central question: Independent; QA tutor's answer as resolution: Affects | NR -> NR | HIGH, flag |
+| observation_only | policy_eval_v1 (v9) | reporter reading: Affects; title caution: Affects | NR -> NR | flag |
+| upstream_flags | final_eval_v1 (v6.2) | resolution dispute: Affects; audit unavailable: Unknown | NR -> NR | flag, open confirmation |
+
+JSON-versus-prose (moves). The only finding on the flagged thread is RESOLUTION: an independent check judged a tutor's
+reply ("score the formatting failure separately") a partial answer; Agent 1 said UNRESOLVED. Neither reading decides the
+preference question. The card cites no claim from the tutor's message; every element of the action (score separately,
+check whether the structure was mandatory, provide the prompt and both responses for TL confirmation) is in the current
+FAQ text (`response-preference-faq@1.1`, CURRENT_GUIDANCE); the card-level resolution is MIXED under either reading
+(other members UNRESOLVED and PARTIALLY_RESOLVED); the intervention need ("preference questions remain unanswered") holds
+under both; the member basis mentions the tutor's suggestion, so nothing decision-relevant is omitted. Caveat: this is a
+v10 card, and the classification needed the Agent 1 record, not the card's flag text.
+
+Repeated ending (stays). The content-review caution disputes the title "Repeated final line in exported audio", which the
+card displays. The Agent 1 finding questions whether a tutor's reply ("the actual recording speaks it twice") is a
+personal observation; the card counts it among the "five tutors" reporting and in "two tutors report the audio repeats an
+ending the transcript does not". Both are displayed. Affects.
+
+Contrasting cases: disputed tutor advice relied on (tie, `member_42af...`: card RESOLVED_IN_THREAD on a QA tutor's answer
+and the scope note "preserve the earlier answers") -> Affects; supported independently by current guidance
+(JSON-versus-prose) -> Independent; older record with insufficient detail (fictional phone `member_b26b...`, Japanese
+`member_3123...`: only "evidence audit unavailable" with every field disputed) -> Unknown.
+
+Accounting: every flag stays on its card; each non-gap flag has its queue item in its run (52 items per run unchanged);
+projection gaps checked against `accounting.json` (COMPLETE, 8). No decision store exists in this checkout and the shadow
+writes none.
+
+Findings. (1) One card of nine moves, the JSON-versus-prose card. (2) The card's flag text is Agent 1's `review_reason`;
+on four flagged members it describes the failed revision ("audit unavailable", "cited authority evidence") while the
+specific dispute is only in the Agent 1 record's `review_findings` (e.g. the Submit thread's flag reads "summary:3 ...
+quotations are required" but the finding is the central question and the team lead's authority). Classifying from the
+card alone would have produced Unknown or the wrong reason. (3) Classification here was manual reading; the saved data
+has no claim-level link from a disputed field to the card statements that use it. (4) Resolution disputes are the
+common Affects case (5 of 13 flags), because member-level resolution feeds the displayed card resolution.
+
+## Flag provenance and card dependencies (2026-11-04, zero calls)
+
+Prerequisite for the flag-dependence routing rule; production routing is unchanged.
+
+- Contracts (`agents/advice_contracts.py`, new; existing contracts unchanged): `FlagProvenance` v1
+  (`agent3-flag-provenance-v1`: origin, stable `obligation_key`, the run's own `queue_item_id`, `findings`
+  (`UpstreamFinding`: category, nature SUBSTANTIVE / PROCESS_FAILURE, disputed fields, message IDs, verbatim explanation,
+  `SourceArtifact` path/pointer/sha256), `attempt_errors` (REVISION_FAILED, NON_EFFECTIVE_ATTEMPT), `recovery`
+  RECOVERED / NOT_NARROWED / UNAVAILABLE / NOT_APPLICABLE, and `card_detail_is` FINDING / ATTEMPT_ERROR / GROUPING_NOTE /
+  UNMATCHED) and `CardDependencies` v1 (`DependencyLink` per element: DIRECT, DERIVED, SAME_THREAD, INVARIANT,
+  NOT_ESTABLISHED; `ResolutionInput` per member with the states that would change the topic state).
+- `agents/flag_provenance.py` (derived view for every run, old or new; the AdviceCard v3 bytes and InheritedFlag stay
+  as saved). `FlagSource` opens the handoff the run recorded (`fingerprints.handoff` path, canonical and routing hashes)
+  and refuses a changed one. Agent 1: the verification artifact at the recorded `agent1_lineage_base` +
+  `verification_file`, checked as `handoff_inputs.load_handoff` checks it (inside `records/`, `result_sha256`, kept
+  interpretation equals the handoff record). Findings are the kept attempt's pass findings plus Agent 1 content reviews;
+  the failed revision (`revision_error`) and the other attempt's check are attempt errors. Content cautions come from the
+  handoff's `content_review_obligations` with their supplement provenance. A missing or changed artifact is UNAVAILABLE;
+  nothing is guessed.
+- Dependencies reuse the saved records: grounding statements (text a card may show and its evidence), summary-sentence
+  and action premise/context claim links, member states with `advisor_checks.topic_resolution`, severity, the title
+  (naming cautions), the first retrieval query (disputed central question). DIRECT and DERIVED are references, not
+  effects; SAME_THREAD (cites the thread, not a named message) is not a dependence; INVARIANT is only the exact topic
+  aggregation; a check that failed without naming fields makes every link NOT_ESTABLISHED. Draft input is always
+  NOT_ESTABLISHED (runs do not save the request). Code never records independence.
+- Projection gaps: "Topic grouping needs review" (`GROUPING_LABEL`), category TOPIC_GROUPING, no queue item, no finding;
+  routing and accounting unchanged (52 queue items per run, `projection_gaps` 8). New cards' INHERITED_FLAG note and
+  detail describe the gap apart from Agent 1/2 flags; the dashboard review view (v3) and checks do the same, and each
+  flag entry carries its upstream finding (`Run.flags`, `GET /api/runs/{run}/cards/{card}/flags`).
+- Human assessments: `data/evaluation/agent3_flag_dependence_labels_v1.json` (`label_type: HUMAN_ASSESSMENT`).
+  Report `scripts/report_flag_dependence.py` (read-only; `--write` to `data/experiments/agent3_flag_dependence_v1/`).
+
+Result on the nine audited cards (each its own run and prompt version):
+
+- The card's saved flag text is not the dispute on 8 of 12 Agent 1 flags: the failed revision (`REVISION_FAILED`, 5)
+  or the discarded attempt's check (3, e.g. playback `member_943d...`: card says "evidence audit unavailable", the kept
+  findings are QN expansion and resolution). Provenance recovers the finding on 10, NOT_NARROWED on 2 (fictional phone,
+  Japanese closing-style), UNAVAILABLE on none.
+- Every AFFECTS label (6) is supported by displayed references (e.g. repeated ending: title DIRECT; `claim:c1`,
+  `reporter:U011` and the summary cite the disputed reply). Both UNKNOWN labels match NOT_NARROWED. The projection gap
+  is TOPIC_GROUPING with no queue item.
+- No INDEPENDENT label (5) can be confirmed by code; each rests on semantic judgment of displayed references.
+  JSON-versus-prose: `action:need` cites the QA tutor's reply named by the finding, and the member resolution assesses
+  the disputed field; code establishes only that the topic state (MIXED) is invariant. The central-question flags
+  (Submit, tie) are referenced by most displayed statements because the finding lists the thread's messages as evidence
+  for Agent 1's wording; whether citing a source message adopts Agent 1's wording is semantic.
+- Proposed rule: from the human labels, the JSON-versus-prose card still moves (1 of 9); from code alone, nothing moves.
+  A card is never promoted on a missing link.
+- Still needed before adopting the rule: (1) a recorded judgment per displayed statement of whether it adopts the
+  disputed reading (a field-level dependency, not message overlap), produced by a validated stage or a TL review action
+  rather than inferred; (2) Agent 1 finding evidence that separates the messages a dispute is about from the messages it
+  cites; (3) a saved draft request (or a hash of its Agent 1 interpretation block) so draft-input exposure is recorded;
+  (4) a policy decision on whether member-level resolution disputes count when the topic state is invariant
+  (playback `member_943d...`, tie `member_42af...`).
+
+## Flag-impact assessment in the final grounding call (2026-11-04, offline shadow, zero calls)
+
+Opt-in `advise(..., flag_impact=True)`; off by default, so production grounding requests are byte-identical and routing
+does not read the result.
+
+- Model I/O (`advisor_contracts.py`): `FlagImpactJudgment` (flag_id, impact AFFECTS / INDEPENDENT / UNKNOWN,
+  element_ids, explanation, independence_basis) and `GroundingJudgmentV6` (v5 plus `flag_impacts`). Entries are parsed
+  one by one, so a malformed or duplicated entry makes only that flag UNKNOWN and never fails the statement verdicts.
+- The same reserved grounding request carries `flag_impacts`: per flag (stable `flag_id`, `flag_impact.flag_id`) the
+  recovered finding, attempt errors labelled as not the dispute, and the CardDependencies references, plus
+  `FLAG_IMPACT_RULES` after the grounding rules. Projection gaps are not sent. Four-request topic ceiling unchanged.
+- Validation (`agents/flag_impact.validate`, deterministic): missing / duplicate / malformed judgment, unknown element ID,
+  or unavailable finding -> UNKNOWN; INDEPENDENT also needs a narrowed finding, a basis, and every displayed statement
+  referencing the dispute among its assessed elements; a disputed member resolution that the card counts in its thread
+  status ("Thread status: partially resolved x1, unresolved x2" in the reasoning) is AFFECTS even when the topic state is
+  invariant; a member state kept only in diagnostics may be INDEPENDENT only if the judgment assesses it. AFFECTS and
+  UNKNOWN retain review; projection gaps keep GROUPING_RULE.
+- Record (`advice_contracts.FlagImpactRecord` v1, saved as `flag_impact` in the topic result): assessments bound to
+  `inputs_sha256` (flag inputs, statements, member threads and retrieved sources as sent), evidence, provenance and the
+  assembled card text. `ReplayClient` reuses a recorded judgment only when those inputs and the flag-impact fingerprint
+  (`prompt_fingerprints()['flag_impact']`) are unchanged. Older runs read as NOT_ASSESSED (`Run.flags`).
+- Agent 1 context (every new run): `Stages` keeps the exact `agent1_interpretations` handed to drafting once per content
+  hash (`result['agent1_context']`), and each draft/revision call records the hash and whether that text was in the HTTP
+  body actually sent (`IN_HTTP_BODY`, from `RequestGuard.sent_text`), absent from it, or `NO_HTTP_REQUEST` (offline).
+  CardDependencies now records DRAFT_INPUT as DIRECT when that context carried the flagged member.
+
+Offline verification (tests/test_agent3_flag_impact.py; prepared judgments in
+`tests/fixtures/agent3_flag_impact_prepared_judgments.json`, labelled PREPARED, not model output):
+
+- JSON-versus-prose, INDEPENDENT with every reference assessed -> AFFECTS (the card counts the disputed UNRESOLVED state
+  in its thread status; topic MIXED is invariant). Without `action:need` assessed -> UNKNOWN.
+- Repeated ending: title caution and counted report -> AFFECTS. Audit-unavailable (fictional phone) -> UNKNOWN.
+- Tie (v17): `member_42af` INDEPENDENT -> AFFECTS (displayed RESOLVED_IN_THREAD, topic MIXED invariant); the
+  central-question flag is accepted as INDEPENDENT (all its references assessed, no resolution dispute); the card stays
+  on HIGH and the other flag.
+- Diagnostics only (`agent3_overnight_offline_v2`, scripted): `member_42af` shown UNKNOWN, state only in the draft ->
+  INDEPENDENT when assessed, UNKNOWN when not; the other flag has no judgment -> UNKNOWN.
+- Invalid element ID, malformed impact, duplicate entries, missing judgments, failed grounding -> UNKNOWN /
+  NOT_ASSESSED. Changed statements, changed flag rules or an unrecorded judgment -> no replay reuse.
+- End to end (Fake client): same stages and one grounding request with and without the option; the card is identical.
+
+Request size (`scripts/measure_grounding_request.py`, exact HTTP body at a fake transport, RequestGuard count): 20
+grounding requests replayed from 9 saved live runs, all within 24,000 (`agent3_final_eval_v1` and
+`agent3_overnight_smoke_v1` replay to no grounding request under the current code, so 0 were measured there). Largest 20,627 (Submit gap,
+`agent3_repair_eval_v1`; 17,304 without the flag context); largest flag context +3,669 (playback). Report
+`data/experiments/agent3_grounding_request_flag_impact_v1/`.
+
+Shadow routing (`scripts/report_flag_impact.py`, `data/experiments/agent3_flag_impact_shadow_v1/`): no saved run carries
+an assessment (all NOT_ASSESSED, shadow line = current line); with prepared judgments no card moves either. The
+JSON-versus-prose card, the one the human labels would move, is kept by the displayed member-resolution rule.
+A live assessment run is the next evidence needed; it is paid and needs authorization.
+
+## Flag-impact live shadow evaluation (2026-11-04, live, small)
+
+One authorized run: `data/experiments/agent3_flag_impact_live_v1/` (`scripts/run_agent3_overnight.py --cutoff
+2026-10-02T12:00:00Z --only <3 topics> --flag-impact --run --max-requests 12 --max-cost 3`). Sol, medium, default tier,
+24,000 / 16,384 tokens, 120 s timeout, zero retries; prompts v17, flag rules `b7358774…`, sent schema V6 `9dc49364…`.
+The runner gained `--flag-impact` (`Runtime(flag_impact=True)`, recorded in the manifest only when on; `freeze` now
+compares the union of saved and current fingerprint keys, so a resume cannot drop the option). Preflight
+(`preflight.json`): members, flag IDs and recovered findings match the saved examples; worst case 12 x $0.2118 = $2.54.
+
+Result: 6 requests (draft + grounding per topic; no revision, no ToT), $0.374, 81,462 input / 21,109 output tokens;
+grounding requests 12,081-15,431 tokens. Every statement SUPPORTED on all three cards; lines unchanged (all Needs
+Review); queue 52; accounting COMPLETE.
+
+| Topic | Flag | Model | Validated | Source check |
+|---|---|---|---|---|
+| JSON-versus-prose | RP-3824 member resolution (PARTIALLY_RESOLVED, counted; topic MIXED) | AFFECTS | AFFECTS | agree |
+| Tie | central question (RP-9595) | INDEPENDENT | UNKNOWN (`action:context` rejected) | defensible for the finding; unsafe as a release while the flag's discarded attempt disputes the member's resolution |
+| Tie | member resolution (RESOLVED_IN_THREAD, counted; topic MIXED) | AFFECTS | AFFECTS | agree; displayed state doubtful |
+| Repeated ending | AUDIO-9012 member resolution | AFFECTS | AFFECTS | agree; also bears on reporter counts and HIGH signal (not listed) |
+| Repeated ending | title caution ("exported audio") | AFFECTS | AFFECTS | agree; title unchanged, body text scoped |
+
+Findings: (1) contract defect: `flag_impact.elements()` omits `action:context`, which dependencies send; (2) rule gap:
+attempt errors with a resolution disagreement are not considered by the INDEPENDENT rule; (3) element lists of AFFECTS
+judgments are incomplete. Keep the feature experimental; routing unchanged. Reviewer assessment: `evaluation.json`
+(REVIEWER_ASSESSMENT, not human labels).
+
+Correction (2026-11-04, reliability pass): finding (2) above misread the tie record. The discarded attempt was Agent 1's
+original interpretation; the kept revision corrected both earlier findings (see below). The run is unpaired (no
+flag-off control, saved cards from other prompt versions), so it establishes neither an improvement nor a regression
+caused by flag assessment. Corrections: `data/experiments/agent3_flag_impact_reliability_v1/corrections.json`.
+
+## Flag-impact reliability pass and closeout (2026-11-04, offline, zero calls)
+
+Repairs (production routing unchanged; flag assessment stays opt-in):
+
+1. One element catalogue. `flag_impact.catalogue()` = judged statements, every member's resolution, title /
+   thread_status / topic_resolution, and every reference element_id the flag inputs send (`action:context`, the whole
+   summary for a title caution, severity signals). prepare() builds references and catalogue together; validate()
+   accepts exactly that catalogue. Across 64 flagged cards in seven saved runs no sent reference falls outside it;
+   `claim:c99`, `action:premise:c1` and similar are still rejected.
+2. Finding history. FlagProvenance v2 keeps each substantive finding of the discarded attempt as a PriorFinding:
+   OPEN (it applies to the kept values, or the kept state still differs from the coverage state), CORRECTED (the kept
+   revision changed structured fields, or set the state coverage named, and its check raised nothing on them),
+   SUPERSEDED (the kept check re-raises the same fields, or the finding disputes values only the discarded revision
+   held), UNCERTAIN (anything else, including rewritten prose that a later check silently accepted). Over the 41
+   inherited obligations: 11 CORRECTED, 4 SUPERSEDED, 1 UNCERTAIN (member 8ce5853, playback: a TERMINOLOGY finding on
+   rewritten prose; that thread's human content review found the revised summary still carried a disputed claim).
+   Process failures, attempt errors and failed revisions stay AttemptErrors. Agent 1 code and outputs are untouched;
+   positive content reviews still never clear a flag.
+3. Explicit coverage. Flag inputs carry open findings (F1..: kept, then OPEN/UNCERTAIN prior) and resolved ones (R1..,
+   context only). FlagImpactJudgmentV2 adds `finding_ids` (GroundingJudgmentV7). FlagImpactAssessment/Record v2 keep
+   `reference_ids` and `unassessed_reference_ids` beside every judgment: AFFECTS lists are known effects, not
+   exhaustive. INDEPENDENT now also needs every open finding accounted for, no UNCERTAIN finding, no record gap and
+   every displayed DIRECT / DERIVED / NOT_ESTABLISHED reference assessed; a diagnostics-only member state must be
+   assessed as `resolution:<member>` (topic invariance alone is not independence).
+4. Resolution interpretation. Reviewed the live assessments that leaned on "a tutor answered, not the TL": the Advisor
+   rule assigns states from the thread with no authority requirement, and the FAQ asks for TL confirmation only when the
+   pair and guidance do not settle the preference. JSON-versus-prose PARTIALLY_RESOLVED is defensible on content
+   (scoring approach answered, overall preference open); tie member 42af RESOLVED_IN_THREAD versus PARTIALLY_RESOLVED
+   is unresolved. Policy unchanged.
+
+Regression evidence (`report_flag_impact_reliability.py`, DIAGNOSTIC_REINTERPRETATION of the saved live responses, not
+new live results): the four AFFECTS stay AFFECTS with their unnamed references recorded (repeated ending: reporter
+count, HIGH signal and summary sentence for AUDIO-9012; the whole summary for the title caution); the tie
+central-question INDEPENDENT stays UNKNOWN, now because the v1 response has no `finding_ids` (with F1 added by hand it
+would validate; HIGH severity and the member-resolution flag keep the card in review). Reuse: recorded statement
+verdicts remain reusable (grounding rules, evidence view and schema unchanged); every recorded flag judgment needs a new
+judgment (flag rules and schema changed). Largest grounding request with v2 flag inputs: 20,820 / 24,000 (23 requests,
+all fit; flag context up to +4,187).
+
+Adoption decision: flag-impact stays experimental, opt-in (`advise(flag_impact=True)`, `run_agent3_overnight.py
+--flag-impact`) and shadow only; routing ignores it. Before any automatic clearance: (a) a paired live evaluation (same
+drafts with and without flag assessment) under v2 rules on a labelled set that includes INDEPENDENT-eligible flags; (b)
+human labels for the flags, not reviewer assessments; (c) an agreed resolution policy for peer replies and for
+RESOLVED_IN_THREAD without acceptance; (d) a decision on how much clearance an UNCERTAIN prior finding needs (human
+adjudication route); (e) dashboard handling for released flags. Until then INHERITED_FLAG routing is unchanged.
+

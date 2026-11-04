@@ -98,6 +98,11 @@ def create_app(*, catalog=None, store=None, fixture_root=FIXTURE_ROOT, clock=now
                             'diagnostics': result.get('diagnostics'), 'coverage_issues': result.get('coverage_issues'),
                             'action_notes': result.get('action_notes'), 'tot_status': (result.get('tot') or {}).get('status')}}
 
+    @app.get('/api/runs/{run_key}/cards/{card_id}/flags')
+    def card_flags(run_key: str, card_id: str):
+        """Upstream provenance of each inherited flag and what it references on the card (derived, read-only)."""
+        return {'flags': run_of(run_key).flags(card_id)}
+
     @app.get('/api/runs/{run_key}/evidence/{evidence_id:path}')
     def evidence(run_key: str, evidence_id: str):
         return run_of(run_key).evidence_entry(evidence_id)

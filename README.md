@@ -161,7 +161,8 @@ scenarios on the same arm for pilot v5 (zero calls by default; `--run` is paid, 
 AdviceCard v3 shows what happened, what to do, why and what needs review in plain language, referring to people
 by role; IDs, enums and premises stay in structured fields. The overnight workflow (LangGraph) runs the whole
 handoff: `scripts/run_agent3_overnight.py --cutoff <ISO>` (zero calls: plan and worst case), `--scripted --write
-<dir>` (offline), `--run --write <dir> --max-requests N --max-cost USD` (paid), `--resume <dir>`; it writes a
+<dir>` (offline), `--run --write <dir> --max-requests N --max-cost USD` (paid), `--resume <dir>`, `--flag-impact`
+(shadow flag-impact assessment in the grounding request; routing ignores it); it writes a
 morning brief (`morning_brief.json`/`.md`), cards, Model Review Queue, accounting and diagnostics. See
 [Milestone 4](docs/agent3-plan.md#milestone-4-implemented-bounded-advisor-pilot).
 
@@ -218,6 +219,8 @@ the frozen baselines when preparing any future run.
 | Dataset checks | `scripts/validate_topic_catalog.py`, `scripts/validate_slack_fixtures.py`, `scripts/validate_threadsense_dataset.py` |
 | Agent 3 | `scripts/run_agent3_pilot.py`, `scripts/run_agent3_overnight.py` (zero calls by default; `--run` is paid) |
 | Agent 3 experiment | `scripts/run_agent3_react_comparison.py` (offline batch-versus-adaptive research comparison; zero calls; `--write <new dir>`) |
+| Agent 3 evaluation | `scripts/report_flag_dependence.py` (flag provenance and card dependencies for the nine audited cards against human labels; zero calls; `--write` to `data/experiments/agent3_flag_dependence_v1/`) |
+| Agent 3 evaluation | `scripts/report_flag_impact.py` (shadow routing for the opt-in flag-impact assessment; prepared judgments labelled; zero calls; `--write`) and `scripts/measure_grounding_request.py` (exact grounding request size with the flag context, zero calls; `--write <new path>`); `scripts/report_flag_impact_reliability.py` (catalogue, finding history and diagnostic re-validation of the saved live flag judgments, zero calls; `--write`) |
 | Dashboard / TL decisions | `scripts/run_dashboard.py`, `scripts/build_decision_snapshot.py`, `web/` |
 
 Agent 2 preparation is read-only unless `--write` or `--prepare` is supplied.

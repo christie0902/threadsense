@@ -1,0 +1,75 @@
+{
+ "version": "agent3-flag-impact-live-eval-v1",
+ "label_type": "REVIEWER_ASSESSMENT",
+ "label_note": "Source-based assessment written by the coding assistant on 2026-11-04 from the fixture messages (data/fixtures/slack_generated_demo), the upstream findings (flag provenance) and the displayed card text of this run. Not a human label and not the model's verdict. Raw model judgments are in topics/*.json (model_calls[stage=grounding].raw, flag_impacts); validated records are result.flag_impact.",
+ "run": "data/experiments/agent3_flag_impact_live_v1",
+ "production_routing": "unchanged (routing ignores flag_impact)",
+ "flags": [
+  {
+   "topic": "repeated_ending", "topic_id": "cluster_b7e5234380f9ea67/topic_1",
+   "flag_id": "flag_9d20ed872d018f64ffb30bd9f5632a39", "kind": "inherited_agent1_review",
+   "member_id": "member_a05733133a11c3689d715928", "thread": "C_AUDIO_GENERAL 1790899012.002000 (AUDIO-9012)",
+   "finding": "RESOLUTION (resolution_state, resolution_rationale): coverage PARTIALLY_RESOLVED vs interpretation UNRESOLVED; whether U011's reply corroborates the loop.",
+   "model_impact": "AFFECTS", "model_elements": ["resolution:member_a05733133a11c3689d715928", "thread_status"],
+   "validated_impact": "AFFECTS", "validator_changes": [],
+   "assessment": "AFFECTS, agreed. The card displays this member as PARTIALLY_RESOLVED and counts it in 'partially resolved x3'. The disputed reply (U011: 'the actual recording speaks it twice') is also counted as a report: it is one of the 'five tutors', one of the 'two tutors report doubled audio endings that are not doubled in the transcript', a reporter (reporter:U011) and one of the seven authors behind the HIGH signal. The model's element list omits those count, reporter and severity references; the outcome is unaffected (AFFECTS), but its element coverage is incomplete. Excluding U011 would leave six authors, so the HIGH signal would probably still hold.",
+   "unsafe_independent": false
+  },
+  {
+   "topic": "repeated_ending", "topic_id": "cluster_b7e5234380f9ea67/topic_1",
+   "flag_id": "flag_15a6bbd45a49ff8b339a508bb91f7766", "kind": "assisted_content_review",
+   "finding": "TAXONOMY_NAMING_CAUTION (topics[0].topic_name): 'exported audio' over-specifies the location for members still comparing file and player.",
+   "model_impact": "AFFECTS", "model_elements": ["title"],
+   "validated_impact": "AFFECTS", "validator_changes": [],
+   "assessment": "AFFECTS, agreed. The displayed title is unchanged: 'Repeated final line in exported audio'. In threads 1790868894.000123 and 1790915994.000122 the team lead asks first to establish file versus player, and in 1790899012.002000 a QA tutor asks the same, so the title still over-specifies. The new body text does not adopt the disputed reading: it limits exported-audio reports to two tutors (U013 and U010, correct), and the action reports symptoms 'not a confirmed generation defect'.",
+   "unsafe_independent": false
+  },
+  {
+   "topic": "tie_decisions", "topic_id": "cluster_f944891544b06f79/topic_2",
+   "flag_id": "flag_06e1381c31326fb163ea485a102ad4c3", "kind": "inherited_agent1_review",
+   "member_id": "member_0886e8fe7e7d998c1077ff10", "thread": "C_RP_GENERAL 1790939595.000035 (RP-9595)",
+   "finding": "CENTRAL_QUESTION: Agent 1's question 'What should be done about the QA marking the tie as wrong again' unsupported; the thread is about inconsistency and calibration.",
+   "model_impact": "INDEPENDENT", "model_elements": ["claim:c1", "claim:c3", "claim:c4", "claim:c5", "summary:s1", "summary:s2", "action", "action:rationale", "action:need", "review_note", "severity:rationale", "severity:signal:HIGH[3]", "severity:reported_recurrence", "action:context", "resolution:member_0886e8fe7e7d998c1077ff10"],
+   "validated_impact": "UNKNOWN", "validator_changes": ["Unknown element IDs: action:context."],
+   "validator_change_is_correct": "No, it is a contract defect. 'action:context' is the element_id of the DERIVED ACTION_CONTEXT dependency link that was itself sent to the judge, but flag_impact.elements() does not include it in the vocabulary. With it accepted (offline diagnostic, not applied), the validator would return INDEPENDENT. The outcome is conservative, so no unsafe release occurred.",
+   "assessment": "INDEPENDENT is defensible for the finding as stated. The card frames the thread as inconsistency and calibration ('the team lead acknowledges inconsistent QA feedback and asks for both rationales'), and the action is a calibration comparison, so it never adopts the disputed 'what should be done about the mark' framing. Not safe to release on this alone, though: the same flag carries a discarded attempt in which independent coverage judged this member UNRESOLVED against the card's PARTIALLY_RESOLVED, and this member is the only one whose state changes the topic resolution (RESOLVED_IN_THREAD would make the topic RESOLVED). Under the current rules, attempt errors are not the dispute, so releasing this flag would leave that resolution disagreement unflagged. In this run the card keeps Needs Review regardless, through HIGH_SEVERITY and the second flag (AFFECTS); neither was cleared.",
+   "unsafe_independent": "not unsafe for the stated finding; unsafe as a release rule while a resolution disagreement sits in the flag's attempt errors"
+  },
+  {
+   "topic": "tie_decisions", "topic_id": "cluster_f944891544b06f79/topic_2",
+   "flag_id": "flag_4e3e3ce94ee96df81ece44da0fb0da4f", "kind": "inherited_agent1_review",
+   "member_id": "member_42af0c53b9dee102697caa09", "thread": "C_RP_QA 1790926534.000040",
+   "finding": "RESOLUTION (resolution_rationale): Agent 1's 'clear conclusion' and 'no further questions remain' unsupported; the QA tutor's justification is not shown to close the concern.",
+   "model_impact": "AFFECTS", "model_elements": ["resolution:member_42af0c53b9dee102697caa09", "thread_status"],
+   "validated_impact": "AFFECTS", "validator_changes": [],
+   "assessment": "AFFECTS, agreed, and substantively doubtful: the card shows RESOLVED_IN_THREAD ('resolved in thread x2'). The root asks 'Anyone else seeing this?' about inconsistent outcomes; the only reply (U002, a QA tutor) justifies a tie for one pair. It neither answers whether others see the inconsistency nor shows acceptance. The topic stays MIXED for every state of this member (INVARIANT), as the model said.",
+   "unsafe_independent": false
+  },
+  {
+   "topic": "json_vs_prose", "topic_id": "cluster_fb1dce1eeeedc4cb/topic_1",
+   "flag_id": "flag_135b903cdf5f8a936db129c317c7c3b4", "kind": "inherited_agent1_review",
+   "member_id": "member_225803f43142caa5d3c165cf", "thread": "C_RP_QA 1790913824.000016 (RP-3824)",
+   "finding": "RESOLUTION (resolution_state, resolution_rationale): coverage PARTIALLY_RESOLVED vs interpretation UNRESOLVED; the tutor's reply sets out the scoring approach but does not say which response wins.",
+   "model_impact": "AFFECTS", "model_elements": ["resolution:member_225803f43142caa5d3c165cf", "thread_status"],
+   "validated_impact": "AFFECTS", "validator_changes": [],
+   "assessment": "AFFECTS, agreed. The card counts the disputed PARTIALLY_RESOLVED in 'partially resolved x2' while the topic stays MIXED (INVARIANT). The only substantive reply is from a tutor (U018), not the team lead, and the failed revision was rejected for citing exactly that message as authority, so the displayed state is genuinely open. The card text attributes the reply correctly ('a tutor reports ... and suggests scoring the formatting failure separately').",
+   "unsafe_independent": false
+  }
+ ],
+ "unsafe_independent_judgments": 0,
+ "contract_defects": [
+  "flag_impact.elements() omits 'action:context', although flag_provenance.dependencies() sends it as an ACTION_CONTEXT link element_id; a fully assessed INDEPENDENT that cites it is downgraded to UNKNOWN."
+ ],
+ "rule_gaps": [
+  "A flag whose attempt errors contain a resolution disagreement on a displayed member state (here, the tie card's central-question flag) can be judged INDEPENDENT on its finding alone; releasing it would drop that disagreement from review.",
+  "AFFECTS judgments may list fewer affected elements than the card has (repeated ending: reporter count and severity omitted). This is harmless for routing but means element lists are not a complete dependency map."
+ ],
+ "privacy": "No personal first names in model-written card prose or in impact explanations. The tie card's inherited_flags[1].detail repeats Agent 1's verbatim finding ('Mina's response ...'); the saved v17 card has the same text (pre-existing, not introduced here); morning_brief.md contains no names.",
+ "authority": "No card cites an upstream finding: supporting sources are slack_message and knowledge_source only. Model explanations refer to findings as disputes ('the finding disputes ...').",
+ "quality_vs_saved": {
+  "json_vs_prose": "Same line, reasons, severity (MEDIUM), resolution (MIXED), action (POST_ALIGNMENT); every statement SUPPORTED, as in the saved card (agent3_summary_eval_v1, prompts v10).",
+  "tie_decisions": "Same line, reasons, severity (HIGH), resolution (MIXED), title and action (SCHEDULE_ALIGNMENT) as the saved v17 card; every statement SUPPORTED.",
+  "repeated_ending": "Differs from the saved card (agent3_policy_eval_v1, prompts v9: LOW severity, no action): now HIGH (seven distinct authors) with ESCALATE_ENGINEERING. Flag context is only in the grounding request, so this comes from the v17 draft, not the feature. The counts check out against the threads. Escalating to engineering while the team lead's 'first establish file versus player' is still open is a judgment call; the draft says the comparisons are pending and the cause is unconfirmed.",
+  "control": "No flag-off control on the same drafts (it would have needed more paid requests); grounding regression can only be bounded: every statement SUPPORTED, no stage failures, no withheld text."
+ }
+}

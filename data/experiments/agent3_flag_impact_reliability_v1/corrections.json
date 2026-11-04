@@ -1,0 +1,29 @@
+{
+ "version": "agent3-flag-impact-reliability-corrections-v1",
+ "label_type": "REVIEWER_ASSESSMENT",
+ "label_note": "Written by the coding assistant on 2026-11-04 from the recorded Agent 1 artifacts, the fixture messages, the project FAQ and the Advisor resolution rule. It corrects data/experiments/agent3_flag_impact_live_v1/evaluation.json, which is kept unchanged as recorded. Not a human label.",
+ "corrections": [
+  {
+   "claim": "evaluation.json (tie, central-question flag): 'the same flag carries a discarded attempt in which independent coverage judged this member UNRESOLVED against the card's PARTIALLY_RESOLVED ... releasing this flag would leave that resolution disagreement unflagged' (listed as a rule gap).",
+   "correction": "Misread. The discarded attempt was Agent 1's original interpretation (PARTIALLY_RESOLVED), not the card. The kept revision changed resolution_state to UNRESOLVED (the state independent coverage named) and cleared the authority fields, and the revision's check raised neither finding again. Both earlier findings are recorded corrections (PriorFinding CORRECTED), not an open disagreement. The card's own PARTIALLY_RESOLVED for this member is Agent 3's judgment from the thread (Agent 1's label is an input, not evidence); the grounding call judged it SUPPORTED. The general concern behind the rule gap still held for other records: a discarded attempt's substantive finding was previously never carried. It is now classified (OPEN / CORRECTED / SUPERSEDED / UNCERTAIN), and one real record (member 8ce5853, playback) is UNCERTAIN and blocks clearance."
+  },
+  {
+   "claim": "evaluation.json (JSON-versus-prose): 'The only substantive reply is from a tutor (U018), not the team lead ... so the displayed state is genuinely open.'",
+   "correction": "Overstated; it rested on the replier's role. What was answered: how to score (assess the format failure separately from factual correctness), which matches the FAQ. What remains open: which response wins on RP-3824; nobody supplied the pair. The FAQ asks for team-lead confirmation only 'if the actual pair and applicable guidance do not settle the preference', and the Advisor's resolution rule assigns states from the thread without an authority requirement (authority applies to Agent 1's separate authority fields, the reason the revision was rejected). PARTIALLY_RESOLVED is therefore defensible on content; UNRESOLVED (Agent 1's kept label) is also arguable because the question asked is unanswered. The flag stays AFFECTS because the disputed state is displayed and counted, not because a tutor answered.",
+   "uncertainty": "Whether a peer's restatement of guidance counts as partial resolution is not settled by the current rule; this pass does not change the resolution policy."
+  },
+  {
+   "claim": "evaluation.json (tie, member 42af): 'substantively doubtful: ... the only reply (U002, a QA tutor) justifies a tie for one pair. It neither answers whether others see the inconsistency nor shows acceptance.'",
+   "correction": "The role was not the basis, but 'doubtful' was too strong. What was answered: whether the tie is justified for the pair (substantive). What remains open: the root's 'Anyone else seeing this?' about inconsistent outcomes. The Advisor rule requires no acceptance message; Agent 1's later coverage check judged RESOLVED_IN_THREAD while its first check disputed the rationale's 'clear conclusion' wording. RESOLVED_IN_THREAD versus PARTIALLY_RESOLVED is a judgment call the record does not settle; the flag stays AFFECTS because the state is displayed and counted.",
+   "uncertainty": "Unresolved between RESOLVED_IN_THREAD and PARTIALLY_RESOLVED; the FAQ's calibration guidance does not require team-lead confirmation for a single pair."
+  },
+  {
+   "claim": "evaluation.json / plan text describing the repeated-ending card (LOW to HIGH, escalation) and the other cards as 'no regression'.",
+   "correction": "The live run was unpaired: no flag-off control on the same drafts, and the comparison with saved cards spans different prompt versions (v9, v10, v17). It establishes neither an improvement nor a regression caused by flag assessment. It shows only that, in this run, every statement was SUPPORTED, no stage failed and the card lines were unchanged. The repeated-ending change comes from the v17 draft, which the flag context (grounding only) cannot reach."
+  },
+  {
+   "claim": "evaluation.json contract_defects: 'flag_impact.elements() omits action:context'.",
+   "correction": "Fixed in this pass: catalogue() is the one vocabulary (the fixed elements plus every reference element_id sent); validate() accepts exactly that. Under the current rules the saved central-question judgment is still UNKNOWN, now because it predates finding_ids (it cannot account for F1), not because of action:context."
+  }
+ ]
+}
