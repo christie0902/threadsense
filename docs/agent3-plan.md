@@ -1547,3 +1547,139 @@ submission problem to engineering." The announcement description (c11, SOURCE_FA
 announcement governing example collection only. Summary 2/2 shown. Card line NEEDS_REVIEW (HIGH severity, inherited
 flags). Independent check: the instruction, draft, scope note and rationale match the member messages, the team lead's
 requests, the engineer's RP-3412/RP-5337 requests and the project instructions; no route or shared cause is asserted.
+
+## Refinement milestone: actionable cards and an adaptive-research experiment (2026-11-04, offline)
+
+Baseline `d976eff` (v14). Zero paid calls; frozen evidence, saved runs and existing staging unchanged; nothing committed.
+
+**Dashboard: "What should I do?" and "What do I need to check?"** The overview shows the complete instruction (no
+clamp) with **Copy draft** beside it; alternative drafts are collapsed. Each alternative states its relation to the
+card's action only as far as the saved comparison records it (`runs.alternatives` `relation`: INCUMBENT for comparison
+v3, SAME_ACTION_TYPE, DIFFERENT_ACTION); the playback card's first option is "same kind of action, judged separately",
+not "the same recommendation". A **What to review** panel replaces the reason chips and the Review notes tab: one entry
+per final review reason (`dashboard/review.py`, view `dashboard-review-view-v1`), categorised MANDATORY (high severity:
+required even when the recommendation is supported), DISPUTED (withheld by the final check), MISSING, INHERITED,
+CONFLICT, DECISION, with the field or thread it concerns, what to check and links to the saved evidence, related
+threads and Model Review Queue items (a queue link opens the queue focused on that item). Withheld statements are named
+by field and verdict with the judge's recorded reason labelled as an assessment; the rejected wording is never
+returned. Details a run did not save are reported as unavailable. The advisor's own review note is shown once,
+identified by its grounding statement (`review_note`, SUPPORTED). Run, prompt version and model are on every card and in
+the run banner (`provenance` from the manifest). Backend: `Run.review`, `Run.provenance`; brief and card APIs add `review`.
+
+**Stiff Submit example, traced.** Card (`agent3_recipient_routing_v1`) -> saved brief -> dashboard: two independent
+problems. (1) Duplication: `assemble_card` adds a plain-language note per review reason ("Severity is high under the team
+rubric.", "3 earlier review flags are still open ...") after the model's `review_note`, which already said the flags
+were open; both renderers then printed every note beside the reason chips. Fixed in the renderer (the review panel shows
+each reason once and the advisor's note once; stored cards and briefs unchanged) and at the source for new prose. (2)
+The draft lists reports as "A QA tutor and a tutor report ...; another tutor reports ... Another QA tutor reports ...;
+another tutor reports ...". **Prompts v15** (writing guide only): `review_note` covers only a check the card does not
+already list (the card adds high severity, open upstream flags and their count, withheld statements and the open
+question); a draft covering several reports groups them by shared symptom with counts and roles, only where the cited
+messages state that symptom, keeping each task reference with its report. Grounding rules, evidence view and schemas
+unchanged (grounding inputs identical to the v14 run, so recorded verdicts still replay); the final grounding still
+judges the exact displayed text; no post-grounding call. Reconstructed Submit revision request 20,918 tokens (v14
+measurement 20,344-20,780; limit 24,000). v15 is not validated live.
+
+**Adaptive (react) research, opt-in** (`agents/advisor_research.py`; `advise(research_mode='react')`, default `batch`;
+not wired to any runner). One query at a time: after each observation the revision step either finalizes or names ONE
+targeted query for an open gap (`REACT_REVISION_RULES`), at most 2 follow-ups. Stops: NO_GAP, GAP_FILLED,
+CONTROLLER_STOP, REPEATED_QUERY, NO_NEW_EVIDENCE (no revision is sent), RETRIEVAL_BUDGET, FOLLOW_UP_LIMIT,
+REQUEST_CEILING. Before a revision may ask for a second search, the remaining requests must cover a second revision,
+the comparison if triggered and the grounding; otherwise the revision runs in final mode and the trace records that a
+fifth request would have been needed. Each step logs gap, query, returned ids, expansion additions, new evidence and the
+query terms traceable to the previous observation; the topic result records recovered versus used evidence and model
+requests separately from local searches.
+
+**Offline comparison** (`scripts/run_agent3_react_comparison.py`, `data/experiments/agent3_react_comparison_v1/`; real
+local retrieval on the active snapshot; prepared drafts; controller decisions by `scripted_decision`, a deterministic
+stand-in over recorded fields; no revision generated, so "used" is not measured):
+
+| Case | Arm | Follow-up searches | Expected evidence recovered | Unnecessary searches | Stop | Model requests (est.) |
+|---|---|---|---|---|---|---|
+| Audio trial outcome | batch (production) | 1 | yes (outcome, via recorded-link expansion) | 0 | all run | 3 |
+| Audio trial outcome | react | 1 | yes | 0 | GAP_FILLED | 3 |
+| Audio trial outcome | batch, expansion off (the frozen miss) | 1 | no | 1 | all run | 3 |
+| Audio trial outcome | react, expansion off | 2 | yes (second query written from the approval) | 0 | FOLLOW_UP_LIMIT | 4 |
+| Audio trial outcome | react, expansion off, comparison triggered as in the live v6.2 run | 1 | no | 1 | REQUEST_CEILING (fifth request needed) | 4 |
+| Control (initial evidence answers) | batch / react | 0 | n/a | 0 | NO_GAP | 2 |
+| Gap the corpus cannot answer | batch | 1 | n/a | 1 | all run | 4 |
+| Gap the corpus cannot answer | react | 1 | n/a | 1 | REQUEST_CEILING | 4 |
+| Gap the corpus cannot answer | react, ceiling raised to 5 | 2 | n/a | 2 | FOLLOW_UP_LIMIT | 5 |
+
+Findings: the existing recorded-link expansion already recovers the audio outcome on the frozen query, so react adds
+nothing there in production. React's sequencing is shown only when the first observation holds the approval alone
+(expansion off): the next query uses the approval's title, ID, authoring and date and recovers the outcome, within four
+requests only if the comparison is not triggered; with the live run's OPEN_CONFIRMATION trigger it needs a fifth
+request. On an unanswerable gap react spends the same or more for nothing. Not enabled; a live check would be needed to
+test a model's own stop/continue decisions and whether recovered evidence is used.
+
+Tests: `tests/test_dashboard_review.py` (6), `tests/test_agent3_adaptive_research.py` (13, including the paired test
+on real retrieval), Playwright `a team lead finds the complete action, the specific review reasons and their evidence
+without opening Technical`; three tests updated for the v15 version pin.
+
+## Prompts v15 writing evaluation (2026-11-04, live, small)
+
+Not a controlled benchmark: one run per topic, different prompt versions in the baselines, model variance uncontrolled.
+`data/experiments/agent3_writing_eval_v15_v1/` (Sol `openai/gpt-6.1-sol`, medium reasoning, default tier, 24,000 input /
+16,384 output tokens per request, timeout 120 s, zero retries; `--max-requests 8 --max-cost 2`, worst-case reservation
+$1.69; run once). Same snapshot (`4da16f090eb5`), cutoff 2026-10-02T12:00:00Z, handoff and members as the baselines:
+Submit `gap:routed_440e64c7fbdcc49f` (4 members; baseline `agent3_recipient_routing_v1`, v14) and tie decisions
+`topic:cluster_f944891544b06f79/topic_2` (3 members; baseline `agent3_policy_eval_v1`, v9). Retrieval expansion on in all
+three; ReAct off. Result: 4 requests (draft + grounding per topic; no revision or ToT), 54,151 input / 15,089 output
+tokens, $0.2592; accounting COMPLETE.
+
+Submit: grounding PASSED, nothing withheld, action displayed. The draft now groups reports as bullets with task references
+attributed correctly (RP-3412 / RP-5337 named by the engineer in the two grey-button threads; RP-1577; RP-3325; the
+"every field" tutor's reference "not supplied"); the review note names a specific missing check instead of restating
+flags. Losses: the summary's first sentence is vaguer ("problems submitting tasks" instead of the grey/disabled versus
+no-op range, which moved to the instruction); the scope note exposes routing-rule language ("No concrete engineering
+intake route is established here"); the general diagnostic list folds the engineer's error request into the team lead's
+set. Tie decisions: grounding FAILED only on the affected-reporter statement for the tutor (same as the baseline); text
+otherwise displayed. Severity moved MEDIUM -> HIGH (signal HIGH[3], three reporters) with no guidance change: model
+variance that adds a mandatory review. The draft states the QA tutor's "meaningful quality advantage" wording as "the
+current criterion" and drops the FAQ's hedges ("usually", "can be appropriate"), as the v9 draft also did; it refers to
+"the team lead's request" in a message the team lead would post. Severity support text keeps internal phrasing ("supplied
+batch context", "not three separate people inferred from the topic's member entries"); severity wording is not covered
+by the v15 writing guide.
+
+Dashboard: projection-gap work items display "Threads awaiting a topic" (`runs.display_title`, from the saved
+work_item kind); the saved label and group ID are under Technical.
+
+## Policy wording in copyable drafts (2026-11-04, offline, prompts v16)
+
+Source audit of the v15 tie draft (frozen `agent3_writing_eval_v15_v1`): "choose a tie when neither response has a
+meaningful quality advantage" and "cosmetic phrasing alone does not justify a preference" are quoted from the current
+project instructions (`response-preference-instructions@1.1`, "Ties"; CURRENT_GUIDANCE, team lead authority, project
+scope), cited by claim c9 and listed as an essential premise; the judge marked c9 SUPPORTED and the action SUFFICIENT,
+and compared the FAQ ("usually does not", "can be appropriate") with the instructions as AGREE. All three phrases are
+supported as written. **Correction:** the v15 evaluation above said the draft promoted a QA tutor's wording and dropped
+FAQ hedges; the wording is the instructions' own, so that finding was wrong. No final-grounding change is justified.
+
+Prompts v16 (writing guide only; grounding inputs identical to the v15 run): team lead-posted drafts in the team lead's
+voice, addressed to recipients, no third-person references to the team lead or team lead-only steps; policy wording only
+when it helps recipients act, at the strength and scope of its governing source (listed among the premises), participant
+explanations attributed rather than stated as rules; requests kept with the threads and tasks where they were made; no
+commentary on an unnamed delivery route the action does not depend on. Reconstructed Submit revision request 21,136
+tokens (limit 24,000). Offline tests `tests/test_agent3_policy_wording.py` (7; frozen ledger; deterministic checks real,
+semantic verdicts prepared). Not run live.
+
+## Prompts v17 writing evaluation (2026-11-04, live, small)
+
+v16 already covered team-lead voice, request attachment, policy only when it helps (at source strength) and evidence for
+a named destination (ROUTING_RULE); it lacked plain wording for severity.rationale and signal support and the requested
+familiar substitutes, so v17 adds one writing-guide sentence (grounding unchanged; reconstructed Submit revision 21,243
+tokens). The tie rule remains supported by current instructions v1.1 ("Ties"), as the source audit recorded.
+`data/experiments/agent3_writing_eval_v17_v1/`: same two work items, members, snapshot `4da16f090eb5`, expansion on,
+ReAct off, Sol medium/default, 24,000 / 16,384 tokens, `--max-requests 8 --max-cost 2` (reservation $1.69), run once.
+4 requests (draft + grounding per topic), 54,653 input / 14,391 output tokens, $0.2532; accounting COMPLETE.
+
+Tie: grounding PASSED, nothing withheld (v15 withheld one affected-reporter statement). Draft in the team lead's voice,
+addressed to recipients, no destination named, policy reduced to "whether a preference has a meaningful user-facing
+benefit" (consistent with instructions and FAQ); roles and counts correct (QA tutors U014 and U019; the tutor's
+next-day report). No overstated hedge was written, so none was rejected. Remaining: severity HIGH (signal HIGH[3]) as in
+v15 (v9 MEDIUM); "tie threshold" kept from the team lead's own wording; the summary omits the tutor's report (it is in
+the draft); "wait for the inputs" repeated in instruction, scope note and review note. Submit: grounding PASSED; bullets
+kept, task references correct (the "every field" tutor placed in the RP-3325 thread); route commentary gone from the scope
+note; summary again names the symptom range. Residual: the team lead's request list still includes "errors" (the team
+lead asked for task ID, required-field state and exact button behavior; the error request is the engineer's and is
+also attached correctly to RP-3412/RP-5337); the rationale mentions "the browser-zoom review" without context.

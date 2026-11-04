@@ -26,7 +26,7 @@ function readHash() {
   let panel = null
   if (raw?.startsWith('evidence:')) panel = { type: 'evidence', id: raw.slice(9) }
   else if (raw?.startsWith('thread:')) { const [, channel, thread] = raw.split(':'); panel = { type: 'thread', channel, thread } }
-  return { run: p.get('run'), project: p.get('project') || '', tab: p.get('tab') || 'brief', panel }
+  return { run: p.get('run'), project: p.get('project') || '', tab: p.get('tab') || 'brief', panel, item: p.get('item') }
 }
 
 function writeHash(s) {
@@ -34,6 +34,7 @@ function writeHash(s) {
   if (s.run) p.set('run', s.run)
   if (s.project) p.set('project', s.project)
   if (s.tab !== 'brief') p.set('tab', s.tab)
+  if (s.tab === 'queue' && s.item) p.set('item', s.item)
   if (s.panel) p.set('panel', s.panel.type === 'evidence' ? `evidence:${s.panel.id}` : `thread:${s.panel.channel}:${s.panel.thread}`)
   const next = `#${p.toString()}`
   if (window.location.hash !== next) window.history.replaceState(null, '', next)
@@ -131,7 +132,8 @@ function RunBanner({ run }) {
         <span className="text-xs text-slate-400"><Icon name="clock" className="mr-1 inline h-3.5 w-3.5 -translate-y-px" />Cutoff {when(run.cutoff)} · window {when(run.window.start)} to {when(run.window.cutoff)}</span>
       </div>
       <div className="mt-1.5 text-xs leading-relaxed text-slate-300">{text} {run.mode !== 'LIVE' && run.semantic_note}</div>
-      <div className="mt-1 text-[11px] text-slate-500">Run <code className="font-mono text-slate-400">{run.run_key}</code> ({run.run_id}){run.scope_only ? ` · scoped to ${run.scope_only.join(', ')}` : ''}.
+      <div className="mt-1 text-[11px] text-slate-500">Run <code className="font-mono text-slate-400">{run.run_key}</code> ({run.run_id}){run.scope_only ? ` · scoped to ${run.scope_only.join(', ')}` : ''}
+        <span data-testid="run-provenance"> · prompts {run.provenance?.prompt_version || 'not recorded'}{run.provenance?.model ? ` · model ${run.provenance.model}` : ''}</span>.
         {run.shares_run_id_with.length > 0 && <span className="text-amber-200/90"> Another directory ({run.shares_run_id_with.join(', ')}) has the same run ID; it is a separate run and is never combined with this one.</span>}</div>
     </section>
   )
@@ -144,6 +146,8 @@ export default function App() {
   const [runKey, setRunKey] = useState(initial.run)
   const [project, setProject] = useState(initial.project)
   const [tab, setTab] = useState(initial.tab)
+  const [focusItem, setFocusItem] = useState(initial.item)
+  const openQueueItem = useCallback(id => { setFocusItem(id); setTab('queue'); window.scrollTo({ top: 0 }) }, [])
   const [panel, setPanel] = useState(initial.panel)
   const [lineFilter, setLineFilter] = useState('ALL')
   const [brief, setBrief] = useState(null)
@@ -153,7 +157,7 @@ export default function App() {
   const actor = session?.actor_id || ''
 
   useEffect(() => { getJSON('/api/runs').then(d => { setRuns(d.runs); setSession(d.session || null); if (!runKey && d.runs.length) setRunKey(d.runs[0].run_key) }).catch(e => setError(String(e.message))) }, [])
-  useEffect(() => { writeHash({ run: runKey, project, tab, panel }) }, [runKey, project, tab, panel])
+  useEffect(() => { writeHash({ run: runKey, project, tab, panel, item: focusItem }) }, [runKey, project, tab, panel, focusItem])
 
   const loadDecisions = useCallback(() => runKey && getJSON(`/api/runs/${encodeURIComponent(runKey)}/decisions`).then(setDecisions), [runKey])
   const loadQueue = useCallback(() => runKey && getJSON(`/api/runs/${encodeURIComponent(runKey)}/review-queue`).then(d => setQueue(d.items)), [runKey])
@@ -177,7 +181,7 @@ export default function App() {
   const cards = (brief?.cards || []).filter(c => inProject(c.card))
   const queueRows = queue.filter(r => inProject(r.item))
   const topics = (brief?.topics || []).filter(t => !project || t.project_id === project)
-  const cardTopics = Object.fromEntries((brief?.cards || []).map(c => [c.card.card_id, c.card.topic_name]))
+  const cardTopics = Object.fromEntries((brief?.cards || []).map(c => [c.card.card_id, c.display_title || c.card.topic_name]))
   const projects = runs?.find(r => r.run_key === runKey)?.projects || []
   const openQueue = queueRows.filter(r => r.review_state === 'OPEN').length
   const counts = brief?.counts || {}
@@ -313,7 +317,7 @@ export default function App() {
                       </h3>
                       <div className="grid gap-4 lg:grid-cols-2" data-testid={`active-${line}`}>
                         <AnimatePresence initial={false}>
-                          {live.map(c => <CardView key={c.card.card_id} runKey={runKey} item={c} actor={actor} decisionState={byCard[c.card.card_id]} wide={live.length === 1}
+                          {live.map(c => <CardView key={c.card.card_id} runKey={runKey} run={run} openQueueItem={openQueueItem} item={c} actor={actor} decisionState={byCard[c.card.card_id]} wide={live.length === 1}
                             onDecisionChanged={loadDecisions} openPanel={setPanel} />)}
                         </AnimatePresence>
                         {live.length === 0 && <EmptyLine line={line} resolved={resolved.length} total={cards.length}
@@ -323,7 +327,7 @@ export default function App() {
                         <details className="group panel-inset p-3" data-testid={`resolved-${line}`}>
                           <summary className="cursor-pointer text-sm font-medium text-slate-300">Resolved ({resolved.length}): out of the active worklist; original card, review reasons and evidence unchanged</summary>
                           <div className="mt-3 grid gap-4 lg:grid-cols-2">
-                            {resolved.map(c => <CardView key={c.card.card_id} runKey={runKey} item={c} actor={actor} decisionState={byCard[c.card.card_id]} wide={resolved.length === 1}
+                            {resolved.map(c => <CardView key={c.card.card_id} runKey={runKey} run={run} openQueueItem={openQueueItem} item={c} actor={actor} decisionState={byCard[c.card.card_id]} wide={resolved.length === 1}
                               onDecisionChanged={loadDecisions} openPanel={setPanel} />)}
                           </div>
                         </details>
@@ -338,7 +342,7 @@ export default function App() {
                 </div>
               </>
             )}
-            {tab === 'queue' && <ReviewQueue runKey={runKey} rows={queueRows} actor={actor} onChanged={loadQueue} cardTopics={cardTopics} />}
+            {tab === 'queue' && <ReviewQueue runKey={runKey} rows={queueRows} actor={actor} onChanged={loadQueue} cardTopics={cardTopics} focus={focusItem} />}
           </>
         )}
       </main>

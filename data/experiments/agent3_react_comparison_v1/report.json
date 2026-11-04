@@ -1,0 +1,890 @@
+{
+  "version": "agent3-react-comparison-v1",
+  "model_calls": 0,
+  "snapshot": {
+    "build_fingerprint": "4da16f090eb5f2c61f408948f4f761b254caaf4e3a226e1e46a9574308ccc791",
+    "cutoff": "2026-10-02T12:00:00Z",
+    "chunking_version": "knowledge-chunks-v2"
+  },
+  "scripted": {
+    "drafts": "prepared (tests/fixtures/agent3_pilot_scripted_judgments.json); gaps as labelled per case",
+    "controller_decisions": "advisor_research.scripted_decision (deterministic stand-in)",
+    "revisions": "not generated; \"used\" is not measured offline"
+  },
+  "real": [
+    "local hybrid retrieval on the active snapshot",
+    "version, scope and date filters",
+    "recorded-link expansion (when on)",
+    "evidence ledger",
+    "controller sequencing and stop rules"
+  ],
+  "cases": [
+    {
+      "id": "audio_trial_outcome",
+      "scenario": "audio_playback",
+      "question": "Did the earlier batch-05 one-reload playback trial have a recorded outcome?",
+      "gap": {
+        "gap_id": "g1",
+        "need": "PRIOR_DECISION_OUTCOME",
+        "query": "Audio multimodal batch 05 one-reload playback trial ending August 28 2026: observed results and decisions extending, ending or replacing the trial; applicability to batch 06 player never loads or waveform visible with no playback",
+        "source_types": [
+          "decision",
+          "announcement",
+          "guideline"
+        ],
+        "version_mode": "history"
+      },
+      "gap_source": "The frozen live follow-up query (agent3_open_evaluation_cases.json, audio_trial_outcome_followup_miss).",
+      "expected": [
+        "audio-playback-trial-outcome@1.0"
+      ],
+      "arms": [
+        {
+          "arm": "batch (production)",
+          "expansion": true,
+          "steps": [
+            {
+              "step": 1,
+              "gap_id": "g1",
+              "query": "Audio multimodal batch 05 one-reload playback trial ending August 28 2026: observed results and decisions extending, ending or replacing the trial; applicability to batch 06 player never loads or waveform visible with no playback",
+              "status": "DONE",
+              "returned_ids": [
+                "k:audio-playback-trial-post@1.0:d674dbe6",
+                "k:audio-playback-trial-approval@1.0:1779c36a",
+                "k:slack:C_AUDIO_ANNOUNCEMENTS:1790892000.000901:1c524924",
+                "k:audio-multimodal-instructions@1.3:1c6df70e",
+                "k:slack:C_AUDIO_ANNOUNCEMENTS:1790890099.000112:64d38d33"
+              ],
+              "added_by_expansion": [
+                "k:audio-playback-trial-outcome@1.0:16332fce"
+              ],
+              "new_evidence_ids": [
+                "k:audio-playback-trial-approval@1.0:1779c36a",
+                "k:audio-playback-trial-outcome@1.0:16332fce"
+              ]
+            }
+          ],
+          "stop_reason": "ALL_REQUESTED_QUERIES_RUN",
+          "tot_triggers": [],
+          "recovered_evidence_ids": [
+            "k:audio-playback-trial-approval@1.0:1779c36a",
+            "k:audio-playback-trial-outcome@1.0:16332fce"
+          ],
+          "expected_found": [
+            "audio-playback-trial-outcome@1.0"
+          ],
+          "local_searches": 2,
+          "follow_up_searches": 1,
+          "model_requests_estimate": {
+            "draft": 1,
+            "revision": 1,
+            "tot": 0,
+            "grounding": 1,
+            "total": 3
+          },
+          "unnecessary_follow_up_searches": 0
+        },
+        {
+          "arm": "react (opt-in)",
+          "expansion": true,
+          "ceiling": 4,
+          "steps": [
+            {
+              "step": 1,
+              "gap_id": "g1",
+              "need": "PRIOR_DECISION_OUTCOME",
+              "query": "Audio multimodal batch 05 one-reload playback trial ending August 28 2026: observed results and decisions extending, ending or replacing the trial; applicability to batch 06 player never loads or waveform visible with no playback",
+              "source_types": [
+                "decision",
+                "announcement",
+                "guideline"
+              ],
+              "version_mode": "history",
+              "query_terms_from_observation": null,
+              "status": "DONE",
+              "returned_ids": [
+                "k:audio-playback-trial-post@1.0:d674dbe6",
+                "k:audio-playback-trial-approval@1.0:1779c36a",
+                "k:slack:C_AUDIO_ANNOUNCEMENTS:1790892000.000901:1c524924",
+                "k:audio-multimodal-instructions@1.3:1c6df70e",
+                "k:slack:C_AUDIO_ANNOUNCEMENTS:1790890099.000112:64d38d33"
+              ],
+              "added_by_expansion": [
+                "k:audio-playback-trial-outcome@1.0:16332fce"
+              ],
+              "new_evidence_ids": [
+                "k:audio-playback-trial-approval@1.0:1779c36a",
+                "k:audio-playback-trial-outcome@1.0:16332fce"
+              ]
+            }
+          ],
+          "decisions": [
+            {
+              "after_step": 1,
+              "may_search": true,
+              "filled": true,
+              "request": null,
+              "basis": "observed outcome k:audio-playback-trial-outcome@1.0:16332fce in series audio-playback-trial",
+              "decided_by": "SCRIPTED_STAND_IN"
+            }
+          ],
+          "stop_reason": "GAP_FILLED",
+          "note": null,
+          "fifth_request_needed": false,
+          "tot_triggers": [],
+          "recovered_evidence_ids": [
+            "k:audio-playback-trial-approval@1.0:1779c36a",
+            "k:audio-playback-trial-outcome@1.0:16332fce"
+          ],
+          "expected_found": [
+            "audio-playback-trial-outcome@1.0"
+          ],
+          "unnecessary_follow_up_searches": 0,
+          "local_searches": 2,
+          "follow_up_searches": 1,
+          "model_requests_estimate": {
+            "draft": 1,
+            "revision": 1,
+            "tot": 0,
+            "grounding": 1,
+            "total": 3
+          }
+        },
+        {
+          "arm": "batch (production), expansion off",
+          "expansion": false,
+          "steps": [
+            {
+              "step": 1,
+              "gap_id": "g1",
+              "query": "Audio multimodal batch 05 one-reload playback trial ending August 28 2026: observed results and decisions extending, ending or replacing the trial; applicability to batch 06 player never loads or waveform visible with no playback",
+              "status": "DONE",
+              "returned_ids": [
+                "k:audio-playback-trial-post@1.0:d674dbe6",
+                "k:audio-playback-trial-approval@1.0:1779c36a",
+                "k:slack:C_AUDIO_ANNOUNCEMENTS:1790892000.000901:1c524924",
+                "k:audio-multimodal-instructions@1.3:1c6df70e",
+                "k:slack:C_AUDIO_ANNOUNCEMENTS:1790890099.000112:64d38d33"
+              ],
+              "added_by_expansion": [],
+              "new_evidence_ids": [
+                "k:audio-playback-trial-approval@1.0:1779c36a"
+              ]
+            }
+          ],
+          "stop_reason": "ALL_REQUESTED_QUERIES_RUN",
+          "tot_triggers": [],
+          "recovered_evidence_ids": [
+            "k:audio-playback-trial-approval@1.0:1779c36a"
+          ],
+          "expected_found": [],
+          "local_searches": 2,
+          "follow_up_searches": 1,
+          "model_requests_estimate": {
+            "draft": 1,
+            "revision": 1,
+            "tot": 0,
+            "grounding": 1,
+            "total": 3
+          },
+          "unnecessary_follow_up_searches": 1
+        },
+        {
+          "arm": "react (opt-in), expansion off",
+          "expansion": false,
+          "ceiling": 4,
+          "steps": [
+            {
+              "step": 1,
+              "gap_id": "g1",
+              "need": "PRIOR_DECISION_OUTCOME",
+              "query": "Audio multimodal batch 05 one-reload playback trial ending August 28 2026: observed results and decisions extending, ending or replacing the trial; applicability to batch 06 player never loads or waveform visible with no playback",
+              "source_types": [
+                "decision",
+                "announcement",
+                "guideline"
+              ],
+              "version_mode": "history",
+              "query_terms_from_observation": null,
+              "status": "DONE",
+              "returned_ids": [
+                "k:audio-playback-trial-post@1.0:d674dbe6",
+                "k:audio-playback-trial-approval@1.0:1779c36a",
+                "k:slack:C_AUDIO_ANNOUNCEMENTS:1790892000.000901:1c524924",
+                "k:audio-multimodal-instructions@1.3:1c6df70e",
+                "k:slack:C_AUDIO_ANNOUNCEMENTS:1790890099.000112:64d38d33"
+              ],
+              "added_by_expansion": [],
+              "new_evidence_ids": [
+                "k:audio-playback-trial-approval@1.0:1779c36a"
+              ]
+            },
+            {
+              "step": 2,
+              "gap_id": "g1",
+              "need": "PRIOR_DECISION_OUTCOME",
+              "query": "Outcome of AUDIO-20260824-01 — Approve a limited playback trial (audio-playback-trial-approval@1.0): observed results after 2026-08-24",
+              "source_types": [
+                "decision"
+              ],
+              "version_mode": "history",
+              "query_terms_from_observation": {
+                "terms": [
+                  "2026-08-24",
+                  "approve",
+                  "audio-20260824-01",
+                  "audio-playback-trial-approval@1.0",
+                  "limited"
+                ],
+                "evidence_ids": [
+                  "k:audio-playback-trial-approval@1.0:1779c36a"
+                ]
+              },
+              "status": "DONE",
+              "returned_ids": [
+                "k:audio-playback-trial-approval@1.0:5e945970",
+                "k:audio-playback-trial-approval@1.0:1779c36a",
+                "k:audio-playback-trial-outcome@1.0:e8e69ba6",
+                "k:audio-playback-trial-outcome@1.0:16332fce",
+                "k:audio-headset-check-outcome@1.0:45338f35"
+              ],
+              "added_by_expansion": [],
+              "new_evidence_ids": [
+                "k:audio-playback-trial-approval@1.0:5e945970",
+                "k:audio-playback-trial-outcome@1.0:e8e69ba6",
+                "k:audio-playback-trial-outcome@1.0:16332fce",
+                "k:audio-headset-check-outcome@1.0:45338f35"
+              ]
+            }
+          ],
+          "decisions": [
+            {
+              "after_step": 1,
+              "may_search": true,
+              "filled": false,
+              "request": "Outcome of AUDIO-20260824-01 — Approve a limited playback trial (audio-playback-trial-approval@1.0): observed results after 2026-08-24",
+              "basis": "query built from k:audio-playback-trial-approval@1.0:1779c36a (series audio-playback-trial)",
+              "decided_by": "SCRIPTED_STAND_IN"
+            },
+            {
+              "after_step": 2,
+              "may_search": false,
+              "filled": true,
+              "request": null,
+              "basis": "observed outcome k:audio-playback-trial-outcome@1.0:e8e69ba6 in series audio-playback-trial",
+              "decided_by": "SCRIPTED_STAND_IN"
+            }
+          ],
+          "stop_reason": "FOLLOW_UP_LIMIT",
+          "note": null,
+          "fifth_request_needed": false,
+          "tot_triggers": [],
+          "recovered_evidence_ids": [
+            "k:audio-playback-trial-approval@1.0:1779c36a",
+            "k:audio-playback-trial-approval@1.0:5e945970",
+            "k:audio-playback-trial-outcome@1.0:e8e69ba6",
+            "k:audio-playback-trial-outcome@1.0:16332fce",
+            "k:audio-headset-check-outcome@1.0:45338f35"
+          ],
+          "expected_found": [
+            "audio-playback-trial-outcome@1.0"
+          ],
+          "unnecessary_follow_up_searches": 0,
+          "local_searches": 3,
+          "follow_up_searches": 2,
+          "model_requests_estimate": {
+            "draft": 1,
+            "revision": 2,
+            "tot": 0,
+            "grounding": 1,
+            "total": 4
+          }
+        },
+        {
+          "arm": "react (opt-in), expansion off, ceiling 5",
+          "expansion": false,
+          "ceiling": 5,
+          "steps": [
+            {
+              "step": 1,
+              "gap_id": "g1",
+              "need": "PRIOR_DECISION_OUTCOME",
+              "query": "Audio multimodal batch 05 one-reload playback trial ending August 28 2026: observed results and decisions extending, ending or replacing the trial; applicability to batch 06 player never loads or waveform visible with no playback",
+              "source_types": [
+                "decision",
+                "announcement",
+                "guideline"
+              ],
+              "version_mode": "history",
+              "query_terms_from_observation": null,
+              "status": "DONE",
+              "returned_ids": [
+                "k:audio-playback-trial-post@1.0:d674dbe6",
+                "k:audio-playback-trial-approval@1.0:1779c36a",
+                "k:slack:C_AUDIO_ANNOUNCEMENTS:1790892000.000901:1c524924",
+                "k:audio-multimodal-instructions@1.3:1c6df70e",
+                "k:slack:C_AUDIO_ANNOUNCEMENTS:1790890099.000112:64d38d33"
+              ],
+              "added_by_expansion": [],
+              "new_evidence_ids": [
+                "k:audio-playback-trial-approval@1.0:1779c36a"
+              ]
+            },
+            {
+              "step": 2,
+              "gap_id": "g1",
+              "need": "PRIOR_DECISION_OUTCOME",
+              "query": "Outcome of AUDIO-20260824-01 — Approve a limited playback trial (audio-playback-trial-approval@1.0): observed results after 2026-08-24",
+              "source_types": [
+                "decision"
+              ],
+              "version_mode": "history",
+              "query_terms_from_observation": {
+                "terms": [
+                  "2026-08-24",
+                  "approve",
+                  "audio-20260824-01",
+                  "audio-playback-trial-approval@1.0",
+                  "limited"
+                ],
+                "evidence_ids": [
+                  "k:audio-playback-trial-approval@1.0:1779c36a"
+                ]
+              },
+              "status": "DONE",
+              "returned_ids": [
+                "k:audio-playback-trial-approval@1.0:5e945970",
+                "k:audio-playback-trial-approval@1.0:1779c36a",
+                "k:audio-playback-trial-outcome@1.0:e8e69ba6",
+                "k:audio-playback-trial-outcome@1.0:16332fce",
+                "k:audio-headset-check-outcome@1.0:45338f35"
+              ],
+              "added_by_expansion": [],
+              "new_evidence_ids": [
+                "k:audio-playback-trial-approval@1.0:5e945970",
+                "k:audio-playback-trial-outcome@1.0:e8e69ba6",
+                "k:audio-playback-trial-outcome@1.0:16332fce",
+                "k:audio-headset-check-outcome@1.0:45338f35"
+              ]
+            }
+          ],
+          "decisions": [
+            {
+              "after_step": 1,
+              "may_search": true,
+              "filled": false,
+              "request": "Outcome of AUDIO-20260824-01 — Approve a limited playback trial (audio-playback-trial-approval@1.0): observed results after 2026-08-24",
+              "basis": "query built from k:audio-playback-trial-approval@1.0:1779c36a (series audio-playback-trial)",
+              "decided_by": "SCRIPTED_STAND_IN"
+            },
+            {
+              "after_step": 2,
+              "may_search": false,
+              "filled": true,
+              "request": null,
+              "basis": "observed outcome k:audio-playback-trial-outcome@1.0:e8e69ba6 in series audio-playback-trial",
+              "decided_by": "SCRIPTED_STAND_IN"
+            }
+          ],
+          "stop_reason": "FOLLOW_UP_LIMIT",
+          "note": null,
+          "fifth_request_needed": false,
+          "tot_triggers": [],
+          "recovered_evidence_ids": [
+            "k:audio-playback-trial-approval@1.0:1779c36a",
+            "k:audio-playback-trial-approval@1.0:5e945970",
+            "k:audio-playback-trial-outcome@1.0:e8e69ba6",
+            "k:audio-playback-trial-outcome@1.0:16332fce",
+            "k:audio-headset-check-outcome@1.0:45338f35"
+          ],
+          "expected_found": [
+            "audio-playback-trial-outcome@1.0"
+          ],
+          "unnecessary_follow_up_searches": 0,
+          "local_searches": 3,
+          "follow_up_searches": 2,
+          "model_requests_estimate": {
+            "draft": 1,
+            "revision": 2,
+            "tot": 0,
+            "grounding": 1,
+            "total": 4
+          }
+        },
+        {
+          "arm": "react (opt-in), expansion off, comparison triggered as in the live v6.2 run",
+          "expansion": false,
+          "ceiling": 4,
+          "steps": [
+            {
+              "step": 1,
+              "gap_id": "g1",
+              "need": "PRIOR_DECISION_OUTCOME",
+              "query": "Audio multimodal batch 05 one-reload playback trial ending August 28 2026: observed results and decisions extending, ending or replacing the trial; applicability to batch 06 player never loads or waveform visible with no playback",
+              "source_types": [
+                "decision",
+                "announcement",
+                "guideline"
+              ],
+              "version_mode": "history",
+              "query_terms_from_observation": null,
+              "status": "DONE",
+              "returned_ids": [
+                "k:audio-playback-trial-post@1.0:d674dbe6",
+                "k:audio-playback-trial-approval@1.0:1779c36a",
+                "k:slack:C_AUDIO_ANNOUNCEMENTS:1790892000.000901:1c524924",
+                "k:audio-multimodal-instructions@1.3:1c6df70e",
+                "k:slack:C_AUDIO_ANNOUNCEMENTS:1790890099.000112:64d38d33"
+              ],
+              "added_by_expansion": [],
+              "new_evidence_ids": [
+                "k:audio-playback-trial-approval@1.0:1779c36a"
+              ]
+            }
+          ],
+          "decisions": [
+            {
+              "after_step": 1,
+              "may_search": false,
+              "filled": false,
+              "request": null,
+              "basis": "query built from k:audio-playback-trial-approval@1.0:1779c36a (series audio-playback-trial)",
+              "decided_by": "SCRIPTED_STAND_IN"
+            }
+          ],
+          "stop_reason": "REQUEST_CEILING",
+          "note": "A second search needs 4 more requests (revision, second revision, comparison, grounding); 3 remain under the 4-request ceiling.",
+          "fifth_request_needed": true,
+          "tot_triggers": [
+            "OPEN_CONFIRMATION"
+          ],
+          "recovered_evidence_ids": [
+            "k:audio-playback-trial-approval@1.0:1779c36a"
+          ],
+          "expected_found": [],
+          "unnecessary_follow_up_searches": 1,
+          "local_searches": 2,
+          "follow_up_searches": 1,
+          "model_requests_estimate": {
+            "draft": 1,
+            "revision": 1,
+            "tot": 1,
+            "grounding": 1,
+            "total": 4
+          }
+        }
+      ]
+    },
+    {
+      "id": "control_initial_evidence_answers",
+      "scenario": "submit_failure",
+      "question": "What is the current handling for the Submit reports? (current instructions answer it)",
+      "gap": null,
+      "gap_source": "The prepared Submit draft names no follow-up: the initial evidence covers it.",
+      "expected": [],
+      "arms": [
+        {
+          "arm": "batch (production)",
+          "expansion": true,
+          "steps": [],
+          "stop_reason": "NO_GAP",
+          "tot_triggers": [],
+          "recovered_evidence_ids": [],
+          "expected_found": [],
+          "local_searches": 1,
+          "follow_up_searches": 0,
+          "model_requests_estimate": {
+            "draft": 1,
+            "revision": 0,
+            "tot": 0,
+            "grounding": 1,
+            "total": 2
+          },
+          "unnecessary_follow_up_searches": 0
+        },
+        {
+          "arm": "react (opt-in)",
+          "expansion": true,
+          "ceiling": 4,
+          "steps": [],
+          "decisions": [],
+          "stop_reason": "NO_GAP",
+          "note": null,
+          "fifth_request_needed": false,
+          "tot_triggers": [],
+          "recovered_evidence_ids": [],
+          "expected_found": [],
+          "unnecessary_follow_up_searches": 0,
+          "local_searches": 1,
+          "follow_up_searches": 0,
+          "model_requests_estimate": {
+            "draft": 1,
+            "revision": 0,
+            "tot": 0,
+            "grounding": 1,
+            "total": 2
+          }
+        }
+      ]
+    },
+    {
+      "id": "gap_corpus_cannot_answer",
+      "scenario": "repeated_ending",
+      "question": "Was the repeated final line confirmed in a downloaded recording or on a second player?",
+      "gap": {
+        "gap_id": "g1",
+        "need": "PRIOR_DECISION_OUTCOME",
+        "source_types": [
+          "decision"
+        ],
+        "version_mode": "history",
+        "query": "repeated final line in exported audio: result of the downloaded-recording or second-player comparison"
+      },
+      "gap_source": "Written for this experiment (the prepared draft names this gap without a query); the corpus records only the deferred review that requested this evidence.",
+      "expected": [],
+      "arms": [
+        {
+          "arm": "batch (production)",
+          "expansion": true,
+          "steps": [
+            {
+              "step": 1,
+              "gap_id": "g1",
+              "query": "repeated final line in exported audio: result of the downloaded-recording or second-player comparison",
+              "status": "DONE",
+              "returned_ids": [
+                "k:audio-repeat-observation-review@1.0:ae0550d0",
+                "k:audio-headset-check-outcome@1.0:4b8898da",
+                "k:audio-headset-check-approval@1.0:bb33bb5d",
+                "k:audio-playback-trial-approval@1.0:1779c36a",
+                "k:audio-headset-check-outcome@1.0:45338f35"
+              ],
+              "added_by_expansion": [
+                "k:audio-playback-trial-outcome@1.0:16332fce"
+              ],
+              "new_evidence_ids": [
+                "k:audio-headset-check-outcome@1.0:4b8898da",
+                "k:audio-headset-check-approval@1.0:bb33bb5d",
+                "k:audio-playback-trial-approval@1.0:1779c36a",
+                "k:audio-headset-check-outcome@1.0:45338f35",
+                "k:audio-playback-trial-outcome@1.0:16332fce"
+              ]
+            }
+          ],
+          "stop_reason": "ALL_REQUESTED_QUERIES_RUN",
+          "tot_triggers": [
+            "LOW_CONFIDENCE"
+          ],
+          "recovered_evidence_ids": [
+            "k:audio-headset-check-outcome@1.0:4b8898da",
+            "k:audio-headset-check-approval@1.0:bb33bb5d",
+            "k:audio-playback-trial-approval@1.0:1779c36a",
+            "k:audio-headset-check-outcome@1.0:45338f35",
+            "k:audio-playback-trial-outcome@1.0:16332fce"
+          ],
+          "expected_found": [],
+          "local_searches": 2,
+          "follow_up_searches": 1,
+          "model_requests_estimate": {
+            "draft": 1,
+            "revision": 1,
+            "tot": 1,
+            "grounding": 1,
+            "total": 4
+          },
+          "unnecessary_follow_up_searches": 1
+        },
+        {
+          "arm": "react (opt-in)",
+          "expansion": true,
+          "ceiling": 4,
+          "steps": [
+            {
+              "step": 1,
+              "gap_id": "g1",
+              "need": "PRIOR_DECISION_OUTCOME",
+              "query": "repeated final line in exported audio: result of the downloaded-recording or second-player comparison",
+              "source_types": [
+                "decision"
+              ],
+              "version_mode": "history",
+              "query_terms_from_observation": null,
+              "status": "DONE",
+              "returned_ids": [
+                "k:audio-repeat-observation-review@1.0:ae0550d0",
+                "k:audio-headset-check-outcome@1.0:4b8898da",
+                "k:audio-headset-check-approval@1.0:bb33bb5d",
+                "k:audio-playback-trial-approval@1.0:1779c36a",
+                "k:audio-headset-check-outcome@1.0:45338f35"
+              ],
+              "added_by_expansion": [
+                "k:audio-playback-trial-outcome@1.0:16332fce"
+              ],
+              "new_evidence_ids": [
+                "k:audio-headset-check-outcome@1.0:4b8898da",
+                "k:audio-headset-check-approval@1.0:bb33bb5d",
+                "k:audio-playback-trial-approval@1.0:1779c36a",
+                "k:audio-headset-check-outcome@1.0:45338f35",
+                "k:audio-playback-trial-outcome@1.0:16332fce"
+              ]
+            }
+          ],
+          "decisions": [
+            {
+              "after_step": 1,
+              "may_search": false,
+              "filled": false,
+              "request": null,
+              "basis": "query built from k:audio-repeat-observation-review@1.0:ae0550d0 (series audio-repeat-observation)",
+              "decided_by": "SCRIPTED_STAND_IN"
+            }
+          ],
+          "stop_reason": "REQUEST_CEILING",
+          "note": "A second search needs 4 more requests (revision, second revision, comparison, grounding); 3 remain under the 4-request ceiling.",
+          "fifth_request_needed": true,
+          "tot_triggers": [
+            "LOW_CONFIDENCE"
+          ],
+          "recovered_evidence_ids": [
+            "k:audio-headset-check-outcome@1.0:4b8898da",
+            "k:audio-headset-check-approval@1.0:bb33bb5d",
+            "k:audio-playback-trial-approval@1.0:1779c36a",
+            "k:audio-headset-check-outcome@1.0:45338f35",
+            "k:audio-playback-trial-outcome@1.0:16332fce"
+          ],
+          "expected_found": [],
+          "unnecessary_follow_up_searches": 1,
+          "local_searches": 2,
+          "follow_up_searches": 1,
+          "model_requests_estimate": {
+            "draft": 1,
+            "revision": 1,
+            "tot": 1,
+            "grounding": 1,
+            "total": 4
+          }
+        },
+        {
+          "arm": "batch (production), expansion off",
+          "expansion": false,
+          "steps": [
+            {
+              "step": 1,
+              "gap_id": "g1",
+              "query": "repeated final line in exported audio: result of the downloaded-recording or second-player comparison",
+              "status": "DONE",
+              "returned_ids": [
+                "k:audio-repeat-observation-review@1.0:ae0550d0",
+                "k:audio-headset-check-outcome@1.0:4b8898da",
+                "k:audio-headset-check-approval@1.0:bb33bb5d",
+                "k:audio-playback-trial-approval@1.0:1779c36a",
+                "k:audio-headset-check-outcome@1.0:45338f35"
+              ],
+              "added_by_expansion": [],
+              "new_evidence_ids": [
+                "k:audio-headset-check-outcome@1.0:4b8898da",
+                "k:audio-headset-check-approval@1.0:bb33bb5d",
+                "k:audio-playback-trial-approval@1.0:1779c36a",
+                "k:audio-headset-check-outcome@1.0:45338f35"
+              ]
+            }
+          ],
+          "stop_reason": "ALL_REQUESTED_QUERIES_RUN",
+          "tot_triggers": [
+            "LOW_CONFIDENCE"
+          ],
+          "recovered_evidence_ids": [
+            "k:audio-headset-check-outcome@1.0:4b8898da",
+            "k:audio-headset-check-approval@1.0:bb33bb5d",
+            "k:audio-playback-trial-approval@1.0:1779c36a",
+            "k:audio-headset-check-outcome@1.0:45338f35"
+          ],
+          "expected_found": [],
+          "local_searches": 2,
+          "follow_up_searches": 1,
+          "model_requests_estimate": {
+            "draft": 1,
+            "revision": 1,
+            "tot": 1,
+            "grounding": 1,
+            "total": 4
+          },
+          "unnecessary_follow_up_searches": 1
+        },
+        {
+          "arm": "react (opt-in), expansion off",
+          "expansion": false,
+          "ceiling": 4,
+          "steps": [
+            {
+              "step": 1,
+              "gap_id": "g1",
+              "need": "PRIOR_DECISION_OUTCOME",
+              "query": "repeated final line in exported audio: result of the downloaded-recording or second-player comparison",
+              "source_types": [
+                "decision"
+              ],
+              "version_mode": "history",
+              "query_terms_from_observation": null,
+              "status": "DONE",
+              "returned_ids": [
+                "k:audio-repeat-observation-review@1.0:ae0550d0",
+                "k:audio-headset-check-outcome@1.0:4b8898da",
+                "k:audio-headset-check-approval@1.0:bb33bb5d",
+                "k:audio-playback-trial-approval@1.0:1779c36a",
+                "k:audio-headset-check-outcome@1.0:45338f35"
+              ],
+              "added_by_expansion": [],
+              "new_evidence_ids": [
+                "k:audio-headset-check-outcome@1.0:4b8898da",
+                "k:audio-headset-check-approval@1.0:bb33bb5d",
+                "k:audio-playback-trial-approval@1.0:1779c36a",
+                "k:audio-headset-check-outcome@1.0:45338f35"
+              ]
+            }
+          ],
+          "decisions": [
+            {
+              "after_step": 1,
+              "may_search": false,
+              "filled": false,
+              "request": null,
+              "basis": "query built from k:audio-repeat-observation-review@1.0:ae0550d0 (series audio-repeat-observation)",
+              "decided_by": "SCRIPTED_STAND_IN"
+            }
+          ],
+          "stop_reason": "REQUEST_CEILING",
+          "note": "A second search needs 4 more requests (revision, second revision, comparison, grounding); 3 remain under the 4-request ceiling.",
+          "fifth_request_needed": true,
+          "tot_triggers": [
+            "LOW_CONFIDENCE"
+          ],
+          "recovered_evidence_ids": [
+            "k:audio-headset-check-outcome@1.0:4b8898da",
+            "k:audio-headset-check-approval@1.0:bb33bb5d",
+            "k:audio-playback-trial-approval@1.0:1779c36a",
+            "k:audio-headset-check-outcome@1.0:45338f35"
+          ],
+          "expected_found": [],
+          "unnecessary_follow_up_searches": 1,
+          "local_searches": 2,
+          "follow_up_searches": 1,
+          "model_requests_estimate": {
+            "draft": 1,
+            "revision": 1,
+            "tot": 1,
+            "grounding": 1,
+            "total": 4
+          }
+        },
+        {
+          "arm": "react (opt-in), expansion off, ceiling 5",
+          "expansion": false,
+          "ceiling": 5,
+          "steps": [
+            {
+              "step": 1,
+              "gap_id": "g1",
+              "need": "PRIOR_DECISION_OUTCOME",
+              "query": "repeated final line in exported audio: result of the downloaded-recording or second-player comparison",
+              "source_types": [
+                "decision"
+              ],
+              "version_mode": "history",
+              "query_terms_from_observation": null,
+              "status": "DONE",
+              "returned_ids": [
+                "k:audio-repeat-observation-review@1.0:ae0550d0",
+                "k:audio-headset-check-outcome@1.0:4b8898da",
+                "k:audio-headset-check-approval@1.0:bb33bb5d",
+                "k:audio-playback-trial-approval@1.0:1779c36a",
+                "k:audio-headset-check-outcome@1.0:45338f35"
+              ],
+              "added_by_expansion": [],
+              "new_evidence_ids": [
+                "k:audio-headset-check-outcome@1.0:4b8898da",
+                "k:audio-headset-check-approval@1.0:bb33bb5d",
+                "k:audio-playback-trial-approval@1.0:1779c36a",
+                "k:audio-headset-check-outcome@1.0:45338f35"
+              ]
+            },
+            {
+              "step": 2,
+              "gap_id": "g1",
+              "need": "PRIOR_DECISION_OUTCOME",
+              "query": "Requested evidence for Repeated ending retained as an observation (audio-repeat-observation-review@1.0) after 2026-09-29: comparison result",
+              "source_types": [
+                "decision"
+              ],
+              "version_mode": "history",
+              "query_terms_from_observation": {
+                "terms": [
+                  "evidence"
+                ],
+                "evidence_ids": [
+                  "k:audio-playback-trial-approval@1.0:1779c36a"
+                ]
+              },
+              "status": "DONE",
+              "returned_ids": [
+                "k:audio-repeat-observation-review@1.0:ae0550d0",
+                "k:audio-playback-trial-approval@1.0:1779c36a",
+                "k:audio-playback-trial-outcome@1.0:16332fce",
+                "k:audio-playback-trial-approval@1.0:5e945970",
+                "k:audio-headset-check-outcome@1.0:4b8898da"
+              ],
+              "added_by_expansion": [],
+              "new_evidence_ids": [
+                "k:audio-playback-trial-outcome@1.0:16332fce",
+                "k:audio-playback-trial-approval@1.0:5e945970"
+              ]
+            }
+          ],
+          "decisions": [
+            {
+              "after_step": 1,
+              "may_search": true,
+              "filled": false,
+              "request": "Requested evidence for Repeated ending retained as an observation (audio-repeat-observation-review@1.0) after 2026-09-29: comparison result",
+              "basis": "query built from k:audio-repeat-observation-review@1.0:ae0550d0 (series audio-repeat-observation)",
+              "decided_by": "SCRIPTED_STAND_IN"
+            },
+            {
+              "after_step": 2,
+              "may_search": false,
+              "filled": false,
+              "request": null,
+              "basis": "query built from k:audio-repeat-observation-review@1.0:ae0550d0 (series audio-repeat-observation)",
+              "decided_by": "SCRIPTED_STAND_IN"
+            }
+          ],
+          "stop_reason": "FOLLOW_UP_LIMIT",
+          "note": null,
+          "fifth_request_needed": false,
+          "tot_triggers": [
+            "LOW_CONFIDENCE"
+          ],
+          "recovered_evidence_ids": [
+            "k:audio-headset-check-outcome@1.0:4b8898da",
+            "k:audio-headset-check-approval@1.0:bb33bb5d",
+            "k:audio-playback-trial-approval@1.0:1779c36a",
+            "k:audio-headset-check-outcome@1.0:45338f35",
+            "k:audio-playback-trial-outcome@1.0:16332fce",
+            "k:audio-playback-trial-approval@1.0:5e945970"
+          ],
+          "expected_found": [],
+          "unnecessary_follow_up_searches": 2,
+          "local_searches": 3,
+          "follow_up_searches": 2,
+          "model_requests_estimate": {
+            "draft": 1,
+            "revision": 2,
+            "tot": 1,
+            "grounding": 1,
+            "total": 5
+          }
+        }
+      ]
+    }
+  ]
+}

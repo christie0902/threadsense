@@ -19,7 +19,7 @@ uv run --locked --extra dev python -m pytest tests/test_x.py   # single file
 ```
 
 - Always pass a **fresh** `--basetemp .cache/pytest-<name>`: pytest wipes it at start.
-- Full suite: 962 tests, ~11 min, all expected to pass. Intermittent `WinError 5` on `os.replace` is a Windows file lock (see Known issues), not a code failure.
+- Full suite: 982 tests, ~13 min, all expected to pass. Intermittent `WinError 5` on `os.replace` is a Windows file lock (see Known issues), not a code failure.
 - No linter/formatter configured. No build step beyond the editable install.
 - UI tests: `npm --prefix web run build` then `npm --prefix web run test:ui` (Playwright, system Chrome; temp output
   in `TS_UI_TMP`, default `D:/tsb/ui-<time>`). Frontend deps are pinned in `web/package.json` + `package-lock.json`.
@@ -120,6 +120,10 @@ because the judge treated "report to engineering" as an unestablished destinatio
 Recipient/route rule (prompts v14, one `ROUTING_RULE` in draft and grounding): a functional recipient needs incident
 evidence, not an intake route; concrete or mandatory routes need their own premise; live `agent3_recipient_routing_v1`
 (2 requests, $0.14): every statement SUPPORTED, escalation to engineering displayed.
+Refinement 2026-11-04 (offline): dashboard "What to review" panel (`dashboard/review.py`), complete instruction + Copy
+draft in the overview, provenance per card; prompts v15 (writing guide only, not validated live); opt-in adaptive
+research `agents/advisor_research.py` (`advise(research_mode='react')`, off by default) with offline comparison
+`agent3_react_comparison_v1` (recorded-link expansion already recovers the audio outcome).
 Further `--run`s are paid (ask first). Full plan: [docs/agent3-plan.md](docs/agent3-plan.md).
 - Agent 3 input: `data/processed/agent2_handoff_v2_projection/` (schema 8 / handoff v2, a zero-call projection of the v7 release; load with `advice_inputs.load_effective_view`): 81 groups / 79 topics / 161 assigned + 17 unassigned / 41 + 8 announcement-route obligations / 3 carried cautions. The frozen v7 release (handoff v1: 90 / 97 / 49 / 3 / 41) is unchanged.
 - Demo Slack input: `data/fixtures/slack_generated_demo/` (201 threads / 517 messages, cutoff `2026-10-02T12:00:00Z`); the original `slack_generated/` (200 / 516) stays unchanged.

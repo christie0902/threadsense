@@ -40,7 +40,8 @@ export function sha256(rel) {
 }
 
 export const RUN_FILES = ['data/experiments/agent3_overnight_smoke_v1', 'data/experiments/agent3_overnight_offline_v1',
-  'data/experiments/agent3_overnight_offline_v2', 'tests/fixtures/dashboard_runs/dashboard_states_fixture_v1']
+  'data/experiments/agent3_overnight_offline_v2', 'data/experiments/agent3_recipient_routing_v1',
+  'data/experiments/agent3_final_eval_v1', 'tests/fixtures/dashboard_runs/dashboard_states_fixture_v1']
   .flatMap(d => ['cards.json', 'review_queue.json', 'morning_brief.json'].map(f => `${d}/${f}`))
 
 export const hashes = () => Object.fromEntries(RUN_FILES.map(f => [f, sha256(f)]))

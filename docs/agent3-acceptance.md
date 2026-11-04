@@ -209,3 +209,21 @@ frozen evidence changed, and the results in sections 2–4 are unaffected.
 - **Checks:** `tests/test_dashboard.py` passes 28/28, including a new session-lock test, and the feedback-loop and
   policy-routing files pass 22/22. The Playwright suite, updated for the expander and lock, passes 11/11 (10 existing
   tests plus a new session test). The full 962-test suite was not rerun for this change.
+
+### Refinement after the baseline (2026-11-04, implementation and prompts v15)
+
+Code and prompt changes after `d976eff`; the live results in sections 2-4 were recorded under v14 and are unchanged.
+Details and the comparison table: "Refinement milestone" in [agent3-plan.md](agent3-plan.md).
+
+- **Dashboard:** complete instruction and Copy draft in the card overview; a "What to review" panel built from the final
+  review reasons (mandatory high-severity review apart from withheld content, missing facts, inherited flags, source
+  conflicts and decisions), with links to saved evidence, threads and Model Review Queue items; withheld statements
+  named by field and verdict, never shown; alternative drafts collapsed, with their relation to the card's action only as
+  recorded; run, prompt version and model on every card.
+- **Prompts v15** (writing guide only): review notes no longer restate what the card already lists; drafts covering
+  several reports group them by shared symptom. Grounding rules unchanged. **Not validated live.**
+- **Adaptive research (opt-in, off by default):** evaluated offline only. The existing recorded-link expansion already
+  recovers the audio trial outcome; adaptive research helps only when the first observation lacks it, and then needs a
+  fifth request whenever the option comparison is triggered. Not enabled.
+- **Checks (2026-11-04):** full pytest suite 982 passed (13:25, basetemp outside the repo); Playwright 12/12, including
+  a new test that the complete action, the specific review reasons and their evidence are reachable without Technical.

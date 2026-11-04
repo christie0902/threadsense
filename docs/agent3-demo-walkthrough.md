@@ -44,8 +44,12 @@ Show:
   - Instruction: "Collect the requested diagnostic details for these reports and report the submission problem to
     engineering."
   - Also show the copyable draft, the scope note and the rationale.
-- **Needs Review reasons:** HIGH severity and inherited Agent 1 flags. Point out that the action is shown but the card
-  still needs a team lead. No statement was withheld on this card.
+- **Overview:** the complete instruction, with **Copy draft** in the same box (one click; nothing is posted).
+- **What to review** (on the card, no expanding): the high severity is a *mandatory* review (open its two rubric
+  signals and their messages); three inherited flags, each linked to its thread, two of them to their Model Review
+  Queue items (the projection gap has no queue item); and the advisor's own note, which the final evidence check
+  supported. Point out that the action is shown but the card still needs a team lead. No statement was withheld on
+  this card. The line under the title names the run, prompts v14 and the model.
 - **Evidence:** 21 items, 16 cited. Click **Details & evidence**: the draft is on the "Action & draft" tab, the cited
   sources and threads on "Sources & threads", and every item on "All evidence". Open:
   - the project instructions section "Tool incidents and submission" (current guidance);

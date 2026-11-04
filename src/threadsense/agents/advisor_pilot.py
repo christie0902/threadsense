@@ -29,7 +29,7 @@ from urllib.parse import urlparse
 
 from pydantic import ValidationError
 
-from threadsense.agents import advisor_tot
+from threadsense.agents import advisor_research, advisor_tot
 from threadsense.agents.advice_contracts import ModelReviewItem, stable_id
 from threadsense.agents.advice_inputs import coverage, load_effective_view, review_items_from_view
 from threadsense.agents.advisor_checks import (
@@ -62,7 +62,22 @@ PILOT_VERSION = 'agent3-advisor-pilot-v6'
 # is justified by incident evidence and the expertise needed, without intake-route evidence; a concrete route, or a
 # claim that one is designated or mandatory, needs its own premise (agent3_source_fact_v1 withheld "report to
 # engineering" for lacking an established route).
-PROMPT_VERSION = 'agent3-advisor-prompts-v14'
+# v15 (writing guide only; grounding rules, evidence view and schemas unchanged, so recorded grounding verdicts still
+# replay): review_note covers only a check the card does not already list (the card itself adds high severity, the open
+# upstream flags with their count, withheld statements and the open question; agent3_recipient_routing_v1 restated the
+# open flags); a draft covering several reports groups them by shared symptom with counts and roles instead of a
+# sequence of "another tutor reports ..." clauses, keeping each task reference with its report and every distinct
+# symptom with the roles that reported it.
+# v16 (writing guide only, after agent3_writing_eval_v15_v1; grounding rules, evidence view and schemas unchanged): a
+# draft the team lead posts is in their voice, addressed to its recipients, without third-person references to the team
+# lead or steps only the team lead takes; policy wording only when it helps recipients act, at the strength and scope of
+# its governing source, which is listed among the premises (a participant's explanation is attributed, not stated as a
+# rule); requests stay with the threads and tasks where they were made; no commentary on an unnamed delivery route the
+# action does not depend on. The source audit found the v15 tie draft's policy wording quoted from the current
+# instructions ("Ties"), so the final grounding standard was not changed.
+# v17 (writing guide only; grounding unchanged): plain wording covers severity.rationale and rubric-signal support too,
+# with familiar substitutes when they keep the meaning, exact quotes, and no processing phrases ("supplied batch context").
+PROMPT_VERSION = 'agent3-advisor-prompts-v17'
 # Replayed recorded drafts older than v7 are read under the last contract they satisfy (no intervention_need).
 LEGACY_LABELS = {'AdvisorDraft': 'agent3-advisor-draft-v6', 'ToTComparison': 'agent3-tot-comparison-v2',
                  'GroundingJudgment': 'agent3-grounding-judgment-v4'}
@@ -184,9 +199,30 @@ WRITING_GUIDE = (
     'proposed_action.rationale (why that helps and any explanatory context, 1-2 short sentences; judged and shown on '
     'its own); proposed_action.scope_note (only conditions and limits the action depends on); proposed_action.draft_text (a copyable draft suited '
     'to the action: an announcement of about 60-120 words, with bullets when useful, or the message to send for an '
-    'escalation or referral); review_note (only when something specific still needs the team lead\'s review; otherwise '
-    'null). These are writing targets, not limits: keep necessary conditions, uncertainty, scope and who reported, asked, '
-    'confirmed or instructed. Use familiar words: "post a reminder", not "post alignment"; "report a technical issue", not '
+    'escalation or referral; when it covers several reports, group them by the symptom they share, with counts and '
+    'roles ("two tutors and a QA tutor report a grey Submit button after choosing B; a tutor reports that clicking Submit '
+    'does nothing on RP-1577"), rather than one "another tutor reports ..." clause per report: group only reports whose '
+    'cited messages state that symptom, keep each task reference with its own report, and keep every distinct symptom '
+    'and who reported it); review_note (only for a specific check the team lead still has to make that the card does '
+    'not already list, and which threads or sources it concerns, for example requested details that are still missing; '
+    'the card itself lists high severity, the open upstream review flags and their count, withheld statements and the '
+    'open question, so do not restate those; otherwise null). A draft the team lead will post is in the team lead\'s own '
+    'voice and addressed to its recipients: tell them what to provide or do; do not refer to the team lead in the third '
+    'person or include steps only the team lead takes (those belong in the instruction). Put policy wording in a draft '
+    'only when it helps the recipients act, and then at the strength and scope of the governing source it comes from '
+    '(keep its conditions, exceptions and words such as "usually" or "can"), listing that source\'s claim among the '
+    'action\'s premises; a participant\'s explanation or suggestion may be attributed to them ("a QA tutor suggests '
+    '...") but is not stated as a rule unless a current guideline, FAQ or established announcement states it. Keep '
+    'requests apart by who made them and where: a request made in specific threads or about specific tasks stays with '
+    'those threads and tasks, separate from a request the team lead made in every thread. When no evidence names a '
+    'delivery route and the action does not depend on one, leave the route unspecified without commenting on its '
+    'absence in any of these fields. These are writing targets, not limits: keep necessary conditions, uncertainty, scope and who reported, asked, '
+    'confirmed or instructed. Plain wording applies to every field the team lead reads, including severity.rationale '
+    'and each rubric signal\'s support: prefer familiar words when they keep the meaning ("prompt requirements" for '
+    '"prompt constraints", "compare the QA decisions" for "calibrate", "change how ties are judged" for "change the tie '
+    'threshold"), keep a project term when a plainer one would change its meaning, quote sources exactly, and leave out '
+    'processing phrases such as "in the supplied batch context" or "inferred from the topic\'s member entries". '
+    'Use familiar words: "post a reminder", not "post alignment"; "report a technical issue", not '
     '"tool-incident reporting". Never put evidence IDs, claim IDs, user IDs, field or enum names, rubric references, '
     'premise lists or processing details in these fields or in claim text; the evidence mapping belongs in evidence_ids, '
     'support_claim_ids, attributions and targets. Use double quotation marks only for exact quotations copied unchanged '
@@ -228,6 +264,14 @@ REVISION_RULES = (
     'Revise your previous draft once, using the follow-up retrieval results now included in the evidence. Keep every '
     'claim cited; weaken or remove claims the evidence does not support. No further retrieval will run: leave remaining '
     f'gaps with follow_up null. {RESEARCH_RULES} {WRITING_GUIDE}')
+# Opt-in adaptive research only (advise(research_mode='react')); not part of the production prompts or fingerprints.
+REACT_REVISION_RULES = (
+    'Revise your previous draft once, using the follow-up retrieval results now included in the evidence. Keep every '
+    'claim cited; weaken or remove claims the evidence does not support. If the new evidence leaves one named gap open '
+    'and points to where its answer could be (for example an approval whose outcome is not in the evidence), you may '
+    'request ONE more search: set follow_up on that gap only, and write its query from what the new evidence shows (its '
+    'title, dates, scope or recorded states). Leave every other follow_up null. Your draft must be complete either way: '
+    f'the search may not run. {RESEARCH_RULES} {WRITING_GUIDE}')
 GROUNDING_RULES = (
     'Judge each statement against the evidence it cites, read within the full context provided: every message of every '
     'member thread (with canonical author IDs, roles, thread starters and reactions) and every retrieved source for '
@@ -897,9 +941,46 @@ NOT_RUN = {'structural_issues': [], 'action_issues': [], 'statements': [], 'unsu
            'extraneous_verdicts': []}
 
 
-def advise(scenario, *, view, retriever, client, budget, rubric, run_id, as_of, initial=None):
+def _adaptive(call, tools, draft, ledger, topic, rubric, interpretations, budget):
+    """The opt-in react path: sequential follow-ups whose revision may name the next query (advisor_research)."""
+    current = {'draft': draft}
+
+    def room_for_another():
+        left = budget.remaining('model_calls')
+        tot = 1 if advisor_tot.triggers(current['draft'], temporal_check(current['draft'], ledger), ledger) else 0
+        need = 3 + tot  # this revision, a second revision, the comparison if triggered, the final grounding
+        return (left is None or left >= need), (
+            f'A second search would need {need} more model requests (revision, second revision, '
+            f"{'option comparison, ' if tot else ''}final grounding) but {left} remain: a fifth request for this topic.")
+
+    def revise(may_search, steps):
+        payload = _research_payload(REACT_REVISION_RULES if may_search else REVISION_RULES, topic, ledger, tools, rubric,
+                                    interpretations)
+        revised = call('revision', {**payload, 'previous_draft': current['draft'].model_dump(exclude_none=True),
+                                    'follow_ups': advisor_research.follow_up_entries(steps)}, AdvisorDraft, reserve=1)
+        if revised is None:
+            return None
+        gap = steps[-1]['gap_id']
+        current['draft'] = revised
+        return {'draft': revised, 'request': advisor_research.gap_request(revised) if may_search else None,
+                'filled': gap not in {g.gap_id for g in revised.gaps}}
+    first = advisor_research.gap_request(draft)
+    run = advisor_research.adaptive_research(tools, first, revise, room_for_another=room_for_another,
+                                             topic_text=topic['topic_label'])
+    final = run['draft'] or draft
+    recovered = [i for s in run['steps'] for i in s.get('new_evidence_ids', [])]
+    record = {k: v for k, v in run.items() if k != 'draft'} | {
+        'recovered_evidence_ids': recovered, 'used_evidence_ids': advisor_research.used_evidence(final, recovered),
+        'model_requests': {'revisions': run['revisions']}, 'local_searches': sum(s['status'] == 'DONE' for s in run['steps'])}
+    return final, advisor_research.follow_up_entries(run['steps']), record
+
+
+def advise(scenario, *, view, retriever, client, budget, rubric, run_id, as_of, initial=None, research_mode='batch'):
     """One topic. Never raises for model or budget problems; ScenarioError only for a missing topic.
-    `initial` replaces the derived initial query (used to test recovery from an incomplete first pass)."""
+    `initial` replaces the derived initial query (used to test recovery from an incomplete first pass).
+    `research_mode` 'react' is the opt-in adaptive follow-up experiment (advisor_research); 'batch' is production."""
+    if research_mode not in advisor_research.RESEARCH_MODES:
+        raise ValueError(f'research_mode must be one of {advisor_research.RESEARCH_MODES}.')
     budget.start_topic()
     packet = topic_packet(view, scenario)
     ledger = {i['evidence_id']: i for i in member_messages(packet['members'])}
@@ -913,8 +994,11 @@ def advise(scenario, *, view, retriever, client, budget, rubric, run_id, as_of, 
         tools.search(query, purpose='supersession_check', version_mode='history')
     first = draft = call('draft', _research_payload(DRAFT_RULES, topic, ledger, tools, rubric, interpretations),
                          AdvisorDraft, reserve=1)
-    follow_ups, unfilled = [], []
-    if draft is not None:
+    follow_ups, unfilled, adaptive = [], [], None
+    if draft is not None and research_mode == 'react':
+        draft, follow_ups, adaptive = _adaptive(call, tools, draft, ledger, topic, rubric, interpretations, budget)
+        unfilled = [g.model_dump() for g in draft.gaps]
+    elif draft is not None:
         requested = [g for g in draft.gaps if g.follow_up]
         for i, gap in enumerate(requested):
             entry = {'gap_id': gap.gap_id, 'need': gap.need, 'query': gap.follow_up.query,
@@ -1005,6 +1089,7 @@ def advise(scenario, *, view, retriever, client, budget, rubric, run_id, as_of, 
                'uncarried_obligations': covered['missing_obligations']}
     return {'scenario': scenario, 'status': 'CARD', 'topic': {**topic, 'initial_query': query},
             'retrieval_trace': tools.trace, 'retrieval_notes': tools.notes(), 'follow_ups': follow_ups,
+            **({'adaptive_research': adaptive} if adaptive is not None else {}),
             'unfilled_gaps': unfilled, 'model_calls': call.log,
             'drafts': {'initial': first.model_dump() if first else None,
                        'final': draft.model_dump() if draft else None, 'revised': revised},

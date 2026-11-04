@@ -12,6 +12,7 @@ import json
 from pathlib import Path
 
 from threadsense.agents.advice_contracts import ACTION_LABELS, AdviceCardV3, ModelReviewItem
+from threadsense.dashboard.review import review_view
 from threadsense.retrieval.config import FIXTURE_ROOT
 from threadsense.routing import ROOT, fixture_fingerprint, slack_datetime
 
@@ -25,6 +26,9 @@ INSTANCE_FILES = ('run_manifest.json', 'morning_brief.json', 'cards.json', 'revi
 NAMESPACES = {'LIVE': 'operational', 'SCRIPTED': 'demo', 'TEST_FIXTURE': 'test', 'UNKNOWN': 'test'}
 INCOMPLETE = ('TOPIC_FAILED', 'UNPROCESSED_BUDGET', 'UNPROCESSED_RUN_STOPPED', 'INTERRUPTED_UNCERTAIN')
 SUPERSEDED_STATES = {'SUPERSEDED_REVISION', 'SECTION_SUPERSEDED'}
+# Display title for a projection-gap work item (members with no Agent 2 topic). The saved topic_name is unchanged and
+# shown under Technical.
+GAP_TITLE = 'Threads awaiting a topic'
 
 
 class RunNotFound(KeyError):
@@ -135,7 +139,16 @@ class Run:
             'unprocessed': sum(w['outcome'] in INCOMPLETE[1:] for w in incomplete),
             'out_of_scope': len((b.get('scope') or {}).get('out_of_scope_work') or []),
             'review_queue_items': counts.get('review_queue_items', 0), 'cards_sha256': self.cards_sha256,
+            'provenance': self.provenance(),
         }
+
+    def provenance(self):
+        """Where the card text came from, as recorded in the run manifest (None when the run did not record it)."""
+        f = self.manifest.get('fingerprints') or {}
+        client = f.get('semantic_client') or {}
+        return {'prompt_version': (f.get('prompts') or {}).get('prompt_version'), 'pilot_version': f.get('pilot_version'),
+                'semantic_client': client.get('label'),
+                'model': (client.get('settings') or {}).get('model') if client.get('label') == 'LIVE_MODEL' else None}
 
     @cached_property
     def work_projects(self):
@@ -166,12 +179,15 @@ class Run:
         """ToT alternatives the final grounding call judged SUPPORTED and SUFFICIENT, with no recorded prose or display
         issue (advisor_tot.check_candidates), other than the card's action. When a close call survived the final
         grounding (tot.choice_after_grounding UNRESOLVED), its viable options are marked closely_matched (a viable
-        NO_ACTION included) and none is shown as preferred."""
+        NO_ACTION included) and none is shown as preferred. relation says how an option relates to the card's action,
+        only as far as the saved comparison records it: INCUMBENT (entered as the advisor's own proposal; comparison v3),
+        SAME_ACTION_TYPE (same kind of action, worded and judged separately) or DIFFERENT_ACTION."""
         result = (self.topics.get(card_id) or {}).get('result') or {}
         tot, grounding = result.get('tot') or {}, result.get('grounding') or {}
         judged = grounding.get('alternative_sufficiency') or {}
         statements = {s['statement_id']: s for s in grounding.get('statements') or []}
-        shown = (self.cards[card_id].get('recommended_action') or {}).get('draft_text')
+        action = self.cards[card_id].get('recommended_action') or {}
+        shown = action.get('draft_text')
         choice = tot.get('choice_after_grounding') or {}
         matched = {v['candidate_id'] for v in choice.get('viable') or []} if choice.get('status') == 'UNRESOLVED' else set()
         out = []
@@ -186,8 +202,21 @@ class Run:
             out.append({'candidate_id': c['candidate_id'], 'action_type': c['action_type'], 'label': ACTION_LABELS[c['action_type']],
                         'instruction': c.get('instruction'), 'draft_text': c.get('draft_text'), 'rationale': c.get('rationale'),
                         'preferred_by_comparison': not matched and c['candidate_id'] == tot.get('preferred_candidate_id'),
-                        'closely_matched': c['candidate_id'] in matched})
+                        'closely_matched': c['candidate_id'] in matched,
+                        'relation': 'INCUMBENT' if c.get('incumbent') else 'SAME_ACTION_TYPE'
+                        if c['action_type'] == action.get('action_type') else 'DIFFERENT_ACTION'})
         return out
+
+    def display_title(self, card_id):
+        """The saved topic name, except for a work item the run recorded as a projection gap (no Agent 2 topic)."""
+        work = (self.topics.get(card_id) or {}).get('work_item') or {}
+        gap = work.get('kind') == 'PROJECTION_GAP' and self.cards[card_id]['lineage'].get('topic_id') is None
+        return GAP_TITLE if gap else self.cards[card_id]['topic_name']
+
+    def review(self, card_id):
+        """What the team lead needs to check on this card (dashboard.review), from the saved card, topic result and queue."""
+        queue = [i.model_dump(mode='json') for i in self.queue.values() if card_id in i.related_card_ids]
+        return review_view(self.cards[card_id], (self.topics.get(card_id) or {}).get('result'), queue)
 
     def ledger(self, card_id):
         return ((self.topics.get(card_id) or {}).get('result') or {}).get('evidence_ledger') or {}

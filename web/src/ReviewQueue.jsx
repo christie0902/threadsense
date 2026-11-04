@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useIdempotentSave } from './api.js'
 import { Badge, Details, Json, when } from './ui.jsx'
 
@@ -12,7 +12,9 @@ const KIND_LABELS = {
 const kindLabel = item => (item.kind === 'assisted_content_review' && JSON.stringify(item.source_obligation).includes('TAXONOMY_NAMING_CAUTION')
   ? 'Agent 2 naming caution' : KIND_LABELS[item.kind] || item.kind.replaceAll('_', ' '))
 
-function ReviewItem({ runKey, row, actor, onChanged, cardTopics }) {
+function ReviewItem({ runKey, row, actor, onChanged, cardTopics, focused }) {
+  const ref = useRef(null)
+  useEffect(() => { if (focused) ref.current?.scrollIntoView({ block: 'center' }) }, [focused])
   const { item, review_state: state, entries, head } = row
   const { state: save, save: submit, reset } = useIdempotentSave(`/api/runs/${encodeURIComponent(runKey)}/review-items/${item.item_id}/actions`)
   const [note, setNote] = useState('')
@@ -21,7 +23,8 @@ function ReviewItem({ runKey, row, actor, onChanged, cardTopics }) {
     if (entry) { setNote(''); onChanged(); }
   }
   return (
-    <li className="panel p-4" data-testid="review-item" data-item-id={item.item_id}>
+    <li ref={ref} className={`panel p-4 ${focused ? 'ring-2 ring-cyan-300/60' : ''}`} data-testid="review-item" data-item-id={item.item_id} data-focused={focused || undefined}>
+      {focused && <div className="mb-2 text-[11px] font-medium text-cyan-200">Opened from a card's "What to review" panel</div>}
       <div className="flex flex-wrap items-center gap-1.5">
         <Badge tone={STATE_TONES[state]} data-testid="review-state">{state.toLowerCase()}</Badge>
         <Badge tone="cyan" title={`${item.origin} · ${item.kind}`}>{kindLabel(item)}</Badge>
@@ -53,8 +56,9 @@ function ReviewItem({ runKey, row, actor, onChanged, cardTopics }) {
   )
 }
 
-export default function ReviewQueue({ runKey, rows, actor, onChanged, cardTopics }) {
-  const [show, setShow] = useState('OPEN')
+export default function ReviewQueue({ runKey, rows, actor, onChanged, cardTopics, focus }) {
+  // A linked item is shown whatever its state.
+  const [show, setShow] = useState(focus ? 'ALL' : 'OPEN')
   const shown = rows.filter(r => show === 'ALL' || r.review_state === show)
   const counts = rows.reduce((acc, r) => ({ ...acc, [r.review_state]: (acc[r.review_state] || 0) + 1 }), {})
   return (
@@ -71,7 +75,7 @@ export default function ReviewQueue({ runKey, rows, actor, onChanged, cardTopics
           </button>
         ))}
       </div>
-      <ul className="space-y-3">{shown.map(r => <ReviewItem key={r.item.item_id} runKey={runKey} row={r} actor={actor} onChanged={onChanged} cardTopics={cardTopics} />)}</ul>
+      <ul className="space-y-3">{shown.map(r => <ReviewItem key={r.item.item_id} runKey={runKey} row={r} actor={actor} onChanged={onChanged} cardTopics={cardTopics} focused={r.item.item_id === focus} />)}</ul>
       {shown.length === 0 && <div className="text-sm text-slate-500">No items.</div>}
     </section>
   )

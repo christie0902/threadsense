@@ -6,11 +6,13 @@ import { hashes, REPO, startServer } from './server.js'
 
 const SMOKE = 'agent3_overnight_smoke_v1', V1 = 'agent3_overnight_offline_v1', V2 = 'agent3_overnight_offline_v2'
 const FIXTURE = 'dashboard_states_fixture_v1'
+const ROUTING = 'agent3_recipient_routing_v1'
 let server
 
 test.afterEach(async () => { await server?.stop() })
 
-const cardBox = (page, text) => page.locator('[data-testid=card]', { hasText: text })
+// Cards are found by their saved topic name (a projection-gap card displays a fallback title instead).
+const cardBox = (page, name) => page.locator(`[data-testid=card][data-topic-name=${JSON.stringify(name)}]`)
 async function open(page, run, extra = '') {
   await page.goto(`${server.url}/#run=${run}${extra}`)
   await page.reload() // hash-only navigation does not reload the app
@@ -40,7 +42,7 @@ test('approve -> refresh -> restart keeps exactly one decision, never executed',
   await open(page, FIXTURE)
   const box = cardBox(page, card.topic_name)
   await details(box, 'Action & draft')
-  const copyButton = box.getByRole('button', { name: 'Copy draft' })
+  const copyButton = box.getByTestId('card-detail').getByRole('button', { name: 'Copy draft' })
   const draftBefore = await box.getByTestId('action-draft').boundingBox()
   await copyButton.click()
   await expect(box.getByTestId('copy-note')).toHaveText('Copied to your clipboard. Nothing was posted.')
@@ -396,4 +398,63 @@ test('the session is locked to one team lead: no identity switch, other IDs refu
   await box.getByTestId('save-decision').click()
   await expect(box.getByTestId('save-success')).toBeVisible()
   expect((await decisionsFor(FIXTURE)).map(d => d.actor_id)).toEqual(['U006'])
+})
+
+test('closed cards are easy to scan; an opened card leads with what to check, without opening Technical', async ({ page }) => {
+  server = await startServer('what-to-check')
+  const SMOKE_PLAYBACK = 'card_bd0a25b5720e9f5c55945f96f92f4783'
+
+  // Closed: topic, severity, status, the whole saved summary and instruction; no reasons, notes or prompt metadata.
+  const submit = await cardId(ROUTING, c => c.topic_name.startsWith('Unassigned members'))
+  await open(page, ROUTING)
+  let box = cardBox(page, submit.topic_name)
+  await expect(box.getByTestId('card-summary')).toHaveText(submit.summary)
+  const instruction = box.getByTestId('action-instruction')
+  await expect(instruction).toHaveText(submit.recommended_action.instruction)
+  expect(await instruction.evaluate(el => el.scrollHeight <= el.clientHeight + 1)).toBe(true)
+  await expect(box.getByTestId('action-box').getByRole('button', { name: 'Copy draft' })).toBeVisible()
+  for (const id of ['what-to-check', 'what-to-review', 'advisor-review-note', 'card-provenance']) await expect(box.getByTestId(id)).toHaveCount(0)
+  await expect(box).not.toContainText('reasons from the final checks')
+  await expect(page.getByTestId('run-provenance')).toContainText('agent3-advisor-prompts-v14') // still in the banner
+  await expect(box.getByTestId('card-topic')).toHaveText('Threads awaiting a topic') // projection gap: fallback title
+
+  // Opened Submit: the escalation stays at the top; flags lead the checks; no boilerplate.
+  await box.getByTestId('card-expand').click()
+  const checks = box.getByTestId('what-to-check')
+  await expect(box.getByTestId('action-box')).toBeVisible()
+  await expect(checks.getByTestId('check').first()).toHaveAttribute('data-kind', 'FLAG')
+  await expect(checks).toContainText('passed the evidence check')
+  for (const boilerplate of ['Concerns:', 'from the final checks', 'severity-rubric', 'final evidence check supported', 'review this card'])
+    await expect(checks).not.toContainText(boilerplate)
+  await expect(box.getByTestId('all-reasons')).not.toHaveAttribute('open', '')
+  await box.getByRole('tab', { name: 'Technical' }).click()
+  await expect(box.getByTestId('saved-title')).toContainText(submit.topic_name) // the saved label is kept here
+  await box.getByRole('tab', { name: 'Action & draft' }).click()
+  await checks.getByTestId('check-link').filter({ hasText: 'Open its Model Review Queue item' }).first().click()
+  await expect(page.locator('[data-testid=review-item][data-focused]')).toHaveCount(1)
+
+  // Opened smoke playback (the reload-workaround card): the saved question leads, once; withheld named, not shown.
+  await open(page, SMOKE)
+  box = page.locator(`[data-testid=card][data-card-id=${SMOKE_PLAYBACK}]`)
+  await box.getByTestId('card-expand').click()
+  const first = box.getByTestId('check').first()
+  await expect(first).toHaveAttribute('data-kind', 'QUESTION')
+  await expect(first.getByTestId('check-text')).toHaveAttribute('data-origin', 'SAVED')
+  await expect(first.getByTestId('check-text')).toHaveText('Does the earlier reload trial apply to the current symptoms, and what observed outcome or later decision supports using it now?')
+  await expect(first.getByTestId('check-related')).toContainText('did not find a recorded answer on earlier decisions')
+  await expect(first.getByTestId('check-note')).toContainText('do not establish that a current reporter attempted a workaround')
+  await expect(box.getByTestId('what-to-check').getByText('Does the earlier reload trial apply', { exact: false })).toHaveCount(1)
+  await expect(box.getByTestId('what-to-check').locator('[data-kind=GAP]')).toHaveCount(0) // folded into the question
+  const withheld = box.getByTestId('what-to-check').locator('[data-testid=check][data-kind=WITHHELD]')
+  await expect(withheld).toContainText('How an announcement applies to this topic: not shown')
+  await withheld.getByTestId('check-link').click()
+  await expect(page.getByTestId('evidence-detail')).toBeVisible()
+  await page.keyboard.press('Escape')
+  await first.getByTestId('check-link').filter({ hasText: 'View the record' }).click()
+  await expect(page.getByTestId('evidence-detail')).toContainText('Approve a limited playback trial')
+  await page.keyboard.press('Escape')
+  // Every original reason is still one click away; Technical was never opened.
+  await box.getByTestId('all-reasons').locator(':scope > summary').click()
+  await expect(box.getByTestId('what-to-review').getByTestId('review-item-reason')).toHaveCount(5)
+  await expect(box.getByRole('tab', { name: 'Technical', selected: true })).toHaveCount(0)
 })

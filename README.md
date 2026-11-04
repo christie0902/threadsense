@@ -217,6 +217,7 @@ the frozen baselines when preparing any future run.
 | Dataset authoring | `scripts/generate_thread_blueprint.py`, `scripts/generate_slack_fixtures.py` |
 | Dataset checks | `scripts/validate_topic_catalog.py`, `scripts/validate_slack_fixtures.py`, `scripts/validate_threadsense_dataset.py` |
 | Agent 3 | `scripts/run_agent3_pilot.py`, `scripts/run_agent3_overnight.py` (zero calls by default; `--run` is paid) |
+| Agent 3 experiment | `scripts/run_agent3_react_comparison.py` (offline batch-versus-adaptive research comparison; zero calls; `--write <new dir>`) |
 | Dashboard / TL decisions | `scripts/run_dashboard.py`, `scripts/build_decision_snapshot.py`, `web/` |
 
 Agent 2 preparation is read-only unless `--write` or `--prepare` is supplied.
