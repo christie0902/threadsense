@@ -2017,9 +2017,14 @@ authorization.
 
 Live acceptance 2026-11-05 (`data/experiments/agent3_v18_acceptance_v1/`, prompts v18, same eight items and member
 bindings, 16 requests, $0.86, no failures, accounting COMPLETE, 52 queue items): every card grounding PASSED; 8/8 actions
-in the unchanged proposed sets; no displayed unsupported content found on manual inspection; NO_ACTION_NEEDED on greetings
+in the unchanged proposed sets (agreement with evaluator expectations, not validated ground truth); no blocking unsupported
+content identified in the developer's inspection, but one potentially misleading historical phrase passed grounding (Submit
+detail 6, "at its September 28 close", for an incident that remained open) and is recorded as a wording defect; NO_ACTION_NEEDED on greetings
 and cosmetic ties (reasons judged SUPPORTED), NO_INTERVENTION_PROPOSED on English->Spanish (reason partly supported);
 v4 decision saved and replayed once in a throwaway demo database. Safeguard tests: `tests/test_agent3_presentation_safeguards.py`.
-Follow-ups (not blockers): check copy that says "recommendation passed" on cards without one; processing-flavoured words
-("retrieved conversations", "supplied thread"); one imprecise "close" for an open incident; documented retrieval misses;
-severity variation between runs. Recommendation: close the milestone.
+After the run (offline): the flagged-thread status sentence is built from saved statement verdicts
+(`dashboard.checks.checked_parts`), so a card without a supported recommendation no longer says one passed. Follow-ups (not
+blockers): retrieval misses (buffering trial outcome, tie-tracking announcement); severity variation and the unresolved
+rubric interpretation; awkward wording and repetition; experimental or not live-covered features. Test evidence: full suite
+1,072 passed before the run; 9 safeguard tests added; closeout 82 focused tests, frontend build and 13 UI tests passed.
+**Milestone closed for the local capstone/demo scope** (`data/experiments/agent3_v18_acceptance_v1/ACCEPTANCE.md`).

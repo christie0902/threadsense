@@ -307,3 +307,63 @@ def test_decisions_on_v4_cards_save_and_render_the_approved_text(tmp_path):
                             json={'kind': 'DISMISS', 'actor_id': 'U001', 'note': 'Checked.'}, headers={'Idempotency-Key': 'test-v4-dismiss'})
     assert dismissed.status_code == 201, dismissed.text
     assert client.get(f'/api/runs/{run.key}/decisions').json()['decisions'][0]['card_id'] in (rec['card_id'], review['card_id'])
+
+
+# ---- Evidence-check status sentence on flagged cards (RECORDED live acceptance run; changed copies are labelled) ------
+
+ACCEPTANCE = ROOT/'data/experiments/agent3_v18_acceptance_v1/run'
+
+
+def acceptance(name):
+    topic = json.loads((ACCEPTANCE/'topics'/f'{name}.json').read_text(encoding='utf-8'))
+    return topic['result']['card'], topic['result']
+
+
+def status_sentence(card, result):
+    from threadsense.dashboard.review import review_view
+    related = [r for c in review_view(card, result)['checks'] if c['kind'] == 'FLAG' for r in c['related']]
+    return related[0] if related else None
+
+
+@pytest.mark.skipif(not ACCEPTANCE.is_dir(), reason='acceptance run not present')
+def test_status_sentence_names_only_what_the_saved_verdicts_support():
+    from threadsense.dashboard.checks import checked_parts
+    submit, submit_result = acceptance('gap__routed_440e64c7fbdcc49f')
+    assert checked_parts(submit, submit_result) == 'RECOMMENDATION'
+    assert status_sentence(submit, submit_result).startswith('The summary and recommendation passed the evidence check')
+    # English->Spanish: "No intervention proposed" (NO_ACTION reason partly supported): only the summary passed.
+    spanish, spanish_result = acceptance('topic__cluster_7249f5e5bbe9af0b__topic_1')
+    assert spanish['next_step']['status'] == 'NO_INTERVENTION_PROPOSED'
+    sentence = status_sentence(spanish, spanish_result)
+    assert sentence.startswith('The summary passed the evidence check') and 'recommendation' not in sentence
+    # Supported NO_ACTION (CHANGED COPY of the same card: the no-action reason judged SUPPORTED and displayed).
+    result = deepcopy(spanish_result)
+    for s in result['grounding']['statements']:
+        if s['statement_id'] == 'action:no_action':
+            s['verdict'] = 'SUPPORTED'
+    card = {**spanish, 'next_step': {'status': 'NO_ACTION_NEEDED', 'rationale': 'Reason.', 'explanation': None}}
+    assert status_sentence(card, result).startswith('The summary and the reason for no action passed')
+    # Withheld action (CHANGED COPY of Submit: the action failed and is not displayed).
+    result = deepcopy(submit_result)
+    for s in result['grounding']['statements']:
+        if s['statement_id'] == 'action':
+            s['verdict'] = 'PARTIALLY_SUPPORTED'
+    withheld = {**submit, 'recommended_action': None, 'next_step': {'status': 'RECOMMENDATION_WITHHELD', 'rationale': None,
+                                                                    'explanation': 'x'}}
+    assert checked_parts(withheld, result) == 'SUMMARY' and 'recommendation' not in status_sentence(withheld, result)
+    # A displayed action without its own SUPPORTED verdict never reads as passed.
+    assert checked_parts(submit, result) == 'SUMMARY'
+
+
+@pytest.mark.skipif(not ACCEPTANCE.is_dir(), reason='acceptance run not present')
+def test_status_sentence_is_omitted_when_saved_results_cannot_establish_it():
+    from threadsense.dashboard.checks import checked_parts
+    submit, result = acceptance('gap__routed_440e64c7fbdcc49f')
+    assert checked_parts(submit, None) is None and status_sentence(submit, None) is None  # no saved result
+    no_statements = {**result, 'grounding': {**result['grounding'], 'statements': []}}
+    assert status_sentence(submit, no_statements) is None
+    partial = deepcopy(result)  # a summary sentence withheld: the displayed summary is not what the verdicts cover
+    next(s for s in partial['grounding']['statements'] if s['statement_id'] == 'summary:s1')['verdict'] = 'UNSUPPORTED'
+    assert status_sentence(submit, partial) is None
+    legacy = {**submit, 'summary': "The advisor's summary is not shown because the evidence did not support it; see the related threads."}
+    assert status_sentence(legacy, result) is None

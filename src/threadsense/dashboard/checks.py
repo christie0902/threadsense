@@ -43,6 +43,39 @@ def labelled(link, verb=None, ledger=None):
     return {**link, 'label': verb or 'Open source', 'detail': link['label']}
 
 
+def checked_parts(card, result):
+    """What the saved statement verdicts show passed on this card, or None when they cannot establish it: 'SUMMARY'
+    when the displayed summary is exactly its SUPPORTED summary sentences; 'NO_ACTION' when, in addition, a supported
+    reason for no action is displayed; 'RECOMMENDATION' when, in addition, a displayed operational action has its own
+    SUPPORTED verdict (a reviewed alternative: its own supported, sufficient judgment). Never from the overall grounding
+    status alone; an unvalidated NO_ACTION, a withheld or an unavailable recommendation adds nothing."""
+    statements = ((result or {}).get('grounding') or {}).get('statements') or []
+    verdict = {x['statement_id']: x.get('verdict') for x in statements}
+    summary = [x for x in statements if x['statement_id'] == 'summary' or x['statement_id'].startswith('summary:s')]
+    shown = ' '.join(x['text'] for x in summary if x.get('verdict') == 'SUPPORTED')
+    if not summary or not shown or ' '.join(card['summary'].split()) != ' '.join(shown.split()):
+        return None
+    action = card.get('recommended_action') or {}
+    if action and action.get('action_type') != 'NO_ACTION':
+        if action.get('source', 'DRAFT') == 'DRAFT':
+            ok = verdict.get('action') == 'SUPPORTED'
+        else:
+            judged = ((result or {}).get('grounding') or {}).get('alternative_sufficiency') or {}
+            ok = any(verdict.get(sid) == 'SUPPORTED' and (j or {}).get('check') == 'SUPPORTED' for sid, j in judged.items())
+        return 'RECOMMENDATION' if ok else 'SUMMARY'
+    step = card.get('next_step') or {}
+    if action.get('action_type') == 'NO_ACTION' and verdict.get('action') == 'SUPPORTED':
+        return 'NO_ACTION'
+    if step.get('status') == 'NO_ACTION_NEEDED' and step.get('rationale') and verdict.get('action:no_action') == 'SUPPORTED':
+        return 'NO_ACTION'
+    return 'SUMMARY'
+
+
+PASSED_WORDS = {'RECOMMENDATION': ('The summary and recommendation passed', 'the recommendation'),
+                'NO_ACTION': ('The summary and the reason for no action passed', 'either of them'),
+                'SUMMARY': ('The summary passed', 'the summary')}
+
+
 def build_checks(card, result, ledger, view):
     items = view['items']
     by_code = {}
@@ -88,7 +121,7 @@ def build_checks(card, result, ledger, view):
     for item in by_code.get('GROUNDING_NOT_RUN', []):
         checks.append({'kind': 'WITHHELD', 'heading': 'Not checked against the evidence', 'text_origin': 'UI', 'links': [],
                        'text': "None of the advisor's statements on this card were checked, so none is shown as established."})
-    passed = card['checks']['grounding'] == 'PASSED'
+    passed = checked_parts(card, result)
     for item in by_code.get('INHERITED_FLAG', []):
         kinds = {}
         for f in item.get('flags') or []:  # Flags of the same recorded kind are one check, each thread listed.
@@ -111,10 +144,11 @@ def build_checks(card, result, ledger, view):
                      'more_links': 0 if single else max(0, len(threads) - 3), 'related': []}
             if passed and upstream and kind == upstream[0]['kind']:
                 total = len(upstream)
-                check['related'].append('The summary and recommendation passed the evidence check; '
+                subject, what = PASSED_WORDS[passed]
+                check['related'].append(f'{subject} the evidence check; '
                                         + ('the flags concern' if total > 1 else 'the flag concerns')
                                         + " an earlier step's reading of "
-                                        + ('this thread' if len(flagged_all) == 1 else 'these threads') + ', not the recommendation.')
+                                        + ('this thread' if len(flagged_all) == 1 else 'these threads') + f', not {what}.')
             flagged = {l['thread'] for l in threads}
             if note and not placed and any((ledger.get(i) or {}).get('thread_id') in flagged for i in note_ids):
                 check['note'], placed = note['text'], True
