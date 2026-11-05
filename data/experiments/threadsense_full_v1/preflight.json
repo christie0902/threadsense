@@ -1,0 +1,75 @@
+{
+ "estimate": {
+  "scope": {
+   "fixture": "data/fixtures/slack_generated_demo",
+   "cutoff": "2026-10-02T12:00:00Z",
+   "source_threads": 201,
+   "discussion_threads": 178,
+   "announcements_bypassing_agent1": 23
+  },
+  "by_agent": [
+   {
+    "agent": "Agent 1 interpretation",
+    "model": "openai/gpt-4o-mini-2024-07-18",
+    "work": "178 discussion threads",
+    "expected_requests": 178,
+    "expected_input_tokens": 498400,
+    "expected_usd": 0.15,
+    "exposure_usd": 0.54,
+    "basis": "proxy: data/processed/agent1_verified_v3 revision_1 calls (same model, same thread inputs)"
+   },
+   {
+    "agent": "Agent 1 verification",
+    "model": "openai/gpt-4.1 + openai/gpt-4o-mini-2024-07-18 (revision)",
+    "work": "178 threads, at most 4 calls each",
+    "expected_requests": 528,
+    "expected_input_tokens": 981389,
+    "expected_usd": 3.88,
+    "exposure_usd": 59.13,
+    "basis": "data/processed/agent1_verified_v3 (593 calls over 200 threads; usage from raw responses)"
+   },
+   {
+    "agent": "Agent 2 taxonomy",
+    "model": "openai/gpt-5.4-2026-03-05 (reasoning low)",
+    "work": "~81 groups (estimate)",
+    "expected_requests": 81,
+    "expected_input_tokens": 62289,
+    "expected_usd": 0.32,
+    "exposure_usd": 10.26,
+    "basis": "data/experiments/agent2_taxonomy_final_v7/request_ledger.json (90 groups)"
+   },
+   {
+    "agent": "Agent 3 advisor",
+    "model": "openai/gpt-6.1-sol (medium reasoning, default tier)",
+    "work": "~87 work items (estimate), at most 4 requests each",
+    "expected_requests": 179,
+    "expected_input_tokens": 2163946,
+    "expected_usd": 10.85,
+    "exposure_usd": 77.9,
+    "basis": "agent3_e2e_eval_v1 and agent3_v18_acceptance_v1 (16 work items, 33 requests, $1.80 at the input rate); uncached input re-priced as 30-minute cache writes"
+   }
+  ],
+  "expected_total_usd": 15.2,
+  "expected_total_with_margin_usd": 19.0,
+  "margin": 1.25,
+  "conservative_exposure_usd": 147.83,
+  "hard_ceiling_usd": 39.0,
+  "target_usd": 30.0,
+  "remaining_after_expected_usd": 23.8,
+  "enforced": "Only the ledger ceiling is enforced: each request reserves its maximum charge before sending and is refused if it cannot fit. Estimates and exposure are not limits.",
+  "fits_target": true,
+  "prices_verified": "2026-11-05: developers.openai.com/api/docs/pricing and guides/prompt-caching",
+  "fee_rate": 0.0,
+  "batch_api": "Not used: Agent 1 runs dependent per-thread stages through fingerprinted runners and Agent 2 one synchronous request per group; batching would change those transports for <$0.2 (Agent 2) of savings.",
+  "prompt_caching": "Automatic provider caching; reads recorded as savings, Sol writes charged at 1.25x input."
+ },
+ "wiring": {
+  "agent1_interpret_dry_run_exit": 0,
+  "agent1_interpret_selected": "Selected 178 thread(s).",
+  "agent1_verify_source_view_channels": 8,
+  "agent1_verify_source_view_equals_routed_discussions": true,
+  "agent1_verify_source_view_threads": 178,
+  "agent2_payloads_from_frozen_inputs": 81,
+  "agent3_reservation_per_request_usd": 0.22384
+ }
+}

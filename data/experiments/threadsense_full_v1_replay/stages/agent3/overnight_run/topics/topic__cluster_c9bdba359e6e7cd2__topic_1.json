@@ -1,0 +1,1572 @@
+{
+  "work_item": {
+    "candidate_group_id": "cluster_c9bdba359e6e7cd2",
+    "project_id": "response_preference",
+    "batch_id": "rp_batch_15",
+    "work_id": "topic:cluster_c9bdba359e6e7cd2/topic_1",
+    "kind": "TOPIC",
+    "topic_id": "cluster_c9bdba359e6e7cd2/topic_1",
+    "topic_name": "Social greetings and well-wishes",
+    "member_ids": [
+      "member_e7ef680e847ac15d0380e466"
+    ],
+    "pilot_scenario": null,
+    "in_scope": true
+  },
+  "workflow": {
+    "outcome": "CARD",
+    "card_id": "card_3364710fba2332f3dd866effadd09ba6",
+    "card_line": "OBSERVATION",
+    "grounding": "PASSED",
+    "stage_failures": [],
+    "semantic_source": "LIVE_MODEL"
+  },
+  "result": {
+    "scenario": {
+      "id": "topic:cluster_c9bdba359e6e7cd2/topic_1",
+      "candidate_group_id": "cluster_c9bdba359e6e7cd2",
+      "focus": "Social greetings and well-wishes",
+      "topic_id": "cluster_c9bdba359e6e7cd2/topic_1"
+    },
+    "status": "CARD",
+    "topic": {
+      "project_id": "response_preference",
+      "batch_id": "rp_batch_15",
+      "candidate_group_id": "cluster_c9bdba359e6e7cd2",
+      "topic_id": "cluster_c9bdba359e6e7cd2/topic_1",
+      "topic_label": "Social greetings and well-wishes",
+      "projection_gap": null,
+      "as_of": "2026-10-02T12:00:00Z",
+      "member_ids": [
+        "member_e7ef680e847ac15d0380e466"
+      ],
+      "initial_query": "Social greetings and well-wishes. Yuki opens the thread by wishing everyone a good break and noting that the chat is quieter today. Sofia responds in agreement, hoping Yuki's shift goes smoothly. There are no substantive questions or issues raised in this thread."
+    },
+    "retrieval_trace": [
+      {
+        "step": 1,
+        "purpose": "initial_current_guidance",
+        "gap_id": null,
+        "query": "Social greetings and well-wishes. Yuki opens the thread by wishing everyone a good break and noting that the chat is quieter today. Sofia responds in agreement, hoping Yuki's shift goes smoothly. There are no substantive questions or issues raised in this thread.",
+        "source_types": [
+          "guideline",
+          "faq",
+          "decision",
+          "announcement"
+        ],
+        "version_mode": "current",
+        "as_of": "2026-10-02T12:00:00Z",
+        "batch": "rp_batch_15",
+        "top_k": 5,
+        "status": "DONE",
+        "mode": "hybrid",
+        "use_mmr": true,
+        "mmr_lambda": 0.9,
+        "result_ids": [
+          "k:slack:C_RP_ANNOUNCEMENTS:1790929075.000039:05d4b538",
+          "k:response-preference-faq@1.1:fa9b6a3d",
+          "k:slack:C_RP_ANNOUNCEMENTS:1790871613.000001:430efd10",
+          "k:slack:C_RP_ANNOUNCEMENTS:1790936513.000019:8237860f",
+          "k:slack:C_RP_ANNOUNCEMENTS:1790916442.000051:a3b60595"
+        ],
+        "new_evidence_ids": [
+          "k:slack:C_RP_ANNOUNCEMENTS:1790929075.000039:05d4b538",
+          "k:response-preference-faq@1.1:fa9b6a3d",
+          "k:slack:C_RP_ANNOUNCEMENTS:1790871613.000001:430efd10",
+          "k:slack:C_RP_ANNOUNCEMENTS:1790936513.000019:8237860f",
+          "k:slack:C_RP_ANNOUNCEMENTS:1790916442.000051:a3b60595",
+          "k:response-preference-instructions@1.1:4745e3e0"
+        ],
+        "eligible_chunks": 28,
+        "added": [
+          {
+            "evidence_id": "k:response-preference-instructions@1.1:4745e3e0",
+            "role": "TYPE_COVERAGE",
+            "detail": "best-ranked guideline for this query (rank 9), outside the top 5"
+          }
+        ]
+      }
+    ],
+    "retrieval_notes": {
+      "withheld_by_version": [],
+      "version_diagnostics": []
+    },
+    "follow_ups": [],
+    "unfilled_gaps": [],
+    "model_calls": [
+      {
+        "stage": "draft",
+        "schema": "AdvisorDraft",
+        "agent1_context": {
+          "sha256": "2214eaed96c6d5929db954a5442838bd1185b411513d4bc792c5f8230a342138",
+          "boundary": "IN_HTTP_BODY"
+        },
+        "raw": "{\n  \"contract_version\": \"agent3-advisor-draft-v11\",\n  \"summary\": null,\n  \"summary_sentences\": [\n    {\n      \"text\": \"A QA tutor and a tutor exchange well-wishes and remark that the chat is quieter today.\",\n      \"support_claim_ids\": [\"c1\", \"c2\"],\n      \"depends_on\": []\n    },\n    {\n      \"text\": \"Neither message raises a work problem or handling question, so no operational intervention is needed for this thread.\",\n      \"support_claim_ids\": [\"c3\"],\n      \"depends_on\": []\n    }\n  ],\n  \"detail_sentences\": [],\n  \"reasoning\": \"The member messages show a social exchange, not an unresolved operational issue. The retrieved guidance and announcements concern response evaluation or onboarding, not this exchange, and do not justify an intervention. No further research is needed to support leaving this thread without operational action. The upstream review flag on the unrelated citation announcement remains open; this assessment does not clear it.\",\n  \"claims\": [\n    {\n      \"claim_id\": \"c1\",\n      \"kind\": \"INCIDENT_FACT\",\n      \"text\": \"A QA tutor wishes everyone well after a break and reports that the chat is quieter today.\",\n      \"evidence_ids\": [\"m:C_RP_GENERAL:1790911349.000052\"],\n      \"attributions\": [\n        {\n          \"user_id\": \"U019\",\n          \"relation\": \"AUTHOR\",\n          \"evidence_id\": \"m:C_RP_GENERAL:1790911349.000052\"\n        }\n      ],\n      \"quote\": null,\n      \"quote_kind\": \"PARAPHRASE\",\n      \"material\": true\n    },\n    {\n      \"claim_id\": \"c2\",\n      \"kind\": \"INCIDENT_FACT\",\n      \"text\": \"A tutor agrees that the channel is quieter today and wishes the QA tutor a smooth shift.\",\n      \"evidence_ids\": [\"m:C_RP_GENERAL:1790911404.000113\"],\n      \"attributions\": [\n        {\n          \"user_id\": \"U004\",\n          \"relation\": \"AUTHOR\",\n          \"evidence_id\": \"m:C_RP_GENERAL:1790911404.000113\"\n        },\n        {\n          \"user_id\": \"U019\",\n          \"relation\": \"THREAD_STARTER\",\n          \"evidence_id\": \"m:C_RP_GENERAL:1790911404.000113\"\n        }\n      ],\n      \"quote\": null,\n      \"quote_kind\": \"PARAPHRASE\",\n      \"material\": true\n    },\n    {\n      \"claim_id\": \"c3\",\n      \"kind\": \"INFERENCE\",\n      \"text\": \"The QA tutor's message and the tutor's reply raise no work problem or handling question requiring operational intervention.\",\n      \"evidence_ids\": [\n        \"m:C_RP_GENERAL:1790911349.000052\",\n        \"m:C_RP_GENERAL:1790911404.000113\"\n      ],\n      \"attributions\": [\n        {\n          \"user_id\": \"U019\",\n          \"relation\": \"AUTHOR\",\n          \"evidence_id\": \"m:C_RP_GENERAL:1790911349.000052\"\n        },\n        {\n          \"user_id\": \"U004\",\n          \"relation\": \"AUTHOR\",\n          \"evidence_id\": \"m:C_RP_GENERAL:1790911404.000113\"\n        }\n      ],\n      \"quote\": null,\n      \"quote_kind\": \"PARAPHRASE\",\n      \"material\": true\n    }\n  ],\n  \"gaps\": [],\n  \"evidence_sufficiency\": \"SUFFICIENT\",\n  \"proposed_action\": {\n    \"action_type\": \"NO_ACTION\",\n    \"intervention_need\": null,\n    \"instruction\": \"Leave this social thread without an operational follow-up; the messages do not raise a work problem or handling question.\",\n    \"rationale\": \"The exchange contains well-wishes and an observation about a quieter chat, with nothing requiring clarification or escalation.\",\n    \"draft_text\": null,\n    \"scope_note\": \"This recommendation applies only to the social exchange in this thread.\",\n    \"support_claim_ids\": [\"c1\", \"c2\", \"c3\"],\n    \"targets\": [],\n    \"context_claim_ids\": []\n  },\n  \"severity\": {\n    \"level\": \"N/A\",\n    \"rationale\": \"A QA tutor and a tutor exchange social well-wishes without reporting an operational problem or risk.\",\n    \"signals\": [],\n    \"affected_reporters\": [],\n    \"recurrence\": \"NOT_CHECKED\",\n    \"recurrence_evidence_ids\": [],\n    \"reported_recurrence_evidence_ids\": []\n  },\n  \"confidence\": 0.99,\n  \"open_confirmation\": \"NONE\",\n  \"open_question\": null,\n  \"open_question_evidence_ids\": [],\n  \"source_conflicts\": [],\n  \"announcement_assessments\": [\n    {\n      \"evidence_id\": \"k:slack:C_RP_ANNOUNCEMENTS:1790929075.000039:05d4b538\",\n      \"relevant\": false,\n      \"directive\": true,\n      \"directive_quote\": \"Please keep examples in this thread while we check the scope.\",\n      \"rationale\": \"The announcement concerns tie judgments, not social greetings, despite covering the same project and batch.\"\n    },\n    {\n      \"evidence_id\": \"k:slack:C_RP_ANNOUNCEMENTS:1790871613.000001:430efd10\",\n      \"relevant\": false,\n      \"directive\": true,\n      \"directive_quote\": \"Please keep examples in this thread while we check the scope.\",\n      \"rationale\": \"The announcement concerns citation scoring, not social greetings, despite covering the same project and batch.\"\n    },\n    {\n      \"evidence_id\": \"k:slack:C_RP_ANNOUNCEMENTS:1790936513.000019:8237860f\",\n      \"relevant\": false,\n      \"directive\": true,\n      \"directive_quote\": \"Please keep examples in this thread while we check the scope.\",\n      \"rationale\": \"The announcement concerns factuality and instruction adherence, not social greetings, despite covering the same project and batch.\"\n    },\n    {\n      \"evidence_id\": \"k:slack:C_RP_ANNOUNCEMENTS:1790916442.000051:a3b60595\",\n      \"relevant\": false,\n      \"directive\": false,\n      \"directive_quote\": null,\n      \"rationale\": \"The announcement shares an onboarding resource rather than directing handling of social greetings.\"\n    }\n  ],\n  \"resolution\": [\n    {\n      \"member_id\": \"member_e7ef680e847ac15d0380e466\",\n      \"state\": \"UNKNOWN\",\n      \"evidence_ids\": [\n        \"m:C_RP_GENERAL:1790911349.000052\",\n        \"m:C_RP_GENERAL:1790911404.000113\"\n      ],\n      \"basis\": \"The complete thread contains a QA tutor's greeting and a tutor's friendly reply; there is no substantive issue whose resolution can be assessed.\"\n    }\n  ],\n  \"coverage\": [\n    {\n      \"need\": \"CURRENT_GUIDANCE\",\n      \"status\": \"NOT_APPLICABLE\",\n      \"evidence_ids\": [],\n      \"note\": \"No handling question or operational problem requires a current rule for this social exchange.\",\n      \"gap_id\": null\n    },\n    {\n      \"need\": \"ANNOUNCEMENTS\",\n      \"status\": \"COVERED\",\n      \"evidence_ids\": [\n        \"k:slack:C_RP_ANNOUNCEMENTS:1790929075.000039:05d4b538\",\n        \"k:slack:C_RP_ANNOUNCEMENTS:1790871613.000001:430efd10\",\n        \"k:slack:C_RP_ANNOUNCEMENTS:1790936513.000019:8237860f\",\n        \"k:slack:C_RP_ANNOUNCEMENTS:1790916442.000051:a3b60595\"\n      ],\n      \"note\": \"The retrieved announcements were assessed; none addresses this social exchange.\",\n      \"gap_id\": null\n    },\n    {\n      \"need\": \"PRIOR_DECISIONS\",\n      \"status\": \"NOT_APPLICABLE\",\n      \"evidence_ids\": [],\n      \"note\": \"No earlier workaround, decision, trial or outcome is needed to assess this social exchange.\",\n      \"gap_id\": null\n    },\n    {\n      \"need\": \"MEMBER_QUESTIONS\",\n      \"status\": \"COVERED\",\n      \"evidence_ids\": [\n        \"m:C_RP_GENERAL:1790911349.000052\",\n        \"m:C_RP_GENERAL:1790911404.000113\"\n      ],\n      \"note\": \"Both messages were reviewed; neither asks a substantive question or refers to an earlier workaround or discussion.\",\n      \"gap_id\": null\n    }\n  ],\n  \"review_note\": null,\n  \"action_choice\": null\n}",
+        "raw_sha256": "ffdb9dd3fe2ffb55cc1ffdaca5fd075ba53c4f456f512b782e47bfcd873cf605",
+        "http_requests": {
+          "sent": 1,
+          "blocked": 0,
+          "hosts": [
+            "api.openai.com"
+          ],
+          "responses": [
+            {
+              "status_code": 200,
+              "seconds": 0.086,
+              "model": "gpt-6.1-sol",
+              "usage": {
+                "prompt_tokens": 11481,
+                "completion_tokens": 1979,
+                "total_tokens": 13460,
+                "prompt_tokens_details": {
+                  "cached_tokens": 0,
+                  "cache_write_tokens": 11478,
+                  "audio_tokens": 0
+                },
+                "completion_tokens_details": {
+                  "reasoning_tokens": 76,
+                  "audio_tokens": 0,
+                  "accepted_prediction_tokens": 0,
+                  "rejected_prediction_tokens": 0
+                }
+              },
+              "finish_reasons": [
+                "stop"
+              ]
+            }
+          ],
+          "input_tokens": 11487,
+          "refused": null,
+          "charged_usd": 0.042752
+        },
+        "input_tokens_estimate": 11487,
+        "status": "OK"
+      },
+      {
+        "stage": "grounding",
+        "schema": "GroundingJudgment",
+        "raw": "{\n  \"contract_version\": \"agent3-grounding-judgment-v5\",\n  \"verdicts\": [\n    {\n      \"statement_id\": \"claim:c1\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"U019, the QA tutor, expresses hope that everyone had a decent break and observes that the chat is quieter today.\"\n    },\n    {\n      \"statement_id\": \"claim:c2\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"U004, a tutor, agrees that the channel is quieter and wishes the thread starter a smooth shift. U019 is correctly attributed as the QA tutor who started the thread.\"\n    },\n    {\n      \"statement_id\": \"claim:c3\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The complete exchange contains only social well-wishes and observations about chat activity, with no reported work problem or handling question.\"\n    },\n    {\n      \"statement_id\": \"summary:s1\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"Both authors express well-wishes and remark on the quieter chat. Their roles and the thread-starter attribution match the supplied messages.\"\n    },\n    {\n      \"statement_id\": \"summary:s2\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"Neither message raises an operational issue or handling question. No applicable pending decision or coordination need appears elsewhere in the supplied context for this social thread.\"\n    },\n    {\n      \"statement_id\": \"action:no_action\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The full thread is a social exchange without an unresolved request, operational problem, or need for clarification or escalation. The retrieved material concerns other topics and creates no applicable intervention requirement here.\"\n    },\n    {\n      \"statement_id\": \"severity:rationale\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The QA tutor and tutor exchange social well-wishes without reporting an operational problem or risk, supporting the N/A severity assessment.\"\n    }\n  ],\n  \"action_sufficiency\": null,\n  \"alternative_sufficiency\": [],\n  \"source_consistency\": {\n    \"assessed_evidence_ids\": [],\n    \"relations\": [],\n    \"declared_conflict_checks\": []\n  }\n}",
+        "raw_sha256": "4573baf7d6f2ef131c9fca037491b305998ce7ed3d287c351e2edc40acbbc8cf",
+        "http_requests": {
+          "sent": 1,
+          "blocked": 0,
+          "hosts": [
+            "api.openai.com"
+          ],
+          "responses": [
+            {
+              "status_code": 200,
+              "seconds": 0.083,
+              "model": "gpt-6.1-sol",
+              "usage": {
+                "prompt_tokens": 7277,
+                "completion_tokens": 538,
+                "total_tokens": 7815,
+                "prompt_tokens_details": {
+                  "cached_tokens": 0,
+                  "cache_write_tokens": 7274,
+                  "audio_tokens": 0
+                },
+                "completion_tokens_details": {
+                  "reasoning_tokens": 56,
+                  "audio_tokens": 0,
+                  "accepted_prediction_tokens": 0,
+                  "rejected_prediction_tokens": 0
+                }
+              },
+              "finish_reasons": [
+                "stop"
+              ]
+            }
+          ],
+          "input_tokens": 7283,
+          "refused": null,
+          "charged_usd": 0.019934
+        },
+        "input_tokens_estimate": 7283,
+        "status": "OK"
+      }
+    ],
+    "agent1_context": [
+      {
+        "sha256": "2214eaed96c6d5929db954a5442838bd1185b411513d4bc792c5f8230a342138",
+        "content": [
+          {
+            "member_id": "member_e7ef680e847ac15d0380e466",
+            "thread_id": "1790911349.000052",
+            "summary": "Yuki opens the thread by wishing everyone a good break and noting that the chat is quieter today. Sofia responds in agreement, hoping Yuki's shift goes smoothly. There are no substantive questions or issues raised in this thread.",
+            "central_question": null,
+            "attributed_agent1_resolution": {
+              "state": "UNRESOLVED",
+              "rationale": "The thread consists of casual greetings and does not address any specific question or decision. No substantive answers or conclusions are established regarding any issue.",
+              "agent1_verification_status": "CORRECTED",
+              "note": "Agent 1 label, not evidence; NEEDS_REVIEW means Agent 1 did not verify it. Assess resolution from the member messages."
+            },
+            "agent1_review_required": false,
+            "agent1_review_reason": "",
+            "note": "Agent 1 interpretation, not source evidence; cite member messages for incident facts."
+          }
+        ]
+      }
+    ],
+    "drafts": {
+      "initial": {
+        "contract_version": "agent3-advisor-draft-v11",
+        "summary": "A QA tutor and a tutor exchange well-wishes and remark that the chat is quieter today. Neither message raises a work problem or handling question, so no operational intervention is needed for this thread.",
+        "summary_sentences": [
+          {
+            "text": "A QA tutor and a tutor exchange well-wishes and remark that the chat is quieter today.",
+            "support_claim_ids": [
+              "c1",
+              "c2"
+            ],
+            "depends_on": []
+          },
+          {
+            "text": "Neither message raises a work problem or handling question, so no operational intervention is needed for this thread.",
+            "support_claim_ids": [
+              "c3"
+            ],
+            "depends_on": []
+          }
+        ],
+        "detail_sentences": [],
+        "reasoning": "The member messages show a social exchange, not an unresolved operational issue. The retrieved guidance and announcements concern response evaluation or onboarding, not this exchange, and do not justify an intervention. No further research is needed to support leaving this thread without operational action. The upstream review flag on the unrelated citation announcement remains open; this assessment does not clear it.",
+        "claims": [
+          {
+            "claim_id": "c1",
+            "kind": "INCIDENT_FACT",
+            "text": "A QA tutor wishes everyone well after a break and reports that the chat is quieter today.",
+            "evidence_ids": [
+              "m:C_RP_GENERAL:1790911349.000052"
+            ],
+            "attributions": [
+              {
+                "user_id": "U019",
+                "relation": "AUTHOR",
+                "evidence_id": "m:C_RP_GENERAL:1790911349.000052"
+              }
+            ],
+            "quote": null,
+            "quote_kind": "PARAPHRASE",
+            "material": true
+          },
+          {
+            "claim_id": "c2",
+            "kind": "INCIDENT_FACT",
+            "text": "A tutor agrees that the channel is quieter today and wishes the QA tutor a smooth shift.",
+            "evidence_ids": [
+              "m:C_RP_GENERAL:1790911404.000113"
+            ],
+            "attributions": [
+              {
+                "user_id": "U004",
+                "relation": "AUTHOR",
+                "evidence_id": "m:C_RP_GENERAL:1790911404.000113"
+              },
+              {
+                "user_id": "U019",
+                "relation": "THREAD_STARTER",
+                "evidence_id": "m:C_RP_GENERAL:1790911404.000113"
+              }
+            ],
+            "quote": null,
+            "quote_kind": "PARAPHRASE",
+            "material": true
+          },
+          {
+            "claim_id": "c3",
+            "kind": "INFERENCE",
+            "text": "The QA tutor's message and the tutor's reply raise no work problem or handling question requiring operational intervention.",
+            "evidence_ids": [
+              "m:C_RP_GENERAL:1790911349.000052",
+              "m:C_RP_GENERAL:1790911404.000113"
+            ],
+            "attributions": [
+              {
+                "user_id": "U019",
+                "relation": "AUTHOR",
+                "evidence_id": "m:C_RP_GENERAL:1790911349.000052"
+              },
+              {
+                "user_id": "U004",
+                "relation": "AUTHOR",
+                "evidence_id": "m:C_RP_GENERAL:1790911404.000113"
+              }
+            ],
+            "quote": null,
+            "quote_kind": "PARAPHRASE",
+            "material": true
+          }
+        ],
+        "gaps": [],
+        "evidence_sufficiency": "SUFFICIENT",
+        "proposed_action": {
+          "action_type": "NO_ACTION",
+          "intervention_need": null,
+          "instruction": "Leave this social thread without an operational follow-up; the messages do not raise a work problem or handling question.",
+          "rationale": "The exchange contains well-wishes and an observation about a quieter chat, with nothing requiring clarification or escalation.",
+          "draft_text": null,
+          "scope_note": "This recommendation applies only to the social exchange in this thread.",
+          "support_claim_ids": [
+            "c1",
+            "c2",
+            "c3"
+          ],
+          "targets": [],
+          "context_claim_ids": []
+        },
+        "severity": {
+          "level": "N/A",
+          "rationale": "A QA tutor and a tutor exchange social well-wishes without reporting an operational problem or risk.",
+          "signals": [],
+          "affected_reporters": [],
+          "recurrence": "NOT_CHECKED",
+          "recurrence_evidence_ids": [],
+          "reported_recurrence_evidence_ids": []
+        },
+        "confidence": 0.99,
+        "open_confirmation": "NONE",
+        "open_question": null,
+        "open_question_evidence_ids": [],
+        "source_conflicts": [],
+        "announcement_assessments": [
+          {
+            "evidence_id": "k:slack:C_RP_ANNOUNCEMENTS:1790929075.000039:05d4b538",
+            "relevant": false,
+            "directive": true,
+            "directive_quote": "Please keep examples in this thread while we check the scope.",
+            "rationale": "The announcement concerns tie judgments, not social greetings, despite covering the same project and batch."
+          },
+          {
+            "evidence_id": "k:slack:C_RP_ANNOUNCEMENTS:1790871613.000001:430efd10",
+            "relevant": false,
+            "directive": true,
+            "directive_quote": "Please keep examples in this thread while we check the scope.",
+            "rationale": "The announcement concerns citation scoring, not social greetings, despite covering the same project and batch."
+          },
+          {
+            "evidence_id": "k:slack:C_RP_ANNOUNCEMENTS:1790936513.000019:8237860f",
+            "relevant": false,
+            "directive": true,
+            "directive_quote": "Please keep examples in this thread while we check the scope.",
+            "rationale": "The announcement concerns factuality and instruction adherence, not social greetings, despite covering the same project and batch."
+          },
+          {
+            "evidence_id": "k:slack:C_RP_ANNOUNCEMENTS:1790916442.000051:a3b60595",
+            "relevant": false,
+            "directive": false,
+            "directive_quote": null,
+            "rationale": "The announcement shares an onboarding resource rather than directing handling of social greetings."
+          }
+        ],
+        "resolution": [
+          {
+            "member_id": "member_e7ef680e847ac15d0380e466",
+            "state": "UNKNOWN",
+            "evidence_ids": [
+              "m:C_RP_GENERAL:1790911349.000052",
+              "m:C_RP_GENERAL:1790911404.000113"
+            ],
+            "basis": "The complete thread contains a QA tutor's greeting and a tutor's friendly reply; there is no substantive issue whose resolution can be assessed."
+          }
+        ],
+        "coverage": [
+          {
+            "need": "CURRENT_GUIDANCE",
+            "status": "NOT_APPLICABLE",
+            "evidence_ids": [],
+            "note": "No handling question or operational problem requires a current rule for this social exchange.",
+            "gap_id": null
+          },
+          {
+            "need": "ANNOUNCEMENTS",
+            "status": "COVERED",
+            "evidence_ids": [
+              "k:slack:C_RP_ANNOUNCEMENTS:1790929075.000039:05d4b538",
+              "k:slack:C_RP_ANNOUNCEMENTS:1790871613.000001:430efd10",
+              "k:slack:C_RP_ANNOUNCEMENTS:1790936513.000019:8237860f",
+              "k:slack:C_RP_ANNOUNCEMENTS:1790916442.000051:a3b60595"
+            ],
+            "note": "The retrieved announcements were assessed; none addresses this social exchange.",
+            "gap_id": null
+          },
+          {
+            "need": "PRIOR_DECISIONS",
+            "status": "NOT_APPLICABLE",
+            "evidence_ids": [],
+            "note": "No earlier workaround, decision, trial or outcome is needed to assess this social exchange.",
+            "gap_id": null
+          },
+          {
+            "need": "MEMBER_QUESTIONS",
+            "status": "COVERED",
+            "evidence_ids": [
+              "m:C_RP_GENERAL:1790911349.000052",
+              "m:C_RP_GENERAL:1790911404.000113"
+            ],
+            "note": "Both messages were reviewed; neither asks a substantive question or refers to an earlier workaround or discussion.",
+            "gap_id": null
+          }
+        ],
+        "review_note": null,
+        "action_choice": null
+      },
+      "final": {
+        "contract_version": "agent3-advisor-draft-v11",
+        "summary": "A QA tutor and a tutor exchange well-wishes and remark that the chat is quieter today. Neither message raises a work problem or handling question, so no operational intervention is needed for this thread.",
+        "summary_sentences": [
+          {
+            "text": "A QA tutor and a tutor exchange well-wishes and remark that the chat is quieter today.",
+            "support_claim_ids": [
+              "c1",
+              "c2"
+            ],
+            "depends_on": []
+          },
+          {
+            "text": "Neither message raises a work problem or handling question, so no operational intervention is needed for this thread.",
+            "support_claim_ids": [
+              "c3"
+            ],
+            "depends_on": []
+          }
+        ],
+        "detail_sentences": [],
+        "reasoning": "The member messages show a social exchange, not an unresolved operational issue. The retrieved guidance and announcements concern response evaluation or onboarding, not this exchange, and do not justify an intervention. No further research is needed to support leaving this thread without operational action. The upstream review flag on the unrelated citation announcement remains open; this assessment does not clear it.",
+        "claims": [
+          {
+            "claim_id": "c1",
+            "kind": "INCIDENT_FACT",
+            "text": "A QA tutor wishes everyone well after a break and reports that the chat is quieter today.",
+            "evidence_ids": [
+              "m:C_RP_GENERAL:1790911349.000052"
+            ],
+            "attributions": [
+              {
+                "user_id": "U019",
+                "relation": "AUTHOR",
+                "evidence_id": "m:C_RP_GENERAL:1790911349.000052"
+              }
+            ],
+            "quote": null,
+            "quote_kind": "PARAPHRASE",
+            "material": true
+          },
+          {
+            "claim_id": "c2",
+            "kind": "INCIDENT_FACT",
+            "text": "A tutor agrees that the channel is quieter today and wishes the QA tutor a smooth shift.",
+            "evidence_ids": [
+              "m:C_RP_GENERAL:1790911404.000113"
+            ],
+            "attributions": [
+              {
+                "user_id": "U004",
+                "relation": "AUTHOR",
+                "evidence_id": "m:C_RP_GENERAL:1790911404.000113"
+              },
+              {
+                "user_id": "U019",
+                "relation": "THREAD_STARTER",
+                "evidence_id": "m:C_RP_GENERAL:1790911404.000113"
+              }
+            ],
+            "quote": null,
+            "quote_kind": "PARAPHRASE",
+            "material": true
+          },
+          {
+            "claim_id": "c3",
+            "kind": "INFERENCE",
+            "text": "The QA tutor's message and the tutor's reply raise no work problem or handling question requiring operational intervention.",
+            "evidence_ids": [
+              "m:C_RP_GENERAL:1790911349.000052",
+              "m:C_RP_GENERAL:1790911404.000113"
+            ],
+            "attributions": [
+              {
+                "user_id": "U019",
+                "relation": "AUTHOR",
+                "evidence_id": "m:C_RP_GENERAL:1790911349.000052"
+              },
+              {
+                "user_id": "U004",
+                "relation": "AUTHOR",
+                "evidence_id": "m:C_RP_GENERAL:1790911404.000113"
+              }
+            ],
+            "quote": null,
+            "quote_kind": "PARAPHRASE",
+            "material": true
+          }
+        ],
+        "gaps": [],
+        "evidence_sufficiency": "SUFFICIENT",
+        "proposed_action": {
+          "action_type": "NO_ACTION",
+          "intervention_need": null,
+          "instruction": "Leave this social thread without an operational follow-up; the messages do not raise a work problem or handling question.",
+          "rationale": "The exchange contains well-wishes and an observation about a quieter chat, with nothing requiring clarification or escalation.",
+          "draft_text": null,
+          "scope_note": "This recommendation applies only to the social exchange in this thread.",
+          "support_claim_ids": [
+            "c1",
+            "c2",
+            "c3"
+          ],
+          "targets": [],
+          "context_claim_ids": []
+        },
+        "severity": {
+          "level": "N/A",
+          "rationale": "A QA tutor and a tutor exchange social well-wishes without reporting an operational problem or risk.",
+          "signals": [],
+          "affected_reporters": [],
+          "recurrence": "NOT_CHECKED",
+          "recurrence_evidence_ids": [],
+          "reported_recurrence_evidence_ids": []
+        },
+        "confidence": 0.99,
+        "open_confirmation": "NONE",
+        "open_question": null,
+        "open_question_evidence_ids": [],
+        "source_conflicts": [],
+        "announcement_assessments": [
+          {
+            "evidence_id": "k:slack:C_RP_ANNOUNCEMENTS:1790929075.000039:05d4b538",
+            "relevant": false,
+            "directive": true,
+            "directive_quote": "Please keep examples in this thread while we check the scope.",
+            "rationale": "The announcement concerns tie judgments, not social greetings, despite covering the same project and batch."
+          },
+          {
+            "evidence_id": "k:slack:C_RP_ANNOUNCEMENTS:1790871613.000001:430efd10",
+            "relevant": false,
+            "directive": true,
+            "directive_quote": "Please keep examples in this thread while we check the scope.",
+            "rationale": "The announcement concerns citation scoring, not social greetings, despite covering the same project and batch."
+          },
+          {
+            "evidence_id": "k:slack:C_RP_ANNOUNCEMENTS:1790936513.000019:8237860f",
+            "relevant": false,
+            "directive": true,
+            "directive_quote": "Please keep examples in this thread while we check the scope.",
+            "rationale": "The announcement concerns factuality and instruction adherence, not social greetings, despite covering the same project and batch."
+          },
+          {
+            "evidence_id": "k:slack:C_RP_ANNOUNCEMENTS:1790916442.000051:a3b60595",
+            "relevant": false,
+            "directive": false,
+            "directive_quote": null,
+            "rationale": "The announcement shares an onboarding resource rather than directing handling of social greetings."
+          }
+        ],
+        "resolution": [
+          {
+            "member_id": "member_e7ef680e847ac15d0380e466",
+            "state": "UNKNOWN",
+            "evidence_ids": [
+              "m:C_RP_GENERAL:1790911349.000052",
+              "m:C_RP_GENERAL:1790911404.000113"
+            ],
+            "basis": "The complete thread contains a QA tutor's greeting and a tutor's friendly reply; there is no substantive issue whose resolution can be assessed."
+          }
+        ],
+        "coverage": [
+          {
+            "need": "CURRENT_GUIDANCE",
+            "status": "NOT_APPLICABLE",
+            "evidence_ids": [],
+            "note": "No handling question or operational problem requires a current rule for this social exchange.",
+            "gap_id": null
+          },
+          {
+            "need": "ANNOUNCEMENTS",
+            "status": "COVERED",
+            "evidence_ids": [
+              "k:slack:C_RP_ANNOUNCEMENTS:1790929075.000039:05d4b538",
+              "k:slack:C_RP_ANNOUNCEMENTS:1790871613.000001:430efd10",
+              "k:slack:C_RP_ANNOUNCEMENTS:1790936513.000019:8237860f",
+              "k:slack:C_RP_ANNOUNCEMENTS:1790916442.000051:a3b60595"
+            ],
+            "note": "The retrieved announcements were assessed; none addresses this social exchange.",
+            "gap_id": null
+          },
+          {
+            "need": "PRIOR_DECISIONS",
+            "status": "NOT_APPLICABLE",
+            "evidence_ids": [],
+            "note": "No earlier workaround, decision, trial or outcome is needed to assess this social exchange.",
+            "gap_id": null
+          },
+          {
+            "need": "MEMBER_QUESTIONS",
+            "status": "COVERED",
+            "evidence_ids": [
+              "m:C_RP_GENERAL:1790911349.000052",
+              "m:C_RP_GENERAL:1790911404.000113"
+            ],
+            "note": "Both messages were reviewed; neither asks a substantive question or refers to an earlier workaround or discussion.",
+            "gap_id": null
+          }
+        ],
+        "review_note": null,
+        "action_choice": null
+      },
+      "revised": false
+    },
+    "grounding": {
+      "structural_issues": [],
+      "action_issues": [],
+      "unsupported": [],
+      "unjudged": [],
+      "extraneous_verdicts": [],
+      "rejected": {},
+      "pending": [],
+      "action_sufficiency": null,
+      "source_consistency": {
+        "assessed_evidence_ids": [],
+        "relations": [],
+        "declared_conflict_checks": []
+      },
+      "alternative_sufficiency": {},
+      "status": "PASSED",
+      "basis": "SEMANTIC",
+      "statements": [
+        {
+          "statement_id": "claim:c1",
+          "kind": "CLAIM_INCIDENT_FACT",
+          "text": "A QA tutor wishes everyone well after a break and reports that the chat is quieter today.",
+          "blocking": true,
+          "evidence_ids": [
+            "m:C_RP_GENERAL:1790911349.000052"
+          ],
+          "attributions": [
+            {
+              "user_id": "U019",
+              "relation": "AUTHOR",
+              "evidence_id": "m:C_RP_GENERAL:1790911349.000052",
+              "role": "QA_TUTOR"
+            }
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "U019, the QA tutor, expresses hope that everyone had a decent break and observes that the chat is quieter today."
+        },
+        {
+          "statement_id": "claim:c2",
+          "kind": "CLAIM_INCIDENT_FACT",
+          "text": "A tutor agrees that the channel is quieter today and wishes the QA tutor a smooth shift.",
+          "blocking": true,
+          "evidence_ids": [
+            "m:C_RP_GENERAL:1790911404.000113"
+          ],
+          "attributions": [
+            {
+              "user_id": "U004",
+              "relation": "AUTHOR",
+              "evidence_id": "m:C_RP_GENERAL:1790911404.000113",
+              "role": "TUTOR"
+            },
+            {
+              "user_id": "U019",
+              "relation": "THREAD_STARTER",
+              "evidence_id": "m:C_RP_GENERAL:1790911404.000113",
+              "role": "QA_TUTOR"
+            }
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "U004, a tutor, agrees that the channel is quieter and wishes the thread starter a smooth shift. U019 is correctly attributed as the QA tutor who started the thread."
+        },
+        {
+          "statement_id": "claim:c3",
+          "kind": "CLAIM_INFERENCE",
+          "text": "The QA tutor's message and the tutor's reply raise no work problem or handling question requiring operational intervention.",
+          "blocking": true,
+          "evidence_ids": [
+            "m:C_RP_GENERAL:1790911349.000052",
+            "m:C_RP_GENERAL:1790911404.000113"
+          ],
+          "attributions": [
+            {
+              "user_id": "U019",
+              "relation": "AUTHOR",
+              "evidence_id": "m:C_RP_GENERAL:1790911349.000052",
+              "role": "QA_TUTOR"
+            },
+            {
+              "user_id": "U004",
+              "relation": "AUTHOR",
+              "evidence_id": "m:C_RP_GENERAL:1790911404.000113",
+              "role": "TUTOR"
+            }
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "The complete exchange contains only social well-wishes and observations about chat activity, with no reported work problem or handling question."
+        },
+        {
+          "statement_id": "summary:s1",
+          "kind": "SUMMARY",
+          "text": "A QA tutor and a tutor exchange well-wishes and remark that the chat is quieter today.",
+          "blocking": true,
+          "evidence_ids": [
+            "m:C_RP_GENERAL:1790911349.000052",
+            "m:C_RP_GENERAL:1790911404.000113"
+          ],
+          "attributions": [
+            {
+              "user_id": "U019",
+              "relation": "AUTHOR",
+              "evidence_id": "m:C_RP_GENERAL:1790911349.000052",
+              "role": "QA_TUTOR"
+            },
+            {
+              "user_id": "U004",
+              "relation": "AUTHOR",
+              "evidence_id": "m:C_RP_GENERAL:1790911404.000113",
+              "role": "TUTOR"
+            },
+            {
+              "user_id": "U019",
+              "relation": "THREAD_STARTER",
+              "evidence_id": "m:C_RP_GENERAL:1790911404.000113",
+              "role": "QA_TUTOR"
+            }
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "Both authors express well-wishes and remark on the quieter chat. Their roles and the thread-starter attribution match the supplied messages."
+        },
+        {
+          "statement_id": "summary:s2",
+          "kind": "SUMMARY",
+          "text": "Neither message raises a work problem or handling question, so no operational intervention is needed for this thread.",
+          "blocking": true,
+          "evidence_ids": [
+            "m:C_RP_GENERAL:1790911349.000052",
+            "m:C_RP_GENERAL:1790911404.000113"
+          ],
+          "attributions": [
+            {
+              "user_id": "U019",
+              "relation": "AUTHOR",
+              "evidence_id": "m:C_RP_GENERAL:1790911349.000052",
+              "role": "QA_TUTOR"
+            },
+            {
+              "user_id": "U004",
+              "relation": "AUTHOR",
+              "evidence_id": "m:C_RP_GENERAL:1790911404.000113",
+              "role": "TUTOR"
+            }
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "Neither message raises an operational issue or handling question. No applicable pending decision or coordination need appears elsewhere in the supplied context for this social thread."
+        },
+        {
+          "statement_id": "action:no_action",
+          "kind": "NO_ACTION_RATIONALE",
+          "text": "Why no further action is needed now: The exchange contains well-wishes and an observation about a quieter chat, with nothing requiring clarification or escalation.",
+          "blocking": false,
+          "evidence_ids": [
+            "m:C_RP_GENERAL:1790911349.000052",
+            "m:C_RP_GENERAL:1790911404.000113"
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "The full thread is a social exchange without an unresolved request, operational problem, or need for clarification or escalation. The retrieved material concerns other topics and creates no applicable intervention requirement here."
+        },
+        {
+          "statement_id": "severity:rationale",
+          "kind": "SEVERITY_RATIONALE",
+          "text": "Severity N/A: A QA tutor and a tutor exchange social well-wishes without reporting an operational problem or risk.",
+          "blocking": true,
+          "evidence_ids": [
+            "m:C_RP_GENERAL:1790911349.000052",
+            "m:C_RP_GENERAL:1790911404.000113"
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "The QA tutor and tutor exchange social well-wishes without reporting an operational problem or risk, supporting the N/A severity assessment."
+        }
+      ]
+    },
+    "temporal": {
+      "status": "NONE_FOUND",
+      "findings": [],
+      "source_consistency": "ASSESSED",
+      "ignored_revision_states": "NOT_YET_EFFECTIVE and NOT_APPROVED revisions never compete with applicable guidance."
+    },
+    "temporal_before_grounding": {
+      "status": "NONE_FOUND",
+      "findings": [],
+      "source_consistency": "NOT_ASSESSED",
+      "ignored_revision_states": "NOT_YET_EFFECTIVE and NOT_APPROVED revisions never compete with applicable guidance."
+    },
+    "severity": {
+      "assessment": {
+        "level": "N/A",
+        "assessment_status": "ASSESSED",
+        "rubric_version": "severity-rubric-v3-semantic-signals",
+        "rubric_content_sha256": "eccaa31a2ab84a0aa7c005216a92fc39681e1dd10107117344948235a76673f4",
+        "rubric_project_id": null,
+        "rubric_scope": "SHARED_DEFAULT",
+        "rationale": "A QA tutor and a tutor exchange social well-wishes without reporting an operational problem or risk.",
+        "matched_signals": [],
+        "evidence": [],
+        "occurrence": {
+          "affected_reporters": {
+            "status": "UNKNOWN",
+            "count": null,
+            "ids": [],
+            "basis": null,
+            "evidence": []
+          },
+          "affected_tasks": {
+            "status": "UNKNOWN",
+            "count": null,
+            "ids": [],
+            "basis": null,
+            "evidence": []
+          },
+          "relevant_threads": [
+            {
+              "project_id": "response_preference",
+              "batch_id": "rp_batch_15",
+              "channel_id": "C_RP_GENERAL",
+              "thread_id": "1790911349.000052",
+              "member_id": "member_e7ef680e847ac15d0380e466"
+            }
+          ],
+          "reporting_window": {
+            "start": "2026-10-02T03:22:29.000052+00:00",
+            "end": "2026-10-02T03:23:24.000113+00:00"
+          },
+          "historical_recurrence": {
+            "status": "NOT_CHECKED",
+            "sources": [],
+            "event_series_ids": []
+          },
+          "known_denominator": null,
+          "structural": {
+            "threads": 1,
+            "messages": 2,
+            "distinct_participants": 2,
+            "duplicate_threads_ignored": 0,
+            "duplicate_messages_ignored": 0,
+            "computed_from": "topic member threads (original Slack messages)",
+            "participants_are_not_affected_reporters": true
+          },
+          "semantic_identification": "ASSESSED"
+        },
+        "inherited_from": {
+          "level": "UNKNOWN",
+          "assessment_status": "UNASSESSED",
+          "assessment_deferred_to": "AGENT3",
+          "reason": "Agent 2 performs taxonomy only."
+        }
+      },
+      "issues": [],
+      "notes": [],
+      "proposal": {
+        "level": "N/A",
+        "rationale": "A QA tutor and a tutor exchange social well-wishes without reporting an operational problem or risk.",
+        "signals": [],
+        "affected_reporters": [],
+        "recurrence": "NOT_CHECKED",
+        "recurrence_evidence_ids": [],
+        "reported_recurrence_evidence_ids": []
+      }
+    },
+    "resolution": {
+      "topic": "UNKNOWN",
+      "members": {
+        "member_e7ef680e847ac15d0380e466": "UNKNOWN"
+      },
+      "agent1_attributed": [
+        {
+          "member_id": "member_e7ef680e847ac15d0380e466",
+          "state": "UNRESOLVED",
+          "agent1_verification_status": "CORRECTED",
+          "agent1_review_required": false
+        }
+      ]
+    },
+    "established_handling": [],
+    "coverage_issues": [],
+    "action_source": "DRAFT",
+    "action_notes": [],
+    "tot": {
+      "status": "NOT_TRIGGERED",
+      "triggers": [],
+      "choice_after_grounding": {
+        "status": "NOT_COMPARED",
+        "viable": []
+      }
+    },
+    "evidence_ledger": {
+      "m:C_RP_GENERAL:1790911349.000052": {
+        "evidence_id": "m:C_RP_GENERAL:1790911349.000052",
+        "origin": "member_message",
+        "use": "MEMBER_REPORT",
+        "member_id": "member_e7ef680e847ac15d0380e466",
+        "channel_id": "C_RP_GENERAL",
+        "thread_id": "1790911349.000052",
+        "message_id": "1790911349.000052",
+        "author_id": "U019",
+        "author_name": "Yuki",
+        "author_role": "QA_TUTOR",
+        "timestamp": "2026-10-02T03:22:29.000052Z",
+        "thread_starter_id": "U019",
+        "thread_starter_role": "QA_TUTOR",
+        "reactions": [],
+        "excerpt": "Hope everyone had a decent break — the chat is quieter today 🙂"
+      },
+      "m:C_RP_GENERAL:1790911404.000113": {
+        "evidence_id": "m:C_RP_GENERAL:1790911404.000113",
+        "origin": "member_message",
+        "use": "MEMBER_REPORT",
+        "member_id": "member_e7ef680e847ac15d0380e466",
+        "channel_id": "C_RP_GENERAL",
+        "thread_id": "1790911349.000052",
+        "message_id": "1790911404.000113",
+        "author_id": "U004",
+        "author_name": "Sofia",
+        "author_role": "TUTOR",
+        "timestamp": "2026-10-02T03:23:24.000113Z",
+        "thread_starter_id": "U019",
+        "thread_starter_role": "QA_TUTOR",
+        "reactions": [],
+        "excerpt": "Yeah, a quieter channel today. Hope your shift goes smoothly!"
+      },
+      "k:slack:C_RP_ANNOUNCEMENTS:1790929075.000039:05d4b538": {
+        "evidence_id": "k:slack:C_RP_ANNOUNCEMENTS:1790929075.000039:05d4b538",
+        "origin": "retrieved_source",
+        "use": "ANNOUNCEMENT",
+        "citation": {
+          "document_id": "knowledge_29ce2e1083733faca4753f8b2136091cc1cce0c3c5c201c068172749bbb29812",
+          "version_id": "version_2ba4ca59a98cb9f68abc4b67ba1489c495e1e95ea46fbb83886e8c2c5f14cbba",
+          "chunk_id": "chunk_05d4b538bdf9f38723dc4f0881327290",
+          "authoring": null,
+          "title": "Slack announcement in response-preference-announcements at 2026-10-02T08:17:55.000039+00:00",
+          "sections": [],
+          "source": {
+            "batch_id": "rp_batch_15",
+            "channel_id": "C_RP_ANNOUNCEMENTS",
+            "manual_key": null,
+            "message_id": "1790929075.000039",
+            "permalink": null,
+            "project_id": "response_preference",
+            "reference": null,
+            "system": "slack",
+            "thread_id": "1790929075.000039",
+            "workspace_id": null
+          }
+        },
+        "source_type": "announcement",
+        "record_kind": "announcement",
+        "applicability": {
+          "state": "CURRENT",
+          "revision_state": "CURRENT",
+          "version_mode": "current",
+          "replaced_by": [],
+          "unverified_supersession": [],
+          "supersedes": [],
+          "enactment": null,
+          "other_revisions": []
+        },
+        "dates": {
+          "source_date": "2026-10-02T08:17:55.000039+00:00",
+          "basis": "created_at",
+          "effective_at": null,
+          "created_at": "2026-10-02T08:17:55.000039+00:00",
+          "valid_until": null,
+          "expired_as_of": false,
+          "reference_time": "2026-10-02T12:00:00Z"
+        },
+        "scope": {
+          "project_id": "response_preference",
+          "batch_id": "rp_batch_15",
+          "scope": "project",
+          "batch_relation": "same_batch"
+        },
+        "authority": {
+          "role": "TEAM_LEAD",
+          "actor": "U001",
+          "actor_relation": "MESSAGE_AUTHOR",
+          "approval_status": "UNKNOWN",
+          "provenance": null
+        },
+        "authorship": {
+          "author_id": "U001",
+          "verified": true,
+          "basis": "SLACK_MESSAGE_AUTHOR"
+        },
+        "recorded_states": {
+          "status": null,
+          "decision_status": null,
+          "execution_status": null,
+          "outcome_status": null
+        },
+        "upstream_review": null,
+        "excerpt": "[ANNOUNCEMENT posted 2026-10-02T08:17:55.000039+00:00 by TEAM_LEAD (rp_batch_15): not established as handling for this topic until you show it is relevant and gives a directive.]\nBatch status note — QA and tutors disagree on when two outputs are tied. Please keep examples in this thread while we check the scope."
+      },
+      "k:response-preference-faq@1.1:fa9b6a3d": {
+        "evidence_id": "k:response-preference-faq@1.1:fa9b6a3d",
+        "origin": "retrieved_source",
+        "use": "CURRENT_GUIDANCE",
+        "citation": {
+          "document_id": "knowledge_8267f474fe0a050bdbcaf6140c458ee11ad457fdc2afe9f79de12a23de8575e9",
+          "version_id": "version_6c9da15dd304e1be3d453ea1de9cbfd1e8cc54f0939ce516dd89cf0457f82a86",
+          "chunk_id": "chunk_fa9b6a3dd66908c89de9f8cf42d99e0e",
+          "authoring": "response-preference-faq@1.1",
+          "title": "Response Preference — FAQ (v1.1)",
+          "sections": [
+            "Instruction following"
+          ],
+          "source": {
+            "batch_id": null,
+            "channel_id": null,
+            "manual_key": "response-preference-faq",
+            "message_id": null,
+            "permalink": null,
+            "project_id": "response_preference",
+            "reference": null,
+            "system": "manual",
+            "thread_id": null,
+            "workspace_id": null
+          }
+        },
+        "source_type": "faq",
+        "record_kind": "faq",
+        "applicability": {
+          "state": "CURRENT",
+          "revision_state": "CURRENT",
+          "version_mode": "current",
+          "replaced_by": [],
+          "unverified_supersession": [],
+          "supersedes": [],
+          "enactment": null,
+          "other_revisions": []
+        },
+        "dates": {
+          "source_date": "2026-09-05T13:00:00Z",
+          "basis": "effective_at",
+          "effective_at": "2026-09-05T13:00:00Z",
+          "created_at": null,
+          "valid_until": null,
+          "expired_as_of": false,
+          "reference_time": "2026-10-02T12:00:00Z"
+        },
+        "scope": {
+          "project_id": "response_preference",
+          "batch_id": null,
+          "scope": "project",
+          "batch_relation": "project_wide"
+        },
+        "authority": {
+          "role": "TEAM_LEAD",
+          "actor": "U001",
+          "actor_relation": "RECORD_AUTHORITY",
+          "approval_status": "EXPLICIT_SOURCE_MARKER",
+          "provenance": "synthetic_manual_record"
+        },
+        "authorship": {
+          "author_id": null,
+          "verified": false,
+          "basis": "NO_AUTHOR_RECORDED"
+        },
+        "recorded_states": {
+          "status": "approved",
+          "decision_status": null,
+          "execution_status": null,
+          "outcome_status": null
+        },
+        "upstream_review": null,
+        "excerpt": "## Instruction following\n\n### Q: The prompt required JSON, but one response is well-written prose. Which response wins?\nThe required format is not optional: record its violation separately from factual accuracy. No universal tie-break rule is established for competing accuracy and instruction-following defects. If the actual pair and applicable guidance do not settle the preference, provide the prompt and both responses for TL confirmation.\n\n### Q: Can accuracy outweigh ignoring a requested output structure?\nScore the dimensions separately and identify whether the requested structure was mandatory. Do not infer a general priority rule from one example or decide without the other response's evidence."
+      },
+      "k:slack:C_RP_ANNOUNCEMENTS:1790871613.000001:430efd10": {
+        "evidence_id": "k:slack:C_RP_ANNOUNCEMENTS:1790871613.000001:430efd10",
+        "origin": "retrieved_source",
+        "use": "ANNOUNCEMENT",
+        "citation": {
+          "document_id": "knowledge_5792f6b3b98dab3d8b1eb2ca98c251a4319418607f656aa39896e4206fb556b4",
+          "version_id": "version_655b30a174d2736f82ea177fde7e142b80140671be58a8b57b90cd698ccb7416",
+          "chunk_id": "chunk_430efd102b38553947ded63bff915236",
+          "authoring": null,
+          "title": "Slack announcement in response-preference-announcements at 2026-10-01T16:20:13.000001+00:00",
+          "sections": [],
+          "source": {
+            "batch_id": "rp_batch_15",
+            "channel_id": "C_RP_ANNOUNCEMENTS",
+            "manual_key": null,
+            "message_id": "1790871613.000001",
+            "permalink": null,
+            "project_id": "response_preference",
+            "reference": null,
+            "system": "slack",
+            "thread_id": "1790871613.000001",
+            "workspace_id": null
+          }
+        },
+        "source_type": "announcement",
+        "record_kind": "announcement",
+        "applicability": {
+          "state": "CURRENT",
+          "revision_state": "CURRENT",
+          "version_mode": "current",
+          "replaced_by": [],
+          "unverified_supersession": [],
+          "supersedes": [],
+          "enactment": null,
+          "other_revisions": []
+        },
+        "dates": {
+          "source_date": "2026-10-01T16:20:13.000001+00:00",
+          "basis": "created_at",
+          "effective_at": null,
+          "created_at": "2026-10-01T16:20:13.000001+00:00",
+          "valid_until": null,
+          "expired_as_of": false,
+          "reference_time": "2026-10-02T12:00:00Z"
+        },
+        "scope": {
+          "project_id": "response_preference",
+          "batch_id": "rp_batch_15",
+          "scope": "project",
+          "batch_relation": "same_batch"
+        },
+        "authority": {
+          "role": "TEAM_LEAD",
+          "actor": "U001",
+          "actor_relation": "MESSAGE_AUTHOR",
+          "approval_status": "UNKNOWN",
+          "provenance": null
+        },
+        "authorship": {
+          "author_id": "U001",
+          "verified": true,
+          "basis": "SLACK_MESSAGE_AUTHOR"
+        },
+        "recorded_states": {
+          "status": null,
+          "decision_status": null,
+          "execution_status": null,
+          "outcome_status": null
+        },
+        "upstream_review": {
+          "review_required": true,
+          "review_reasons": [
+            "It is correct that no scoring method is supplied, but Avery does provide an example of misleading citation support: the source exists while its quoted paragraph addresses another claim. The rationale incorrectly says no examples were provided."
+          ]
+        },
+        "excerpt": "[ANNOUNCEMENT posted 2026-10-01T16:20:13.000001+00:00 by TEAM_LEAD (rp_batch_15): not established as handling for this topic until you show it is relevant and gives a directive.]\nBatch status note — How to score responses with weak, missing, or misleading citations. Please keep examples in this thread while we check the scope.\n\nContext reply [1790871661.000113] by U010 (TUTOR):\nThe source is real, but the quoted paragraph is about a different claim."
+      },
+      "k:slack:C_RP_ANNOUNCEMENTS:1790936513.000019:8237860f": {
+        "evidence_id": "k:slack:C_RP_ANNOUNCEMENTS:1790936513.000019:8237860f",
+        "origin": "retrieved_source",
+        "use": "ANNOUNCEMENT",
+        "citation": {
+          "document_id": "knowledge_3f9c3f5561c5385ed69f099758901142a9e3b06ad6fc514660f866f603c0d2a8",
+          "version_id": "version_1a2112ff6314ff50b1e03a2e15107eb28b3765e99d05ed49b2d7ab5e617fdc3c",
+          "chunk_id": "chunk_8237860fcc4c371fbf84f6f7193958d7",
+          "authoring": null,
+          "title": "Slack announcement in response-preference-announcements at 2026-10-02T10:21:53.000019+00:00",
+          "sections": [],
+          "source": {
+            "batch_id": "rp_batch_15",
+            "channel_id": "C_RP_ANNOUNCEMENTS",
+            "manual_key": null,
+            "message_id": "1790936513.000019",
+            "permalink": null,
+            "project_id": "response_preference",
+            "reference": null,
+            "system": "slack",
+            "thread_id": "1790936513.000019",
+            "workspace_id": null
+          }
+        },
+        "source_type": "announcement",
+        "record_kind": "announcement",
+        "applicability": {
+          "state": "CURRENT",
+          "revision_state": "CURRENT",
+          "version_mode": "current",
+          "replaced_by": [],
+          "unverified_supersession": [],
+          "supersedes": [],
+          "enactment": null,
+          "other_revisions": []
+        },
+        "dates": {
+          "source_date": "2026-10-02T10:21:53.000019+00:00",
+          "basis": "created_at",
+          "effective_at": null,
+          "created_at": "2026-10-02T10:21:53.000019+00:00",
+          "valid_until": null,
+          "expired_as_of": false,
+          "reference_time": "2026-10-02T12:00:00Z"
+        },
+        "scope": {
+          "project_id": "response_preference",
+          "batch_id": "rp_batch_15",
+          "scope": "project",
+          "batch_relation": "same_batch"
+        },
+        "authority": {
+          "role": "TEAM_LEAD",
+          "actor": "U001",
+          "actor_relation": "MESSAGE_AUTHOR",
+          "approval_status": "UNKNOWN",
+          "provenance": null
+        },
+        "authorship": {
+          "author_id": "U001",
+          "verified": true,
+          "basis": "SLACK_MESSAGE_AUTHOR"
+        },
+        "recorded_states": {
+          "status": null,
+          "decision_status": null,
+          "execution_status": null,
+          "outcome_status": null
+        },
+        "upstream_review": null,
+        "excerpt": "[ANNOUNCEMENT posted 2026-10-02T10:21:53.000019+00:00 by TEAM_LEAD (rp_batch_15): not established as handling for this topic until you show it is relevant and gives a directive.]\nBatch status note — Competing rubric dimensions: factuality versus instruction adherence. Please keep examples in this thread while we check the scope.\n\nContext reply [1790936562.000113] by U007 (QA_TUTOR):\nWas the requested structure mandatory, and were the factual statements correct independently?\n\nContext reply [1790936607.000226] by U001 (TEAM_LEAD):\nPlease paste the exact formatting instruction; QA needs to verify whether it was mandatory before weighing the responses."
+      },
+      "k:slack:C_RP_ANNOUNCEMENTS:1790916442.000051:a3b60595": {
+        "evidence_id": "k:slack:C_RP_ANNOUNCEMENTS:1790916442.000051:a3b60595",
+        "origin": "retrieved_source",
+        "use": "ANNOUNCEMENT",
+        "citation": {
+          "document_id": "knowledge_ccd188f235fa1da9e1f0079f64889a4ba5934c753e5e9c6492251743cc837815",
+          "version_id": "version_11ad2df0694e5ec7f09be8fc4f1fc0098731a6809a7bb2b9818af035cff5ece7",
+          "chunk_id": "chunk_a3b60595a3f9eb4352310f75cccfa0a5",
+          "authoring": null,
+          "title": "Slack announcement in response-preference-announcements at 2026-10-02T04:47:22.000051+00:00",
+          "sections": [],
+          "source": {
+            "batch_id": "rp_batch_15",
+            "channel_id": "C_RP_ANNOUNCEMENTS",
+            "manual_key": null,
+            "message_id": "1790916442.000051",
+            "permalink": null,
+            "project_id": "response_preference",
+            "reference": null,
+            "system": "slack",
+            "thread_id": "1790916442.000051",
+            "workspace_id": null
+          }
+        },
+        "source_type": "announcement",
+        "record_kind": "announcement",
+        "applicability": {
+          "state": "CURRENT",
+          "revision_state": "CURRENT",
+          "version_mode": "current",
+          "replaced_by": [],
+          "unverified_supersession": [],
+          "supersedes": [],
+          "enactment": null,
+          "other_revisions": []
+        },
+        "dates": {
+          "source_date": "2026-10-02T04:47:22.000051+00:00",
+          "basis": "created_at",
+          "effective_at": null,
+          "created_at": "2026-10-02T04:47:22.000051+00:00",
+          "valid_until": null,
+          "expired_as_of": false,
+          "reference_time": "2026-10-02T12:00:00Z"
+        },
+        "scope": {
+          "project_id": "response_preference",
+          "batch_id": "rp_batch_15",
+          "scope": "project",
+          "batch_relation": "same_batch"
+        },
+        "authority": {
+          "role": "TEAM_LEAD",
+          "actor": "U001",
+          "actor_relation": "MESSAGE_AUTHOR",
+          "approval_status": "UNKNOWN",
+          "provenance": null
+        },
+        "authorship": {
+          "author_id": "U001",
+          "verified": true,
+          "basis": "SLACK_MESSAGE_AUTHOR"
+        },
+        "recorded_states": {
+          "status": null,
+          "decision_status": null,
+          "execution_status": null,
+          "outcome_status": null
+        },
+        "upstream_review": null,
+        "excerpt": "[ANNOUNCEMENT posted 2026-10-02T04:47:22.000051+00:00 by TEAM_LEAD (rp_batch_15): not established as handling for this topic until you show it is relevant and gives a directive.]\nHere's the onboarding resource link for new preference reviewers: internal training hub.\n\nContext reply [1790916495.000113] by U011 (TUTOR):\nThanks for sharing. I’ll check the resource before the next queue."
+      },
+      "k:response-preference-instructions@1.1:4745e3e0": {
+        "evidence_id": "k:response-preference-instructions@1.1:4745e3e0",
+        "origin": "retrieved_source",
+        "use": "CURRENT_GUIDANCE",
+        "citation": {
+          "document_id": "knowledge_c49652bd3dfc0e71a42597bd9128f922ba1700cc4d7eb83a39cfbaad9a43ed6d",
+          "version_id": "version_497eb858ea77dcb88133f2ba1afd5eaf08d1a1d380c3a5cad663f8f55b7d3c65",
+          "chunk_id": "chunk_4745e3e0b93e43f6fa0946382493a655",
+          "authoring": "response-preference-instructions@1.1",
+          "title": "Response Preference — Instructions (v1.1)",
+          "sections": [
+            "Project purpose"
+          ],
+          "source": {
+            "batch_id": null,
+            "channel_id": null,
+            "manual_key": "response-preference-instructions",
+            "message_id": null,
+            "permalink": null,
+            "project_id": "response_preference",
+            "reference": null,
+            "system": "manual",
+            "thread_id": null,
+            "workspace_id": null
+          }
+        },
+        "source_type": "guideline",
+        "record_kind": "guideline",
+        "applicability": {
+          "state": "CURRENT",
+          "revision_state": "CURRENT",
+          "version_mode": "current",
+          "replaced_by": [],
+          "unverified_supersession": [],
+          "supersedes": [],
+          "enactment": null,
+          "other_revisions": []
+        },
+        "dates": {
+          "source_date": "2026-08-30T13:00:00Z",
+          "basis": "effective_at",
+          "effective_at": "2026-08-30T13:00:00Z",
+          "created_at": null,
+          "valid_until": null,
+          "expired_as_of": false,
+          "reference_time": "2026-10-02T12:00:00Z"
+        },
+        "scope": {
+          "project_id": "response_preference",
+          "batch_id": null,
+          "scope": "project",
+          "batch_relation": "project_wide"
+        },
+        "authority": {
+          "role": "TEAM_LEAD",
+          "actor": "U001",
+          "actor_relation": "RECORD_AUTHORITY",
+          "approval_status": "EXPLICIT_SOURCE_MARKER",
+          "provenance": "synthetic_manual_record"
+        },
+        "authorship": {
+          "author_id": null,
+          "verified": false,
+          "basis": "NO_AUTHOR_RECORDED"
+        },
+        "recorded_states": {
+          "status": "approved",
+          "decision_status": null,
+          "execution_status": null,
+          "outcome_status": null
+        },
+        "upstream_review": null,
+        "excerpt": "[ADDED FOR TYPE COVERAGE: best-ranked guideline for this query (rank 9), outside the top 5.]\n## Project purpose\nCompare two responses against the user's prompt. Record meaningful differences in factual accuracy, instruction adherence, citation support and usefulness.",
+        "retrieved_as": {
+          "role": "TYPE_COVERAGE",
+          "detail": "best-ranked guideline for this query (rank 9), outside the top 5"
+        }
+      }
+    },
+    "card": {
+      "contract_version": "agent3-advice-card-v4",
+      "record_type": "ADVICE_CARD",
+      "card_id": "card_3364710fba2332f3dd866effadd09ba6",
+      "project_id": "response_preference",
+      "topic_name": "Social greetings and well-wishes",
+      "card_line": "OBSERVATION",
+      "summary": "A QA tutor and a tutor exchange well-wishes and remark that the chat is quieter today. Neither message raises a work problem or handling question, so no operational intervention is needed for this thread.",
+      "severity": {
+        "level": "N/A",
+        "assessment_status": "ASSESSED",
+        "rubric_version": "severity-rubric-v3-semantic-signals",
+        "rubric_content_sha256": "eccaa31a2ab84a0aa7c005216a92fc39681e1dd10107117344948235a76673f4",
+        "rubric_project_id": null,
+        "rubric_scope": "SHARED_DEFAULT",
+        "rationale": "A QA tutor and a tutor exchange social well-wishes without reporting an operational problem or risk.",
+        "matched_signals": [],
+        "evidence": [],
+        "occurrence": {
+          "affected_reporters": {
+            "status": "UNKNOWN",
+            "count": null,
+            "ids": [],
+            "basis": null,
+            "evidence": []
+          },
+          "affected_tasks": {
+            "status": "UNKNOWN",
+            "count": null,
+            "ids": [],
+            "basis": null,
+            "evidence": []
+          },
+          "relevant_threads": [
+            {
+              "project_id": "response_preference",
+              "batch_id": "rp_batch_15",
+              "channel_id": "C_RP_GENERAL",
+              "thread_id": "1790911349.000052",
+              "member_id": "member_e7ef680e847ac15d0380e466"
+            }
+          ],
+          "reporting_window": {
+            "start": "2026-10-02T03:22:29.000052+00:00",
+            "end": "2026-10-02T03:23:24.000113+00:00"
+          },
+          "historical_recurrence": {
+            "status": "NOT_CHECKED",
+            "sources": [],
+            "event_series_ids": []
+          },
+          "known_denominator": null,
+          "structural": {
+            "threads": 1,
+            "messages": 2,
+            "distinct_participants": 2,
+            "duplicate_threads_ignored": 0,
+            "duplicate_messages_ignored": 0,
+            "computed_from": "topic member threads (original Slack messages)",
+            "participants_are_not_affected_reporters": true
+          },
+          "semantic_identification": "ASSESSED"
+        },
+        "inherited_from": {
+          "level": "UNKNOWN",
+          "assessment_status": "UNASSESSED",
+          "assessment_deferred_to": "AGENT3",
+          "reason": "Agent 2 performs taxonomy only."
+        }
+      },
+      "severity_is_provisional": false,
+      "resolution_status": "UNKNOWN",
+      "recommended_action": null,
+      "reasoning": "What the evidence shows: A QA tutor wishes everyone well after a break and reports that the chat is quieter today. A tutor agrees that the channel is quieter today and wishes the QA tutor a smooth shift. The QA tutor's message and the tutor's reply raise no work problem or handling question requiring operational intervention. Thread status, read from each thread's own messages: unknown ×1. Agent 1's earlier labels (an input, not evidence): unresolved ×1.",
+      "supporting_sources": [
+        {
+          "kind": "slack_message",
+          "project_id": "response_preference",
+          "batch_id": "rp_batch_15",
+          "scope": "project",
+          "channel_id": "C_RP_GENERAL",
+          "thread_id": "1790911349.000052",
+          "message_id": "1790911349.000052",
+          "document_id": null,
+          "version_id": null,
+          "authoring_document_id": null,
+          "authoring_version": null,
+          "section": null,
+          "chunk_id": null,
+          "candidate_group_id": null,
+          "member_id": "member_e7ef680e847ac15d0380e466",
+          "artifact": null,
+          "artifact_sha256": null,
+          "quote": null,
+          "note": "m:C_RP_GENERAL:1790911349.000052"
+        },
+        {
+          "kind": "slack_message",
+          "project_id": "response_preference",
+          "batch_id": "rp_batch_15",
+          "scope": "project",
+          "channel_id": "C_RP_GENERAL",
+          "thread_id": "1790911349.000052",
+          "message_id": "1790911404.000113",
+          "document_id": null,
+          "version_id": null,
+          "authoring_document_id": null,
+          "authoring_version": null,
+          "section": null,
+          "chunk_id": null,
+          "candidate_group_id": null,
+          "member_id": "member_e7ef680e847ac15d0380e466",
+          "artifact": null,
+          "artifact_sha256": null,
+          "quote": null,
+          "note": "m:C_RP_GENERAL:1790911404.000113"
+        }
+      ],
+      "related_threads": [
+        {
+          "project_id": "response_preference",
+          "batch_id": "rp_batch_15",
+          "channel_id": "C_RP_GENERAL",
+          "thread_id": "1790911349.000052",
+          "member_id": "member_e7ef680e847ac15d0380e466",
+          "permalink": null,
+          "display_reference": "1790911349.000052",
+          "label": "#response-preference-general, 2026-10-02, started by a QA tutor: \"Hope everyone had a decent break — the chat is quieter today 🙂\"",
+          "opening_text": "Hope everyone had a decent break — the chat is quieter today 🙂"
+        }
+      ],
+      "confidence": 0.99,
+      "confidence_band": "HIGH",
+      "needs_review_reasons": [],
+      "inherited_flags": [],
+      "checks": {
+        "grounding": "PASSED",
+        "temporal_conflict": "NONE_FOUND",
+        "open_confirmation": "NONE"
+      },
+      "lineage": {
+        "agent3_run_id": "agent3overnight_0b7636193a04d34b4fe271dfea902a96",
+        "handoff_contract": "agent2-taxonomy-handoff-v2",
+        "agent2_export_sha256": "7634a0c7af684201be9771b97e12c4379ed86cc8b4de7159caa55bd6816e9c26",
+        "agent2_schema_version": 8,
+        "candidate_group_id": "cluster_c9bdba359e6e7cd2",
+        "topic_id": "cluster_c9bdba359e6e7cd2/topic_1",
+        "member_ids": [
+          "member_e7ef680e847ac15d0380e466"
+        ],
+        "project_id": "response_preference",
+        "batch_id": "rp_batch_15"
+      },
+      "review_notes": [],
+      "details": [],
+      "next_step": {
+        "status": "NO_ACTION_NEEDED",
+        "rationale": "The exchange contains well-wishes and an observation about a quieter chat, with nothing requiring clarification or escalation.",
+        "explanation": null
+      }
+    },
+    "review_items": [],
+    "coverage": {
+      "group_members_outside_this_card": [],
+      "uncarried_obligations": []
+    },
+    "budget": {
+      "consumed": {
+        "retrieval_calls": 1,
+        "model_calls": 2
+      },
+      "limits": {
+        "model_calls_per_topic": 4,
+        "model_calls_total": 28,
+        "retrieval_calls_per_topic": 6,
+        "retrieval_calls_total": 42
+      }
+    },
+    "diagnostics": []
+  }
+}

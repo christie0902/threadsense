@@ -1,0 +1,2751 @@
+{
+  "work_item": {
+    "candidate_group_id": "cluster_398a1390e27da753",
+    "project_id": "multilingual_eval",
+    "batch_id": "multi_batch_11",
+    "work_id": "topic:cluster_398a1390e27da753/topic_1",
+    "kind": "TOPIC",
+    "topic_id": "cluster_398a1390e27da753/topic_1",
+    "topic_name": "LT Hangul rendering issue",
+    "member_ids": [
+      "member_ba4581cf60461d619dc34676",
+      "member_de85059f17dd8949093893e5"
+    ],
+    "pilot_scenario": null,
+    "in_scope": true
+  },
+  "workflow": {
+    "outcome": "CARD",
+    "card_id": "card_9d1d736070930dd4726df4bc54041799",
+    "card_line": "NEEDS_REVIEW",
+    "grounding": "PASSED",
+    "stage_failures": [],
+    "semantic_source": "LIVE_MODEL"
+  },
+  "result": {
+    "scenario": {
+      "id": "topic:cluster_398a1390e27da753/topic_1",
+      "candidate_group_id": "cluster_398a1390e27da753",
+      "focus": "LT Hangul rendering issue",
+      "topic_id": "cluster_398a1390e27da753/topic_1"
+    },
+    "status": "CARD",
+    "topic": {
+      "project_id": "multilingual_eval",
+      "batch_id": "multi_batch_11",
+      "candidate_group_id": "cluster_398a1390e27da753",
+      "topic_id": "cluster_398a1390e27da753/topic_1",
+      "topic_label": "LT Hangul rendering issue",
+      "projection_gap": null,
+      "as_of": "2026-10-02T12:00:00Z",
+      "member_ids": [
+        "member_de85059f17dd8949093893e5",
+        "member_ba4581cf60461d619dc34676"
+      ],
+      "initial_query": "LT Hangul rendering issue. What should be done about Hangul appearing as boxes in LT?"
+    },
+    "retrieval_trace": [
+      {
+        "step": 1,
+        "purpose": "initial_current_guidance",
+        "gap_id": null,
+        "query": "LT Hangul rendering issue. What should be done about Hangul appearing as boxes in LT?",
+        "source_types": [
+          "guideline",
+          "faq",
+          "decision",
+          "announcement"
+        ],
+        "version_mode": "current",
+        "as_of": "2026-10-02T12:00:00Z",
+        "batch": "multi_batch_11",
+        "top_k": 5,
+        "status": "DONE",
+        "mode": "hybrid",
+        "use_mmr": true,
+        "mmr_lambda": 0.9,
+        "result_ids": [
+          "k:multilingual-eval-faq@1.1:e2ea02bf",
+          "k:multilingual-eval-faq@1.1:8508b653",
+          "k:multilingual-eval-instructions@1.2:ea925467",
+          "k:slack:C_MULTI_ANNOUNCEMENTS:1790862733.000190:8a8518aa",
+          "k:multilingual-eval-instructions@1.2:818f7ccb"
+        ],
+        "new_evidence_ids": [
+          "k:multilingual-eval-faq@1.1:e2ea02bf",
+          "k:multilingual-eval-faq@1.1:8508b653",
+          "k:multilingual-eval-instructions@1.2:ea925467",
+          "k:slack:C_MULTI_ANNOUNCEMENTS:1790862733.000190:8a8518aa",
+          "k:multilingual-eval-instructions@1.2:818f7ccb"
+        ],
+        "eligible_chunks": 22,
+        "added": []
+      }
+    ],
+    "retrieval_notes": {
+      "withheld_by_version": [],
+      "version_diagnostics": []
+    },
+    "follow_ups": [],
+    "unfilled_gaps": [
+      {
+        "gap_id": "g1",
+        "need": "OTHER",
+        "description": "Outside-LT comparison results and task references for the reports other than MULTI-7548 remain to be collected from the affected QA tutor and tutors. This does not prevent reporting the incident.",
+        "follow_up": null
+      }
+    ],
+    "model_calls": [
+      {
+        "stage": "draft",
+        "schema": "AdvisorDraft",
+        "agent1_context": {
+          "sha256": "fe696cdf1896535c95e4540393fa2346bb5942c6b54a9b880b30070a020d34a4",
+          "boundary": "IN_HTTP_BODY"
+        },
+        "raw": "{\n  \"contract_version\": \"agent3-advisor-draft-v11\",\n  \"summary\": null,\n  \"summary_sentences\": [\n    {\n      \"text\": \"A QA tutor and two tutors report Hangul displaying as boxes or disappearing in LT.\",\n      \"support_claim_ids\": [\"c1\", \"c2\", \"c3\"],\n      \"depends_on\": []\n    },\n    {\n      \"text\": \"Current guidance calls for reporting a tool-rendering incident and checking the text outside LT where possible, rather than assuming the underlying response contains corrupted characters.\",\n      \"support_claim_ids\": [\"c6\", \"c7\"],\n      \"depends_on\": []\n    }\n  ],\n  \"detail_sentences\": [\n    {\n      \"text\": \"A QA tutor reports boxes in LT; a tutor reports boxes on the rating screen for MULTI-7548.\",\n      \"support_claim_ids\": [\"c1\", \"c2\"],\n      \"depends_on\": [],\n      \"summary_depends_on\": []\n    },\n    {\n      \"text\": \"A second tutor reports Korean glyphs disappearing in the preview while Latin text remains visible.\",\n      \"support_claim_ids\": [\"c3\"],\n      \"depends_on\": [1],\n      \"summary_depends_on\": []\n    },\n    {\n      \"text\": \"In the MULTI-7548 thread, a QA tutor asks whether the original text displays correctly outside LT; no comparison result appears in the provided messages.\",\n      \"support_claim_ids\": [\"c4\", \"c8\"],\n      \"depends_on\": [],\n      \"summary_depends_on\": []\n    },\n    {\n      \"text\": \"The team lead instructs that thread to treat the item as a tool-rendering incident, not a language-quality mistake, if the original text renders outside LT but not inside it.\",\n      \"support_claim_ids\": [\"c5\"],\n      \"depends_on\": [3],\n      \"summary_depends_on\": []\n    }\n  ],\n  \"reasoning\": \"The comparable rendering reports justify reporting a technical issue to engineering. Current project guidance already establishes incident handling without requiring a confirmed cause or a completed outside-LT comparison. The team lead's conditional instruction applies only to the MULTI-7548 thread and does not establish a project-wide rule. Earlier decisions are not needed to support this step, and the routine reopening announcement does not establish a cause or a handling route.\",\n  \"claims\": [\n    {\n      \"claim_id\": \"c1\",\n      \"kind\": \"INCIDENT_FACT\",\n      \"text\": \"A QA tutor reports that Hangul appears as boxes in LT.\",\n      \"evidence_ids\": [\"m:C_MULTI_QA:1790885224.000166\"],\n      \"attributions\": [\n        {\n          \"user_id\": \"U008\",\n          \"relation\": \"AUTHOR\",\n          \"evidence_id\": \"m:C_MULTI_QA:1790885224.000166\"\n        }\n      ],\n      \"quote\": \"Hangul appears as boxes in LT.\",\n      \"quote_kind\": \"VERBATIM\",\n      \"material\": true\n    },\n    {\n      \"claim_id\": \"c2\",\n      \"kind\": \"INCIDENT_FACT\",\n      \"text\": \"A tutor reports Hangul rendering as boxes on the LT rating screen for MULTI-7548 and asks whether others see it.\",\n      \"evidence_ids\": [\"m:C_MULTI_GENERAL:1790927548.000165\"],\n      \"attributions\": [\n        {\n          \"user_id\": \"U017\",\n          \"relation\": \"AUTHOR\",\n          \"evidence_id\": \"m:C_MULTI_GENERAL:1790927548.000165\"\n        }\n      ],\n      \"quote\": null,\n      \"quote_kind\": \"PARAPHRASE\",\n      \"material\": true\n    },\n    {\n      \"claim_id\": \"c3\",\n      \"kind\": \"INCIDENT_FACT\",\n      \"text\": \"A tutor reports Korean glyphs vanishing in the preview while Latin text is visible.\",\n      \"evidence_ids\": [\"m:C_MULTI_GENERAL:1790927595.000113\"],\n      \"attributions\": [\n        {\n          \"user_id\": \"U013\",\n          \"relation\": \"AUTHOR\",\n          \"evidence_id\": \"m:C_MULTI_GENERAL:1790927595.000113\"\n        }\n      ],\n      \"quote\": \"Korean glyphs vanish in the preview while Latin text is visible.\",\n      \"quote_kind\": \"VERBATIM\",\n      \"material\": true\n    },\n    {\n      \"claim_id\": \"c4\",\n      \"kind\": \"INCIDENT_FACT\",\n      \"text\": \"A QA tutor asks in the MULTI-7548 thread whether the original text displays correctly outside the labeling tool.\",\n      \"evidence_ids\": [\"m:C_MULTI_GENERAL:1790927640.000226\"],\n      \"attributions\": [\n        {\n          \"user_id\": \"U019\",\n          \"relation\": \"AUTHOR\",\n          \"evidence_id\": \"m:C_MULTI_GENERAL:1790927640.000226\"\n        }\n      ],\n      \"quote\": \"Does the original text display correctly outside the labeling tool?\",\n      \"quote_kind\": \"VERBATIM\",\n      \"material\": true\n    },\n    {\n      \"claim_id\": \"c5\",\n      \"kind\": \"THREAD_INSTRUCTION\",\n      \"text\": \"The team lead instructs the MULTI-7548 thread to treat the item as a tool-rendering incident rather than a language-quality mistake if the original text renders outside LT but not inside it.\",\n      \"evidence_ids\": [\"m:C_MULTI_GENERAL:1790927684.000339\"],\n      \"attributions\": [\n        {\n          \"user_id\": \"U001\",\n          \"relation\": \"AUTHOR\",\n          \"evidence_id\": \"m:C_MULTI_GENERAL:1790927684.000339\"\n        }\n      ],\n      \"quote\": \"If the original text renders outside LT but not inside it, treat this item as a tool-rendering incident, not a language-quality mistake.\",\n      \"quote_kind\": \"VERBATIM\",\n      \"material\": true\n    },\n    {\n      \"claim_id\": \"c6\",\n      \"kind\": \"GUIDANCE\",\n      \"text\": \"The current FAQ directs reporting a tool-rendering incident when characters appear as boxes or become unreadable in LT, checking the text outside LT where possible, and not claiming the underlying response has corrupted characters before that comparison is available.\",\n      \"evidence_ids\": [\"k:multilingual-eval-faq@1.1:e2ea02bf\"],\n      \"attributions\": [],\n      \"quote\": null,\n      \"quote_kind\": \"PARAPHRASE\",\n      \"material\": true\n    },\n    {\n      \"claim_id\": \"c7\",\n      \"kind\": \"GUIDANCE\",\n      \"text\": \"The current instructions treat boxes or broken characters in LT as tool-rendering incidents until the source text is checked, require capturing task IDs, and direct recording any inability to compare outside LT rather than asserting corrupt model text; operational impact is assessed separately from language-quality grades.\",\n      \"evidence_ids\": [\"k:multilingual-eval-instructions@1.2:ea925467\"],\n      \"attributions\": [],\n      \"quote\": null,\n      \"quote_kind\": \"PARAPHRASE\",\n      \"material\": true\n    },\n    {\n      \"claim_id\": \"c8\",\n      \"kind\": \"INFERENCE\",\n      \"text\": \"The provided MULTI-7548 thread messages do not contain an outside-LT comparison result.\",\n      \"evidence_ids\": [\n        \"m:C_MULTI_GENERAL:1790927548.000165\",\n        \"m:C_MULTI_GENERAL:1790927595.000113\",\n        \"m:C_MULTI_GENERAL:1790927640.000226\",\n        \"m:C_MULTI_GENERAL:1790927684.000339\"\n      ],\n      \"attributions\": [],\n      \"quote\": null,\n      \"quote_kind\": \"PARAPHRASE\",\n      \"material\": true\n    }\n  ],\n  \"gaps\": [\n    {\n      \"gap_id\": \"g1\",\n      \"need\": \"OTHER\",\n      \"description\": \"Outside-LT comparison results and task references for the reports other than MULTI-7548 remain to be collected from the affected QA tutor and tutors. This does not prevent reporting the incident.\",\n      \"follow_up\": null\n    }\n  ],\n  \"evidence_sufficiency\": \"SUFFICIENT\",\n  \"proposed_action\": {\n    \"action_type\": \"ESCALATE_ENGINEERING\",\n    \"intervention_need\": {\n      \"kind\": \"OPERATIONAL_PROBLEM\",\n      \"statement\": \"A QA tutor and two tutors report comparable Hangul display failures in LT, warranting technical investigation while source-text checks are collected.\",\n      \"evidence_ids\": [\n        \"m:C_MULTI_QA:1790885224.000166\",\n        \"m:C_MULTI_GENERAL:1790927548.000165\",\n        \"m:C_MULTI_GENERAL:1790927595.000113\"\n      ]\n    },\n    \"instruction\": \"Report the Hangul display failures to engineering, grouping the reported symptoms and including MULTI-7548 as the available task reference.\",\n    \"rationale\": \"Comparable display failures across three reporters warrant engineering investigation. Current guidance directs incident reporting without waiting for a confirmed cause or completed source-text comparison.\",\n    \"draft_text\": \"Engineering: please investigate these Hangul display reports in LT.\\n- A QA tutor and a tutor report Hangul appearing as boxes; the tutor identifies MULTI-7548 on the rating screen.\\n- A second tutor reports Korean glyphs disappearing in the preview while Latin text remains visible.\\nAffected reporters: please provide task IDs and compare the original text outside LT where possible. If comparison is unavailable, record that limitation. Treat these as tool-rendering incidents pending source-text checks, separately from language-quality grades; do not assume the underlying response contains corrupted characters.\",\n    \"scope_note\": \"Report the observed display symptoms without asserting a technical cause or treating the thread-specific instruction as project-wide guidance.\",\n    \"support_claim_ids\": [\"c1\", \"c2\", \"c3\", \"c6\", \"c7\"],\n    \"targets\": [],\n    \"context_claim_ids\": [\"c4\", \"c5\", \"c8\"]\n  },\n  \"severity\": {\n    \"level\": \"HIGH\",\n    \"rationale\": \"A QA tutor and two tutors report comparable Korean-text display failures within the same batch and time window, suggesting broader disruption to evaluating that text.\",\n    \"signals\": [\n      {\n        \"level\": \"HIGH\",\n        \"signal_index\": 3,\n        \"signal_text\": \"Multiple distinct people or affected tasks reporting a comparable problem within the relevant project, batch, and time window, suggesting broader disruption or systemic labeling risk. Consider the number affected relative to the known active group when that information is available; do not require an explicit statement of widespread impact\",\n        \"support\": \"A QA tutor reports Hangul boxes in LT; a tutor reports boxes on the rating screen; a second tutor reports Korean glyphs disappearing in the preview while Latin text remains visible.\",\n        \"evidence_ids\": [\n          \"m:C_MULTI_QA:1790885224.000166\",\n          \"m:C_MULTI_GENERAL:1790927548.000165\",\n          \"m:C_MULTI_GENERAL:1790927595.000113\"\n        ]\n      }\n    ],\n    \"affected_reporters\": [\n      {\n        \"author_id\": \"U008\",\n        \"evidence_id\": \"m:C_MULTI_QA:1790885224.000166\"\n      },\n      {\n        \"author_id\": \"U017\",\n        \"evidence_id\": \"m:C_MULTI_GENERAL:1790927548.000165\"\n      },\n      {\n        \"author_id\": \"U013\",\n        \"evidence_id\": \"m:C_MULTI_GENERAL:1790927595.000113\"\n      }\n    ],\n    \"recurrence\": \"NOT_CHECKED\",\n    \"recurrence_evidence_ids\": [],\n    \"reported_recurrence_evidence_ids\": []\n  },\n  \"confidence\": 0.94,\n  \"open_confirmation\": \"NONE\",\n  \"open_question\": null,\n  \"open_question_evidence_ids\": [],\n  \"source_conflicts\": [],\n  \"announcement_assessments\": [\n    {\n      \"evidence_id\": \"k:slack:C_MULTI_ANNOUNCEMENTS:1790862733.000190:8a8518aa\",\n      \"relevant\": false,\n      \"directive\": false,\n      \"directive_quote\": null,\n      \"rationale\": \"The same-batch announcement states a routine queue reopening schedule, not Hangul-rendering handling, and gives no directive for this problem.\"\n    }\n  ],\n  \"resolution\": [\n    {\n      \"member_id\": \"member_de85059f17dd8949093893e5\",\n      \"state\": \"UNRESOLVED\",\n      \"evidence_ids\": [\"m:C_MULTI_QA:1790885224.000166\"],\n      \"basis\": \"The QA tutor's thread contains a report of Hangul boxes but no response, comparison result or resolution.\"\n    },\n    {\n      \"member_id\": \"member_ba4581cf60461d619dc34676\",\n      \"state\": \"PARTIALLY_RESOLVED\",\n      \"evidence_ids\": [\n        \"m:C_MULTI_GENERAL:1790927548.000165\",\n        \"m:C_MULTI_GENERAL:1790927595.000113\",\n        \"m:C_MULTI_GENERAL:1790927640.000226\",\n        \"m:C_MULTI_GENERAL:1790927684.000339\"\n      ],\n      \"basis\": \"The team lead gives conditional handling for the tutor's item, but the thread contains neither the requested outside-LT comparison result nor confirmation that the display problem is resolved.\"\n    }\n  ],\n  \"coverage\": [\n    {\n      \"need\": \"CURRENT_GUIDANCE\",\n      \"status\": \"COVERED\",\n      \"evidence_ids\": [\n        \"k:multilingual-eval-faq@1.1:e2ea02bf\",\n        \"k:multilingual-eval-instructions@1.2:ea925467\"\n      ],\n      \"note\": \"Current project guidance covers rendering incidents, source-text comparisons, task-ID collection and separation from language-quality grading.\",\n      \"gap_id\": null\n    },\n    {\n      \"need\": \"ANNOUNCEMENTS\",\n      \"status\": \"COVERED\",\n      \"evidence_ids\": [\"k:slack:C_MULTI_ANNOUNCEMENTS:1790862733.000190:8a8518aa\"],\n      \"note\": \"The retrieved announcement was assessed and does not direct handling of this problem.\",\n      \"gap_id\": null\n    },\n    {\n      \"need\": \"PRIOR_DECISIONS\",\n      \"status\": \"NOT_APPLICABLE\",\n      \"evidence_ids\": [],\n      \"note\": \"The recommendation rests on current reports and current incident guidance, not on an earlier workaround, trial outcome or claim of historical recurrence.\",\n      \"gap_id\": null\n    },\n    {\n      \"need\": \"MEMBER_QUESTIONS\",\n      \"status\": \"COVERED\",\n      \"evidence_ids\": [\n        \"m:C_MULTI_GENERAL:1790927548.000165\",\n        \"m:C_MULTI_GENERAL:1790927640.000226\",\n        \"m:C_MULTI_GENERAL:1790927684.000339\"\n      ],\n      \"note\": \"The tutor asks whether others see the issue, a QA tutor asks about display outside LT, and the team lead supplies conditional thread handling.\",\n      \"gap_id\": null\n    }\n  ],\n  \"review_note\": null,\n  \"action_choice\": null\n}",
+        "raw_sha256": "17faa5633dbf4141b42cbdce8ec164be37ad0ce370d78d76651e1c49aa025040",
+        "http_requests": {
+          "sent": 1,
+          "blocked": 0,
+          "hosts": [
+            "api.openai.com"
+          ],
+          "responses": [
+            {
+              "status_code": 200,
+              "seconds": 0.069,
+              "model": "gpt-6.1-sol",
+              "usage": {
+                "prompt_tokens": 11469,
+                "completion_tokens": 3461,
+                "total_tokens": 14930,
+                "prompt_tokens_details": {
+                  "cached_tokens": 0,
+                  "cache_write_tokens": 11466,
+                  "audio_tokens": 0
+                },
+                "completion_tokens_details": {
+                  "reasoning_tokens": 179,
+                  "audio_tokens": 0,
+                  "accepted_prediction_tokens": 0,
+                  "rejected_prediction_tokens": 0
+                }
+              },
+              "finish_reasons": [
+                "stop"
+              ]
+            }
+          ],
+          "input_tokens": 11475,
+          "refused": null,
+          "charged_usd": 0.057548
+        },
+        "input_tokens_estimate": 11475,
+        "status": "OK"
+      },
+      {
+        "stage": "grounding",
+        "schema": "GroundingJudgment",
+        "raw": "{\n  \"contract_version\": \"agent3-grounding-judgment-v5\",\n  \"verdicts\": [\n    {\n      \"statement_id\": \"claim:c1\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"U008 is a QA tutor and authored the cited report. The quotation matches exactly.\"\n    },\n    {\n      \"statement_id\": \"claim:c2\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"U017 is a tutor and reports boxes on the LT rating screen, identifies MULTI-7548, and asks whether others see the problem.\"\n    },\n    {\n      \"statement_id\": \"claim:c3\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"U013 is a tutor and authored the cited report. The quotation matches exactly.\"\n    },\n    {\n      \"statement_id\": \"claim:c4\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"U019 is a QA tutor and asks the quoted question in the MULTI-7548 thread. The quotation is exact.\"\n    },\n    {\n      \"statement_id\": \"claim:c5\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The team lead gives this exact conditional instruction in the MULTI-7548 thread. The statement correctly preserves its condition and thread-specific scope.\"\n    },\n    {\n      \"statement_id\": \"claim:c6\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The current FAQ explicitly directs incident reporting, comparison outside LT where possible, and withholding claims of underlying corrupted characters until that comparison is available.\"\n    },\n    {\n      \"statement_id\": \"claim:c7\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The current instructions state each described requirement, including provisional tool-incident treatment, task-ID capture, documenting unavailable comparisons, and separating operational impact from language-quality grades.\"\n    },\n    {\n      \"statement_id\": \"claim:c8\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The complete provided MULTI-7548 thread contains a comparison question and conditional handling instruction, but no outside-LT comparison result.\"\n    },\n    {\n      \"statement_id\": \"summary:s1\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"Three distinct authors with the stated roles report boxes or disappearing Korean glyphs in the LT context.\"\n    },\n    {\n      \"statement_id\": \"summary:s2\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"Both current handling sources support incident reporting and source-text comparison without assuming corruption in the underlying response.\"\n    },\n    {\n      \"statement_id\": \"detail:d1\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The two cited authors have the stated roles and report the described boxes; the tutor supplies MULTI-7548.\"\n    },\n    {\n      \"statement_id\": \"detail:d2\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"U013 is a distinct second tutor and reports vanishing Korean glyphs while Latin text remains visible.\"\n    },\n    {\n      \"statement_id\": \"detail:d3\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The QA tutor asks about display outside the labeling tool, and no comparison result appears anywhere in the provided thread.\"\n    },\n    {\n      \"statement_id\": \"detail:d4\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The team lead's message gives exactly this conditional treatment for the item in that thread.\"\n    },\n    {\n      \"statement_id\": \"action\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The reported display failures justify recommending engineering investigation without naming an unsupported concrete route. The draft accurately groups the reports, identifies the available task reference, requests the checks and documentation required by current guidance, and avoids asserting a cause or expanding thread-specific authority.\"\n    },\n    {\n      \"statement_id\": \"action:rationale\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"Three distinct reporters describe comparable display failures warranting technical investigation. Current guidance directs reporting while source-text checks remain pending, rather than making reporting conditional on a confirmed cause or completed comparison.\"\n    },\n    {\n      \"statement_id\": \"action:need\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The unresolved display failures reported by three distinct people constitute an operational problem needing technical investigation and coordination of source-text checks.\"\n    },\n    {\n      \"statement_id\": \"resolution:member_de85059f17dd8949093893e5\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The complete provided thread consists only of the QA tutor's report, with no response, comparison result, or resolution.\"\n    },\n    {\n      \"statement_id\": \"resolution:member_ba4581cf60461d619dc34676\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The thread supplies conditional handling but neither answers the comparison question nor confirms that the display failure has been resolved.\"\n    },\n    {\n      \"statement_id\": \"severity:rationale\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"Three distinct reporters in the same topic batch report comparable Korean-text display failures within approximately twelve hours. This supports the stated broader-disruption signal without claiming a verified systemic cause or measured outcome.\"\n    },\n    {\n      \"statement_id\": \"severity:signal:HIGH[3]\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The cited reports establish multiple distinct people reporting comparable display problems in the relevant project, batch, and time window, satisfying the stated signal.\"\n    },\n    {\n      \"statement_id\": \"reporter:U008\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"U008's own message directly reports encountering Hangul displayed as boxes in LT.\"\n    },\n    {\n      \"statement_id\": \"reporter:U017\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"U017's own message reports the display problem on the rating screen and supplies an affected task reference.\"\n    },\n    {\n      \"statement_id\": \"reporter:U013\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"U013's own message directly reports Korean glyphs vanishing in the preview.\"\n    }\n  ],\n  \"action_sufficiency\": {\n    \"verdict\": \"SUFFICIENT\",\n    \"essential_statement_ids\": [\n      \"claim:c1\",\n      \"claim:c2\",\n      \"claim:c3\",\n      \"claim:c6\",\n      \"claim:c7\"\n    ],\n    \"rationale\": \"All listed premises are supported. The incident premises establish the exact symptoms, reporter grouping, task reference, and need for engineering expertise; the guidance premises justify reporting pending comparison, requesting task IDs, documenting comparison limitations, and separating tool incidents from language-quality judgments. The recommendation names no unsupported concrete route.\"\n  },\n  \"alternative_sufficiency\": [],\n  \"source_consistency\": {\n    \"assessed_evidence_ids\": [\n      \"k:multilingual-eval-faq@1.1:e2ea02bf\",\n      \"k:multilingual-eval-instructions@1.2:ea925467\",\n      \"k:multilingual-eval-instructions@1.2:818f7ccb\"\n    ],\n    \"relations\": [\n      {\n        \"evidence_ids\": [\n          \"k:multilingual-eval-faq@1.1:e2ea02bf\",\n          \"k:multilingual-eval-instructions@1.2:ea925467\"\n        ],\n        \"relation\": \"AGREE\",\n        \"point\": \"Handling unreadable or broken characters displayed in LT pending source-text comparison.\",\n        \"disagreement_scope\": null,\n        \"rationale\": \"Both sources treat these reports as tool-rendering incidents, direct comparison outside LT where possible, and prohibit assuming the underlying model text is corrupt before comparison. The instructions add compatible task-ID and limitation-recording requirements.\"\n      },\n      {\n        \"evidence_ids\": [\n          \"k:multilingual-eval-instructions@1.2:ea925467\",\n          \"k:multilingual-eval-instructions@1.2:818f7ccb\"\n        ],\n        \"relation\": \"AGREE\",\n        \"point\": \"Distinguishing tool-rendering failures from linguistic defects.\",\n        \"disagreement_scope\": null,\n        \"rationale\": \"The project-purpose section requires distinguishing linguistic defects from rendering failures, and the tool-incident section implements that distinction by separating operational impact from language-quality grades.\"\n      }\n    ],\n    \"declared_conflict_checks\": []\n  }\n}",
+        "raw_sha256": "5da780b06436181061fb80ef9f60de6a0c4f0f13157134d3b20ee153c20115c6",
+        "http_requests": {
+          "sent": 1,
+          "blocked": 0,
+          "hosts": [
+            "api.openai.com"
+          ],
+          "responses": [
+            {
+              "status_code": 200,
+              "seconds": 0.078,
+              "model": "gpt-6.1-sol",
+              "usage": {
+                "prompt_tokens": 9141,
+                "completion_tokens": 1895,
+                "total_tokens": 11036,
+                "prompt_tokens_details": {
+                  "cached_tokens": 0,
+                  "cache_write_tokens": 9138,
+                  "audio_tokens": 0
+                },
+                "completion_tokens_details": {
+                  "reasoning_tokens": 82,
+                  "audio_tokens": 0,
+                  "accepted_prediction_tokens": 0,
+                  "rejected_prediction_tokens": 0
+                }
+              },
+              "finish_reasons": [
+                "stop"
+              ]
+            }
+          ],
+          "input_tokens": 9147,
+          "refused": null,
+          "charged_usd": 0.037232
+        },
+        "input_tokens_estimate": 9147,
+        "status": "OK"
+      }
+    ],
+    "agent1_context": [
+      {
+        "sha256": "fe696cdf1896535c95e4540393fa2346bb5942c6b54a9b880b30070a020d34a4",
+        "content": [
+          {
+            "member_id": "member_de85059f17dd8949093893e5",
+            "thread_id": "1790885224.000166",
+            "summary": "Hana reports that Hangul appears as boxes in LT, indicating a symptom of a potential issue.",
+            "central_question": "What should be done about Hangul appearing as boxes in LT?",
+            "attributed_agent1_resolution": {
+              "state": "UNRESOLVED",
+              "rationale": "The thread contains a single report of an issue with Hangul appearing as boxes, but no substantive answers or conclusions are provided to address what should be done about the issue.",
+              "agent1_verification_status": "CORRECTED",
+              "note": "Agent 1 label, not evidence; NEEDS_REVIEW means Agent 1 did not verify it. Assess resolution from the member messages."
+            },
+            "agent1_review_required": false,
+            "agent1_review_reason": "",
+            "note": "Agent 1 interpretation, not source evidence; cite member messages for incident facts."
+          },
+          {
+            "member_id": "member_ba4581cf60461d619dc34676",
+            "thread_id": "1790927548.000165",
+            "summary": "Bea reports an issue where Hangul characters render as □□□ on the rating screen. Jun confirms that Korean glyphs vanish in the preview while Latin text is visible. Yuki asks if the original text displays correctly outside the labeling tool. Alex, the team lead, concludes that if the original text renders correctly outside the labeling tool but not inside, it should be treated as a tool-rendering incident rather than a language-quality mistake.",
+            "central_question": "Is the rendering issue with Hangul in the labeling tool a tool-rendering incident or a language-quality mistake?",
+            "attributed_agent1_resolution": {
+              "state": "PARTIALLY_RESOLVED",
+              "rationale": "While Alex's response provides guidance on categorizing the issue, it does not fully resolve whether others are experiencing the same rendering problem as described by Bea. Jun's reply indicates a related issue but does not confirm the specific rendering of □□□.",
+              "agent1_verification_status": "CORRECTED",
+              "note": "Agent 1 label, not evidence; NEEDS_REVIEW means Agent 1 did not verify it. Assess resolution from the member messages."
+            },
+            "agent1_review_required": false,
+            "agent1_review_reason": "",
+            "note": "Agent 1 interpretation, not source evidence; cite member messages for incident facts."
+          }
+        ]
+      }
+    ],
+    "drafts": {
+      "initial": {
+        "contract_version": "agent3-advisor-draft-v11",
+        "summary": "A QA tutor and two tutors report Hangul displaying as boxes or disappearing in LT. Current guidance calls for reporting a tool-rendering incident and checking the text outside LT where possible, rather than assuming the underlying response contains corrupted characters.",
+        "summary_sentences": [
+          {
+            "text": "A QA tutor and two tutors report Hangul displaying as boxes or disappearing in LT.",
+            "support_claim_ids": [
+              "c1",
+              "c2",
+              "c3"
+            ],
+            "depends_on": []
+          },
+          {
+            "text": "Current guidance calls for reporting a tool-rendering incident and checking the text outside LT where possible, rather than assuming the underlying response contains corrupted characters.",
+            "support_claim_ids": [
+              "c6",
+              "c7"
+            ],
+            "depends_on": []
+          }
+        ],
+        "detail_sentences": [
+          {
+            "text": "A QA tutor reports boxes in LT; a tutor reports boxes on the rating screen for MULTI-7548.",
+            "support_claim_ids": [
+              "c1",
+              "c2"
+            ],
+            "depends_on": [],
+            "summary_depends_on": []
+          },
+          {
+            "text": "A second tutor reports Korean glyphs disappearing in the preview while Latin text remains visible.",
+            "support_claim_ids": [
+              "c3"
+            ],
+            "depends_on": [
+              1
+            ],
+            "summary_depends_on": []
+          },
+          {
+            "text": "In the MULTI-7548 thread, a QA tutor asks whether the original text displays correctly outside LT; no comparison result appears in the provided messages.",
+            "support_claim_ids": [
+              "c4",
+              "c8"
+            ],
+            "depends_on": [],
+            "summary_depends_on": []
+          },
+          {
+            "text": "The team lead instructs that thread to treat the item as a tool-rendering incident, not a language-quality mistake, if the original text renders outside LT but not inside it.",
+            "support_claim_ids": [
+              "c5"
+            ],
+            "depends_on": [
+              3
+            ],
+            "summary_depends_on": []
+          }
+        ],
+        "reasoning": "The comparable rendering reports justify reporting a technical issue to engineering. Current project guidance already establishes incident handling without requiring a confirmed cause or a completed outside-LT comparison. The team lead's conditional instruction applies only to the MULTI-7548 thread and does not establish a project-wide rule. Earlier decisions are not needed to support this step, and the routine reopening announcement does not establish a cause or a handling route.",
+        "claims": [
+          {
+            "claim_id": "c1",
+            "kind": "INCIDENT_FACT",
+            "text": "A QA tutor reports that Hangul appears as boxes in LT.",
+            "evidence_ids": [
+              "m:C_MULTI_QA:1790885224.000166"
+            ],
+            "attributions": [
+              {
+                "user_id": "U008",
+                "relation": "AUTHOR",
+                "evidence_id": "m:C_MULTI_QA:1790885224.000166"
+              }
+            ],
+            "quote": "Hangul appears as boxes in LT.",
+            "quote_kind": "VERBATIM",
+            "material": true
+          },
+          {
+            "claim_id": "c2",
+            "kind": "INCIDENT_FACT",
+            "text": "A tutor reports Hangul rendering as boxes on the LT rating screen for MULTI-7548 and asks whether others see it.",
+            "evidence_ids": [
+              "m:C_MULTI_GENERAL:1790927548.000165"
+            ],
+            "attributions": [
+              {
+                "user_id": "U017",
+                "relation": "AUTHOR",
+                "evidence_id": "m:C_MULTI_GENERAL:1790927548.000165"
+              }
+            ],
+            "quote": null,
+            "quote_kind": "PARAPHRASE",
+            "material": true
+          },
+          {
+            "claim_id": "c3",
+            "kind": "INCIDENT_FACT",
+            "text": "A tutor reports Korean glyphs vanishing in the preview while Latin text is visible.",
+            "evidence_ids": [
+              "m:C_MULTI_GENERAL:1790927595.000113"
+            ],
+            "attributions": [
+              {
+                "user_id": "U013",
+                "relation": "AUTHOR",
+                "evidence_id": "m:C_MULTI_GENERAL:1790927595.000113"
+              }
+            ],
+            "quote": "Korean glyphs vanish in the preview while Latin text is visible.",
+            "quote_kind": "VERBATIM",
+            "material": true
+          },
+          {
+            "claim_id": "c4",
+            "kind": "INCIDENT_FACT",
+            "text": "A QA tutor asks in the MULTI-7548 thread whether the original text displays correctly outside the labeling tool.",
+            "evidence_ids": [
+              "m:C_MULTI_GENERAL:1790927640.000226"
+            ],
+            "attributions": [
+              {
+                "user_id": "U019",
+                "relation": "AUTHOR",
+                "evidence_id": "m:C_MULTI_GENERAL:1790927640.000226"
+              }
+            ],
+            "quote": "Does the original text display correctly outside the labeling tool?",
+            "quote_kind": "VERBATIM",
+            "material": true
+          },
+          {
+            "claim_id": "c5",
+            "kind": "THREAD_INSTRUCTION",
+            "text": "The team lead instructs the MULTI-7548 thread to treat the item as a tool-rendering incident rather than a language-quality mistake if the original text renders outside LT but not inside it.",
+            "evidence_ids": [
+              "m:C_MULTI_GENERAL:1790927684.000339"
+            ],
+            "attributions": [
+              {
+                "user_id": "U001",
+                "relation": "AUTHOR",
+                "evidence_id": "m:C_MULTI_GENERAL:1790927684.000339"
+              }
+            ],
+            "quote": "If the original text renders outside LT but not inside it, treat this item as a tool-rendering incident, not a language-quality mistake.",
+            "quote_kind": "VERBATIM",
+            "material": true
+          },
+          {
+            "claim_id": "c6",
+            "kind": "GUIDANCE",
+            "text": "The current FAQ directs reporting a tool-rendering incident when characters appear as boxes or become unreadable in LT, checking the text outside LT where possible, and not claiming the underlying response has corrupted characters before that comparison is available.",
+            "evidence_ids": [
+              "k:multilingual-eval-faq@1.1:e2ea02bf"
+            ],
+            "attributions": [],
+            "quote": null,
+            "quote_kind": "PARAPHRASE",
+            "material": true
+          },
+          {
+            "claim_id": "c7",
+            "kind": "GUIDANCE",
+            "text": "The current instructions treat boxes or broken characters in LT as tool-rendering incidents until the source text is checked, require capturing task IDs, and direct recording any inability to compare outside LT rather than asserting corrupt model text; operational impact is assessed separately from language-quality grades.",
+            "evidence_ids": [
+              "k:multilingual-eval-instructions@1.2:ea925467"
+            ],
+            "attributions": [],
+            "quote": null,
+            "quote_kind": "PARAPHRASE",
+            "material": true
+          },
+          {
+            "claim_id": "c8",
+            "kind": "INFERENCE",
+            "text": "The provided MULTI-7548 thread messages do not contain an outside-LT comparison result.",
+            "evidence_ids": [
+              "m:C_MULTI_GENERAL:1790927548.000165",
+              "m:C_MULTI_GENERAL:1790927595.000113",
+              "m:C_MULTI_GENERAL:1790927640.000226",
+              "m:C_MULTI_GENERAL:1790927684.000339"
+            ],
+            "attributions": [],
+            "quote": null,
+            "quote_kind": "PARAPHRASE",
+            "material": true
+          }
+        ],
+        "gaps": [
+          {
+            "gap_id": "g1",
+            "need": "OTHER",
+            "description": "Outside-LT comparison results and task references for the reports other than MULTI-7548 remain to be collected from the affected QA tutor and tutors. This does not prevent reporting the incident.",
+            "follow_up": null
+          }
+        ],
+        "evidence_sufficiency": "SUFFICIENT",
+        "proposed_action": {
+          "action_type": "ESCALATE_ENGINEERING",
+          "intervention_need": {
+            "kind": "OPERATIONAL_PROBLEM",
+            "statement": "A QA tutor and two tutors report comparable Hangul display failures in LT, warranting technical investigation while source-text checks are collected.",
+            "evidence_ids": [
+              "m:C_MULTI_QA:1790885224.000166",
+              "m:C_MULTI_GENERAL:1790927548.000165",
+              "m:C_MULTI_GENERAL:1790927595.000113"
+            ]
+          },
+          "instruction": "Report the Hangul display failures to engineering, grouping the reported symptoms and including MULTI-7548 as the available task reference.",
+          "rationale": "Comparable display failures across three reporters warrant engineering investigation. Current guidance directs incident reporting without waiting for a confirmed cause or completed source-text comparison.",
+          "draft_text": "Engineering: please investigate these Hangul display reports in LT.\n- A QA tutor and a tutor report Hangul appearing as boxes; the tutor identifies MULTI-7548 on the rating screen.\n- A second tutor reports Korean glyphs disappearing in the preview while Latin text remains visible.\nAffected reporters: please provide task IDs and compare the original text outside LT where possible. If comparison is unavailable, record that limitation. Treat these as tool-rendering incidents pending source-text checks, separately from language-quality grades; do not assume the underlying response contains corrupted characters.",
+          "scope_note": "Report the observed display symptoms without asserting a technical cause or treating the thread-specific instruction as project-wide guidance.",
+          "support_claim_ids": [
+            "c1",
+            "c2",
+            "c3",
+            "c6",
+            "c7"
+          ],
+          "targets": [],
+          "context_claim_ids": [
+            "c4",
+            "c5",
+            "c8"
+          ]
+        },
+        "severity": {
+          "level": "HIGH",
+          "rationale": "A QA tutor and two tutors report comparable Korean-text display failures within the same batch and time window, suggesting broader disruption to evaluating that text.",
+          "signals": [
+            {
+              "level": "HIGH",
+              "signal_index": 3,
+              "signal_text": "Multiple distinct people or affected tasks reporting a comparable problem within the relevant project, batch, and time window, suggesting broader disruption or systemic labeling risk. Consider the number affected relative to the known active group when that information is available; do not require an explicit statement of widespread impact",
+              "support": "A QA tutor reports Hangul boxes in LT; a tutor reports boxes on the rating screen; a second tutor reports Korean glyphs disappearing in the preview while Latin text remains visible.",
+              "evidence_ids": [
+                "m:C_MULTI_QA:1790885224.000166",
+                "m:C_MULTI_GENERAL:1790927548.000165",
+                "m:C_MULTI_GENERAL:1790927595.000113"
+              ]
+            }
+          ],
+          "affected_reporters": [
+            {
+              "author_id": "U008",
+              "evidence_id": "m:C_MULTI_QA:1790885224.000166"
+            },
+            {
+              "author_id": "U017",
+              "evidence_id": "m:C_MULTI_GENERAL:1790927548.000165"
+            },
+            {
+              "author_id": "U013",
+              "evidence_id": "m:C_MULTI_GENERAL:1790927595.000113"
+            }
+          ],
+          "recurrence": "NOT_CHECKED",
+          "recurrence_evidence_ids": [],
+          "reported_recurrence_evidence_ids": []
+        },
+        "confidence": 0.94,
+        "open_confirmation": "NONE",
+        "open_question": null,
+        "open_question_evidence_ids": [],
+        "source_conflicts": [],
+        "announcement_assessments": [
+          {
+            "evidence_id": "k:slack:C_MULTI_ANNOUNCEMENTS:1790862733.000190:8a8518aa",
+            "relevant": false,
+            "directive": false,
+            "directive_quote": null,
+            "rationale": "The same-batch announcement states a routine queue reopening schedule, not Hangul-rendering handling, and gives no directive for this problem."
+          }
+        ],
+        "resolution": [
+          {
+            "member_id": "member_de85059f17dd8949093893e5",
+            "state": "UNRESOLVED",
+            "evidence_ids": [
+              "m:C_MULTI_QA:1790885224.000166"
+            ],
+            "basis": "The QA tutor's thread contains a report of Hangul boxes but no response, comparison result or resolution."
+          },
+          {
+            "member_id": "member_ba4581cf60461d619dc34676",
+            "state": "PARTIALLY_RESOLVED",
+            "evidence_ids": [
+              "m:C_MULTI_GENERAL:1790927548.000165",
+              "m:C_MULTI_GENERAL:1790927595.000113",
+              "m:C_MULTI_GENERAL:1790927640.000226",
+              "m:C_MULTI_GENERAL:1790927684.000339"
+            ],
+            "basis": "The team lead gives conditional handling for the tutor's item, but the thread contains neither the requested outside-LT comparison result nor confirmation that the display problem is resolved."
+          }
+        ],
+        "coverage": [
+          {
+            "need": "CURRENT_GUIDANCE",
+            "status": "COVERED",
+            "evidence_ids": [
+              "k:multilingual-eval-faq@1.1:e2ea02bf",
+              "k:multilingual-eval-instructions@1.2:ea925467"
+            ],
+            "note": "Current project guidance covers rendering incidents, source-text comparisons, task-ID collection and separation from language-quality grading.",
+            "gap_id": null
+          },
+          {
+            "need": "ANNOUNCEMENTS",
+            "status": "COVERED",
+            "evidence_ids": [
+              "k:slack:C_MULTI_ANNOUNCEMENTS:1790862733.000190:8a8518aa"
+            ],
+            "note": "The retrieved announcement was assessed and does not direct handling of this problem.",
+            "gap_id": null
+          },
+          {
+            "need": "PRIOR_DECISIONS",
+            "status": "NOT_APPLICABLE",
+            "evidence_ids": [],
+            "note": "The recommendation rests on current reports and current incident guidance, not on an earlier workaround, trial outcome or claim of historical recurrence.",
+            "gap_id": null
+          },
+          {
+            "need": "MEMBER_QUESTIONS",
+            "status": "COVERED",
+            "evidence_ids": [
+              "m:C_MULTI_GENERAL:1790927548.000165",
+              "m:C_MULTI_GENERAL:1790927640.000226",
+              "m:C_MULTI_GENERAL:1790927684.000339"
+            ],
+            "note": "The tutor asks whether others see the issue, a QA tutor asks about display outside LT, and the team lead supplies conditional thread handling.",
+            "gap_id": null
+          }
+        ],
+        "review_note": null,
+        "action_choice": null
+      },
+      "final": {
+        "contract_version": "agent3-advisor-draft-v11",
+        "summary": "A QA tutor and two tutors report Hangul displaying as boxes or disappearing in LT. Current guidance calls for reporting a tool-rendering incident and checking the text outside LT where possible, rather than assuming the underlying response contains corrupted characters.",
+        "summary_sentences": [
+          {
+            "text": "A QA tutor and two tutors report Hangul displaying as boxes or disappearing in LT.",
+            "support_claim_ids": [
+              "c1",
+              "c2",
+              "c3"
+            ],
+            "depends_on": []
+          },
+          {
+            "text": "Current guidance calls for reporting a tool-rendering incident and checking the text outside LT where possible, rather than assuming the underlying response contains corrupted characters.",
+            "support_claim_ids": [
+              "c6",
+              "c7"
+            ],
+            "depends_on": []
+          }
+        ],
+        "detail_sentences": [
+          {
+            "text": "A QA tutor reports boxes in LT; a tutor reports boxes on the rating screen for MULTI-7548.",
+            "support_claim_ids": [
+              "c1",
+              "c2"
+            ],
+            "depends_on": [],
+            "summary_depends_on": []
+          },
+          {
+            "text": "A second tutor reports Korean glyphs disappearing in the preview while Latin text remains visible.",
+            "support_claim_ids": [
+              "c3"
+            ],
+            "depends_on": [
+              1
+            ],
+            "summary_depends_on": []
+          },
+          {
+            "text": "In the MULTI-7548 thread, a QA tutor asks whether the original text displays correctly outside LT; no comparison result appears in the provided messages.",
+            "support_claim_ids": [
+              "c4",
+              "c8"
+            ],
+            "depends_on": [],
+            "summary_depends_on": []
+          },
+          {
+            "text": "The team lead instructs that thread to treat the item as a tool-rendering incident, not a language-quality mistake, if the original text renders outside LT but not inside it.",
+            "support_claim_ids": [
+              "c5"
+            ],
+            "depends_on": [
+              3
+            ],
+            "summary_depends_on": []
+          }
+        ],
+        "reasoning": "The comparable rendering reports justify reporting a technical issue to engineering. Current project guidance already establishes incident handling without requiring a confirmed cause or a completed outside-LT comparison. The team lead's conditional instruction applies only to the MULTI-7548 thread and does not establish a project-wide rule. Earlier decisions are not needed to support this step, and the routine reopening announcement does not establish a cause or a handling route.",
+        "claims": [
+          {
+            "claim_id": "c1",
+            "kind": "INCIDENT_FACT",
+            "text": "A QA tutor reports that Hangul appears as boxes in LT.",
+            "evidence_ids": [
+              "m:C_MULTI_QA:1790885224.000166"
+            ],
+            "attributions": [
+              {
+                "user_id": "U008",
+                "relation": "AUTHOR",
+                "evidence_id": "m:C_MULTI_QA:1790885224.000166"
+              }
+            ],
+            "quote": "Hangul appears as boxes in LT.",
+            "quote_kind": "VERBATIM",
+            "material": true
+          },
+          {
+            "claim_id": "c2",
+            "kind": "INCIDENT_FACT",
+            "text": "A tutor reports Hangul rendering as boxes on the LT rating screen for MULTI-7548 and asks whether others see it.",
+            "evidence_ids": [
+              "m:C_MULTI_GENERAL:1790927548.000165"
+            ],
+            "attributions": [
+              {
+                "user_id": "U017",
+                "relation": "AUTHOR",
+                "evidence_id": "m:C_MULTI_GENERAL:1790927548.000165"
+              }
+            ],
+            "quote": null,
+            "quote_kind": "PARAPHRASE",
+            "material": true
+          },
+          {
+            "claim_id": "c3",
+            "kind": "INCIDENT_FACT",
+            "text": "A tutor reports Korean glyphs vanishing in the preview while Latin text is visible.",
+            "evidence_ids": [
+              "m:C_MULTI_GENERAL:1790927595.000113"
+            ],
+            "attributions": [
+              {
+                "user_id": "U013",
+                "relation": "AUTHOR",
+                "evidence_id": "m:C_MULTI_GENERAL:1790927595.000113"
+              }
+            ],
+            "quote": "Korean glyphs vanish in the preview while Latin text is visible.",
+            "quote_kind": "VERBATIM",
+            "material": true
+          },
+          {
+            "claim_id": "c4",
+            "kind": "INCIDENT_FACT",
+            "text": "A QA tutor asks in the MULTI-7548 thread whether the original text displays correctly outside the labeling tool.",
+            "evidence_ids": [
+              "m:C_MULTI_GENERAL:1790927640.000226"
+            ],
+            "attributions": [
+              {
+                "user_id": "U019",
+                "relation": "AUTHOR",
+                "evidence_id": "m:C_MULTI_GENERAL:1790927640.000226"
+              }
+            ],
+            "quote": "Does the original text display correctly outside the labeling tool?",
+            "quote_kind": "VERBATIM",
+            "material": true
+          },
+          {
+            "claim_id": "c5",
+            "kind": "THREAD_INSTRUCTION",
+            "text": "The team lead instructs the MULTI-7548 thread to treat the item as a tool-rendering incident rather than a language-quality mistake if the original text renders outside LT but not inside it.",
+            "evidence_ids": [
+              "m:C_MULTI_GENERAL:1790927684.000339"
+            ],
+            "attributions": [
+              {
+                "user_id": "U001",
+                "relation": "AUTHOR",
+                "evidence_id": "m:C_MULTI_GENERAL:1790927684.000339"
+              }
+            ],
+            "quote": "If the original text renders outside LT but not inside it, treat this item as a tool-rendering incident, not a language-quality mistake.",
+            "quote_kind": "VERBATIM",
+            "material": true
+          },
+          {
+            "claim_id": "c6",
+            "kind": "GUIDANCE",
+            "text": "The current FAQ directs reporting a tool-rendering incident when characters appear as boxes or become unreadable in LT, checking the text outside LT where possible, and not claiming the underlying response has corrupted characters before that comparison is available.",
+            "evidence_ids": [
+              "k:multilingual-eval-faq@1.1:e2ea02bf"
+            ],
+            "attributions": [],
+            "quote": null,
+            "quote_kind": "PARAPHRASE",
+            "material": true
+          },
+          {
+            "claim_id": "c7",
+            "kind": "GUIDANCE",
+            "text": "The current instructions treat boxes or broken characters in LT as tool-rendering incidents until the source text is checked, require capturing task IDs, and direct recording any inability to compare outside LT rather than asserting corrupt model text; operational impact is assessed separately from language-quality grades.",
+            "evidence_ids": [
+              "k:multilingual-eval-instructions@1.2:ea925467"
+            ],
+            "attributions": [],
+            "quote": null,
+            "quote_kind": "PARAPHRASE",
+            "material": true
+          },
+          {
+            "claim_id": "c8",
+            "kind": "INFERENCE",
+            "text": "The provided MULTI-7548 thread messages do not contain an outside-LT comparison result.",
+            "evidence_ids": [
+              "m:C_MULTI_GENERAL:1790927548.000165",
+              "m:C_MULTI_GENERAL:1790927595.000113",
+              "m:C_MULTI_GENERAL:1790927640.000226",
+              "m:C_MULTI_GENERAL:1790927684.000339"
+            ],
+            "attributions": [],
+            "quote": null,
+            "quote_kind": "PARAPHRASE",
+            "material": true
+          }
+        ],
+        "gaps": [
+          {
+            "gap_id": "g1",
+            "need": "OTHER",
+            "description": "Outside-LT comparison results and task references for the reports other than MULTI-7548 remain to be collected from the affected QA tutor and tutors. This does not prevent reporting the incident.",
+            "follow_up": null
+          }
+        ],
+        "evidence_sufficiency": "SUFFICIENT",
+        "proposed_action": {
+          "action_type": "ESCALATE_ENGINEERING",
+          "intervention_need": {
+            "kind": "OPERATIONAL_PROBLEM",
+            "statement": "A QA tutor and two tutors report comparable Hangul display failures in LT, warranting technical investigation while source-text checks are collected.",
+            "evidence_ids": [
+              "m:C_MULTI_QA:1790885224.000166",
+              "m:C_MULTI_GENERAL:1790927548.000165",
+              "m:C_MULTI_GENERAL:1790927595.000113"
+            ]
+          },
+          "instruction": "Report the Hangul display failures to engineering, grouping the reported symptoms and including MULTI-7548 as the available task reference.",
+          "rationale": "Comparable display failures across three reporters warrant engineering investigation. Current guidance directs incident reporting without waiting for a confirmed cause or completed source-text comparison.",
+          "draft_text": "Engineering: please investigate these Hangul display reports in LT.\n- A QA tutor and a tutor report Hangul appearing as boxes; the tutor identifies MULTI-7548 on the rating screen.\n- A second tutor reports Korean glyphs disappearing in the preview while Latin text remains visible.\nAffected reporters: please provide task IDs and compare the original text outside LT where possible. If comparison is unavailable, record that limitation. Treat these as tool-rendering incidents pending source-text checks, separately from language-quality grades; do not assume the underlying response contains corrupted characters.",
+          "scope_note": "Report the observed display symptoms without asserting a technical cause or treating the thread-specific instruction as project-wide guidance.",
+          "support_claim_ids": [
+            "c1",
+            "c2",
+            "c3",
+            "c6",
+            "c7"
+          ],
+          "targets": [],
+          "context_claim_ids": [
+            "c4",
+            "c5",
+            "c8"
+          ]
+        },
+        "severity": {
+          "level": "HIGH",
+          "rationale": "A QA tutor and two tutors report comparable Korean-text display failures within the same batch and time window, suggesting broader disruption to evaluating that text.",
+          "signals": [
+            {
+              "level": "HIGH",
+              "signal_index": 3,
+              "signal_text": "Multiple distinct people or affected tasks reporting a comparable problem within the relevant project, batch, and time window, suggesting broader disruption or systemic labeling risk. Consider the number affected relative to the known active group when that information is available; do not require an explicit statement of widespread impact",
+              "support": "A QA tutor reports Hangul boxes in LT; a tutor reports boxes on the rating screen; a second tutor reports Korean glyphs disappearing in the preview while Latin text remains visible.",
+              "evidence_ids": [
+                "m:C_MULTI_QA:1790885224.000166",
+                "m:C_MULTI_GENERAL:1790927548.000165",
+                "m:C_MULTI_GENERAL:1790927595.000113"
+              ]
+            }
+          ],
+          "affected_reporters": [
+            {
+              "author_id": "U008",
+              "evidence_id": "m:C_MULTI_QA:1790885224.000166"
+            },
+            {
+              "author_id": "U017",
+              "evidence_id": "m:C_MULTI_GENERAL:1790927548.000165"
+            },
+            {
+              "author_id": "U013",
+              "evidence_id": "m:C_MULTI_GENERAL:1790927595.000113"
+            }
+          ],
+          "recurrence": "NOT_CHECKED",
+          "recurrence_evidence_ids": [],
+          "reported_recurrence_evidence_ids": []
+        },
+        "confidence": 0.94,
+        "open_confirmation": "NONE",
+        "open_question": null,
+        "open_question_evidence_ids": [],
+        "source_conflicts": [],
+        "announcement_assessments": [
+          {
+            "evidence_id": "k:slack:C_MULTI_ANNOUNCEMENTS:1790862733.000190:8a8518aa",
+            "relevant": false,
+            "directive": false,
+            "directive_quote": null,
+            "rationale": "The same-batch announcement states a routine queue reopening schedule, not Hangul-rendering handling, and gives no directive for this problem."
+          }
+        ],
+        "resolution": [
+          {
+            "member_id": "member_de85059f17dd8949093893e5",
+            "state": "UNRESOLVED",
+            "evidence_ids": [
+              "m:C_MULTI_QA:1790885224.000166"
+            ],
+            "basis": "The QA tutor's thread contains a report of Hangul boxes but no response, comparison result or resolution."
+          },
+          {
+            "member_id": "member_ba4581cf60461d619dc34676",
+            "state": "PARTIALLY_RESOLVED",
+            "evidence_ids": [
+              "m:C_MULTI_GENERAL:1790927548.000165",
+              "m:C_MULTI_GENERAL:1790927595.000113",
+              "m:C_MULTI_GENERAL:1790927640.000226",
+              "m:C_MULTI_GENERAL:1790927684.000339"
+            ],
+            "basis": "The team lead gives conditional handling for the tutor's item, but the thread contains neither the requested outside-LT comparison result nor confirmation that the display problem is resolved."
+          }
+        ],
+        "coverage": [
+          {
+            "need": "CURRENT_GUIDANCE",
+            "status": "COVERED",
+            "evidence_ids": [
+              "k:multilingual-eval-faq@1.1:e2ea02bf",
+              "k:multilingual-eval-instructions@1.2:ea925467"
+            ],
+            "note": "Current project guidance covers rendering incidents, source-text comparisons, task-ID collection and separation from language-quality grading.",
+            "gap_id": null
+          },
+          {
+            "need": "ANNOUNCEMENTS",
+            "status": "COVERED",
+            "evidence_ids": [
+              "k:slack:C_MULTI_ANNOUNCEMENTS:1790862733.000190:8a8518aa"
+            ],
+            "note": "The retrieved announcement was assessed and does not direct handling of this problem.",
+            "gap_id": null
+          },
+          {
+            "need": "PRIOR_DECISIONS",
+            "status": "NOT_APPLICABLE",
+            "evidence_ids": [],
+            "note": "The recommendation rests on current reports and current incident guidance, not on an earlier workaround, trial outcome or claim of historical recurrence.",
+            "gap_id": null
+          },
+          {
+            "need": "MEMBER_QUESTIONS",
+            "status": "COVERED",
+            "evidence_ids": [
+              "m:C_MULTI_GENERAL:1790927548.000165",
+              "m:C_MULTI_GENERAL:1790927640.000226",
+              "m:C_MULTI_GENERAL:1790927684.000339"
+            ],
+            "note": "The tutor asks whether others see the issue, a QA tutor asks about display outside LT, and the team lead supplies conditional thread handling.",
+            "gap_id": null
+          }
+        ],
+        "review_note": null,
+        "action_choice": null
+      },
+      "revised": false
+    },
+    "grounding": {
+      "structural_issues": [],
+      "action_issues": [],
+      "unsupported": [],
+      "unjudged": [],
+      "extraneous_verdicts": [],
+      "rejected": {},
+      "pending": [],
+      "action_sufficiency": {
+        "verdict": "SUFFICIENT",
+        "essential_statement_ids": [
+          "claim:c1",
+          "claim:c2",
+          "claim:c3",
+          "claim:c6",
+          "claim:c7"
+        ],
+        "rationale": "All listed premises are supported. The incident premises establish the exact symptoms, reporter grouping, task reference, and need for engineering expertise; the guidance premises justify reporting pending comparison, requesting task IDs, documenting comparison limitations, and separating tool incidents from language-quality judgments. The recommendation names no unsupported concrete route."
+      },
+      "source_consistency": {
+        "assessed_evidence_ids": [
+          "k:multilingual-eval-faq@1.1:e2ea02bf",
+          "k:multilingual-eval-instructions@1.2:ea925467",
+          "k:multilingual-eval-instructions@1.2:818f7ccb"
+        ],
+        "relations": [
+          {
+            "evidence_ids": [
+              "k:multilingual-eval-faq@1.1:e2ea02bf",
+              "k:multilingual-eval-instructions@1.2:ea925467"
+            ],
+            "relation": "AGREE",
+            "point": "Handling unreadable or broken characters displayed in LT pending source-text comparison.",
+            "disagreement_scope": null,
+            "rationale": "Both sources treat these reports as tool-rendering incidents, direct comparison outside LT where possible, and prohibit assuming the underlying model text is corrupt before comparison. The instructions add compatible task-ID and limitation-recording requirements."
+          },
+          {
+            "evidence_ids": [
+              "k:multilingual-eval-instructions@1.2:ea925467",
+              "k:multilingual-eval-instructions@1.2:818f7ccb"
+            ],
+            "relation": "AGREE",
+            "point": "Distinguishing tool-rendering failures from linguistic defects.",
+            "disagreement_scope": null,
+            "rationale": "The project-purpose section requires distinguishing linguistic defects from rendering failures, and the tool-incident section implements that distinction by separating operational impact from language-quality grades."
+          }
+        ],
+        "declared_conflict_checks": []
+      },
+      "alternative_sufficiency": {},
+      "status": "PASSED",
+      "basis": "SEMANTIC",
+      "statements": [
+        {
+          "statement_id": "claim:c1",
+          "kind": "CLAIM_INCIDENT_FACT",
+          "text": "A QA tutor reports that Hangul appears as boxes in LT. Verbatim quote: \"Hangul appears as boxes in LT.\"",
+          "blocking": true,
+          "evidence_ids": [
+            "m:C_MULTI_QA:1790885224.000166"
+          ],
+          "attributions": [
+            {
+              "user_id": "U008",
+              "relation": "AUTHOR",
+              "evidence_id": "m:C_MULTI_QA:1790885224.000166",
+              "role": "QA_TUTOR"
+            }
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "U008 is a QA tutor and authored the cited report. The quotation matches exactly."
+        },
+        {
+          "statement_id": "claim:c2",
+          "kind": "CLAIM_INCIDENT_FACT",
+          "text": "A tutor reports Hangul rendering as boxes on the LT rating screen for MULTI-7548 and asks whether others see it.",
+          "blocking": true,
+          "evidence_ids": [
+            "m:C_MULTI_GENERAL:1790927548.000165"
+          ],
+          "attributions": [
+            {
+              "user_id": "U017",
+              "relation": "AUTHOR",
+              "evidence_id": "m:C_MULTI_GENERAL:1790927548.000165",
+              "role": "TUTOR"
+            }
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "U017 is a tutor and reports boxes on the LT rating screen, identifies MULTI-7548, and asks whether others see the problem."
+        },
+        {
+          "statement_id": "claim:c3",
+          "kind": "CLAIM_INCIDENT_FACT",
+          "text": "A tutor reports Korean glyphs vanishing in the preview while Latin text is visible. Verbatim quote: \"Korean glyphs vanish in the preview while Latin text is visible.\"",
+          "blocking": true,
+          "evidence_ids": [
+            "m:C_MULTI_GENERAL:1790927595.000113"
+          ],
+          "attributions": [
+            {
+              "user_id": "U013",
+              "relation": "AUTHOR",
+              "evidence_id": "m:C_MULTI_GENERAL:1790927595.000113",
+              "role": "TUTOR"
+            }
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "U013 is a tutor and authored the cited report. The quotation matches exactly."
+        },
+        {
+          "statement_id": "claim:c4",
+          "kind": "CLAIM_INCIDENT_FACT",
+          "text": "A QA tutor asks in the MULTI-7548 thread whether the original text displays correctly outside the labeling tool. Verbatim quote: \"Does the original text display correctly outside the labeling tool?\"",
+          "blocking": true,
+          "evidence_ids": [
+            "m:C_MULTI_GENERAL:1790927640.000226"
+          ],
+          "attributions": [
+            {
+              "user_id": "U019",
+              "relation": "AUTHOR",
+              "evidence_id": "m:C_MULTI_GENERAL:1790927640.000226",
+              "role": "QA_TUTOR"
+            }
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "U019 is a QA tutor and asks the quoted question in the MULTI-7548 thread. The quotation is exact."
+        },
+        {
+          "statement_id": "claim:c5",
+          "kind": "CLAIM_THREAD_INSTRUCTION",
+          "text": "The team lead instructs the MULTI-7548 thread to treat the item as a tool-rendering incident rather than a language-quality mistake if the original text renders outside LT but not inside it. Verbatim quote: \"If the original text renders outside LT but not inside it, treat this item as a tool-rendering incident, not a language-quality mistake.\"",
+          "blocking": true,
+          "evidence_ids": [
+            "m:C_MULTI_GENERAL:1790927684.000339"
+          ],
+          "attributions": [
+            {
+              "user_id": "U001",
+              "relation": "AUTHOR",
+              "evidence_id": "m:C_MULTI_GENERAL:1790927684.000339",
+              "role": "TEAM_LEAD"
+            }
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "The team lead gives this exact conditional instruction in the MULTI-7548 thread. The statement correctly preserves its condition and thread-specific scope."
+        },
+        {
+          "statement_id": "claim:c6",
+          "kind": "CLAIM_GUIDANCE",
+          "text": "The current FAQ directs reporting a tool-rendering incident when characters appear as boxes or become unreadable in LT, checking the text outside LT where possible, and not claiming the underlying response has corrupted characters before that comparison is available.",
+          "blocking": true,
+          "evidence_ids": [
+            "k:multilingual-eval-faq@1.1:e2ea02bf"
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "The current FAQ explicitly directs incident reporting, comparison outside LT where possible, and withholding claims of underlying corrupted characters until that comparison is available."
+        },
+        {
+          "statement_id": "claim:c7",
+          "kind": "CLAIM_GUIDANCE",
+          "text": "The current instructions treat boxes or broken characters in LT as tool-rendering incidents until the source text is checked, require capturing task IDs, and direct recording any inability to compare outside LT rather than asserting corrupt model text; operational impact is assessed separately from language-quality grades.",
+          "blocking": true,
+          "evidence_ids": [
+            "k:multilingual-eval-instructions@1.2:ea925467"
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "The current instructions state each described requirement, including provisional tool-incident treatment, task-ID capture, documenting unavailable comparisons, and separating operational impact from language-quality grades."
+        },
+        {
+          "statement_id": "claim:c8",
+          "kind": "CLAIM_INFERENCE",
+          "text": "The provided MULTI-7548 thread messages do not contain an outside-LT comparison result.",
+          "blocking": true,
+          "evidence_ids": [
+            "m:C_MULTI_GENERAL:1790927548.000165",
+            "m:C_MULTI_GENERAL:1790927595.000113",
+            "m:C_MULTI_GENERAL:1790927640.000226",
+            "m:C_MULTI_GENERAL:1790927684.000339"
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "The complete provided MULTI-7548 thread contains a comparison question and conditional handling instruction, but no outside-LT comparison result."
+        },
+        {
+          "statement_id": "summary:s1",
+          "kind": "SUMMARY",
+          "text": "A QA tutor and two tutors report Hangul displaying as boxes or disappearing in LT.",
+          "blocking": true,
+          "evidence_ids": [
+            "m:C_MULTI_QA:1790885224.000166",
+            "m:C_MULTI_GENERAL:1790927548.000165",
+            "m:C_MULTI_GENERAL:1790927595.000113"
+          ],
+          "attributions": [
+            {
+              "user_id": "U008",
+              "relation": "AUTHOR",
+              "evidence_id": "m:C_MULTI_QA:1790885224.000166",
+              "role": "QA_TUTOR"
+            },
+            {
+              "user_id": "U017",
+              "relation": "AUTHOR",
+              "evidence_id": "m:C_MULTI_GENERAL:1790927548.000165",
+              "role": "TUTOR"
+            },
+            {
+              "user_id": "U013",
+              "relation": "AUTHOR",
+              "evidence_id": "m:C_MULTI_GENERAL:1790927595.000113",
+              "role": "TUTOR"
+            }
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "Three distinct authors with the stated roles report boxes or disappearing Korean glyphs in the LT context."
+        },
+        {
+          "statement_id": "summary:s2",
+          "kind": "SUMMARY",
+          "text": "Current guidance calls for reporting a tool-rendering incident and checking the text outside LT where possible, rather than assuming the underlying response contains corrupted characters.",
+          "blocking": true,
+          "evidence_ids": [
+            "k:multilingual-eval-faq@1.1:e2ea02bf",
+            "k:multilingual-eval-instructions@1.2:ea925467"
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "Both current handling sources support incident reporting and source-text comparison without assuming corruption in the underlying response."
+        },
+        {
+          "statement_id": "detail:d1",
+          "kind": "DETAIL",
+          "text": "A QA tutor reports boxes in LT; a tutor reports boxes on the rating screen for MULTI-7548.",
+          "blocking": false,
+          "evidence_ids": [
+            "m:C_MULTI_QA:1790885224.000166",
+            "m:C_MULTI_GENERAL:1790927548.000165"
+          ],
+          "attributions": [
+            {
+              "user_id": "U008",
+              "relation": "AUTHOR",
+              "evidence_id": "m:C_MULTI_QA:1790885224.000166",
+              "role": "QA_TUTOR"
+            },
+            {
+              "user_id": "U017",
+              "relation": "AUTHOR",
+              "evidence_id": "m:C_MULTI_GENERAL:1790927548.000165",
+              "role": "TUTOR"
+            }
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "The two cited authors have the stated roles and report the described boxes; the tutor supplies MULTI-7548."
+        },
+        {
+          "statement_id": "detail:d2",
+          "kind": "DETAIL",
+          "text": "A second tutor reports Korean glyphs disappearing in the preview while Latin text remains visible.",
+          "blocking": false,
+          "evidence_ids": [
+            "m:C_MULTI_GENERAL:1790927595.000113"
+          ],
+          "attributions": [
+            {
+              "user_id": "U013",
+              "relation": "AUTHOR",
+              "evidence_id": "m:C_MULTI_GENERAL:1790927595.000113",
+              "role": "TUTOR"
+            }
+          ],
+          "depends_on": [
+            "detail:d1"
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "U013 is a distinct second tutor and reports vanishing Korean glyphs while Latin text remains visible."
+        },
+        {
+          "statement_id": "detail:d3",
+          "kind": "DETAIL",
+          "text": "In the MULTI-7548 thread, a QA tutor asks whether the original text displays correctly outside LT; no comparison result appears in the provided messages.",
+          "blocking": false,
+          "evidence_ids": [
+            "m:C_MULTI_GENERAL:1790927640.000226",
+            "m:C_MULTI_GENERAL:1790927548.000165",
+            "m:C_MULTI_GENERAL:1790927595.000113",
+            "m:C_MULTI_GENERAL:1790927684.000339"
+          ],
+          "attributions": [
+            {
+              "user_id": "U019",
+              "relation": "AUTHOR",
+              "evidence_id": "m:C_MULTI_GENERAL:1790927640.000226",
+              "role": "QA_TUTOR"
+            }
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "The QA tutor asks about display outside the labeling tool, and no comparison result appears anywhere in the provided thread."
+        },
+        {
+          "statement_id": "detail:d4",
+          "kind": "DETAIL",
+          "text": "The team lead instructs that thread to treat the item as a tool-rendering incident, not a language-quality mistake, if the original text renders outside LT but not inside it.",
+          "blocking": false,
+          "evidence_ids": [
+            "m:C_MULTI_GENERAL:1790927684.000339"
+          ],
+          "attributions": [
+            {
+              "user_id": "U001",
+              "relation": "AUTHOR",
+              "evidence_id": "m:C_MULTI_GENERAL:1790927684.000339",
+              "role": "TEAM_LEAD"
+            }
+          ],
+          "depends_on": [
+            "detail:d3"
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "The team lead's message gives exactly this conditional treatment for the item in that thread."
+        },
+        {
+          "statement_id": "action",
+          "kind": "ACTION",
+          "text": "Report a technical issue to engineering. Instruction: Report the Hangul display failures to engineering, grouping the reported symptoms and including MULTI-7548 as the available task reference. Draft to copy: Engineering: please investigate these Hangul display reports in LT.\n- A QA tutor and a tutor report Hangul appearing as boxes; the tutor identifies MULTI-7548 on the rating screen.\n- A second tutor reports Korean glyphs disappearing in the preview while Latin text remains visible.\nAffected reporters: please provide task IDs and compare the original text outside LT where possible. If comparison is unavailable, record that limitation. Treat these as tool-rendering incidents pending source-text checks, separately from language-quality grades; do not assume the underlying response contains corrupted characters. Scope: Report the observed display symptoms without asserting a technical cause or treating the thread-specific instruction as project-wide guidance.",
+          "blocking": true,
+          "evidence_ids": [
+            "m:C_MULTI_QA:1790885224.000166",
+            "m:C_MULTI_GENERAL:1790927548.000165",
+            "m:C_MULTI_GENERAL:1790927595.000113",
+            "k:multilingual-eval-faq@1.1:e2ea02bf",
+            "k:multilingual-eval-instructions@1.2:ea925467"
+          ],
+          "premises": [
+            "claim:c1",
+            "claim:c2",
+            "claim:c3",
+            "claim:c6",
+            "claim:c7"
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "The reported display failures justify recommending engineering investigation without naming an unsupported concrete route. The draft accurately groups the reports, identifies the available task reference, requests the checks and documentation required by current guidance, and avoids asserting a cause or expanding thread-specific authority."
+        },
+        {
+          "statement_id": "action:rationale",
+          "kind": "ACTION_RATIONALE",
+          "text": "Why this helps: Comparable display failures across three reporters warrant engineering investigation. Current guidance directs incident reporting without waiting for a confirmed cause or completed source-text comparison.",
+          "blocking": false,
+          "evidence_ids": [
+            "m:C_MULTI_QA:1790885224.000166",
+            "m:C_MULTI_GENERAL:1790927548.000165",
+            "m:C_MULTI_GENERAL:1790927595.000113",
+            "k:multilingual-eval-faq@1.1:e2ea02bf",
+            "k:multilingual-eval-instructions@1.2:ea925467",
+            "m:C_MULTI_GENERAL:1790927640.000226",
+            "m:C_MULTI_GENERAL:1790927684.000339"
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "Three distinct reporters describe comparable display failures warranting technical investigation. Current guidance directs reporting while source-text checks remain pending, rather than making reporting conditional on a confirmed cause or completed comparison."
+        },
+        {
+          "statement_id": "action:need",
+          "kind": "INTERVENTION_NEED",
+          "text": "Why intervening now is needed (an operational problem that needs coordination): A QA tutor and two tutors report comparable Hangul display failures in LT, warranting technical investigation while source-text checks are collected.",
+          "blocking": false,
+          "evidence_ids": [
+            "m:C_MULTI_QA:1790885224.000166",
+            "m:C_MULTI_GENERAL:1790927548.000165",
+            "m:C_MULTI_GENERAL:1790927595.000113"
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "The unresolved display failures reported by three distinct people constitute an operational problem needing technical investigation and coordination of source-text checks."
+        },
+        {
+          "statement_id": "resolution:member_de85059f17dd8949093893e5",
+          "kind": "RESOLUTION",
+          "text": "Member thread member_de85059f17dd8949093893e5 is UNRESOLVED: The QA tutor's thread contains a report of Hangul boxes but no response, comparison result or resolution.",
+          "blocking": true,
+          "evidence_ids": [
+            "m:C_MULTI_QA:1790885224.000166"
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "The complete provided thread consists only of the QA tutor's report, with no response, comparison result, or resolution."
+        },
+        {
+          "statement_id": "resolution:member_ba4581cf60461d619dc34676",
+          "kind": "RESOLUTION",
+          "text": "Member thread member_ba4581cf60461d619dc34676 is PARTIALLY_RESOLVED: The team lead gives conditional handling for the tutor's item, but the thread contains neither the requested outside-LT comparison result nor confirmation that the display problem is resolved.",
+          "blocking": true,
+          "evidence_ids": [
+            "m:C_MULTI_GENERAL:1790927548.000165",
+            "m:C_MULTI_GENERAL:1790927595.000113",
+            "m:C_MULTI_GENERAL:1790927640.000226",
+            "m:C_MULTI_GENERAL:1790927684.000339"
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "The thread supplies conditional handling but neither answers the comparison question nor confirms that the display failure has been resolved."
+        },
+        {
+          "statement_id": "severity:rationale",
+          "kind": "SEVERITY_RATIONALE",
+          "text": "Severity HIGH: A QA tutor and two tutors report comparable Korean-text display failures within the same batch and time window, suggesting broader disruption to evaluating that text.",
+          "blocking": true,
+          "evidence_ids": [
+            "m:C_MULTI_QA:1790885224.000166",
+            "m:C_MULTI_GENERAL:1790927548.000165",
+            "m:C_MULTI_GENERAL:1790927595.000113",
+            "m:C_MULTI_GENERAL:1790927640.000226"
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "Three distinct reporters in the same topic batch report comparable Korean-text display failures within approximately twelve hours. This supports the stated broader-disruption signal without claiming a verified systemic cause or measured outcome."
+        },
+        {
+          "statement_id": "severity:signal:HIGH[3]",
+          "kind": "SEVERITY_SIGNAL",
+          "text": "Rubric signal met - \"Multiple distinct people or affected tasks reporting a comparable problem within the relevant project, batch, and time window, suggesting broader disruption or systemic labeling risk. Consider the number affected relative to the known active group when that information is available; do not require an explicit statement of widespread impact\": A QA tutor reports Hangul boxes in LT; a tutor reports boxes on the rating screen; a second tutor reports Korean glyphs disappearing in the preview while Latin text remains visible.",
+          "blocking": true,
+          "evidence_ids": [
+            "m:C_MULTI_QA:1790885224.000166",
+            "m:C_MULTI_GENERAL:1790927548.000165",
+            "m:C_MULTI_GENERAL:1790927595.000113"
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "The cited reports establish multiple distinct people reporting comparable display problems in the relevant project, batch, and time window, satisfying the stated signal."
+        },
+        {
+          "statement_id": "reporter:U008",
+          "kind": "AFFECTED_REPORTER",
+          "text": "U008 reports, in their own cited message, being affected by this problem.",
+          "blocking": true,
+          "evidence_ids": [
+            "m:C_MULTI_QA:1790885224.000166"
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "U008's own message directly reports encountering Hangul displayed as boxes in LT."
+        },
+        {
+          "statement_id": "reporter:U017",
+          "kind": "AFFECTED_REPORTER",
+          "text": "U017 reports, in their own cited message, being affected by this problem.",
+          "blocking": true,
+          "evidence_ids": [
+            "m:C_MULTI_GENERAL:1790927548.000165"
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "U017's own message reports the display problem on the rating screen and supplies an affected task reference."
+        },
+        {
+          "statement_id": "reporter:U013",
+          "kind": "AFFECTED_REPORTER",
+          "text": "U013 reports, in their own cited message, being affected by this problem.",
+          "blocking": true,
+          "evidence_ids": [
+            "m:C_MULTI_GENERAL:1790927595.000113"
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "U013's own message directly reports Korean glyphs vanishing in the preview."
+        }
+      ]
+    },
+    "temporal": {
+      "status": "NONE_FOUND",
+      "findings": [],
+      "source_consistency": "ASSESSED",
+      "ignored_revision_states": "NOT_YET_EFFECTIVE and NOT_APPROVED revisions never compete with applicable guidance."
+    },
+    "temporal_before_grounding": {
+      "status": "NONE_FOUND",
+      "findings": [],
+      "source_consistency": "NOT_ASSESSED",
+      "ignored_revision_states": "NOT_YET_EFFECTIVE and NOT_APPROVED revisions never compete with applicable guidance."
+    },
+    "severity": {
+      "assessment": {
+        "level": "HIGH",
+        "assessment_status": "ASSESSED",
+        "rubric_version": "severity-rubric-v3-semantic-signals",
+        "rubric_content_sha256": "eccaa31a2ab84a0aa7c005216a92fc39681e1dd10107117344948235a76673f4",
+        "rubric_project_id": null,
+        "rubric_scope": "SHARED_DEFAULT",
+        "rationale": "A QA tutor and two tutors report comparable Korean-text display failures within the same batch and time window, suggesting broader disruption to evaluating that text.",
+        "matched_signals": [
+          {
+            "level": "HIGH",
+            "signal_index": 3,
+            "signal_text": "Multiple distinct people or affected tasks reporting a comparable problem within the relevant project, batch, and time window, suggesting broader disruption or systemic labeling risk. Consider the number affected relative to the known active group when that information is available; do not require an explicit statement of widespread impact",
+            "support": "A QA tutor reports Hangul boxes in LT; a tutor reports boxes on the rating screen; a second tutor reports Korean glyphs disappearing in the preview while Latin text remains visible.",
+            "evidence": [
+              {
+                "kind": "slack_message",
+                "project_id": "multilingual_eval",
+                "batch_id": "multi_batch_11",
+                "scope": "project",
+                "channel_id": "C_MULTI_QA",
+                "thread_id": "1790885224.000166",
+                "message_id": "1790885224.000166",
+                "document_id": null,
+                "version_id": null,
+                "authoring_document_id": null,
+                "authoring_version": null,
+                "section": null,
+                "chunk_id": null,
+                "candidate_group_id": null,
+                "member_id": "member_de85059f17dd8949093893e5",
+                "artifact": null,
+                "artifact_sha256": null,
+                "quote": null,
+                "note": "m:C_MULTI_QA:1790885224.000166"
+              },
+              {
+                "kind": "slack_message",
+                "project_id": "multilingual_eval",
+                "batch_id": "multi_batch_11",
+                "scope": "project",
+                "channel_id": "C_MULTI_GENERAL",
+                "thread_id": "1790927548.000165",
+                "message_id": "1790927548.000165",
+                "document_id": null,
+                "version_id": null,
+                "authoring_document_id": null,
+                "authoring_version": null,
+                "section": null,
+                "chunk_id": null,
+                "candidate_group_id": null,
+                "member_id": "member_ba4581cf60461d619dc34676",
+                "artifact": null,
+                "artifact_sha256": null,
+                "quote": null,
+                "note": "m:C_MULTI_GENERAL:1790927548.000165"
+              },
+              {
+                "kind": "slack_message",
+                "project_id": "multilingual_eval",
+                "batch_id": "multi_batch_11",
+                "scope": "project",
+                "channel_id": "C_MULTI_GENERAL",
+                "thread_id": "1790927548.000165",
+                "message_id": "1790927595.000113",
+                "document_id": null,
+                "version_id": null,
+                "authoring_document_id": null,
+                "authoring_version": null,
+                "section": null,
+                "chunk_id": null,
+                "candidate_group_id": null,
+                "member_id": "member_ba4581cf60461d619dc34676",
+                "artifact": null,
+                "artifact_sha256": null,
+                "quote": null,
+                "note": "m:C_MULTI_GENERAL:1790927595.000113"
+              }
+            ]
+          }
+        ],
+        "evidence": [
+          {
+            "kind": "slack_message",
+            "project_id": "multilingual_eval",
+            "batch_id": "multi_batch_11",
+            "scope": "project",
+            "channel_id": "C_MULTI_QA",
+            "thread_id": "1790885224.000166",
+            "message_id": "1790885224.000166",
+            "document_id": null,
+            "version_id": null,
+            "authoring_document_id": null,
+            "authoring_version": null,
+            "section": null,
+            "chunk_id": null,
+            "candidate_group_id": null,
+            "member_id": "member_de85059f17dd8949093893e5",
+            "artifact": null,
+            "artifact_sha256": null,
+            "quote": null,
+            "note": "m:C_MULTI_QA:1790885224.000166"
+          },
+          {
+            "kind": "slack_message",
+            "project_id": "multilingual_eval",
+            "batch_id": "multi_batch_11",
+            "scope": "project",
+            "channel_id": "C_MULTI_GENERAL",
+            "thread_id": "1790927548.000165",
+            "message_id": "1790927548.000165",
+            "document_id": null,
+            "version_id": null,
+            "authoring_document_id": null,
+            "authoring_version": null,
+            "section": null,
+            "chunk_id": null,
+            "candidate_group_id": null,
+            "member_id": "member_ba4581cf60461d619dc34676",
+            "artifact": null,
+            "artifact_sha256": null,
+            "quote": null,
+            "note": "m:C_MULTI_GENERAL:1790927548.000165"
+          },
+          {
+            "kind": "slack_message",
+            "project_id": "multilingual_eval",
+            "batch_id": "multi_batch_11",
+            "scope": "project",
+            "channel_id": "C_MULTI_GENERAL",
+            "thread_id": "1790927548.000165",
+            "message_id": "1790927595.000113",
+            "document_id": null,
+            "version_id": null,
+            "authoring_document_id": null,
+            "authoring_version": null,
+            "section": null,
+            "chunk_id": null,
+            "candidate_group_id": null,
+            "member_id": "member_ba4581cf60461d619dc34676",
+            "artifact": null,
+            "artifact_sha256": null,
+            "quote": null,
+            "note": "m:C_MULTI_GENERAL:1790927595.000113"
+          }
+        ],
+        "occurrence": {
+          "affected_reporters": {
+            "status": "LOWER_BOUND",
+            "count": 3,
+            "ids": [
+              "U008",
+              "U017",
+              "U013"
+            ],
+            "basis": "Distinct authors whose own cited message reports the problem; other participants are not counted.",
+            "evidence": [
+              {
+                "kind": "slack_message",
+                "project_id": "multilingual_eval",
+                "batch_id": "multi_batch_11",
+                "scope": "project",
+                "channel_id": "C_MULTI_QA",
+                "thread_id": "1790885224.000166",
+                "message_id": "1790885224.000166",
+                "document_id": null,
+                "version_id": null,
+                "authoring_document_id": null,
+                "authoring_version": null,
+                "section": null,
+                "chunk_id": null,
+                "candidate_group_id": null,
+                "member_id": "member_de85059f17dd8949093893e5",
+                "artifact": null,
+                "artifact_sha256": null,
+                "quote": null,
+                "note": "m:C_MULTI_QA:1790885224.000166"
+              },
+              {
+                "kind": "slack_message",
+                "project_id": "multilingual_eval",
+                "batch_id": "multi_batch_11",
+                "scope": "project",
+                "channel_id": "C_MULTI_GENERAL",
+                "thread_id": "1790927548.000165",
+                "message_id": "1790927548.000165",
+                "document_id": null,
+                "version_id": null,
+                "authoring_document_id": null,
+                "authoring_version": null,
+                "section": null,
+                "chunk_id": null,
+                "candidate_group_id": null,
+                "member_id": "member_ba4581cf60461d619dc34676",
+                "artifact": null,
+                "artifact_sha256": null,
+                "quote": null,
+                "note": "m:C_MULTI_GENERAL:1790927548.000165"
+              },
+              {
+                "kind": "slack_message",
+                "project_id": "multilingual_eval",
+                "batch_id": "multi_batch_11",
+                "scope": "project",
+                "channel_id": "C_MULTI_GENERAL",
+                "thread_id": "1790927548.000165",
+                "message_id": "1790927595.000113",
+                "document_id": null,
+                "version_id": null,
+                "authoring_document_id": null,
+                "authoring_version": null,
+                "section": null,
+                "chunk_id": null,
+                "candidate_group_id": null,
+                "member_id": "member_ba4581cf60461d619dc34676",
+                "artifact": null,
+                "artifact_sha256": null,
+                "quote": null,
+                "note": "m:C_MULTI_GENERAL:1790927595.000113"
+              }
+            ]
+          },
+          "affected_tasks": {
+            "status": "UNKNOWN",
+            "count": null,
+            "ids": [],
+            "basis": null,
+            "evidence": []
+          },
+          "relevant_threads": [
+            {
+              "project_id": "multilingual_eval",
+              "batch_id": "multi_batch_11",
+              "channel_id": "C_MULTI_QA",
+              "thread_id": "1790885224.000166",
+              "member_id": "member_de85059f17dd8949093893e5"
+            },
+            {
+              "project_id": "multilingual_eval",
+              "batch_id": "multi_batch_11",
+              "channel_id": "C_MULTI_GENERAL",
+              "thread_id": "1790927548.000165",
+              "member_id": "member_ba4581cf60461d619dc34676"
+            }
+          ],
+          "reporting_window": {
+            "start": "2026-10-01T20:07:04.000166+00:00",
+            "end": "2026-10-02T07:54:44.000339+00:00"
+          },
+          "historical_recurrence": {
+            "status": "NOT_CHECKED",
+            "sources": [],
+            "event_series_ids": []
+          },
+          "known_denominator": null,
+          "structural": {
+            "threads": 2,
+            "messages": 5,
+            "distinct_participants": 5,
+            "duplicate_threads_ignored": 0,
+            "duplicate_messages_ignored": 0,
+            "computed_from": "topic member threads (original Slack messages)",
+            "participants_are_not_affected_reporters": true
+          },
+          "semantic_identification": "ASSESSED"
+        },
+        "inherited_from": {
+          "level": "UNKNOWN",
+          "assessment_status": "UNASSESSED",
+          "assessment_deferred_to": "AGENT3",
+          "reason": "Agent 2 performs taxonomy only."
+        }
+      },
+      "issues": [],
+      "notes": [],
+      "proposal": {
+        "level": "HIGH",
+        "rationale": "A QA tutor and two tutors report comparable Korean-text display failures within the same batch and time window, suggesting broader disruption to evaluating that text.",
+        "signals": [
+          {
+            "level": "HIGH",
+            "signal_index": 3,
+            "signal_text": "Multiple distinct people or affected tasks reporting a comparable problem within the relevant project, batch, and time window, suggesting broader disruption or systemic labeling risk. Consider the number affected relative to the known active group when that information is available; do not require an explicit statement of widespread impact",
+            "support": "A QA tutor reports Hangul boxes in LT; a tutor reports boxes on the rating screen; a second tutor reports Korean glyphs disappearing in the preview while Latin text remains visible.",
+            "evidence_ids": [
+              "m:C_MULTI_QA:1790885224.000166",
+              "m:C_MULTI_GENERAL:1790927548.000165",
+              "m:C_MULTI_GENERAL:1790927595.000113"
+            ]
+          }
+        ],
+        "affected_reporters": [
+          {
+            "author_id": "U008",
+            "evidence_id": "m:C_MULTI_QA:1790885224.000166"
+          },
+          {
+            "author_id": "U017",
+            "evidence_id": "m:C_MULTI_GENERAL:1790927548.000165"
+          },
+          {
+            "author_id": "U013",
+            "evidence_id": "m:C_MULTI_GENERAL:1790927595.000113"
+          }
+        ],
+        "recurrence": "NOT_CHECKED",
+        "recurrence_evidence_ids": [],
+        "reported_recurrence_evidence_ids": []
+      }
+    },
+    "resolution": {
+      "topic": "MIXED",
+      "members": {
+        "member_de85059f17dd8949093893e5": "UNRESOLVED",
+        "member_ba4581cf60461d619dc34676": "PARTIALLY_RESOLVED"
+      },
+      "agent1_attributed": [
+        {
+          "member_id": "member_de85059f17dd8949093893e5",
+          "state": "UNRESOLVED",
+          "agent1_verification_status": "CORRECTED",
+          "agent1_review_required": false
+        },
+        {
+          "member_id": "member_ba4581cf60461d619dc34676",
+          "state": "PARTIALLY_RESOLVED",
+          "agent1_verification_status": "CORRECTED",
+          "agent1_review_required": false
+        }
+      ]
+    },
+    "established_handling": [],
+    "coverage_issues": [],
+    "action_source": "DRAFT",
+    "action_notes": [],
+    "tot": {
+      "status": "NOT_TRIGGERED",
+      "triggers": [],
+      "choice_after_grounding": {
+        "status": "NOT_COMPARED",
+        "viable": []
+      }
+    },
+    "evidence_ledger": {
+      "m:C_MULTI_QA:1790885224.000166": {
+        "evidence_id": "m:C_MULTI_QA:1790885224.000166",
+        "origin": "member_message",
+        "use": "MEMBER_REPORT",
+        "member_id": "member_de85059f17dd8949093893e5",
+        "channel_id": "C_MULTI_QA",
+        "thread_id": "1790885224.000166",
+        "message_id": "1790885224.000166",
+        "author_id": "U008",
+        "author_name": "Hana",
+        "author_role": "QA_TUTOR",
+        "timestamp": "2026-10-01T20:07:04.000166Z",
+        "thread_starter_id": "U008",
+        "thread_starter_role": "QA_TUTOR",
+        "reactions": [],
+        "excerpt": "Hangul appears as boxes in LT."
+      },
+      "m:C_MULTI_GENERAL:1790927548.000165": {
+        "evidence_id": "m:C_MULTI_GENERAL:1790927548.000165",
+        "origin": "member_message",
+        "use": "MEMBER_REPORT",
+        "member_id": "member_ba4581cf60461d619dc34676",
+        "channel_id": "C_MULTI_GENERAL",
+        "thread_id": "1790927548.000165",
+        "message_id": "1790927548.000165",
+        "author_id": "U017",
+        "author_name": "Bea",
+        "author_role": "TUTOR",
+        "timestamp": "2026-10-02T07:52:28.000165Z",
+        "thread_starter_id": "U017",
+        "thread_starter_role": "TUTOR",
+        "reactions": [],
+        "excerpt": "Anyone else seeing this? Hangul in LT renders as □□□ on the rating screen. (task ref MULTI-7548)"
+      },
+      "m:C_MULTI_GENERAL:1790927595.000113": {
+        "evidence_id": "m:C_MULTI_GENERAL:1790927595.000113",
+        "origin": "member_message",
+        "use": "MEMBER_REPORT",
+        "member_id": "member_ba4581cf60461d619dc34676",
+        "channel_id": "C_MULTI_GENERAL",
+        "thread_id": "1790927548.000165",
+        "message_id": "1790927595.000113",
+        "author_id": "U013",
+        "author_name": "Jun",
+        "author_role": "TUTOR",
+        "timestamp": "2026-10-02T07:53:15.000113Z",
+        "thread_starter_id": "U017",
+        "thread_starter_role": "TUTOR",
+        "reactions": [],
+        "excerpt": "Korean glyphs vanish in the preview while Latin text is visible."
+      },
+      "m:C_MULTI_GENERAL:1790927640.000226": {
+        "evidence_id": "m:C_MULTI_GENERAL:1790927640.000226",
+        "origin": "member_message",
+        "use": "MEMBER_REPORT",
+        "member_id": "member_ba4581cf60461d619dc34676",
+        "channel_id": "C_MULTI_GENERAL",
+        "thread_id": "1790927548.000165",
+        "message_id": "1790927640.000226",
+        "author_id": "U019",
+        "author_name": "Yuki",
+        "author_role": "QA_TUTOR",
+        "timestamp": "2026-10-02T07:54:00.000226Z",
+        "thread_starter_id": "U017",
+        "thread_starter_role": "TUTOR",
+        "reactions": [],
+        "excerpt": "Does the original text display correctly outside the labeling tool?"
+      },
+      "m:C_MULTI_GENERAL:1790927684.000339": {
+        "evidence_id": "m:C_MULTI_GENERAL:1790927684.000339",
+        "origin": "member_message",
+        "use": "MEMBER_REPORT",
+        "member_id": "member_ba4581cf60461d619dc34676",
+        "channel_id": "C_MULTI_GENERAL",
+        "thread_id": "1790927548.000165",
+        "message_id": "1790927684.000339",
+        "author_id": "U001",
+        "author_name": "Alex",
+        "author_role": "TEAM_LEAD",
+        "timestamp": "2026-10-02T07:54:44.000339Z",
+        "thread_starter_id": "U017",
+        "thread_starter_role": "TUTOR",
+        "reactions": [],
+        "excerpt": "If the original text renders outside LT but not inside it, treat this item as a tool-rendering incident, not a language-quality mistake."
+      },
+      "k:multilingual-eval-faq@1.1:e2ea02bf": {
+        "evidence_id": "k:multilingual-eval-faq@1.1:e2ea02bf",
+        "origin": "retrieved_source",
+        "use": "CURRENT_GUIDANCE",
+        "citation": {
+          "document_id": "knowledge_c15570cbd012ed59f27eb87df90bd765cd62588d1360da180a3d953eac280c4c",
+          "version_id": "version_7e0db046267f7e994c89672132b74a58c12aa6b67a66736fe2f2979f669fe4cb",
+          "chunk_id": "chunk_e2ea02bf0d3b7a9238c93ebbb869490a",
+          "authoring": "multilingual-eval-faq@1.1",
+          "title": "Multilingual Evaluation — FAQ (v1.1)",
+          "sections": [
+            "Tool issues"
+          ],
+          "source": {
+            "batch_id": null,
+            "channel_id": null,
+            "manual_key": "multilingual-eval-faq",
+            "message_id": null,
+            "permalink": null,
+            "project_id": "multilingual_eval",
+            "reference": null,
+            "system": "manual",
+            "thread_id": null,
+            "workspace_id": null
+          }
+        },
+        "source_type": "faq",
+        "record_kind": "faq",
+        "applicability": {
+          "state": "CURRENT",
+          "revision_state": "CURRENT",
+          "version_mode": "current",
+          "replaced_by": [],
+          "unverified_supersession": [],
+          "supersedes": [],
+          "enactment": null,
+          "other_revisions": []
+        },
+        "dates": {
+          "source_date": "2026-09-18T13:00:00Z",
+          "basis": "effective_at",
+          "effective_at": "2026-09-18T13:00:00Z",
+          "created_at": null,
+          "valid_until": null,
+          "expired_as_of": false,
+          "reference_time": "2026-10-02T12:00:00Z"
+        },
+        "scope": {
+          "project_id": "multilingual_eval",
+          "batch_id": null,
+          "scope": "project",
+          "batch_relation": "project_wide"
+        },
+        "authority": {
+          "role": "TEAM_LEAD",
+          "actor": "U001",
+          "actor_relation": "RECORD_AUTHORITY",
+          "approval_status": "EXPLICIT_SOURCE_MARKER",
+          "provenance": "synthetic_manual_record"
+        },
+        "authorship": {
+          "author_id": null,
+          "verified": false,
+          "basis": "NO_AUTHOR_RECORDED"
+        },
+        "recorded_states": {
+          "status": "approved",
+          "decision_status": null,
+          "execution_status": null,
+          "outcome_status": null
+        },
+        "upstream_review": null,
+        "excerpt": "## Tool issues\n\n### Q: Characters or tone marks appear as boxes or become unreadable in LT.\nReport a tool-rendering incident and check the text outside LT where possible. Until that comparison is available, do not claim the underlying response itself has corrupted characters."
+      },
+      "k:multilingual-eval-faq@1.1:8508b653": {
+        "evidence_id": "k:multilingual-eval-faq@1.1:8508b653",
+        "origin": "retrieved_source",
+        "use": "CURRENT_GUIDANCE",
+        "citation": {
+          "document_id": "knowledge_c15570cbd012ed59f27eb87df90bd765cd62588d1360da180a3d953eac280c4c",
+          "version_id": "version_7e0db046267f7e994c89672132b74a58c12aa6b67a66736fe2f2979f669fe4cb",
+          "chunk_id": "chunk_8508b65347c071c4fb6d8130e6e04348",
+          "authoring": "multilingual-eval-faq@1.1",
+          "title": "Multilingual Evaluation — FAQ (v1.1)",
+          "sections": [
+            "Language adherence"
+          ],
+          "source": {
+            "batch_id": null,
+            "channel_id": null,
+            "manual_key": "multilingual-eval-faq",
+            "message_id": null,
+            "permalink": null,
+            "project_id": "multilingual_eval",
+            "reference": null,
+            "system": "manual",
+            "thread_id": null,
+            "workspace_id": null
+          }
+        },
+        "source_type": "faq",
+        "record_kind": "faq",
+        "applicability": {
+          "state": "CURRENT",
+          "revision_state": "CURRENT",
+          "version_mode": "current",
+          "replaced_by": [],
+          "unverified_supersession": [],
+          "supersedes": [],
+          "enactment": null,
+          "other_revisions": []
+        },
+        "dates": {
+          "source_date": "2026-09-18T13:00:00Z",
+          "basis": "effective_at",
+          "effective_at": "2026-09-18T13:00:00Z",
+          "created_at": null,
+          "valid_until": null,
+          "expired_as_of": false,
+          "reference_time": "2026-10-02T12:00:00Z"
+        },
+        "scope": {
+          "project_id": "multilingual_eval",
+          "batch_id": null,
+          "scope": "project",
+          "batch_relation": "project_wide"
+        },
+        "authority": {
+          "role": "TEAM_LEAD",
+          "actor": "U001",
+          "actor_relation": "RECORD_AUTHORITY",
+          "approval_status": "EXPLICIT_SOURCE_MARKER",
+          "provenance": "synthetic_manual_record"
+        },
+        "authorship": {
+          "author_id": null,
+          "verified": false,
+          "basis": "NO_AUTHOR_RECORDED"
+        },
+        "recorded_states": {
+          "status": "approved",
+          "decision_status": null,
+          "execution_status": null,
+          "outcome_status": null
+        },
+        "upstream_review": null,
+        "excerpt": "## Language adherence\n\n### Q: Does a single English word in a Korean or Japanese answer count as code-switching?\nNot automatically. Ordinary loanwords are acceptable. Assess the word in context and against the required output language; an unrequested full paragraph in another language is a different issue.\n\n### Q: The user code-switched. Should the response mirror it?\nCheck the explicit output-language requirement and context. User code-switching alone does not settle the score."
+      },
+      "k:multilingual-eval-instructions@1.2:ea925467": {
+        "evidence_id": "k:multilingual-eval-instructions@1.2:ea925467",
+        "origin": "retrieved_source",
+        "use": "CURRENT_GUIDANCE",
+        "citation": {
+          "document_id": "knowledge_39fa9c105417f58fd94be8aad733afc43c68c751e575216a2095e758e7a711ee",
+          "version_id": "version_04697b30fef1fe24b853568a67e7ddb0f1f2906712be246671e21b75945aa005",
+          "chunk_id": "chunk_ea925467d5db68de6c792e4b16c21f5a",
+          "authoring": "multilingual-eval-instructions@1.2",
+          "title": "Multilingual Evaluation — Instructions (v1.2)",
+          "sections": [
+            "Tool incidents and submission"
+          ],
+          "source": {
+            "batch_id": null,
+            "channel_id": null,
+            "manual_key": "multilingual-eval-instructions",
+            "message_id": null,
+            "permalink": null,
+            "project_id": "multilingual_eval",
+            "reference": null,
+            "system": "manual",
+            "thread_id": null,
+            "workspace_id": null
+          }
+        },
+        "source_type": "guideline",
+        "record_kind": "guideline",
+        "applicability": {
+          "state": "CURRENT",
+          "revision_state": "CURRENT",
+          "version_mode": "current",
+          "replaced_by": [],
+          "unverified_supersession": [],
+          "supersedes": [],
+          "enactment": null,
+          "other_revisions": []
+        },
+        "dates": {
+          "source_date": "2026-09-10T13:00:00Z",
+          "basis": "effective_at",
+          "effective_at": "2026-09-10T13:00:00Z",
+          "created_at": null,
+          "valid_until": null,
+          "expired_as_of": false,
+          "reference_time": "2026-10-02T12:00:00Z"
+        },
+        "scope": {
+          "project_id": "multilingual_eval",
+          "batch_id": null,
+          "scope": "project",
+          "batch_relation": "project_wide"
+        },
+        "authority": {
+          "role": "TEAM_LEAD",
+          "actor": "U001",
+          "actor_relation": "RECORD_AUTHORITY",
+          "approval_status": "EXPLICIT_SOURCE_MARKER",
+          "provenance": "synthetic_manual_record"
+        },
+        "authorship": {
+          "author_id": null,
+          "verified": false,
+          "basis": "NO_AUTHOR_RECORDED"
+        },
+        "recorded_states": {
+          "status": "approved",
+          "decision_status": null,
+          "execution_status": null,
+          "outcome_status": null
+        },
+        "upstream_review": null,
+        "excerpt": "## Tool incidents and submission\nBoxes, missing diacritics or broken characters in LT are tool-rendering incidents until the source text is checked. Compare outside the tool where possible. If unavailable, record the limitation rather than asserting that the model produced corrupt text.\n\nCapture task IDs for rendering or submission failures. Treat tool impact under the operational incident rubric, separately from language-quality grades. A saved rating is not proof of a completed submission."
+      },
+      "k:slack:C_MULTI_ANNOUNCEMENTS:1790862733.000190:8a8518aa": {
+        "evidence_id": "k:slack:C_MULTI_ANNOUNCEMENTS:1790862733.000190:8a8518aa",
+        "origin": "retrieved_source",
+        "use": "ANNOUNCEMENT",
+        "citation": {
+          "document_id": "knowledge_5671416296bb83925ddf4da2c9e736d092baab51e8c1fb156f5784c160a978dc",
+          "version_id": "version_f61944491802877f9b6454eec822f4a268b8ec33d5677a9e1a10921efc22b893",
+          "chunk_id": "chunk_8a8518aa8b06528097f7d42feb96f4ba",
+          "authoring": null,
+          "title": "Slack announcement in multilingual-eval-announcements at 2026-10-01T13:52:13.000190+00:00",
+          "sections": [],
+          "source": {
+            "batch_id": "multi_batch_11",
+            "channel_id": "C_MULTI_ANNOUNCEMENTS",
+            "manual_key": null,
+            "message_id": "1790862733.000190",
+            "permalink": null,
+            "project_id": "multilingual_eval",
+            "reference": null,
+            "system": "slack",
+            "thread_id": "1790862733.000190",
+            "workspace_id": null
+          }
+        },
+        "source_type": "announcement",
+        "record_kind": "announcement",
+        "applicability": {
+          "state": "CURRENT",
+          "revision_state": "CURRENT",
+          "version_mode": "current",
+          "replaced_by": [],
+          "unverified_supersession": [],
+          "supersedes": [],
+          "enactment": null,
+          "other_revisions": []
+        },
+        "dates": {
+          "source_date": "2026-10-01T13:52:13.000190+00:00",
+          "basis": "created_at",
+          "effective_at": null,
+          "created_at": "2026-10-01T13:52:13.000190+00:00",
+          "valid_until": null,
+          "expired_as_of": false,
+          "reference_time": "2026-10-02T12:00:00Z"
+        },
+        "scope": {
+          "project_id": "multilingual_eval",
+          "batch_id": "multi_batch_11",
+          "scope": "project",
+          "batch_relation": "same_batch"
+        },
+        "authority": {
+          "role": "TEAM_LEAD",
+          "actor": "U001",
+          "actor_relation": "MESSAGE_AUTHOR",
+          "approval_status": "UNKNOWN",
+          "provenance": null
+        },
+        "authorship": {
+          "author_id": "U001",
+          "verified": true,
+          "basis": "SLACK_MESSAGE_AUTHOR"
+        },
+        "recorded_states": {
+          "status": null,
+          "decision_status": null,
+          "execution_status": null,
+          "outcome_status": null
+        },
+        "upstream_review": null,
+        "excerpt": "[ANNOUNCEMENT posted 2026-10-01T13:52:13.000190+00:00 by TEAM_LEAD (multi_batch_11): not established as handling for this topic until you show it is relevant and gives a directive.]\nMultilingual queue will reopen after the routine deployment window.\n\nContext reply [1790862788.000113] by U017 (TUTOR):\nThanks for the heads-up about the reopen window."
+      },
+      "k:multilingual-eval-instructions@1.2:818f7ccb": {
+        "evidence_id": "k:multilingual-eval-instructions@1.2:818f7ccb",
+        "origin": "retrieved_source",
+        "use": "CURRENT_GUIDANCE",
+        "citation": {
+          "document_id": "knowledge_39fa9c105417f58fd94be8aad733afc43c68c751e575216a2095e758e7a711ee",
+          "version_id": "version_04697b30fef1fe24b853568a67e7ddb0f1f2906712be246671e21b75945aa005",
+          "chunk_id": "chunk_818f7ccb2ccb5e3564d359a7a41205a4",
+          "authoring": "multilingual-eval-instructions@1.2",
+          "title": "Multilingual Evaluation — Instructions (v1.2)",
+          "sections": [
+            "Project purpose"
+          ],
+          "source": {
+            "batch_id": null,
+            "channel_id": null,
+            "manual_key": "multilingual-eval-instructions",
+            "message_id": null,
+            "permalink": null,
+            "project_id": "multilingual_eval",
+            "reference": null,
+            "system": "manual",
+            "thread_id": null,
+            "workspace_id": null
+          }
+        },
+        "source_type": "guideline",
+        "record_kind": "guideline",
+        "applicability": {
+          "state": "CURRENT",
+          "revision_state": "CURRENT",
+          "version_mode": "current",
+          "replaced_by": [],
+          "unverified_supersession": [],
+          "supersedes": [],
+          "enactment": null,
+          "other_revisions": []
+        },
+        "dates": {
+          "source_date": "2026-09-10T13:00:00Z",
+          "basis": "effective_at",
+          "effective_at": "2026-09-10T13:00:00Z",
+          "created_at": null,
+          "valid_until": null,
+          "expired_as_of": false,
+          "reference_time": "2026-10-02T12:00:00Z"
+        },
+        "scope": {
+          "project_id": "multilingual_eval",
+          "batch_id": null,
+          "scope": "project",
+          "batch_relation": "project_wide"
+        },
+        "authority": {
+          "role": "TEAM_LEAD",
+          "actor": "U001",
+          "actor_relation": "RECORD_AUTHORITY",
+          "approval_status": "EXPLICIT_SOURCE_MARKER",
+          "provenance": "synthetic_manual_record"
+        },
+        "authorship": {
+          "author_id": null,
+          "verified": false,
+          "basis": "NO_AUTHOR_RECORDED"
+        },
+        "recorded_states": {
+          "status": "approved",
+          "decision_status": null,
+          "execution_status": null,
+          "outcome_status": null
+        },
+        "upstream_review": null,
+        "excerpt": "## Project purpose\nEvaluate language adherence, register consistency, naturalness and regional appropriateness against the intended audience. Distinguish linguistic defects from tool rendering failures."
+      }
+    },
+    "card": {
+      "contract_version": "agent3-advice-card-v4",
+      "record_type": "ADVICE_CARD",
+      "card_id": "card_9d1d736070930dd4726df4bc54041799",
+      "project_id": "multilingual_eval",
+      "topic_name": "LT Hangul rendering issue",
+      "card_line": "NEEDS_REVIEW",
+      "summary": "A QA tutor and two tutors report Hangul displaying as boxes or disappearing in LT. Current guidance calls for reporting a tool-rendering incident and checking the text outside LT where possible, rather than assuming the underlying response contains corrupted characters.",
+      "severity": {
+        "level": "HIGH",
+        "assessment_status": "ASSESSED",
+        "rubric_version": "severity-rubric-v3-semantic-signals",
+        "rubric_content_sha256": "eccaa31a2ab84a0aa7c005216a92fc39681e1dd10107117344948235a76673f4",
+        "rubric_project_id": null,
+        "rubric_scope": "SHARED_DEFAULT",
+        "rationale": "A QA tutor and two tutors report comparable Korean-text display failures within the same batch and time window, suggesting broader disruption to evaluating that text.",
+        "matched_signals": [
+          {
+            "level": "HIGH",
+            "signal_index": 3,
+            "signal_text": "Multiple distinct people or affected tasks reporting a comparable problem within the relevant project, batch, and time window, suggesting broader disruption or systemic labeling risk. Consider the number affected relative to the known active group when that information is available; do not require an explicit statement of widespread impact",
+            "support": "A QA tutor reports Hangul boxes in LT; a tutor reports boxes on the rating screen; a second tutor reports Korean glyphs disappearing in the preview while Latin text remains visible.",
+            "evidence": [
+              {
+                "kind": "slack_message",
+                "project_id": "multilingual_eval",
+                "batch_id": "multi_batch_11",
+                "scope": "project",
+                "channel_id": "C_MULTI_QA",
+                "thread_id": "1790885224.000166",
+                "message_id": "1790885224.000166",
+                "document_id": null,
+                "version_id": null,
+                "authoring_document_id": null,
+                "authoring_version": null,
+                "section": null,
+                "chunk_id": null,
+                "candidate_group_id": null,
+                "member_id": "member_de85059f17dd8949093893e5",
+                "artifact": null,
+                "artifact_sha256": null,
+                "quote": null,
+                "note": "m:C_MULTI_QA:1790885224.000166"
+              },
+              {
+                "kind": "slack_message",
+                "project_id": "multilingual_eval",
+                "batch_id": "multi_batch_11",
+                "scope": "project",
+                "channel_id": "C_MULTI_GENERAL",
+                "thread_id": "1790927548.000165",
+                "message_id": "1790927548.000165",
+                "document_id": null,
+                "version_id": null,
+                "authoring_document_id": null,
+                "authoring_version": null,
+                "section": null,
+                "chunk_id": null,
+                "candidate_group_id": null,
+                "member_id": "member_ba4581cf60461d619dc34676",
+                "artifact": null,
+                "artifact_sha256": null,
+                "quote": null,
+                "note": "m:C_MULTI_GENERAL:1790927548.000165"
+              },
+              {
+                "kind": "slack_message",
+                "project_id": "multilingual_eval",
+                "batch_id": "multi_batch_11",
+                "scope": "project",
+                "channel_id": "C_MULTI_GENERAL",
+                "thread_id": "1790927548.000165",
+                "message_id": "1790927595.000113",
+                "document_id": null,
+                "version_id": null,
+                "authoring_document_id": null,
+                "authoring_version": null,
+                "section": null,
+                "chunk_id": null,
+                "candidate_group_id": null,
+                "member_id": "member_ba4581cf60461d619dc34676",
+                "artifact": null,
+                "artifact_sha256": null,
+                "quote": null,
+                "note": "m:C_MULTI_GENERAL:1790927595.000113"
+              }
+            ]
+          }
+        ],
+        "evidence": [
+          {
+            "kind": "slack_message",
+            "project_id": "multilingual_eval",
+            "batch_id": "multi_batch_11",
+            "scope": "project",
+            "channel_id": "C_MULTI_QA",
+            "thread_id": "1790885224.000166",
+            "message_id": "1790885224.000166",
+            "document_id": null,
+            "version_id": null,
+            "authoring_document_id": null,
+            "authoring_version": null,
+            "section": null,
+            "chunk_id": null,
+            "candidate_group_id": null,
+            "member_id": "member_de85059f17dd8949093893e5",
+            "artifact": null,
+            "artifact_sha256": null,
+            "quote": null,
+            "note": "m:C_MULTI_QA:1790885224.000166"
+          },
+          {
+            "kind": "slack_message",
+            "project_id": "multilingual_eval",
+            "batch_id": "multi_batch_11",
+            "scope": "project",
+            "channel_id": "C_MULTI_GENERAL",
+            "thread_id": "1790927548.000165",
+            "message_id": "1790927548.000165",
+            "document_id": null,
+            "version_id": null,
+            "authoring_document_id": null,
+            "authoring_version": null,
+            "section": null,
+            "chunk_id": null,
+            "candidate_group_id": null,
+            "member_id": "member_ba4581cf60461d619dc34676",
+            "artifact": null,
+            "artifact_sha256": null,
+            "quote": null,
+            "note": "m:C_MULTI_GENERAL:1790927548.000165"
+          },
+          {
+            "kind": "slack_message",
+            "project_id": "multilingual_eval",
+            "batch_id": "multi_batch_11",
+            "scope": "project",
+            "channel_id": "C_MULTI_GENERAL",
+            "thread_id": "1790927548.000165",
+            "message_id": "1790927595.000113",
+            "document_id": null,
+            "version_id": null,
+            "authoring_document_id": null,
+            "authoring_version": null,
+            "section": null,
+            "chunk_id": null,
+            "candidate_group_id": null,
+            "member_id": "member_ba4581cf60461d619dc34676",
+            "artifact": null,
+            "artifact_sha256": null,
+            "quote": null,
+            "note": "m:C_MULTI_GENERAL:1790927595.000113"
+          }
+        ],
+        "occurrence": {
+          "affected_reporters": {
+            "status": "LOWER_BOUND",
+            "count": 3,
+            "ids": [
+              "U008",
+              "U017",
+              "U013"
+            ],
+            "basis": "Distinct authors whose own cited message reports the problem; other participants are not counted.",
+            "evidence": [
+              {
+                "kind": "slack_message",
+                "project_id": "multilingual_eval",
+                "batch_id": "multi_batch_11",
+                "scope": "project",
+                "channel_id": "C_MULTI_QA",
+                "thread_id": "1790885224.000166",
+                "message_id": "1790885224.000166",
+                "document_id": null,
+                "version_id": null,
+                "authoring_document_id": null,
+                "authoring_version": null,
+                "section": null,
+                "chunk_id": null,
+                "candidate_group_id": null,
+                "member_id": "member_de85059f17dd8949093893e5",
+                "artifact": null,
+                "artifact_sha256": null,
+                "quote": null,
+                "note": "m:C_MULTI_QA:1790885224.000166"
+              },
+              {
+                "kind": "slack_message",
+                "project_id": "multilingual_eval",
+                "batch_id": "multi_batch_11",
+                "scope": "project",
+                "channel_id": "C_MULTI_GENERAL",
+                "thread_id": "1790927548.000165",
+                "message_id": "1790927548.000165",
+                "document_id": null,
+                "version_id": null,
+                "authoring_document_id": null,
+                "authoring_version": null,
+                "section": null,
+                "chunk_id": null,
+                "candidate_group_id": null,
+                "member_id": "member_ba4581cf60461d619dc34676",
+                "artifact": null,
+                "artifact_sha256": null,
+                "quote": null,
+                "note": "m:C_MULTI_GENERAL:1790927548.000165"
+              },
+              {
+                "kind": "slack_message",
+                "project_id": "multilingual_eval",
+                "batch_id": "multi_batch_11",
+                "scope": "project",
+                "channel_id": "C_MULTI_GENERAL",
+                "thread_id": "1790927548.000165",
+                "message_id": "1790927595.000113",
+                "document_id": null,
+                "version_id": null,
+                "authoring_document_id": null,
+                "authoring_version": null,
+                "section": null,
+                "chunk_id": null,
+                "candidate_group_id": null,
+                "member_id": "member_ba4581cf60461d619dc34676",
+                "artifact": null,
+                "artifact_sha256": null,
+                "quote": null,
+                "note": "m:C_MULTI_GENERAL:1790927595.000113"
+              }
+            ]
+          },
+          "affected_tasks": {
+            "status": "UNKNOWN",
+            "count": null,
+            "ids": [],
+            "basis": null,
+            "evidence": []
+          },
+          "relevant_threads": [
+            {
+              "project_id": "multilingual_eval",
+              "batch_id": "multi_batch_11",
+              "channel_id": "C_MULTI_QA",
+              "thread_id": "1790885224.000166",
+              "member_id": "member_de85059f17dd8949093893e5"
+            },
+            {
+              "project_id": "multilingual_eval",
+              "batch_id": "multi_batch_11",
+              "channel_id": "C_MULTI_GENERAL",
+              "thread_id": "1790927548.000165",
+              "member_id": "member_ba4581cf60461d619dc34676"
+            }
+          ],
+          "reporting_window": {
+            "start": "2026-10-01T20:07:04.000166+00:00",
+            "end": "2026-10-02T07:54:44.000339+00:00"
+          },
+          "historical_recurrence": {
+            "status": "NOT_CHECKED",
+            "sources": [],
+            "event_series_ids": []
+          },
+          "known_denominator": null,
+          "structural": {
+            "threads": 2,
+            "messages": 5,
+            "distinct_participants": 5,
+            "duplicate_threads_ignored": 0,
+            "duplicate_messages_ignored": 0,
+            "computed_from": "topic member threads (original Slack messages)",
+            "participants_are_not_affected_reporters": true
+          },
+          "semantic_identification": "ASSESSED"
+        },
+        "inherited_from": {
+          "level": "UNKNOWN",
+          "assessment_status": "UNASSESSED",
+          "assessment_deferred_to": "AGENT3",
+          "reason": "Agent 2 performs taxonomy only."
+        }
+      },
+      "severity_is_provisional": false,
+      "resolution_status": "MIXED",
+      "recommended_action": {
+        "action_type": "ESCALATE_ENGINEERING",
+        "draft_text": "Engineering: please investigate these Hangul display reports in LT.\n- A QA tutor and a tutor report Hangul appearing as boxes; the tutor identifies MULTI-7548 on the rating screen.\n- A second tutor reports Korean glyphs disappearing in the preview while Latin text remains visible.\nAffected reporters: please provide task IDs and compare the original text outside LT where possible. If comparison is unavailable, record that limitation. Treat these as tool-rendering incidents pending source-text checks, separately from language-quality grades; do not assume the underlying response contains corrupted characters.",
+        "scope_note": "Report the observed display symptoms without asserting a technical cause or treating the thread-specific instruction as project-wide guidance.",
+        "label": "Report a technical issue to engineering",
+        "instruction": "Report the Hangul display failures to engineering, grouping the reported symptoms and including MULTI-7548 as the available task reference.",
+        "rationale": "Comparable display failures across three reporters warrant engineering investigation. Current guidance directs incident reporting without waiting for a confirmed cause or completed source-text comparison.",
+        "targets": [],
+        "essential_premise_ids": [
+          "claim:c1",
+          "claim:c2",
+          "claim:c3",
+          "claim:c6",
+          "claim:c7"
+        ],
+        "source": "DRAFT"
+      },
+      "reasoning": "What the evidence shows: A QA tutor reports that Hangul appears as boxes in LT. A tutor reports Hangul rendering as boxes on the LT rating screen for MULTI-7548 and asks whether others see it. A tutor reports Korean glyphs vanishing in the preview while Latin text is visible. A QA tutor asks in the MULTI-7548 thread whether the original text displays correctly outside the labeling tool. The team lead instructs the MULTI-7548 thread to treat the item as a tool-rendering incident rather than a language-quality mistake if the original text renders outside LT but not inside it. The current FAQ directs reporting a tool-rendering incident when characters appear as boxes or become unreadable in LT, checking the text outside LT where possible, and not claiming the underlying response has corrupted characters before that comparison is available. The current instructions treat boxes or broken characters in LT as tool-rendering incidents until the source text is checked, require capturing task IDs, and direct recording any inability to compare outside LT rather than asserting corrupt model text; operational impact is assessed separately from language-quality grades. The provided MULTI-7548 thread messages do not contain an outside-LT comparison result. Thread status, read from each thread's own messages: partially resolved ×1, unresolved ×1. Agent 1's earlier labels (an input, not evidence): partially resolved ×1, unresolved ×1.",
+      "supporting_sources": [
+        {
+          "kind": "knowledge_source",
+          "project_id": "multilingual_eval",
+          "batch_id": null,
+          "scope": "project",
+          "channel_id": null,
+          "thread_id": null,
+          "message_id": null,
+          "document_id": "knowledge_c15570cbd012ed59f27eb87df90bd765cd62588d1360da180a3d953eac280c4c",
+          "version_id": "version_7e0db046267f7e994c89672132b74a58c12aa6b67a66736fe2f2979f669fe4cb",
+          "authoring_document_id": "multilingual-eval-faq",
+          "authoring_version": "1.1",
+          "section": "Tool issues",
+          "chunk_id": "chunk_e2ea02bf0d3b7a9238c93ebbb869490a",
+          "candidate_group_id": null,
+          "member_id": null,
+          "artifact": null,
+          "artifact_sha256": null,
+          "quote": null,
+          "note": "k:multilingual-eval-faq@1.1:e2ea02bf (CURRENT_GUIDANCE; CURRENT)"
+        },
+        {
+          "kind": "knowledge_source",
+          "project_id": "multilingual_eval",
+          "batch_id": null,
+          "scope": "project",
+          "channel_id": null,
+          "thread_id": null,
+          "message_id": null,
+          "document_id": "knowledge_39fa9c105417f58fd94be8aad733afc43c68c751e575216a2095e758e7a711ee",
+          "version_id": "version_04697b30fef1fe24b853568a67e7ddb0f1f2906712be246671e21b75945aa005",
+          "authoring_document_id": "multilingual-eval-instructions",
+          "authoring_version": "1.2",
+          "section": "Tool incidents and submission",
+          "chunk_id": "chunk_ea925467d5db68de6c792e4b16c21f5a",
+          "candidate_group_id": null,
+          "member_id": null,
+          "artifact": null,
+          "artifact_sha256": null,
+          "quote": null,
+          "note": "k:multilingual-eval-instructions@1.2:ea925467 (CURRENT_GUIDANCE; CURRENT)"
+        },
+        {
+          "kind": "slack_message",
+          "project_id": "multilingual_eval",
+          "batch_id": "multi_batch_11",
+          "scope": "project",
+          "channel_id": "C_MULTI_QA",
+          "thread_id": "1790885224.000166",
+          "message_id": "1790885224.000166",
+          "document_id": null,
+          "version_id": null,
+          "authoring_document_id": null,
+          "authoring_version": null,
+          "section": null,
+          "chunk_id": null,
+          "candidate_group_id": null,
+          "member_id": "member_de85059f17dd8949093893e5",
+          "artifact": null,
+          "artifact_sha256": null,
+          "quote": null,
+          "note": "m:C_MULTI_QA:1790885224.000166"
+        },
+        {
+          "kind": "slack_message",
+          "project_id": "multilingual_eval",
+          "batch_id": "multi_batch_11",
+          "scope": "project",
+          "channel_id": "C_MULTI_GENERAL",
+          "thread_id": "1790927548.000165",
+          "message_id": "1790927548.000165",
+          "document_id": null,
+          "version_id": null,
+          "authoring_document_id": null,
+          "authoring_version": null,
+          "section": null,
+          "chunk_id": null,
+          "candidate_group_id": null,
+          "member_id": "member_ba4581cf60461d619dc34676",
+          "artifact": null,
+          "artifact_sha256": null,
+          "quote": null,
+          "note": "m:C_MULTI_GENERAL:1790927548.000165"
+        },
+        {
+          "kind": "slack_message",
+          "project_id": "multilingual_eval",
+          "batch_id": "multi_batch_11",
+          "scope": "project",
+          "channel_id": "C_MULTI_GENERAL",
+          "thread_id": "1790927548.000165",
+          "message_id": "1790927595.000113",
+          "document_id": null,
+          "version_id": null,
+          "authoring_document_id": null,
+          "authoring_version": null,
+          "section": null,
+          "chunk_id": null,
+          "candidate_group_id": null,
+          "member_id": "member_ba4581cf60461d619dc34676",
+          "artifact": null,
+          "artifact_sha256": null,
+          "quote": null,
+          "note": "m:C_MULTI_GENERAL:1790927595.000113"
+        },
+        {
+          "kind": "slack_message",
+          "project_id": "multilingual_eval",
+          "batch_id": "multi_batch_11",
+          "scope": "project",
+          "channel_id": "C_MULTI_GENERAL",
+          "thread_id": "1790927548.000165",
+          "message_id": "1790927640.000226",
+          "document_id": null,
+          "version_id": null,
+          "authoring_document_id": null,
+          "authoring_version": null,
+          "section": null,
+          "chunk_id": null,
+          "candidate_group_id": null,
+          "member_id": "member_ba4581cf60461d619dc34676",
+          "artifact": null,
+          "artifact_sha256": null,
+          "quote": null,
+          "note": "m:C_MULTI_GENERAL:1790927640.000226"
+        },
+        {
+          "kind": "slack_message",
+          "project_id": "multilingual_eval",
+          "batch_id": "multi_batch_11",
+          "scope": "project",
+          "channel_id": "C_MULTI_GENERAL",
+          "thread_id": "1790927548.000165",
+          "message_id": "1790927684.000339",
+          "document_id": null,
+          "version_id": null,
+          "authoring_document_id": null,
+          "authoring_version": null,
+          "section": null,
+          "chunk_id": null,
+          "candidate_group_id": null,
+          "member_id": "member_ba4581cf60461d619dc34676",
+          "artifact": null,
+          "artifact_sha256": null,
+          "quote": null,
+          "note": "m:C_MULTI_GENERAL:1790927684.000339"
+        }
+      ],
+      "related_threads": [
+        {
+          "project_id": "multilingual_eval",
+          "batch_id": "multi_batch_11",
+          "channel_id": "C_MULTI_QA",
+          "thread_id": "1790885224.000166",
+          "member_id": "member_de85059f17dd8949093893e5",
+          "permalink": null,
+          "display_reference": "1790885224.000166",
+          "label": "#multilingual-eval-qa, 2026-10-01, started by a QA tutor: \"Hangul appears as boxes in LT.\"",
+          "opening_text": "Hangul appears as boxes in LT."
+        },
+        {
+          "project_id": "multilingual_eval",
+          "batch_id": "multi_batch_11",
+          "channel_id": "C_MULTI_GENERAL",
+          "thread_id": "1790927548.000165",
+          "member_id": "member_ba4581cf60461d619dc34676",
+          "permalink": null,
+          "display_reference": "1790927548.000165",
+          "label": "#multilingual-eval-general, 2026-10-02, started by a tutor: \"Anyone else seeing this?\"",
+          "opening_text": "Anyone else seeing this? Hangul in LT renders as □□□ on the rating screen. (task ref MULTI-7548)"
+        }
+      ],
+      "confidence": 0.94,
+      "confidence_band": "HIGH",
+      "needs_review_reasons": [
+        {
+          "code": "HIGH_SEVERITY",
+          "detail": "Assessed HIGH under the shared default rubric.",
+          "obligation_ids": [],
+          "evidence": []
+        }
+      ],
+      "inherited_flags": [],
+      "checks": {
+        "grounding": "PASSED",
+        "temporal_conflict": "NONE_FOUND",
+        "open_confirmation": "NONE"
+      },
+      "lineage": {
+        "agent3_run_id": "agent3overnight_0b7636193a04d34b4fe271dfea902a96",
+        "handoff_contract": "agent2-taxonomy-handoff-v2",
+        "agent2_export_sha256": "7634a0c7af684201be9771b97e12c4379ed86cc8b4de7159caa55bd6816e9c26",
+        "agent2_schema_version": 8,
+        "candidate_group_id": "cluster_398a1390e27da753",
+        "topic_id": "cluster_398a1390e27da753/topic_1",
+        "member_ids": [
+          "member_de85059f17dd8949093893e5",
+          "member_ba4581cf60461d619dc34676"
+        ],
+        "project_id": "multilingual_eval",
+        "batch_id": "multi_batch_11"
+      },
+      "review_notes": [
+        "Severity is high under the team rubric."
+      ],
+      "details": [
+        "A QA tutor reports boxes in LT; a tutor reports boxes on the rating screen for MULTI-7548.",
+        "A second tutor reports Korean glyphs disappearing in the preview while Latin text remains visible.",
+        "In the MULTI-7548 thread, a QA tutor asks whether the original text displays correctly outside LT; no comparison result appears in the provided messages.",
+        "The team lead instructs that thread to treat the item as a tool-rendering incident, not a language-quality mistake, if the original text renders outside LT but not inside it."
+      ],
+      "next_step": {
+        "status": "ACTION_RECOMMENDED",
+        "rationale": "Comparable display failures across three reporters warrant engineering investigation. Current guidance directs incident reporting without waiting for a confirmed cause or completed source-text comparison.",
+        "explanation": null
+      }
+    },
+    "review_items": [],
+    "coverage": {
+      "group_members_outside_this_card": [],
+      "uncarried_obligations": []
+    },
+    "budget": {
+      "consumed": {
+        "retrieval_calls": 1,
+        "model_calls": 2
+      },
+      "limits": {
+        "model_calls_per_topic": 4,
+        "model_calls_total": 28,
+        "retrieval_calls_per_topic": 6,
+        "retrieval_calls_total": 42
+      }
+    },
+    "diagnostics": []
+  }
+}

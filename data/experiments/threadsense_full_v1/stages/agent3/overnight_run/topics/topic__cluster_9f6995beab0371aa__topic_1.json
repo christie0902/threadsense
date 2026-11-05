@@ -1,0 +1,2019 @@
+{
+  "work_item": {
+    "candidate_group_id": "cluster_9f6995beab0371aa",
+    "project_id": "multilingual_eval",
+    "batch_id": "multi_batch_11",
+    "work_id": "topic:cluster_9f6995beab0371aa/topic_1",
+    "kind": "TOPIC",
+    "topic_id": "cluster_9f6995beab0371aa/topic_1",
+    "topic_name": "Japanese register consistency and honorific use",
+    "member_ids": [
+      "member_09aa8fec95ded91ba4ac7c6d"
+    ],
+    "pilot_scenario": null,
+    "in_scope": true
+  },
+  "workflow": {
+    "outcome": "CARD",
+    "card_id": "card_2b3eb7be71319afd33b27abaa2091a61",
+    "card_line": "NEEDS_REVIEW",
+    "grounding": "FAILED",
+    "stage_failures": [],
+    "semantic_source": "LIVE_MODEL"
+  },
+  "result": {
+    "scenario": {
+      "id": "topic:cluster_9f6995beab0371aa/topic_1",
+      "candidate_group_id": "cluster_9f6995beab0371aa",
+      "focus": "Japanese register consistency and honorific use",
+      "topic_id": "cluster_9f6995beab0371aa/topic_1"
+    },
+    "status": "CARD",
+    "topic": {
+      "project_id": "multilingual_eval",
+      "batch_id": "multi_batch_11",
+      "candidate_group_id": "cluster_9f6995beab0371aa",
+      "topic_id": "cluster_9f6995beab0371aa/topic_1",
+      "topic_label": "Japanese register consistency and honorific use",
+      "projection_gap": null,
+      "as_of": "2026-10-02T12:00:00Z",
+      "member_ids": [
+        "member_09aa8fec95ded91ba4ac7c6d"
+      ],
+      "initial_query": "Japanese register consistency and honorific use. Is dropping さん in this reply an error?"
+    },
+    "retrieval_trace": [
+      {
+        "step": 1,
+        "purpose": "initial_current_guidance",
+        "gap_id": null,
+        "query": "Japanese register consistency and honorific use. Is dropping さん in this reply an error?",
+        "source_types": [
+          "guideline",
+          "faq",
+          "decision",
+          "announcement"
+        ],
+        "version_mode": "current",
+        "as_of": "2026-10-02T12:00:00Z",
+        "batch": "multi_batch_11",
+        "top_k": 5,
+        "status": "DONE",
+        "mode": "hybrid",
+        "use_mmr": true,
+        "mmr_lambda": 0.9,
+        "result_ids": [
+          "k:multilingual-eval-faq@1.1:c080929d",
+          "k:multi-locale-announcement@1.0:e97783e3",
+          "k:multi-japanese-backup-assignment-deferred@1.0:64536199",
+          "k:multi-korean-scoped-result@1.0:5b489480",
+          "k:multi-japanese-review-pending@1.0:124c6b92"
+        ],
+        "new_evidence_ids": [
+          "k:multilingual-eval-faq@1.1:c080929d",
+          "k:multi-locale-announcement@1.0:e97783e3",
+          "k:multi-japanese-backup-assignment-deferred@1.0:64536199",
+          "k:multi-korean-scoped-result@1.0:5b489480",
+          "k:multi-japanese-review-pending@1.0:124c6b92",
+          "k:multilingual-eval-instructions@1.2:e19f0e0c"
+        ],
+        "eligible_chunks": 22,
+        "added": [
+          {
+            "evidence_id": "k:multilingual-eval-instructions@1.2:e19f0e0c",
+            "role": "TYPE_COVERAGE",
+            "detail": "best-ranked guideline for this query (rank 7), outside the top 5"
+          }
+        ]
+      }
+    ],
+    "retrieval_notes": {
+      "withheld_by_version": [],
+      "version_diagnostics": []
+    },
+    "follow_ups": [],
+    "unfilled_gaps": [],
+    "model_calls": [
+      {
+        "stage": "draft",
+        "schema": "AdvisorDraft",
+        "agent1_context": {
+          "sha256": "aa7c68ac071d042ac727b9af0f5f042195835f758da877c4e8da5e519acb6b98",
+          "boundary": "IN_HTTP_BODY"
+        },
+        "raw": "{\n  \"contract_version\": \"agent3-advisor-draft-v11\",\n  \"summary\": null,\n  \"summary_sentences\": [\n    {\n      \"text\": \"A tutor asks whether dropping さん is an error in a Japanese reply.\",\n      \"support_claim_ids\": [\"c1\"],\n      \"depends_on\": []\n    },\n    {\n      \"text\": \"The team lead identifies a register-consistency problem in this example and directs locale-specific scoring through language QA; the thread does not record a completed scoring assessment.\",\n      \"support_claim_ids\": [\"c3\", \"c4\"],\n      \"depends_on\": []\n    }\n  ],\n  \"detail_sentences\": [\n    {\n      \"text\": \"A second tutor reports that the addressee stays the same while the ending changes to plain style.\",\n      \"support_claim_ids\": [\"c2\"],\n      \"depends_on\": [],\n      \"summary_depends_on\": [1]\n    },\n    {\n      \"text\": \"Current guidance requires exact sentence endings and surrounding context for Japanese language QA, including checks for quotations and addressee changes; a shift alone does not justify a major penalty.\",\n      \"support_claim_ids\": [\"c5\"],\n      \"depends_on\": [],\n      \"summary_depends_on\": []\n    },\n    {\n      \"text\": \"An earlier Japanese referral for M11-JA-022 records a polite-to-plain shift, but its review was awaiting complete dialogue and had no completed assessment.\",\n      \"support_claim_ids\": [\"c6\"],\n      \"depends_on\": [],\n      \"summary_depends_on\": []\n    }\n  ],\n  \"reasoning\": \"The team lead has already answered how this example should be handled: locale-specific scoring goes through language QA. That instruction agrees with current project guidance. The score itself remains unrecorded, but an outstanding specialist assessment is not an unanswered policy question or, by itself, evidence that another intervention is needed. The earlier referral corroborates a similar historical report, not a resolution of this example or a general scoring rule.\",\n  \"claims\": [\n    {\n      \"claim_id\": \"c1\",\n      \"kind\": \"INCIDENT_FACT\",\n      \"text\": \"A tutor asks whether dropping さん in a Japanese reply is an error.\",\n      \"evidence_ids\": [\"m:C_MULTI_GENERAL:1790891203.000155\"],\n      \"attributions\": [\n        {\n          \"user_id\": \"U011\",\n          \"relation\": \"AUTHOR\",\n          \"evidence_id\": \"m:C_MULTI_GENERAL:1790891203.000155\"\n        }\n      ],\n      \"quote\": null,\n      \"quote_kind\": \"PARAPHRASE\",\n      \"material\": true\n    },\n    {\n      \"claim_id\": \"c2\",\n      \"kind\": \"INCIDENT_FACT\",\n      \"text\": \"A second tutor reports that the addressee remains the same while the ending becomes plain style.\",\n      \"evidence_ids\": [\"m:C_MULTI_GENERAL:1790891257.000113\"],\n      \"attributions\": [\n        {\n          \"user_id\": \"U004\",\n          \"relation\": \"AUTHOR\",\n          \"evidence_id\": \"m:C_MULTI_GENERAL:1790891257.000113\"\n        }\n      ],\n      \"quote\": null,\n      \"quote_kind\": \"PARAPHRASE\",\n      \"material\": true\n    },\n    {\n      \"claim_id\": \"c3\",\n      \"kind\": \"THREAD_INSTRUCTION\",\n      \"text\": \"For this Japanese example, the team lead identifies the unmotivated speech-level shift as a register-consistency problem and instructs that locale-specific scoring judgments go through language QA.\",\n      \"evidence_ids\": [\"m:C_MULTI_GENERAL:1790891295.000226\"],\n      \"attributions\": [\n        {\n          \"user_id\": \"U001\",\n          \"relation\": \"AUTHOR\",\n          \"evidence_id\": \"m:C_MULTI_GENERAL:1790891295.000226\"\n        }\n      ],\n      \"quote\": null,\n      \"quote_kind\": \"PARAPHRASE\",\n      \"material\": true\n    },\n    {\n      \"claim_id\": \"c4\",\n      \"kind\": \"INFERENCE\",\n      \"text\": \"The thread establishes how to handle the example but contains no completed language-QA scoring assessment or explicit determination about the dropped honorific itself.\",\n      \"evidence_ids\": [\n        \"m:C_MULTI_GENERAL:1790891203.000155\",\n        \"m:C_MULTI_GENERAL:1790891257.000113\",\n        \"m:C_MULTI_GENERAL:1790891295.000226\"\n      ],\n      \"attributions\": [],\n      \"quote\": null,\n      \"quote_kind\": \"PARAPHRASE\",\n      \"material\": true\n    },\n    {\n      \"claim_id\": \"c5\",\n      \"kind\": \"GUIDANCE\",\n      \"text\": \"Current project guidance routes Japanese register scoring to Japanese language QA with exact sentence endings and surrounding context, requires checks for quotations and addressee changes, and does not allow a major penalty based on a shift alone.\",\n      \"evidence_ids\": [\n        \"k:multilingual-eval-faq@1.1:c080929d\",\n        \"k:multilingual-eval-instructions@1.2:e19f0e0c\"\n      ],\n      \"attributions\": [],\n      \"quote\": null,\n      \"quote_kind\": \"PARAPHRASE\",\n      \"material\": true\n    },\n    {\n      \"claim_id\": \"c6\",\n      \"kind\": \"HISTORY\",\n      \"text\": \"The earlier Japanese referral records M11-JA-022 as beginning in polite forms and ending in plain form; the review was routed but awaited complete dialogue, with no completed assessment or approved major/minor score recorded.\",\n      \"evidence_ids\": [\"k:multi-japanese-review-pending@1.0:124c6b92\"],\n      \"attributions\": [],\n      \"quote\": null,\n      \"quote_kind\": \"PARAPHRASE\",\n      \"material\": true\n    },\n    {\n      \"claim_id\": \"c7\",\n      \"kind\": \"SOURCE_FACT\",\n      \"text\": \"The September 22 batch announcement asks for the addressee and any quotation when reporting register shifts and says an apparent shift is not an automatic major penalty.\",\n      \"evidence_ids\": [\"k:multi-locale-announcement@1.0:e97783e3\"],\n      \"attributions\": [],\n      \"quote\": \"For register shifts, include the addressee and any quotation; an apparent shift is not an automatic major penalty.\",\n      \"quote_kind\": \"VERBATIM\",\n      \"material\": false\n    }\n  ],\n  \"gaps\": [],\n  \"evidence_sufficiency\": \"SUFFICIENT\",\n  \"proposed_action\": {\n    \"action_type\": \"NO_ACTION\",\n    \"intervention_need\": null,\n    \"instruction\": \"Take no additional action now; retain the team lead’s existing direction to use language QA for this example’s scoring.\",\n    \"rationale\": \"The thread already establishes the handling route, and that direction matches current guidance. An unrecorded specialist assessment does not establish a need for another intervention.\",\n    \"draft_text\": null,\n    \"scope_note\": \"This recommendation does not settle whether the dropped honorific warrants a penalty or what grade applies to this example.\",\n    \"support_claim_ids\": [\"c3\", \"c4\", \"c5\"],\n    \"targets\": [],\n    \"context_claim_ids\": [\"c6\"]\n  },\n  \"severity\": {\n    \"level\": \"LOW\",\n    \"rationale\": \"This is a localized scoring clarification with a handling direction already supplied by the team lead. The member messages do not establish conflicting scoring interpretations, interrupted work, or broader impact.\",\n    \"signals\": [],\n    \"affected_reporters\": [],\n    \"recurrence\": \"FOUND\",\n    \"recurrence_evidence_ids\": [\"k:multi-japanese-review-pending@1.0:124c6b92\"],\n    \"reported_recurrence_evidence_ids\": []\n  },\n  \"confidence\": 0.9,\n  \"open_confirmation\": \"NONE\",\n  \"open_question\": null,\n  \"open_question_evidence_ids\": [],\n  \"source_conflicts\": [],\n  \"announcement_assessments\": [\n    {\n      \"evidence_id\": \"k:multi-locale-announcement@1.0:e97783e3\",\n      \"relevant\": true,\n      \"directive\": true,\n      \"directive_quote\": \"For register shifts, include the addressee and any quotation; an apparent shift is not an automatic major penalty.\",\n      \"rationale\": \"The announcement addresses register shifts in the same project and batch and directs what context to include. The recommendation relies on the current FAQ and instructions rather than on the announcement.\"\n    }\n  ],\n  \"resolution\": [\n    {\n      \"member_id\": \"member_09aa8fec95ded91ba4ac7c6d\",\n      \"state\": \"PARTIALLY_RESOLVED\",\n      \"evidence_ids\": [\n        \"m:C_MULTI_GENERAL:1790891203.000155\",\n        \"m:C_MULTI_GENERAL:1790891257.000113\",\n        \"m:C_MULTI_GENERAL:1790891295.000226\"\n      ],\n      \"basis\": \"The team lead identifies a register-consistency problem and supplies the language-QA route, but the thread does not explicitly settle the dropped honorific or record a scoring assessment.\"\n    }\n  ],\n  \"coverage\": [\n    {\n      \"need\": \"CURRENT_GUIDANCE\",\n      \"status\": \"COVERED\",\n      \"evidence_ids\": [\n        \"k:multilingual-eval-faq@1.1:c080929d\",\n        \"k:multilingual-eval-instructions@1.2:e19f0e0c\"\n      ],\n      \"note\": \"Current guidance establishes the language-QA referral, required context, and limit on assigning a major penalty.\",\n      \"gap_id\": null\n    },\n    {\n      \"need\": \"ANNOUNCEMENTS\",\n      \"status\": \"COVERED\",\n      \"evidence_ids\": [\"k:multi-locale-announcement@1.0:e97783e3\"],\n      \"note\": \"The same-batch announcement includes a relevant directive about register-shift context and penalties.\",\n      \"gap_id\": null\n    },\n    {\n      \"need\": \"PRIOR_DECISIONS\",\n      \"status\": \"COVERED\",\n      \"evidence_ids\": [\n        \"k:multi-japanese-review-pending@1.0:124c6b92\",\n        \"k:multi-japanese-backup-assignment-deferred@1.0:64536199\",\n        \"k:multi-korean-scoped-result@1.0:5b489480\"\n      ],\n      \"note\": \"The retrieved earlier records distinguish an unfinished Japanese review, a deferred staffing assignment, and a resolved Korean case limited to its quoted-speaker context. None establishes a score for the present example; further historical research is not needed for the no-additional-action recommendation.\",\n      \"gap_id\": null\n    },\n    {\n      \"need\": \"MEMBER_QUESTIONS\",\n      \"status\": \"COVERED\",\n      \"evidence_ids\": [\n        \"m:C_MULTI_GENERAL:1790891203.000155\",\n        \"m:C_MULTI_GENERAL:1790891257.000113\",\n        \"m:C_MULTI_GENERAL:1790891295.000226\"\n      ],\n      \"note\": \"The thread supplies the honorific question, the reported same-addressee shift, and the team lead’s handling instruction.\",\n      \"gap_id\": null\n    }\n  ],\n  \"review_note\": null,\n  \"action_choice\": null\n}",
+        "raw_sha256": "776398c6db5343e883ebe6065deaa386acbe798eecf014be5f6fea615c034f8f",
+        "http_requests": {
+          "sent": 1,
+          "blocked": 0,
+          "hosts": [
+            "api.openai.com"
+          ],
+          "responses": [
+            {
+              "status_code": 200,
+              "seconds": 38.723,
+              "model": "gpt-6.1-sol",
+              "usage": {
+                "prompt_tokens": 12177,
+                "completion_tokens": 2877,
+                "total_tokens": 15054,
+                "prompt_tokens_details": {
+                  "cached_tokens": 0,
+                  "cache_write_tokens": 12174,
+                  "audio_tokens": 0
+                },
+                "completion_tokens_details": {
+                  "reasoning_tokens": 422,
+                  "audio_tokens": 0,
+                  "accepted_prediction_tokens": 0,
+                  "rejected_prediction_tokens": 0
+                }
+              },
+              "finish_reasons": [
+                "stop"
+              ]
+            }
+          ],
+          "input_tokens": 12183,
+          "refused": null,
+          "charged_usd": 0.053124000000000005
+        },
+        "input_tokens_estimate": 12183,
+        "status": "OK"
+      },
+      {
+        "stage": "grounding",
+        "schema": "GroundingJudgment",
+        "raw": "{\n  \"contract_version\": \"agent3-grounding-judgment-v5\",\n  \"verdicts\": [\n    {\n      \"statement_id\": \"announcement:k:multi-locale-announcement@1.0:e97783e3\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The current announcement expressly applies to multilingual batch 11 and directs inclusion of the addressee and quotations for register shifts while prohibiting an automatic major penalty. The quoted directive matches exactly and governs this topic.\"\n    },\n    {\n      \"statement_id\": \"claim:c1\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"U011, a tutor, asks whether dropping さん in the reply is an error; the complete thread identifies the example as Japanese.\"\n    },\n    {\n      \"statement_id\": \"claim:c2\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"U004 is a distinct tutor and explicitly reports that the addressee remains the same while the ending becomes plain style.\"\n    },\n    {\n      \"statement_id\": \"claim:c3\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The cited team-lead message identifies the unmotivated speech-level shift as a register-consistency problem for this Japanese example and directs locale-specific scoring through language QA.\"\n    },\n    {\n      \"statement_id\": \"claim:c4\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The complete thread supplies a handling direction but contains neither a completed language-QA assessment nor an explicit determination about dropping さん itself.\"\n    },\n    {\n      \"statement_id\": \"claim:c5\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The current FAQ and instructions require appropriate language-QA review with exact endings and context, checks for quotations and addressee changes, and a case-specific basis rather than a shift alone for a major penalty.\"\n    },\n    {\n      \"statement_id\": \"claim:c6\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The historical referral records M11-JA-022 starting in polite forms and ending in plain form, with review routed but awaiting complete dialogue and no completed assessment or approved major/minor score.\"\n    },\n    {\n      \"statement_id\": \"claim:c7\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The September 22 announcement contains the quoted sentence verbatim and states both the requested reporting context and the restriction on automatic major penalties.\"\n    },\n    {\n      \"statement_id\": \"summary:s1\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The cited tutor asks whether dropping さん is an error, and the thread establishes that the reply is Japanese.\"\n    },\n    {\n      \"statement_id\": \"summary:s2\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The team lead explicitly identifies the register-consistency problem and supplies the language-QA direction. No completed scoring assessment appears in the complete thread.\"\n    },\n    {\n      \"statement_id\": \"detail:d1\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The second tutor explicitly reports an unchanged addressee and a change to plain-style endings.\"\n    },\n    {\n      \"statement_id\": \"detail:d2\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The current FAQ and instructions jointly establish all the stated context requirements, language-QA routing, and limits on assigning a major penalty.\"\n    },\n    {\n      \"statement_id\": \"detail:d3\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The earlier referral records the polite-to-plain shift and explicitly states that complete dialogue and a completed assessment were still absent.\"\n    },\n    {\n      \"statement_id\": \"action:no_action\",\n      \"verdict\": \"UNSUPPORTED\",\n      \"rationale\": \"An established route does not establish that no further intervention is needed. The honorific question remains explicitly unsettled, and the same-batch Japanese referral records an unresolved context request with a September 30 follow-up and no completed assessment. The context does not establish that these outstanding matters require no coordination.\"\n    },\n    {\n      \"statement_id\": \"resolution:member_09aa8fec95ded91ba4ac7c6d\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The thread resolves the handling direction and identifies a register-consistency problem, but does not explicitly determine the honorific issue or record a scoring assessment. PARTIALLY_RESOLVED accurately preserves those limits.\"\n    },\n    {\n      \"statement_id\": \"severity:rationale\",\n      \"verdict\": \"PARTIALLY_SUPPORTED\",\n      \"rationale\": \"The cited tutor messages support a localized clarification and do not establish conflicting scoring interpretations, interrupted work, or broader impact. However, they do not contain the team-lead handling direction on which the rationale also relies; that direction appears in a different, uncited message.\"\n    },\n    {\n      \"statement_id\": \"severity:recurrence\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The retrieved historical referral documents an earlier reported Japanese polite-to-plain register-shift problem. It supports recurrence of the reported problem, without establishing a completed scoring determination.\"\n    }\n  ],\n  \"action_sufficiency\": null,\n  \"alternative_sufficiency\": [],\n  \"source_consistency\": {\n    \"assessed_evidence_ids\": [\n      \"k:multilingual-eval-faq@1.1:c080929d\",\n      \"k:multi-locale-announcement@1.0:e97783e3\",\n      \"k:multilingual-eval-instructions@1.2:e19f0e0c\"\n    ],\n    \"relations\": [\n      {\n        \"evidence_ids\": [\n          \"k:multilingual-eval-faq@1.1:c080929d\",\n          \"k:multi-locale-announcement@1.0:e97783e3\",\n          \"k:multilingual-eval-instructions@1.2:e19f0e0c\"\n        ],\n        \"relation\": \"AGREE\",\n        \"point\": \"Register shifts require contextual review and do not automatically warrant a major penalty.\",\n        \"disagreement_scope\": null,\n        \"rationale\": \"All three sources require attention to addressee and quotation context and reject assigning a major penalty merely because a register shift appears.\"\n      },\n      {\n        \"evidence_ids\": [\n          \"k:multilingual-eval-faq@1.1:c080929d\",\n          \"k:multilingual-eval-instructions@1.2:e19f0e0c\",\n          \"k:multi-locale-announcement@1.0:e97783e3\"\n        ],\n        \"relation\": \"AGREE\",\n        \"point\": \"Japanese locale-specific scoring goes to the appropriate Japanese language reviewer.\",\n        \"disagreement_scope\": null,\n        \"rationale\": \"The FAQ and instructions require appropriate language QA. The batch announcement supplies the compatible concrete Japanese recipient, Yuki; that additional specificity does not create a conflicting rule.\"\n      }\n    ],\n    \"declared_conflict_checks\": []\n  }\n}",
+        "raw_sha256": "528545a4a223aeca0a048292580d26bbf277db666feca0b58e0b5b262ed9e0f5",
+        "http_requests": {
+          "sent": 1,
+          "blocked": 0,
+          "hosts": [
+            "api.openai.com"
+          ],
+          "responses": [
+            {
+              "status_code": 200,
+              "seconds": 20.537,
+              "model": "gpt-6.1-sol",
+              "usage": {
+                "prompt_tokens": 8727,
+                "completion_tokens": 1636,
+                "total_tokens": 10363,
+                "prompt_tokens_details": {
+                  "cached_tokens": 0,
+                  "cache_write_tokens": 8724,
+                  "audio_tokens": 0
+                },
+                "completion_tokens_details": {
+                  "reasoning_tokens": 135,
+                  "audio_tokens": 0,
+                  "accepted_prediction_tokens": 0,
+                  "rejected_prediction_tokens": 0
+                }
+              },
+              "finish_reasons": [
+                "stop"
+              ]
+            }
+          ],
+          "input_tokens": 8733,
+          "refused": null,
+          "charged_usd": 0.033814000000000004
+        },
+        "input_tokens_estimate": 8733,
+        "status": "OK"
+      }
+    ],
+    "agent1_context": [
+      {
+        "sha256": "aa7c68ac071d042ac727b9af0f5f042195835f758da877c4e8da5e519acb6b98",
+        "content": [
+          {
+            "member_id": "member_09aa8fec95ded91ba4ac7c6d",
+            "thread_id": "1790891203.000155",
+            "summary": "Rina asks if dropping さん in a reply is an error, seeking confirmation from others. Sofia responds that the addressee remains the same, but the ending shifts to plain style. Alex, a team lead, identifies the issue as a register-consistency problem and advises routing locale-specific scoring judgments through language QA.",
+            "central_question": "Is dropping さん in this reply an error?",
+            "attributed_agent1_resolution": {
+              "state": "PARTIALLY_RESOLVED",
+              "rationale": "The thread identifies the issue as a register-consistency problem, but does not fully resolve whether dropping さん is an error in this specific context. Alex's guidance suggests a process for handling such judgments, but the original question remains partially unanswered.",
+              "agent1_verification_status": "VERIFIED",
+              "note": "Agent 1 label, not evidence; NEEDS_REVIEW means Agent 1 did not verify it. Assess resolution from the member messages."
+            },
+            "agent1_review_required": false,
+            "agent1_review_reason": "",
+            "note": "Agent 1 interpretation, not source evidence; cite member messages for incident facts."
+          }
+        ]
+      }
+    ],
+    "drafts": {
+      "initial": {
+        "contract_version": "agent3-advisor-draft-v11",
+        "summary": "A tutor asks whether dropping さん is an error in a Japanese reply. The team lead identifies a register-consistency problem in this example and directs locale-specific scoring through language QA; the thread does not record a completed scoring assessment.",
+        "summary_sentences": [
+          {
+            "text": "A tutor asks whether dropping さん is an error in a Japanese reply.",
+            "support_claim_ids": [
+              "c1"
+            ],
+            "depends_on": []
+          },
+          {
+            "text": "The team lead identifies a register-consistency problem in this example and directs locale-specific scoring through language QA; the thread does not record a completed scoring assessment.",
+            "support_claim_ids": [
+              "c3",
+              "c4"
+            ],
+            "depends_on": []
+          }
+        ],
+        "detail_sentences": [
+          {
+            "text": "A second tutor reports that the addressee stays the same while the ending changes to plain style.",
+            "support_claim_ids": [
+              "c2"
+            ],
+            "depends_on": [],
+            "summary_depends_on": [
+              1
+            ]
+          },
+          {
+            "text": "Current guidance requires exact sentence endings and surrounding context for Japanese language QA, including checks for quotations and addressee changes; a shift alone does not justify a major penalty.",
+            "support_claim_ids": [
+              "c5"
+            ],
+            "depends_on": [],
+            "summary_depends_on": []
+          },
+          {
+            "text": "An earlier Japanese referral for M11-JA-022 records a polite-to-plain shift, but its review was awaiting complete dialogue and had no completed assessment.",
+            "support_claim_ids": [
+              "c6"
+            ],
+            "depends_on": [],
+            "summary_depends_on": []
+          }
+        ],
+        "reasoning": "The team lead has already answered how this example should be handled: locale-specific scoring goes through language QA. That instruction agrees with current project guidance. The score itself remains unrecorded, but an outstanding specialist assessment is not an unanswered policy question or, by itself, evidence that another intervention is needed. The earlier referral corroborates a similar historical report, not a resolution of this example or a general scoring rule.",
+        "claims": [
+          {
+            "claim_id": "c1",
+            "kind": "INCIDENT_FACT",
+            "text": "A tutor asks whether dropping さん in a Japanese reply is an error.",
+            "evidence_ids": [
+              "m:C_MULTI_GENERAL:1790891203.000155"
+            ],
+            "attributions": [
+              {
+                "user_id": "U011",
+                "relation": "AUTHOR",
+                "evidence_id": "m:C_MULTI_GENERAL:1790891203.000155"
+              }
+            ],
+            "quote": null,
+            "quote_kind": "PARAPHRASE",
+            "material": true
+          },
+          {
+            "claim_id": "c2",
+            "kind": "INCIDENT_FACT",
+            "text": "A second tutor reports that the addressee remains the same while the ending becomes plain style.",
+            "evidence_ids": [
+              "m:C_MULTI_GENERAL:1790891257.000113"
+            ],
+            "attributions": [
+              {
+                "user_id": "U004",
+                "relation": "AUTHOR",
+                "evidence_id": "m:C_MULTI_GENERAL:1790891257.000113"
+              }
+            ],
+            "quote": null,
+            "quote_kind": "PARAPHRASE",
+            "material": true
+          },
+          {
+            "claim_id": "c3",
+            "kind": "THREAD_INSTRUCTION",
+            "text": "For this Japanese example, the team lead identifies the unmotivated speech-level shift as a register-consistency problem and instructs that locale-specific scoring judgments go through language QA.",
+            "evidence_ids": [
+              "m:C_MULTI_GENERAL:1790891295.000226"
+            ],
+            "attributions": [
+              {
+                "user_id": "U001",
+                "relation": "AUTHOR",
+                "evidence_id": "m:C_MULTI_GENERAL:1790891295.000226"
+              }
+            ],
+            "quote": null,
+            "quote_kind": "PARAPHRASE",
+            "material": true
+          },
+          {
+            "claim_id": "c4",
+            "kind": "INFERENCE",
+            "text": "The thread establishes how to handle the example but contains no completed language-QA scoring assessment or explicit determination about the dropped honorific itself.",
+            "evidence_ids": [
+              "m:C_MULTI_GENERAL:1790891203.000155",
+              "m:C_MULTI_GENERAL:1790891257.000113",
+              "m:C_MULTI_GENERAL:1790891295.000226"
+            ],
+            "attributions": [],
+            "quote": null,
+            "quote_kind": "PARAPHRASE",
+            "material": true
+          },
+          {
+            "claim_id": "c5",
+            "kind": "GUIDANCE",
+            "text": "Current project guidance routes Japanese register scoring to Japanese language QA with exact sentence endings and surrounding context, requires checks for quotations and addressee changes, and does not allow a major penalty based on a shift alone.",
+            "evidence_ids": [
+              "k:multilingual-eval-faq@1.1:c080929d",
+              "k:multilingual-eval-instructions@1.2:e19f0e0c"
+            ],
+            "attributions": [],
+            "quote": null,
+            "quote_kind": "PARAPHRASE",
+            "material": true
+          },
+          {
+            "claim_id": "c6",
+            "kind": "HISTORY",
+            "text": "The earlier Japanese referral records M11-JA-022 as beginning in polite forms and ending in plain form; the review was routed but awaited complete dialogue, with no completed assessment or approved major/minor score recorded.",
+            "evidence_ids": [
+              "k:multi-japanese-review-pending@1.0:124c6b92"
+            ],
+            "attributions": [],
+            "quote": null,
+            "quote_kind": "PARAPHRASE",
+            "material": true
+          },
+          {
+            "claim_id": "c7",
+            "kind": "SOURCE_FACT",
+            "text": "The September 22 batch announcement asks for the addressee and any quotation when reporting register shifts and says an apparent shift is not an automatic major penalty.",
+            "evidence_ids": [
+              "k:multi-locale-announcement@1.0:e97783e3"
+            ],
+            "attributions": [],
+            "quote": "For register shifts, include the addressee and any quotation; an apparent shift is not an automatic major penalty.",
+            "quote_kind": "VERBATIM",
+            "material": false
+          }
+        ],
+        "gaps": [],
+        "evidence_sufficiency": "SUFFICIENT",
+        "proposed_action": {
+          "action_type": "NO_ACTION",
+          "intervention_need": null,
+          "instruction": "Take no additional action now; retain the team lead’s existing direction to use language QA for this example’s scoring.",
+          "rationale": "The thread already establishes the handling route, and that direction matches current guidance. An unrecorded specialist assessment does not establish a need for another intervention.",
+          "draft_text": null,
+          "scope_note": "This recommendation does not settle whether the dropped honorific warrants a penalty or what grade applies to this example.",
+          "support_claim_ids": [
+            "c3",
+            "c4",
+            "c5"
+          ],
+          "targets": [],
+          "context_claim_ids": [
+            "c6"
+          ]
+        },
+        "severity": {
+          "level": "LOW",
+          "rationale": "This is a localized scoring clarification with a handling direction already supplied by the team lead. The member messages do not establish conflicting scoring interpretations, interrupted work, or broader impact.",
+          "signals": [],
+          "affected_reporters": [],
+          "recurrence": "FOUND",
+          "recurrence_evidence_ids": [
+            "k:multi-japanese-review-pending@1.0:124c6b92"
+          ],
+          "reported_recurrence_evidence_ids": []
+        },
+        "confidence": 0.9,
+        "open_confirmation": "NONE",
+        "open_question": null,
+        "open_question_evidence_ids": [],
+        "source_conflicts": [],
+        "announcement_assessments": [
+          {
+            "evidence_id": "k:multi-locale-announcement@1.0:e97783e3",
+            "relevant": true,
+            "directive": true,
+            "directive_quote": "For register shifts, include the addressee and any quotation; an apparent shift is not an automatic major penalty.",
+            "rationale": "The announcement addresses register shifts in the same project and batch and directs what context to include. The recommendation relies on the current FAQ and instructions rather than on the announcement."
+          }
+        ],
+        "resolution": [
+          {
+            "member_id": "member_09aa8fec95ded91ba4ac7c6d",
+            "state": "PARTIALLY_RESOLVED",
+            "evidence_ids": [
+              "m:C_MULTI_GENERAL:1790891203.000155",
+              "m:C_MULTI_GENERAL:1790891257.000113",
+              "m:C_MULTI_GENERAL:1790891295.000226"
+            ],
+            "basis": "The team lead identifies a register-consistency problem and supplies the language-QA route, but the thread does not explicitly settle the dropped honorific or record a scoring assessment."
+          }
+        ],
+        "coverage": [
+          {
+            "need": "CURRENT_GUIDANCE",
+            "status": "COVERED",
+            "evidence_ids": [
+              "k:multilingual-eval-faq@1.1:c080929d",
+              "k:multilingual-eval-instructions@1.2:e19f0e0c"
+            ],
+            "note": "Current guidance establishes the language-QA referral, required context, and limit on assigning a major penalty.",
+            "gap_id": null
+          },
+          {
+            "need": "ANNOUNCEMENTS",
+            "status": "COVERED",
+            "evidence_ids": [
+              "k:multi-locale-announcement@1.0:e97783e3"
+            ],
+            "note": "The same-batch announcement includes a relevant directive about register-shift context and penalties.",
+            "gap_id": null
+          },
+          {
+            "need": "PRIOR_DECISIONS",
+            "status": "COVERED",
+            "evidence_ids": [
+              "k:multi-japanese-review-pending@1.0:124c6b92",
+              "k:multi-japanese-backup-assignment-deferred@1.0:64536199",
+              "k:multi-korean-scoped-result@1.0:5b489480"
+            ],
+            "note": "The retrieved earlier records distinguish an unfinished Japanese review, a deferred staffing assignment, and a resolved Korean case limited to its quoted-speaker context. None establishes a score for the present example; further historical research is not needed for the no-additional-action recommendation.",
+            "gap_id": null
+          },
+          {
+            "need": "MEMBER_QUESTIONS",
+            "status": "COVERED",
+            "evidence_ids": [
+              "m:C_MULTI_GENERAL:1790891203.000155",
+              "m:C_MULTI_GENERAL:1790891257.000113",
+              "m:C_MULTI_GENERAL:1790891295.000226"
+            ],
+            "note": "The thread supplies the honorific question, the reported same-addressee shift, and the team lead’s handling instruction.",
+            "gap_id": null
+          }
+        ],
+        "review_note": null,
+        "action_choice": null
+      },
+      "final": {
+        "contract_version": "agent3-advisor-draft-v11",
+        "summary": "A tutor asks whether dropping さん is an error in a Japanese reply. The team lead identifies a register-consistency problem in this example and directs locale-specific scoring through language QA; the thread does not record a completed scoring assessment.",
+        "summary_sentences": [
+          {
+            "text": "A tutor asks whether dropping さん is an error in a Japanese reply.",
+            "support_claim_ids": [
+              "c1"
+            ],
+            "depends_on": []
+          },
+          {
+            "text": "The team lead identifies a register-consistency problem in this example and directs locale-specific scoring through language QA; the thread does not record a completed scoring assessment.",
+            "support_claim_ids": [
+              "c3",
+              "c4"
+            ],
+            "depends_on": []
+          }
+        ],
+        "detail_sentences": [
+          {
+            "text": "A second tutor reports that the addressee stays the same while the ending changes to plain style.",
+            "support_claim_ids": [
+              "c2"
+            ],
+            "depends_on": [],
+            "summary_depends_on": [
+              1
+            ]
+          },
+          {
+            "text": "Current guidance requires exact sentence endings and surrounding context for Japanese language QA, including checks for quotations and addressee changes; a shift alone does not justify a major penalty.",
+            "support_claim_ids": [
+              "c5"
+            ],
+            "depends_on": [],
+            "summary_depends_on": []
+          },
+          {
+            "text": "An earlier Japanese referral for M11-JA-022 records a polite-to-plain shift, but its review was awaiting complete dialogue and had no completed assessment.",
+            "support_claim_ids": [
+              "c6"
+            ],
+            "depends_on": [],
+            "summary_depends_on": []
+          }
+        ],
+        "reasoning": "The team lead has already answered how this example should be handled: locale-specific scoring goes through language QA. That instruction agrees with current project guidance. The score itself remains unrecorded, but an outstanding specialist assessment is not an unanswered policy question or, by itself, evidence that another intervention is needed. The earlier referral corroborates a similar historical report, not a resolution of this example or a general scoring rule.",
+        "claims": [
+          {
+            "claim_id": "c1",
+            "kind": "INCIDENT_FACT",
+            "text": "A tutor asks whether dropping さん in a Japanese reply is an error.",
+            "evidence_ids": [
+              "m:C_MULTI_GENERAL:1790891203.000155"
+            ],
+            "attributions": [
+              {
+                "user_id": "U011",
+                "relation": "AUTHOR",
+                "evidence_id": "m:C_MULTI_GENERAL:1790891203.000155"
+              }
+            ],
+            "quote": null,
+            "quote_kind": "PARAPHRASE",
+            "material": true
+          },
+          {
+            "claim_id": "c2",
+            "kind": "INCIDENT_FACT",
+            "text": "A second tutor reports that the addressee remains the same while the ending becomes plain style.",
+            "evidence_ids": [
+              "m:C_MULTI_GENERAL:1790891257.000113"
+            ],
+            "attributions": [
+              {
+                "user_id": "U004",
+                "relation": "AUTHOR",
+                "evidence_id": "m:C_MULTI_GENERAL:1790891257.000113"
+              }
+            ],
+            "quote": null,
+            "quote_kind": "PARAPHRASE",
+            "material": true
+          },
+          {
+            "claim_id": "c3",
+            "kind": "THREAD_INSTRUCTION",
+            "text": "For this Japanese example, the team lead identifies the unmotivated speech-level shift as a register-consistency problem and instructs that locale-specific scoring judgments go through language QA.",
+            "evidence_ids": [
+              "m:C_MULTI_GENERAL:1790891295.000226"
+            ],
+            "attributions": [
+              {
+                "user_id": "U001",
+                "relation": "AUTHOR",
+                "evidence_id": "m:C_MULTI_GENERAL:1790891295.000226"
+              }
+            ],
+            "quote": null,
+            "quote_kind": "PARAPHRASE",
+            "material": true
+          },
+          {
+            "claim_id": "c4",
+            "kind": "INFERENCE",
+            "text": "The thread establishes how to handle the example but contains no completed language-QA scoring assessment or explicit determination about the dropped honorific itself.",
+            "evidence_ids": [
+              "m:C_MULTI_GENERAL:1790891203.000155",
+              "m:C_MULTI_GENERAL:1790891257.000113",
+              "m:C_MULTI_GENERAL:1790891295.000226"
+            ],
+            "attributions": [],
+            "quote": null,
+            "quote_kind": "PARAPHRASE",
+            "material": true
+          },
+          {
+            "claim_id": "c5",
+            "kind": "GUIDANCE",
+            "text": "Current project guidance routes Japanese register scoring to Japanese language QA with exact sentence endings and surrounding context, requires checks for quotations and addressee changes, and does not allow a major penalty based on a shift alone.",
+            "evidence_ids": [
+              "k:multilingual-eval-faq@1.1:c080929d",
+              "k:multilingual-eval-instructions@1.2:e19f0e0c"
+            ],
+            "attributions": [],
+            "quote": null,
+            "quote_kind": "PARAPHRASE",
+            "material": true
+          },
+          {
+            "claim_id": "c6",
+            "kind": "HISTORY",
+            "text": "The earlier Japanese referral records M11-JA-022 as beginning in polite forms and ending in plain form; the review was routed but awaited complete dialogue, with no completed assessment or approved major/minor score recorded.",
+            "evidence_ids": [
+              "k:multi-japanese-review-pending@1.0:124c6b92"
+            ],
+            "attributions": [],
+            "quote": null,
+            "quote_kind": "PARAPHRASE",
+            "material": true
+          },
+          {
+            "claim_id": "c7",
+            "kind": "SOURCE_FACT",
+            "text": "The September 22 batch announcement asks for the addressee and any quotation when reporting register shifts and says an apparent shift is not an automatic major penalty.",
+            "evidence_ids": [
+              "k:multi-locale-announcement@1.0:e97783e3"
+            ],
+            "attributions": [],
+            "quote": "For register shifts, include the addressee and any quotation; an apparent shift is not an automatic major penalty.",
+            "quote_kind": "VERBATIM",
+            "material": false
+          }
+        ],
+        "gaps": [],
+        "evidence_sufficiency": "SUFFICIENT",
+        "proposed_action": {
+          "action_type": "NO_ACTION",
+          "intervention_need": null,
+          "instruction": "Take no additional action now; retain the team lead’s existing direction to use language QA for this example’s scoring.",
+          "rationale": "The thread already establishes the handling route, and that direction matches current guidance. An unrecorded specialist assessment does not establish a need for another intervention.",
+          "draft_text": null,
+          "scope_note": "This recommendation does not settle whether the dropped honorific warrants a penalty or what grade applies to this example.",
+          "support_claim_ids": [
+            "c3",
+            "c4",
+            "c5"
+          ],
+          "targets": [],
+          "context_claim_ids": [
+            "c6"
+          ]
+        },
+        "severity": {
+          "level": "LOW",
+          "rationale": "This is a localized scoring clarification with a handling direction already supplied by the team lead. The member messages do not establish conflicting scoring interpretations, interrupted work, or broader impact.",
+          "signals": [],
+          "affected_reporters": [],
+          "recurrence": "FOUND",
+          "recurrence_evidence_ids": [
+            "k:multi-japanese-review-pending@1.0:124c6b92"
+          ],
+          "reported_recurrence_evidence_ids": []
+        },
+        "confidence": 0.9,
+        "open_confirmation": "NONE",
+        "open_question": null,
+        "open_question_evidence_ids": [],
+        "source_conflicts": [],
+        "announcement_assessments": [
+          {
+            "evidence_id": "k:multi-locale-announcement@1.0:e97783e3",
+            "relevant": true,
+            "directive": true,
+            "directive_quote": "For register shifts, include the addressee and any quotation; an apparent shift is not an automatic major penalty.",
+            "rationale": "The announcement addresses register shifts in the same project and batch and directs what context to include. The recommendation relies on the current FAQ and instructions rather than on the announcement."
+          }
+        ],
+        "resolution": [
+          {
+            "member_id": "member_09aa8fec95ded91ba4ac7c6d",
+            "state": "PARTIALLY_RESOLVED",
+            "evidence_ids": [
+              "m:C_MULTI_GENERAL:1790891203.000155",
+              "m:C_MULTI_GENERAL:1790891257.000113",
+              "m:C_MULTI_GENERAL:1790891295.000226"
+            ],
+            "basis": "The team lead identifies a register-consistency problem and supplies the language-QA route, but the thread does not explicitly settle the dropped honorific or record a scoring assessment."
+          }
+        ],
+        "coverage": [
+          {
+            "need": "CURRENT_GUIDANCE",
+            "status": "COVERED",
+            "evidence_ids": [
+              "k:multilingual-eval-faq@1.1:c080929d",
+              "k:multilingual-eval-instructions@1.2:e19f0e0c"
+            ],
+            "note": "Current guidance establishes the language-QA referral, required context, and limit on assigning a major penalty.",
+            "gap_id": null
+          },
+          {
+            "need": "ANNOUNCEMENTS",
+            "status": "COVERED",
+            "evidence_ids": [
+              "k:multi-locale-announcement@1.0:e97783e3"
+            ],
+            "note": "The same-batch announcement includes a relevant directive about register-shift context and penalties.",
+            "gap_id": null
+          },
+          {
+            "need": "PRIOR_DECISIONS",
+            "status": "COVERED",
+            "evidence_ids": [
+              "k:multi-japanese-review-pending@1.0:124c6b92",
+              "k:multi-japanese-backup-assignment-deferred@1.0:64536199",
+              "k:multi-korean-scoped-result@1.0:5b489480"
+            ],
+            "note": "The retrieved earlier records distinguish an unfinished Japanese review, a deferred staffing assignment, and a resolved Korean case limited to its quoted-speaker context. None establishes a score for the present example; further historical research is not needed for the no-additional-action recommendation.",
+            "gap_id": null
+          },
+          {
+            "need": "MEMBER_QUESTIONS",
+            "status": "COVERED",
+            "evidence_ids": [
+              "m:C_MULTI_GENERAL:1790891203.000155",
+              "m:C_MULTI_GENERAL:1790891257.000113",
+              "m:C_MULTI_GENERAL:1790891295.000226"
+            ],
+            "note": "The thread supplies the honorific question, the reported same-addressee shift, and the team lead’s handling instruction.",
+            "gap_id": null
+          }
+        ],
+        "review_note": null,
+        "action_choice": null
+      },
+      "revised": false
+    },
+    "grounding": {
+      "structural_issues": [],
+      "action_issues": [],
+      "unsupported": [
+        "severity:rationale"
+      ],
+      "unjudged": [],
+      "extraneous_verdicts": [],
+      "rejected": {},
+      "pending": [],
+      "action_sufficiency": null,
+      "source_consistency": {
+        "assessed_evidence_ids": [
+          "k:multilingual-eval-faq@1.1:c080929d",
+          "k:multi-locale-announcement@1.0:e97783e3",
+          "k:multilingual-eval-instructions@1.2:e19f0e0c"
+        ],
+        "relations": [
+          {
+            "evidence_ids": [
+              "k:multilingual-eval-faq@1.1:c080929d",
+              "k:multi-locale-announcement@1.0:e97783e3",
+              "k:multilingual-eval-instructions@1.2:e19f0e0c"
+            ],
+            "relation": "AGREE",
+            "point": "Register shifts require contextual review and do not automatically warrant a major penalty.",
+            "disagreement_scope": null,
+            "rationale": "All three sources require attention to addressee and quotation context and reject assigning a major penalty merely because a register shift appears."
+          },
+          {
+            "evidence_ids": [
+              "k:multilingual-eval-faq@1.1:c080929d",
+              "k:multilingual-eval-instructions@1.2:e19f0e0c",
+              "k:multi-locale-announcement@1.0:e97783e3"
+            ],
+            "relation": "AGREE",
+            "point": "Japanese locale-specific scoring goes to the appropriate Japanese language reviewer.",
+            "disagreement_scope": null,
+            "rationale": "The FAQ and instructions require appropriate language QA. The batch announcement supplies the compatible concrete Japanese recipient, Yuki; that additional specificity does not create a conflicting rule."
+          }
+        ],
+        "declared_conflict_checks": []
+      },
+      "alternative_sufficiency": {},
+      "status": "FAILED",
+      "basis": "SEMANTIC",
+      "statements": [
+        {
+          "statement_id": "claim:c1",
+          "kind": "CLAIM_INCIDENT_FACT",
+          "text": "A tutor asks whether dropping さん in a Japanese reply is an error.",
+          "blocking": true,
+          "evidence_ids": [
+            "m:C_MULTI_GENERAL:1790891203.000155"
+          ],
+          "attributions": [
+            {
+              "user_id": "U011",
+              "relation": "AUTHOR",
+              "evidence_id": "m:C_MULTI_GENERAL:1790891203.000155",
+              "role": "TUTOR"
+            }
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "U011, a tutor, asks whether dropping さん in the reply is an error; the complete thread identifies the example as Japanese."
+        },
+        {
+          "statement_id": "claim:c2",
+          "kind": "CLAIM_INCIDENT_FACT",
+          "text": "A second tutor reports that the addressee remains the same while the ending becomes plain style.",
+          "blocking": true,
+          "evidence_ids": [
+            "m:C_MULTI_GENERAL:1790891257.000113"
+          ],
+          "attributions": [
+            {
+              "user_id": "U004",
+              "relation": "AUTHOR",
+              "evidence_id": "m:C_MULTI_GENERAL:1790891257.000113",
+              "role": "TUTOR"
+            }
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "U004 is a distinct tutor and explicitly reports that the addressee remains the same while the ending becomes plain style."
+        },
+        {
+          "statement_id": "claim:c3",
+          "kind": "CLAIM_THREAD_INSTRUCTION",
+          "text": "For this Japanese example, the team lead identifies the unmotivated speech-level shift as a register-consistency problem and instructs that locale-specific scoring judgments go through language QA.",
+          "blocking": true,
+          "evidence_ids": [
+            "m:C_MULTI_GENERAL:1790891295.000226"
+          ],
+          "attributions": [
+            {
+              "user_id": "U001",
+              "relation": "AUTHOR",
+              "evidence_id": "m:C_MULTI_GENERAL:1790891295.000226",
+              "role": "TEAM_LEAD"
+            }
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "The cited team-lead message identifies the unmotivated speech-level shift as a register-consistency problem for this Japanese example and directs locale-specific scoring through language QA."
+        },
+        {
+          "statement_id": "claim:c4",
+          "kind": "CLAIM_INFERENCE",
+          "text": "The thread establishes how to handle the example but contains no completed language-QA scoring assessment or explicit determination about the dropped honorific itself.",
+          "blocking": true,
+          "evidence_ids": [
+            "m:C_MULTI_GENERAL:1790891203.000155",
+            "m:C_MULTI_GENERAL:1790891257.000113",
+            "m:C_MULTI_GENERAL:1790891295.000226"
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "The complete thread supplies a handling direction but contains neither a completed language-QA assessment nor an explicit determination about dropping さん itself."
+        },
+        {
+          "statement_id": "claim:c5",
+          "kind": "CLAIM_GUIDANCE",
+          "text": "Current project guidance routes Japanese register scoring to Japanese language QA with exact sentence endings and surrounding context, requires checks for quotations and addressee changes, and does not allow a major penalty based on a shift alone.",
+          "blocking": true,
+          "evidence_ids": [
+            "k:multilingual-eval-faq@1.1:c080929d",
+            "k:multilingual-eval-instructions@1.2:e19f0e0c"
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "The current FAQ and instructions require appropriate language-QA review with exact endings and context, checks for quotations and addressee changes, and a case-specific basis rather than a shift alone for a major penalty."
+        },
+        {
+          "statement_id": "claim:c6",
+          "kind": "CLAIM_HISTORY",
+          "text": "The earlier Japanese referral records M11-JA-022 as beginning in polite forms and ending in plain form; the review was routed but awaited complete dialogue, with no completed assessment or approved major/minor score recorded.",
+          "blocking": true,
+          "evidence_ids": [
+            "k:multi-japanese-review-pending@1.0:124c6b92"
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "The historical referral records M11-JA-022 starting in polite forms and ending in plain form, with review routed but awaiting complete dialogue and no completed assessment or approved major/minor score."
+        },
+        {
+          "statement_id": "claim:c7",
+          "kind": "CLAIM_SOURCE_FACT",
+          "text": "The September 22 batch announcement asks for the addressee and any quotation when reporting register shifts and says an apparent shift is not an automatic major penalty. Verbatim quote: \"For register shifts, include the addressee and any quotation; an apparent shift is not an automatic major penalty.\"",
+          "blocking": false,
+          "evidence_ids": [
+            "k:multi-locale-announcement@1.0:e97783e3"
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "The September 22 announcement contains the quoted sentence verbatim and states both the requested reporting context and the restriction on automatic major penalties."
+        },
+        {
+          "statement_id": "summary:s1",
+          "kind": "SUMMARY",
+          "text": "A tutor asks whether dropping さん is an error in a Japanese reply.",
+          "blocking": true,
+          "evidence_ids": [
+            "m:C_MULTI_GENERAL:1790891203.000155"
+          ],
+          "attributions": [
+            {
+              "user_id": "U011",
+              "relation": "AUTHOR",
+              "evidence_id": "m:C_MULTI_GENERAL:1790891203.000155",
+              "role": "TUTOR"
+            }
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "The cited tutor asks whether dropping さん is an error, and the thread establishes that the reply is Japanese."
+        },
+        {
+          "statement_id": "summary:s2",
+          "kind": "SUMMARY",
+          "text": "The team lead identifies a register-consistency problem in this example and directs locale-specific scoring through language QA; the thread does not record a completed scoring assessment.",
+          "blocking": true,
+          "evidence_ids": [
+            "m:C_MULTI_GENERAL:1790891295.000226",
+            "m:C_MULTI_GENERAL:1790891203.000155",
+            "m:C_MULTI_GENERAL:1790891257.000113"
+          ],
+          "attributions": [
+            {
+              "user_id": "U001",
+              "relation": "AUTHOR",
+              "evidence_id": "m:C_MULTI_GENERAL:1790891295.000226",
+              "role": "TEAM_LEAD"
+            }
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "The team lead explicitly identifies the register-consistency problem and supplies the language-QA direction. No completed scoring assessment appears in the complete thread."
+        },
+        {
+          "statement_id": "detail:d1",
+          "kind": "DETAIL",
+          "text": "A second tutor reports that the addressee stays the same while the ending changes to plain style.",
+          "blocking": false,
+          "evidence_ids": [
+            "m:C_MULTI_GENERAL:1790891257.000113"
+          ],
+          "attributions": [
+            {
+              "user_id": "U004",
+              "relation": "AUTHOR",
+              "evidence_id": "m:C_MULTI_GENERAL:1790891257.000113",
+              "role": "TUTOR"
+            }
+          ],
+          "depends_on": [
+            "summary:s1"
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "The second tutor explicitly reports an unchanged addressee and a change to plain-style endings."
+        },
+        {
+          "statement_id": "detail:d2",
+          "kind": "DETAIL",
+          "text": "Current guidance requires exact sentence endings and surrounding context for Japanese language QA, including checks for quotations and addressee changes; a shift alone does not justify a major penalty.",
+          "blocking": false,
+          "evidence_ids": [
+            "k:multilingual-eval-faq@1.1:c080929d",
+            "k:multilingual-eval-instructions@1.2:e19f0e0c"
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "The current FAQ and instructions jointly establish all the stated context requirements, language-QA routing, and limits on assigning a major penalty."
+        },
+        {
+          "statement_id": "detail:d3",
+          "kind": "DETAIL",
+          "text": "An earlier Japanese referral for M11-JA-022 records a polite-to-plain shift, but its review was awaiting complete dialogue and had no completed assessment.",
+          "blocking": false,
+          "evidence_ids": [
+            "k:multi-japanese-review-pending@1.0:124c6b92"
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "The earlier referral records the polite-to-plain shift and explicitly states that complete dialogue and a completed assessment were still absent."
+        },
+        {
+          "statement_id": "action:no_action",
+          "kind": "NO_ACTION_RATIONALE",
+          "text": "Why no further action is needed now: The thread already establishes the handling route, and that direction matches current guidance. An unrecorded specialist assessment does not establish a need for another intervention.",
+          "blocking": false,
+          "evidence_ids": [
+            "m:C_MULTI_GENERAL:1790891295.000226",
+            "m:C_MULTI_GENERAL:1790891203.000155",
+            "m:C_MULTI_GENERAL:1790891257.000113",
+            "k:multilingual-eval-faq@1.1:c080929d",
+            "k:multilingual-eval-instructions@1.2:e19f0e0c",
+            "k:multi-japanese-review-pending@1.0:124c6b92"
+          ],
+          "verdict": "UNSUPPORTED",
+          "model_verdict": "UNSUPPORTED",
+          "rationale": "An established route does not establish that no further intervention is needed. The honorific question remains explicitly unsettled, and the same-batch Japanese referral records an unresolved context request with a September 30 follow-up and no completed assessment. The context does not establish that these outstanding matters require no coordination."
+        },
+        {
+          "statement_id": "announcement:k:multi-locale-announcement@1.0:e97783e3",
+          "kind": "ANNOUNCEMENT_HANDLING",
+          "text": "This announcement applies to this topic and directs current handling: \"For register shifts, include the addressee and any quotation; an apparent shift is not an automatic major penalty.\". The announcement addresses register shifts in the same project and batch and directs what context to include. The recommendation relies on the current FAQ and instructions rather than on the announcement.",
+          "blocking": true,
+          "evidence_ids": [
+            "k:multi-locale-announcement@1.0:e97783e3"
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "The current announcement expressly applies to multilingual batch 11 and directs inclusion of the addressee and quotations for register shifts while prohibiting an automatic major penalty. The quoted directive matches exactly and governs this topic."
+        },
+        {
+          "statement_id": "resolution:member_09aa8fec95ded91ba4ac7c6d",
+          "kind": "RESOLUTION",
+          "text": "Member thread member_09aa8fec95ded91ba4ac7c6d is PARTIALLY_RESOLVED: The team lead identifies a register-consistency problem and supplies the language-QA route, but the thread does not explicitly settle the dropped honorific or record a scoring assessment.",
+          "blocking": true,
+          "evidence_ids": [
+            "m:C_MULTI_GENERAL:1790891203.000155",
+            "m:C_MULTI_GENERAL:1790891257.000113",
+            "m:C_MULTI_GENERAL:1790891295.000226"
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "The thread resolves the handling direction and identifies a register-consistency problem, but does not explicitly determine the honorific issue or record a scoring assessment. PARTIALLY_RESOLVED accurately preserves those limits."
+        },
+        {
+          "statement_id": "severity:rationale",
+          "kind": "SEVERITY_RATIONALE",
+          "text": "Severity LOW: This is a localized scoring clarification with a handling direction already supplied by the team lead. The member messages do not establish conflicting scoring interpretations, interrupted work, or broader impact.",
+          "blocking": true,
+          "evidence_ids": [
+            "m:C_MULTI_GENERAL:1790891203.000155",
+            "m:C_MULTI_GENERAL:1790891257.000113"
+          ],
+          "verdict": "PARTIALLY_SUPPORTED",
+          "model_verdict": "PARTIALLY_SUPPORTED",
+          "rationale": "The cited tutor messages support a localized clarification and do not establish conflicting scoring interpretations, interrupted work, or broader impact. However, they do not contain the team-lead handling direction on which the rationale also relies; that direction appears in a different, uncited message."
+        },
+        {
+          "statement_id": "severity:recurrence",
+          "kind": "HISTORICAL_RECURRENCE",
+          "text": "Retrieved records show this problem occurred before.",
+          "blocking": true,
+          "evidence_ids": [
+            "k:multi-japanese-review-pending@1.0:124c6b92"
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "The retrieved historical referral documents an earlier reported Japanese polite-to-plain register-shift problem. It supports recurrence of the reported problem, without establishing a completed scoring determination."
+        }
+      ]
+    },
+    "temporal": {
+      "status": "NONE_FOUND",
+      "findings": [],
+      "source_consistency": "ASSESSED",
+      "ignored_revision_states": "NOT_YET_EFFECTIVE and NOT_APPROVED revisions never compete with applicable guidance."
+    },
+    "temporal_before_grounding": {
+      "status": "NONE_FOUND",
+      "findings": [],
+      "source_consistency": "NOT_ASSESSED",
+      "ignored_revision_states": "NOT_YET_EFFECTIVE and NOT_APPROVED revisions never compete with applicable guidance."
+    },
+    "severity": {
+      "assessment": {
+        "level": "UNKNOWN",
+        "assessment_status": "UNASSESSED",
+        "rubric_version": null,
+        "rubric_content_sha256": null,
+        "rubric_project_id": null,
+        "rubric_scope": null,
+        "rationale": null,
+        "matched_signals": [],
+        "evidence": [],
+        "occurrence": {
+          "affected_reporters": {
+            "status": "UNKNOWN",
+            "count": null,
+            "ids": [],
+            "basis": null,
+            "evidence": []
+          },
+          "affected_tasks": {
+            "status": "UNKNOWN",
+            "count": null,
+            "ids": [],
+            "basis": null,
+            "evidence": []
+          },
+          "relevant_threads": [],
+          "reporting_window": null,
+          "historical_recurrence": {
+            "status": "NOT_CHECKED",
+            "sources": [],
+            "event_series_ids": []
+          },
+          "known_denominator": null,
+          "structural": null,
+          "semantic_identification": "PENDING"
+        },
+        "inherited_from": {
+          "level": "UNKNOWN",
+          "assessment_status": "UNASSESSED",
+          "assessment_deferred_to": "AGENT3",
+          "reason": "Agent 2 performs taxonomy only."
+        }
+      },
+      "issues": [
+        "Severity rationale not supported and no rubric signal passed; severity left UNASSESSED."
+      ],
+      "notes": [],
+      "proposal": {
+        "level": "LOW",
+        "rationale": "This is a localized scoring clarification with a handling direction already supplied by the team lead. The member messages do not establish conflicting scoring interpretations, interrupted work, or broader impact.",
+        "signals": [],
+        "affected_reporters": [],
+        "recurrence": "FOUND",
+        "recurrence_evidence_ids": [
+          "k:multi-japanese-review-pending@1.0:124c6b92"
+        ],
+        "reported_recurrence_evidence_ids": []
+      }
+    },
+    "resolution": {
+      "topic": "PARTIALLY_RESOLVED",
+      "members": {
+        "member_09aa8fec95ded91ba4ac7c6d": "PARTIALLY_RESOLVED"
+      },
+      "agent1_attributed": [
+        {
+          "member_id": "member_09aa8fec95ded91ba4ac7c6d",
+          "state": "PARTIALLY_RESOLVED",
+          "agent1_verification_status": "VERIFIED",
+          "agent1_review_required": false
+        }
+      ]
+    },
+    "established_handling": [
+      "k:multi-locale-announcement@1.0:e97783e3"
+    ],
+    "coverage_issues": [],
+    "action_source": "DRAFT",
+    "action_notes": [],
+    "tot": {
+      "status": "NOT_TRIGGERED",
+      "triggers": [],
+      "choice_after_grounding": {
+        "status": "NOT_COMPARED",
+        "viable": []
+      }
+    },
+    "evidence_ledger": {
+      "m:C_MULTI_GENERAL:1790891203.000155": {
+        "evidence_id": "m:C_MULTI_GENERAL:1790891203.000155",
+        "origin": "member_message",
+        "use": "MEMBER_REPORT",
+        "member_id": "member_09aa8fec95ded91ba4ac7c6d",
+        "channel_id": "C_MULTI_GENERAL",
+        "thread_id": "1790891203.000155",
+        "message_id": "1790891203.000155",
+        "author_id": "U011",
+        "author_name": "Rina",
+        "author_role": "TUTOR",
+        "timestamp": "2026-10-01T21:46:43.000155Z",
+        "thread_starter_id": "U011",
+        "thread_starter_role": "TUTOR",
+        "reactions": [],
+        "excerpt": "Anyone else seeing this? Is dropping さん in this reply an error?"
+      },
+      "m:C_MULTI_GENERAL:1790891257.000113": {
+        "evidence_id": "m:C_MULTI_GENERAL:1790891257.000113",
+        "origin": "member_message",
+        "use": "MEMBER_REPORT",
+        "member_id": "member_09aa8fec95ded91ba4ac7c6d",
+        "channel_id": "C_MULTI_GENERAL",
+        "thread_id": "1790891203.000155",
+        "message_id": "1790891257.000113",
+        "author_id": "U004",
+        "author_name": "Sofia",
+        "author_role": "TUTOR",
+        "timestamp": "2026-10-01T21:47:37.000113Z",
+        "thread_starter_id": "U011",
+        "thread_starter_role": "TUTOR",
+        "reactions": [
+          {
+            "name": "thinking_face",
+            "users": [
+              {
+                "id": "U010",
+                "name": "Avery"
+              }
+            ]
+          }
+        ],
+        "excerpt": "The addressee is the same throughout, but the ending becomes plain style."
+      },
+      "m:C_MULTI_GENERAL:1790891295.000226": {
+        "evidence_id": "m:C_MULTI_GENERAL:1790891295.000226",
+        "origin": "member_message",
+        "use": "MEMBER_REPORT",
+        "member_id": "member_09aa8fec95ded91ba4ac7c6d",
+        "channel_id": "C_MULTI_GENERAL",
+        "thread_id": "1790891203.000155",
+        "message_id": "1790891295.000226",
+        "author_id": "U001",
+        "author_name": "Alex",
+        "author_role": "TEAM_LEAD",
+        "timestamp": "2026-10-01T21:48:15.000226Z",
+        "thread_starter_id": "U011",
+        "thread_starter_role": "TUTOR",
+        "reactions": [],
+        "excerpt": "For this Japanese example, the unmotivated shift in speech level is a register-consistency problem; route any locale-specific scoring judgment through language QA."
+      },
+      "k:multilingual-eval-faq@1.1:c080929d": {
+        "evidence_id": "k:multilingual-eval-faq@1.1:c080929d",
+        "origin": "retrieved_source",
+        "use": "CURRENT_GUIDANCE",
+        "citation": {
+          "document_id": "knowledge_c15570cbd012ed59f27eb87df90bd765cd62588d1360da180a3d953eac280c4c",
+          "version_id": "version_7e0db046267f7e994c89672132b74a58c12aa6b67a66736fe2f2979f669fe4cb",
+          "chunk_id": "chunk_c080929dd1534beb3655111ccfcb9ab7",
+          "authoring": "multilingual-eval-faq@1.1",
+          "title": "Multilingual Evaluation — FAQ (v1.1)",
+          "sections": [
+            "Register and honorifics"
+          ],
+          "source": {
+            "batch_id": null,
+            "channel_id": null,
+            "manual_key": "multilingual-eval-faq",
+            "message_id": null,
+            "permalink": null,
+            "project_id": "multilingual_eval",
+            "reference": null,
+            "system": "manual",
+            "thread_id": null,
+            "workspace_id": null
+          }
+        },
+        "source_type": "faq",
+        "record_kind": "faq",
+        "applicability": {
+          "state": "CURRENT",
+          "revision_state": "CURRENT",
+          "version_mode": "current",
+          "replaced_by": [],
+          "unverified_supersession": [],
+          "supersedes": [],
+          "enactment": null,
+          "other_revisions": []
+        },
+        "dates": {
+          "source_date": "2026-09-18T13:00:00Z",
+          "basis": "effective_at",
+          "effective_at": "2026-09-18T13:00:00Z",
+          "created_at": null,
+          "valid_until": null,
+          "expired_as_of": false,
+          "reference_time": "2026-10-02T12:00:00Z"
+        },
+        "scope": {
+          "project_id": "multilingual_eval",
+          "batch_id": null,
+          "scope": "project",
+          "batch_relation": "project_wide"
+        },
+        "authority": {
+          "role": "TEAM_LEAD",
+          "actor": "U001",
+          "actor_relation": "RECORD_AUTHORITY",
+          "approval_status": "EXPLICIT_SOURCE_MARKER",
+          "provenance": "synthetic_manual_record"
+        },
+        "authorship": {
+          "author_id": null,
+          "verified": false,
+          "basis": "NO_AUTHOR_RECORDED"
+        },
+        "recorded_states": {
+          "status": "approved",
+          "decision_status": null,
+          "execution_status": null,
+          "outcome_status": null
+        },
+        "upstream_review": null,
+        "excerpt": "## Register and honorifics\n\n### Q: Who scores Korean or Japanese register shifts?\nRoute the case to appropriate Korean or Japanese language QA with exact sentence endings and surrounding context. Check quotations and addressee changes. The task-quality grade depends on demonstrated impact; do not assign a major penalty from the presence of a shift alone.\n\n### Q: Spanish tú versus usted inconsistency — major or minor?\nAsk Spanish QA to check addressee, intended formality and discourse context. An unjustified shift can be an error, but its grade needs a case-specific rationale."
+      },
+      "k:multi-locale-announcement@1.0:e97783e3": {
+        "evidence_id": "k:multi-locale-announcement@1.0:e97783e3",
+        "origin": "retrieved_source",
+        "use": "ANNOUNCEMENT",
+        "citation": {
+          "document_id": "knowledge_19f329e43828dc751d0dc5261dc160c942e9663d8ca2671c5d9bb14cad998f03",
+          "version_id": "version_85fd95c87351213f6440425b615b50363a8e4c38dc4ba175eac40a6545b4ec31",
+          "chunk_id": "chunk_e97783e38fbc485bcacec8754be6a0c0",
+          "authoring": "multi-locale-announcement@1.0",
+          "title": "Locale and register routing announcement",
+          "sections": [],
+          "source": {
+            "batch_id": "multi_batch_11",
+            "channel_id": "C_MULTI_ANNOUNCEMENTS",
+            "manual_key": null,
+            "message_id": "1790082000.700003",
+            "permalink": null,
+            "project_id": "multilingual_eval",
+            "reference": null,
+            "system": "slack",
+            "thread_id": "1790082000.700003",
+            "workspace_id": null
+          }
+        },
+        "source_type": "announcement",
+        "record_kind": "channel_announcement",
+        "applicability": {
+          "state": "CURRENT",
+          "revision_state": "CURRENT",
+          "version_mode": "current",
+          "replaced_by": [],
+          "unverified_supersession": [],
+          "supersedes": [],
+          "enactment": null,
+          "other_revisions": []
+        },
+        "dates": {
+          "source_date": "2026-09-22T13:00:00Z",
+          "basis": "effective_at",
+          "effective_at": "2026-09-22T13:00:00Z",
+          "created_at": "2026-09-22T13:00:00.700003+00:00",
+          "valid_until": null,
+          "expired_as_of": false,
+          "reference_time": "2026-10-02T12:00:00Z"
+        },
+        "scope": {
+          "project_id": "multilingual_eval",
+          "batch_id": "multi_batch_11",
+          "scope": "project",
+          "batch_relation": "same_batch"
+        },
+        "authority": {
+          "role": "TEAM_LEAD",
+          "actor": "U001",
+          "actor_relation": "MESSAGE_AUTHOR",
+          "approval_status": "EXPLICIT_SOURCE_MARKER",
+          "provenance": "synthetic_slack_archive"
+        },
+        "authorship": {
+          "author_id": "U001",
+          "verified": true,
+          "basis": "SLACK_MESSAGE_AUTHOR"
+        },
+        "recorded_states": {
+          "status": "tl_approved",
+          "decision_status": "tl_approved",
+          "execution_status": "posted",
+          "outcome_status": "not_observed"
+        },
+        "upstream_review": null,
+        "excerpt": "[ANNOUNCEMENT posted 2026-09-22T13:00:00Z by TEAM_LEAD (multi_batch_11): not established as handling for this topic until you show it is relevant and gives a directive.]\nMultilingual batch 11: confirm the requested audience or locale before penalizing regional wording. Natural Southern Vietnamese vocabulary is not an error solely because a reviewer prefers a Northern term. Provide the exact phrase and prompt context. Send Korean cases to Hana, Japanese cases to Yuki, Vietnamese cases to Linh and Spanish cases to Leo. For register shifts, include the addressee and any quotation; an apparent shift is not an automatic major penalty."
+      },
+      "k:multi-japanese-backup-assignment-deferred@1.0:64536199": {
+        "evidence_id": "k:multi-japanese-backup-assignment-deferred@1.0:64536199",
+        "origin": "retrieved_source",
+        "use": "PRIOR_DECISION",
+        "citation": {
+          "document_id": "knowledge_61e1fc3883ab97790afb8c0fa95408d3d80a14cba093f4e1be994c33608c6bd6",
+          "version_id": "version_b02e9deb950f90ddfd9af9b9fed1a4a8bff496741e16e9036fee72706bf01534",
+          "chunk_id": "chunk_64536199f10bad8a8daad6af9a2300ab",
+          "authoring": "multi-japanese-backup-assignment-deferred@1.0",
+          "title": "Defer a proposed Japanese QA backup assignment",
+          "sections": [
+            "Evidence available at review",
+            "Prior ThreadSense advice",
+            "TL response"
+          ],
+          "source": {
+            "batch_id": "multi_batch_11",
+            "channel_id": null,
+            "manual_key": "multi-japanese-backup-assignment-deferred",
+            "message_id": null,
+            "permalink": null,
+            "project_id": "multilingual_eval",
+            "reference": null,
+            "system": "manual",
+            "thread_id": null,
+            "workspace_id": null
+          }
+        },
+        "source_type": "decision",
+        "record_kind": "advice_review",
+        "applicability": {
+          "state": "CURRENT",
+          "revision_state": "CURRENT",
+          "version_mode": "current",
+          "replaced_by": [],
+          "unverified_supersession": [],
+          "supersedes": [],
+          "enactment": {
+            "status": "NOT_ENACTED",
+            "basis": null,
+            "governing_sources": [],
+            "missing": [
+              "NO_TL_APPROVAL",
+              "NOT_A_POLICY_CHANGE",
+              "NO_ENACTMENT_EVIDENCE"
+            ],
+            "recorded": {
+              "decision_status": "tl_deferred",
+              "execution_status": "not_executed",
+              "authority_role": "TEAM_LEAD",
+              "batch_id": "multi_batch_11",
+              "valid_until": null,
+              "effective_at": "2026-09-28T15:00:00Z"
+            }
+          },
+          "other_revisions": []
+        },
+        "dates": {
+          "source_date": "2026-09-28T15:00:00Z",
+          "basis": "effective_at",
+          "effective_at": "2026-09-28T15:00:00Z",
+          "created_at": null,
+          "valid_until": null,
+          "expired_as_of": false,
+          "reference_time": "2026-10-02T12:00:00Z"
+        },
+        "scope": {
+          "project_id": "multilingual_eval",
+          "batch_id": "multi_batch_11",
+          "scope": "project",
+          "batch_relation": "same_batch"
+        },
+        "authority": {
+          "role": "TEAM_LEAD",
+          "actor": "U001",
+          "actor_relation": "RECORD_AUTHORITY",
+          "approval_status": "NO_APPROVAL_MARKER",
+          "provenance": "synthetic_manual_record"
+        },
+        "authorship": {
+          "author_id": null,
+          "verified": false,
+          "basis": "NO_AUTHOR_RECORDED"
+        },
+        "recorded_states": {
+          "status": "tl_deferred",
+          "decision_status": "tl_deferred",
+          "execution_status": "not_executed",
+          "outcome_status": "open"
+        },
+        "upstream_review": null,
+        "excerpt": "[PRIOR RECORD (advice_review; decision_status: tl_deferred; execution_status: not_executed; outcome_status: open) - history, not a standing rule.]\n# Defer a proposed Japanese QA backup assignment\n\n## Evidence available at review\n\nYuki (U019, Japanese QA) had not confirmed availability for the September 30 morning review slot. Leo (U007) had an open calendar slot, but the project roster records Spanish expertise for Leo, not Japanese. No alternate Japanese specialist or reviewed Japanese case was supplied with this request.\n\nThe staffing question remains open. No reassignment, specialist opinion, or resolution of a register question is recorded here.\n\n## Prior ThreadSense advice\n\nAssign Leo as the September 30 backup for the Japanese QA queue because his calendar shows an available slot.\n\n## TL response\n\nDefer this assignment. Availability does not establish Japanese expertise. Keep Yuki as the named Japanese reviewer and confirm her slot; if she is unavailable, bring me an appropriately qualified alternative. Do not route Japanese scoring decisions to Leo based only on this calendar opening."
+      },
+      "k:multi-korean-scoped-result@1.0:5b489480": {
+        "evidence_id": "k:multi-korean-scoped-result@1.0:5b489480",
+        "origin": "retrieved_source",
+        "use": "PRIOR_DECISION",
+        "citation": {
+          "document_id": "knowledge_a8b6d9399ba7ec6a64d73f02cb1f757465fe0bd68c0985279f9039d92851f541",
+          "version_id": "version_219955bf61359d8739b3f11429ec1e45a7249590b822d3fe27039c6e6708303c",
+          "chunk_id": "chunk_5b48948011da0280acd4c7e7f631211c",
+          "authoring": "multi-korean-scoped-result@1.0",
+          "title": "Scoped Korean finding confirmed by the TL",
+          "sections": [
+            "Specialist finding",
+            "TL confirmation",
+            "Result and limits"
+          ],
+          "source": {
+            "batch_id": "multi_batch_10",
+            "channel_id": null,
+            "manual_key": "multi-korean-scoped-result",
+            "message_id": null,
+            "permalink": null,
+            "project_id": "multilingual_eval",
+            "reference": null,
+            "system": "manual",
+            "thread_id": null,
+            "workspace_id": null
+          }
+        },
+        "source_type": "decision",
+        "record_kind": "expert_review",
+        "applicability": {
+          "state": "CURRENT",
+          "revision_state": "CURRENT",
+          "version_mode": "current",
+          "replaced_by": [],
+          "unverified_supersession": [],
+          "supersedes": [],
+          "enactment": {
+            "status": "NOT_ENACTED",
+            "basis": null,
+            "governing_sources": [],
+            "missing": [
+              "OUT_OF_SCOPE",
+              "NOT_A_POLICY_CHANGE",
+              "NO_ENACTMENT_EVIDENCE"
+            ],
+            "recorded": {
+              "decision_status": "tl_approved",
+              "execution_status": "assessment_recorded",
+              "authority_role": "TEAM_LEAD",
+              "batch_id": "multi_batch_10",
+              "valid_until": null,
+              "effective_at": "2026-09-14T15:00:00Z"
+            }
+          },
+          "other_revisions": []
+        },
+        "dates": {
+          "source_date": "2026-09-14T15:00:00Z",
+          "basis": "effective_at",
+          "effective_at": "2026-09-14T15:00:00Z",
+          "created_at": null,
+          "valid_until": null,
+          "expired_as_of": false,
+          "reference_time": "2026-10-02T12:00:00Z"
+        },
+        "scope": {
+          "project_id": "multilingual_eval",
+          "batch_id": "multi_batch_10",
+          "scope": "project",
+          "batch_relation": "other_batch"
+        },
+        "authority": {
+          "role": "TEAM_LEAD",
+          "actor": "U001",
+          "actor_relation": "RECORD_AUTHORITY",
+          "approval_status": "EXPLICIT_SOURCE_MARKER",
+          "provenance": "synthetic_manual_record"
+        },
+        "authorship": {
+          "author_id": null,
+          "verified": false,
+          "basis": "NO_AUTHOR_RECORDED"
+        },
+        "recorded_states": {
+          "status": "tl_approved",
+          "decision_status": "tl_approved",
+          "execution_status": "assessment_recorded",
+          "outcome_status": "resolved_for_scoped_case"
+        },
+        "upstream_review": null,
+        "excerpt": "[PRIOR RECORD (expert_review; decision_status: tl_approved; execution_status: assessment_recorded; outcome_status: resolved_for_scoped_case) - history, not a standing rule.]\n# Scoped Korean finding confirmed by the TL\n\n## Specialist finding\nHana reviewed the complete paragraph for M10-KO-017. The casual sentence was a quoted utterance from a different speaker, and the surrounding narration retained its polite register. She found no unsupported shift by the narrator.\n\n## TL confirmation\nAlex confirmed no register-consistency penalty for this exact quoted-speaker case. The finding does not authorize a casual switch while addressing the same person without a discourse reason.\n\n## Result and limits\nThe batch-10 question for M10-KO-017 is resolved. Later same-addressee cases require their own context; an older favorable ruling cannot be transferred merely because both texts contain polite and casual endings."
+      },
+      "k:multi-japanese-review-pending@1.0:124c6b92": {
+        "evidence_id": "k:multi-japanese-review-pending@1.0:124c6b92",
+        "origin": "retrieved_source",
+        "use": "PRIOR_DECISION",
+        "citation": {
+          "document_id": "knowledge_bc99d029e4f74696096161d34ced85102817a9a45e77c0ca6093caf042fe843e",
+          "version_id": "version_37babf5fb7378ad51029ff707231ce297427b0679fc97ca108efd6428ffffd05",
+          "chunk_id": "chunk_124c6b929e3865d49c6602a4c429404a",
+          "authoring": "multi-japanese-review-pending@1.0",
+          "title": "Japanese register review awaiting complete context",
+          "sections": [
+            "Case packet",
+            "TL routing",
+            "State"
+          ],
+          "source": {
+            "batch_id": "multi_batch_11",
+            "channel_id": null,
+            "manual_key": "multi-japanese-review-pending",
+            "message_id": null,
+            "permalink": null,
+            "project_id": "multilingual_eval",
+            "reference": null,
+            "system": "manual",
+            "thread_id": null,
+            "workspace_id": null
+          }
+        },
+        "source_type": "decision",
+        "record_kind": "expert_referral",
+        "applicability": {
+          "state": "CURRENT",
+          "revision_state": "CURRENT",
+          "version_mode": "current",
+          "replaced_by": [],
+          "unverified_supersession": [],
+          "supersedes": [],
+          "enactment": {
+            "status": "NOT_ENACTED",
+            "basis": null,
+            "governing_sources": [],
+            "missing": [
+              "NOT_A_POLICY_CHANGE",
+              "NO_ENACTMENT_EVIDENCE"
+            ],
+            "recorded": {
+              "decision_status": "tl_approved",
+              "execution_status": "routed",
+              "authority_role": "TEAM_LEAD",
+              "batch_id": "multi_batch_11",
+              "valid_until": null,
+              "effective_at": "2026-09-25T15:00:00Z"
+            }
+          },
+          "other_revisions": []
+        },
+        "dates": {
+          "source_date": "2026-09-25T15:00:00Z",
+          "basis": "effective_at",
+          "effective_at": "2026-09-25T15:00:00Z",
+          "created_at": null,
+          "valid_until": null,
+          "expired_as_of": false,
+          "reference_time": "2026-10-02T12:00:00Z"
+        },
+        "scope": {
+          "project_id": "multilingual_eval",
+          "batch_id": "multi_batch_11",
+          "scope": "project",
+          "batch_relation": "same_batch"
+        },
+        "authority": {
+          "role": "TEAM_LEAD",
+          "actor": "U001",
+          "actor_relation": "RECORD_AUTHORITY",
+          "approval_status": "EXPLICIT_SOURCE_MARKER",
+          "provenance": "synthetic_manual_record"
+        },
+        "authorship": {
+          "author_id": null,
+          "verified": false,
+          "basis": "NO_AUTHOR_RECORDED"
+        },
+        "recorded_states": {
+          "status": "tl_approved",
+          "decision_status": "tl_approved",
+          "execution_status": "routed",
+          "outcome_status": "awaiting_context"
+        },
+        "upstream_review": null,
+        "excerpt": "[PRIOR RECORD (expert_referral; decision_status: tl_approved; execution_status: routed; outcome_status: awaiting_context) - history, not a standing rule.]\n# Japanese register review awaiting complete context\n\n## Case packet\nM11-JA-022 was reported as starting in です/ます and ending in plain form. The supplied excerpt omitted the preceding dialogue and did not establish whether the closing sentence addressed the same person.\n\n## TL routing\nAlex assigned the review to Yuki (U019, Japanese QA). Yuki requested the complete dialogue before deciding whether the change was purposeful. The follow-up was due September 30; this record contains no completed assessment.\n\n## State\nThe case was routed, not resolved. No major/minor score or general keigo rule was approved. A due date is a requested follow-up time, not proof that the follow-up occurred."
+      },
+      "k:multilingual-eval-instructions@1.2:e19f0e0c": {
+        "evidence_id": "k:multilingual-eval-instructions@1.2:e19f0e0c",
+        "origin": "retrieved_source",
+        "use": "CURRENT_GUIDANCE",
+        "citation": {
+          "document_id": "knowledge_39fa9c105417f58fd94be8aad733afc43c68c751e575216a2095e758e7a711ee",
+          "version_id": "version_04697b30fef1fe24b853568a67e7ddb0f1f2906712be246671e21b75945aa005",
+          "chunk_id": "chunk_e19f0e0c159ad1d53e9684be0bf69066",
+          "authoring": "multilingual-eval-instructions@1.2",
+          "title": "Multilingual Evaluation — Instructions (v1.2)",
+          "sections": [
+            "Register and honorifics"
+          ],
+          "source": {
+            "batch_id": null,
+            "channel_id": null,
+            "manual_key": "multilingual-eval-instructions",
+            "message_id": null,
+            "permalink": null,
+            "project_id": "multilingual_eval",
+            "reference": null,
+            "system": "manual",
+            "thread_id": null,
+            "workspace_id": null
+          }
+        },
+        "source_type": "guideline",
+        "record_kind": "guideline",
+        "applicability": {
+          "state": "CURRENT",
+          "revision_state": "CURRENT",
+          "version_mode": "current",
+          "replaced_by": [],
+          "unverified_supersession": [],
+          "supersedes": [],
+          "enactment": null,
+          "other_revisions": []
+        },
+        "dates": {
+          "source_date": "2026-09-10T13:00:00Z",
+          "basis": "effective_at",
+          "effective_at": "2026-09-10T13:00:00Z",
+          "created_at": null,
+          "valid_until": null,
+          "expired_as_of": false,
+          "reference_time": "2026-10-02T12:00:00Z"
+        },
+        "scope": {
+          "project_id": "multilingual_eval",
+          "batch_id": null,
+          "scope": "project",
+          "batch_relation": "project_wide"
+        },
+        "authority": {
+          "role": "TEAM_LEAD",
+          "actor": "U001",
+          "actor_relation": "RECORD_AUTHORITY",
+          "approval_status": "EXPLICIT_SOURCE_MARKER",
+          "provenance": "synthetic_manual_record"
+        },
+        "authorship": {
+          "author_id": null,
+          "verified": false,
+          "basis": "NO_AUTHOR_RECORDED"
+        },
+        "recorded_states": {
+          "status": "approved",
+          "decision_status": null,
+          "execution_status": null,
+          "outcome_status": null
+        },
+        "upstream_review": null,
+        "excerpt": "[ADDED FOR TYPE COVERAGE: best-ranked guideline for this query (rank 7), outside the top 5.]\n## Register and honorifics\nCheck the addressee, discourse context, quotation and intended register. A speaker change or quotation can justify a shift. Provide exact sentence endings and route locale-specific scoring to the appropriate language QA. An apparent shift is not an automatic major penalty.",
+        "retrieved_as": {
+          "role": "TYPE_COVERAGE",
+          "detail": "best-ranked guideline for this query (rank 7), outside the top 5"
+        }
+      }
+    },
+    "card": {
+      "contract_version": "agent3-advice-card-v4",
+      "record_type": "ADVICE_CARD",
+      "card_id": "card_2b3eb7be71319afd33b27abaa2091a61",
+      "project_id": "multilingual_eval",
+      "topic_name": "Japanese register consistency and honorific use",
+      "card_line": "NEEDS_REVIEW",
+      "summary": "A tutor asks whether dropping さん is an error in a Japanese reply. The team lead identifies a register-consistency problem in this example and directs locale-specific scoring through language QA; the thread does not record a completed scoring assessment.",
+      "severity": {
+        "level": "UNKNOWN",
+        "assessment_status": "UNASSESSED",
+        "rubric_version": null,
+        "rubric_content_sha256": null,
+        "rubric_project_id": null,
+        "rubric_scope": null,
+        "rationale": null,
+        "matched_signals": [],
+        "evidence": [],
+        "occurrence": {
+          "affected_reporters": {
+            "status": "UNKNOWN",
+            "count": null,
+            "ids": [],
+            "basis": null,
+            "evidence": []
+          },
+          "affected_tasks": {
+            "status": "UNKNOWN",
+            "count": null,
+            "ids": [],
+            "basis": null,
+            "evidence": []
+          },
+          "relevant_threads": [],
+          "reporting_window": null,
+          "historical_recurrence": {
+            "status": "NOT_CHECKED",
+            "sources": [],
+            "event_series_ids": []
+          },
+          "known_denominator": null,
+          "structural": null,
+          "semantic_identification": "PENDING"
+        },
+        "inherited_from": {
+          "level": "UNKNOWN",
+          "assessment_status": "UNASSESSED",
+          "assessment_deferred_to": "AGENT3",
+          "reason": "Agent 2 performs taxonomy only."
+        }
+      },
+      "severity_is_provisional": true,
+      "resolution_status": "PARTIALLY_RESOLVED",
+      "recommended_action": null,
+      "reasoning": "What the evidence shows: A tutor asks whether dropping さん in a Japanese reply is an error. A second tutor reports that the addressee remains the same while the ending becomes plain style. For this Japanese example, the team lead identifies the unmotivated speech-level shift as a register-consistency problem and instructs that locale-specific scoring judgments go through language QA. The thread establishes how to handle the example but contains no completed language-QA scoring assessment or explicit determination about the dropped honorific itself. Current project guidance routes Japanese register scoring to Japanese language QA with exact sentence endings and surrounding context, requires checks for quotations and addressee changes, and does not allow a major penalty based on a shift alone. The earlier Japanese referral records M11-JA-022 as beginning in polite forms and ending in plain form; the review was routed but awaited complete dialogue, with no completed assessment or approved major/minor score recorded. The September 22 batch announcement asks for the addressee and any quotation when reporting register shifts and says an apparent shift is not an automatic major penalty. Thread status, read from each thread's own messages: partially resolved ×1. Agent 1's earlier labels (an input, not evidence): partially resolved ×1. 2 advisor statements were not supported by the evidence and not shown.",
+      "supporting_sources": [
+        {
+          "kind": "knowledge_source",
+          "project_id": "multilingual_eval",
+          "batch_id": null,
+          "scope": "project",
+          "channel_id": null,
+          "thread_id": null,
+          "message_id": null,
+          "document_id": "knowledge_c15570cbd012ed59f27eb87df90bd765cd62588d1360da180a3d953eac280c4c",
+          "version_id": "version_7e0db046267f7e994c89672132b74a58c12aa6b67a66736fe2f2979f669fe4cb",
+          "authoring_document_id": "multilingual-eval-faq",
+          "authoring_version": "1.1",
+          "section": "Register and honorifics",
+          "chunk_id": "chunk_c080929dd1534beb3655111ccfcb9ab7",
+          "candidate_group_id": null,
+          "member_id": null,
+          "artifact": null,
+          "artifact_sha256": null,
+          "quote": null,
+          "note": "k:multilingual-eval-faq@1.1:c080929d (CURRENT_GUIDANCE; CURRENT)"
+        },
+        {
+          "kind": "knowledge_source",
+          "project_id": "multilingual_eval",
+          "batch_id": null,
+          "scope": "project",
+          "channel_id": null,
+          "thread_id": null,
+          "message_id": null,
+          "document_id": "knowledge_39fa9c105417f58fd94be8aad733afc43c68c751e575216a2095e758e7a711ee",
+          "version_id": "version_04697b30fef1fe24b853568a67e7ddb0f1f2906712be246671e21b75945aa005",
+          "authoring_document_id": "multilingual-eval-instructions",
+          "authoring_version": "1.2",
+          "section": "Register and honorifics",
+          "chunk_id": "chunk_e19f0e0c159ad1d53e9684be0bf69066",
+          "candidate_group_id": null,
+          "member_id": null,
+          "artifact": null,
+          "artifact_sha256": null,
+          "quote": null,
+          "note": "k:multilingual-eval-instructions@1.2:e19f0e0c (CURRENT_GUIDANCE; CURRENT)"
+        },
+        {
+          "kind": "knowledge_source",
+          "project_id": "multilingual_eval",
+          "batch_id": "multi_batch_11",
+          "scope": "project",
+          "channel_id": null,
+          "thread_id": null,
+          "message_id": null,
+          "document_id": "knowledge_bc99d029e4f74696096161d34ced85102817a9a45e77c0ca6093caf042fe843e",
+          "version_id": "version_37babf5fb7378ad51029ff707231ce297427b0679fc97ca108efd6428ffffd05",
+          "authoring_document_id": "multi-japanese-review-pending",
+          "authoring_version": "1.0",
+          "section": "Case packet",
+          "chunk_id": "chunk_124c6b929e3865d49c6602a4c429404a",
+          "candidate_group_id": null,
+          "member_id": null,
+          "artifact": null,
+          "artifact_sha256": null,
+          "quote": null,
+          "note": "k:multi-japanese-review-pending@1.0:124c6b92 (PRIOR_DECISION; CURRENT)"
+        },
+        {
+          "kind": "knowledge_source",
+          "project_id": "multilingual_eval",
+          "batch_id": "multi_batch_11",
+          "scope": "project",
+          "channel_id": null,
+          "thread_id": null,
+          "message_id": null,
+          "document_id": "knowledge_19f329e43828dc751d0dc5261dc160c942e9663d8ca2671c5d9bb14cad998f03",
+          "version_id": "version_85fd95c87351213f6440425b615b50363a8e4c38dc4ba175eac40a6545b4ec31",
+          "authoring_document_id": "multi-locale-announcement",
+          "authoring_version": "1.0",
+          "section": null,
+          "chunk_id": "chunk_e97783e38fbc485bcacec8754be6a0c0",
+          "candidate_group_id": null,
+          "member_id": null,
+          "artifact": null,
+          "artifact_sha256": null,
+          "quote": null,
+          "note": "k:multi-locale-announcement@1.0:e97783e3 (CURRENT_HANDLING (announcement verified for this topic); CURRENT)"
+        },
+        {
+          "kind": "slack_message",
+          "project_id": "multilingual_eval",
+          "batch_id": "multi_batch_11",
+          "scope": "project",
+          "channel_id": "C_MULTI_GENERAL",
+          "thread_id": "1790891203.000155",
+          "message_id": "1790891203.000155",
+          "document_id": null,
+          "version_id": null,
+          "authoring_document_id": null,
+          "authoring_version": null,
+          "section": null,
+          "chunk_id": null,
+          "candidate_group_id": null,
+          "member_id": "member_09aa8fec95ded91ba4ac7c6d",
+          "artifact": null,
+          "artifact_sha256": null,
+          "quote": null,
+          "note": "m:C_MULTI_GENERAL:1790891203.000155"
+        },
+        {
+          "kind": "slack_message",
+          "project_id": "multilingual_eval",
+          "batch_id": "multi_batch_11",
+          "scope": "project",
+          "channel_id": "C_MULTI_GENERAL",
+          "thread_id": "1790891203.000155",
+          "message_id": "1790891257.000113",
+          "document_id": null,
+          "version_id": null,
+          "authoring_document_id": null,
+          "authoring_version": null,
+          "section": null,
+          "chunk_id": null,
+          "candidate_group_id": null,
+          "member_id": "member_09aa8fec95ded91ba4ac7c6d",
+          "artifact": null,
+          "artifact_sha256": null,
+          "quote": null,
+          "note": "m:C_MULTI_GENERAL:1790891257.000113"
+        },
+        {
+          "kind": "slack_message",
+          "project_id": "multilingual_eval",
+          "batch_id": "multi_batch_11",
+          "scope": "project",
+          "channel_id": "C_MULTI_GENERAL",
+          "thread_id": "1790891203.000155",
+          "message_id": "1790891295.000226",
+          "document_id": null,
+          "version_id": null,
+          "authoring_document_id": null,
+          "authoring_version": null,
+          "section": null,
+          "chunk_id": null,
+          "candidate_group_id": null,
+          "member_id": "member_09aa8fec95ded91ba4ac7c6d",
+          "artifact": null,
+          "artifact_sha256": null,
+          "quote": null,
+          "note": "m:C_MULTI_GENERAL:1790891295.000226"
+        }
+      ],
+      "related_threads": [
+        {
+          "project_id": "multilingual_eval",
+          "batch_id": "multi_batch_11",
+          "channel_id": "C_MULTI_GENERAL",
+          "thread_id": "1790891203.000155",
+          "member_id": "member_09aa8fec95ded91ba4ac7c6d",
+          "permalink": null,
+          "display_reference": "1790891203.000155",
+          "label": "#multilingual-eval-general, 2026-10-01, started by a tutor: \"Anyone else seeing this?\"",
+          "opening_text": "Anyone else seeing this? Is dropping さん in this reply an error?"
+        }
+      ],
+      "confidence": 0.9,
+      "confidence_band": "HIGH",
+      "needs_review_reasons": [
+        {
+          "code": "GROUNDING_FAILURE",
+          "detail": "Withheld from this card: severity:rationale: PARTIALLY_SUPPORTED",
+          "obligation_ids": [],
+          "evidence": []
+        },
+        {
+          "code": "OTHER",
+          "detail": "Severity not established: Severity rationale not supported and no rubric signal passed; severity left UNASSESSED.",
+          "obligation_ids": [],
+          "evidence": []
+        }
+      ],
+      "inherited_flags": [],
+      "checks": {
+        "grounding": "FAILED",
+        "temporal_conflict": "NONE_FOUND",
+        "open_confirmation": "NONE"
+      },
+      "lineage": {
+        "agent3_run_id": "agent3overnight_bdc099a76ee76bdc391050df2aded225",
+        "handoff_contract": "agent2-taxonomy-handoff-v2",
+        "agent2_export_sha256": "6f1f56bf5a5b1f02287d7ac958dc205c05cc9e0ea3e6d5f3fdd7279da0c9e1e7",
+        "agent2_schema_version": 8,
+        "candidate_group_id": "cluster_9f6995beab0371aa",
+        "topic_id": "cluster_9f6995beab0371aa/topic_1",
+        "member_ids": [
+          "member_09aa8fec95ded91ba4ac7c6d"
+        ],
+        "project_id": "multilingual_eval",
+        "batch_id": "multi_batch_11"
+      },
+      "review_notes": [
+        "Some advisor statements were not supported by the evidence and are not shown.",
+        "Severity could not be established from the supported evidence."
+      ],
+      "details": [
+        "A second tutor reports that the addressee stays the same while the ending changes to plain style.",
+        "Current guidance requires exact sentence endings and surrounding context for Japanese language QA, including checks for quotations and addressee changes; a shift alone does not justify a major penalty.",
+        "An earlier Japanese referral for M11-JA-022 records a polite-to-plain shift, but its review was awaiting complete dialogue and had no completed assessment."
+      ],
+      "next_step": {
+        "status": "NO_INTERVENTION_PROPOSED",
+        "rationale": null,
+        "explanation": "The advisor chose not to propose an intervention. Its reason is not shown because the evidence check found no support for it in the cited evidence. Treat this as the advisor's choice, not a confirmed decision."
+      }
+    },
+    "review_items": [],
+    "coverage": {
+      "group_members_outside_this_card": [],
+      "uncarried_obligations": []
+    },
+    "budget": {
+      "consumed": {
+        "retrieval_calls": 1,
+        "model_calls": 2
+      },
+      "limits": {
+        "model_calls_per_topic": 4,
+        "model_calls_total": 28,
+        "retrieval_calls_per_topic": 6,
+        "retrieval_calls_total": 42
+      }
+    },
+    "diagnostics": [
+      {
+        "code": "WITHHELD_STATEMENT",
+        "statement_id": "action:no_action",
+        "kind": "NO_ACTION_RATIONALE",
+        "text": "Why no further action is needed now: The thread already establishes the handling route, and that direction matches current guidance. An unrecorded specialist assessment does not establish a need for another intervention.",
+        "verdict": "UNSUPPORTED",
+        "rationale": "An established route does not establish that no further intervention is needed. The honorific question remains explicitly unsettled, and the same-batch Japanese referral records an unresolved context request with a September 30 follow-up and no completed assessment. The context does not establish that these outstanding matters require no coordination.",
+        "blocking": false
+      },
+      {
+        "code": "WITHHELD_STATEMENT",
+        "statement_id": "severity:rationale",
+        "kind": "SEVERITY_RATIONALE",
+        "text": "Severity LOW: This is a localized scoring clarification with a handling direction already supplied by the team lead. The member messages do not establish conflicting scoring interpretations, interrupted work, or broader impact.",
+        "verdict": "PARTIALLY_SUPPORTED",
+        "rationale": "The cited tutor messages support a localized clarification and do not establish conflicting scoring interpretations, interrupted work, or broader impact. However, they do not contain the team-lead handling direction on which the rationale also relies; that direction appears in a different, uncited message.",
+        "blocking": true
+      }
+    ]
+  }
+}

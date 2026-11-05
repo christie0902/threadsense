@@ -1,0 +1,340 @@
+{
+ "generated_at": "2026-11-05T19:40:05.456911+00:00",
+ "stages": {
+  "snapshot": {
+   "stage": "snapshot",
+   "status": "COMPLETE",
+   "output": "snapshot",
+   "dependencies": {},
+   "output_tree_sha256": "30a15c40400363182c54a75d13240f368cafec5930cd6263942262bc3772ac2c",
+   "versions": {},
+   "requests": {
+    "by_origin_state": {},
+    "charged_usd": 0,
+    "uncertain_reserved_usd": 0
+   },
+   "finished_at": "2026-11-05T19:36:15.725163+00:00",
+   "snapshot": {
+    "fixture_tree_sha256": "373c0f38c3624e08c240384b994bde19e2122f060941e98f953dfb4445106b6c",
+    "source_fixture_tree_sha256": "373c0f38c3624e08c240384b994bde19e2122f060941e98f953dfb4445106b6c",
+    "retrieval_manifest_sha256": "f69c59890eb59eed67879dacc86703fa52178ac39ede606bd5cc5209fe23fd33",
+    "knowledge_tree_sha256": "10b8e01dfbacf2c7ba76298a3656b94c76dd1d689683e396bb119a383ee29433"
+   }
+  },
+  "agent1_interpret": {
+   "stage": "agent1_interpret",
+   "status": "COMPLETE",
+   "output": "stages/agent1_interpret/agent1_interpretations_v1",
+   "dependencies": {
+    "snapshot": "74bce3d94b0c5bedea5bb2da780daca7bc3d8d24632ba87c6a1da3d631c96ce2"
+   },
+   "output_tree_sha256": "5137217f5217ec61bdf88e90f3c21bd3495563352ebdb79f5750d197c5251702",
+   "versions": {
+    "runner": "5a33978ec90cc8b55bdb9eded1252f6e655dff0e3f88a1a0f70dee9e009144e4"
+   },
+   "requests": {
+    "by_origin_state": {
+     "REUSED_PARENT:REUSED": 178
+    },
+    "charged_usd": 0.0,
+    "uncertain_reserved_usd": 0
+   },
+   "finished_at": "2026-11-05T19:36:55.476684+00:00",
+   "runner_exit_code": 2,
+   "batch_status": {
+    "state": "complete_with_review",
+    "selected": 178,
+    "valid": 177,
+    "needs_review": 1,
+    "unprocessed": 0,
+    "all_selected_have_valid_interpretations": false,
+    "stopped_error": null
+   }
+  },
+  "agent1_verify": {
+   "stage": "agent1_verify",
+   "status": "COMPLETE",
+   "output": "stages/agent1_verify/agent1_verified_v1",
+   "dependencies": {
+    "snapshot": "74bce3d94b0c5bedea5bb2da780daca7bc3d8d24632ba87c6a1da3d631c96ce2",
+    "agent1_interpret": "cc668a53e8de12e309368be479a11dd5b081f9f57bcd89ec5f95ab62c94265b3"
+   },
+   "output_tree_sha256": "f3f1af5c07054bdec78b619770c43bf27fc57208f5c320872b38cc19ed18885a",
+   "versions": {
+    "runner": "35de6f277a13a9fd4e43551b719162682ae62a69237fb2ee6c330d0ff1970fce"
+   },
+   "requests": {
+    "by_origin_state": {
+     "REUSED_PARENT:REUSED": 496,
+     "REUSED_RUN:REUSED": 10
+    },
+    "charged_usd": 0.0,
+    "uncertain_reserved_usd": 0
+   },
+   "finished_at": "2026-11-05T19:38:21.418873+00:00",
+   "source_view": {
+    "path": "stages/agent1_verify/agent1_verified_v1_sources",
+    "channels": [
+     "C_AUDIO_GENERAL.json",
+     "C_AUDIO_QA.json",
+     "C_MULTI_GENERAL.json",
+     "C_MULTI_QA.json",
+     "C_RP_GENERAL.json",
+     "C_RP_QA.json",
+     "C_SAFETY_GENERAL.json",
+     "C_SAFETY_QA.json"
+    ],
+    "tree_sha256": "33d3947ca2847a485dbd7950a112371324156d9b932387361c1651e1fad1449c",
+    "excluded_agent1_rejections": 1
+   },
+   "agent1_rejected": [
+    {
+     "project_id": "multilingual_eval",
+     "batch_id": "multi_batch_11",
+     "channel_id": "C_MULTI_QA",
+     "thread_id": "1790866887.000147",
+     "rule": "AUTHORITY_INELIGIBLE",
+     "error": "The model cited authority evidence without an eligible author role or a qualifying TEAM_LEAD endorsement. Ineligible message IDs: ['1790866940.000113']",
+     "attempts": 1,
+     "failure_file": "stages/agent1_interpret/agent1_interpretations_v1/failures/22bdad375b00e44c3cbf4ebe417b9c73ca63d795bb1f5d3896e08198ccfeec36.json",
+     "requests": [
+      {
+       "request_id": "c8303c0053ea474abeb1f13b27d15372",
+       "request_sha": "c101371491e3088f2692017254ff05fc71283cdd03b945f921246ea8d20b272a",
+       "response_sha": "aef0f6550182c7eec16bde611c106db43c967bdefad8be2c91daba7a414541f2",
+       "state": "REUSED"
+      }
+     ],
+     "downstream": "Not verified, grouped, classified or advised: no accepted Agent 1 interpretation."
+    }
+   ],
+   "runner_exit_code": 0,
+   "verification": {
+    "state": "complete_with_review",
+    "counts": {
+     "VERIFIED": 79,
+     "CORRECTED": 61,
+     "NEEDS_REVIEW": 37
+    },
+    "retained": 177,
+    "unprocessed": 0,
+    "model_calls_recorded": 506
+   }
+  },
+  "grouping": {
+   "stage": "grouping",
+   "status": "COMPLETE",
+   "output": "stages/grouping/grouping_v1",
+   "dependencies": {
+    "snapshot": "74bce3d94b0c5bedea5bb2da780daca7bc3d8d24632ba87c6a1da3d631c96ce2",
+    "agent1_interpret": "cc668a53e8de12e309368be479a11dd5b081f9f57bcd89ec5f95ab62c94265b3",
+    "agent1_verify": "a50364512882f15fc347961e8415f08d76a916092902a3db591b0583df8d0e53"
+   },
+   "output_tree_sha256": "6b72e96339dbc444b31a35d026849186b1c4c5062e630b2859ecc2ec5543c323",
+   "versions": {},
+   "requests": {
+    "by_origin_state": {},
+    "charged_usd": 0,
+    "uncertain_reserved_usd": 0
+   },
+   "finished_at": "2026-11-05T19:38:38.344598+00:00",
+   "grouping": {
+    "thread_count": 177,
+    "cluster_count": 76,
+    "singleton_count": 27,
+    "review_member_count": 37
+   }
+  },
+  "agent2": {
+   "stage": "agent2",
+   "status": "COMPLETE",
+   "output": "stages/agent2/agent2_v1",
+   "dependencies": {
+    "snapshot": "74bce3d94b0c5bedea5bb2da780daca7bc3d8d24632ba87c6a1da3d631c96ce2",
+    "agent1_interpret": "cc668a53e8de12e309368be479a11dd5b081f9f57bcd89ec5f95ab62c94265b3",
+    "agent1_verify": "a50364512882f15fc347961e8415f08d76a916092902a3db591b0583df8d0e53",
+    "grouping": "7bccdf1bfae8c6af2391938eda3b2473bd9b54f9d403079d4b58b13248116987"
+   },
+   "output_tree_sha256": "156dd98f24e07d8acfa076aa9de30223317040a9548b04ca76dd629da04d0731",
+   "versions": {},
+   "requests": {
+    "by_origin_state": {
+     "REUSED_PARENT:REUSED": 76
+    },
+    "charged_usd": 0.0,
+    "uncertain_reserved_usd": 0
+   },
+   "finished_at": "2026-11-05T19:39:19.853547+00:00",
+   "agent2": {
+    "state": "complete_with_review",
+    "selected_groups": 76,
+    "retained_input_identities": 177,
+    "processing_counts": {
+     "CONSOLIDATED": 76
+    },
+    "unprocessed_groups": 0,
+    "inherited_review_obligations": 37,
+    "review_group_count": 28,
+    "new_request_attempts": 76,
+    "unknown_completion_requests": []
+   },
+   "groups_sent": 76
+  },
+  "agent3": {
+   "stage": "agent3",
+   "status": "COMPLETE",
+   "output": "stages/agent3/overnight_run",
+   "dependencies": {
+    "snapshot": "74bce3d94b0c5bedea5bb2da780daca7bc3d8d24632ba87c6a1da3d631c96ce2",
+    "agent1_interpret": "cc668a53e8de12e309368be479a11dd5b081f9f57bcd89ec5f95ab62c94265b3",
+    "agent1_verify": "a50364512882f15fc347961e8415f08d76a916092902a3db591b0583df8d0e53",
+    "grouping": "7bccdf1bfae8c6af2391938eda3b2473bd9b54f9d403079d4b58b13248116987",
+    "agent2": "5633677552cf0c8cace2813ab5c3d152eb4705066af70b684f550e3a6aab7c6a"
+   },
+   "output_tree_sha256": "29ca9de83e510009e3edb3c3734f1a5cbda35e8dcb3c7e83ad773f3c586321c9",
+   "versions": {},
+   "requests": {
+    "by_origin_state": {
+     "REUSED_PARENT:REUSED": 187
+    },
+    "charged_usd": 0.0,
+    "uncertain_reserved_usd": 0
+   },
+   "finished_at": "2026-11-05T19:40:05.454305+00:00",
+   "agent3": {
+    "status": "COMPLETE",
+    "accounting": {
+     "status": "COMPLETE",
+     "issues": []
+    },
+    "counts": {
+     "discussion_members": 177,
+     "members_by_agent2_disposition": {
+      "ASSIGNED": 177
+     },
+     "members_by_outcome": {
+      "CARD": 177
+     },
+     "members_on_cards": 177,
+     "announcement_route_members": 0,
+     "announcement_route_obligations": 0,
+     "inherited_agent1_obligations": 37,
+     "naming_cautions": 0,
+     "agent2_obligations": 0,
+     "projection_gap_groups": 0,
+     "topics": 81,
+     "work_items": 81,
+     "work_by_outcome": {
+      "CARD": 81
+     },
+     "cards": 81,
+     "cards_by_line": {
+      "NEEDS_REVIEW": 61,
+      "RECOMMENDED_ACTION": 8,
+      "OBSERVATION": 12
+     },
+     "review_queue_items": 37,
+     "review_queue_by_kind": {
+      "agent1:inherited_agent1_review": 37
+     },
+     "window_announcements": 23,
+     "window_announcements_in_snapshot": 23
+    },
+    "usage": {
+     "requests_sent": 187,
+     "requests_blocked": 0,
+     "charged_usd": 10.135587999999998,
+     "input_tokens": 2298134,
+     "output_tokens": 553932,
+     "reasoning_tokens": 53555,
+     "model_calls": 187
+    },
+    "incomplete_work": 0,
+    "graph_state": {
+     "status": "COMPLETE",
+     "cursor": 81,
+     "total": 81,
+     "stop_reason": null
+    },
+    "resumed": false,
+    "agent3_budget_usd": 34.7432,
+    "per_request_reservation_usd": 0.22384
+   }
+  }
+ },
+ "ledger": {
+  "limit_usd": 0.0,
+  "committed_usd": 0,
+  "rows": 947,
+  "by_stage": [
+   {
+    "stage": "agent1_interpret",
+    "origin": "REUSED_PARENT:threadsense_full_v1",
+    "state": "REUSED",
+    "requests": 178,
+    "charged_usd": 0.0,
+    "reserved_usd": 0.0,
+    "cache_savings_usd": 0.0
+   },
+   {
+    "stage": "agent1_verify",
+    "origin": "REUSED_PARENT:threadsense_full_v1",
+    "state": "REUSED",
+    "requests": 496,
+    "charged_usd": 0.0,
+    "reserved_usd": 0.0,
+    "cache_savings_usd": 0.0
+   },
+   {
+    "stage": "agent1_verify",
+    "origin": "REUSED_RUN",
+    "state": "REUSED",
+    "requests": 10,
+    "charged_usd": 0.0,
+    "reserved_usd": 0.0,
+    "cache_savings_usd": 0.0
+   },
+   {
+    "stage": "agent2",
+    "origin": "REUSED_PARENT:threadsense_full_v1",
+    "state": "REUSED",
+    "requests": 76,
+    "charged_usd": 0.0,
+    "reserved_usd": 0.0,
+    "cache_savings_usd": 0.0
+   },
+   {
+    "stage": "agent3",
+    "origin": "REUSED_PARENT:threadsense_full_v1",
+    "state": "REUSED",
+    "requests": 187,
+    "charged_usd": 0.0,
+    "reserved_usd": 0.0,
+    "cache_savings_usd": 0.0
+   }
+  ]
+ },
+ "unfinished_work": {
+  "agent1_rejected_threads": [
+   {
+    "project_id": "multilingual_eval",
+    "batch_id": "multi_batch_11",
+    "channel_id": "C_MULTI_QA",
+    "thread_id": "1790866887.000147",
+    "rule": "AUTHORITY_INELIGIBLE",
+    "error": "The model cited authority evidence without an eligible author role or a qualifying TEAM_LEAD endorsement. Ineligible message IDs: ['1790866940.000113']",
+    "attempts": 1,
+    "failure_file": "stages/agent1_interpret/agent1_interpretations_v1/failures/22bdad375b00e44c3cbf4ebe417b9c73ca63d795bb1f5d3896e08198ccfeec36.json",
+    "requests": [
+     {
+      "request_id": "c8303c0053ea474abeb1f13b27d15372",
+      "request_sha": "c101371491e3088f2692017254ff05fc71283cdd03b945f921246ea8d20b272a",
+      "response_sha": "aef0f6550182c7eec16bde611c106db43c967bdefad8be2c91daba7a414541f2",
+      "state": "REUSED"
+     }
+    ],
+    "downstream": "Not verified, grouped, classified or advised: no accepted Agent 1 interpretation."
+   }
+  ]
+ }
+}

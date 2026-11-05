@@ -1,0 +1,1794 @@
+{
+  "work_item": {
+    "candidate_group_id": "cluster_839fecb69ec3fa12",
+    "project_id": "response_preference",
+    "batch_id": "rp_batch_15",
+    "work_id": "topic:cluster_839fecb69ec3fa12/topic_2",
+    "kind": "TOPIC",
+    "topic_id": "cluster_839fecb69ec3fa12/topic_2",
+    "topic_name": "Misattributed DOI citations",
+    "member_ids": [
+      "member_959eb272660244ea5b417971"
+    ],
+    "pilot_scenario": null,
+    "in_scope": true
+  },
+  "workflow": {
+    "outcome": "CARD",
+    "card_id": "card_5b28fa8249f9a94480288419ffb03a60",
+    "card_line": "NEEDS_REVIEW",
+    "grounding": "FAILED",
+    "stage_failures": [],
+    "semantic_source": "LIVE_MODEL"
+  },
+  "result": {
+    "scenario": {
+      "id": "topic:cluster_839fecb69ec3fa12/topic_2",
+      "candidate_group_id": "cluster_839fecb69ec3fa12",
+      "focus": "Misattributed DOI citations",
+      "topic_id": "cluster_839fecb69ec3fa12/topic_2"
+    },
+    "status": "CARD",
+    "topic": {
+      "project_id": "response_preference",
+      "batch_id": "rp_batch_15",
+      "candidate_group_id": "cluster_839fecb69ec3fa12",
+      "topic_id": "cluster_839fecb69ec3fa12/topic_2",
+      "topic_label": "Misattributed DOI citations",
+      "projection_gap": null,
+      "as_of": "2026-10-02T12:00:00Z",
+      "member_ids": [
+        "member_959eb272660244ea5b417971"
+      ],
+      "initial_query": "Misattributed DOI citations. Is the citation misattributed to an unrelated publication, and should the unsupported factual reference be flagged?"
+    },
+    "retrieval_trace": [
+      {
+        "step": 1,
+        "purpose": "initial_current_guidance",
+        "gap_id": null,
+        "query": "Misattributed DOI citations. Is the citation misattributed to an unrelated publication, and should the unsupported factual reference be flagged?",
+        "source_types": [
+          "guideline",
+          "faq",
+          "decision",
+          "announcement"
+        ],
+        "version_mode": "current",
+        "as_of": "2026-10-02T12:00:00Z",
+        "batch": "rp_batch_15",
+        "top_k": 5,
+        "status": "DONE",
+        "mode": "hybrid",
+        "use_mmr": true,
+        "mmr_lambda": 0.9,
+        "result_ids": [
+          "k:response-preference-faq@1.1:3db12f63",
+          "k:response-preference-instructions@1.1:a71c54c7",
+          "k:response-preference-instructions@1.1:3350bbc0",
+          "k:slack:C_RP_ANNOUNCEMENTS:1790871613.000001:430efd10",
+          "k:rp-tie-calibration-post@1.0:4a3c786f"
+        ],
+        "new_evidence_ids": [
+          "k:response-preference-faq@1.1:3db12f63",
+          "k:response-preference-instructions@1.1:a71c54c7",
+          "k:response-preference-instructions@1.1:3350bbc0",
+          "k:slack:C_RP_ANNOUNCEMENTS:1790871613.000001:430efd10",
+          "k:rp-tie-calibration-post@1.0:4a3c786f"
+        ],
+        "eligible_chunks": 28,
+        "added": []
+      }
+    ],
+    "retrieval_notes": {
+      "withheld_by_version": [],
+      "version_diagnostics": []
+    },
+    "follow_ups": [],
+    "unfilled_gaps": [],
+    "model_calls": [
+      {
+        "stage": "draft",
+        "schema": "AdvisorDraft",
+        "agent1_context": {
+          "sha256": "6779965dc3ff071b7826005eaac3d27bff33d8fd00f9c8b854f44d9720fa558d",
+          "boundary": "IN_HTTP_BODY"
+        },
+        "raw": "{\n  \"contract_version\": \"agent3-advisor-draft-v11\",\n  \"summary\": null,\n  \"summary_sentences\": [\n    {\n      \"text\": \"A QA tutor and a tutor report that a DOI points to a publication unrelated to the citation in response B.\",\n      \"support_claim_ids\": [\"c1\", \"c2\"],\n      \"depends_on\": []\n    },\n    {\n      \"text\": \"The team lead has already instructed the thread to flag the unsupported factual reference rather than treat this example as a formatting-only issue.\",\n      \"support_claim_ids\": [\"c3\"],\n      \"depends_on\": []\n    }\n  ],\n  \"detail_sentences\": [\n    {\n      \"text\": \"A tutor also asked for the reference string to be preserved before the task disappears from the queue.\",\n      \"support_claim_ids\": [\"c2\"],\n      \"depends_on\": [],\n      \"summary_depends_on\": []\n    },\n    {\n      \"text\": \"The current content-quality rubric distinguishes materially unsupported attribution from a limited citation-detail error where the source and support remain identifiable.\",\n      \"support_claim_ids\": [\"c4\"],\n      \"depends_on\": [],\n      \"summary_depends_on\": []\n    }\n  ],\n  \"reasoning\": \"The team lead answered the handling question for this example, and the current rubric supports distinguishing unsupported attribution from citation-detail errors. The tutor's preservation request does not establish an unresolved scoring question or a broader operational problem. No additional research is needed to support leaving the resolved handling unchanged; historical recurrence has not been checked. The upstream review flag concerning the batch status note's rationale remains open.\",\n  \"claims\": [\n    {\n      \"claim_id\": \"c1\",\n      \"kind\": \"INCIDENT_FACT\",\n      \"text\": \"A QA tutor reports that the DOI resolves to a completely different publication than response B claims.\",\n      \"evidence_ids\": [\"m:C_RP_QA:1790931056.000012\"],\n      \"attributions\": [\n        {\n          \"user_id\": \"U007\",\n          \"relation\": \"AUTHOR\",\n          \"evidence_id\": \"m:C_RP_QA:1790931056.000012\"\n        }\n      ],\n      \"quote\": null,\n      \"quote_kind\": \"PARAPHRASE\",\n      \"material\": true\n    },\n    {\n      \"claim_id\": \"c2\",\n      \"kind\": \"INCIDENT_FACT\",\n      \"text\": \"A tutor reports that the DOI resolves to an unrelated article and asks for the reference string to be preserved before the task disappears from the queue.\",\n      \"evidence_ids\": [\"m:C_RP_QA:1790931105.000113\"],\n      \"attributions\": [\n        {\n          \"user_id\": \"U010\",\n          \"relation\": \"AUTHOR\",\n          \"evidence_id\": \"m:C_RP_QA:1790931105.000113\"\n        }\n      ],\n      \"quote\": null,\n      \"quote_kind\": \"PARAPHRASE\",\n      \"material\": true\n    },\n    {\n      \"claim_id\": \"c3\",\n      \"kind\": \"THREAD_INSTRUCTION\",\n      \"text\": \"The team lead confirms that this specific citation is misattributed to an unrelated publication and instructs the thread to flag the unsupported factual reference, not a formatting-only issue.\",\n      \"evidence_ids\": [\"m:C_RP_QA:1790931158.000226\"],\n      \"attributions\": [\n        {\n          \"user_id\": \"U001\",\n          \"relation\": \"AUTHOR\",\n          \"evidence_id\": \"m:C_RP_QA:1790931158.000226\"\n        }\n      ],\n      \"quote\": \"For this specific example the citation is misattributed to an unrelated publication. Flag the unsupported factual reference, not a formatting-only issue.\",\n      \"quote_kind\": \"VERBATIM\",\n      \"material\": true\n    },\n    {\n      \"claim_id\": \"c4\",\n      \"kind\": \"GUIDANCE\",\n      \"text\": \"The current content-quality rubric treats a fabricated reference or materially unsupported attribution as a major citation-support defect and a limited citation-detail error where the source and support remain identifiable as minor; these task-quality grades do not determine operational incident severity.\",\n      \"evidence_ids\": [\"k:response-preference-instructions@1.1:a71c54c7\"],\n      \"attributions\": [],\n      \"quote\": null,\n      \"quote_kind\": \"PARAPHRASE\",\n      \"material\": true\n    },\n    {\n      \"claim_id\": \"c5\",\n      \"kind\": \"SOURCE_FACT\",\n      \"text\": \"The team lead's October 1 batch status note asks for citation examples in its thread while scope is checked; it does not supply a scoring method or designate an escalation route.\",\n      \"evidence_ids\": [\"k:slack:C_RP_ANNOUNCEMENTS:1790871613.000001:430efd10\"],\n      \"attributions\": [\n        {\n          \"user_id\": \"U001\",\n          \"relation\": \"AUTHOR\",\n          \"evidence_id\": \"k:slack:C_RP_ANNOUNCEMENTS:1790871613.000001:430efd10\"\n        }\n      ],\n      \"quote\": \"Please keep examples in this thread while we check the scope.\",\n      \"quote_kind\": \"VERBATIM\",\n      \"material\": false\n    }\n  ],\n  \"gaps\": [],\n  \"evidence_sufficiency\": \"SUFFICIENT\",\n  \"proposed_action\": {\n    \"action_type\": \"NO_ACTION\",\n    \"intervention_need\": null,\n    \"instruction\": \"Leave the thread's resolved handling unchanged; no additional reminder, documentation change, or escalation is needed for this example.\",\n    \"rationale\": \"The team lead has already supplied the example-specific handling, consistent with the current rubric's distinction between unsupported attribution and citation-detail errors.\",\n    \"draft_text\": null,\n    \"scope_note\": \"This recommendation concerns only the reported example and does not turn the thread instruction into project-wide guidance.\",\n    \"support_claim_ids\": [\"c3\", \"c4\"],\n    \"targets\": [],\n    \"context_claim_ids\": [\"c1\", \"c2\", \"c5\"]\n  },\n  \"severity\": {\n    \"level\": \"LOW\",\n    \"rationale\": \"The reports concern one citation example, and the team lead supplied a straightforward handling correction. The messages do not show broader disruption or conflicting scoring instructions.\",\n    \"signals\": [],\n    \"affected_reporters\": [\n      {\n        \"author_id\": \"U007\",\n        \"evidence_id\": \"m:C_RP_QA:1790931056.000012\"\n      },\n      {\n        \"author_id\": \"U010\",\n        \"evidence_id\": \"m:C_RP_QA:1790931105.000113\"\n      }\n    ],\n    \"recurrence\": \"NOT_CHECKED\",\n    \"recurrence_evidence_ids\": [],\n    \"reported_recurrence_evidence_ids\": []\n  },\n  \"confidence\": 0.96,\n  \"open_confirmation\": \"NONE\",\n  \"open_question\": null,\n  \"open_question_evidence_ids\": [],\n  \"source_conflicts\": [],\n  \"announcement_assessments\": [\n    {\n      \"evidence_id\": \"k:slack:C_RP_ANNOUNCEMENTS:1790871613.000001:430efd10\",\n      \"relevant\": true,\n      \"directive\": true,\n      \"directive_quote\": \"Please keep examples in this thread while we check the scope.\",\n      \"rationale\": \"The note concerns misleading citations in the same batch. Its directive governs where examples are collected, not scoring or escalation.\"\n    },\n    {\n      \"evidence_id\": \"k:rp-tie-calibration-post@1.0:4a3c786f\",\n      \"relevant\": false,\n      \"directive\": true,\n      \"directive_quote\": \"Bring both rationales for disputed pairs to the eight-pair calibration review.\",\n      \"rationale\": \"The announcement concerns tie calibration in an earlier batch, not handling the reported DOI misattribution.\"\n    }\n  ],\n  \"resolution\": [\n    {\n      \"member_id\": \"member_959eb272660244ea5b417971\",\n      \"state\": \"RESOLVED_IN_THREAD\",\n      \"evidence_ids\": [\n        \"m:C_RP_QA:1790931056.000012\",\n        \"m:C_RP_QA:1790931105.000113\",\n        \"m:C_RP_QA:1790931158.000226\"\n      ],\n      \"basis\": \"The team lead explicitly identifies the citation as misattributed and tells the thread how to flag it. This resolves the handling question; the messages do not confirm whether the tutor's separate request to preserve the reference string was completed.\"\n    }\n  ],\n  \"coverage\": [\n    {\n      \"need\": \"CURRENT_GUIDANCE\",\n      \"status\": \"COVERED\",\n      \"evidence_ids\": [\n        \"k:response-preference-faq@1.1:3db12f63\",\n        \"k:response-preference-instructions@1.1:a71c54c7\",\n        \"k:response-preference-instructions@1.1:3350bbc0\"\n      ],\n      \"note\": \"Current guidance distinguishes unsupported attribution, citation-detail errors, and access failures.\",\n      \"gap_id\": null\n    },\n    {\n      \"need\": \"ANNOUNCEMENTS\",\n      \"status\": \"COVERED\",\n      \"evidence_ids\": [\n        \"k:slack:C_RP_ANNOUNCEMENTS:1790871613.000001:430efd10\",\n        \"k:rp-tie-calibration-post@1.0:4a3c786f\"\n      ],\n      \"note\": \"The same-batch note collects citation examples; the earlier-batch tie announcement is not applicable to this example.\",\n      \"gap_id\": null\n    },\n    {\n      \"need\": \"PRIOR_DECISIONS\",\n      \"status\": \"NOT_APPLICABLE\",\n      \"evidence_ids\": [],\n      \"note\": \"No earlier decision or trial outcome is needed to support leaving the explicitly resolved example unchanged; no historical recurrence claim is made.\",\n      \"gap_id\": null\n    },\n    {\n      \"need\": \"MEMBER_QUESTIONS\",\n      \"status\": \"COVERED\",\n      \"evidence_ids\": [\n        \"m:C_RP_QA:1790931056.000012\",\n        \"m:C_RP_QA:1790931105.000113\",\n        \"m:C_RP_QA:1790931158.000226\"\n      ],\n      \"note\": \"The thread includes the DOI reports, the tutor's preservation request, and the team lead's example-specific handling instruction.\",\n      \"gap_id\": null\n    }\n  ],\n  \"review_note\": null,\n  \"action_choice\": null\n}",
+        "raw_sha256": "a978a772930c8381d05fddf24e19b94580ce08cfb7e6f5be6fa225e43d6e3334",
+        "http_requests": {
+          "sent": 1,
+          "blocked": 0,
+          "hosts": [
+            "api.openai.com"
+          ],
+          "responses": [
+            {
+              "status_code": 200,
+              "seconds": 0.089,
+              "model": "gpt-6.1-sol",
+              "usage": {
+                "prompt_tokens": 11369,
+                "completion_tokens": 2436,
+                "total_tokens": 13805,
+                "prompt_tokens_details": {
+                  "cached_tokens": 0,
+                  "cache_write_tokens": 11366,
+                  "audio_tokens": 0
+                },
+                "completion_tokens_details": {
+                  "reasoning_tokens": 139,
+                  "audio_tokens": 0,
+                  "accepted_prediction_tokens": 0,
+                  "rejected_prediction_tokens": 0
+                }
+              },
+              "finish_reasons": [
+                "stop"
+              ]
+            }
+          ],
+          "input_tokens": 11375,
+          "refused": null,
+          "charged_usd": 0.047098
+        },
+        "input_tokens_estimate": 11375,
+        "status": "OK"
+      },
+      {
+        "stage": "grounding",
+        "schema": "GroundingJudgment",
+        "raw": "{\n  \"contract_version\": \"agent3-grounding-judgment-v5\",\n  \"verdicts\": [\n    {\n      \"statement_id\": \"claim:c1\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The cited QA tutor explicitly reports that the DOI resolves to a completely different publication from what B claims.\"\n    },\n    {\n      \"statement_id\": \"claim:c2\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The cited tutor reports an unrelated article and asks that the reference string be preserved before the task disappears from the queue.\"\n    },\n    {\n      \"statement_id\": \"claim:c3\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The quotation exactly matches the team lead's message. That message identifies the misattribution and gives the stated instruction for this example within the thread.\"\n    },\n    {\n      \"statement_id\": \"claim:c4\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The current rubric explicitly supplies both citation-support categories and states that task-quality grades do not determine operational incident severity.\"\n    },\n    {\n      \"statement_id\": \"claim:c5\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The October 1 announcement is authored by the team lead and contains the exact quoted request. It directs example collection while scope is checked, without prescribing scoring or an escalation route.\"\n    },\n    {\n      \"statement_id\": \"summary:s1\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"Both distinct cited authors report that the DOI points to an unrelated publication. Their messages belong to the same thread about the citation in response B.\"\n    },\n    {\n      \"statement_id\": \"summary:s2\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The team lead explicitly instructs the thread to flag the unsupported factual reference rather than a formatting-only issue.\"\n    },\n    {\n      \"statement_id\": \"detail:d1\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The tutor explicitly asks for preservation of the reference string before the task disappears from the queue.\"\n    },\n    {\n      \"statement_id\": \"detail:d2\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The current rubric explicitly distinguishes materially unsupported attribution from a limited citation-detail error with identifiable source and support.\"\n    },\n    {\n      \"statement_id\": \"action:no_action\",\n      \"verdict\": \"PARTIALLY_SUPPORTED\",\n      \"rationale\": \"The team lead has supplied example-specific handling consistent with the rubric. However, that does not establish that no further action is needed: the request to preserve the reference string has no recorded completion, and the applicable announcement directs collection of examples while scope is checked. The cited context does not establish that these remaining operational matters have been addressed.\"\n    },\n    {\n      \"statement_id\": \"announcement:k:slack:C_RP_ANNOUNCEMENTS:1790871613.000001:430efd10\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The announcement concerns misleading citations in the same project and batch, which includes this misattributed citation. Its explicit directive concerns where examples are collected, not scoring or escalation.\"\n    },\n    {\n      \"statement_id\": \"resolution:member_959eb272660244ea5b417971\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The complete thread contains an explicit team-lead determination and flagging instruction, resolving the example-specific classification question. The statement accurately limits that resolution by acknowledging that preservation of the reference string is not confirmed.\"\n    },\n    {\n      \"statement_id\": \"severity:rationale\",\n      \"verdict\": \"PARTIALLY_SUPPORTED\",\n      \"rationale\": \"The two cited reports concern one citation example and show neither broader disruption nor conflicting scoring instructions. However, the asserted team-lead correction is supplied by a different message that this statement does not cite.\"\n    },\n    {\n      \"statement_id\": \"reporter:U007\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"U007's own message reports encountering the DOI mismatch in response B.\"\n    },\n    {\n      \"statement_id\": \"reporter:U010\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"U010's own message reports the DOI resolving to an unrelated article and requests preservation of the reference string.\"\n    }\n  ],\n  \"action_sufficiency\": null,\n  \"alternative_sufficiency\": [],\n  \"source_consistency\": {\n    \"assessed_evidence_ids\": [\n      \"k:response-preference-faq@1.1:3db12f63\",\n      \"k:response-preference-instructions@1.1:a71c54c7\",\n      \"k:response-preference-instructions@1.1:3350bbc0\",\n      \"k:slack:C_RP_ANNOUNCEMENTS:1790871613.000001:430efd10\"\n    ],\n    \"relations\": [\n      {\n        \"evidence_ids\": [\n          \"k:response-preference-faq@1.1:3db12f63\",\n          \"k:response-preference-instructions@1.1:a71c54c7\",\n          \"k:response-preference-instructions@1.1:3350bbc0\"\n        ],\n        \"relation\": \"AGREE\",\n        \"point\": \"Factual-error severity depends on its effect on the central conclusion or actionable answer, and link inaccessibility alone does not establish a false claim.\",\n        \"disagreement_scope\": null,\n        \"rationale\": \"All three current guidance excerpts use the same consequential-versus-background distinction and distinguish access or verification failure from a substantive factual defect.\"\n      },\n      {\n        \"evidence_ids\": [\n          \"k:response-preference-faq@1.1:3db12f63\",\n          \"k:response-preference-instructions@1.1:a71c54c7\",\n          \"k:response-preference-instructions@1.1:3350bbc0\"\n        ],\n        \"relation\": \"AGREE\",\n        \"point\": \"Unsupported attribution and fabricated references require substantive citation assessment rather than treatment as mere access failures.\",\n        \"disagreement_scope\": null,\n        \"rationale\": \"The FAQ distinguishes access failure from unsupported attribution or fabrication; the rubric classifies substantive citation-support defects; the citations section distinguishes a real but nonsupporting source from an invented reference. These provisions are compatible. The same-batch announcement separately governs example collection and supplies no competing scoring rule.\"\n      }\n    ],\n    \"declared_conflict_checks\": []\n  }\n}",
+        "raw_sha256": "6f70ad351fb1a3116f29c474d224da90cb86d6be882ef2e62cadaecf75913e71",
+        "http_requests": {
+          "sent": 1,
+          "blocked": 0,
+          "hosts": [
+            "api.openai.com"
+          ],
+          "responses": [
+            {
+              "status_code": 200,
+              "seconds": 0.068,
+              "model": "gpt-6.1-sol",
+              "usage": {
+                "prompt_tokens": 7836,
+                "completion_tokens": 1513,
+                "total_tokens": 9349,
+                "prompt_tokens_details": {
+                  "cached_tokens": 0,
+                  "cache_write_tokens": 7833,
+                  "audio_tokens": 0
+                },
+                "completion_tokens_details": {
+                  "reasoning_tokens": 116,
+                  "audio_tokens": 0,
+                  "accepted_prediction_tokens": 0,
+                  "rejected_prediction_tokens": 0
+                }
+              },
+              "finish_reasons": [
+                "stop"
+              ]
+            }
+          ],
+          "input_tokens": 7842,
+          "refused": null,
+          "charged_usd": 0.030802
+        },
+        "input_tokens_estimate": 7842,
+        "status": "OK"
+      }
+    ],
+    "agent1_context": [
+      {
+        "sha256": "6779965dc3ff071b7826005eaac3d27bff33d8fd00f9c8b854f44d9720fa558d",
+        "content": [
+          {
+            "member_id": "member_959eb272660244ea5b417971",
+            "thread_id": "1790931056.000012",
+            "summary": "The discussion revolves around a DOI that resolves to a different publication than what was claimed by B. Leo states that the DOI leads to a completely different publication, while Avery notes that it points to an unrelated article and requests to preserve the reference string. Alex, the team lead, confirms that the citation is misattributed and instructs to flag the unsupported factual reference, emphasizing that it is not merely a formatting issue.",
+            "central_question": "Is the citation misattributed to an unrelated publication, and should the unsupported factual reference be flagged?",
+            "attributed_agent1_resolution": {
+              "state": "RESOLVED_IN_THREAD",
+              "rationale": "Alex, the team lead, confirms that the citation is misattributed to an unrelated publication and instructs to flag the unsupported factual reference. This provides a clear resolution to the question of whether the citation should be flagged.",
+              "agent1_verification_status": "VERIFIED",
+              "note": "Agent 1 label, not evidence; NEEDS_REVIEW means Agent 1 did not verify it. Assess resolution from the member messages."
+            },
+            "agent1_review_required": false,
+            "agent1_review_reason": "",
+            "note": "Agent 1 interpretation, not source evidence; cite member messages for incident facts."
+          }
+        ]
+      }
+    ],
+    "drafts": {
+      "initial": {
+        "contract_version": "agent3-advisor-draft-v11",
+        "summary": "A QA tutor and a tutor report that a DOI points to a publication unrelated to the citation in response B. The team lead has already instructed the thread to flag the unsupported factual reference rather than treat this example as a formatting-only issue.",
+        "summary_sentences": [
+          {
+            "text": "A QA tutor and a tutor report that a DOI points to a publication unrelated to the citation in response B.",
+            "support_claim_ids": [
+              "c1",
+              "c2"
+            ],
+            "depends_on": []
+          },
+          {
+            "text": "The team lead has already instructed the thread to flag the unsupported factual reference rather than treat this example as a formatting-only issue.",
+            "support_claim_ids": [
+              "c3"
+            ],
+            "depends_on": []
+          }
+        ],
+        "detail_sentences": [
+          {
+            "text": "A tutor also asked for the reference string to be preserved before the task disappears from the queue.",
+            "support_claim_ids": [
+              "c2"
+            ],
+            "depends_on": [],
+            "summary_depends_on": []
+          },
+          {
+            "text": "The current content-quality rubric distinguishes materially unsupported attribution from a limited citation-detail error where the source and support remain identifiable.",
+            "support_claim_ids": [
+              "c4"
+            ],
+            "depends_on": [],
+            "summary_depends_on": []
+          }
+        ],
+        "reasoning": "The team lead answered the handling question for this example, and the current rubric supports distinguishing unsupported attribution from citation-detail errors. The tutor's preservation request does not establish an unresolved scoring question or a broader operational problem. No additional research is needed to support leaving the resolved handling unchanged; historical recurrence has not been checked. The upstream review flag concerning the batch status note's rationale remains open.",
+        "claims": [
+          {
+            "claim_id": "c1",
+            "kind": "INCIDENT_FACT",
+            "text": "A QA tutor reports that the DOI resolves to a completely different publication than response B claims.",
+            "evidence_ids": [
+              "m:C_RP_QA:1790931056.000012"
+            ],
+            "attributions": [
+              {
+                "user_id": "U007",
+                "relation": "AUTHOR",
+                "evidence_id": "m:C_RP_QA:1790931056.000012"
+              }
+            ],
+            "quote": null,
+            "quote_kind": "PARAPHRASE",
+            "material": true
+          },
+          {
+            "claim_id": "c2",
+            "kind": "INCIDENT_FACT",
+            "text": "A tutor reports that the DOI resolves to an unrelated article and asks for the reference string to be preserved before the task disappears from the queue.",
+            "evidence_ids": [
+              "m:C_RP_QA:1790931105.000113"
+            ],
+            "attributions": [
+              {
+                "user_id": "U010",
+                "relation": "AUTHOR",
+                "evidence_id": "m:C_RP_QA:1790931105.000113"
+              }
+            ],
+            "quote": null,
+            "quote_kind": "PARAPHRASE",
+            "material": true
+          },
+          {
+            "claim_id": "c3",
+            "kind": "THREAD_INSTRUCTION",
+            "text": "The team lead confirms that this specific citation is misattributed to an unrelated publication and instructs the thread to flag the unsupported factual reference, not a formatting-only issue.",
+            "evidence_ids": [
+              "m:C_RP_QA:1790931158.000226"
+            ],
+            "attributions": [
+              {
+                "user_id": "U001",
+                "relation": "AUTHOR",
+                "evidence_id": "m:C_RP_QA:1790931158.000226"
+              }
+            ],
+            "quote": "For this specific example the citation is misattributed to an unrelated publication. Flag the unsupported factual reference, not a formatting-only issue.",
+            "quote_kind": "VERBATIM",
+            "material": true
+          },
+          {
+            "claim_id": "c4",
+            "kind": "GUIDANCE",
+            "text": "The current content-quality rubric treats a fabricated reference or materially unsupported attribution as a major citation-support defect and a limited citation-detail error where the source and support remain identifiable as minor; these task-quality grades do not determine operational incident severity.",
+            "evidence_ids": [
+              "k:response-preference-instructions@1.1:a71c54c7"
+            ],
+            "attributions": [],
+            "quote": null,
+            "quote_kind": "PARAPHRASE",
+            "material": true
+          },
+          {
+            "claim_id": "c5",
+            "kind": "SOURCE_FACT",
+            "text": "The team lead's October 1 batch status note asks for citation examples in its thread while scope is checked; it does not supply a scoring method or designate an escalation route.",
+            "evidence_ids": [
+              "k:slack:C_RP_ANNOUNCEMENTS:1790871613.000001:430efd10"
+            ],
+            "attributions": [
+              {
+                "user_id": "U001",
+                "relation": "AUTHOR",
+                "evidence_id": "k:slack:C_RP_ANNOUNCEMENTS:1790871613.000001:430efd10"
+              }
+            ],
+            "quote": "Please keep examples in this thread while we check the scope.",
+            "quote_kind": "VERBATIM",
+            "material": false
+          }
+        ],
+        "gaps": [],
+        "evidence_sufficiency": "SUFFICIENT",
+        "proposed_action": {
+          "action_type": "NO_ACTION",
+          "intervention_need": null,
+          "instruction": "Leave the thread's resolved handling unchanged; no additional reminder, documentation change, or escalation is needed for this example.",
+          "rationale": "The team lead has already supplied the example-specific handling, consistent with the current rubric's distinction between unsupported attribution and citation-detail errors.",
+          "draft_text": null,
+          "scope_note": "This recommendation concerns only the reported example and does not turn the thread instruction into project-wide guidance.",
+          "support_claim_ids": [
+            "c3",
+            "c4"
+          ],
+          "targets": [],
+          "context_claim_ids": [
+            "c1",
+            "c2",
+            "c5"
+          ]
+        },
+        "severity": {
+          "level": "LOW",
+          "rationale": "The reports concern one citation example, and the team lead supplied a straightforward handling correction. The messages do not show broader disruption or conflicting scoring instructions.",
+          "signals": [],
+          "affected_reporters": [
+            {
+              "author_id": "U007",
+              "evidence_id": "m:C_RP_QA:1790931056.000012"
+            },
+            {
+              "author_id": "U010",
+              "evidence_id": "m:C_RP_QA:1790931105.000113"
+            }
+          ],
+          "recurrence": "NOT_CHECKED",
+          "recurrence_evidence_ids": [],
+          "reported_recurrence_evidence_ids": []
+        },
+        "confidence": 0.96,
+        "open_confirmation": "NONE",
+        "open_question": null,
+        "open_question_evidence_ids": [],
+        "source_conflicts": [],
+        "announcement_assessments": [
+          {
+            "evidence_id": "k:slack:C_RP_ANNOUNCEMENTS:1790871613.000001:430efd10",
+            "relevant": true,
+            "directive": true,
+            "directive_quote": "Please keep examples in this thread while we check the scope.",
+            "rationale": "The note concerns misleading citations in the same batch. Its directive governs where examples are collected, not scoring or escalation."
+          },
+          {
+            "evidence_id": "k:rp-tie-calibration-post@1.0:4a3c786f",
+            "relevant": false,
+            "directive": true,
+            "directive_quote": "Bring both rationales for disputed pairs to the eight-pair calibration review.",
+            "rationale": "The announcement concerns tie calibration in an earlier batch, not handling the reported DOI misattribution."
+          }
+        ],
+        "resolution": [
+          {
+            "member_id": "member_959eb272660244ea5b417971",
+            "state": "RESOLVED_IN_THREAD",
+            "evidence_ids": [
+              "m:C_RP_QA:1790931056.000012",
+              "m:C_RP_QA:1790931105.000113",
+              "m:C_RP_QA:1790931158.000226"
+            ],
+            "basis": "The team lead explicitly identifies the citation as misattributed and tells the thread how to flag it. This resolves the handling question; the messages do not confirm whether the tutor's separate request to preserve the reference string was completed."
+          }
+        ],
+        "coverage": [
+          {
+            "need": "CURRENT_GUIDANCE",
+            "status": "COVERED",
+            "evidence_ids": [
+              "k:response-preference-faq@1.1:3db12f63",
+              "k:response-preference-instructions@1.1:a71c54c7",
+              "k:response-preference-instructions@1.1:3350bbc0"
+            ],
+            "note": "Current guidance distinguishes unsupported attribution, citation-detail errors, and access failures.",
+            "gap_id": null
+          },
+          {
+            "need": "ANNOUNCEMENTS",
+            "status": "COVERED",
+            "evidence_ids": [
+              "k:slack:C_RP_ANNOUNCEMENTS:1790871613.000001:430efd10",
+              "k:rp-tie-calibration-post@1.0:4a3c786f"
+            ],
+            "note": "The same-batch note collects citation examples; the earlier-batch tie announcement is not applicable to this example.",
+            "gap_id": null
+          },
+          {
+            "need": "PRIOR_DECISIONS",
+            "status": "NOT_APPLICABLE",
+            "evidence_ids": [],
+            "note": "No earlier decision or trial outcome is needed to support leaving the explicitly resolved example unchanged; no historical recurrence claim is made.",
+            "gap_id": null
+          },
+          {
+            "need": "MEMBER_QUESTIONS",
+            "status": "COVERED",
+            "evidence_ids": [
+              "m:C_RP_QA:1790931056.000012",
+              "m:C_RP_QA:1790931105.000113",
+              "m:C_RP_QA:1790931158.000226"
+            ],
+            "note": "The thread includes the DOI reports, the tutor's preservation request, and the team lead's example-specific handling instruction.",
+            "gap_id": null
+          }
+        ],
+        "review_note": null,
+        "action_choice": null
+      },
+      "final": {
+        "contract_version": "agent3-advisor-draft-v11",
+        "summary": "A QA tutor and a tutor report that a DOI points to a publication unrelated to the citation in response B. The team lead has already instructed the thread to flag the unsupported factual reference rather than treat this example as a formatting-only issue.",
+        "summary_sentences": [
+          {
+            "text": "A QA tutor and a tutor report that a DOI points to a publication unrelated to the citation in response B.",
+            "support_claim_ids": [
+              "c1",
+              "c2"
+            ],
+            "depends_on": []
+          },
+          {
+            "text": "The team lead has already instructed the thread to flag the unsupported factual reference rather than treat this example as a formatting-only issue.",
+            "support_claim_ids": [
+              "c3"
+            ],
+            "depends_on": []
+          }
+        ],
+        "detail_sentences": [
+          {
+            "text": "A tutor also asked for the reference string to be preserved before the task disappears from the queue.",
+            "support_claim_ids": [
+              "c2"
+            ],
+            "depends_on": [],
+            "summary_depends_on": []
+          },
+          {
+            "text": "The current content-quality rubric distinguishes materially unsupported attribution from a limited citation-detail error where the source and support remain identifiable.",
+            "support_claim_ids": [
+              "c4"
+            ],
+            "depends_on": [],
+            "summary_depends_on": []
+          }
+        ],
+        "reasoning": "The team lead answered the handling question for this example, and the current rubric supports distinguishing unsupported attribution from citation-detail errors. The tutor's preservation request does not establish an unresolved scoring question or a broader operational problem. No additional research is needed to support leaving the resolved handling unchanged; historical recurrence has not been checked. The upstream review flag concerning the batch status note's rationale remains open.",
+        "claims": [
+          {
+            "claim_id": "c1",
+            "kind": "INCIDENT_FACT",
+            "text": "A QA tutor reports that the DOI resolves to a completely different publication than response B claims.",
+            "evidence_ids": [
+              "m:C_RP_QA:1790931056.000012"
+            ],
+            "attributions": [
+              {
+                "user_id": "U007",
+                "relation": "AUTHOR",
+                "evidence_id": "m:C_RP_QA:1790931056.000012"
+              }
+            ],
+            "quote": null,
+            "quote_kind": "PARAPHRASE",
+            "material": true
+          },
+          {
+            "claim_id": "c2",
+            "kind": "INCIDENT_FACT",
+            "text": "A tutor reports that the DOI resolves to an unrelated article and asks for the reference string to be preserved before the task disappears from the queue.",
+            "evidence_ids": [
+              "m:C_RP_QA:1790931105.000113"
+            ],
+            "attributions": [
+              {
+                "user_id": "U010",
+                "relation": "AUTHOR",
+                "evidence_id": "m:C_RP_QA:1790931105.000113"
+              }
+            ],
+            "quote": null,
+            "quote_kind": "PARAPHRASE",
+            "material": true
+          },
+          {
+            "claim_id": "c3",
+            "kind": "THREAD_INSTRUCTION",
+            "text": "The team lead confirms that this specific citation is misattributed to an unrelated publication and instructs the thread to flag the unsupported factual reference, not a formatting-only issue.",
+            "evidence_ids": [
+              "m:C_RP_QA:1790931158.000226"
+            ],
+            "attributions": [
+              {
+                "user_id": "U001",
+                "relation": "AUTHOR",
+                "evidence_id": "m:C_RP_QA:1790931158.000226"
+              }
+            ],
+            "quote": "For this specific example the citation is misattributed to an unrelated publication. Flag the unsupported factual reference, not a formatting-only issue.",
+            "quote_kind": "VERBATIM",
+            "material": true
+          },
+          {
+            "claim_id": "c4",
+            "kind": "GUIDANCE",
+            "text": "The current content-quality rubric treats a fabricated reference or materially unsupported attribution as a major citation-support defect and a limited citation-detail error where the source and support remain identifiable as minor; these task-quality grades do not determine operational incident severity.",
+            "evidence_ids": [
+              "k:response-preference-instructions@1.1:a71c54c7"
+            ],
+            "attributions": [],
+            "quote": null,
+            "quote_kind": "PARAPHRASE",
+            "material": true
+          },
+          {
+            "claim_id": "c5",
+            "kind": "SOURCE_FACT",
+            "text": "The team lead's October 1 batch status note asks for citation examples in its thread while scope is checked; it does not supply a scoring method or designate an escalation route.",
+            "evidence_ids": [
+              "k:slack:C_RP_ANNOUNCEMENTS:1790871613.000001:430efd10"
+            ],
+            "attributions": [
+              {
+                "user_id": "U001",
+                "relation": "AUTHOR",
+                "evidence_id": "k:slack:C_RP_ANNOUNCEMENTS:1790871613.000001:430efd10"
+              }
+            ],
+            "quote": "Please keep examples in this thread while we check the scope.",
+            "quote_kind": "VERBATIM",
+            "material": false
+          }
+        ],
+        "gaps": [],
+        "evidence_sufficiency": "SUFFICIENT",
+        "proposed_action": {
+          "action_type": "NO_ACTION",
+          "intervention_need": null,
+          "instruction": "Leave the thread's resolved handling unchanged; no additional reminder, documentation change, or escalation is needed for this example.",
+          "rationale": "The team lead has already supplied the example-specific handling, consistent with the current rubric's distinction between unsupported attribution and citation-detail errors.",
+          "draft_text": null,
+          "scope_note": "This recommendation concerns only the reported example and does not turn the thread instruction into project-wide guidance.",
+          "support_claim_ids": [
+            "c3",
+            "c4"
+          ],
+          "targets": [],
+          "context_claim_ids": [
+            "c1",
+            "c2",
+            "c5"
+          ]
+        },
+        "severity": {
+          "level": "LOW",
+          "rationale": "The reports concern one citation example, and the team lead supplied a straightforward handling correction. The messages do not show broader disruption or conflicting scoring instructions.",
+          "signals": [],
+          "affected_reporters": [
+            {
+              "author_id": "U007",
+              "evidence_id": "m:C_RP_QA:1790931056.000012"
+            },
+            {
+              "author_id": "U010",
+              "evidence_id": "m:C_RP_QA:1790931105.000113"
+            }
+          ],
+          "recurrence": "NOT_CHECKED",
+          "recurrence_evidence_ids": [],
+          "reported_recurrence_evidence_ids": []
+        },
+        "confidence": 0.96,
+        "open_confirmation": "NONE",
+        "open_question": null,
+        "open_question_evidence_ids": [],
+        "source_conflicts": [],
+        "announcement_assessments": [
+          {
+            "evidence_id": "k:slack:C_RP_ANNOUNCEMENTS:1790871613.000001:430efd10",
+            "relevant": true,
+            "directive": true,
+            "directive_quote": "Please keep examples in this thread while we check the scope.",
+            "rationale": "The note concerns misleading citations in the same batch. Its directive governs where examples are collected, not scoring or escalation."
+          },
+          {
+            "evidence_id": "k:rp-tie-calibration-post@1.0:4a3c786f",
+            "relevant": false,
+            "directive": true,
+            "directive_quote": "Bring both rationales for disputed pairs to the eight-pair calibration review.",
+            "rationale": "The announcement concerns tie calibration in an earlier batch, not handling the reported DOI misattribution."
+          }
+        ],
+        "resolution": [
+          {
+            "member_id": "member_959eb272660244ea5b417971",
+            "state": "RESOLVED_IN_THREAD",
+            "evidence_ids": [
+              "m:C_RP_QA:1790931056.000012",
+              "m:C_RP_QA:1790931105.000113",
+              "m:C_RP_QA:1790931158.000226"
+            ],
+            "basis": "The team lead explicitly identifies the citation as misattributed and tells the thread how to flag it. This resolves the handling question; the messages do not confirm whether the tutor's separate request to preserve the reference string was completed."
+          }
+        ],
+        "coverage": [
+          {
+            "need": "CURRENT_GUIDANCE",
+            "status": "COVERED",
+            "evidence_ids": [
+              "k:response-preference-faq@1.1:3db12f63",
+              "k:response-preference-instructions@1.1:a71c54c7",
+              "k:response-preference-instructions@1.1:3350bbc0"
+            ],
+            "note": "Current guidance distinguishes unsupported attribution, citation-detail errors, and access failures.",
+            "gap_id": null
+          },
+          {
+            "need": "ANNOUNCEMENTS",
+            "status": "COVERED",
+            "evidence_ids": [
+              "k:slack:C_RP_ANNOUNCEMENTS:1790871613.000001:430efd10",
+              "k:rp-tie-calibration-post@1.0:4a3c786f"
+            ],
+            "note": "The same-batch note collects citation examples; the earlier-batch tie announcement is not applicable to this example.",
+            "gap_id": null
+          },
+          {
+            "need": "PRIOR_DECISIONS",
+            "status": "NOT_APPLICABLE",
+            "evidence_ids": [],
+            "note": "No earlier decision or trial outcome is needed to support leaving the explicitly resolved example unchanged; no historical recurrence claim is made.",
+            "gap_id": null
+          },
+          {
+            "need": "MEMBER_QUESTIONS",
+            "status": "COVERED",
+            "evidence_ids": [
+              "m:C_RP_QA:1790931056.000012",
+              "m:C_RP_QA:1790931105.000113",
+              "m:C_RP_QA:1790931158.000226"
+            ],
+            "note": "The thread includes the DOI reports, the tutor's preservation request, and the team lead's example-specific handling instruction.",
+            "gap_id": null
+          }
+        ],
+        "review_note": null,
+        "action_choice": null
+      },
+      "revised": false
+    },
+    "grounding": {
+      "structural_issues": [],
+      "action_issues": [],
+      "unsupported": [
+        "severity:rationale"
+      ],
+      "unjudged": [],
+      "extraneous_verdicts": [],
+      "rejected": {},
+      "pending": [],
+      "action_sufficiency": null,
+      "source_consistency": {
+        "assessed_evidence_ids": [
+          "k:response-preference-faq@1.1:3db12f63",
+          "k:response-preference-instructions@1.1:a71c54c7",
+          "k:response-preference-instructions@1.1:3350bbc0",
+          "k:slack:C_RP_ANNOUNCEMENTS:1790871613.000001:430efd10"
+        ],
+        "relations": [
+          {
+            "evidence_ids": [
+              "k:response-preference-faq@1.1:3db12f63",
+              "k:response-preference-instructions@1.1:a71c54c7",
+              "k:response-preference-instructions@1.1:3350bbc0"
+            ],
+            "relation": "AGREE",
+            "point": "Factual-error severity depends on its effect on the central conclusion or actionable answer, and link inaccessibility alone does not establish a false claim.",
+            "disagreement_scope": null,
+            "rationale": "All three current guidance excerpts use the same consequential-versus-background distinction and distinguish access or verification failure from a substantive factual defect."
+          },
+          {
+            "evidence_ids": [
+              "k:response-preference-faq@1.1:3db12f63",
+              "k:response-preference-instructions@1.1:a71c54c7",
+              "k:response-preference-instructions@1.1:3350bbc0"
+            ],
+            "relation": "AGREE",
+            "point": "Unsupported attribution and fabricated references require substantive citation assessment rather than treatment as mere access failures.",
+            "disagreement_scope": null,
+            "rationale": "The FAQ distinguishes access failure from unsupported attribution or fabrication; the rubric classifies substantive citation-support defects; the citations section distinguishes a real but nonsupporting source from an invented reference. These provisions are compatible. The same-batch announcement separately governs example collection and supplies no competing scoring rule."
+          }
+        ],
+        "declared_conflict_checks": []
+      },
+      "alternative_sufficiency": {},
+      "status": "FAILED",
+      "basis": "SEMANTIC",
+      "statements": [
+        {
+          "statement_id": "claim:c1",
+          "kind": "CLAIM_INCIDENT_FACT",
+          "text": "A QA tutor reports that the DOI resolves to a completely different publication than response B claims.",
+          "blocking": true,
+          "evidence_ids": [
+            "m:C_RP_QA:1790931056.000012"
+          ],
+          "attributions": [
+            {
+              "user_id": "U007",
+              "relation": "AUTHOR",
+              "evidence_id": "m:C_RP_QA:1790931056.000012",
+              "role": "QA_TUTOR"
+            }
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "The cited QA tutor explicitly reports that the DOI resolves to a completely different publication from what B claims."
+        },
+        {
+          "statement_id": "claim:c2",
+          "kind": "CLAIM_INCIDENT_FACT",
+          "text": "A tutor reports that the DOI resolves to an unrelated article and asks for the reference string to be preserved before the task disappears from the queue.",
+          "blocking": true,
+          "evidence_ids": [
+            "m:C_RP_QA:1790931105.000113"
+          ],
+          "attributions": [
+            {
+              "user_id": "U010",
+              "relation": "AUTHOR",
+              "evidence_id": "m:C_RP_QA:1790931105.000113",
+              "role": "TUTOR"
+            }
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "The cited tutor reports an unrelated article and asks that the reference string be preserved before the task disappears from the queue."
+        },
+        {
+          "statement_id": "claim:c3",
+          "kind": "CLAIM_THREAD_INSTRUCTION",
+          "text": "The team lead confirms that this specific citation is misattributed to an unrelated publication and instructs the thread to flag the unsupported factual reference, not a formatting-only issue. Verbatim quote: \"For this specific example the citation is misattributed to an unrelated publication. Flag the unsupported factual reference, not a formatting-only issue.\"",
+          "blocking": true,
+          "evidence_ids": [
+            "m:C_RP_QA:1790931158.000226"
+          ],
+          "attributions": [
+            {
+              "user_id": "U001",
+              "relation": "AUTHOR",
+              "evidence_id": "m:C_RP_QA:1790931158.000226",
+              "role": "TEAM_LEAD"
+            }
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "The quotation exactly matches the team lead's message. That message identifies the misattribution and gives the stated instruction for this example within the thread."
+        },
+        {
+          "statement_id": "claim:c4",
+          "kind": "CLAIM_GUIDANCE",
+          "text": "The current content-quality rubric treats a fabricated reference or materially unsupported attribution as a major citation-support defect and a limited citation-detail error where the source and support remain identifiable as minor; these task-quality grades do not determine operational incident severity.",
+          "blocking": true,
+          "evidence_ids": [
+            "k:response-preference-instructions@1.1:a71c54c7"
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "The current rubric explicitly supplies both citation-support categories and states that task-quality grades do not determine operational incident severity."
+        },
+        {
+          "statement_id": "claim:c5",
+          "kind": "CLAIM_SOURCE_FACT",
+          "text": "The team lead's October 1 batch status note asks for citation examples in its thread while scope is checked; it does not supply a scoring method or designate an escalation route. Verbatim quote: \"Please keep examples in this thread while we check the scope.\"",
+          "blocking": false,
+          "evidence_ids": [
+            "k:slack:C_RP_ANNOUNCEMENTS:1790871613.000001:430efd10"
+          ],
+          "attributions": [
+            {
+              "user_id": "U001",
+              "relation": "AUTHOR",
+              "evidence_id": "k:slack:C_RP_ANNOUNCEMENTS:1790871613.000001:430efd10",
+              "role": "TEAM_LEAD"
+            }
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "The October 1 announcement is authored by the team lead and contains the exact quoted request. It directs example collection while scope is checked, without prescribing scoring or an escalation route."
+        },
+        {
+          "statement_id": "summary:s1",
+          "kind": "SUMMARY",
+          "text": "A QA tutor and a tutor report that a DOI points to a publication unrelated to the citation in response B.",
+          "blocking": true,
+          "evidence_ids": [
+            "m:C_RP_QA:1790931056.000012",
+            "m:C_RP_QA:1790931105.000113"
+          ],
+          "attributions": [
+            {
+              "user_id": "U007",
+              "relation": "AUTHOR",
+              "evidence_id": "m:C_RP_QA:1790931056.000012",
+              "role": "QA_TUTOR"
+            },
+            {
+              "user_id": "U010",
+              "relation": "AUTHOR",
+              "evidence_id": "m:C_RP_QA:1790931105.000113",
+              "role": "TUTOR"
+            }
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "Both distinct cited authors report that the DOI points to an unrelated publication. Their messages belong to the same thread about the citation in response B."
+        },
+        {
+          "statement_id": "summary:s2",
+          "kind": "SUMMARY",
+          "text": "The team lead has already instructed the thread to flag the unsupported factual reference rather than treat this example as a formatting-only issue.",
+          "blocking": true,
+          "evidence_ids": [
+            "m:C_RP_QA:1790931158.000226"
+          ],
+          "attributions": [
+            {
+              "user_id": "U001",
+              "relation": "AUTHOR",
+              "evidence_id": "m:C_RP_QA:1790931158.000226",
+              "role": "TEAM_LEAD"
+            }
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "The team lead explicitly instructs the thread to flag the unsupported factual reference rather than a formatting-only issue."
+        },
+        {
+          "statement_id": "detail:d1",
+          "kind": "DETAIL",
+          "text": "A tutor also asked for the reference string to be preserved before the task disappears from the queue.",
+          "blocking": false,
+          "evidence_ids": [
+            "m:C_RP_QA:1790931105.000113"
+          ],
+          "attributions": [
+            {
+              "user_id": "U010",
+              "relation": "AUTHOR",
+              "evidence_id": "m:C_RP_QA:1790931105.000113",
+              "role": "TUTOR"
+            }
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "The tutor explicitly asks for preservation of the reference string before the task disappears from the queue."
+        },
+        {
+          "statement_id": "detail:d2",
+          "kind": "DETAIL",
+          "text": "The current content-quality rubric distinguishes materially unsupported attribution from a limited citation-detail error where the source and support remain identifiable.",
+          "blocking": false,
+          "evidence_ids": [
+            "k:response-preference-instructions@1.1:a71c54c7"
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "The current rubric explicitly distinguishes materially unsupported attribution from a limited citation-detail error with identifiable source and support."
+        },
+        {
+          "statement_id": "action:no_action",
+          "kind": "NO_ACTION_RATIONALE",
+          "text": "Why no further action is needed now: The team lead has already supplied the example-specific handling, consistent with the current rubric's distinction between unsupported attribution and citation-detail errors.",
+          "blocking": false,
+          "evidence_ids": [
+            "m:C_RP_QA:1790931158.000226",
+            "k:response-preference-instructions@1.1:a71c54c7",
+            "m:C_RP_QA:1790931056.000012",
+            "m:C_RP_QA:1790931105.000113",
+            "k:slack:C_RP_ANNOUNCEMENTS:1790871613.000001:430efd10"
+          ],
+          "verdict": "PARTIALLY_SUPPORTED",
+          "model_verdict": "PARTIALLY_SUPPORTED",
+          "rationale": "The team lead has supplied example-specific handling consistent with the rubric. However, that does not establish that no further action is needed: the request to preserve the reference string has no recorded completion, and the applicable announcement directs collection of examples while scope is checked. The cited context does not establish that these remaining operational matters have been addressed."
+        },
+        {
+          "statement_id": "announcement:k:slack:C_RP_ANNOUNCEMENTS:1790871613.000001:430efd10",
+          "kind": "ANNOUNCEMENT_HANDLING",
+          "text": "This announcement applies to this topic and directs current handling: \"Please keep examples in this thread while we check the scope.\". The note concerns misleading citations in the same batch. Its directive governs where examples are collected, not scoring or escalation.",
+          "blocking": true,
+          "evidence_ids": [
+            "k:slack:C_RP_ANNOUNCEMENTS:1790871613.000001:430efd10"
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "The announcement concerns misleading citations in the same project and batch, which includes this misattributed citation. Its explicit directive concerns where examples are collected, not scoring or escalation."
+        },
+        {
+          "statement_id": "resolution:member_959eb272660244ea5b417971",
+          "kind": "RESOLUTION",
+          "text": "Member thread member_959eb272660244ea5b417971 is RESOLVED_IN_THREAD: The team lead explicitly identifies the citation as misattributed and tells the thread how to flag it. This resolves the handling question; the messages do not confirm whether the tutor's separate request to preserve the reference string was completed.",
+          "blocking": true,
+          "evidence_ids": [
+            "m:C_RP_QA:1790931056.000012",
+            "m:C_RP_QA:1790931105.000113",
+            "m:C_RP_QA:1790931158.000226"
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "The complete thread contains an explicit team-lead determination and flagging instruction, resolving the example-specific classification question. The statement accurately limits that resolution by acknowledging that preservation of the reference string is not confirmed."
+        },
+        {
+          "statement_id": "severity:rationale",
+          "kind": "SEVERITY_RATIONALE",
+          "text": "Severity LOW: The reports concern one citation example, and the team lead supplied a straightforward handling correction. The messages do not show broader disruption or conflicting scoring instructions.",
+          "blocking": true,
+          "evidence_ids": [
+            "m:C_RP_QA:1790931056.000012",
+            "m:C_RP_QA:1790931105.000113"
+          ],
+          "verdict": "PARTIALLY_SUPPORTED",
+          "model_verdict": "PARTIALLY_SUPPORTED",
+          "rationale": "The two cited reports concern one citation example and show neither broader disruption nor conflicting scoring instructions. However, the asserted team-lead correction is supplied by a different message that this statement does not cite."
+        },
+        {
+          "statement_id": "reporter:U007",
+          "kind": "AFFECTED_REPORTER",
+          "text": "U007 reports, in their own cited message, being affected by this problem.",
+          "blocking": true,
+          "evidence_ids": [
+            "m:C_RP_QA:1790931056.000012"
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "U007's own message reports encountering the DOI mismatch in response B."
+        },
+        {
+          "statement_id": "reporter:U010",
+          "kind": "AFFECTED_REPORTER",
+          "text": "U010 reports, in their own cited message, being affected by this problem.",
+          "blocking": true,
+          "evidence_ids": [
+            "m:C_RP_QA:1790931105.000113"
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "U010's own message reports the DOI resolving to an unrelated article and requests preservation of the reference string."
+        }
+      ]
+    },
+    "temporal": {
+      "status": "NONE_FOUND",
+      "findings": [],
+      "source_consistency": "ASSESSED",
+      "ignored_revision_states": "NOT_YET_EFFECTIVE and NOT_APPROVED revisions never compete with applicable guidance."
+    },
+    "temporal_before_grounding": {
+      "status": "NONE_FOUND",
+      "findings": [],
+      "source_consistency": "NOT_ASSESSED",
+      "ignored_revision_states": "NOT_YET_EFFECTIVE and NOT_APPROVED revisions never compete with applicable guidance."
+    },
+    "severity": {
+      "assessment": {
+        "level": "UNKNOWN",
+        "assessment_status": "UNASSESSED",
+        "rubric_version": null,
+        "rubric_content_sha256": null,
+        "rubric_project_id": null,
+        "rubric_scope": null,
+        "rationale": null,
+        "matched_signals": [],
+        "evidence": [],
+        "occurrence": {
+          "affected_reporters": {
+            "status": "UNKNOWN",
+            "count": null,
+            "ids": [],
+            "basis": null,
+            "evidence": []
+          },
+          "affected_tasks": {
+            "status": "UNKNOWN",
+            "count": null,
+            "ids": [],
+            "basis": null,
+            "evidence": []
+          },
+          "relevant_threads": [],
+          "reporting_window": null,
+          "historical_recurrence": {
+            "status": "NOT_CHECKED",
+            "sources": [],
+            "event_series_ids": []
+          },
+          "known_denominator": null,
+          "structural": null,
+          "semantic_identification": "PENDING"
+        },
+        "inherited_from": {
+          "level": "UNKNOWN",
+          "assessment_status": "UNASSESSED",
+          "assessment_deferred_to": "AGENT3",
+          "reason": "Agent 2 performs taxonomy only."
+        }
+      },
+      "issues": [
+        "Severity rationale not supported and no rubric signal passed; severity left UNASSESSED."
+      ],
+      "notes": [],
+      "proposal": {
+        "level": "LOW",
+        "rationale": "The reports concern one citation example, and the team lead supplied a straightforward handling correction. The messages do not show broader disruption or conflicting scoring instructions.",
+        "signals": [],
+        "affected_reporters": [
+          {
+            "author_id": "U007",
+            "evidence_id": "m:C_RP_QA:1790931056.000012"
+          },
+          {
+            "author_id": "U010",
+            "evidence_id": "m:C_RP_QA:1790931105.000113"
+          }
+        ],
+        "recurrence": "NOT_CHECKED",
+        "recurrence_evidence_ids": [],
+        "reported_recurrence_evidence_ids": []
+      }
+    },
+    "resolution": {
+      "topic": "RESOLVED_IN_THREAD",
+      "members": {
+        "member_959eb272660244ea5b417971": "RESOLVED_IN_THREAD"
+      },
+      "agent1_attributed": [
+        {
+          "member_id": "member_959eb272660244ea5b417971",
+          "state": "RESOLVED_IN_THREAD",
+          "agent1_verification_status": "VERIFIED",
+          "agent1_review_required": false
+        }
+      ]
+    },
+    "established_handling": [
+      "k:slack:C_RP_ANNOUNCEMENTS:1790871613.000001:430efd10"
+    ],
+    "coverage_issues": [],
+    "action_source": "DRAFT",
+    "action_notes": [],
+    "tot": {
+      "status": "NOT_TRIGGERED",
+      "triggers": [],
+      "choice_after_grounding": {
+        "status": "NOT_COMPARED",
+        "viable": []
+      }
+    },
+    "evidence_ledger": {
+      "m:C_RP_QA:1790931056.000012": {
+        "evidence_id": "m:C_RP_QA:1790931056.000012",
+        "origin": "member_message",
+        "use": "MEMBER_REPORT",
+        "member_id": "member_959eb272660244ea5b417971",
+        "channel_id": "C_RP_QA",
+        "thread_id": "1790931056.000012",
+        "message_id": "1790931056.000012",
+        "author_id": "U007",
+        "author_name": "Leo",
+        "author_role": "QA_TUTOR",
+        "timestamp": "2026-10-02T08:50:56.000012Z",
+        "thread_starter_id": "U007",
+        "thread_starter_role": "QA_TUTOR",
+        "reactions": [],
+        "excerpt": "This DOI resolves to a completely different publication than what B claims."
+      },
+      "m:C_RP_QA:1790931105.000113": {
+        "evidence_id": "m:C_RP_QA:1790931105.000113",
+        "origin": "member_message",
+        "use": "MEMBER_REPORT",
+        "member_id": "member_959eb272660244ea5b417971",
+        "channel_id": "C_RP_QA",
+        "thread_id": "1790931056.000012",
+        "message_id": "1790931105.000113",
+        "author_id": "U010",
+        "author_name": "Avery",
+        "author_role": "TUTOR",
+        "timestamp": "2026-10-02T08:51:45.000113Z",
+        "thread_starter_id": "U007",
+        "thread_starter_role": "QA_TUTOR",
+        "reactions": [
+          {
+            "name": "thinking_face",
+            "users": [
+              {
+                "id": "U003",
+                "name": "Jordan"
+              }
+            ]
+          }
+        ],
+        "excerpt": "The DOI resolves, but it points to an unrelated article. Could you preserve the reference string before the task disappears from the queue?"
+      },
+      "m:C_RP_QA:1790931158.000226": {
+        "evidence_id": "m:C_RP_QA:1790931158.000226",
+        "origin": "member_message",
+        "use": "MEMBER_REPORT",
+        "member_id": "member_959eb272660244ea5b417971",
+        "channel_id": "C_RP_QA",
+        "thread_id": "1790931056.000012",
+        "message_id": "1790931158.000226",
+        "author_id": "U001",
+        "author_name": "Alex",
+        "author_role": "TEAM_LEAD",
+        "timestamp": "2026-10-02T08:52:38.000226Z",
+        "thread_starter_id": "U007",
+        "thread_starter_role": "QA_TUTOR",
+        "reactions": [],
+        "excerpt": "For this specific example the citation is misattributed to an unrelated publication. Flag the unsupported factual reference, not a formatting-only issue."
+      },
+      "k:response-preference-faq@1.1:3db12f63": {
+        "evidence_id": "k:response-preference-faq@1.1:3db12f63",
+        "origin": "retrieved_source",
+        "use": "CURRENT_GUIDANCE",
+        "citation": {
+          "document_id": "knowledge_8267f474fe0a050bdbcaf6140c458ee11ad457fdc2afe9f79de12a23de8575e9",
+          "version_id": "version_6c9da15dd304e1be3d453ea1de9cbfd1e8cc54f0939ce516dd89cf0457f82a86",
+          "chunk_id": "chunk_3db12f63fa273df6f01b15a6ef7ed7f3",
+          "authoring": "response-preference-faq@1.1",
+          "title": "Response Preference — FAQ (v1.1)",
+          "sections": [
+            "Factual errors"
+          ],
+          "source": {
+            "batch_id": null,
+            "channel_id": null,
+            "manual_key": "response-preference-faq",
+            "message_id": null,
+            "permalink": null,
+            "project_id": "response_preference",
+            "reference": null,
+            "system": "manual",
+            "thread_id": null,
+            "workspace_id": null
+          }
+        },
+        "source_type": "faq",
+        "record_kind": "faq",
+        "applicability": {
+          "state": "CURRENT",
+          "revision_state": "CURRENT",
+          "version_mode": "current",
+          "replaced_by": [],
+          "unverified_supersession": [],
+          "supersedes": [],
+          "enactment": null,
+          "other_revisions": []
+        },
+        "dates": {
+          "source_date": "2026-09-05T13:00:00Z",
+          "basis": "effective_at",
+          "effective_at": "2026-09-05T13:00:00Z",
+          "created_at": null,
+          "valid_until": null,
+          "expired_as_of": false,
+          "reference_time": "2026-10-02T12:00:00Z"
+        },
+        "scope": {
+          "project_id": "response_preference",
+          "batch_id": null,
+          "scope": "project",
+          "batch_relation": "project_wide"
+        },
+        "authority": {
+          "role": "TEAM_LEAD",
+          "actor": "U001",
+          "actor_relation": "RECORD_AUTHORITY",
+          "approval_status": "EXPLICIT_SOURCE_MARKER",
+          "provenance": "synthetic_manual_record"
+        },
+        "authorship": {
+          "author_id": null,
+          "verified": false,
+          "basis": "NO_AUTHOR_RECORDED"
+        },
+        "recorded_states": {
+          "status": "approved",
+          "decision_status": null,
+          "execution_status": null,
+          "outcome_status": null
+        },
+        "upstream_review": null,
+        "excerpt": "## Factual errors\n\n### Q: What counts as a significant factual error?\nAn error that changes the central conclusion or the answer the user would act on. A nonessential background detail with no effect on the recommendation is minor.\n\n### Q: The source link is dead. Should I penalize the factual claim?\nRecord that the citation could not be verified. A failed URL alone does not prove the claim is false. Distinguish access failure from an unsupported attribution or fabricated reference."
+      },
+      "k:response-preference-instructions@1.1:a71c54c7": {
+        "evidence_id": "k:response-preference-instructions@1.1:a71c54c7",
+        "origin": "retrieved_source",
+        "use": "CURRENT_GUIDANCE",
+        "citation": {
+          "document_id": "knowledge_c49652bd3dfc0e71a42597bd9128f922ba1700cc4d7eb83a39cfbaad9a43ed6d",
+          "version_id": "version_497eb858ea77dcb88133f2ba1afd5eaf08d1a1d380c3a5cad663f8f55b7d3c65",
+          "chunk_id": "chunk_a71c54c718421d30748a010a14ec54a6",
+          "authoring": "response-preference-instructions@1.1",
+          "title": "Response Preference — Instructions (v1.1)",
+          "sections": [
+            "Content-quality rubric"
+          ],
+          "source": {
+            "batch_id": null,
+            "channel_id": null,
+            "manual_key": "response-preference-instructions",
+            "message_id": null,
+            "permalink": null,
+            "project_id": "response_preference",
+            "reference": null,
+            "system": "manual",
+            "thread_id": null,
+            "workspace_id": null
+          }
+        },
+        "source_type": "guideline",
+        "record_kind": "guideline",
+        "applicability": {
+          "state": "CURRENT",
+          "revision_state": "CURRENT",
+          "version_mode": "current",
+          "replaced_by": [],
+          "unverified_supersession": [],
+          "supersedes": [],
+          "enactment": null,
+          "other_revisions": []
+        },
+        "dates": {
+          "source_date": "2026-08-30T13:00:00Z",
+          "basis": "effective_at",
+          "effective_at": "2026-08-30T13:00:00Z",
+          "created_at": null,
+          "valid_until": null,
+          "expired_as_of": false,
+          "reference_time": "2026-10-02T12:00:00Z"
+        },
+        "scope": {
+          "project_id": "response_preference",
+          "batch_id": null,
+          "scope": "project",
+          "batch_relation": "project_wide"
+        },
+        "authority": {
+          "role": "TEAM_LEAD",
+          "actor": "U001",
+          "actor_relation": "RECORD_AUTHORITY",
+          "approval_status": "EXPLICIT_SOURCE_MARKER",
+          "provenance": "synthetic_manual_record"
+        },
+        "authorship": {
+          "author_id": null,
+          "verified": false,
+          "basis": "NO_AUTHOR_RECORDED"
+        },
+        "recorded_states": {
+          "status": "approved",
+          "decision_status": null,
+          "execution_status": null,
+          "outcome_status": null
+        },
+        "upstream_review": null,
+        "excerpt": "## Content-quality rubric\nMajor/minor describe task-quality defects and do not determine operational incident severity.\n\n| Dimension | Major defect | Minor defect | Acceptable / no automatic penalty |\n| --- | --- | --- | --- |\n| Factual accuracy | Error changes the central conclusion or actionable answer | Nonessential background error without that effect | Accurate paraphrase or an immaterial stylistic difference |\n| Instruction adherence | Explicit required format/structure is missing | Limited violation of an actual secondary requirement | A stylistic choice that violates no requirement |\n| Citation support | Fabricated reference or materially unsupported attribution | A limited citation-detail error where the source and support remain identifiable | A valid source that supports the claim |\n| Preference | Identify a meaningful benefit; grade underlying defects separately | Do not manufacture a defect to break a tie | No meaningful quality difference supports a tie |\n\nAn inaccessible link needs a verification note; lack of access alone does not establish the error grade of the claim."
+      },
+      "k:response-preference-instructions@1.1:3350bbc0": {
+        "evidence_id": "k:response-preference-instructions@1.1:3350bbc0",
+        "origin": "retrieved_source",
+        "use": "CURRENT_GUIDANCE",
+        "citation": {
+          "document_id": "knowledge_c49652bd3dfc0e71a42597bd9128f922ba1700cc4d7eb83a39cfbaad9a43ed6d",
+          "version_id": "version_497eb858ea77dcb88133f2ba1afd5eaf08d1a1d380c3a5cad663f8f55b7d3c65",
+          "chunk_id": "chunk_3350bbc0864a963b08fc08bb48e80bd1",
+          "authoring": "response-preference-instructions@1.1",
+          "title": "Response Preference — Instructions (v1.1)",
+          "sections": [
+            "Factual errors and citations"
+          ],
+          "source": {
+            "batch_id": null,
+            "channel_id": null,
+            "manual_key": "response-preference-instructions",
+            "message_id": null,
+            "permalink": null,
+            "project_id": "response_preference",
+            "reference": null,
+            "system": "manual",
+            "thread_id": null,
+            "workspace_id": null
+          }
+        },
+        "source_type": "guideline",
+        "record_kind": "guideline",
+        "applicability": {
+          "state": "CURRENT",
+          "revision_state": "CURRENT",
+          "version_mode": "current",
+          "replaced_by": [],
+          "unverified_supersession": [],
+          "supersedes": [],
+          "enactment": null,
+          "other_revisions": []
+        },
+        "dates": {
+          "source_date": "2026-08-30T13:00:00Z",
+          "basis": "effective_at",
+          "effective_at": "2026-08-30T13:00:00Z",
+          "created_at": null,
+          "valid_until": null,
+          "expired_as_of": false,
+          "reference_time": "2026-10-02T12:00:00Z"
+        },
+        "scope": {
+          "project_id": "response_preference",
+          "batch_id": null,
+          "scope": "project",
+          "batch_relation": "project_wide"
+        },
+        "authority": {
+          "role": "TEAM_LEAD",
+          "actor": "U001",
+          "actor_relation": "RECORD_AUTHORITY",
+          "approval_status": "EXPLICIT_SOURCE_MARKER",
+          "provenance": "synthetic_manual_record"
+        },
+        "authorship": {
+          "author_id": null,
+          "verified": false,
+          "basis": "NO_AUTHOR_RECORDED"
+        },
+        "recorded_states": {
+          "status": "approved",
+          "decision_status": null,
+          "execution_status": null,
+          "outcome_status": null
+        },
+        "upstream_review": null,
+        "excerpt": "## Factual errors and citations\n- A factual error is major when it changes the central conclusion or the answer a user would act on.\n- A nonessential background error with no effect on that conclusion is minor.\n- A broken link is an access/verification failure, not proof that the underlying factual claim is false.\n- Distinguish an existing source that does not support the claim from an invented reference."
+      },
+      "k:slack:C_RP_ANNOUNCEMENTS:1790871613.000001:430efd10": {
+        "evidence_id": "k:slack:C_RP_ANNOUNCEMENTS:1790871613.000001:430efd10",
+        "origin": "retrieved_source",
+        "use": "ANNOUNCEMENT",
+        "citation": {
+          "document_id": "knowledge_5792f6b3b98dab3d8b1eb2ca98c251a4319418607f656aa39896e4206fb556b4",
+          "version_id": "version_655b30a174d2736f82ea177fde7e142b80140671be58a8b57b90cd698ccb7416",
+          "chunk_id": "chunk_430efd102b38553947ded63bff915236",
+          "authoring": null,
+          "title": "Slack announcement in response-preference-announcements at 2026-10-01T16:20:13.000001+00:00",
+          "sections": [],
+          "source": {
+            "batch_id": "rp_batch_15",
+            "channel_id": "C_RP_ANNOUNCEMENTS",
+            "manual_key": null,
+            "message_id": "1790871613.000001",
+            "permalink": null,
+            "project_id": "response_preference",
+            "reference": null,
+            "system": "slack",
+            "thread_id": "1790871613.000001",
+            "workspace_id": null
+          }
+        },
+        "source_type": "announcement",
+        "record_kind": "announcement",
+        "applicability": {
+          "state": "CURRENT",
+          "revision_state": "CURRENT",
+          "version_mode": "current",
+          "replaced_by": [],
+          "unverified_supersession": [],
+          "supersedes": [],
+          "enactment": null,
+          "other_revisions": []
+        },
+        "dates": {
+          "source_date": "2026-10-01T16:20:13.000001+00:00",
+          "basis": "created_at",
+          "effective_at": null,
+          "created_at": "2026-10-01T16:20:13.000001+00:00",
+          "valid_until": null,
+          "expired_as_of": false,
+          "reference_time": "2026-10-02T12:00:00Z"
+        },
+        "scope": {
+          "project_id": "response_preference",
+          "batch_id": "rp_batch_15",
+          "scope": "project",
+          "batch_relation": "same_batch"
+        },
+        "authority": {
+          "role": "TEAM_LEAD",
+          "actor": "U001",
+          "actor_relation": "MESSAGE_AUTHOR",
+          "approval_status": "UNKNOWN",
+          "provenance": null
+        },
+        "authorship": {
+          "author_id": "U001",
+          "verified": true,
+          "basis": "SLACK_MESSAGE_AUTHOR"
+        },
+        "recorded_states": {
+          "status": null,
+          "decision_status": null,
+          "execution_status": null,
+          "outcome_status": null
+        },
+        "upstream_review": {
+          "review_required": true,
+          "review_reasons": [
+            "It is correct that no scoring method is supplied, but Avery does provide an example of misleading citation support: the source exists while its quoted paragraph addresses another claim. The rationale incorrectly says no examples were provided."
+          ]
+        },
+        "excerpt": "[ANNOUNCEMENT posted 2026-10-01T16:20:13.000001+00:00 by TEAM_LEAD (rp_batch_15): not established as handling for this topic until you show it is relevant and gives a directive.]\nBatch status note — How to score responses with weak, missing, or misleading citations. Please keep examples in this thread while we check the scope.\n\nContext reply [1790871661.000113] by U010 (TUTOR):\nThe source is real, but the quoted paragraph is about a different claim."
+      },
+      "k:rp-tie-calibration-post@1.0:4a3c786f": {
+        "evidence_id": "k:rp-tie-calibration-post@1.0:4a3c786f",
+        "origin": "retrieved_source",
+        "use": "ANNOUNCEMENT",
+        "citation": {
+          "document_id": "knowledge_45310f4cdc303d3697b6589b86dfcc3def7cefd37cba2e56b4a20a01bc548841",
+          "version_id": "version_da07d09f6758e77c7a4524b72e54e3ce672614472c8509957745aa892a73961b",
+          "chunk_id": "chunk_4a3c786f92797e2e8738accda1893ab4",
+          "authoring": "rp-tie-calibration-post@1.0",
+          "title": "Tie calibration announcement",
+          "sections": [],
+          "source": {
+            "batch_id": "rp_batch_14",
+            "channel_id": "C_RP_ANNOUNCEMENTS",
+            "manual_key": null,
+            "message_id": "1789567200.700002",
+            "permalink": null,
+            "project_id": "response_preference",
+            "reference": null,
+            "system": "slack",
+            "thread_id": "1789567200.700002",
+            "workspace_id": null
+          }
+        },
+        "source_type": "announcement",
+        "record_kind": "channel_announcement",
+        "applicability": {
+          "state": "CURRENT",
+          "revision_state": "CURRENT",
+          "version_mode": "current",
+          "replaced_by": [],
+          "unverified_supersession": [],
+          "supersedes": [],
+          "enactment": null,
+          "other_revisions": []
+        },
+        "dates": {
+          "source_date": "2026-09-16T14:00:00Z",
+          "basis": "effective_at",
+          "effective_at": "2026-09-16T14:00:00Z",
+          "created_at": "2026-09-16T14:00:00.700002+00:00",
+          "valid_until": null,
+          "expired_as_of": false,
+          "reference_time": "2026-10-02T12:00:00Z"
+        },
+        "scope": {
+          "project_id": "response_preference",
+          "batch_id": "rp_batch_14",
+          "scope": "project",
+          "batch_relation": "other_batch"
+        },
+        "authority": {
+          "role": "TEAM_LEAD",
+          "actor": "U001",
+          "actor_relation": "MESSAGE_AUTHOR",
+          "approval_status": "EXPLICIT_SOURCE_MARKER",
+          "provenance": "synthetic_slack_archive"
+        },
+        "authorship": {
+          "author_id": "U001",
+          "verified": true,
+          "basis": "SLACK_MESSAGE_AUTHOR"
+        },
+        "recorded_states": {
+          "status": "tl_approved",
+          "decision_status": "tl_approved",
+          "execution_status": "posted",
+          "outcome_status": "not_observed"
+        },
+        "upstream_review": null,
+        "excerpt": "[ANNOUNCEMENT posted 2026-09-16T14:00:00Z by TEAM_LEAD (rp_batch_14): not established as handling for this topic until you show it is relevant and gives a directive.]\nPreference batch 14 calibration: choose a tie when neither answer offers a meaningful quality advantage. If choosing A or B, identify the user-facing benefit rather than saying only that it sounds nicer. Keep material factual or instruction-following defects separate. Bring both rationales for disputed pairs to the eight-pair calibration review. This message clarifies the existing criterion; it does not create a new numerical threshold."
+      }
+    },
+    "card": {
+      "contract_version": "agent3-advice-card-v4",
+      "record_type": "ADVICE_CARD",
+      "card_id": "card_5b28fa8249f9a94480288419ffb03a60",
+      "project_id": "response_preference",
+      "topic_name": "Misattributed DOI citations",
+      "card_line": "NEEDS_REVIEW",
+      "summary": "A QA tutor and a tutor report that a DOI points to a publication unrelated to the citation in response B. The team lead has already instructed the thread to flag the unsupported factual reference rather than treat this example as a formatting-only issue.",
+      "severity": {
+        "level": "UNKNOWN",
+        "assessment_status": "UNASSESSED",
+        "rubric_version": null,
+        "rubric_content_sha256": null,
+        "rubric_project_id": null,
+        "rubric_scope": null,
+        "rationale": null,
+        "matched_signals": [],
+        "evidence": [],
+        "occurrence": {
+          "affected_reporters": {
+            "status": "UNKNOWN",
+            "count": null,
+            "ids": [],
+            "basis": null,
+            "evidence": []
+          },
+          "affected_tasks": {
+            "status": "UNKNOWN",
+            "count": null,
+            "ids": [],
+            "basis": null,
+            "evidence": []
+          },
+          "relevant_threads": [],
+          "reporting_window": null,
+          "historical_recurrence": {
+            "status": "NOT_CHECKED",
+            "sources": [],
+            "event_series_ids": []
+          },
+          "known_denominator": null,
+          "structural": null,
+          "semantic_identification": "PENDING"
+        },
+        "inherited_from": {
+          "level": "UNKNOWN",
+          "assessment_status": "UNASSESSED",
+          "assessment_deferred_to": "AGENT3",
+          "reason": "Agent 2 performs taxonomy only."
+        }
+      },
+      "severity_is_provisional": true,
+      "resolution_status": "RESOLVED_IN_THREAD",
+      "recommended_action": null,
+      "reasoning": "What the evidence shows: A QA tutor reports that the DOI resolves to a completely different publication than response B claims. A tutor reports that the DOI resolves to an unrelated article and asks for the reference string to be preserved before the task disappears from the queue. The team lead confirms that this specific citation is misattributed to an unrelated publication and instructs the thread to flag the unsupported factual reference, not a formatting-only issue. The current content-quality rubric treats a fabricated reference or materially unsupported attribution as a major citation-support defect and a limited citation-detail error where the source and support remain identifiable as minor; these task-quality grades do not determine operational incident severity. The team lead's October 1 batch status note asks for citation examples in its thread while scope is checked; it does not supply a scoring method or designate an escalation route. Thread status, read from each thread's own messages: resolved in thread ×1. Agent 1's earlier labels (an input, not evidence): resolved in thread ×1. 2 advisor statements were not supported by the evidence and not shown.",
+      "supporting_sources": [
+        {
+          "kind": "knowledge_source",
+          "project_id": "response_preference",
+          "batch_id": null,
+          "scope": "project",
+          "channel_id": null,
+          "thread_id": null,
+          "message_id": null,
+          "document_id": "knowledge_c49652bd3dfc0e71a42597bd9128f922ba1700cc4d7eb83a39cfbaad9a43ed6d",
+          "version_id": "version_497eb858ea77dcb88133f2ba1afd5eaf08d1a1d380c3a5cad663f8f55b7d3c65",
+          "authoring_document_id": "response-preference-instructions",
+          "authoring_version": "1.1",
+          "section": "Content-quality rubric",
+          "chunk_id": "chunk_a71c54c718421d30748a010a14ec54a6",
+          "candidate_group_id": null,
+          "member_id": null,
+          "artifact": null,
+          "artifact_sha256": null,
+          "quote": null,
+          "note": "k:response-preference-instructions@1.1:a71c54c7 (CURRENT_GUIDANCE; CURRENT)"
+        },
+        {
+          "kind": "knowledge_source",
+          "project_id": "response_preference",
+          "batch_id": "rp_batch_15",
+          "scope": "project",
+          "channel_id": null,
+          "thread_id": null,
+          "message_id": null,
+          "document_id": "knowledge_5792f6b3b98dab3d8b1eb2ca98c251a4319418607f656aa39896e4206fb556b4",
+          "version_id": "version_655b30a174d2736f82ea177fde7e142b80140671be58a8b57b90cd698ccb7416",
+          "authoring_document_id": null,
+          "authoring_version": null,
+          "section": null,
+          "chunk_id": "chunk_430efd102b38553947ded63bff915236",
+          "candidate_group_id": null,
+          "member_id": null,
+          "artifact": null,
+          "artifact_sha256": null,
+          "quote": null,
+          "note": "k:slack:C_RP_ANNOUNCEMENTS:1790871613.000001:430efd10 (CURRENT_HANDLING (announcement verified for this topic); CURRENT)"
+        },
+        {
+          "kind": "slack_message",
+          "project_id": "response_preference",
+          "batch_id": "rp_batch_15",
+          "scope": "project",
+          "channel_id": "C_RP_QA",
+          "thread_id": "1790931056.000012",
+          "message_id": "1790931056.000012",
+          "document_id": null,
+          "version_id": null,
+          "authoring_document_id": null,
+          "authoring_version": null,
+          "section": null,
+          "chunk_id": null,
+          "candidate_group_id": null,
+          "member_id": "member_959eb272660244ea5b417971",
+          "artifact": null,
+          "artifact_sha256": null,
+          "quote": null,
+          "note": "m:C_RP_QA:1790931056.000012"
+        },
+        {
+          "kind": "slack_message",
+          "project_id": "response_preference",
+          "batch_id": "rp_batch_15",
+          "scope": "project",
+          "channel_id": "C_RP_QA",
+          "thread_id": "1790931056.000012",
+          "message_id": "1790931105.000113",
+          "document_id": null,
+          "version_id": null,
+          "authoring_document_id": null,
+          "authoring_version": null,
+          "section": null,
+          "chunk_id": null,
+          "candidate_group_id": null,
+          "member_id": "member_959eb272660244ea5b417971",
+          "artifact": null,
+          "artifact_sha256": null,
+          "quote": null,
+          "note": "m:C_RP_QA:1790931105.000113"
+        },
+        {
+          "kind": "slack_message",
+          "project_id": "response_preference",
+          "batch_id": "rp_batch_15",
+          "scope": "project",
+          "channel_id": "C_RP_QA",
+          "thread_id": "1790931056.000012",
+          "message_id": "1790931158.000226",
+          "document_id": null,
+          "version_id": null,
+          "authoring_document_id": null,
+          "authoring_version": null,
+          "section": null,
+          "chunk_id": null,
+          "candidate_group_id": null,
+          "member_id": "member_959eb272660244ea5b417971",
+          "artifact": null,
+          "artifact_sha256": null,
+          "quote": null,
+          "note": "m:C_RP_QA:1790931158.000226"
+        }
+      ],
+      "related_threads": [
+        {
+          "project_id": "response_preference",
+          "batch_id": "rp_batch_15",
+          "channel_id": "C_RP_QA",
+          "thread_id": "1790931056.000012",
+          "member_id": "member_959eb272660244ea5b417971",
+          "permalink": null,
+          "display_reference": "1790931056.000012",
+          "label": "#response-preference-qa, 2026-10-02, started by a QA tutor: \"This DOI resolves to a completely different publication than what B claims.\"",
+          "opening_text": "This DOI resolves to a completely different publication than what B claims."
+        }
+      ],
+      "confidence": 0.96,
+      "confidence_band": "HIGH",
+      "needs_review_reasons": [
+        {
+          "code": "GROUNDING_FAILURE",
+          "detail": "Withheld from this card: severity:rationale: PARTIALLY_SUPPORTED",
+          "obligation_ids": [],
+          "evidence": []
+        },
+        {
+          "code": "OTHER",
+          "detail": "Severity not established: Severity rationale not supported and no rubric signal passed; severity left UNASSESSED.",
+          "obligation_ids": [],
+          "evidence": []
+        }
+      ],
+      "inherited_flags": [],
+      "checks": {
+        "grounding": "FAILED",
+        "temporal_conflict": "NONE_FOUND",
+        "open_confirmation": "NONE"
+      },
+      "lineage": {
+        "agent3_run_id": "agent3overnight_0b7636193a04d34b4fe271dfea902a96",
+        "handoff_contract": "agent2-taxonomy-handoff-v2",
+        "agent2_export_sha256": "7634a0c7af684201be9771b97e12c4379ed86cc8b4de7159caa55bd6816e9c26",
+        "agent2_schema_version": 8,
+        "candidate_group_id": "cluster_839fecb69ec3fa12",
+        "topic_id": "cluster_839fecb69ec3fa12/topic_2",
+        "member_ids": [
+          "member_959eb272660244ea5b417971"
+        ],
+        "project_id": "response_preference",
+        "batch_id": "rp_batch_15"
+      },
+      "review_notes": [
+        "Some advisor statements were not supported by the evidence and are not shown.",
+        "Severity could not be established from the supported evidence."
+      ],
+      "details": [
+        "A tutor also asked for the reference string to be preserved before the task disappears from the queue.",
+        "The current content-quality rubric distinguishes materially unsupported attribution from a limited citation-detail error where the source and support remain identifiable."
+      ],
+      "next_step": {
+        "status": "NO_INTERVENTION_PROPOSED",
+        "rationale": null,
+        "explanation": "The advisor chose not to propose an intervention. Its reason is not shown because the evidence check found it only partly supported. Treat this as the advisor's choice, not a confirmed decision."
+      }
+    },
+    "review_items": [],
+    "coverage": {
+      "group_members_outside_this_card": [
+        "member_8d50dd1c5f78296f69cc5bde",
+        "member_b269035d5f6ff3270d451b66"
+      ],
+      "uncarried_obligations": []
+    },
+    "budget": {
+      "consumed": {
+        "retrieval_calls": 1,
+        "model_calls": 2
+      },
+      "limits": {
+        "model_calls_per_topic": 4,
+        "model_calls_total": 28,
+        "retrieval_calls_per_topic": 6,
+        "retrieval_calls_total": 42
+      }
+    },
+    "diagnostics": [
+      {
+        "code": "WITHHELD_STATEMENT",
+        "statement_id": "action:no_action",
+        "kind": "NO_ACTION_RATIONALE",
+        "text": "Why no further action is needed now: The team lead has already supplied the example-specific handling, consistent with the current rubric's distinction between unsupported attribution and citation-detail errors.",
+        "verdict": "PARTIALLY_SUPPORTED",
+        "rationale": "The team lead has supplied example-specific handling consistent with the rubric. However, that does not establish that no further action is needed: the request to preserve the reference string has no recorded completion, and the applicable announcement directs collection of examples while scope is checked. The cited context does not establish that these remaining operational matters have been addressed.",
+        "blocking": false
+      },
+      {
+        "code": "WITHHELD_STATEMENT",
+        "statement_id": "severity:rationale",
+        "kind": "SEVERITY_RATIONALE",
+        "text": "Severity LOW: The reports concern one citation example, and the team lead supplied a straightforward handling correction. The messages do not show broader disruption or conflicting scoring instructions.",
+        "verdict": "PARTIALLY_SUPPORTED",
+        "rationale": "The two cited reports concern one citation example and show neither broader disruption nor conflicting scoring instructions. However, the asserted team-lead correction is supplied by a different message that this statement does not cite.",
+        "blocking": true
+      }
+    ]
+  }
+}

@@ -1,0 +1,2673 @@
+{
+  "work_item": {
+    "candidate_group_id": "cluster_2845c1b030fe6d60",
+    "project_id": "response_preference",
+    "batch_id": "rp_batch_15",
+    "work_id": "topic:cluster_2845c1b030fe6d60/topic_1",
+    "kind": "TOPIC",
+    "topic_id": "cluster_2845c1b030fe6d60/topic_1",
+    "topic_name": "Majority threshold for incorrect dates and key facts",
+    "member_ids": [
+      "member_4c0f46ab95a5321f30ddaa81",
+      "member_b193085c828797658e0da615",
+      "member_fa59c4a67b9437de29c74005"
+    ],
+    "pilot_scenario": null,
+    "in_scope": true
+  },
+  "workflow": {
+    "outcome": "CARD",
+    "card_id": "card_ae8261f32944c73f60d573a715d027b3",
+    "card_line": "RECOMMENDED_ACTION",
+    "grounding": "PASSED",
+    "stage_failures": [],
+    "semantic_source": "LIVE_MODEL"
+  },
+  "result": {
+    "scenario": {
+      "id": "topic:cluster_2845c1b030fe6d60/topic_1",
+      "candidate_group_id": "cluster_2845c1b030fe6d60",
+      "focus": "Majority threshold for incorrect dates and key facts",
+      "topic_id": "cluster_2845c1b030fe6d60/topic_1"
+    },
+    "status": "CARD",
+    "topic": {
+      "project_id": "response_preference",
+      "batch_id": "rp_batch_15",
+      "candidate_group_id": "cluster_2845c1b030fe6d60",
+      "topic_id": "cluster_2845c1b030fe6d60/topic_1",
+      "topic_label": "Majority threshold for incorrect dates and key facts",
+      "projection_gap": null,
+      "as_of": "2026-10-02T12:00:00Z",
+      "member_ids": [
+        "member_4c0f46ab95a5321f30ddaa81",
+        "member_b193085c828797658e0da615",
+        "member_fa59c4a67b9437de29c74005"
+      ],
+      "initial_query": "Majority threshold for incorrect dates and key facts. Does this incorrect date count as major?"
+    },
+    "retrieval_trace": [
+      {
+        "step": 1,
+        "purpose": "initial_current_guidance",
+        "gap_id": null,
+        "query": "Majority threshold for incorrect dates and key facts. Does this incorrect date count as major?",
+        "source_types": [
+          "guideline",
+          "faq",
+          "decision",
+          "announcement"
+        ],
+        "version_mode": "current",
+        "as_of": "2026-10-02T12:00:00Z",
+        "batch": "rp_batch_15",
+        "top_k": 5,
+        "status": "DONE",
+        "mode": "hybrid",
+        "use_mmr": true,
+        "mmr_lambda": 0.9,
+        "result_ids": [
+          "k:response-preference-instructions@1.1:3350bbc0",
+          "k:rp-tie-calibration-post@1.0:4a3c786f",
+          "k:response-preference-instructions@1.1:a71c54c7",
+          "k:response-preference-instructions@1.1:47ed0c14",
+          "k:response-preference-faq@1.1:3db12f63"
+        ],
+        "new_evidence_ids": [
+          "k:response-preference-instructions@1.1:3350bbc0",
+          "k:rp-tie-calibration-post@1.0:4a3c786f",
+          "k:response-preference-instructions@1.1:a71c54c7",
+          "k:response-preference-instructions@1.1:47ed0c14",
+          "k:response-preference-faq@1.1:3db12f63"
+        ],
+        "eligible_chunks": 28,
+        "added": []
+      }
+    ],
+    "retrieval_notes": {
+      "withheld_by_version": [],
+      "version_diagnostics": []
+    },
+    "follow_ups": [],
+    "unfilled_gaps": [],
+    "model_calls": [
+      {
+        "stage": "draft",
+        "schema": "AdvisorDraft",
+        "agent1_context": {
+          "sha256": "4c30e79b2487b5bd1dd1ed74480d55be2b82baaf0b9f2875d8d5c6baae667145",
+          "boundary": "IN_HTTP_BODY"
+        },
+        "raw": "{\n  \"contract_version\": \"agent3-advisor-draft-v11\",\n  \"summary\": null,\n  \"summary_sentences\": [\n    {\n      \"text\": \"Two QA tutors and a tutor ask when incorrect dates or key facts count as major factual errors.\",\n      \"support_claim_ids\": [\"c1\", \"c2\", \"c3\"],\n      \"depends_on\": []\n    },\n    {\n      \"text\": \"Current guidance defines the threshold, but one QA tutor's question remains unanswered and the other has only a tutor's contextual explanation.\",\n      \"support_claim_ids\": [\"c7\", \"c8\"],\n      \"depends_on\": [1]\n    }\n  ],\n  \"detail_sentences\": [\n    {\n      \"text\": \"The team lead answered the tutor's question within that thread: a factual error is major when it changes the central conclusion, while a nonessential background-date slip is minor.\",\n      \"support_claim_ids\": [\"c2\", \"c6\"],\n      \"depends_on\": [],\n      \"summary_depends_on\": []\n    },\n    {\n      \"text\": \"For RP-3656, a tutor says the wrong date changes the event order and explains that the same wrong year can be minor in background context but major in a chronology task.\",\n      \"support_claim_ids\": [\"c5\"],\n      \"depends_on\": [],\n      \"summary_depends_on\": []\n    }\n  ],\n  \"reasoning\": \"The repeated questions concern a consequential grading distinction, but the current instructions and FAQ agree on the rule. A reminder can address the unanswered questions without turning the team lead's thread-specific answer or a tutor's explanation into project policy. No historical decision or outcome is needed to support this limited action.\",\n  \"claims\": [\n    {\n      \"claim_id\": \"c1\",\n      \"kind\": \"INCIDENT_FACT\",\n      \"text\": \"A QA tutor asks whether an incorrect date counts as major.\",\n      \"evidence_ids\": [\"m:C_RP_GENERAL:1790857505.000025\"],\n      \"attributions\": [\n        {\n          \"user_id\": \"U008\",\n          \"relation\": \"AUTHOR\",\n          \"evidence_id\": \"m:C_RP_GENERAL:1790857505.000025\"\n        }\n      ],\n      \"quote\": null,\n      \"quote_kind\": \"PARAPHRASE\",\n      \"material\": true\n    },\n    {\n      \"claim_id\": \"c2\",\n      \"kind\": \"INCIDENT_FACT\",\n      \"text\": \"A tutor asks whether an inaccurate key fact warrants a major grade even when tone is fine, and asks how to handle the task.\",\n      \"evidence_ids\": [\"m:C_RP_GENERAL:1790877012.001300\"],\n      \"attributions\": [\n        {\n          \"user_id\": \"U003\",\n          \"relation\": \"AUTHOR\",\n          \"evidence_id\": \"m:C_RP_GENERAL:1790877012.001300\"\n        }\n      ],\n      \"quote\": null,\n      \"quote_kind\": \"PARAPHRASE\",\n      \"material\": true\n    },\n    {\n      \"claim_id\": \"c3\",\n      \"kind\": \"INCIDENT_FACT\",\n      \"text\": \"A QA tutor asks whether the incorrect date on RP-3656 counts as major.\",\n      \"evidence_ids\": [\"m:C_RP_QA:1790893656.000022\"],\n      \"attributions\": [\n        {\n          \"user_id\": \"U007\",\n          \"relation\": \"AUTHOR\",\n          \"evidence_id\": \"m:C_RP_QA:1790893656.000022\"\n        }\n      ],\n      \"quote\": null,\n      \"quote_kind\": \"PARAPHRASE\",\n      \"material\": true\n    },\n    {\n      \"claim_id\": \"c4\",\n      \"kind\": \"INCIDENT_FACT\",\n      \"text\": \"A tutor says the wrong date changes which event happened first and considers that central.\",\n      \"evidence_ids\": [\"m:C_RP_GENERAL:1790877065.000113\"],\n      \"attributions\": [\n        {\n          \"user_id\": \"U012\",\n          \"relation\": \"AUTHOR\",\n          \"evidence_id\": \"m:C_RP_GENERAL:1790877065.000113\"\n        }\n      ],\n      \"quote\": null,\n      \"quote_kind\": \"PARAPHRASE\",\n      \"material\": true\n    },\n    {\n      \"claim_id\": \"c5\",\n      \"kind\": \"INCIDENT_FACT\",\n      \"text\": \"In the RP-3656 thread, a tutor says the wrong date changes which event happened first and explains that the same wrong year can be minor in background context and major in a chronology task.\",\n      \"evidence_ids\": [\"m:C_RP_QA:1790893706.000113\"],\n      \"attributions\": [\n        {\n          \"user_id\": \"U004\",\n          \"relation\": \"AUTHOR\",\n          \"evidence_id\": \"m:C_RP_QA:1790893706.000113\"\n        }\n      ],\n      \"quote\": null,\n      \"quote_kind\": \"PARAPHRASE\",\n      \"material\": true\n    },\n    {\n      \"claim_id\": \"c6\",\n      \"kind\": \"THREAD_INSTRUCTION\",\n      \"text\": \"For the tutor's example, the team lead instructs that a factual error is major when it changes the central conclusion and a nonessential background-date slip is minor.\",\n      \"evidence_ids\": [\"m:C_RP_GENERAL:1790877109.000226\"],\n      \"attributions\": [\n        {\n          \"user_id\": \"U001\",\n          \"relation\": \"AUTHOR\",\n          \"evidence_id\": \"m:C_RP_GENERAL:1790877109.000226\"\n        },\n        {\n          \"user_id\": \"U003\",\n          \"relation\": \"THREAD_STARTER\",\n          \"evidence_id\": \"m:C_RP_GENERAL:1790877109.000226\"\n        }\n      ],\n      \"quote\": null,\n      \"quote_kind\": \"PARAPHRASE\",\n      \"material\": true\n    },\n    {\n      \"claim_id\": \"c7\",\n      \"kind\": \"GUIDANCE\",\n      \"text\": \"Current project instructions classify a factual error as major when it changes the central conclusion or the answer a user would act on, and a nonessential background error without that effect as minor; the current FAQ gives the same distinction.\",\n      \"evidence_ids\": [\n        \"k:response-preference-instructions@1.1:3350bbc0\",\n        \"k:response-preference-faq@1.1:3db12f63\"\n      ],\n      \"attributions\": [],\n      \"quote\": null,\n      \"quote_kind\": \"PARAPHRASE\",\n      \"material\": true\n    },\n    {\n      \"claim_id\": \"c8\",\n      \"kind\": \"INFERENCE\",\n      \"text\": \"One QA tutor's question has no answer in its provided thread, while the QA tutor asking about RP-3656 receives a tutor's contextual explanation but no definitive classification of the task.\",\n      \"evidence_ids\": [\n        \"m:C_RP_GENERAL:1790857505.000025\",\n        \"m:C_RP_QA:1790893656.000022\",\n        \"m:C_RP_QA:1790893706.000113\"\n      ],\n      \"attributions\": [\n        {\n          \"user_id\": \"U008\",\n          \"relation\": \"AUTHOR\",\n          \"evidence_id\": \"m:C_RP_GENERAL:1790857505.000025\"\n        },\n        {\n          \"user_id\": \"U007\",\n          \"relation\": \"AUTHOR\",\n          \"evidence_id\": \"m:C_RP_QA:1790893656.000022\"\n        },\n        {\n          \"user_id\": \"U004\",\n          \"relation\": \"AUTHOR\",\n          \"evidence_id\": \"m:C_RP_QA:1790893706.000113\"\n        }\n      ],\n      \"quote\": null,\n      \"quote_kind\": \"PARAPHRASE\",\n      \"material\": true\n    }\n  ],\n  \"gaps\": [],\n  \"evidence_sufficiency\": \"SUFFICIENT\",\n  \"proposed_action\": {\n    \"action_type\": \"POST_ALIGNMENT\",\n    \"intervention_need\": {\n      \"kind\": \"UNRESOLVED_HANDLING_QUESTION\",\n      \"statement\": \"Two QA tutors' date-grading questions remain unanswered or only partly answered, despite an applicable factual-error rule.\",\n      \"evidence_ids\": [\n        \"m:C_RP_GENERAL:1790857505.000025\",\n        \"m:C_RP_QA:1790893656.000022\",\n        \"m:C_RP_QA:1790893706.000113\",\n        \"k:response-preference-instructions@1.1:3350bbc0\"\n      ]\n    },\n    \"instruction\": \"Post a reminder explaining that incorrect dates and key facts are graded by their effect on the central conclusion or actionable answer.\",\n    \"rationale\": \"The current instructions and FAQ already supply the same threshold. A reminder addresses the remaining grading questions without introducing a new rule.\",\n    \"draft_text\": \"Reminder for date and key-fact reviews: an incorrect fact is major when it changes the central conclusion or the answer a user would act on. A nonessential background error with no effect on that conclusion is minor.\\n\\nApply that distinction to the role the date or fact plays in the answer, rather than treating every incorrect date as automatically major. This follows the current factual-error instructions and FAQ; it does not introduce a new grading threshold.\",\n    \"scope_note\": \"This reminder restates the factual-error threshold; it does not assign a final grade to either QA tutor's example.\",\n    \"support_claim_ids\": [\"c1\", \"c2\", \"c3\", \"c7\", \"c8\"],\n    \"targets\": [],\n    \"context_claim_ids\": [\"c4\", \"c5\", \"c6\"]\n  },\n  \"severity\": {\n    \"level\": \"MEDIUM\",\n    \"rationale\": \"Repeated uncertainty concerns the distinction between major and minor factual defects, which can affect grading consistency. The messages do not establish broader disruption or incorrect submitted labels.\",\n    \"signals\": [\n      {\n        \"level\": \"MEDIUM\",\n        \"signal_index\": 0,\n        \"signal_text\": \"Recurring confusion about the same rule, tool behavior, or scoring criterion that suggests meaningful workflow or labeling impact\",\n        \"support\": \"Two QA tutors and a tutor ask how incorrect dates or key facts should be graded, showing repeated uncertainty about the same consequential grading distinction.\",\n        \"evidence_ids\": [\n          \"m:C_RP_GENERAL:1790857505.000025\",\n          \"m:C_RP_GENERAL:1790877012.001300\",\n          \"m:C_RP_QA:1790893656.000022\"\n        ]\n      }\n    ],\n    \"affected_reporters\": [],\n    \"recurrence\": \"NOT_CHECKED\",\n    \"recurrence_evidence_ids\": [],\n    \"reported_recurrence_evidence_ids\": []\n  },\n  \"confidence\": 0.93,\n  \"open_confirmation\": \"NONE\",\n  \"open_question\": null,\n  \"open_question_evidence_ids\": [],\n  \"source_conflicts\": [],\n  \"announcement_assessments\": [\n    {\n      \"evidence_id\": \"k:rp-tie-calibration-post@1.0:4a3c786f\",\n      \"relevant\": false,\n      \"directive\": true,\n      \"directive_quote\": \"Bring both rationales for disputed pairs to the eight-pair calibration review.\",\n      \"rationale\": \"The announcement directs tie calibration for batch 14, not factual-error grading questions in batch 15, so it does not govern this action.\"\n    }\n  ],\n  \"resolution\": [\n    {\n      \"member_id\": \"member_4c0f46ab95a5321f30ddaa81\",\n      \"state\": \"UNRESOLVED\",\n      \"evidence_ids\": [\"m:C_RP_GENERAL:1790857505.000025\"],\n      \"basis\": \"The QA tutor asks whether the date error is major; the provided thread contains no reply.\"\n    },\n    {\n      \"member_id\": \"member_b193085c828797658e0da615\",\n      \"state\": \"RESOLVED_IN_THREAD\",\n      \"evidence_ids\": [\n        \"m:C_RP_GENERAL:1790877012.001300\",\n        \"m:C_RP_GENERAL:1790877065.000113\",\n        \"m:C_RP_GENERAL:1790877109.000226\"\n      ],\n      \"basis\": \"The team lead answers the tutor's handling question with a threshold explicitly scoped to that example.\"\n    },\n    {\n      \"member_id\": \"member_fa59c4a67b9437de29c74005\",\n      \"state\": \"PARTIALLY_RESOLVED\",\n      \"evidence_ids\": [\n        \"m:C_RP_QA:1790893656.000022\",\n        \"m:C_RP_QA:1790893706.000113\"\n      ],\n      \"basis\": \"A tutor explains why the event order matters and how context can change the grade, but does not definitively classify RP-3656 for the QA tutor.\"\n    }\n  ],\n  \"coverage\": [\n    {\n      \"need\": \"CURRENT_GUIDANCE\",\n      \"status\": \"COVERED\",\n      \"evidence_ids\": [\n        \"k:response-preference-instructions@1.1:3350bbc0\",\n        \"k:response-preference-faq@1.1:3db12f63\"\n      ],\n      \"note\": \"Current project-wide instructions and FAQ directly define the factual-error threshold.\",\n      \"gap_id\": null\n    },\n    {\n      \"need\": \"ANNOUNCEMENTS\",\n      \"status\": \"COVERED\",\n      \"evidence_ids\": [\"k:rp-tie-calibration-post@1.0:4a3c786f\"],\n      \"note\": \"The retrieved announcement was assessed and does not apply to this batch and grading problem.\",\n      \"gap_id\": null\n    },\n    {\n      \"need\": \"PRIOR_DECISIONS\",\n      \"status\": \"NOT_APPLICABLE\",\n      \"evidence_ids\": [],\n      \"note\": \"The proposed reminder relies only on explicit current guidance; it does not depend on an earlier decision, trial, outcome or historical recurrence.\",\n      \"gap_id\": null\n    },\n    {\n      \"need\": \"MEMBER_QUESTIONS\",\n      \"status\": \"COVERED\",\n      \"evidence_ids\": [\n        \"m:C_RP_GENERAL:1790857505.000025\",\n        \"m:C_RP_GENERAL:1790877012.001300\",\n        \"m:C_RP_GENERAL:1790877109.000226\",\n        \"m:C_RP_QA:1790893656.000022\",\n        \"m:C_RP_QA:1790893706.000113\"\n      ],\n      \"note\": \"The questions and available replies establish which threads are answered and which remain wholly or partly unresolved.\",\n      \"gap_id\": null\n    }\n  ],\n  \"review_note\": null,\n  \"action_choice\": null\n}",
+        "raw_sha256": "e8bfea5f077a54be83ced815a594f81950ef8d495a6160eee7d0a7f11209bc2c",
+        "http_requests": {
+          "sent": 1,
+          "blocked": 0,
+          "hosts": [
+            "api.openai.com"
+          ],
+          "responses": [
+            {
+              "status_code": 200,
+              "seconds": 0.096,
+              "model": "gpt-6.1-sol",
+              "usage": {
+                "prompt_tokens": 12227,
+                "completion_tokens": 3568,
+                "total_tokens": 15795,
+                "prompt_tokens_details": {
+                  "cached_tokens": 0,
+                  "cache_write_tokens": 12224,
+                  "audio_tokens": 0
+                },
+                "completion_tokens_details": {
+                  "reasoning_tokens": 354,
+                  "audio_tokens": 0,
+                  "accepted_prediction_tokens": 0,
+                  "rejected_prediction_tokens": 0
+                }
+              },
+              "finish_reasons": [
+                "stop"
+              ]
+            }
+          ],
+          "input_tokens": 12233,
+          "refused": null,
+          "charged_usd": 0.06013400000000001
+        },
+        "input_tokens_estimate": 12233,
+        "status": "OK"
+      },
+      {
+        "stage": "grounding",
+        "schema": "GroundingJudgment",
+        "raw": "{\n  \"contract_version\": \"agent3-grounding-judgment-v5\",\n  \"verdicts\": [\n    {\n      \"statement_id\": \"claim:c1\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"U008 is a QA tutor and explicitly asks whether the incorrect date counts as major.\"\n    },\n    {\n      \"statement_id\": \"claim:c2\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"U003 is a tutor and asks both whether the inaccurate key fact triggers major despite acceptable tone and what handling applies.\"\n    },\n    {\n      \"statement_id\": \"claim:c3\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"QA tutor U007 explicitly asks whether the incorrect date counts as major and identifies RP-3656.\"\n    },\n    {\n      \"statement_id\": \"claim:c4\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"Tutor U012 reports that the wrong date changes the event order and says that seems central.\"\n    },\n    {\n      \"statement_id\": \"claim:c5\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"Tutor U004 makes both statements in the RP-3656 thread: the date changes event order, and the same wrong year can receive different grades depending on its contextual role.\"\n    },\n    {\n      \"statement_id\": \"claim:c6\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"Team lead U001 gives this threshold explicitly for the example in U003's thread. The statement preserves that thread-specific scope and correctly identifies the author and thread starter.\"\n    },\n    {\n      \"statement_id\": \"claim:c7\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The current project instructions and FAQ both distinguish consequential factual errors from nonessential background errors using the stated threshold.\"\n    },\n    {\n      \"statement_id\": \"claim:c8\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"U008's supplied thread has no reply. U007 receives U004's contextual explanation, which suggests centrality but does not definitively assign RP-3656 a grade.\"\n    },\n    {\n      \"statement_id\": \"summary:s1\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The three cited questions come from two distinct QA tutors and one tutor, each asking about major classification for an incorrect date or key fact.\"\n    },\n    {\n      \"statement_id\": \"summary:s2\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"Current guidance supplies the threshold, while the complete supplied QA threads show one unanswered question and one response limited to a tutor's contextual explanation.\"\n    },\n    {\n      \"statement_id\": \"detail:d1\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The team lead replies in the tutor's own thread with exactly this major/minor distinction, scoped to the example.\"\n    },\n    {\n      \"statement_id\": \"detail:d2\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"U004's message in the RP-3656 thread states both the event-order effect and the background-versus-chronology distinction.\"\n    },\n    {\n      \"statement_id\": \"action\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"Repeated grading questions and the remaining unanswered or partly answered QA questions justify an advisory reminder. Its substantive rule matches current guidance, it names no unsupported delivery route, and it expressly avoids assigning final task grades.\"\n    },\n    {\n      \"statement_id\": \"action:rationale\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The instructions and FAQ agree on the threshold. Restating it addresses the remaining uncertainty without changing the rule or claiming to resolve the specific task grades.\"\n    },\n    {\n      \"statement_id\": \"action:need\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"One QA tutor's handling question has no reply, and the other receives a contextual explanation without a definitive classification. The existence of an applicable general rule does not establish that these task-specific questions have been resolved.\"\n    },\n    {\n      \"statement_id\": \"resolution:member_4c0f46ab95a5321f30ddaa81\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The complete provided thread consists only of the QA tutor's question and contains no answer.\"\n    },\n    {\n      \"statement_id\": \"resolution:member_b193085c828797658e0da615\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The thread includes contextual information followed by the team lead's answer giving the applicable threshold explicitly for this example.\"\n    },\n    {\n      \"statement_id\": \"resolution:member_fa59c4a67b9437de29c74005\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The tutor's response explains relevance and contextual grading but stops short of definitively classifying RP-3656, supporting partial resolution.\"\n    },\n    {\n      \"statement_id\": \"severity:rationale\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"Three distinct questions establish repeated uncertainty over a consequential grading distinction. The rationale frames consistency impact as a possibility and correctly avoids claiming broader disruption or actual incorrect submissions.\"\n    },\n    {\n      \"statement_id\": \"severity:signal:MEDIUM[0]\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"Two QA tutors and one tutor independently ask about the same major/minor factual-error criterion, supporting recurring confusion with potential labeling impact rather than an established labeling failure.\"\n    }\n  ],\n  \"action_sufficiency\": {\n    \"verdict\": \"SUFFICIENT\",\n    \"essential_statement_ids\": [\n      \"claim:c7\",\n      \"claim:c8\"\n    ],\n    \"rationale\": \"The supported current-guidance premise supplies the reminder's exact grading threshold, and the supported thread-status premise establishes remaining questions that justify restating it. The action introduces neither a new threshold nor a final classification or unsupported concrete route.\"\n  },\n  \"alternative_sufficiency\": [],\n  \"source_consistency\": {\n    \"assessed_evidence_ids\": [\n      \"k:response-preference-instructions@1.1:3350bbc0\",\n      \"k:response-preference-instructions@1.1:a71c54c7\",\n      \"k:response-preference-instructions@1.1:47ed0c14\",\n      \"k:response-preference-faq@1.1:3db12f63\"\n    ],\n    \"relations\": [\n      {\n        \"evidence_ids\": [\n          \"k:response-preference-instructions@1.1:3350bbc0\",\n          \"k:response-preference-instructions@1.1:a71c54c7\",\n          \"k:response-preference-faq@1.1:3db12f63\"\n        ],\n        \"relation\": \"AGREE\",\n        \"point\": \"Major versus minor factual-error classification\",\n        \"disagreement_scope\": null,\n        \"rationale\": \"All three classify errors affecting the central conclusion or actionable answer as major/significant and nonessential background errors without that effect as minor. The instruction-adherence section addresses separate scoring and unsettled response comparisons, not a different factual-error threshold. The batch-14 tie announcement does not direct handling for this batch-15 date-grading topic and is not a governing source here.\"\n      }\n    ],\n    \"declared_conflict_checks\": []\n  }\n}",
+        "raw_sha256": "eaef521bea1c2592b67c65d5d47c394b7a78453ca0fd7aec0047291220f74fda",
+        "http_requests": {
+          "sent": 1,
+          "blocked": 0,
+          "hosts": [
+            "api.openai.com"
+          ],
+          "responses": [
+            {
+              "status_code": 200,
+              "seconds": 0.078,
+              "model": "gpt-6.1-sol",
+              "usage": {
+                "prompt_tokens": 9730,
+                "completion_tokens": 1646,
+                "total_tokens": 11376,
+                "prompt_tokens_details": {
+                  "cached_tokens": 0,
+                  "cache_write_tokens": 9727,
+                  "audio_tokens": 0
+                },
+                "completion_tokens_details": {
+                  "reasoning_tokens": 64,
+                  "audio_tokens": 0,
+                  "accepted_prediction_tokens": 0,
+                  "rejected_prediction_tokens": 0
+                }
+              },
+              "finish_reasons": [
+                "stop"
+              ]
+            }
+          ],
+          "input_tokens": 9736,
+          "refused": null,
+          "charged_usd": 0.03592
+        },
+        "input_tokens_estimate": 9736,
+        "status": "OK"
+      }
+    ],
+    "agent1_context": [
+      {
+        "sha256": "4c30e79b2487b5bd1dd1ed74480d55be2b82baaf0b9f2875d8d5c6baae667145",
+        "content": [
+          {
+            "member_id": "member_4c0f46ab95a5321f30ddaa81",
+            "thread_id": "1790857505.000025",
+            "summary": "Hana, a QA_TUTOR, asks whether an incorrect date should be considered major.",
+            "central_question": "Does this incorrect date count as major?",
+            "attributed_agent1_resolution": {
+              "state": "UNRESOLVED",
+              "rationale": "The thread contains only a single question from Hana without any substantive replies or conclusions regarding the severity of the incorrect date. Therefore, no resolution has been established.",
+              "agent1_verification_status": "VERIFIED",
+              "note": "Agent 1 label, not evidence; NEEDS_REVIEW means Agent 1 did not verify it. Assess resolution from the member messages."
+            },
+            "agent1_review_required": false,
+            "agent1_review_reason": "",
+            "note": "Agent 1 interpretation, not source evidence; cite member messages for incident facts."
+          },
+          {
+            "member_id": "member_b193085c828797658e0da615",
+            "thread_id": "1790877012.001300",
+            "summary": "Jordan asks whether an inaccurate key fact is significant enough to trigger a major handling decision, despite the tone being acceptable. Sam responds that the wrong date affects the sequence of events, which is central to the issue. Alex clarifies that a factual error is considered major if it alters the central conclusion, while a minor slip in background dates is not significant.",
+            "central_question": "Is the key fact being inaccurate enough to trigger major even if tone is fine? What is the correct handling for this task?",
+            "attributed_agent1_resolution": {
+              "state": "RESOLVED_IN_THREAD",
+              "rationale": "Alex's response establishes that a factual error is major if it changes the central conclusion, providing clear guidance on how to handle the task. There are no remaining uncertainties regarding the requested decision.",
+              "agent1_verification_status": "VERIFIED",
+              "note": "Agent 1 label, not evidence; NEEDS_REVIEW means Agent 1 did not verify it. Assess resolution from the member messages."
+            },
+            "agent1_review_required": false,
+            "agent1_review_reason": "",
+            "note": "Agent 1 interpretation, not source evidence; cite member messages for incident facts."
+          },
+          {
+            "member_id": "member_fa59c4a67b9437de29c74005",
+            "thread_id": "1790893656.000022",
+            "summary": "Leo asks if an incorrect date in task RP-3656 should be considered a major issue. Sofia responds that the wrong date affects the sequence of events, indicating it could be major in a chronology context but might be minor in other contexts.",
+            "central_question": "Does this incorrect date count as major?",
+            "attributed_agent1_resolution": {
+              "state": "PARTIALLY_RESOLVED",
+              "rationale": "Sofia provides insight into the implications of the incorrect date, suggesting it could be major depending on context, but does not definitively classify it as major or minor. Therefore, the original question remains partially answered.",
+              "agent1_verification_status": "VERIFIED",
+              "note": "Agent 1 label, not evidence; NEEDS_REVIEW means Agent 1 did not verify it. Assess resolution from the member messages."
+            },
+            "agent1_review_required": false,
+            "agent1_review_reason": "",
+            "note": "Agent 1 interpretation, not source evidence; cite member messages for incident facts."
+          }
+        ]
+      }
+    ],
+    "drafts": {
+      "initial": {
+        "contract_version": "agent3-advisor-draft-v11",
+        "summary": "Two QA tutors and a tutor ask when incorrect dates or key facts count as major factual errors. Current guidance defines the threshold, but one QA tutor's question remains unanswered and the other has only a tutor's contextual explanation.",
+        "summary_sentences": [
+          {
+            "text": "Two QA tutors and a tutor ask when incorrect dates or key facts count as major factual errors.",
+            "support_claim_ids": [
+              "c1",
+              "c2",
+              "c3"
+            ],
+            "depends_on": []
+          },
+          {
+            "text": "Current guidance defines the threshold, but one QA tutor's question remains unanswered and the other has only a tutor's contextual explanation.",
+            "support_claim_ids": [
+              "c7",
+              "c8"
+            ],
+            "depends_on": [
+              1
+            ]
+          }
+        ],
+        "detail_sentences": [
+          {
+            "text": "The team lead answered the tutor's question within that thread: a factual error is major when it changes the central conclusion, while a nonessential background-date slip is minor.",
+            "support_claim_ids": [
+              "c2",
+              "c6"
+            ],
+            "depends_on": [],
+            "summary_depends_on": []
+          },
+          {
+            "text": "For RP-3656, a tutor says the wrong date changes the event order and explains that the same wrong year can be minor in background context but major in a chronology task.",
+            "support_claim_ids": [
+              "c5"
+            ],
+            "depends_on": [],
+            "summary_depends_on": []
+          }
+        ],
+        "reasoning": "The repeated questions concern a consequential grading distinction, but the current instructions and FAQ agree on the rule. A reminder can address the unanswered questions without turning the team lead's thread-specific answer or a tutor's explanation into project policy. No historical decision or outcome is needed to support this limited action.",
+        "claims": [
+          {
+            "claim_id": "c1",
+            "kind": "INCIDENT_FACT",
+            "text": "A QA tutor asks whether an incorrect date counts as major.",
+            "evidence_ids": [
+              "m:C_RP_GENERAL:1790857505.000025"
+            ],
+            "attributions": [
+              {
+                "user_id": "U008",
+                "relation": "AUTHOR",
+                "evidence_id": "m:C_RP_GENERAL:1790857505.000025"
+              }
+            ],
+            "quote": null,
+            "quote_kind": "PARAPHRASE",
+            "material": true
+          },
+          {
+            "claim_id": "c2",
+            "kind": "INCIDENT_FACT",
+            "text": "A tutor asks whether an inaccurate key fact warrants a major grade even when tone is fine, and asks how to handle the task.",
+            "evidence_ids": [
+              "m:C_RP_GENERAL:1790877012.001300"
+            ],
+            "attributions": [
+              {
+                "user_id": "U003",
+                "relation": "AUTHOR",
+                "evidence_id": "m:C_RP_GENERAL:1790877012.001300"
+              }
+            ],
+            "quote": null,
+            "quote_kind": "PARAPHRASE",
+            "material": true
+          },
+          {
+            "claim_id": "c3",
+            "kind": "INCIDENT_FACT",
+            "text": "A QA tutor asks whether the incorrect date on RP-3656 counts as major.",
+            "evidence_ids": [
+              "m:C_RP_QA:1790893656.000022"
+            ],
+            "attributions": [
+              {
+                "user_id": "U007",
+                "relation": "AUTHOR",
+                "evidence_id": "m:C_RP_QA:1790893656.000022"
+              }
+            ],
+            "quote": null,
+            "quote_kind": "PARAPHRASE",
+            "material": true
+          },
+          {
+            "claim_id": "c4",
+            "kind": "INCIDENT_FACT",
+            "text": "A tutor says the wrong date changes which event happened first and considers that central.",
+            "evidence_ids": [
+              "m:C_RP_GENERAL:1790877065.000113"
+            ],
+            "attributions": [
+              {
+                "user_id": "U012",
+                "relation": "AUTHOR",
+                "evidence_id": "m:C_RP_GENERAL:1790877065.000113"
+              }
+            ],
+            "quote": null,
+            "quote_kind": "PARAPHRASE",
+            "material": true
+          },
+          {
+            "claim_id": "c5",
+            "kind": "INCIDENT_FACT",
+            "text": "In the RP-3656 thread, a tutor says the wrong date changes which event happened first and explains that the same wrong year can be minor in background context and major in a chronology task.",
+            "evidence_ids": [
+              "m:C_RP_QA:1790893706.000113"
+            ],
+            "attributions": [
+              {
+                "user_id": "U004",
+                "relation": "AUTHOR",
+                "evidence_id": "m:C_RP_QA:1790893706.000113"
+              }
+            ],
+            "quote": null,
+            "quote_kind": "PARAPHRASE",
+            "material": true
+          },
+          {
+            "claim_id": "c6",
+            "kind": "THREAD_INSTRUCTION",
+            "text": "For the tutor's example, the team lead instructs that a factual error is major when it changes the central conclusion and a nonessential background-date slip is minor.",
+            "evidence_ids": [
+              "m:C_RP_GENERAL:1790877109.000226"
+            ],
+            "attributions": [
+              {
+                "user_id": "U001",
+                "relation": "AUTHOR",
+                "evidence_id": "m:C_RP_GENERAL:1790877109.000226"
+              },
+              {
+                "user_id": "U003",
+                "relation": "THREAD_STARTER",
+                "evidence_id": "m:C_RP_GENERAL:1790877109.000226"
+              }
+            ],
+            "quote": null,
+            "quote_kind": "PARAPHRASE",
+            "material": true
+          },
+          {
+            "claim_id": "c7",
+            "kind": "GUIDANCE",
+            "text": "Current project instructions classify a factual error as major when it changes the central conclusion or the answer a user would act on, and a nonessential background error without that effect as minor; the current FAQ gives the same distinction.",
+            "evidence_ids": [
+              "k:response-preference-instructions@1.1:3350bbc0",
+              "k:response-preference-faq@1.1:3db12f63"
+            ],
+            "attributions": [],
+            "quote": null,
+            "quote_kind": "PARAPHRASE",
+            "material": true
+          },
+          {
+            "claim_id": "c8",
+            "kind": "INFERENCE",
+            "text": "One QA tutor's question has no answer in its provided thread, while the QA tutor asking about RP-3656 receives a tutor's contextual explanation but no definitive classification of the task.",
+            "evidence_ids": [
+              "m:C_RP_GENERAL:1790857505.000025",
+              "m:C_RP_QA:1790893656.000022",
+              "m:C_RP_QA:1790893706.000113"
+            ],
+            "attributions": [
+              {
+                "user_id": "U008",
+                "relation": "AUTHOR",
+                "evidence_id": "m:C_RP_GENERAL:1790857505.000025"
+              },
+              {
+                "user_id": "U007",
+                "relation": "AUTHOR",
+                "evidence_id": "m:C_RP_QA:1790893656.000022"
+              },
+              {
+                "user_id": "U004",
+                "relation": "AUTHOR",
+                "evidence_id": "m:C_RP_QA:1790893706.000113"
+              }
+            ],
+            "quote": null,
+            "quote_kind": "PARAPHRASE",
+            "material": true
+          }
+        ],
+        "gaps": [],
+        "evidence_sufficiency": "SUFFICIENT",
+        "proposed_action": {
+          "action_type": "POST_ALIGNMENT",
+          "intervention_need": {
+            "kind": "UNRESOLVED_HANDLING_QUESTION",
+            "statement": "Two QA tutors' date-grading questions remain unanswered or only partly answered, despite an applicable factual-error rule.",
+            "evidence_ids": [
+              "m:C_RP_GENERAL:1790857505.000025",
+              "m:C_RP_QA:1790893656.000022",
+              "m:C_RP_QA:1790893706.000113",
+              "k:response-preference-instructions@1.1:3350bbc0"
+            ]
+          },
+          "instruction": "Post a reminder explaining that incorrect dates and key facts are graded by their effect on the central conclusion or actionable answer.",
+          "rationale": "The current instructions and FAQ already supply the same threshold. A reminder addresses the remaining grading questions without introducing a new rule.",
+          "draft_text": "Reminder for date and key-fact reviews: an incorrect fact is major when it changes the central conclusion or the answer a user would act on. A nonessential background error with no effect on that conclusion is minor.\n\nApply that distinction to the role the date or fact plays in the answer, rather than treating every incorrect date as automatically major. This follows the current factual-error instructions and FAQ; it does not introduce a new grading threshold.",
+          "scope_note": "This reminder restates the factual-error threshold; it does not assign a final grade to either QA tutor's example.",
+          "support_claim_ids": [
+            "c1",
+            "c2",
+            "c3",
+            "c7",
+            "c8"
+          ],
+          "targets": [],
+          "context_claim_ids": [
+            "c4",
+            "c5",
+            "c6"
+          ]
+        },
+        "severity": {
+          "level": "MEDIUM",
+          "rationale": "Repeated uncertainty concerns the distinction between major and minor factual defects, which can affect grading consistency. The messages do not establish broader disruption or incorrect submitted labels.",
+          "signals": [
+            {
+              "level": "MEDIUM",
+              "signal_index": 0,
+              "signal_text": "Recurring confusion about the same rule, tool behavior, or scoring criterion that suggests meaningful workflow or labeling impact",
+              "support": "Two QA tutors and a tutor ask how incorrect dates or key facts should be graded, showing repeated uncertainty about the same consequential grading distinction.",
+              "evidence_ids": [
+                "m:C_RP_GENERAL:1790857505.000025",
+                "m:C_RP_GENERAL:1790877012.001300",
+                "m:C_RP_QA:1790893656.000022"
+              ]
+            }
+          ],
+          "affected_reporters": [],
+          "recurrence": "NOT_CHECKED",
+          "recurrence_evidence_ids": [],
+          "reported_recurrence_evidence_ids": []
+        },
+        "confidence": 0.93,
+        "open_confirmation": "NONE",
+        "open_question": null,
+        "open_question_evidence_ids": [],
+        "source_conflicts": [],
+        "announcement_assessments": [
+          {
+            "evidence_id": "k:rp-tie-calibration-post@1.0:4a3c786f",
+            "relevant": false,
+            "directive": true,
+            "directive_quote": "Bring both rationales for disputed pairs to the eight-pair calibration review.",
+            "rationale": "The announcement directs tie calibration for batch 14, not factual-error grading questions in batch 15, so it does not govern this action."
+          }
+        ],
+        "resolution": [
+          {
+            "member_id": "member_4c0f46ab95a5321f30ddaa81",
+            "state": "UNRESOLVED",
+            "evidence_ids": [
+              "m:C_RP_GENERAL:1790857505.000025"
+            ],
+            "basis": "The QA tutor asks whether the date error is major; the provided thread contains no reply."
+          },
+          {
+            "member_id": "member_b193085c828797658e0da615",
+            "state": "RESOLVED_IN_THREAD",
+            "evidence_ids": [
+              "m:C_RP_GENERAL:1790877012.001300",
+              "m:C_RP_GENERAL:1790877065.000113",
+              "m:C_RP_GENERAL:1790877109.000226"
+            ],
+            "basis": "The team lead answers the tutor's handling question with a threshold explicitly scoped to that example."
+          },
+          {
+            "member_id": "member_fa59c4a67b9437de29c74005",
+            "state": "PARTIALLY_RESOLVED",
+            "evidence_ids": [
+              "m:C_RP_QA:1790893656.000022",
+              "m:C_RP_QA:1790893706.000113"
+            ],
+            "basis": "A tutor explains why the event order matters and how context can change the grade, but does not definitively classify RP-3656 for the QA tutor."
+          }
+        ],
+        "coverage": [
+          {
+            "need": "CURRENT_GUIDANCE",
+            "status": "COVERED",
+            "evidence_ids": [
+              "k:response-preference-instructions@1.1:3350bbc0",
+              "k:response-preference-faq@1.1:3db12f63"
+            ],
+            "note": "Current project-wide instructions and FAQ directly define the factual-error threshold.",
+            "gap_id": null
+          },
+          {
+            "need": "ANNOUNCEMENTS",
+            "status": "COVERED",
+            "evidence_ids": [
+              "k:rp-tie-calibration-post@1.0:4a3c786f"
+            ],
+            "note": "The retrieved announcement was assessed and does not apply to this batch and grading problem.",
+            "gap_id": null
+          },
+          {
+            "need": "PRIOR_DECISIONS",
+            "status": "NOT_APPLICABLE",
+            "evidence_ids": [],
+            "note": "The proposed reminder relies only on explicit current guidance; it does not depend on an earlier decision, trial, outcome or historical recurrence.",
+            "gap_id": null
+          },
+          {
+            "need": "MEMBER_QUESTIONS",
+            "status": "COVERED",
+            "evidence_ids": [
+              "m:C_RP_GENERAL:1790857505.000025",
+              "m:C_RP_GENERAL:1790877012.001300",
+              "m:C_RP_GENERAL:1790877109.000226",
+              "m:C_RP_QA:1790893656.000022",
+              "m:C_RP_QA:1790893706.000113"
+            ],
+            "note": "The questions and available replies establish which threads are answered and which remain wholly or partly unresolved.",
+            "gap_id": null
+          }
+        ],
+        "review_note": null,
+        "action_choice": null
+      },
+      "final": {
+        "contract_version": "agent3-advisor-draft-v11",
+        "summary": "Two QA tutors and a tutor ask when incorrect dates or key facts count as major factual errors. Current guidance defines the threshold, but one QA tutor's question remains unanswered and the other has only a tutor's contextual explanation.",
+        "summary_sentences": [
+          {
+            "text": "Two QA tutors and a tutor ask when incorrect dates or key facts count as major factual errors.",
+            "support_claim_ids": [
+              "c1",
+              "c2",
+              "c3"
+            ],
+            "depends_on": []
+          },
+          {
+            "text": "Current guidance defines the threshold, but one QA tutor's question remains unanswered and the other has only a tutor's contextual explanation.",
+            "support_claim_ids": [
+              "c7",
+              "c8"
+            ],
+            "depends_on": [
+              1
+            ]
+          }
+        ],
+        "detail_sentences": [
+          {
+            "text": "The team lead answered the tutor's question within that thread: a factual error is major when it changes the central conclusion, while a nonessential background-date slip is minor.",
+            "support_claim_ids": [
+              "c2",
+              "c6"
+            ],
+            "depends_on": [],
+            "summary_depends_on": []
+          },
+          {
+            "text": "For RP-3656, a tutor says the wrong date changes the event order and explains that the same wrong year can be minor in background context but major in a chronology task.",
+            "support_claim_ids": [
+              "c5"
+            ],
+            "depends_on": [],
+            "summary_depends_on": []
+          }
+        ],
+        "reasoning": "The repeated questions concern a consequential grading distinction, but the current instructions and FAQ agree on the rule. A reminder can address the unanswered questions without turning the team lead's thread-specific answer or a tutor's explanation into project policy. No historical decision or outcome is needed to support this limited action.",
+        "claims": [
+          {
+            "claim_id": "c1",
+            "kind": "INCIDENT_FACT",
+            "text": "A QA tutor asks whether an incorrect date counts as major.",
+            "evidence_ids": [
+              "m:C_RP_GENERAL:1790857505.000025"
+            ],
+            "attributions": [
+              {
+                "user_id": "U008",
+                "relation": "AUTHOR",
+                "evidence_id": "m:C_RP_GENERAL:1790857505.000025"
+              }
+            ],
+            "quote": null,
+            "quote_kind": "PARAPHRASE",
+            "material": true
+          },
+          {
+            "claim_id": "c2",
+            "kind": "INCIDENT_FACT",
+            "text": "A tutor asks whether an inaccurate key fact warrants a major grade even when tone is fine, and asks how to handle the task.",
+            "evidence_ids": [
+              "m:C_RP_GENERAL:1790877012.001300"
+            ],
+            "attributions": [
+              {
+                "user_id": "U003",
+                "relation": "AUTHOR",
+                "evidence_id": "m:C_RP_GENERAL:1790877012.001300"
+              }
+            ],
+            "quote": null,
+            "quote_kind": "PARAPHRASE",
+            "material": true
+          },
+          {
+            "claim_id": "c3",
+            "kind": "INCIDENT_FACT",
+            "text": "A QA tutor asks whether the incorrect date on RP-3656 counts as major.",
+            "evidence_ids": [
+              "m:C_RP_QA:1790893656.000022"
+            ],
+            "attributions": [
+              {
+                "user_id": "U007",
+                "relation": "AUTHOR",
+                "evidence_id": "m:C_RP_QA:1790893656.000022"
+              }
+            ],
+            "quote": null,
+            "quote_kind": "PARAPHRASE",
+            "material": true
+          },
+          {
+            "claim_id": "c4",
+            "kind": "INCIDENT_FACT",
+            "text": "A tutor says the wrong date changes which event happened first and considers that central.",
+            "evidence_ids": [
+              "m:C_RP_GENERAL:1790877065.000113"
+            ],
+            "attributions": [
+              {
+                "user_id": "U012",
+                "relation": "AUTHOR",
+                "evidence_id": "m:C_RP_GENERAL:1790877065.000113"
+              }
+            ],
+            "quote": null,
+            "quote_kind": "PARAPHRASE",
+            "material": true
+          },
+          {
+            "claim_id": "c5",
+            "kind": "INCIDENT_FACT",
+            "text": "In the RP-3656 thread, a tutor says the wrong date changes which event happened first and explains that the same wrong year can be minor in background context and major in a chronology task.",
+            "evidence_ids": [
+              "m:C_RP_QA:1790893706.000113"
+            ],
+            "attributions": [
+              {
+                "user_id": "U004",
+                "relation": "AUTHOR",
+                "evidence_id": "m:C_RP_QA:1790893706.000113"
+              }
+            ],
+            "quote": null,
+            "quote_kind": "PARAPHRASE",
+            "material": true
+          },
+          {
+            "claim_id": "c6",
+            "kind": "THREAD_INSTRUCTION",
+            "text": "For the tutor's example, the team lead instructs that a factual error is major when it changes the central conclusion and a nonessential background-date slip is minor.",
+            "evidence_ids": [
+              "m:C_RP_GENERAL:1790877109.000226"
+            ],
+            "attributions": [
+              {
+                "user_id": "U001",
+                "relation": "AUTHOR",
+                "evidence_id": "m:C_RP_GENERAL:1790877109.000226"
+              },
+              {
+                "user_id": "U003",
+                "relation": "THREAD_STARTER",
+                "evidence_id": "m:C_RP_GENERAL:1790877109.000226"
+              }
+            ],
+            "quote": null,
+            "quote_kind": "PARAPHRASE",
+            "material": true
+          },
+          {
+            "claim_id": "c7",
+            "kind": "GUIDANCE",
+            "text": "Current project instructions classify a factual error as major when it changes the central conclusion or the answer a user would act on, and a nonessential background error without that effect as minor; the current FAQ gives the same distinction.",
+            "evidence_ids": [
+              "k:response-preference-instructions@1.1:3350bbc0",
+              "k:response-preference-faq@1.1:3db12f63"
+            ],
+            "attributions": [],
+            "quote": null,
+            "quote_kind": "PARAPHRASE",
+            "material": true
+          },
+          {
+            "claim_id": "c8",
+            "kind": "INFERENCE",
+            "text": "One QA tutor's question has no answer in its provided thread, while the QA tutor asking about RP-3656 receives a tutor's contextual explanation but no definitive classification of the task.",
+            "evidence_ids": [
+              "m:C_RP_GENERAL:1790857505.000025",
+              "m:C_RP_QA:1790893656.000022",
+              "m:C_RP_QA:1790893706.000113"
+            ],
+            "attributions": [
+              {
+                "user_id": "U008",
+                "relation": "AUTHOR",
+                "evidence_id": "m:C_RP_GENERAL:1790857505.000025"
+              },
+              {
+                "user_id": "U007",
+                "relation": "AUTHOR",
+                "evidence_id": "m:C_RP_QA:1790893656.000022"
+              },
+              {
+                "user_id": "U004",
+                "relation": "AUTHOR",
+                "evidence_id": "m:C_RP_QA:1790893706.000113"
+              }
+            ],
+            "quote": null,
+            "quote_kind": "PARAPHRASE",
+            "material": true
+          }
+        ],
+        "gaps": [],
+        "evidence_sufficiency": "SUFFICIENT",
+        "proposed_action": {
+          "action_type": "POST_ALIGNMENT",
+          "intervention_need": {
+            "kind": "UNRESOLVED_HANDLING_QUESTION",
+            "statement": "Two QA tutors' date-grading questions remain unanswered or only partly answered, despite an applicable factual-error rule.",
+            "evidence_ids": [
+              "m:C_RP_GENERAL:1790857505.000025",
+              "m:C_RP_QA:1790893656.000022",
+              "m:C_RP_QA:1790893706.000113",
+              "k:response-preference-instructions@1.1:3350bbc0"
+            ]
+          },
+          "instruction": "Post a reminder explaining that incorrect dates and key facts are graded by their effect on the central conclusion or actionable answer.",
+          "rationale": "The current instructions and FAQ already supply the same threshold. A reminder addresses the remaining grading questions without introducing a new rule.",
+          "draft_text": "Reminder for date and key-fact reviews: an incorrect fact is major when it changes the central conclusion or the answer a user would act on. A nonessential background error with no effect on that conclusion is minor.\n\nApply that distinction to the role the date or fact plays in the answer, rather than treating every incorrect date as automatically major. This follows the current factual-error instructions and FAQ; it does not introduce a new grading threshold.",
+          "scope_note": "This reminder restates the factual-error threshold; it does not assign a final grade to either QA tutor's example.",
+          "support_claim_ids": [
+            "c1",
+            "c2",
+            "c3",
+            "c7",
+            "c8"
+          ],
+          "targets": [],
+          "context_claim_ids": [
+            "c4",
+            "c5",
+            "c6"
+          ]
+        },
+        "severity": {
+          "level": "MEDIUM",
+          "rationale": "Repeated uncertainty concerns the distinction between major and minor factual defects, which can affect grading consistency. The messages do not establish broader disruption or incorrect submitted labels.",
+          "signals": [
+            {
+              "level": "MEDIUM",
+              "signal_index": 0,
+              "signal_text": "Recurring confusion about the same rule, tool behavior, or scoring criterion that suggests meaningful workflow or labeling impact",
+              "support": "Two QA tutors and a tutor ask how incorrect dates or key facts should be graded, showing repeated uncertainty about the same consequential grading distinction.",
+              "evidence_ids": [
+                "m:C_RP_GENERAL:1790857505.000025",
+                "m:C_RP_GENERAL:1790877012.001300",
+                "m:C_RP_QA:1790893656.000022"
+              ]
+            }
+          ],
+          "affected_reporters": [],
+          "recurrence": "NOT_CHECKED",
+          "recurrence_evidence_ids": [],
+          "reported_recurrence_evidence_ids": []
+        },
+        "confidence": 0.93,
+        "open_confirmation": "NONE",
+        "open_question": null,
+        "open_question_evidence_ids": [],
+        "source_conflicts": [],
+        "announcement_assessments": [
+          {
+            "evidence_id": "k:rp-tie-calibration-post@1.0:4a3c786f",
+            "relevant": false,
+            "directive": true,
+            "directive_quote": "Bring both rationales for disputed pairs to the eight-pair calibration review.",
+            "rationale": "The announcement directs tie calibration for batch 14, not factual-error grading questions in batch 15, so it does not govern this action."
+          }
+        ],
+        "resolution": [
+          {
+            "member_id": "member_4c0f46ab95a5321f30ddaa81",
+            "state": "UNRESOLVED",
+            "evidence_ids": [
+              "m:C_RP_GENERAL:1790857505.000025"
+            ],
+            "basis": "The QA tutor asks whether the date error is major; the provided thread contains no reply."
+          },
+          {
+            "member_id": "member_b193085c828797658e0da615",
+            "state": "RESOLVED_IN_THREAD",
+            "evidence_ids": [
+              "m:C_RP_GENERAL:1790877012.001300",
+              "m:C_RP_GENERAL:1790877065.000113",
+              "m:C_RP_GENERAL:1790877109.000226"
+            ],
+            "basis": "The team lead answers the tutor's handling question with a threshold explicitly scoped to that example."
+          },
+          {
+            "member_id": "member_fa59c4a67b9437de29c74005",
+            "state": "PARTIALLY_RESOLVED",
+            "evidence_ids": [
+              "m:C_RP_QA:1790893656.000022",
+              "m:C_RP_QA:1790893706.000113"
+            ],
+            "basis": "A tutor explains why the event order matters and how context can change the grade, but does not definitively classify RP-3656 for the QA tutor."
+          }
+        ],
+        "coverage": [
+          {
+            "need": "CURRENT_GUIDANCE",
+            "status": "COVERED",
+            "evidence_ids": [
+              "k:response-preference-instructions@1.1:3350bbc0",
+              "k:response-preference-faq@1.1:3db12f63"
+            ],
+            "note": "Current project-wide instructions and FAQ directly define the factual-error threshold.",
+            "gap_id": null
+          },
+          {
+            "need": "ANNOUNCEMENTS",
+            "status": "COVERED",
+            "evidence_ids": [
+              "k:rp-tie-calibration-post@1.0:4a3c786f"
+            ],
+            "note": "The retrieved announcement was assessed and does not apply to this batch and grading problem.",
+            "gap_id": null
+          },
+          {
+            "need": "PRIOR_DECISIONS",
+            "status": "NOT_APPLICABLE",
+            "evidence_ids": [],
+            "note": "The proposed reminder relies only on explicit current guidance; it does not depend on an earlier decision, trial, outcome or historical recurrence.",
+            "gap_id": null
+          },
+          {
+            "need": "MEMBER_QUESTIONS",
+            "status": "COVERED",
+            "evidence_ids": [
+              "m:C_RP_GENERAL:1790857505.000025",
+              "m:C_RP_GENERAL:1790877012.001300",
+              "m:C_RP_GENERAL:1790877109.000226",
+              "m:C_RP_QA:1790893656.000022",
+              "m:C_RP_QA:1790893706.000113"
+            ],
+            "note": "The questions and available replies establish which threads are answered and which remain wholly or partly unresolved.",
+            "gap_id": null
+          }
+        ],
+        "review_note": null,
+        "action_choice": null
+      },
+      "revised": false
+    },
+    "grounding": {
+      "structural_issues": [],
+      "action_issues": [],
+      "unsupported": [],
+      "unjudged": [],
+      "extraneous_verdicts": [],
+      "rejected": {},
+      "pending": [],
+      "action_sufficiency": {
+        "verdict": "SUFFICIENT",
+        "essential_statement_ids": [
+          "claim:c7",
+          "claim:c8"
+        ],
+        "rationale": "The supported current-guidance premise supplies the reminder's exact grading threshold, and the supported thread-status premise establishes remaining questions that justify restating it. The action introduces neither a new threshold nor a final classification or unsupported concrete route."
+      },
+      "source_consistency": {
+        "assessed_evidence_ids": [
+          "k:response-preference-instructions@1.1:3350bbc0",
+          "k:response-preference-instructions@1.1:a71c54c7",
+          "k:response-preference-instructions@1.1:47ed0c14",
+          "k:response-preference-faq@1.1:3db12f63"
+        ],
+        "relations": [
+          {
+            "evidence_ids": [
+              "k:response-preference-instructions@1.1:3350bbc0",
+              "k:response-preference-instructions@1.1:a71c54c7",
+              "k:response-preference-faq@1.1:3db12f63"
+            ],
+            "relation": "AGREE",
+            "point": "Major versus minor factual-error classification",
+            "disagreement_scope": null,
+            "rationale": "All three classify errors affecting the central conclusion or actionable answer as major/significant and nonessential background errors without that effect as minor. The instruction-adherence section addresses separate scoring and unsettled response comparisons, not a different factual-error threshold. The batch-14 tie announcement does not direct handling for this batch-15 date-grading topic and is not a governing source here."
+          }
+        ],
+        "declared_conflict_checks": []
+      },
+      "alternative_sufficiency": {},
+      "status": "PASSED",
+      "basis": "SEMANTIC",
+      "statements": [
+        {
+          "statement_id": "claim:c1",
+          "kind": "CLAIM_INCIDENT_FACT",
+          "text": "A QA tutor asks whether an incorrect date counts as major.",
+          "blocking": true,
+          "evidence_ids": [
+            "m:C_RP_GENERAL:1790857505.000025"
+          ],
+          "attributions": [
+            {
+              "user_id": "U008",
+              "relation": "AUTHOR",
+              "evidence_id": "m:C_RP_GENERAL:1790857505.000025",
+              "role": "QA_TUTOR"
+            }
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "U008 is a QA tutor and explicitly asks whether the incorrect date counts as major."
+        },
+        {
+          "statement_id": "claim:c2",
+          "kind": "CLAIM_INCIDENT_FACT",
+          "text": "A tutor asks whether an inaccurate key fact warrants a major grade even when tone is fine, and asks how to handle the task.",
+          "blocking": true,
+          "evidence_ids": [
+            "m:C_RP_GENERAL:1790877012.001300"
+          ],
+          "attributions": [
+            {
+              "user_id": "U003",
+              "relation": "AUTHOR",
+              "evidence_id": "m:C_RP_GENERAL:1790877012.001300",
+              "role": "TUTOR"
+            }
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "U003 is a tutor and asks both whether the inaccurate key fact triggers major despite acceptable tone and what handling applies."
+        },
+        {
+          "statement_id": "claim:c3",
+          "kind": "CLAIM_INCIDENT_FACT",
+          "text": "A QA tutor asks whether the incorrect date on RP-3656 counts as major.",
+          "blocking": true,
+          "evidence_ids": [
+            "m:C_RP_QA:1790893656.000022"
+          ],
+          "attributions": [
+            {
+              "user_id": "U007",
+              "relation": "AUTHOR",
+              "evidence_id": "m:C_RP_QA:1790893656.000022",
+              "role": "QA_TUTOR"
+            }
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "QA tutor U007 explicitly asks whether the incorrect date counts as major and identifies RP-3656."
+        },
+        {
+          "statement_id": "claim:c4",
+          "kind": "CLAIM_INCIDENT_FACT",
+          "text": "A tutor says the wrong date changes which event happened first and considers that central.",
+          "blocking": true,
+          "evidence_ids": [
+            "m:C_RP_GENERAL:1790877065.000113"
+          ],
+          "attributions": [
+            {
+              "user_id": "U012",
+              "relation": "AUTHOR",
+              "evidence_id": "m:C_RP_GENERAL:1790877065.000113",
+              "role": "TUTOR"
+            }
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "Tutor U012 reports that the wrong date changes the event order and says that seems central."
+        },
+        {
+          "statement_id": "claim:c5",
+          "kind": "CLAIM_INCIDENT_FACT",
+          "text": "In the RP-3656 thread, a tutor says the wrong date changes which event happened first and explains that the same wrong year can be minor in background context and major in a chronology task.",
+          "blocking": true,
+          "evidence_ids": [
+            "m:C_RP_QA:1790893706.000113"
+          ],
+          "attributions": [
+            {
+              "user_id": "U004",
+              "relation": "AUTHOR",
+              "evidence_id": "m:C_RP_QA:1790893706.000113",
+              "role": "TUTOR"
+            }
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "Tutor U004 makes both statements in the RP-3656 thread: the date changes event order, and the same wrong year can receive different grades depending on its contextual role."
+        },
+        {
+          "statement_id": "claim:c6",
+          "kind": "CLAIM_THREAD_INSTRUCTION",
+          "text": "For the tutor's example, the team lead instructs that a factual error is major when it changes the central conclusion and a nonessential background-date slip is minor.",
+          "blocking": true,
+          "evidence_ids": [
+            "m:C_RP_GENERAL:1790877109.000226"
+          ],
+          "attributions": [
+            {
+              "user_id": "U001",
+              "relation": "AUTHOR",
+              "evidence_id": "m:C_RP_GENERAL:1790877109.000226",
+              "role": "TEAM_LEAD"
+            },
+            {
+              "user_id": "U003",
+              "relation": "THREAD_STARTER",
+              "evidence_id": "m:C_RP_GENERAL:1790877109.000226",
+              "role": "TUTOR"
+            }
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "Team lead U001 gives this threshold explicitly for the example in U003's thread. The statement preserves that thread-specific scope and correctly identifies the author and thread starter."
+        },
+        {
+          "statement_id": "claim:c7",
+          "kind": "CLAIM_GUIDANCE",
+          "text": "Current project instructions classify a factual error as major when it changes the central conclusion or the answer a user would act on, and a nonessential background error without that effect as minor; the current FAQ gives the same distinction.",
+          "blocking": true,
+          "evidence_ids": [
+            "k:response-preference-instructions@1.1:3350bbc0",
+            "k:response-preference-faq@1.1:3db12f63"
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "The current project instructions and FAQ both distinguish consequential factual errors from nonessential background errors using the stated threshold."
+        },
+        {
+          "statement_id": "claim:c8",
+          "kind": "CLAIM_INFERENCE",
+          "text": "One QA tutor's question has no answer in its provided thread, while the QA tutor asking about RP-3656 receives a tutor's contextual explanation but no definitive classification of the task.",
+          "blocking": true,
+          "evidence_ids": [
+            "m:C_RP_GENERAL:1790857505.000025",
+            "m:C_RP_QA:1790893656.000022",
+            "m:C_RP_QA:1790893706.000113"
+          ],
+          "attributions": [
+            {
+              "user_id": "U008",
+              "relation": "AUTHOR",
+              "evidence_id": "m:C_RP_GENERAL:1790857505.000025",
+              "role": "QA_TUTOR"
+            },
+            {
+              "user_id": "U007",
+              "relation": "AUTHOR",
+              "evidence_id": "m:C_RP_QA:1790893656.000022",
+              "role": "QA_TUTOR"
+            },
+            {
+              "user_id": "U004",
+              "relation": "AUTHOR",
+              "evidence_id": "m:C_RP_QA:1790893706.000113",
+              "role": "TUTOR"
+            }
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "U008's supplied thread has no reply. U007 receives U004's contextual explanation, which suggests centrality but does not definitively assign RP-3656 a grade."
+        },
+        {
+          "statement_id": "summary:s1",
+          "kind": "SUMMARY",
+          "text": "Two QA tutors and a tutor ask when incorrect dates or key facts count as major factual errors.",
+          "blocking": true,
+          "evidence_ids": [
+            "m:C_RP_GENERAL:1790857505.000025",
+            "m:C_RP_GENERAL:1790877012.001300",
+            "m:C_RP_QA:1790893656.000022"
+          ],
+          "attributions": [
+            {
+              "user_id": "U008",
+              "relation": "AUTHOR",
+              "evidence_id": "m:C_RP_GENERAL:1790857505.000025",
+              "role": "QA_TUTOR"
+            },
+            {
+              "user_id": "U003",
+              "relation": "AUTHOR",
+              "evidence_id": "m:C_RP_GENERAL:1790877012.001300",
+              "role": "TUTOR"
+            },
+            {
+              "user_id": "U007",
+              "relation": "AUTHOR",
+              "evidence_id": "m:C_RP_QA:1790893656.000022",
+              "role": "QA_TUTOR"
+            }
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "The three cited questions come from two distinct QA tutors and one tutor, each asking about major classification for an incorrect date or key fact."
+        },
+        {
+          "statement_id": "summary:s2",
+          "kind": "SUMMARY",
+          "text": "Current guidance defines the threshold, but one QA tutor's question remains unanswered and the other has only a tutor's contextual explanation.",
+          "blocking": true,
+          "evidence_ids": [
+            "k:response-preference-instructions@1.1:3350bbc0",
+            "k:response-preference-faq@1.1:3db12f63",
+            "m:C_RP_GENERAL:1790857505.000025",
+            "m:C_RP_QA:1790893656.000022",
+            "m:C_RP_QA:1790893706.000113"
+          ],
+          "attributions": [
+            {
+              "user_id": "U008",
+              "relation": "AUTHOR",
+              "evidence_id": "m:C_RP_GENERAL:1790857505.000025",
+              "role": "QA_TUTOR"
+            },
+            {
+              "user_id": "U007",
+              "relation": "AUTHOR",
+              "evidence_id": "m:C_RP_QA:1790893656.000022",
+              "role": "QA_TUTOR"
+            },
+            {
+              "user_id": "U004",
+              "relation": "AUTHOR",
+              "evidence_id": "m:C_RP_QA:1790893706.000113",
+              "role": "TUTOR"
+            }
+          ],
+          "depends_on": [
+            "summary:s1"
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "Current guidance supplies the threshold, while the complete supplied QA threads show one unanswered question and one response limited to a tutor's contextual explanation."
+        },
+        {
+          "statement_id": "detail:d1",
+          "kind": "DETAIL",
+          "text": "The team lead answered the tutor's question within that thread: a factual error is major when it changes the central conclusion, while a nonessential background-date slip is minor.",
+          "blocking": false,
+          "evidence_ids": [
+            "m:C_RP_GENERAL:1790877012.001300",
+            "m:C_RP_GENERAL:1790877109.000226"
+          ],
+          "attributions": [
+            {
+              "user_id": "U003",
+              "relation": "AUTHOR",
+              "evidence_id": "m:C_RP_GENERAL:1790877012.001300",
+              "role": "TUTOR"
+            },
+            {
+              "user_id": "U001",
+              "relation": "AUTHOR",
+              "evidence_id": "m:C_RP_GENERAL:1790877109.000226",
+              "role": "TEAM_LEAD"
+            },
+            {
+              "user_id": "U003",
+              "relation": "THREAD_STARTER",
+              "evidence_id": "m:C_RP_GENERAL:1790877109.000226",
+              "role": "TUTOR"
+            }
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "The team lead replies in the tutor's own thread with exactly this major/minor distinction, scoped to the example."
+        },
+        {
+          "statement_id": "detail:d2",
+          "kind": "DETAIL",
+          "text": "For RP-3656, a tutor says the wrong date changes the event order and explains that the same wrong year can be minor in background context but major in a chronology task.",
+          "blocking": false,
+          "evidence_ids": [
+            "m:C_RP_QA:1790893706.000113"
+          ],
+          "attributions": [
+            {
+              "user_id": "U004",
+              "relation": "AUTHOR",
+              "evidence_id": "m:C_RP_QA:1790893706.000113",
+              "role": "TUTOR"
+            }
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "U004's message in the RP-3656 thread states both the event-order effect and the background-versus-chronology distinction."
+        },
+        {
+          "statement_id": "action",
+          "kind": "ACTION",
+          "text": "Post a reminder. Instruction: Post a reminder explaining that incorrect dates and key facts are graded by their effect on the central conclusion or actionable answer. Draft to copy: Reminder for date and key-fact reviews: an incorrect fact is major when it changes the central conclusion or the answer a user would act on. A nonessential background error with no effect on that conclusion is minor.\n\nApply that distinction to the role the date or fact plays in the answer, rather than treating every incorrect date as automatically major. This follows the current factual-error instructions and FAQ; it does not introduce a new grading threshold. Scope: This reminder restates the factual-error threshold; it does not assign a final grade to either QA tutor's example.",
+          "blocking": true,
+          "evidence_ids": [
+            "m:C_RP_GENERAL:1790857505.000025",
+            "m:C_RP_GENERAL:1790877012.001300",
+            "m:C_RP_QA:1790893656.000022",
+            "k:response-preference-instructions@1.1:3350bbc0",
+            "k:response-preference-faq@1.1:3db12f63",
+            "m:C_RP_QA:1790893706.000113"
+          ],
+          "premises": [
+            "claim:c1",
+            "claim:c2",
+            "claim:c3",
+            "claim:c7",
+            "claim:c8"
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "Repeated grading questions and the remaining unanswered or partly answered QA questions justify an advisory reminder. Its substantive rule matches current guidance, it names no unsupported delivery route, and it expressly avoids assigning final task grades."
+        },
+        {
+          "statement_id": "action:rationale",
+          "kind": "ACTION_RATIONALE",
+          "text": "Why this helps: The current instructions and FAQ already supply the same threshold. A reminder addresses the remaining grading questions without introducing a new rule.",
+          "blocking": false,
+          "evidence_ids": [
+            "m:C_RP_GENERAL:1790857505.000025",
+            "m:C_RP_GENERAL:1790877012.001300",
+            "m:C_RP_QA:1790893656.000022",
+            "k:response-preference-instructions@1.1:3350bbc0",
+            "k:response-preference-faq@1.1:3db12f63",
+            "m:C_RP_QA:1790893706.000113",
+            "m:C_RP_GENERAL:1790877065.000113",
+            "m:C_RP_GENERAL:1790877109.000226"
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "The instructions and FAQ agree on the threshold. Restating it addresses the remaining uncertainty without changing the rule or claiming to resolve the specific task grades."
+        },
+        {
+          "statement_id": "action:need",
+          "kind": "INTERVENTION_NEED",
+          "text": "Why intervening now is needed (an unresolved handling question): Two QA tutors' date-grading questions remain unanswered or only partly answered, despite an applicable factual-error rule.",
+          "blocking": false,
+          "evidence_ids": [
+            "m:C_RP_GENERAL:1790857505.000025",
+            "m:C_RP_QA:1790893656.000022",
+            "m:C_RP_QA:1790893706.000113",
+            "k:response-preference-instructions@1.1:3350bbc0"
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "One QA tutor's handling question has no reply, and the other receives a contextual explanation without a definitive classification. The existence of an applicable general rule does not establish that these task-specific questions have been resolved."
+        },
+        {
+          "statement_id": "resolution:member_4c0f46ab95a5321f30ddaa81",
+          "kind": "RESOLUTION",
+          "text": "Member thread member_4c0f46ab95a5321f30ddaa81 is UNRESOLVED: The QA tutor asks whether the date error is major; the provided thread contains no reply.",
+          "blocking": true,
+          "evidence_ids": [
+            "m:C_RP_GENERAL:1790857505.000025"
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "The complete provided thread consists only of the QA tutor's question and contains no answer."
+        },
+        {
+          "statement_id": "resolution:member_b193085c828797658e0da615",
+          "kind": "RESOLUTION",
+          "text": "Member thread member_b193085c828797658e0da615 is RESOLVED_IN_THREAD: The team lead answers the tutor's handling question with a threshold explicitly scoped to that example.",
+          "blocking": true,
+          "evidence_ids": [
+            "m:C_RP_GENERAL:1790877012.001300",
+            "m:C_RP_GENERAL:1790877065.000113",
+            "m:C_RP_GENERAL:1790877109.000226"
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "The thread includes contextual information followed by the team lead's answer giving the applicable threshold explicitly for this example."
+        },
+        {
+          "statement_id": "resolution:member_fa59c4a67b9437de29c74005",
+          "kind": "RESOLUTION",
+          "text": "Member thread member_fa59c4a67b9437de29c74005 is PARTIALLY_RESOLVED: A tutor explains why the event order matters and how context can change the grade, but does not definitively classify RP-3656 for the QA tutor.",
+          "blocking": true,
+          "evidence_ids": [
+            "m:C_RP_QA:1790893656.000022",
+            "m:C_RP_QA:1790893706.000113"
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "The tutor's response explains relevance and contextual grading but stops short of definitively classifying RP-3656, supporting partial resolution."
+        },
+        {
+          "statement_id": "severity:rationale",
+          "kind": "SEVERITY_RATIONALE",
+          "text": "Severity MEDIUM: Repeated uncertainty concerns the distinction between major and minor factual defects, which can affect grading consistency. The messages do not establish broader disruption or incorrect submitted labels.",
+          "blocking": true,
+          "evidence_ids": [
+            "m:C_RP_GENERAL:1790857505.000025",
+            "m:C_RP_GENERAL:1790877012.001300",
+            "m:C_RP_QA:1790893656.000022",
+            "m:C_RP_GENERAL:1790877065.000113",
+            "m:C_RP_QA:1790893706.000113"
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "Three distinct questions establish repeated uncertainty over a consequential grading distinction. The rationale frames consistency impact as a possibility and correctly avoids claiming broader disruption or actual incorrect submissions."
+        },
+        {
+          "statement_id": "severity:signal:MEDIUM[0]",
+          "kind": "SEVERITY_SIGNAL",
+          "text": "Rubric signal met - \"Recurring confusion about the same rule, tool behavior, or scoring criterion that suggests meaningful workflow or labeling impact\": Two QA tutors and a tutor ask how incorrect dates or key facts should be graded, showing repeated uncertainty about the same consequential grading distinction.",
+          "blocking": true,
+          "evidence_ids": [
+            "m:C_RP_GENERAL:1790857505.000025",
+            "m:C_RP_GENERAL:1790877012.001300",
+            "m:C_RP_QA:1790893656.000022"
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "Two QA tutors and one tutor independently ask about the same major/minor factual-error criterion, supporting recurring confusion with potential labeling impact rather than an established labeling failure."
+        }
+      ]
+    },
+    "temporal": {
+      "status": "NONE_FOUND",
+      "findings": [],
+      "source_consistency": "ASSESSED",
+      "ignored_revision_states": "NOT_YET_EFFECTIVE and NOT_APPROVED revisions never compete with applicable guidance."
+    },
+    "temporal_before_grounding": {
+      "status": "NONE_FOUND",
+      "findings": [],
+      "source_consistency": "NOT_ASSESSED",
+      "ignored_revision_states": "NOT_YET_EFFECTIVE and NOT_APPROVED revisions never compete with applicable guidance."
+    },
+    "severity": {
+      "assessment": {
+        "level": "MEDIUM",
+        "assessment_status": "ASSESSED",
+        "rubric_version": "severity-rubric-v3-semantic-signals",
+        "rubric_content_sha256": "eccaa31a2ab84a0aa7c005216a92fc39681e1dd10107117344948235a76673f4",
+        "rubric_project_id": null,
+        "rubric_scope": "SHARED_DEFAULT",
+        "rationale": "Repeated uncertainty concerns the distinction between major and minor factual defects, which can affect grading consistency. The messages do not establish broader disruption or incorrect submitted labels.",
+        "matched_signals": [
+          {
+            "level": "MEDIUM",
+            "signal_index": 0,
+            "signal_text": "Recurring confusion about the same rule, tool behavior, or scoring criterion that suggests meaningful workflow or labeling impact",
+            "support": "Two QA tutors and a tutor ask how incorrect dates or key facts should be graded, showing repeated uncertainty about the same consequential grading distinction.",
+            "evidence": [
+              {
+                "kind": "slack_message",
+                "project_id": "response_preference",
+                "batch_id": "rp_batch_15",
+                "scope": "project",
+                "channel_id": "C_RP_GENERAL",
+                "thread_id": "1790857505.000025",
+                "message_id": "1790857505.000025",
+                "document_id": null,
+                "version_id": null,
+                "authoring_document_id": null,
+                "authoring_version": null,
+                "section": null,
+                "chunk_id": null,
+                "candidate_group_id": null,
+                "member_id": "member_4c0f46ab95a5321f30ddaa81",
+                "artifact": null,
+                "artifact_sha256": null,
+                "quote": null,
+                "note": "m:C_RP_GENERAL:1790857505.000025"
+              },
+              {
+                "kind": "slack_message",
+                "project_id": "response_preference",
+                "batch_id": "rp_batch_15",
+                "scope": "project",
+                "channel_id": "C_RP_GENERAL",
+                "thread_id": "1790877012.001300",
+                "message_id": "1790877012.001300",
+                "document_id": null,
+                "version_id": null,
+                "authoring_document_id": null,
+                "authoring_version": null,
+                "section": null,
+                "chunk_id": null,
+                "candidate_group_id": null,
+                "member_id": "member_b193085c828797658e0da615",
+                "artifact": null,
+                "artifact_sha256": null,
+                "quote": null,
+                "note": "m:C_RP_GENERAL:1790877012.001300"
+              },
+              {
+                "kind": "slack_message",
+                "project_id": "response_preference",
+                "batch_id": "rp_batch_15",
+                "scope": "project",
+                "channel_id": "C_RP_QA",
+                "thread_id": "1790893656.000022",
+                "message_id": "1790893656.000022",
+                "document_id": null,
+                "version_id": null,
+                "authoring_document_id": null,
+                "authoring_version": null,
+                "section": null,
+                "chunk_id": null,
+                "candidate_group_id": null,
+                "member_id": "member_fa59c4a67b9437de29c74005",
+                "artifact": null,
+                "artifact_sha256": null,
+                "quote": null,
+                "note": "m:C_RP_QA:1790893656.000022"
+              }
+            ]
+          }
+        ],
+        "evidence": [
+          {
+            "kind": "slack_message",
+            "project_id": "response_preference",
+            "batch_id": "rp_batch_15",
+            "scope": "project",
+            "channel_id": "C_RP_GENERAL",
+            "thread_id": "1790857505.000025",
+            "message_id": "1790857505.000025",
+            "document_id": null,
+            "version_id": null,
+            "authoring_document_id": null,
+            "authoring_version": null,
+            "section": null,
+            "chunk_id": null,
+            "candidate_group_id": null,
+            "member_id": "member_4c0f46ab95a5321f30ddaa81",
+            "artifact": null,
+            "artifact_sha256": null,
+            "quote": null,
+            "note": "m:C_RP_GENERAL:1790857505.000025"
+          },
+          {
+            "kind": "slack_message",
+            "project_id": "response_preference",
+            "batch_id": "rp_batch_15",
+            "scope": "project",
+            "channel_id": "C_RP_GENERAL",
+            "thread_id": "1790877012.001300",
+            "message_id": "1790877012.001300",
+            "document_id": null,
+            "version_id": null,
+            "authoring_document_id": null,
+            "authoring_version": null,
+            "section": null,
+            "chunk_id": null,
+            "candidate_group_id": null,
+            "member_id": "member_b193085c828797658e0da615",
+            "artifact": null,
+            "artifact_sha256": null,
+            "quote": null,
+            "note": "m:C_RP_GENERAL:1790877012.001300"
+          },
+          {
+            "kind": "slack_message",
+            "project_id": "response_preference",
+            "batch_id": "rp_batch_15",
+            "scope": "project",
+            "channel_id": "C_RP_QA",
+            "thread_id": "1790893656.000022",
+            "message_id": "1790893656.000022",
+            "document_id": null,
+            "version_id": null,
+            "authoring_document_id": null,
+            "authoring_version": null,
+            "section": null,
+            "chunk_id": null,
+            "candidate_group_id": null,
+            "member_id": "member_fa59c4a67b9437de29c74005",
+            "artifact": null,
+            "artifact_sha256": null,
+            "quote": null,
+            "note": "m:C_RP_QA:1790893656.000022"
+          }
+        ],
+        "occurrence": {
+          "affected_reporters": {
+            "status": "UNKNOWN",
+            "count": null,
+            "ids": [],
+            "basis": null,
+            "evidence": []
+          },
+          "affected_tasks": {
+            "status": "UNKNOWN",
+            "count": null,
+            "ids": [],
+            "basis": null,
+            "evidence": []
+          },
+          "relevant_threads": [
+            {
+              "project_id": "response_preference",
+              "batch_id": "rp_batch_15",
+              "channel_id": "C_RP_GENERAL",
+              "thread_id": "1790857505.000025",
+              "member_id": "member_4c0f46ab95a5321f30ddaa81"
+            },
+            {
+              "project_id": "response_preference",
+              "batch_id": "rp_batch_15",
+              "channel_id": "C_RP_GENERAL",
+              "thread_id": "1790877012.001300",
+              "member_id": "member_b193085c828797658e0da615"
+            },
+            {
+              "project_id": "response_preference",
+              "batch_id": "rp_batch_15",
+              "channel_id": "C_RP_QA",
+              "thread_id": "1790893656.000022",
+              "member_id": "member_fa59c4a67b9437de29c74005"
+            }
+          ],
+          "reporting_window": {
+            "start": "2026-10-01T12:25:05.000025+00:00",
+            "end": "2026-10-01T22:28:26.000113+00:00"
+          },
+          "historical_recurrence": {
+            "status": "NOT_CHECKED",
+            "sources": [],
+            "event_series_ids": []
+          },
+          "known_denominator": null,
+          "structural": {
+            "threads": 3,
+            "messages": 6,
+            "distinct_participants": 6,
+            "duplicate_threads_ignored": 0,
+            "duplicate_messages_ignored": 0,
+            "computed_from": "topic member threads (original Slack messages)",
+            "participants_are_not_affected_reporters": true
+          },
+          "semantic_identification": "ASSESSED"
+        },
+        "inherited_from": {
+          "level": "UNKNOWN",
+          "assessment_status": "UNASSESSED",
+          "assessment_deferred_to": "AGENT3",
+          "reason": "Agent 2 performs taxonomy only."
+        }
+      },
+      "issues": [],
+      "notes": [],
+      "proposal": {
+        "level": "MEDIUM",
+        "rationale": "Repeated uncertainty concerns the distinction between major and minor factual defects, which can affect grading consistency. The messages do not establish broader disruption or incorrect submitted labels.",
+        "signals": [
+          {
+            "level": "MEDIUM",
+            "signal_index": 0,
+            "signal_text": "Recurring confusion about the same rule, tool behavior, or scoring criterion that suggests meaningful workflow or labeling impact",
+            "support": "Two QA tutors and a tutor ask how incorrect dates or key facts should be graded, showing repeated uncertainty about the same consequential grading distinction.",
+            "evidence_ids": [
+              "m:C_RP_GENERAL:1790857505.000025",
+              "m:C_RP_GENERAL:1790877012.001300",
+              "m:C_RP_QA:1790893656.000022"
+            ]
+          }
+        ],
+        "affected_reporters": [],
+        "recurrence": "NOT_CHECKED",
+        "recurrence_evidence_ids": [],
+        "reported_recurrence_evidence_ids": []
+      }
+    },
+    "resolution": {
+      "topic": "MIXED",
+      "members": {
+        "member_4c0f46ab95a5321f30ddaa81": "UNRESOLVED",
+        "member_b193085c828797658e0da615": "RESOLVED_IN_THREAD",
+        "member_fa59c4a67b9437de29c74005": "PARTIALLY_RESOLVED"
+      },
+      "agent1_attributed": [
+        {
+          "member_id": "member_4c0f46ab95a5321f30ddaa81",
+          "state": "UNRESOLVED",
+          "agent1_verification_status": "VERIFIED",
+          "agent1_review_required": false
+        },
+        {
+          "member_id": "member_b193085c828797658e0da615",
+          "state": "RESOLVED_IN_THREAD",
+          "agent1_verification_status": "VERIFIED",
+          "agent1_review_required": false
+        },
+        {
+          "member_id": "member_fa59c4a67b9437de29c74005",
+          "state": "PARTIALLY_RESOLVED",
+          "agent1_verification_status": "VERIFIED",
+          "agent1_review_required": false
+        }
+      ]
+    },
+    "established_handling": [],
+    "coverage_issues": [],
+    "action_source": "DRAFT",
+    "action_notes": [],
+    "tot": {
+      "status": "NOT_TRIGGERED",
+      "triggers": [],
+      "choice_after_grounding": {
+        "status": "NOT_COMPARED",
+        "viable": []
+      }
+    },
+    "evidence_ledger": {
+      "m:C_RP_GENERAL:1790857505.000025": {
+        "evidence_id": "m:C_RP_GENERAL:1790857505.000025",
+        "origin": "member_message",
+        "use": "MEMBER_REPORT",
+        "member_id": "member_4c0f46ab95a5321f30ddaa81",
+        "channel_id": "C_RP_GENERAL",
+        "thread_id": "1790857505.000025",
+        "message_id": "1790857505.000025",
+        "author_id": "U008",
+        "author_name": "Hana",
+        "author_role": "QA_TUTOR",
+        "timestamp": "2026-10-01T12:25:05.000025Z",
+        "thread_starter_id": "U008",
+        "thread_starter_role": "QA_TUTOR",
+        "reactions": [],
+        "excerpt": "Does this incorrect date count as major?"
+      },
+      "m:C_RP_GENERAL:1790877012.001300": {
+        "evidence_id": "m:C_RP_GENERAL:1790877012.001300",
+        "origin": "member_message",
+        "use": "MEMBER_REPORT",
+        "member_id": "member_b193085c828797658e0da615",
+        "channel_id": "C_RP_GENERAL",
+        "thread_id": "1790877012.001300",
+        "message_id": "1790877012.001300",
+        "author_id": "U003",
+        "author_name": "Jordan",
+        "author_role": "TUTOR",
+        "timestamp": "2026-10-01T17:50:12.001300Z",
+        "thread_starter_id": "U003",
+        "thread_starter_role": "TUTOR",
+        "reactions": [],
+        "excerpt": "[Task review]\nIssue: Is the key fact being inaccurate enough to trigger major even if tone is fine?\nQuestion: what is the correct handling for this task?"
+      },
+      "m:C_RP_GENERAL:1790877065.000113": {
+        "evidence_id": "m:C_RP_GENERAL:1790877065.000113",
+        "origin": "member_message",
+        "use": "MEMBER_REPORT",
+        "member_id": "member_b193085c828797658e0da615",
+        "channel_id": "C_RP_GENERAL",
+        "thread_id": "1790877012.001300",
+        "message_id": "1790877065.000113",
+        "author_id": "U012",
+        "author_name": "Sam",
+        "author_role": "TUTOR",
+        "timestamp": "2026-10-01T17:51:05.000113Z",
+        "thread_starter_id": "U003",
+        "thread_starter_role": "TUTOR",
+        "reactions": [
+          {
+            "name": "thinking_face",
+            "users": [
+              {
+                "id": "U011",
+                "name": "Rina"
+              }
+            ]
+          }
+        ],
+        "excerpt": "The wrong date changes which event happened first; that seems central."
+      },
+      "m:C_RP_GENERAL:1790877109.000226": {
+        "evidence_id": "m:C_RP_GENERAL:1790877109.000226",
+        "origin": "member_message",
+        "use": "MEMBER_REPORT",
+        "member_id": "member_b193085c828797658e0da615",
+        "channel_id": "C_RP_GENERAL",
+        "thread_id": "1790877012.001300",
+        "message_id": "1790877109.000226",
+        "author_id": "U001",
+        "author_name": "Alex",
+        "author_role": "TEAM_LEAD",
+        "timestamp": "2026-10-01T17:51:49.000226Z",
+        "thread_starter_id": "U003",
+        "thread_starter_role": "TUTOR",
+        "reactions": [],
+        "excerpt": "For this example, a factual error is major when it changes the central conclusion; a nonessential background-date slip is minor."
+      },
+      "m:C_RP_QA:1790893656.000022": {
+        "evidence_id": "m:C_RP_QA:1790893656.000022",
+        "origin": "member_message",
+        "use": "MEMBER_REPORT",
+        "member_id": "member_fa59c4a67b9437de29c74005",
+        "channel_id": "C_RP_QA",
+        "thread_id": "1790893656.000022",
+        "message_id": "1790893656.000022",
+        "author_id": "U007",
+        "author_name": "Leo",
+        "author_role": "QA_TUTOR",
+        "timestamp": "2026-10-01T22:27:36.000022Z",
+        "thread_starter_id": "U007",
+        "thread_starter_role": "QA_TUTOR",
+        "reactions": [],
+        "excerpt": "Anyone else seeing this? Does this incorrect date count as major? (task ref RP-3656)"
+      },
+      "m:C_RP_QA:1790893706.000113": {
+        "evidence_id": "m:C_RP_QA:1790893706.000113",
+        "origin": "member_message",
+        "use": "MEMBER_REPORT",
+        "member_id": "member_fa59c4a67b9437de29c74005",
+        "channel_id": "C_RP_QA",
+        "thread_id": "1790893656.000022",
+        "message_id": "1790893706.000113",
+        "author_id": "U004",
+        "author_name": "Sofia",
+        "author_role": "TUTOR",
+        "timestamp": "2026-10-01T22:28:26.000113Z",
+        "thread_starter_id": "U007",
+        "thread_starter_role": "QA_TUTOR",
+        "reactions": [
+          {
+            "name": "thinking_face",
+            "users": [
+              {
+                "id": "U013",
+                "name": "Jun"
+              }
+            ]
+          }
+        ],
+        "excerpt": "The wrong date changes which event happened first; that seems central. The same wrong year can be minor in background context and major in a chronology task."
+      },
+      "k:response-preference-instructions@1.1:3350bbc0": {
+        "evidence_id": "k:response-preference-instructions@1.1:3350bbc0",
+        "origin": "retrieved_source",
+        "use": "CURRENT_GUIDANCE",
+        "citation": {
+          "document_id": "knowledge_c49652bd3dfc0e71a42597bd9128f922ba1700cc4d7eb83a39cfbaad9a43ed6d",
+          "version_id": "version_497eb858ea77dcb88133f2ba1afd5eaf08d1a1d380c3a5cad663f8f55b7d3c65",
+          "chunk_id": "chunk_3350bbc0864a963b08fc08bb48e80bd1",
+          "authoring": "response-preference-instructions@1.1",
+          "title": "Response Preference — Instructions (v1.1)",
+          "sections": [
+            "Factual errors and citations"
+          ],
+          "source": {
+            "batch_id": null,
+            "channel_id": null,
+            "manual_key": "response-preference-instructions",
+            "message_id": null,
+            "permalink": null,
+            "project_id": "response_preference",
+            "reference": null,
+            "system": "manual",
+            "thread_id": null,
+            "workspace_id": null
+          }
+        },
+        "source_type": "guideline",
+        "record_kind": "guideline",
+        "applicability": {
+          "state": "CURRENT",
+          "revision_state": "CURRENT",
+          "version_mode": "current",
+          "replaced_by": [],
+          "unverified_supersession": [],
+          "supersedes": [],
+          "enactment": null,
+          "other_revisions": []
+        },
+        "dates": {
+          "source_date": "2026-08-30T13:00:00Z",
+          "basis": "effective_at",
+          "effective_at": "2026-08-30T13:00:00Z",
+          "created_at": null,
+          "valid_until": null,
+          "expired_as_of": false,
+          "reference_time": "2026-10-02T12:00:00Z"
+        },
+        "scope": {
+          "project_id": "response_preference",
+          "batch_id": null,
+          "scope": "project",
+          "batch_relation": "project_wide"
+        },
+        "authority": {
+          "role": "TEAM_LEAD",
+          "actor": "U001",
+          "actor_relation": "RECORD_AUTHORITY",
+          "approval_status": "EXPLICIT_SOURCE_MARKER",
+          "provenance": "synthetic_manual_record"
+        },
+        "authorship": {
+          "author_id": null,
+          "verified": false,
+          "basis": "NO_AUTHOR_RECORDED"
+        },
+        "recorded_states": {
+          "status": "approved",
+          "decision_status": null,
+          "execution_status": null,
+          "outcome_status": null
+        },
+        "upstream_review": null,
+        "excerpt": "## Factual errors and citations\n- A factual error is major when it changes the central conclusion or the answer a user would act on.\n- A nonessential background error with no effect on that conclusion is minor.\n- A broken link is an access/verification failure, not proof that the underlying factual claim is false.\n- Distinguish an existing source that does not support the claim from an invented reference."
+      },
+      "k:rp-tie-calibration-post@1.0:4a3c786f": {
+        "evidence_id": "k:rp-tie-calibration-post@1.0:4a3c786f",
+        "origin": "retrieved_source",
+        "use": "ANNOUNCEMENT",
+        "citation": {
+          "document_id": "knowledge_45310f4cdc303d3697b6589b86dfcc3def7cefd37cba2e56b4a20a01bc548841",
+          "version_id": "version_da07d09f6758e77c7a4524b72e54e3ce672614472c8509957745aa892a73961b",
+          "chunk_id": "chunk_4a3c786f92797e2e8738accda1893ab4",
+          "authoring": "rp-tie-calibration-post@1.0",
+          "title": "Tie calibration announcement",
+          "sections": [],
+          "source": {
+            "batch_id": "rp_batch_14",
+            "channel_id": "C_RP_ANNOUNCEMENTS",
+            "manual_key": null,
+            "message_id": "1789567200.700002",
+            "permalink": null,
+            "project_id": "response_preference",
+            "reference": null,
+            "system": "slack",
+            "thread_id": "1789567200.700002",
+            "workspace_id": null
+          }
+        },
+        "source_type": "announcement",
+        "record_kind": "channel_announcement",
+        "applicability": {
+          "state": "CURRENT",
+          "revision_state": "CURRENT",
+          "version_mode": "current",
+          "replaced_by": [],
+          "unverified_supersession": [],
+          "supersedes": [],
+          "enactment": null,
+          "other_revisions": []
+        },
+        "dates": {
+          "source_date": "2026-09-16T14:00:00Z",
+          "basis": "effective_at",
+          "effective_at": "2026-09-16T14:00:00Z",
+          "created_at": "2026-09-16T14:00:00.700002+00:00",
+          "valid_until": null,
+          "expired_as_of": false,
+          "reference_time": "2026-10-02T12:00:00Z"
+        },
+        "scope": {
+          "project_id": "response_preference",
+          "batch_id": "rp_batch_14",
+          "scope": "project",
+          "batch_relation": "other_batch"
+        },
+        "authority": {
+          "role": "TEAM_LEAD",
+          "actor": "U001",
+          "actor_relation": "MESSAGE_AUTHOR",
+          "approval_status": "EXPLICIT_SOURCE_MARKER",
+          "provenance": "synthetic_slack_archive"
+        },
+        "authorship": {
+          "author_id": "U001",
+          "verified": true,
+          "basis": "SLACK_MESSAGE_AUTHOR"
+        },
+        "recorded_states": {
+          "status": "tl_approved",
+          "decision_status": "tl_approved",
+          "execution_status": "posted",
+          "outcome_status": "not_observed"
+        },
+        "upstream_review": null,
+        "excerpt": "[ANNOUNCEMENT posted 2026-09-16T14:00:00Z by TEAM_LEAD (rp_batch_14): not established as handling for this topic until you show it is relevant and gives a directive.]\nPreference batch 14 calibration: choose a tie when neither answer offers a meaningful quality advantage. If choosing A or B, identify the user-facing benefit rather than saying only that it sounds nicer. Keep material factual or instruction-following defects separate. Bring both rationales for disputed pairs to the eight-pair calibration review. This message clarifies the existing criterion; it does not create a new numerical threshold."
+      },
+      "k:response-preference-instructions@1.1:a71c54c7": {
+        "evidence_id": "k:response-preference-instructions@1.1:a71c54c7",
+        "origin": "retrieved_source",
+        "use": "CURRENT_GUIDANCE",
+        "citation": {
+          "document_id": "knowledge_c49652bd3dfc0e71a42597bd9128f922ba1700cc4d7eb83a39cfbaad9a43ed6d",
+          "version_id": "version_497eb858ea77dcb88133f2ba1afd5eaf08d1a1d380c3a5cad663f8f55b7d3c65",
+          "chunk_id": "chunk_a71c54c718421d30748a010a14ec54a6",
+          "authoring": "response-preference-instructions@1.1",
+          "title": "Response Preference — Instructions (v1.1)",
+          "sections": [
+            "Content-quality rubric"
+          ],
+          "source": {
+            "batch_id": null,
+            "channel_id": null,
+            "manual_key": "response-preference-instructions",
+            "message_id": null,
+            "permalink": null,
+            "project_id": "response_preference",
+            "reference": null,
+            "system": "manual",
+            "thread_id": null,
+            "workspace_id": null
+          }
+        },
+        "source_type": "guideline",
+        "record_kind": "guideline",
+        "applicability": {
+          "state": "CURRENT",
+          "revision_state": "CURRENT",
+          "version_mode": "current",
+          "replaced_by": [],
+          "unverified_supersession": [],
+          "supersedes": [],
+          "enactment": null,
+          "other_revisions": []
+        },
+        "dates": {
+          "source_date": "2026-08-30T13:00:00Z",
+          "basis": "effective_at",
+          "effective_at": "2026-08-30T13:00:00Z",
+          "created_at": null,
+          "valid_until": null,
+          "expired_as_of": false,
+          "reference_time": "2026-10-02T12:00:00Z"
+        },
+        "scope": {
+          "project_id": "response_preference",
+          "batch_id": null,
+          "scope": "project",
+          "batch_relation": "project_wide"
+        },
+        "authority": {
+          "role": "TEAM_LEAD",
+          "actor": "U001",
+          "actor_relation": "RECORD_AUTHORITY",
+          "approval_status": "EXPLICIT_SOURCE_MARKER",
+          "provenance": "synthetic_manual_record"
+        },
+        "authorship": {
+          "author_id": null,
+          "verified": false,
+          "basis": "NO_AUTHOR_RECORDED"
+        },
+        "recorded_states": {
+          "status": "approved",
+          "decision_status": null,
+          "execution_status": null,
+          "outcome_status": null
+        },
+        "upstream_review": null,
+        "excerpt": "## Content-quality rubric\nMajor/minor describe task-quality defects and do not determine operational incident severity.\n\n| Dimension | Major defect | Minor defect | Acceptable / no automatic penalty |\n| --- | --- | --- | --- |\n| Factual accuracy | Error changes the central conclusion or actionable answer | Nonessential background error without that effect | Accurate paraphrase or an immaterial stylistic difference |\n| Instruction adherence | Explicit required format/structure is missing | Limited violation of an actual secondary requirement | A stylistic choice that violates no requirement |\n| Citation support | Fabricated reference or materially unsupported attribution | A limited citation-detail error where the source and support remain identifiable | A valid source that supports the claim |\n| Preference | Identify a meaningful benefit; grade underlying defects separately | Do not manufacture a defect to break a tie | No meaningful quality difference supports a tie |\n\nAn inaccessible link needs a verification note; lack of access alone does not establish the error grade of the claim."
+      },
+      "k:response-preference-instructions@1.1:47ed0c14": {
+        "evidence_id": "k:response-preference-instructions@1.1:47ed0c14",
+        "origin": "retrieved_source",
+        "use": "CURRENT_GUIDANCE",
+        "citation": {
+          "document_id": "knowledge_c49652bd3dfc0e71a42597bd9128f922ba1700cc4d7eb83a39cfbaad9a43ed6d",
+          "version_id": "version_497eb858ea77dcb88133f2ba1afd5eaf08d1a1d380c3a5cad663f8f55b7d3c65",
+          "chunk_id": "chunk_47ed0c146d2fe3870aed4a64ce14d76e",
+          "authoring": "response-preference-instructions@1.1",
+          "title": "Response Preference — Instructions (v1.1)",
+          "sections": [
+            "Instruction adherence versus accuracy"
+          ],
+          "source": {
+            "batch_id": null,
+            "channel_id": null,
+            "manual_key": "response-preference-instructions",
+            "message_id": null,
+            "permalink": null,
+            "project_id": "response_preference",
+            "reference": null,
+            "system": "manual",
+            "thread_id": null,
+            "workspace_id": null
+          }
+        },
+        "source_type": "guideline",
+        "record_kind": "guideline",
+        "applicability": {
+          "state": "CURRENT",
+          "revision_state": "CURRENT",
+          "version_mode": "current",
+          "replaced_by": [],
+          "unverified_supersession": [],
+          "supersedes": [],
+          "enactment": null,
+          "other_revisions": []
+        },
+        "dates": {
+          "source_date": "2026-08-30T13:00:00Z",
+          "basis": "effective_at",
+          "effective_at": "2026-08-30T13:00:00Z",
+          "created_at": null,
+          "valid_until": null,
+          "expired_as_of": false,
+          "reference_time": "2026-10-02T12:00:00Z"
+        },
+        "scope": {
+          "project_id": "response_preference",
+          "batch_id": null,
+          "scope": "project",
+          "batch_relation": "project_wide"
+        },
+        "authority": {
+          "role": "TEAM_LEAD",
+          "actor": "U001",
+          "actor_relation": "RECORD_AUTHORITY",
+          "approval_status": "EXPLICIT_SOURCE_MARKER",
+          "provenance": "synthetic_manual_record"
+        },
+        "authorship": {
+          "author_id": null,
+          "verified": false,
+          "basis": "NO_AUTHOR_RECORDED"
+        },
+        "recorded_states": {
+          "status": "approved",
+          "decision_status": null,
+          "execution_status": null,
+          "outcome_status": null
+        },
+        "upstream_review": null,
+        "excerpt": "## Instruction adherence versus accuracy\nScore these dimensions separately. An explicit required output structure, such as JSON, is not optional.\n\nThis guidance does not define a universal preference ordering for a response that is stronger on accuracy but weaker on a required format. When the applicable rules and actual pair do not settle the comparison, provide the exact prompt, both responses and their separate defects for a TL decision. Do not assume facts about the other response."
+      },
+      "k:response-preference-faq@1.1:3db12f63": {
+        "evidence_id": "k:response-preference-faq@1.1:3db12f63",
+        "origin": "retrieved_source",
+        "use": "CURRENT_GUIDANCE",
+        "citation": {
+          "document_id": "knowledge_8267f474fe0a050bdbcaf6140c458ee11ad457fdc2afe9f79de12a23de8575e9",
+          "version_id": "version_6c9da15dd304e1be3d453ea1de9cbfd1e8cc54f0939ce516dd89cf0457f82a86",
+          "chunk_id": "chunk_3db12f63fa273df6f01b15a6ef7ed7f3",
+          "authoring": "response-preference-faq@1.1",
+          "title": "Response Preference — FAQ (v1.1)",
+          "sections": [
+            "Factual errors"
+          ],
+          "source": {
+            "batch_id": null,
+            "channel_id": null,
+            "manual_key": "response-preference-faq",
+            "message_id": null,
+            "permalink": null,
+            "project_id": "response_preference",
+            "reference": null,
+            "system": "manual",
+            "thread_id": null,
+            "workspace_id": null
+          }
+        },
+        "source_type": "faq",
+        "record_kind": "faq",
+        "applicability": {
+          "state": "CURRENT",
+          "revision_state": "CURRENT",
+          "version_mode": "current",
+          "replaced_by": [],
+          "unverified_supersession": [],
+          "supersedes": [],
+          "enactment": null,
+          "other_revisions": []
+        },
+        "dates": {
+          "source_date": "2026-09-05T13:00:00Z",
+          "basis": "effective_at",
+          "effective_at": "2026-09-05T13:00:00Z",
+          "created_at": null,
+          "valid_until": null,
+          "expired_as_of": false,
+          "reference_time": "2026-10-02T12:00:00Z"
+        },
+        "scope": {
+          "project_id": "response_preference",
+          "batch_id": null,
+          "scope": "project",
+          "batch_relation": "project_wide"
+        },
+        "authority": {
+          "role": "TEAM_LEAD",
+          "actor": "U001",
+          "actor_relation": "RECORD_AUTHORITY",
+          "approval_status": "EXPLICIT_SOURCE_MARKER",
+          "provenance": "synthetic_manual_record"
+        },
+        "authorship": {
+          "author_id": null,
+          "verified": false,
+          "basis": "NO_AUTHOR_RECORDED"
+        },
+        "recorded_states": {
+          "status": "approved",
+          "decision_status": null,
+          "execution_status": null,
+          "outcome_status": null
+        },
+        "upstream_review": null,
+        "excerpt": "## Factual errors\n\n### Q: What counts as a significant factual error?\nAn error that changes the central conclusion or the answer the user would act on. A nonessential background detail with no effect on the recommendation is minor.\n\n### Q: The source link is dead. Should I penalize the factual claim?\nRecord that the citation could not be verified. A failed URL alone does not prove the claim is false. Distinguish access failure from an unsupported attribution or fabricated reference."
+      }
+    },
+    "card": {
+      "contract_version": "agent3-advice-card-v4",
+      "record_type": "ADVICE_CARD",
+      "card_id": "card_ae8261f32944c73f60d573a715d027b3",
+      "project_id": "response_preference",
+      "topic_name": "Majority threshold for incorrect dates and key facts",
+      "card_line": "RECOMMENDED_ACTION",
+      "summary": "Two QA tutors and a tutor ask when incorrect dates or key facts count as major factual errors. Current guidance defines the threshold, but one QA tutor's question remains unanswered and the other has only a tutor's contextual explanation.",
+      "severity": {
+        "level": "MEDIUM",
+        "assessment_status": "ASSESSED",
+        "rubric_version": "severity-rubric-v3-semantic-signals",
+        "rubric_content_sha256": "eccaa31a2ab84a0aa7c005216a92fc39681e1dd10107117344948235a76673f4",
+        "rubric_project_id": null,
+        "rubric_scope": "SHARED_DEFAULT",
+        "rationale": "Repeated uncertainty concerns the distinction between major and minor factual defects, which can affect grading consistency. The messages do not establish broader disruption or incorrect submitted labels.",
+        "matched_signals": [
+          {
+            "level": "MEDIUM",
+            "signal_index": 0,
+            "signal_text": "Recurring confusion about the same rule, tool behavior, or scoring criterion that suggests meaningful workflow or labeling impact",
+            "support": "Two QA tutors and a tutor ask how incorrect dates or key facts should be graded, showing repeated uncertainty about the same consequential grading distinction.",
+            "evidence": [
+              {
+                "kind": "slack_message",
+                "project_id": "response_preference",
+                "batch_id": "rp_batch_15",
+                "scope": "project",
+                "channel_id": "C_RP_GENERAL",
+                "thread_id": "1790857505.000025",
+                "message_id": "1790857505.000025",
+                "document_id": null,
+                "version_id": null,
+                "authoring_document_id": null,
+                "authoring_version": null,
+                "section": null,
+                "chunk_id": null,
+                "candidate_group_id": null,
+                "member_id": "member_4c0f46ab95a5321f30ddaa81",
+                "artifact": null,
+                "artifact_sha256": null,
+                "quote": null,
+                "note": "m:C_RP_GENERAL:1790857505.000025"
+              },
+              {
+                "kind": "slack_message",
+                "project_id": "response_preference",
+                "batch_id": "rp_batch_15",
+                "scope": "project",
+                "channel_id": "C_RP_GENERAL",
+                "thread_id": "1790877012.001300",
+                "message_id": "1790877012.001300",
+                "document_id": null,
+                "version_id": null,
+                "authoring_document_id": null,
+                "authoring_version": null,
+                "section": null,
+                "chunk_id": null,
+                "candidate_group_id": null,
+                "member_id": "member_b193085c828797658e0da615",
+                "artifact": null,
+                "artifact_sha256": null,
+                "quote": null,
+                "note": "m:C_RP_GENERAL:1790877012.001300"
+              },
+              {
+                "kind": "slack_message",
+                "project_id": "response_preference",
+                "batch_id": "rp_batch_15",
+                "scope": "project",
+                "channel_id": "C_RP_QA",
+                "thread_id": "1790893656.000022",
+                "message_id": "1790893656.000022",
+                "document_id": null,
+                "version_id": null,
+                "authoring_document_id": null,
+                "authoring_version": null,
+                "section": null,
+                "chunk_id": null,
+                "candidate_group_id": null,
+                "member_id": "member_fa59c4a67b9437de29c74005",
+                "artifact": null,
+                "artifact_sha256": null,
+                "quote": null,
+                "note": "m:C_RP_QA:1790893656.000022"
+              }
+            ]
+          }
+        ],
+        "evidence": [
+          {
+            "kind": "slack_message",
+            "project_id": "response_preference",
+            "batch_id": "rp_batch_15",
+            "scope": "project",
+            "channel_id": "C_RP_GENERAL",
+            "thread_id": "1790857505.000025",
+            "message_id": "1790857505.000025",
+            "document_id": null,
+            "version_id": null,
+            "authoring_document_id": null,
+            "authoring_version": null,
+            "section": null,
+            "chunk_id": null,
+            "candidate_group_id": null,
+            "member_id": "member_4c0f46ab95a5321f30ddaa81",
+            "artifact": null,
+            "artifact_sha256": null,
+            "quote": null,
+            "note": "m:C_RP_GENERAL:1790857505.000025"
+          },
+          {
+            "kind": "slack_message",
+            "project_id": "response_preference",
+            "batch_id": "rp_batch_15",
+            "scope": "project",
+            "channel_id": "C_RP_GENERAL",
+            "thread_id": "1790877012.001300",
+            "message_id": "1790877012.001300",
+            "document_id": null,
+            "version_id": null,
+            "authoring_document_id": null,
+            "authoring_version": null,
+            "section": null,
+            "chunk_id": null,
+            "candidate_group_id": null,
+            "member_id": "member_b193085c828797658e0da615",
+            "artifact": null,
+            "artifact_sha256": null,
+            "quote": null,
+            "note": "m:C_RP_GENERAL:1790877012.001300"
+          },
+          {
+            "kind": "slack_message",
+            "project_id": "response_preference",
+            "batch_id": "rp_batch_15",
+            "scope": "project",
+            "channel_id": "C_RP_QA",
+            "thread_id": "1790893656.000022",
+            "message_id": "1790893656.000022",
+            "document_id": null,
+            "version_id": null,
+            "authoring_document_id": null,
+            "authoring_version": null,
+            "section": null,
+            "chunk_id": null,
+            "candidate_group_id": null,
+            "member_id": "member_fa59c4a67b9437de29c74005",
+            "artifact": null,
+            "artifact_sha256": null,
+            "quote": null,
+            "note": "m:C_RP_QA:1790893656.000022"
+          }
+        ],
+        "occurrence": {
+          "affected_reporters": {
+            "status": "UNKNOWN",
+            "count": null,
+            "ids": [],
+            "basis": null,
+            "evidence": []
+          },
+          "affected_tasks": {
+            "status": "UNKNOWN",
+            "count": null,
+            "ids": [],
+            "basis": null,
+            "evidence": []
+          },
+          "relevant_threads": [
+            {
+              "project_id": "response_preference",
+              "batch_id": "rp_batch_15",
+              "channel_id": "C_RP_GENERAL",
+              "thread_id": "1790857505.000025",
+              "member_id": "member_4c0f46ab95a5321f30ddaa81"
+            },
+            {
+              "project_id": "response_preference",
+              "batch_id": "rp_batch_15",
+              "channel_id": "C_RP_GENERAL",
+              "thread_id": "1790877012.001300",
+              "member_id": "member_b193085c828797658e0da615"
+            },
+            {
+              "project_id": "response_preference",
+              "batch_id": "rp_batch_15",
+              "channel_id": "C_RP_QA",
+              "thread_id": "1790893656.000022",
+              "member_id": "member_fa59c4a67b9437de29c74005"
+            }
+          ],
+          "reporting_window": {
+            "start": "2026-10-01T12:25:05.000025+00:00",
+            "end": "2026-10-01T22:28:26.000113+00:00"
+          },
+          "historical_recurrence": {
+            "status": "NOT_CHECKED",
+            "sources": [],
+            "event_series_ids": []
+          },
+          "known_denominator": null,
+          "structural": {
+            "threads": 3,
+            "messages": 6,
+            "distinct_participants": 6,
+            "duplicate_threads_ignored": 0,
+            "duplicate_messages_ignored": 0,
+            "computed_from": "topic member threads (original Slack messages)",
+            "participants_are_not_affected_reporters": true
+          },
+          "semantic_identification": "ASSESSED"
+        },
+        "inherited_from": {
+          "level": "UNKNOWN",
+          "assessment_status": "UNASSESSED",
+          "assessment_deferred_to": "AGENT3",
+          "reason": "Agent 2 performs taxonomy only."
+        }
+      },
+      "severity_is_provisional": false,
+      "resolution_status": "MIXED",
+      "recommended_action": {
+        "action_type": "POST_ALIGNMENT",
+        "draft_text": "Reminder for date and key-fact reviews: an incorrect fact is major when it changes the central conclusion or the answer a user would act on. A nonessential background error with no effect on that conclusion is minor.\n\nApply that distinction to the role the date or fact plays in the answer, rather than treating every incorrect date as automatically major. This follows the current factual-error instructions and FAQ; it does not introduce a new grading threshold.",
+        "scope_note": "This reminder restates the factual-error threshold; it does not assign a final grade to either QA tutor's example.",
+        "label": "Post a reminder",
+        "instruction": "Post a reminder explaining that incorrect dates and key facts are graded by their effect on the central conclusion or actionable answer.",
+        "rationale": "The current instructions and FAQ already supply the same threshold. A reminder addresses the remaining grading questions without introducing a new rule.",
+        "targets": [],
+        "essential_premise_ids": [
+          "claim:c7",
+          "claim:c8"
+        ],
+        "source": "DRAFT"
+      },
+      "reasoning": "What the evidence shows: A QA tutor asks whether an incorrect date counts as major. A tutor asks whether an inaccurate key fact warrants a major grade even when tone is fine, and asks how to handle the task. A QA tutor asks whether the incorrect date on RP-3656 counts as major. A tutor says the wrong date changes which event happened first and considers that central. In the RP-3656 thread, a tutor says the wrong date changes which event happened first and explains that the same wrong year can be minor in background context and major in a chronology task. For the tutor's example, the team lead instructs that a factual error is major when it changes the central conclusion and a nonessential background-date slip is minor. Current project instructions classify a factual error as major when it changes the central conclusion or the answer a user would act on, and a nonessential background error without that effect as minor; the current FAQ gives the same distinction. One QA tutor's question has no answer in its provided thread, while the QA tutor asking about RP-3656 receives a tutor's contextual explanation but no definitive classification of the task. Thread status, read from each thread's own messages: partially resolved ×1, resolved in thread ×1, unresolved ×1. Agent 1's earlier labels (an input, not evidence): partially resolved ×1, resolved in thread ×1, unresolved ×1.",
+      "supporting_sources": [
+        {
+          "kind": "knowledge_source",
+          "project_id": "response_preference",
+          "batch_id": null,
+          "scope": "project",
+          "channel_id": null,
+          "thread_id": null,
+          "message_id": null,
+          "document_id": "knowledge_c49652bd3dfc0e71a42597bd9128f922ba1700cc4d7eb83a39cfbaad9a43ed6d",
+          "version_id": "version_497eb858ea77dcb88133f2ba1afd5eaf08d1a1d380c3a5cad663f8f55b7d3c65",
+          "authoring_document_id": "response-preference-instructions",
+          "authoring_version": "1.1",
+          "section": "Factual errors and citations",
+          "chunk_id": "chunk_3350bbc0864a963b08fc08bb48e80bd1",
+          "candidate_group_id": null,
+          "member_id": null,
+          "artifact": null,
+          "artifact_sha256": null,
+          "quote": null,
+          "note": "k:response-preference-instructions@1.1:3350bbc0 (CURRENT_GUIDANCE; CURRENT)"
+        },
+        {
+          "kind": "knowledge_source",
+          "project_id": "response_preference",
+          "batch_id": null,
+          "scope": "project",
+          "channel_id": null,
+          "thread_id": null,
+          "message_id": null,
+          "document_id": "knowledge_8267f474fe0a050bdbcaf6140c458ee11ad457fdc2afe9f79de12a23de8575e9",
+          "version_id": "version_6c9da15dd304e1be3d453ea1de9cbfd1e8cc54f0939ce516dd89cf0457f82a86",
+          "authoring_document_id": "response-preference-faq",
+          "authoring_version": "1.1",
+          "section": "Factual errors",
+          "chunk_id": "chunk_3db12f63fa273df6f01b15a6ef7ed7f3",
+          "candidate_group_id": null,
+          "member_id": null,
+          "artifact": null,
+          "artifact_sha256": null,
+          "quote": null,
+          "note": "k:response-preference-faq@1.1:3db12f63 (CURRENT_GUIDANCE; CURRENT)"
+        },
+        {
+          "kind": "slack_message",
+          "project_id": "response_preference",
+          "batch_id": "rp_batch_15",
+          "scope": "project",
+          "channel_id": "C_RP_GENERAL",
+          "thread_id": "1790857505.000025",
+          "message_id": "1790857505.000025",
+          "document_id": null,
+          "version_id": null,
+          "authoring_document_id": null,
+          "authoring_version": null,
+          "section": null,
+          "chunk_id": null,
+          "candidate_group_id": null,
+          "member_id": "member_4c0f46ab95a5321f30ddaa81",
+          "artifact": null,
+          "artifact_sha256": null,
+          "quote": null,
+          "note": "m:C_RP_GENERAL:1790857505.000025"
+        },
+        {
+          "kind": "slack_message",
+          "project_id": "response_preference",
+          "batch_id": "rp_batch_15",
+          "scope": "project",
+          "channel_id": "C_RP_GENERAL",
+          "thread_id": "1790877012.001300",
+          "message_id": "1790877012.001300",
+          "document_id": null,
+          "version_id": null,
+          "authoring_document_id": null,
+          "authoring_version": null,
+          "section": null,
+          "chunk_id": null,
+          "candidate_group_id": null,
+          "member_id": "member_b193085c828797658e0da615",
+          "artifact": null,
+          "artifact_sha256": null,
+          "quote": null,
+          "note": "m:C_RP_GENERAL:1790877012.001300"
+        },
+        {
+          "kind": "slack_message",
+          "project_id": "response_preference",
+          "batch_id": "rp_batch_15",
+          "scope": "project",
+          "channel_id": "C_RP_QA",
+          "thread_id": "1790893656.000022",
+          "message_id": "1790893656.000022",
+          "document_id": null,
+          "version_id": null,
+          "authoring_document_id": null,
+          "authoring_version": null,
+          "section": null,
+          "chunk_id": null,
+          "candidate_group_id": null,
+          "member_id": "member_fa59c4a67b9437de29c74005",
+          "artifact": null,
+          "artifact_sha256": null,
+          "quote": null,
+          "note": "m:C_RP_QA:1790893656.000022"
+        },
+        {
+          "kind": "slack_message",
+          "project_id": "response_preference",
+          "batch_id": "rp_batch_15",
+          "scope": "project",
+          "channel_id": "C_RP_GENERAL",
+          "thread_id": "1790877012.001300",
+          "message_id": "1790877065.000113",
+          "document_id": null,
+          "version_id": null,
+          "authoring_document_id": null,
+          "authoring_version": null,
+          "section": null,
+          "chunk_id": null,
+          "candidate_group_id": null,
+          "member_id": "member_b193085c828797658e0da615",
+          "artifact": null,
+          "artifact_sha256": null,
+          "quote": null,
+          "note": "m:C_RP_GENERAL:1790877065.000113"
+        },
+        {
+          "kind": "slack_message",
+          "project_id": "response_preference",
+          "batch_id": "rp_batch_15",
+          "scope": "project",
+          "channel_id": "C_RP_QA",
+          "thread_id": "1790893656.000022",
+          "message_id": "1790893706.000113",
+          "document_id": null,
+          "version_id": null,
+          "authoring_document_id": null,
+          "authoring_version": null,
+          "section": null,
+          "chunk_id": null,
+          "candidate_group_id": null,
+          "member_id": "member_fa59c4a67b9437de29c74005",
+          "artifact": null,
+          "artifact_sha256": null,
+          "quote": null,
+          "note": "m:C_RP_QA:1790893706.000113"
+        },
+        {
+          "kind": "slack_message",
+          "project_id": "response_preference",
+          "batch_id": "rp_batch_15",
+          "scope": "project",
+          "channel_id": "C_RP_GENERAL",
+          "thread_id": "1790877012.001300",
+          "message_id": "1790877109.000226",
+          "document_id": null,
+          "version_id": null,
+          "authoring_document_id": null,
+          "authoring_version": null,
+          "section": null,
+          "chunk_id": null,
+          "candidate_group_id": null,
+          "member_id": "member_b193085c828797658e0da615",
+          "artifact": null,
+          "artifact_sha256": null,
+          "quote": null,
+          "note": "m:C_RP_GENERAL:1790877109.000226"
+        }
+      ],
+      "related_threads": [
+        {
+          "project_id": "response_preference",
+          "batch_id": "rp_batch_15",
+          "channel_id": "C_RP_GENERAL",
+          "thread_id": "1790857505.000025",
+          "member_id": "member_4c0f46ab95a5321f30ddaa81",
+          "permalink": null,
+          "display_reference": "1790857505.000025",
+          "label": "#response-preference-general, 2026-10-01, started by a QA tutor: \"Does this incorrect date count as major?\"",
+          "opening_text": "Does this incorrect date count as major?"
+        },
+        {
+          "project_id": "response_preference",
+          "batch_id": "rp_batch_15",
+          "channel_id": "C_RP_GENERAL",
+          "thread_id": "1790877012.001300",
+          "member_id": "member_b193085c828797658e0da615",
+          "permalink": null,
+          "display_reference": "1790877012.001300",
+          "label": "#response-preference-general, 2026-10-01, started by a tutor: \"Issue: Is the key fact being inaccurate enough to trigger major even if tone is fine?\"",
+          "opening_text": "[Task review]\nIssue: Is the key fact being inaccurate enough to trigger major even if tone is fine?\nQuestion: what is the correct handling for this task?"
+        },
+        {
+          "project_id": "response_preference",
+          "batch_id": "rp_batch_15",
+          "channel_id": "C_RP_QA",
+          "thread_id": "1790893656.000022",
+          "member_id": "member_fa59c4a67b9437de29c74005",
+          "permalink": null,
+          "display_reference": "1790893656.000022",
+          "label": "#response-preference-qa, 2026-10-01, started by a QA tutor: \"Anyone else seeing this?\"",
+          "opening_text": "Anyone else seeing this? Does this incorrect date count as major? (task ref RP-3656)"
+        }
+      ],
+      "confidence": 0.93,
+      "confidence_band": "HIGH",
+      "needs_review_reasons": [],
+      "inherited_flags": [],
+      "checks": {
+        "grounding": "PASSED",
+        "temporal_conflict": "NONE_FOUND",
+        "open_confirmation": "NONE"
+      },
+      "lineage": {
+        "agent3_run_id": "agent3overnight_0b7636193a04d34b4fe271dfea902a96",
+        "handoff_contract": "agent2-taxonomy-handoff-v2",
+        "agent2_export_sha256": "7634a0c7af684201be9771b97e12c4379ed86cc8b4de7159caa55bd6816e9c26",
+        "agent2_schema_version": 8,
+        "candidate_group_id": "cluster_2845c1b030fe6d60",
+        "topic_id": "cluster_2845c1b030fe6d60/topic_1",
+        "member_ids": [
+          "member_4c0f46ab95a5321f30ddaa81",
+          "member_b193085c828797658e0da615",
+          "member_fa59c4a67b9437de29c74005"
+        ],
+        "project_id": "response_preference",
+        "batch_id": "rp_batch_15"
+      },
+      "review_notes": [],
+      "details": [
+        "The team lead answered the tutor's question within that thread: a factual error is major when it changes the central conclusion, while a nonessential background-date slip is minor.",
+        "For RP-3656, a tutor says the wrong date changes the event order and explains that the same wrong year can be minor in background context but major in a chronology task."
+      ],
+      "next_step": {
+        "status": "ACTION_RECOMMENDED",
+        "rationale": "The current instructions and FAQ already supply the same threshold. A reminder addresses the remaining grading questions without introducing a new rule.",
+        "explanation": null
+      }
+    },
+    "review_items": [],
+    "coverage": {
+      "group_members_outside_this_card": [],
+      "uncarried_obligations": []
+    },
+    "budget": {
+      "consumed": {
+        "retrieval_calls": 1,
+        "model_calls": 2
+      },
+      "limits": {
+        "model_calls_per_topic": 4,
+        "model_calls_total": 28,
+        "retrieval_calls_per_topic": 6,
+        "retrieval_calls_total": 42
+      }
+    },
+    "diagnostics": []
+  }
+}

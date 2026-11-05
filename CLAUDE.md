@@ -19,7 +19,7 @@ uv run --locked --extra dev python -m pytest tests/test_x.py   # single file
 ```
 
 - Always pass a **fresh** `--basetemp .cache/pytest-<name>`: pytest wipes it at start.
-- Full suite: 1072 tests, ~13 min, all expected to pass. Intermittent `WinError 5` on `os.replace` is a Windows file lock (see Known issues), not a code failure.
+- Full suite: 1107 tests, ~13 min, all expected to pass. Intermittent `WinError 5` on `os.replace` is a Windows file lock (see Known issues), not a code failure.
 - No linter/formatter configured. No build step beyond the editable install.
 - UI tests: `npm --prefix web run build` then `npm --prefix web run test:ui` (Playwright, system Chrome; temp output
   in `TS_UI_TMP`, default `D:/tsb/ui-<time>`). Frontend deps are pinned in `web/package.json` + `package-lock.json`.
@@ -37,6 +37,10 @@ uv run --locked --extra dev python -m pytest tests/test_x.py   # single file
   later snapshots, `app.py` FastAPI), `web/` (React/Vite/Tailwind/Framer Motion; `web/tests/` Playwright). Runners
   `scripts/run_dashboard.py`, `scripts/build_decision_snapshot.py`. Decision store `.state/dashboard/` (ignored).
   Labelled fixture run `tests/fixtures/dashboard_runs/` (builder `tests/fixtures/make_dashboard_fixture_run.py`).
+- Full run (2026-11-05): `src/threadsense/execution/` (`guard.py` transport guard + request cache, `ledger.py` SQLite
+  budget ledger, `store.py` content-addressed objects, `pricing.py` verified prices, `pipeline.py` stages snapshot ->
+  agent1_interpret -> agent1_verify -> grouping -> agent2 -> agent3 -> finalize). Runner `scripts/run_threadsense_full.py`
+  (`preflight` zero calls; `live --run` **paid**; `resume --reason`; `replay`/`render` network disabled; `branch`).
 - `src/threadsense/legacy/` — frozen historical contracts/engines kept only for replay and fingerprints.
 - `scripts/` — CLI entry points (table in README). `tests/` — offline; model calls are mocked.
 - `data/fixtures/slack_generated/` — pipeline input (12 channels). `data/fixtures/slack/` is the old seed set used only by `main.py` and the generator.
@@ -141,6 +145,12 @@ judgments need a new judgment (statement verdicts stay reusable). Report and cor
 Flag-impact milestone closed (commit `4df65ef`). End-to-end evaluation run once (live `data/experiments/agent3_e2e_eval_v1/`, 8 items, 17 requests, $0.93; expectations frozen before the run, inspection in `evaluation.json`).
 Presentation pass (2026-11-05, offline): draft v11 `detail_sentences` (opened card "What happened", each judged as DETAIL, non-blocking), judged NO_ACTION reason (`action:no_action`, NO_ACTION_RATIONALE, non-blocking), AdviceCard v4 (`details`, `next_step`: ACTION_RECOMMENDED / NO_ACTION_NEEDED / NO_INTERVENTION_PROPOSED / RECOMMENDATION_WITHHELD / NO_RECOMMENDATION_AVAILABLE; review status unchanged), prompts v18 (grounding rules changed, so earlier recorded verdicts are not reused in replay), pilot v7. v3 cards load unchanged; the dashboard derives their state from the saved result (`runs.presentation`). Prepared demo run `data/experiments/agent3_presentation_prepared_v1/` (PREPARED fixture, not model output). Live acceptance `data/experiments/agent3_v18_acceptance_v1/` (same 8 items, 16 requests, $0.86, accounting COMPLETE, queue 52; development evaluation in `evaluation.json`): no blocking unsupported content identified in the developer's inspection; one potentially misleading historical phrase (Submit, "at its September 28 close") passed grounding and is recorded as a wording defect; both NO_ACTION_NEEDED states judged SUPPORTED. Flagged-thread status sentence now built from saved verdicts (`dashboard.checks.checked_parts`). **Milestone closed for the local capstone/demo scope** (`ACCEPTANCE.md` in that run directory).
 Further `--run`s are paid (ask first). Full plan: [docs/agent3-plan.md](docs/agent3-plan.md).
+Full live run 2026-11-05 `data/experiments/threadsense_full_v1/` (fresh Agent 1 -> Agent 3 over `slack_generated_demo`,
+937 requests, $15.32 of a $39 ceiling): 177/178 accepted by Agent 1 (1 AUTHORITY_INELIGIBLE rejection recorded as
+unfinished), 76 groups, 81 cards (61/8/12), 37 queue items, accounting COMPLETE; network-disabled replay
+`threadsense_full_v1_replay/` (0 calls, 89/89 artifacts semantically identical). Report `ACCEPTANCE.md` in the run dir.
+Agent 1 verification of a new run receives a derived discussion view (`pipeline.discussion_view`) through the runner's
+module constants; Agent 2 `execute_batch` refuses existing dirs, so its resume uses a new attempt dir with cache hits.
 - Agent 3 input: `data/processed/agent2_handoff_v2_projection/` (schema 8 / handoff v2, a zero-call projection of the v7 release; load with `advice_inputs.load_effective_view`): 81 groups / 79 topics / 161 assigned + 17 unassigned / 41 + 8 announcement-route obligations / 3 carried cautions. The frozen v7 release (handoff v1: 90 / 97 / 49 / 3 / 41) is unchanged.
 - Demo Slack input: `data/fixtures/slack_generated_demo/` (201 threads / 517 messages, cutoff `2026-10-02T12:00:00Z`); the original `slack_generated/` (200 / 516) stays unchanged.
 - LangGraph 1.2.18 (Milestone 5) and FastAPI 0.162.0 (Milestone 6) installed; frontend toolchain in `web/` (npm). Chroma is a direct dependency; BM25 is in-house.

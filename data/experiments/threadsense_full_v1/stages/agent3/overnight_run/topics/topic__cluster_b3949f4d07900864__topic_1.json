@@ -1,0 +1,2432 @@
+{
+  "work_item": {
+    "candidate_group_id": "cluster_b3949f4d07900864",
+    "project_id": "response_preference",
+    "batch_id": "rp_batch_15",
+    "work_id": "topic:cluster_b3949f4d07900864/topic_1",
+    "kind": "TOPIC",
+    "topic_id": "cluster_b3949f4d07900864/topic_1",
+    "topic_name": "Tie threshold for near-identical responses",
+    "member_ids": [
+      "member_4ae1700632c4a55ae1a24a4d",
+      "member_cbc21f1a0a95a7a98a8daec4"
+    ],
+    "pilot_scenario": null,
+    "in_scope": true
+  },
+  "workflow": {
+    "outcome": "CARD",
+    "card_id": "card_22378e0f343b8f7d0d98b7eae8d6a979",
+    "card_line": "OBSERVATION",
+    "grounding": "PASSED",
+    "stage_failures": [],
+    "semantic_source": "LIVE_MODEL"
+  },
+  "result": {
+    "scenario": {
+      "id": "topic:cluster_b3949f4d07900864/topic_1",
+      "candidate_group_id": "cluster_b3949f4d07900864",
+      "focus": "Tie threshold for near-identical responses",
+      "topic_id": "cluster_b3949f4d07900864/topic_1"
+    },
+    "status": "CARD",
+    "topic": {
+      "project_id": "response_preference",
+      "batch_id": "rp_batch_15",
+      "candidate_group_id": "cluster_b3949f4d07900864",
+      "topic_id": "cluster_b3949f4d07900864/topic_1",
+      "topic_label": "Tie threshold for near-identical responses",
+      "projection_gap": null,
+      "as_of": "2026-10-02T12:00:00Z",
+      "member_ids": [
+        "member_4ae1700632c4a55ae1a24a4d",
+        "member_cbc21f1a0a95a7a98a8daec4"
+      ],
+      "initial_query": "Tie threshold for near-identical responses. How much improvement do we need to avoid a tie?"
+    },
+    "retrieval_trace": [
+      {
+        "step": 1,
+        "purpose": "initial_current_guidance",
+        "gap_id": null,
+        "query": "Tie threshold for near-identical responses. How much improvement do we need to avoid a tie?",
+        "source_types": [
+          "guideline",
+          "faq",
+          "decision",
+          "announcement"
+        ],
+        "version_mode": "current",
+        "as_of": "2026-10-02T12:00:00Z",
+        "batch": "rp_batch_15",
+        "top_k": 5,
+        "status": "DONE",
+        "mode": "hybrid",
+        "use_mmr": true,
+        "mmr_lambda": 0.9,
+        "result_ids": [
+          "k:response-preference-faq@1.1:4683724f",
+          "k:rp-tie-calibration-outcome@1.0:f678161f",
+          "k:rp-tie-calibration-post@1.0:4a3c786f",
+          "k:response-preference-instructions@1.1:176ce67d",
+          "k:response-preference-faq@1.1:fa9b6a3d"
+        ],
+        "new_evidence_ids": [
+          "k:response-preference-faq@1.1:4683724f",
+          "k:rp-tie-calibration-outcome@1.0:f678161f",
+          "k:rp-tie-calibration-post@1.0:4a3c786f",
+          "k:response-preference-instructions@1.1:176ce67d",
+          "k:response-preference-faq@1.1:fa9b6a3d"
+        ],
+        "eligible_chunks": 28,
+        "added": []
+      }
+    ],
+    "retrieval_notes": {
+      "withheld_by_version": [],
+      "version_diagnostics": []
+    },
+    "follow_ups": [],
+    "unfilled_gaps": [],
+    "model_calls": [
+      {
+        "stage": "draft",
+        "schema": "AdvisorDraft",
+        "agent1_context": {
+          "sha256": "894b948ff56959d27d4d405607ca5141acbc9987a76b908c9ec5903aac671a5d",
+          "boundary": "IN_HTTP_BODY"
+        },
+        "raw": "{\n  \"contract_version\": \"agent3-advisor-draft-v11\",\n  \"summary\": null,\n  \"summary_sentences\": [\n    {\n      \"text\": \"Two tutors ask when small differences justify a preference rather than a tie.\",\n      \"support_claim_ids\": [\"c1\", \"c4\"],\n      \"depends_on\": []\n    },\n    {\n      \"text\": \"The team lead answers one example and a QA tutor answers the other; both recommend a tie for the specific pair, rather than establishing a general threshold.\",\n      \"support_claim_ids\": [\"c3\", \"c5\"],\n      \"depends_on\": [1]\n    }\n  ],\n  \"detail_sentences\": [\n    {\n      \"text\": \"In the first thread, a tutor reports nicer wording in one response but identical information and coverage.\",\n      \"support_claim_ids\": [\"c2\"],\n      \"depends_on\": [],\n      \"summary_depends_on\": []\n    },\n    {\n      \"text\": \"In the second thread, a tutor reports a small difference in relevance with no major faults; a QA tutor answers in terms of cosmetic phrasing.\",\n      \"support_claim_ids\": [\"c4\", \"c5\"],\n      \"depends_on\": [],\n      \"summary_depends_on\": []\n    },\n    {\n      \"text\": \"Current instructions require a meaningful quality advantage and an explanation of the user-facing benefit when choosing a response on a small difference.\",\n      \"support_claim_ids\": [\"c6\"],\n      \"depends_on\": [],\n      \"summary_depends_on\": []\n    },\n    {\n      \"text\": \"An earlier batch's calibration follow-up records improved agreement on the reviewed sample, not a standing rule for this batch.\",\n      \"support_claim_ids\": [\"c8\"],\n      \"depends_on\": [],\n      \"summary_depends_on\": []\n    }\n  ],\n  \"reasoning\": \"Both handling questions received pair-specific answers in their own threads. The difference between the second tutor's relevance wording and the QA tutor's cosmetic-phrasing explanation does not establish an unanswered question or conflicting judgments. Current instructions and the FAQ already explain the criterion and warn against generalizing from one pair. The earlier calibration records concern another batch and do not establish a new rule here. No further research is needed to support taking no additional action now.\",\n  \"claims\": [\n    {\n      \"claim_id\": \"c1\",\n      \"kind\": \"INCIDENT_FACT\",\n      \"text\": \"A tutor asks how much improvement is needed to avoid a tie.\",\n      \"evidence_ids\": [\"m:C_RP_GENERAL:1790896509.000047\"],\n      \"attributions\": [\n        {\n          \"user_id\": \"U011\",\n          \"relation\": \"AUTHOR\",\n          \"evidence_id\": \"m:C_RP_GENERAL:1790896509.000047\"\n        }\n      ],\n      \"quote\": \"How much improvement do we need to avoid a tie?\",\n      \"quote_kind\": \"VERBATIM\",\n      \"material\": true\n    },\n    {\n      \"claim_id\": \"c2\",\n      \"kind\": \"INCIDENT_FACT\",\n      \"text\": \"A tutor reports that one response uses nicer wording while its information and coverage are identical to the other response.\",\n      \"evidence_ids\": [\"m:C_RP_GENERAL:1790896559.000113\"],\n      \"attributions\": [\n        {\n          \"user_id\": \"U003\",\n          \"relation\": \"AUTHOR\",\n          \"evidence_id\": \"m:C_RP_GENERAL:1790896559.000113\"\n        }\n      ],\n      \"quote\": \"B uses nicer wording, but the information and coverage are identical.\",\n      \"quote_kind\": \"VERBATIM\",\n      \"material\": true\n    },\n    {\n      \"claim_id\": \"c3\",\n      \"kind\": \"THREAD_INSTRUCTION\",\n      \"text\": \"The team lead instructs the first thread to choose a tie for its example because cosmetic phrasing alone does not establish a meaningful quality difference, and says the exact user task should decide whether the difference is cosmetic.\",\n      \"evidence_ids\": [\"m:C_RP_GENERAL:1790896608.000226\"],\n      \"attributions\": [\n        {\n          \"user_id\": \"U001\",\n          \"relation\": \"AUTHOR\",\n          \"evidence_id\": \"m:C_RP_GENERAL:1790896608.000226\"\n        }\n      ],\n      \"quote\": \"For these two responses, cosmetic phrasing alone does not establish a meaningful quality difference; choose a tie for this example. The difference might be cosmetic; the exact user task should decide.\",\n      \"quote_kind\": \"VERBATIM\",\n      \"material\": true\n    },\n    {\n      \"claim_id\": \"c4\",\n      \"kind\": \"INCIDENT_FACT\",\n      \"text\": \"A tutor reports no major faults and a small difference in relevance, and asks whether to choose a tie or a preference.\",\n      \"evidence_ids\": [\"m:C_RP_GENERAL:1790931693.000046\"],\n      \"attributions\": [\n        {\n          \"user_id\": \"U012\",\n          \"relation\": \"AUTHOR\",\n          \"evidence_id\": \"m:C_RP_GENERAL:1790931693.000046\"\n        }\n      ],\n      \"quote\": \"Anyone else seeing this? No major faults, just a small difference in relevance. Tie or preference?\",\n      \"quote_kind\": \"VERBATIM\",\n      \"material\": true\n    },\n    {\n      \"claim_id\": \"c5\",\n      \"kind\": \"INCIDENT_FACT\",\n      \"text\": \"A QA tutor answers the second thread by recommending a tie for that example and explaining that cosmetic phrasing alone does not establish a meaningful quality difference.\",\n      \"evidence_ids\": [\"m:C_RP_GENERAL:1790931744.000113\"],\n      \"attributions\": [\n        {\n          \"user_id\": \"U008\",\n          \"relation\": \"AUTHOR\",\n          \"evidence_id\": \"m:C_RP_GENERAL:1790931744.000113\"\n        }\n      ],\n      \"quote\": \"For these two responses, cosmetic phrasing alone does not establish a meaningful quality difference; choose a tie for this example.\",\n      \"quote_kind\": \"VERBATIM\",\n      \"material\": true\n    },\n    {\n      \"claim_id\": \"c6\",\n      \"kind\": \"GUIDANCE\",\n      \"text\": \"Current project instructions say to choose a tie when neither response has a meaningful quality advantage, do not treat cosmetic phrasing alone as sufficient for a preference, and require an explanation of the user-facing benefit when selecting a response on a small difference.\",\n      \"evidence_ids\": [\"k:response-preference-instructions@1.1:176ce67d\"],\n      \"attributions\": [],\n      \"quote\": \"Choose a tie when neither response has a meaningful quality advantage. Cosmetic phrasing alone does not justify a preference. Explain the user-facing benefit when selecting a response on a small difference.\",\n      \"quote_kind\": \"VERBATIM\",\n      \"material\": true\n    },\n    {\n      \"claim_id\": \"c7\",\n      \"kind\": \"GUIDANCE\",\n      \"text\": \"The current FAQ requires a meaningful benefit to the user, says cosmetic phrasing alone usually does not provide one, and warns against generalizing an answer to one pair without matching its scope.\",\n      \"evidence_ids\": [\"k:response-preference-faq@1.1:4683724f\"],\n      \"attributions\": [],\n      \"quote\": null,\n      \"quote_kind\": \"PARAPHRASE\",\n      \"material\": true\n    },\n    {\n      \"claim_id\": \"c8\",\n      \"kind\": \"HISTORY\",\n      \"text\": \"The earlier batch's calibration follow-up records improved agreement in the reviewed sample after discussion, with one sampled pair still showing different decisions; it is a prior record, not a standing rule.\",\n      \"evidence_ids\": [\"k:rp-tie-calibration-outcome@1.0:f678161f\"],\n      \"attributions\": [],\n      \"quote\": null,\n      \"quote_kind\": \"PARAPHRASE\",\n      \"material\": false\n    },\n    {\n      \"claim_id\": \"c9\",\n      \"kind\": \"SOURCE_FACT\",\n      \"text\": \"The earlier batch's announcement tells reviewers to identify a user-facing benefit when choosing a response and to bring both rationales for disputed pairs to its eight-pair calibration review; it says it does not create a new numerical threshold.\",\n      \"evidence_ids\": [\"k:rp-tie-calibration-post@1.0:4a3c786f\"],\n      \"attributions\": [],\n      \"quote\": null,\n      \"quote_kind\": \"PARAPHRASE\",\n      \"material\": false\n    }\n  ],\n  \"gaps\": [],\n  \"evidence_sufficiency\": \"SUFFICIENT\",\n  \"proposed_action\": {\n    \"action_type\": \"NO_ACTION\",\n    \"intervention_need\": null,\n    \"instruction\": \"Take no further action now; retain the pair-specific answers without extending either answer into a new general tie threshold.\",\n    \"rationale\": \"Both questions received answers in their own threads, and current guidance already provides the meaningful-benefit criterion. The messages show no remaining request or conflicting judgments requiring intervention.\",\n    \"draft_text\": null,\n    \"scope_note\": \"The thread answers apply to their respective examples; current project guidance remains the basis for judging other pairs.\",\n    \"support_claim_ids\": [\"c1\", \"c3\", \"c4\", \"c5\", \"c6\", \"c7\"],\n    \"targets\": [],\n    \"context_claim_ids\": [\"c2\", \"c8\", \"c9\"]\n  },\n  \"severity\": {\n    \"level\": \"LOW\",\n    \"rationale\": \"These are contained clarification questions with pair-specific answers. The messages do not report incorrect submitted labels, conflicting QA decisions, or an inability to continue work.\",\n    \"signals\": [],\n    \"affected_reporters\": [],\n    \"recurrence\": \"NOT_CHECKED\",\n    \"recurrence_evidence_ids\": [],\n    \"reported_recurrence_evidence_ids\": []\n  },\n  \"confidence\": 0.94,\n  \"open_confirmation\": \"NONE\",\n  \"open_question\": null,\n  \"open_question_evidence_ids\": [],\n  \"source_conflicts\": [],\n  \"announcement_assessments\": [\n    {\n      \"evidence_id\": \"k:rp-tie-calibration-post@1.0:4a3c786f\",\n      \"relevant\": false,\n      \"directive\": true,\n      \"directive_quote\": \"Bring both rationales for disputed pairs to the eight-pair calibration review.\",\n      \"rationale\": \"The announcement directs handling for the earlier batch's calibration review, not the current batch's threads, and is not used as current handling here.\"\n    }\n  ],\n  \"resolution\": [\n    {\n      \"member_id\": \"member_4ae1700632c4a55ae1a24a4d\",\n      \"state\": \"RESOLVED_IN_THREAD\",\n      \"evidence_ids\": [\n        \"m:C_RP_GENERAL:1790896509.000047\",\n        \"m:C_RP_GENERAL:1790896559.000113\",\n        \"m:C_RP_GENERAL:1790896608.000226\"\n      ],\n      \"basis\": \"The team lead answers the tutor's question for the example by instructing a tie and explaining the role of cosmetic phrasing and the exact user task.\"\n    },\n    {\n      \"member_id\": \"member_cbc21f1a0a95a7a98a8daec4\",\n      \"state\": \"RESOLVED_IN_THREAD\",\n      \"evidence_ids\": [\n        \"m:C_RP_GENERAL:1790931693.000046\",\n        \"m:C_RP_GENERAL:1790931744.000113\"\n      ],\n      \"basis\": \"The QA tutor directly answers the tutor's tie-or-preference question with a tie recommendation for that example; the thread contains no subsequent challenge or unanswered follow-up.\"\n    }\n  ],\n  \"coverage\": [\n    {\n      \"need\": \"CURRENT_GUIDANCE\",\n      \"status\": \"COVERED\",\n      \"evidence_ids\": [\n        \"k:response-preference-instructions@1.1:176ce67d\",\n        \"k:response-preference-faq@1.1:4683724f\"\n      ],\n      \"note\": \"Current project-wide instructions and the FAQ explain meaningful benefit, cosmetic phrasing, and the limits of applying one pair's answer elsewhere.\",\n      \"gap_id\": null\n    },\n    {\n      \"need\": \"ANNOUNCEMENTS\",\n      \"status\": \"COVERED\",\n      \"evidence_ids\": [\"k:rp-tie-calibration-post@1.0:4a3c786f\"],\n      \"note\": \"The retrieved announcement concerns the earlier batch and is assessed as outside the current batch's handling scope.\",\n      \"gap_id\": null\n    },\n    {\n      \"need\": \"PRIOR_DECISIONS\",\n      \"status\": \"COVERED\",\n      \"evidence_ids\": [\n        \"k:rp-tie-calibration-post@1.0:4a3c786f\",\n        \"k:rp-tie-calibration-outcome@1.0:f678161f\"\n      ],\n      \"note\": \"The earlier calibration announcement and follow-up show the prior review and its sample outcome; neither is treated as a new standing rule.\",\n      \"gap_id\": null\n    },\n    {\n      \"need\": \"MEMBER_QUESTIONS\",\n      \"status\": \"COVERED\",\n      \"evidence_ids\": [\n        \"m:C_RP_GENERAL:1790896509.000047\",\n        \"m:C_RP_GENERAL:1790896559.000113\",\n        \"m:C_RP_GENERAL:1790896608.000226\",\n        \"m:C_RP_GENERAL:1790931693.000046\",\n        \"m:C_RP_GENERAL:1790931744.000113\"\n      ],\n      \"note\": \"Both tutors' questions and the answers in their respective threads are present; neither question requests a review of an earlier workaround.\",\n      \"gap_id\": null\n    }\n  ],\n  \"review_note\": null,\n  \"action_choice\": null\n}",
+        "raw_sha256": "cc72711f092bae6d302dda1ad55ccc7faa5830cc15cbf965481908ad5d8e5dac",
+        "http_requests": {
+          "sent": 1,
+          "blocked": 0,
+          "hosts": [
+            "api.openai.com"
+          ],
+          "responses": [
+            {
+              "status_code": 200,
+              "seconds": 40.035,
+              "model": "gpt-6.1-sol",
+              "usage": {
+                "prompt_tokens": 11942,
+                "completion_tokens": 3353,
+                "total_tokens": 15295,
+                "prompt_tokens_details": {
+                  "cached_tokens": 0,
+                  "cache_write_tokens": 11939,
+                  "audio_tokens": 0
+                },
+                "completion_tokens_details": {
+                  "reasoning_tokens": 354,
+                  "audio_tokens": 0,
+                  "accepted_prediction_tokens": 0,
+                  "rejected_prediction_tokens": 0
+                }
+              },
+              "finish_reasons": [
+                "stop"
+              ]
+            }
+          ],
+          "input_tokens": 11948,
+          "refused": null,
+          "charged_usd": 0.05741400000000001
+        },
+        "input_tokens_estimate": 11948,
+        "status": "OK"
+      },
+      {
+        "stage": "grounding",
+        "schema": "GroundingJudgment",
+        "raw": "{\n  \"contract_version\": \"agent3-grounding-judgment-v5\",\n  \"verdicts\": [\n    {\n      \"statement_id\": \"claim:c1\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The cited tutor asks exactly the quoted question; authorship and role match.\"\n    },\n    {\n      \"statement_id\": \"claim:c2\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The cited tutor reports nicer wording with identical information and coverage. The quote and attribution match.\"\n    },\n    {\n      \"statement_id\": \"claim:c3\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The team lead gives the quoted instruction in the first thread, explicitly limiting the tie decision to this example and referring to the exact user task.\"\n    },\n    {\n      \"statement_id\": \"claim:c4\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The tutor reports no major faults and a small relevance difference, then asks whether to choose a tie or preference. The quote matches.\"\n    },\n    {\n      \"statement_id\": \"claim:c5\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The QA tutor gives the quoted pair-specific tie recommendation and explanation. The statement correctly describes a member response rather than project-wide authority.\"\n    },\n    {\n      \"statement_id\": \"claim:c6\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The current project-wide instructions state all three requirements, and the quotation matches exactly.\"\n    },\n    {\n      \"statement_id\": \"claim:c7\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The current FAQ states the meaningful-user-benefit criterion, qualifies cosmetic phrasing with 'usually,' and cautions against generalizing a pair-specific answer without matching scope.\"\n    },\n    {\n      \"statement_id\": \"claim:c8\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The earlier-batch prior record shows agreement improving from two to seven of eight sampled pairs, with one disagreement remaining. It explicitly disclaims standing-rule status.\"\n    },\n    {\n      \"statement_id\": \"claim:c9\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The batch 14 announcement contains these directions and expressly disclaims a new numerical threshold. The statement describes that earlier announcement without applying its review arrangements to the current batch.\"\n    },\n    {\n      \"statement_id\": \"summary:s1\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"Two distinct tutors ask about the threshold between a tie and a preference; the second explicitly describes a small difference.\"\n    },\n    {\n      \"statement_id\": \"summary:s2\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The team lead and QA tutor each recommend a tie for their respective specific example. Neither message establishes a general threshold.\"\n    },\n    {\n      \"statement_id\": \"detail:d1\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The cited tutor's message directly reports nicer wording but identical information and coverage in the first thread.\"\n    },\n    {\n      \"statement_id\": \"detail:d2\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The second thread contains precisely this relevance report and a QA response framed in terms of cosmetic phrasing. The statement does not equate relevance with cosmetic phrasing.\"\n    },\n    {\n      \"statement_id\": \"detail:d3\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The current instructions require a meaningful quality advantage to avoid a tie and an explanation of user-facing benefit for a preference based on a small difference.\"\n    },\n    {\n      \"statement_id\": \"detail:d4\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The follow-up table demonstrates improved agreement in the earlier batch's reviewed sample, and its status explicitly excludes standing-rule authority.\"\n    },\n    {\n      \"statement_id\": \"action:no_action\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"Both complete threads contain direct pair-specific answers, with no subsequent challenge or unanswered follow-up. Current guidance supplies the general criterion, and the context contains no applicable pending decision, conflicting judgments, or open review obligation requiring coordination.\"\n    },\n    {\n      \"statement_id\": \"resolution:member_4ae1700632c4a55ae1a24a4d\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The team lead answers the example with an explicit tie instruction and explains cosmetic phrasing and task specificity. The complete thread contains no outstanding follow-up.\"\n    },\n    {\n      \"statement_id\": \"resolution:member_cbc21f1a0a95a7a98a8daec4\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The QA tutor directly recommends a tie for the example. No later challenge or unanswered question appears, and the team lead reacts in agreement.\"\n    },\n    {\n      \"statement_id\": \"severity:rationale\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The threads show contained clarification questions with example-specific answers, not reported submission errors, conflicting QA decisions, or blocked work.\"\n    }\n  ],\n  \"action_sufficiency\": null,\n  \"alternative_sufficiency\": [],\n  \"source_consistency\": {\n    \"assessed_evidence_ids\": [\n      \"k:response-preference-faq@1.1:4683724f\",\n      \"k:response-preference-instructions@1.1:176ce67d\",\n      \"k:response-preference-faq@1.1:fa9b6a3d\"\n    ],\n    \"relations\": [\n      {\n        \"evidence_ids\": [\n          \"k:response-preference-faq@1.1:4683724f\",\n          \"k:response-preference-instructions@1.1:176ce67d\"\n        ],\n        \"relation\": \"AGREE\",\n        \"point\": \"A preference requires a meaningful user-facing quality benefit; cosmetic wording alone is insufficient.\",\n        \"disagreement_scope\": null,\n        \"rationale\": \"Both sources use meaningful benefit as the criterion and require explaining that benefit. The FAQ's 'usually' wording does not establish an exception allowing preference solely for cosmetic phrasing. The instruction-following FAQ addresses a separate issue. The batch 14 announcement is not governing handling for batch 15 and is excluded from the comparison.\"\n      }\n    ],\n    \"declared_conflict_checks\": []\n  }\n}",
+        "raw_sha256": "0feb877cd85a836f6aac96f84f08cb94bb5d8ed8c384b5d30a5e3954bad91db9",
+        "http_requests": {
+          "sent": 1,
+          "blocked": 0,
+          "hosts": [
+            "api.openai.com"
+          ],
+          "responses": [
+            {
+              "status_code": 200,
+              "seconds": 19.817,
+              "model": "gpt-6.1-sol",
+              "usage": {
+                "prompt_tokens": 8888,
+                "completion_tokens": 1484,
+                "total_tokens": 10372,
+                "prompt_tokens_details": {
+                  "cached_tokens": 0,
+                  "cache_write_tokens": 8885,
+                  "audio_tokens": 0
+                },
+                "completion_tokens_details": {
+                  "reasoning_tokens": 109,
+                  "audio_tokens": 0,
+                  "accepted_prediction_tokens": 0,
+                  "rejected_prediction_tokens": 0
+                }
+              },
+              "finish_reasons": [
+                "stop"
+              ]
+            }
+          ],
+          "input_tokens": 8894,
+          "refused": null,
+          "charged_usd": 0.032616
+        },
+        "input_tokens_estimate": 8894,
+        "status": "OK"
+      }
+    ],
+    "agent1_context": [
+      {
+        "sha256": "894b948ff56959d27d4d405607ca5141acbc9987a76b908c9ec5903aac671a5d",
+        "content": [
+          {
+            "member_id": "member_4ae1700632c4a55ae1a24a4d",
+            "thread_id": "1790896509.000047",
+            "summary": "Rina asks how much improvement is needed to avoid a tie in responses. Jordan notes that while one response uses nicer wording, the information and coverage are identical. Alex, a team lead, concludes that cosmetic phrasing does not create a meaningful quality difference and advises to choose a tie for this example, indicating that the user task should determine the difference.",
+            "central_question": "How much improvement do we need to avoid a tie?",
+            "attributed_agent1_resolution": {
+              "state": "RESOLVED_IN_THREAD",
+              "rationale": "Alex's response provides a clear conclusion that cosmetic differences do not warrant a decision against a tie, thus fully addressing Rina's question about improvement needed to avoid a tie.",
+              "agent1_verification_status": "VERIFIED",
+              "note": "Agent 1 label, not evidence; NEEDS_REVIEW means Agent 1 did not verify it. Assess resolution from the member messages."
+            },
+            "agent1_review_required": false,
+            "agent1_review_reason": "",
+            "note": "Agent 1 interpretation, not source evidence; cite member messages for incident facts."
+          },
+          {
+            "member_id": "member_cbc21f1a0a95a7a98a8daec4",
+            "thread_id": "1790931693.000046",
+            "summary": "Sam raises a question about observing a small difference in relevance between two responses and asks whether to consider it a tie or if there is a preference. Hana responds that the cosmetic phrasing does not indicate a meaningful quality difference and suggests choosing a tie for this example.",
+            "central_question": "For these two responses, should we consider it a tie or is there a preference?",
+            "attributed_agent1_resolution": {
+              "state": "RESOLVED_IN_THREAD",
+              "rationale": "Hana's response provides a clear conclusion that the difference is not significant enough to warrant a preference, thus resolving the question posed by Sam.",
+              "agent1_verification_status": "VERIFIED",
+              "note": "Agent 1 label, not evidence; NEEDS_REVIEW means Agent 1 did not verify it. Assess resolution from the member messages."
+            },
+            "agent1_review_required": false,
+            "agent1_review_reason": "",
+            "note": "Agent 1 interpretation, not source evidence; cite member messages for incident facts."
+          }
+        ]
+      }
+    ],
+    "drafts": {
+      "initial": {
+        "contract_version": "agent3-advisor-draft-v11",
+        "summary": "Two tutors ask when small differences justify a preference rather than a tie. The team lead answers one example and a QA tutor answers the other; both recommend a tie for the specific pair, rather than establishing a general threshold.",
+        "summary_sentences": [
+          {
+            "text": "Two tutors ask when small differences justify a preference rather than a tie.",
+            "support_claim_ids": [
+              "c1",
+              "c4"
+            ],
+            "depends_on": []
+          },
+          {
+            "text": "The team lead answers one example and a QA tutor answers the other; both recommend a tie for the specific pair, rather than establishing a general threshold.",
+            "support_claim_ids": [
+              "c3",
+              "c5"
+            ],
+            "depends_on": [
+              1
+            ]
+          }
+        ],
+        "detail_sentences": [
+          {
+            "text": "In the first thread, a tutor reports nicer wording in one response but identical information and coverage.",
+            "support_claim_ids": [
+              "c2"
+            ],
+            "depends_on": [],
+            "summary_depends_on": []
+          },
+          {
+            "text": "In the second thread, a tutor reports a small difference in relevance with no major faults; a QA tutor answers in terms of cosmetic phrasing.",
+            "support_claim_ids": [
+              "c4",
+              "c5"
+            ],
+            "depends_on": [],
+            "summary_depends_on": []
+          },
+          {
+            "text": "Current instructions require a meaningful quality advantage and an explanation of the user-facing benefit when choosing a response on a small difference.",
+            "support_claim_ids": [
+              "c6"
+            ],
+            "depends_on": [],
+            "summary_depends_on": []
+          },
+          {
+            "text": "An earlier batch's calibration follow-up records improved agreement on the reviewed sample, not a standing rule for this batch.",
+            "support_claim_ids": [
+              "c8"
+            ],
+            "depends_on": [],
+            "summary_depends_on": []
+          }
+        ],
+        "reasoning": "Both handling questions received pair-specific answers in their own threads. The difference between the second tutor's relevance wording and the QA tutor's cosmetic-phrasing explanation does not establish an unanswered question or conflicting judgments. Current instructions and the FAQ already explain the criterion and warn against generalizing from one pair. The earlier calibration records concern another batch and do not establish a new rule here. No further research is needed to support taking no additional action now.",
+        "claims": [
+          {
+            "claim_id": "c1",
+            "kind": "INCIDENT_FACT",
+            "text": "A tutor asks how much improvement is needed to avoid a tie.",
+            "evidence_ids": [
+              "m:C_RP_GENERAL:1790896509.000047"
+            ],
+            "attributions": [
+              {
+                "user_id": "U011",
+                "relation": "AUTHOR",
+                "evidence_id": "m:C_RP_GENERAL:1790896509.000047"
+              }
+            ],
+            "quote": "How much improvement do we need to avoid a tie?",
+            "quote_kind": "VERBATIM",
+            "material": true
+          },
+          {
+            "claim_id": "c2",
+            "kind": "INCIDENT_FACT",
+            "text": "A tutor reports that one response uses nicer wording while its information and coverage are identical to the other response.",
+            "evidence_ids": [
+              "m:C_RP_GENERAL:1790896559.000113"
+            ],
+            "attributions": [
+              {
+                "user_id": "U003",
+                "relation": "AUTHOR",
+                "evidence_id": "m:C_RP_GENERAL:1790896559.000113"
+              }
+            ],
+            "quote": "B uses nicer wording, but the information and coverage are identical.",
+            "quote_kind": "VERBATIM",
+            "material": true
+          },
+          {
+            "claim_id": "c3",
+            "kind": "THREAD_INSTRUCTION",
+            "text": "The team lead instructs the first thread to choose a tie for its example because cosmetic phrasing alone does not establish a meaningful quality difference, and says the exact user task should decide whether the difference is cosmetic.",
+            "evidence_ids": [
+              "m:C_RP_GENERAL:1790896608.000226"
+            ],
+            "attributions": [
+              {
+                "user_id": "U001",
+                "relation": "AUTHOR",
+                "evidence_id": "m:C_RP_GENERAL:1790896608.000226"
+              }
+            ],
+            "quote": "For these two responses, cosmetic phrasing alone does not establish a meaningful quality difference; choose a tie for this example. The difference might be cosmetic; the exact user task should decide.",
+            "quote_kind": "VERBATIM",
+            "material": true
+          },
+          {
+            "claim_id": "c4",
+            "kind": "INCIDENT_FACT",
+            "text": "A tutor reports no major faults and a small difference in relevance, and asks whether to choose a tie or a preference.",
+            "evidence_ids": [
+              "m:C_RP_GENERAL:1790931693.000046"
+            ],
+            "attributions": [
+              {
+                "user_id": "U012",
+                "relation": "AUTHOR",
+                "evidence_id": "m:C_RP_GENERAL:1790931693.000046"
+              }
+            ],
+            "quote": "Anyone else seeing this? No major faults, just a small difference in relevance. Tie or preference?",
+            "quote_kind": "VERBATIM",
+            "material": true
+          },
+          {
+            "claim_id": "c5",
+            "kind": "INCIDENT_FACT",
+            "text": "A QA tutor answers the second thread by recommending a tie for that example and explaining that cosmetic phrasing alone does not establish a meaningful quality difference.",
+            "evidence_ids": [
+              "m:C_RP_GENERAL:1790931744.000113"
+            ],
+            "attributions": [
+              {
+                "user_id": "U008",
+                "relation": "AUTHOR",
+                "evidence_id": "m:C_RP_GENERAL:1790931744.000113"
+              }
+            ],
+            "quote": "For these two responses, cosmetic phrasing alone does not establish a meaningful quality difference; choose a tie for this example.",
+            "quote_kind": "VERBATIM",
+            "material": true
+          },
+          {
+            "claim_id": "c6",
+            "kind": "GUIDANCE",
+            "text": "Current project instructions say to choose a tie when neither response has a meaningful quality advantage, do not treat cosmetic phrasing alone as sufficient for a preference, and require an explanation of the user-facing benefit when selecting a response on a small difference.",
+            "evidence_ids": [
+              "k:response-preference-instructions@1.1:176ce67d"
+            ],
+            "attributions": [],
+            "quote": "Choose a tie when neither response has a meaningful quality advantage. Cosmetic phrasing alone does not justify a preference. Explain the user-facing benefit when selecting a response on a small difference.",
+            "quote_kind": "VERBATIM",
+            "material": true
+          },
+          {
+            "claim_id": "c7",
+            "kind": "GUIDANCE",
+            "text": "The current FAQ requires a meaningful benefit to the user, says cosmetic phrasing alone usually does not provide one, and warns against generalizing an answer to one pair without matching its scope.",
+            "evidence_ids": [
+              "k:response-preference-faq@1.1:4683724f"
+            ],
+            "attributions": [],
+            "quote": null,
+            "quote_kind": "PARAPHRASE",
+            "material": true
+          },
+          {
+            "claim_id": "c8",
+            "kind": "HISTORY",
+            "text": "The earlier batch's calibration follow-up records improved agreement in the reviewed sample after discussion, with one sampled pair still showing different decisions; it is a prior record, not a standing rule.",
+            "evidence_ids": [
+              "k:rp-tie-calibration-outcome@1.0:f678161f"
+            ],
+            "attributions": [],
+            "quote": null,
+            "quote_kind": "PARAPHRASE",
+            "material": false
+          },
+          {
+            "claim_id": "c9",
+            "kind": "SOURCE_FACT",
+            "text": "The earlier batch's announcement tells reviewers to identify a user-facing benefit when choosing a response and to bring both rationales for disputed pairs to its eight-pair calibration review; it says it does not create a new numerical threshold.",
+            "evidence_ids": [
+              "k:rp-tie-calibration-post@1.0:4a3c786f"
+            ],
+            "attributions": [],
+            "quote": null,
+            "quote_kind": "PARAPHRASE",
+            "material": false
+          }
+        ],
+        "gaps": [],
+        "evidence_sufficiency": "SUFFICIENT",
+        "proposed_action": {
+          "action_type": "NO_ACTION",
+          "intervention_need": null,
+          "instruction": "Take no further action now; retain the pair-specific answers without extending either answer into a new general tie threshold.",
+          "rationale": "Both questions received answers in their own threads, and current guidance already provides the meaningful-benefit criterion. The messages show no remaining request or conflicting judgments requiring intervention.",
+          "draft_text": null,
+          "scope_note": "The thread answers apply to their respective examples; current project guidance remains the basis for judging other pairs.",
+          "support_claim_ids": [
+            "c1",
+            "c3",
+            "c4",
+            "c5",
+            "c6",
+            "c7"
+          ],
+          "targets": [],
+          "context_claim_ids": [
+            "c2",
+            "c8",
+            "c9"
+          ]
+        },
+        "severity": {
+          "level": "LOW",
+          "rationale": "These are contained clarification questions with pair-specific answers. The messages do not report incorrect submitted labels, conflicting QA decisions, or an inability to continue work.",
+          "signals": [],
+          "affected_reporters": [],
+          "recurrence": "NOT_CHECKED",
+          "recurrence_evidence_ids": [],
+          "reported_recurrence_evidence_ids": []
+        },
+        "confidence": 0.94,
+        "open_confirmation": "NONE",
+        "open_question": null,
+        "open_question_evidence_ids": [],
+        "source_conflicts": [],
+        "announcement_assessments": [
+          {
+            "evidence_id": "k:rp-tie-calibration-post@1.0:4a3c786f",
+            "relevant": false,
+            "directive": true,
+            "directive_quote": "Bring both rationales for disputed pairs to the eight-pair calibration review.",
+            "rationale": "The announcement directs handling for the earlier batch's calibration review, not the current batch's threads, and is not used as current handling here."
+          }
+        ],
+        "resolution": [
+          {
+            "member_id": "member_4ae1700632c4a55ae1a24a4d",
+            "state": "RESOLVED_IN_THREAD",
+            "evidence_ids": [
+              "m:C_RP_GENERAL:1790896509.000047",
+              "m:C_RP_GENERAL:1790896559.000113",
+              "m:C_RP_GENERAL:1790896608.000226"
+            ],
+            "basis": "The team lead answers the tutor's question for the example by instructing a tie and explaining the role of cosmetic phrasing and the exact user task."
+          },
+          {
+            "member_id": "member_cbc21f1a0a95a7a98a8daec4",
+            "state": "RESOLVED_IN_THREAD",
+            "evidence_ids": [
+              "m:C_RP_GENERAL:1790931693.000046",
+              "m:C_RP_GENERAL:1790931744.000113"
+            ],
+            "basis": "The QA tutor directly answers the tutor's tie-or-preference question with a tie recommendation for that example; the thread contains no subsequent challenge or unanswered follow-up."
+          }
+        ],
+        "coverage": [
+          {
+            "need": "CURRENT_GUIDANCE",
+            "status": "COVERED",
+            "evidence_ids": [
+              "k:response-preference-instructions@1.1:176ce67d",
+              "k:response-preference-faq@1.1:4683724f"
+            ],
+            "note": "Current project-wide instructions and the FAQ explain meaningful benefit, cosmetic phrasing, and the limits of applying one pair's answer elsewhere.",
+            "gap_id": null
+          },
+          {
+            "need": "ANNOUNCEMENTS",
+            "status": "COVERED",
+            "evidence_ids": [
+              "k:rp-tie-calibration-post@1.0:4a3c786f"
+            ],
+            "note": "The retrieved announcement concerns the earlier batch and is assessed as outside the current batch's handling scope.",
+            "gap_id": null
+          },
+          {
+            "need": "PRIOR_DECISIONS",
+            "status": "COVERED",
+            "evidence_ids": [
+              "k:rp-tie-calibration-post@1.0:4a3c786f",
+              "k:rp-tie-calibration-outcome@1.0:f678161f"
+            ],
+            "note": "The earlier calibration announcement and follow-up show the prior review and its sample outcome; neither is treated as a new standing rule.",
+            "gap_id": null
+          },
+          {
+            "need": "MEMBER_QUESTIONS",
+            "status": "COVERED",
+            "evidence_ids": [
+              "m:C_RP_GENERAL:1790896509.000047",
+              "m:C_RP_GENERAL:1790896559.000113",
+              "m:C_RP_GENERAL:1790896608.000226",
+              "m:C_RP_GENERAL:1790931693.000046",
+              "m:C_RP_GENERAL:1790931744.000113"
+            ],
+            "note": "Both tutors' questions and the answers in their respective threads are present; neither question requests a review of an earlier workaround.",
+            "gap_id": null
+          }
+        ],
+        "review_note": null,
+        "action_choice": null
+      },
+      "final": {
+        "contract_version": "agent3-advisor-draft-v11",
+        "summary": "Two tutors ask when small differences justify a preference rather than a tie. The team lead answers one example and a QA tutor answers the other; both recommend a tie for the specific pair, rather than establishing a general threshold.",
+        "summary_sentences": [
+          {
+            "text": "Two tutors ask when small differences justify a preference rather than a tie.",
+            "support_claim_ids": [
+              "c1",
+              "c4"
+            ],
+            "depends_on": []
+          },
+          {
+            "text": "The team lead answers one example and a QA tutor answers the other; both recommend a tie for the specific pair, rather than establishing a general threshold.",
+            "support_claim_ids": [
+              "c3",
+              "c5"
+            ],
+            "depends_on": [
+              1
+            ]
+          }
+        ],
+        "detail_sentences": [
+          {
+            "text": "In the first thread, a tutor reports nicer wording in one response but identical information and coverage.",
+            "support_claim_ids": [
+              "c2"
+            ],
+            "depends_on": [],
+            "summary_depends_on": []
+          },
+          {
+            "text": "In the second thread, a tutor reports a small difference in relevance with no major faults; a QA tutor answers in terms of cosmetic phrasing.",
+            "support_claim_ids": [
+              "c4",
+              "c5"
+            ],
+            "depends_on": [],
+            "summary_depends_on": []
+          },
+          {
+            "text": "Current instructions require a meaningful quality advantage and an explanation of the user-facing benefit when choosing a response on a small difference.",
+            "support_claim_ids": [
+              "c6"
+            ],
+            "depends_on": [],
+            "summary_depends_on": []
+          },
+          {
+            "text": "An earlier batch's calibration follow-up records improved agreement on the reviewed sample, not a standing rule for this batch.",
+            "support_claim_ids": [
+              "c8"
+            ],
+            "depends_on": [],
+            "summary_depends_on": []
+          }
+        ],
+        "reasoning": "Both handling questions received pair-specific answers in their own threads. The difference between the second tutor's relevance wording and the QA tutor's cosmetic-phrasing explanation does not establish an unanswered question or conflicting judgments. Current instructions and the FAQ already explain the criterion and warn against generalizing from one pair. The earlier calibration records concern another batch and do not establish a new rule here. No further research is needed to support taking no additional action now.",
+        "claims": [
+          {
+            "claim_id": "c1",
+            "kind": "INCIDENT_FACT",
+            "text": "A tutor asks how much improvement is needed to avoid a tie.",
+            "evidence_ids": [
+              "m:C_RP_GENERAL:1790896509.000047"
+            ],
+            "attributions": [
+              {
+                "user_id": "U011",
+                "relation": "AUTHOR",
+                "evidence_id": "m:C_RP_GENERAL:1790896509.000047"
+              }
+            ],
+            "quote": "How much improvement do we need to avoid a tie?",
+            "quote_kind": "VERBATIM",
+            "material": true
+          },
+          {
+            "claim_id": "c2",
+            "kind": "INCIDENT_FACT",
+            "text": "A tutor reports that one response uses nicer wording while its information and coverage are identical to the other response.",
+            "evidence_ids": [
+              "m:C_RP_GENERAL:1790896559.000113"
+            ],
+            "attributions": [
+              {
+                "user_id": "U003",
+                "relation": "AUTHOR",
+                "evidence_id": "m:C_RP_GENERAL:1790896559.000113"
+              }
+            ],
+            "quote": "B uses nicer wording, but the information and coverage are identical.",
+            "quote_kind": "VERBATIM",
+            "material": true
+          },
+          {
+            "claim_id": "c3",
+            "kind": "THREAD_INSTRUCTION",
+            "text": "The team lead instructs the first thread to choose a tie for its example because cosmetic phrasing alone does not establish a meaningful quality difference, and says the exact user task should decide whether the difference is cosmetic.",
+            "evidence_ids": [
+              "m:C_RP_GENERAL:1790896608.000226"
+            ],
+            "attributions": [
+              {
+                "user_id": "U001",
+                "relation": "AUTHOR",
+                "evidence_id": "m:C_RP_GENERAL:1790896608.000226"
+              }
+            ],
+            "quote": "For these two responses, cosmetic phrasing alone does not establish a meaningful quality difference; choose a tie for this example. The difference might be cosmetic; the exact user task should decide.",
+            "quote_kind": "VERBATIM",
+            "material": true
+          },
+          {
+            "claim_id": "c4",
+            "kind": "INCIDENT_FACT",
+            "text": "A tutor reports no major faults and a small difference in relevance, and asks whether to choose a tie or a preference.",
+            "evidence_ids": [
+              "m:C_RP_GENERAL:1790931693.000046"
+            ],
+            "attributions": [
+              {
+                "user_id": "U012",
+                "relation": "AUTHOR",
+                "evidence_id": "m:C_RP_GENERAL:1790931693.000046"
+              }
+            ],
+            "quote": "Anyone else seeing this? No major faults, just a small difference in relevance. Tie or preference?",
+            "quote_kind": "VERBATIM",
+            "material": true
+          },
+          {
+            "claim_id": "c5",
+            "kind": "INCIDENT_FACT",
+            "text": "A QA tutor answers the second thread by recommending a tie for that example and explaining that cosmetic phrasing alone does not establish a meaningful quality difference.",
+            "evidence_ids": [
+              "m:C_RP_GENERAL:1790931744.000113"
+            ],
+            "attributions": [
+              {
+                "user_id": "U008",
+                "relation": "AUTHOR",
+                "evidence_id": "m:C_RP_GENERAL:1790931744.000113"
+              }
+            ],
+            "quote": "For these two responses, cosmetic phrasing alone does not establish a meaningful quality difference; choose a tie for this example.",
+            "quote_kind": "VERBATIM",
+            "material": true
+          },
+          {
+            "claim_id": "c6",
+            "kind": "GUIDANCE",
+            "text": "Current project instructions say to choose a tie when neither response has a meaningful quality advantage, do not treat cosmetic phrasing alone as sufficient for a preference, and require an explanation of the user-facing benefit when selecting a response on a small difference.",
+            "evidence_ids": [
+              "k:response-preference-instructions@1.1:176ce67d"
+            ],
+            "attributions": [],
+            "quote": "Choose a tie when neither response has a meaningful quality advantage. Cosmetic phrasing alone does not justify a preference. Explain the user-facing benefit when selecting a response on a small difference.",
+            "quote_kind": "VERBATIM",
+            "material": true
+          },
+          {
+            "claim_id": "c7",
+            "kind": "GUIDANCE",
+            "text": "The current FAQ requires a meaningful benefit to the user, says cosmetic phrasing alone usually does not provide one, and warns against generalizing an answer to one pair without matching its scope.",
+            "evidence_ids": [
+              "k:response-preference-faq@1.1:4683724f"
+            ],
+            "attributions": [],
+            "quote": null,
+            "quote_kind": "PARAPHRASE",
+            "material": true
+          },
+          {
+            "claim_id": "c8",
+            "kind": "HISTORY",
+            "text": "The earlier batch's calibration follow-up records improved agreement in the reviewed sample after discussion, with one sampled pair still showing different decisions; it is a prior record, not a standing rule.",
+            "evidence_ids": [
+              "k:rp-tie-calibration-outcome@1.0:f678161f"
+            ],
+            "attributions": [],
+            "quote": null,
+            "quote_kind": "PARAPHRASE",
+            "material": false
+          },
+          {
+            "claim_id": "c9",
+            "kind": "SOURCE_FACT",
+            "text": "The earlier batch's announcement tells reviewers to identify a user-facing benefit when choosing a response and to bring both rationales for disputed pairs to its eight-pair calibration review; it says it does not create a new numerical threshold.",
+            "evidence_ids": [
+              "k:rp-tie-calibration-post@1.0:4a3c786f"
+            ],
+            "attributions": [],
+            "quote": null,
+            "quote_kind": "PARAPHRASE",
+            "material": false
+          }
+        ],
+        "gaps": [],
+        "evidence_sufficiency": "SUFFICIENT",
+        "proposed_action": {
+          "action_type": "NO_ACTION",
+          "intervention_need": null,
+          "instruction": "Take no further action now; retain the pair-specific answers without extending either answer into a new general tie threshold.",
+          "rationale": "Both questions received answers in their own threads, and current guidance already provides the meaningful-benefit criterion. The messages show no remaining request or conflicting judgments requiring intervention.",
+          "draft_text": null,
+          "scope_note": "The thread answers apply to their respective examples; current project guidance remains the basis for judging other pairs.",
+          "support_claim_ids": [
+            "c1",
+            "c3",
+            "c4",
+            "c5",
+            "c6",
+            "c7"
+          ],
+          "targets": [],
+          "context_claim_ids": [
+            "c2",
+            "c8",
+            "c9"
+          ]
+        },
+        "severity": {
+          "level": "LOW",
+          "rationale": "These are contained clarification questions with pair-specific answers. The messages do not report incorrect submitted labels, conflicting QA decisions, or an inability to continue work.",
+          "signals": [],
+          "affected_reporters": [],
+          "recurrence": "NOT_CHECKED",
+          "recurrence_evidence_ids": [],
+          "reported_recurrence_evidence_ids": []
+        },
+        "confidence": 0.94,
+        "open_confirmation": "NONE",
+        "open_question": null,
+        "open_question_evidence_ids": [],
+        "source_conflicts": [],
+        "announcement_assessments": [
+          {
+            "evidence_id": "k:rp-tie-calibration-post@1.0:4a3c786f",
+            "relevant": false,
+            "directive": true,
+            "directive_quote": "Bring both rationales for disputed pairs to the eight-pair calibration review.",
+            "rationale": "The announcement directs handling for the earlier batch's calibration review, not the current batch's threads, and is not used as current handling here."
+          }
+        ],
+        "resolution": [
+          {
+            "member_id": "member_4ae1700632c4a55ae1a24a4d",
+            "state": "RESOLVED_IN_THREAD",
+            "evidence_ids": [
+              "m:C_RP_GENERAL:1790896509.000047",
+              "m:C_RP_GENERAL:1790896559.000113",
+              "m:C_RP_GENERAL:1790896608.000226"
+            ],
+            "basis": "The team lead answers the tutor's question for the example by instructing a tie and explaining the role of cosmetic phrasing and the exact user task."
+          },
+          {
+            "member_id": "member_cbc21f1a0a95a7a98a8daec4",
+            "state": "RESOLVED_IN_THREAD",
+            "evidence_ids": [
+              "m:C_RP_GENERAL:1790931693.000046",
+              "m:C_RP_GENERAL:1790931744.000113"
+            ],
+            "basis": "The QA tutor directly answers the tutor's tie-or-preference question with a tie recommendation for that example; the thread contains no subsequent challenge or unanswered follow-up."
+          }
+        ],
+        "coverage": [
+          {
+            "need": "CURRENT_GUIDANCE",
+            "status": "COVERED",
+            "evidence_ids": [
+              "k:response-preference-instructions@1.1:176ce67d",
+              "k:response-preference-faq@1.1:4683724f"
+            ],
+            "note": "Current project-wide instructions and the FAQ explain meaningful benefit, cosmetic phrasing, and the limits of applying one pair's answer elsewhere.",
+            "gap_id": null
+          },
+          {
+            "need": "ANNOUNCEMENTS",
+            "status": "COVERED",
+            "evidence_ids": [
+              "k:rp-tie-calibration-post@1.0:4a3c786f"
+            ],
+            "note": "The retrieved announcement concerns the earlier batch and is assessed as outside the current batch's handling scope.",
+            "gap_id": null
+          },
+          {
+            "need": "PRIOR_DECISIONS",
+            "status": "COVERED",
+            "evidence_ids": [
+              "k:rp-tie-calibration-post@1.0:4a3c786f",
+              "k:rp-tie-calibration-outcome@1.0:f678161f"
+            ],
+            "note": "The earlier calibration announcement and follow-up show the prior review and its sample outcome; neither is treated as a new standing rule.",
+            "gap_id": null
+          },
+          {
+            "need": "MEMBER_QUESTIONS",
+            "status": "COVERED",
+            "evidence_ids": [
+              "m:C_RP_GENERAL:1790896509.000047",
+              "m:C_RP_GENERAL:1790896559.000113",
+              "m:C_RP_GENERAL:1790896608.000226",
+              "m:C_RP_GENERAL:1790931693.000046",
+              "m:C_RP_GENERAL:1790931744.000113"
+            ],
+            "note": "Both tutors' questions and the answers in their respective threads are present; neither question requests a review of an earlier workaround.",
+            "gap_id": null
+          }
+        ],
+        "review_note": null,
+        "action_choice": null
+      },
+      "revised": false
+    },
+    "grounding": {
+      "structural_issues": [],
+      "action_issues": [],
+      "unsupported": [],
+      "unjudged": [],
+      "extraneous_verdicts": [],
+      "rejected": {},
+      "pending": [],
+      "action_sufficiency": null,
+      "source_consistency": {
+        "assessed_evidence_ids": [
+          "k:response-preference-faq@1.1:4683724f",
+          "k:response-preference-instructions@1.1:176ce67d",
+          "k:response-preference-faq@1.1:fa9b6a3d"
+        ],
+        "relations": [
+          {
+            "evidence_ids": [
+              "k:response-preference-faq@1.1:4683724f",
+              "k:response-preference-instructions@1.1:176ce67d"
+            ],
+            "relation": "AGREE",
+            "point": "A preference requires a meaningful user-facing quality benefit; cosmetic wording alone is insufficient.",
+            "disagreement_scope": null,
+            "rationale": "Both sources use meaningful benefit as the criterion and require explaining that benefit. The FAQ's 'usually' wording does not establish an exception allowing preference solely for cosmetic phrasing. The instruction-following FAQ addresses a separate issue. The batch 14 announcement is not governing handling for batch 15 and is excluded from the comparison."
+          }
+        ],
+        "declared_conflict_checks": []
+      },
+      "alternative_sufficiency": {},
+      "status": "PASSED",
+      "basis": "SEMANTIC",
+      "statements": [
+        {
+          "statement_id": "claim:c1",
+          "kind": "CLAIM_INCIDENT_FACT",
+          "text": "A tutor asks how much improvement is needed to avoid a tie. Verbatim quote: \"How much improvement do we need to avoid a tie?\"",
+          "blocking": true,
+          "evidence_ids": [
+            "m:C_RP_GENERAL:1790896509.000047"
+          ],
+          "attributions": [
+            {
+              "user_id": "U011",
+              "relation": "AUTHOR",
+              "evidence_id": "m:C_RP_GENERAL:1790896509.000047",
+              "role": "TUTOR"
+            }
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "The cited tutor asks exactly the quoted question; authorship and role match."
+        },
+        {
+          "statement_id": "claim:c2",
+          "kind": "CLAIM_INCIDENT_FACT",
+          "text": "A tutor reports that one response uses nicer wording while its information and coverage are identical to the other response. Verbatim quote: \"B uses nicer wording, but the information and coverage are identical.\"",
+          "blocking": true,
+          "evidence_ids": [
+            "m:C_RP_GENERAL:1790896559.000113"
+          ],
+          "attributions": [
+            {
+              "user_id": "U003",
+              "relation": "AUTHOR",
+              "evidence_id": "m:C_RP_GENERAL:1790896559.000113",
+              "role": "TUTOR"
+            }
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "The cited tutor reports nicer wording with identical information and coverage. The quote and attribution match."
+        },
+        {
+          "statement_id": "claim:c3",
+          "kind": "CLAIM_THREAD_INSTRUCTION",
+          "text": "The team lead instructs the first thread to choose a tie for its example because cosmetic phrasing alone does not establish a meaningful quality difference, and says the exact user task should decide whether the difference is cosmetic. Verbatim quote: \"For these two responses, cosmetic phrasing alone does not establish a meaningful quality difference; choose a tie for this example. The difference might be cosmetic; the exact user task should decide.\"",
+          "blocking": true,
+          "evidence_ids": [
+            "m:C_RP_GENERAL:1790896608.000226"
+          ],
+          "attributions": [
+            {
+              "user_id": "U001",
+              "relation": "AUTHOR",
+              "evidence_id": "m:C_RP_GENERAL:1790896608.000226",
+              "role": "TEAM_LEAD"
+            }
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "The team lead gives the quoted instruction in the first thread, explicitly limiting the tie decision to this example and referring to the exact user task."
+        },
+        {
+          "statement_id": "claim:c4",
+          "kind": "CLAIM_INCIDENT_FACT",
+          "text": "A tutor reports no major faults and a small difference in relevance, and asks whether to choose a tie or a preference. Verbatim quote: \"Anyone else seeing this? No major faults, just a small difference in relevance. Tie or preference?\"",
+          "blocking": true,
+          "evidence_ids": [
+            "m:C_RP_GENERAL:1790931693.000046"
+          ],
+          "attributions": [
+            {
+              "user_id": "U012",
+              "relation": "AUTHOR",
+              "evidence_id": "m:C_RP_GENERAL:1790931693.000046",
+              "role": "TUTOR"
+            }
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "The tutor reports no major faults and a small relevance difference, then asks whether to choose a tie or preference. The quote matches."
+        },
+        {
+          "statement_id": "claim:c5",
+          "kind": "CLAIM_INCIDENT_FACT",
+          "text": "A QA tutor answers the second thread by recommending a tie for that example and explaining that cosmetic phrasing alone does not establish a meaningful quality difference. Verbatim quote: \"For these two responses, cosmetic phrasing alone does not establish a meaningful quality difference; choose a tie for this example.\"",
+          "blocking": true,
+          "evidence_ids": [
+            "m:C_RP_GENERAL:1790931744.000113"
+          ],
+          "attributions": [
+            {
+              "user_id": "U008",
+              "relation": "AUTHOR",
+              "evidence_id": "m:C_RP_GENERAL:1790931744.000113",
+              "role": "QA_TUTOR"
+            }
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "The QA tutor gives the quoted pair-specific tie recommendation and explanation. The statement correctly describes a member response rather than project-wide authority."
+        },
+        {
+          "statement_id": "claim:c6",
+          "kind": "CLAIM_GUIDANCE",
+          "text": "Current project instructions say to choose a tie when neither response has a meaningful quality advantage, do not treat cosmetic phrasing alone as sufficient for a preference, and require an explanation of the user-facing benefit when selecting a response on a small difference. Verbatim quote: \"Choose a tie when neither response has a meaningful quality advantage. Cosmetic phrasing alone does not justify a preference. Explain the user-facing benefit when selecting a response on a small difference.\"",
+          "blocking": true,
+          "evidence_ids": [
+            "k:response-preference-instructions@1.1:176ce67d"
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "The current project-wide instructions state all three requirements, and the quotation matches exactly."
+        },
+        {
+          "statement_id": "claim:c7",
+          "kind": "CLAIM_GUIDANCE",
+          "text": "The current FAQ requires a meaningful benefit to the user, says cosmetic phrasing alone usually does not provide one, and warns against generalizing an answer to one pair without matching its scope.",
+          "blocking": true,
+          "evidence_ids": [
+            "k:response-preference-faq@1.1:4683724f"
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "The current FAQ states the meaningful-user-benefit criterion, qualifies cosmetic phrasing with 'usually,' and cautions against generalizing a pair-specific answer without matching scope."
+        },
+        {
+          "statement_id": "claim:c8",
+          "kind": "CLAIM_HISTORY",
+          "text": "The earlier batch's calibration follow-up records improved agreement in the reviewed sample after discussion, with one sampled pair still showing different decisions; it is a prior record, not a standing rule.",
+          "blocking": false,
+          "evidence_ids": [
+            "k:rp-tie-calibration-outcome@1.0:f678161f"
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "The earlier-batch prior record shows agreement improving from two to seven of eight sampled pairs, with one disagreement remaining. It explicitly disclaims standing-rule status."
+        },
+        {
+          "statement_id": "claim:c9",
+          "kind": "CLAIM_SOURCE_FACT",
+          "text": "The earlier batch's announcement tells reviewers to identify a user-facing benefit when choosing a response and to bring both rationales for disputed pairs to its eight-pair calibration review; it says it does not create a new numerical threshold.",
+          "blocking": false,
+          "evidence_ids": [
+            "k:rp-tie-calibration-post@1.0:4a3c786f"
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "The batch 14 announcement contains these directions and expressly disclaims a new numerical threshold. The statement describes that earlier announcement without applying its review arrangements to the current batch."
+        },
+        {
+          "statement_id": "summary:s1",
+          "kind": "SUMMARY",
+          "text": "Two tutors ask when small differences justify a preference rather than a tie.",
+          "blocking": true,
+          "evidence_ids": [
+            "m:C_RP_GENERAL:1790896509.000047",
+            "m:C_RP_GENERAL:1790931693.000046"
+          ],
+          "attributions": [
+            {
+              "user_id": "U011",
+              "relation": "AUTHOR",
+              "evidence_id": "m:C_RP_GENERAL:1790896509.000047",
+              "role": "TUTOR"
+            },
+            {
+              "user_id": "U012",
+              "relation": "AUTHOR",
+              "evidence_id": "m:C_RP_GENERAL:1790931693.000046",
+              "role": "TUTOR"
+            }
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "Two distinct tutors ask about the threshold between a tie and a preference; the second explicitly describes a small difference."
+        },
+        {
+          "statement_id": "summary:s2",
+          "kind": "SUMMARY",
+          "text": "The team lead answers one example and a QA tutor answers the other; both recommend a tie for the specific pair, rather than establishing a general threshold.",
+          "blocking": true,
+          "evidence_ids": [
+            "m:C_RP_GENERAL:1790896608.000226",
+            "m:C_RP_GENERAL:1790931744.000113"
+          ],
+          "attributions": [
+            {
+              "user_id": "U001",
+              "relation": "AUTHOR",
+              "evidence_id": "m:C_RP_GENERAL:1790896608.000226",
+              "role": "TEAM_LEAD"
+            },
+            {
+              "user_id": "U008",
+              "relation": "AUTHOR",
+              "evidence_id": "m:C_RP_GENERAL:1790931744.000113",
+              "role": "QA_TUTOR"
+            }
+          ],
+          "depends_on": [
+            "summary:s1"
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "The team lead and QA tutor each recommend a tie for their respective specific example. Neither message establishes a general threshold."
+        },
+        {
+          "statement_id": "detail:d1",
+          "kind": "DETAIL",
+          "text": "In the first thread, a tutor reports nicer wording in one response but identical information and coverage.",
+          "blocking": false,
+          "evidence_ids": [
+            "m:C_RP_GENERAL:1790896559.000113"
+          ],
+          "attributions": [
+            {
+              "user_id": "U003",
+              "relation": "AUTHOR",
+              "evidence_id": "m:C_RP_GENERAL:1790896559.000113",
+              "role": "TUTOR"
+            }
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "The cited tutor's message directly reports nicer wording but identical information and coverage in the first thread."
+        },
+        {
+          "statement_id": "detail:d2",
+          "kind": "DETAIL",
+          "text": "In the second thread, a tutor reports a small difference in relevance with no major faults; a QA tutor answers in terms of cosmetic phrasing.",
+          "blocking": false,
+          "evidence_ids": [
+            "m:C_RP_GENERAL:1790931693.000046",
+            "m:C_RP_GENERAL:1790931744.000113"
+          ],
+          "attributions": [
+            {
+              "user_id": "U012",
+              "relation": "AUTHOR",
+              "evidence_id": "m:C_RP_GENERAL:1790931693.000046",
+              "role": "TUTOR"
+            },
+            {
+              "user_id": "U008",
+              "relation": "AUTHOR",
+              "evidence_id": "m:C_RP_GENERAL:1790931744.000113",
+              "role": "QA_TUTOR"
+            }
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "The second thread contains precisely this relevance report and a QA response framed in terms of cosmetic phrasing. The statement does not equate relevance with cosmetic phrasing."
+        },
+        {
+          "statement_id": "detail:d3",
+          "kind": "DETAIL",
+          "text": "Current instructions require a meaningful quality advantage and an explanation of the user-facing benefit when choosing a response on a small difference.",
+          "blocking": false,
+          "evidence_ids": [
+            "k:response-preference-instructions@1.1:176ce67d"
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "The current instructions require a meaningful quality advantage to avoid a tie and an explanation of user-facing benefit for a preference based on a small difference."
+        },
+        {
+          "statement_id": "detail:d4",
+          "kind": "DETAIL",
+          "text": "An earlier batch's calibration follow-up records improved agreement on the reviewed sample, not a standing rule for this batch.",
+          "blocking": false,
+          "evidence_ids": [
+            "k:rp-tie-calibration-outcome@1.0:f678161f"
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "The follow-up table demonstrates improved agreement in the earlier batch's reviewed sample, and its status explicitly excludes standing-rule authority."
+        },
+        {
+          "statement_id": "action:no_action",
+          "kind": "NO_ACTION_RATIONALE",
+          "text": "Why no further action is needed now: Both questions received answers in their own threads, and current guidance already provides the meaningful-benefit criterion. The messages show no remaining request or conflicting judgments requiring intervention.",
+          "blocking": false,
+          "evidence_ids": [
+            "m:C_RP_GENERAL:1790896509.000047",
+            "m:C_RP_GENERAL:1790896608.000226",
+            "m:C_RP_GENERAL:1790931693.000046",
+            "m:C_RP_GENERAL:1790931744.000113",
+            "k:response-preference-instructions@1.1:176ce67d",
+            "k:response-preference-faq@1.1:4683724f",
+            "m:C_RP_GENERAL:1790896559.000113",
+            "k:rp-tie-calibration-outcome@1.0:f678161f",
+            "k:rp-tie-calibration-post@1.0:4a3c786f"
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "Both complete threads contain direct pair-specific answers, with no subsequent challenge or unanswered follow-up. Current guidance supplies the general criterion, and the context contains no applicable pending decision, conflicting judgments, or open review obligation requiring coordination."
+        },
+        {
+          "statement_id": "resolution:member_4ae1700632c4a55ae1a24a4d",
+          "kind": "RESOLUTION",
+          "text": "Member thread member_4ae1700632c4a55ae1a24a4d is RESOLVED_IN_THREAD: The team lead answers the tutor's question for the example by instructing a tie and explaining the role of cosmetic phrasing and the exact user task.",
+          "blocking": true,
+          "evidence_ids": [
+            "m:C_RP_GENERAL:1790896509.000047",
+            "m:C_RP_GENERAL:1790896559.000113",
+            "m:C_RP_GENERAL:1790896608.000226"
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "The team lead answers the example with an explicit tie instruction and explains cosmetic phrasing and task specificity. The complete thread contains no outstanding follow-up."
+        },
+        {
+          "statement_id": "resolution:member_cbc21f1a0a95a7a98a8daec4",
+          "kind": "RESOLUTION",
+          "text": "Member thread member_cbc21f1a0a95a7a98a8daec4 is RESOLVED_IN_THREAD: The QA tutor directly answers the tutor's tie-or-preference question with a tie recommendation for that example; the thread contains no subsequent challenge or unanswered follow-up.",
+          "blocking": true,
+          "evidence_ids": [
+            "m:C_RP_GENERAL:1790931693.000046",
+            "m:C_RP_GENERAL:1790931744.000113"
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "The QA tutor directly recommends a tie for the example. No later challenge or unanswered question appears, and the team lead reacts in agreement."
+        },
+        {
+          "statement_id": "severity:rationale",
+          "kind": "SEVERITY_RATIONALE",
+          "text": "Severity LOW: These are contained clarification questions with pair-specific answers. The messages do not report incorrect submitted labels, conflicting QA decisions, or an inability to continue work.",
+          "blocking": true,
+          "evidence_ids": [
+            "m:C_RP_GENERAL:1790896509.000047",
+            "m:C_RP_GENERAL:1790896559.000113",
+            "m:C_RP_GENERAL:1790931693.000046",
+            "m:C_RP_GENERAL:1790931744.000113"
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "The threads show contained clarification questions with example-specific answers, not reported submission errors, conflicting QA decisions, or blocked work."
+        }
+      ]
+    },
+    "temporal": {
+      "status": "NONE_FOUND",
+      "findings": [],
+      "source_consistency": "ASSESSED",
+      "ignored_revision_states": "NOT_YET_EFFECTIVE and NOT_APPROVED revisions never compete with applicable guidance."
+    },
+    "temporal_before_grounding": {
+      "status": "NONE_FOUND",
+      "findings": [],
+      "source_consistency": "NOT_ASSESSED",
+      "ignored_revision_states": "NOT_YET_EFFECTIVE and NOT_APPROVED revisions never compete with applicable guidance."
+    },
+    "severity": {
+      "assessment": {
+        "level": "LOW",
+        "assessment_status": "ASSESSED",
+        "rubric_version": "severity-rubric-v3-semantic-signals",
+        "rubric_content_sha256": "eccaa31a2ab84a0aa7c005216a92fc39681e1dd10107117344948235a76673f4",
+        "rubric_project_id": null,
+        "rubric_scope": "SHARED_DEFAULT",
+        "rationale": "These are contained clarification questions with pair-specific answers. The messages do not report incorrect submitted labels, conflicting QA decisions, or an inability to continue work.",
+        "matched_signals": [],
+        "evidence": [],
+        "occurrence": {
+          "affected_reporters": {
+            "status": "UNKNOWN",
+            "count": null,
+            "ids": [],
+            "basis": null,
+            "evidence": []
+          },
+          "affected_tasks": {
+            "status": "UNKNOWN",
+            "count": null,
+            "ids": [],
+            "basis": null,
+            "evidence": []
+          },
+          "relevant_threads": [
+            {
+              "project_id": "response_preference",
+              "batch_id": "rp_batch_15",
+              "channel_id": "C_RP_GENERAL",
+              "thread_id": "1790896509.000047",
+              "member_id": "member_4ae1700632c4a55ae1a24a4d"
+            },
+            {
+              "project_id": "response_preference",
+              "batch_id": "rp_batch_15",
+              "channel_id": "C_RP_GENERAL",
+              "thread_id": "1790931693.000046",
+              "member_id": "member_cbc21f1a0a95a7a98a8daec4"
+            }
+          ],
+          "reporting_window": {
+            "start": "2026-10-01T23:15:09.000047+00:00",
+            "end": "2026-10-02T09:02:24.000113+00:00"
+          },
+          "historical_recurrence": {
+            "status": "NOT_CHECKED",
+            "sources": [],
+            "event_series_ids": []
+          },
+          "known_denominator": null,
+          "structural": {
+            "threads": 2,
+            "messages": 5,
+            "distinct_participants": 5,
+            "duplicate_threads_ignored": 0,
+            "duplicate_messages_ignored": 0,
+            "computed_from": "topic member threads (original Slack messages)",
+            "participants_are_not_affected_reporters": true
+          },
+          "semantic_identification": "ASSESSED"
+        },
+        "inherited_from": {
+          "level": "UNKNOWN",
+          "assessment_status": "UNASSESSED",
+          "assessment_deferred_to": "AGENT3",
+          "reason": "Agent 2 performs taxonomy only."
+        }
+      },
+      "issues": [],
+      "notes": [],
+      "proposal": {
+        "level": "LOW",
+        "rationale": "These are contained clarification questions with pair-specific answers. The messages do not report incorrect submitted labels, conflicting QA decisions, or an inability to continue work.",
+        "signals": [],
+        "affected_reporters": [],
+        "recurrence": "NOT_CHECKED",
+        "recurrence_evidence_ids": [],
+        "reported_recurrence_evidence_ids": []
+      }
+    },
+    "resolution": {
+      "topic": "RESOLVED_IN_THREAD",
+      "members": {
+        "member_4ae1700632c4a55ae1a24a4d": "RESOLVED_IN_THREAD",
+        "member_cbc21f1a0a95a7a98a8daec4": "RESOLVED_IN_THREAD"
+      },
+      "agent1_attributed": [
+        {
+          "member_id": "member_4ae1700632c4a55ae1a24a4d",
+          "state": "RESOLVED_IN_THREAD",
+          "agent1_verification_status": "VERIFIED",
+          "agent1_review_required": false
+        },
+        {
+          "member_id": "member_cbc21f1a0a95a7a98a8daec4",
+          "state": "RESOLVED_IN_THREAD",
+          "agent1_verification_status": "VERIFIED",
+          "agent1_review_required": false
+        }
+      ]
+    },
+    "established_handling": [],
+    "coverage_issues": [],
+    "action_source": "DRAFT",
+    "action_notes": [],
+    "tot": {
+      "status": "NOT_TRIGGERED",
+      "triggers": [],
+      "choice_after_grounding": {
+        "status": "NOT_COMPARED",
+        "viable": []
+      }
+    },
+    "evidence_ledger": {
+      "m:C_RP_GENERAL:1790896509.000047": {
+        "evidence_id": "m:C_RP_GENERAL:1790896509.000047",
+        "origin": "member_message",
+        "use": "MEMBER_REPORT",
+        "member_id": "member_4ae1700632c4a55ae1a24a4d",
+        "channel_id": "C_RP_GENERAL",
+        "thread_id": "1790896509.000047",
+        "message_id": "1790896509.000047",
+        "author_id": "U011",
+        "author_name": "Rina",
+        "author_role": "TUTOR",
+        "timestamp": "2026-10-01T23:15:09.000047Z",
+        "thread_starter_id": "U011",
+        "thread_starter_role": "TUTOR",
+        "reactions": [],
+        "excerpt": "How much improvement do we need to avoid a tie?"
+      },
+      "m:C_RP_GENERAL:1790896559.000113": {
+        "evidence_id": "m:C_RP_GENERAL:1790896559.000113",
+        "origin": "member_message",
+        "use": "MEMBER_REPORT",
+        "member_id": "member_4ae1700632c4a55ae1a24a4d",
+        "channel_id": "C_RP_GENERAL",
+        "thread_id": "1790896509.000047",
+        "message_id": "1790896559.000113",
+        "author_id": "U003",
+        "author_name": "Jordan",
+        "author_role": "TUTOR",
+        "timestamp": "2026-10-01T23:15:59.000113Z",
+        "thread_starter_id": "U011",
+        "thread_starter_role": "TUTOR",
+        "reactions": [
+          {
+            "name": "thumbsup",
+            "users": [
+              {
+                "id": "U017",
+                "name": "Bea"
+              }
+            ]
+          }
+        ],
+        "excerpt": "B uses nicer wording, but the information and coverage are identical."
+      },
+      "m:C_RP_GENERAL:1790896608.000226": {
+        "evidence_id": "m:C_RP_GENERAL:1790896608.000226",
+        "origin": "member_message",
+        "use": "MEMBER_REPORT",
+        "member_id": "member_4ae1700632c4a55ae1a24a4d",
+        "channel_id": "C_RP_GENERAL",
+        "thread_id": "1790896509.000047",
+        "message_id": "1790896608.000226",
+        "author_id": "U001",
+        "author_name": "Alex",
+        "author_role": "TEAM_LEAD",
+        "timestamp": "2026-10-01T23:16:48.000226Z",
+        "thread_starter_id": "U011",
+        "thread_starter_role": "TUTOR",
+        "reactions": [],
+        "excerpt": "For these two responses, cosmetic phrasing alone does not establish a meaningful quality difference; choose a tie for this example. The difference might be cosmetic; the exact user task should decide."
+      },
+      "m:C_RP_GENERAL:1790931693.000046": {
+        "evidence_id": "m:C_RP_GENERAL:1790931693.000046",
+        "origin": "member_message",
+        "use": "MEMBER_REPORT",
+        "member_id": "member_cbc21f1a0a95a7a98a8daec4",
+        "channel_id": "C_RP_GENERAL",
+        "thread_id": "1790931693.000046",
+        "message_id": "1790931693.000046",
+        "author_id": "U012",
+        "author_name": "Sam",
+        "author_role": "TUTOR",
+        "timestamp": "2026-10-02T09:01:33.000046Z",
+        "thread_starter_id": "U012",
+        "thread_starter_role": "TUTOR",
+        "reactions": [],
+        "excerpt": "Anyone else seeing this? No major faults, just a small difference in relevance. Tie or preference?"
+      },
+      "m:C_RP_GENERAL:1790931744.000113": {
+        "evidence_id": "m:C_RP_GENERAL:1790931744.000113",
+        "origin": "member_message",
+        "use": "MEMBER_REPORT",
+        "member_id": "member_cbc21f1a0a95a7a98a8daec4",
+        "channel_id": "C_RP_GENERAL",
+        "thread_id": "1790931693.000046",
+        "message_id": "1790931744.000113",
+        "author_id": "U008",
+        "author_name": "Hana",
+        "author_role": "QA_TUTOR",
+        "timestamp": "2026-10-02T09:02:24.000113Z",
+        "thread_starter_id": "U012",
+        "thread_starter_role": "TUTOR",
+        "reactions": [
+          {
+            "name": "agree",
+            "users": [
+              {
+                "id": "U001",
+                "name": "Alex"
+              }
+            ]
+          }
+        ],
+        "excerpt": "For these two responses, cosmetic phrasing alone does not establish a meaningful quality difference; choose a tie for this example."
+      },
+      "k:response-preference-faq@1.1:4683724f": {
+        "evidence_id": "k:response-preference-faq@1.1:4683724f",
+        "origin": "retrieved_source",
+        "use": "CURRENT_GUIDANCE",
+        "citation": {
+          "document_id": "knowledge_8267f474fe0a050bdbcaf6140c458ee11ad457fdc2afe9f79de12a23de8575e9",
+          "version_id": "version_6c9da15dd304e1be3d453ea1de9cbfd1e8cc54f0939ce516dd89cf0457f82a86",
+          "chunk_id": "chunk_4683724f24eb1ddb53c613284c5f330b",
+          "authoring": "response-preference-faq@1.1",
+          "title": "Response Preference — FAQ (v1.1)",
+          "sections": [
+            "Ties and preferences"
+          ],
+          "source": {
+            "batch_id": null,
+            "channel_id": null,
+            "manual_key": "response-preference-faq",
+            "message_id": null,
+            "permalink": null,
+            "project_id": "response_preference",
+            "reference": null,
+            "system": "manual",
+            "thread_id": null,
+            "workspace_id": null
+          }
+        },
+        "source_type": "faq",
+        "record_kind": "faq",
+        "applicability": {
+          "state": "CURRENT",
+          "revision_state": "CURRENT",
+          "version_mode": "current",
+          "replaced_by": [],
+          "unverified_supersession": [],
+          "supersedes": [],
+          "enactment": null,
+          "other_revisions": []
+        },
+        "dates": {
+          "source_date": "2026-09-05T13:00:00Z",
+          "basis": "effective_at",
+          "effective_at": "2026-09-05T13:00:00Z",
+          "created_at": null,
+          "valid_until": null,
+          "expired_as_of": false,
+          "reference_time": "2026-10-02T12:00:00Z"
+        },
+        "scope": {
+          "project_id": "response_preference",
+          "batch_id": null,
+          "scope": "project",
+          "batch_relation": "project_wide"
+        },
+        "authority": {
+          "role": "TEAM_LEAD",
+          "actor": "U001",
+          "actor_relation": "RECORD_AUTHORITY",
+          "approval_status": "EXPLICIT_SOURCE_MARKER",
+          "provenance": "synthetic_manual_record"
+        },
+        "authorship": {
+          "author_id": null,
+          "verified": false,
+          "basis": "NO_AUTHOR_RECORDED"
+        },
+        "recorded_states": {
+          "status": "approved",
+          "decision_status": null,
+          "execution_status": null,
+          "outcome_status": null
+        },
+        "upstream_review": null,
+        "excerpt": "## Ties and preferences\n\n### Q: How much improvement is needed to avoid a tie?\nThe difference must offer a meaningful benefit to the user. Cosmetic phrasing alone usually does not. Explain that benefit; otherwise a tie can be appropriate.\n\n### Q: QA is reversing ties on similar pairs. What should I do?\nShare the pairs, relevant prompt constraints and both rationales for calibration. Check whether the cases are actually comparable. An answer to one pair should not be generalized without matching its scope."
+      },
+      "k:rp-tie-calibration-outcome@1.0:f678161f": {
+        "evidence_id": "k:rp-tie-calibration-outcome@1.0:f678161f",
+        "origin": "retrieved_source",
+        "use": "PRIOR_DECISION",
+        "citation": {
+          "document_id": "knowledge_2172da2a2ef0f5ad329ced2418a84472dbe7d939455cf84fcb1b9d27c943e47c",
+          "version_id": "version_cd04873e2b6866bd014b1f72e268367237289452d2dd33d91010fbb0709cf007",
+          "chunk_id": "chunk_f678161fcf576de1d8e9bbd685496695",
+          "authoring": "rp-tie-calibration-outcome@1.0",
+          "title": "Tie calibration follow-up — improvement in the reviewed sample",
+          "sections": [
+            "Review receipt"
+          ],
+          "source": {
+            "batch_id": "rp_batch_14",
+            "channel_id": null,
+            "manual_key": "rp-tie-calibration-outcome",
+            "message_id": null,
+            "permalink": null,
+            "project_id": "response_preference",
+            "reference": null,
+            "system": "manual",
+            "thread_id": null,
+            "workspace_id": null
+          }
+        },
+        "source_type": "decision",
+        "record_kind": "follow_up",
+        "applicability": {
+          "state": "CURRENT",
+          "revision_state": "CURRENT",
+          "version_mode": "current",
+          "replaced_by": [],
+          "unverified_supersession": [],
+          "supersedes": [],
+          "enactment": {
+            "status": "NOT_ENACTED",
+            "basis": null,
+            "governing_sources": [],
+            "missing": [
+              "NO_TL_APPROVAL",
+              "OUT_OF_SCOPE",
+              "NOT_A_POLICY_CHANGE",
+              "NO_ENACTMENT_EVIDENCE"
+            ],
+            "recorded": {
+              "decision_status": "reported",
+              "execution_status": "calibration_completed",
+              "authority_role": "TEAM_LEAD",
+              "batch_id": "rp_batch_14",
+              "valid_until": null,
+              "effective_at": "2026-09-20T15:00:00Z"
+            }
+          },
+          "other_revisions": []
+        },
+        "dates": {
+          "source_date": "2026-09-20T15:00:00Z",
+          "basis": "effective_at",
+          "effective_at": "2026-09-20T15:00:00Z",
+          "created_at": null,
+          "valid_until": null,
+          "expired_as_of": false,
+          "reference_time": "2026-10-02T12:00:00Z"
+        },
+        "scope": {
+          "project_id": "response_preference",
+          "batch_id": "rp_batch_14",
+          "scope": "project",
+          "batch_relation": "other_batch"
+        },
+        "authority": {
+          "role": "TEAM_LEAD",
+          "actor": "U001",
+          "actor_relation": "RECORD_AUTHORITY",
+          "approval_status": "NO_APPROVAL_MARKER",
+          "provenance": "synthetic_manual_record"
+        },
+        "authorship": {
+          "author_id": null,
+          "verified": false,
+          "basis": "NO_AUTHOR_RECORDED"
+        },
+        "recorded_states": {
+          "status": "reported",
+          "decision_status": "reported",
+          "execution_status": "calibration_completed",
+          "outcome_status": "improved_in_sample"
+        },
+        "upstream_review": null,
+        "excerpt": "[PRIOR RECORD (follow_up; decision_status: reported; execution_status: calibration_completed; outcome_status: improved_in_sample) - history, not a standing rule.]\n## Review receipt\nAlex recorded the two reviewers' decisions before and after the calibration discussion. The labels below describe the same sampled pairs, not new production judgments.\n\n| Pair | Before: reviewer 1 / reviewer 2 | After: reviewer 1 / reviewer 2 |\n| --- | --- | --- |\n| RP14-C01 | Tie / A | Tie / Tie |\n| RP14-C02 | A / Tie | Tie / Tie |\n| RP14-C03 | Tie / B | B / B |\n| RP14-C04 | A / A | A / A |\n| RP14-C05 | B / Tie | B / B |\n| RP14-C06 | Tie / Tie | Tie / Tie |\n| RP14-C07 | A / B | Tie / Tie |\n| RP14-C08 | Tie / A | Tie / A |"
+      },
+      "k:rp-tie-calibration-post@1.0:4a3c786f": {
+        "evidence_id": "k:rp-tie-calibration-post@1.0:4a3c786f",
+        "origin": "retrieved_source",
+        "use": "ANNOUNCEMENT",
+        "citation": {
+          "document_id": "knowledge_45310f4cdc303d3697b6589b86dfcc3def7cefd37cba2e56b4a20a01bc548841",
+          "version_id": "version_da07d09f6758e77c7a4524b72e54e3ce672614472c8509957745aa892a73961b",
+          "chunk_id": "chunk_4a3c786f92797e2e8738accda1893ab4",
+          "authoring": "rp-tie-calibration-post@1.0",
+          "title": "Tie calibration announcement",
+          "sections": [],
+          "source": {
+            "batch_id": "rp_batch_14",
+            "channel_id": "C_RP_ANNOUNCEMENTS",
+            "manual_key": null,
+            "message_id": "1789567200.700002",
+            "permalink": null,
+            "project_id": "response_preference",
+            "reference": null,
+            "system": "slack",
+            "thread_id": "1789567200.700002",
+            "workspace_id": null
+          }
+        },
+        "source_type": "announcement",
+        "record_kind": "channel_announcement",
+        "applicability": {
+          "state": "CURRENT",
+          "revision_state": "CURRENT",
+          "version_mode": "current",
+          "replaced_by": [],
+          "unverified_supersession": [],
+          "supersedes": [],
+          "enactment": null,
+          "other_revisions": []
+        },
+        "dates": {
+          "source_date": "2026-09-16T14:00:00Z",
+          "basis": "effective_at",
+          "effective_at": "2026-09-16T14:00:00Z",
+          "created_at": "2026-09-16T14:00:00.700002+00:00",
+          "valid_until": null,
+          "expired_as_of": false,
+          "reference_time": "2026-10-02T12:00:00Z"
+        },
+        "scope": {
+          "project_id": "response_preference",
+          "batch_id": "rp_batch_14",
+          "scope": "project",
+          "batch_relation": "other_batch"
+        },
+        "authority": {
+          "role": "TEAM_LEAD",
+          "actor": "U001",
+          "actor_relation": "MESSAGE_AUTHOR",
+          "approval_status": "EXPLICIT_SOURCE_MARKER",
+          "provenance": "synthetic_slack_archive"
+        },
+        "authorship": {
+          "author_id": "U001",
+          "verified": true,
+          "basis": "SLACK_MESSAGE_AUTHOR"
+        },
+        "recorded_states": {
+          "status": "tl_approved",
+          "decision_status": "tl_approved",
+          "execution_status": "posted",
+          "outcome_status": "not_observed"
+        },
+        "upstream_review": null,
+        "excerpt": "[ANNOUNCEMENT posted 2026-09-16T14:00:00Z by TEAM_LEAD (rp_batch_14): not established as handling for this topic until you show it is relevant and gives a directive.]\nPreference batch 14 calibration: choose a tie when neither answer offers a meaningful quality advantage. If choosing A or B, identify the user-facing benefit rather than saying only that it sounds nicer. Keep material factual or instruction-following defects separate. Bring both rationales for disputed pairs to the eight-pair calibration review. This message clarifies the existing criterion; it does not create a new numerical threshold."
+      },
+      "k:response-preference-instructions@1.1:176ce67d": {
+        "evidence_id": "k:response-preference-instructions@1.1:176ce67d",
+        "origin": "retrieved_source",
+        "use": "CURRENT_GUIDANCE",
+        "citation": {
+          "document_id": "knowledge_c49652bd3dfc0e71a42597bd9128f922ba1700cc4d7eb83a39cfbaad9a43ed6d",
+          "version_id": "version_497eb858ea77dcb88133f2ba1afd5eaf08d1a1d380c3a5cad663f8f55b7d3c65",
+          "chunk_id": "chunk_176ce67d1ceba70602148f9331ac3a5e",
+          "authoring": "response-preference-instructions@1.1",
+          "title": "Response Preference — Instructions (v1.1)",
+          "sections": [
+            "Ties"
+          ],
+          "source": {
+            "batch_id": null,
+            "channel_id": null,
+            "manual_key": "response-preference-instructions",
+            "message_id": null,
+            "permalink": null,
+            "project_id": "response_preference",
+            "reference": null,
+            "system": "manual",
+            "thread_id": null,
+            "workspace_id": null
+          }
+        },
+        "source_type": "guideline",
+        "record_kind": "guideline",
+        "applicability": {
+          "state": "CURRENT",
+          "revision_state": "CURRENT",
+          "version_mode": "current",
+          "replaced_by": [],
+          "unverified_supersession": [],
+          "supersedes": [],
+          "enactment": null,
+          "other_revisions": []
+        },
+        "dates": {
+          "source_date": "2026-08-30T13:00:00Z",
+          "basis": "effective_at",
+          "effective_at": "2026-08-30T13:00:00Z",
+          "created_at": null,
+          "valid_until": null,
+          "expired_as_of": false,
+          "reference_time": "2026-10-02T12:00:00Z"
+        },
+        "scope": {
+          "project_id": "response_preference",
+          "batch_id": null,
+          "scope": "project",
+          "batch_relation": "project_wide"
+        },
+        "authority": {
+          "role": "TEAM_LEAD",
+          "actor": "U001",
+          "actor_relation": "RECORD_AUTHORITY",
+          "approval_status": "EXPLICIT_SOURCE_MARKER",
+          "provenance": "synthetic_manual_record"
+        },
+        "authorship": {
+          "author_id": null,
+          "verified": false,
+          "basis": "NO_AUTHOR_RECORDED"
+        },
+        "recorded_states": {
+          "status": "approved",
+          "decision_status": null,
+          "execution_status": null,
+          "outcome_status": null
+        },
+        "upstream_review": null,
+        "excerpt": "## Ties\nChoose a tie when neither response has a meaningful quality advantage. Cosmetic phrasing alone does not justify a preference. Explain the user-facing benefit when selecting a response on a small difference."
+      },
+      "k:response-preference-faq@1.1:fa9b6a3d": {
+        "evidence_id": "k:response-preference-faq@1.1:fa9b6a3d",
+        "origin": "retrieved_source",
+        "use": "CURRENT_GUIDANCE",
+        "citation": {
+          "document_id": "knowledge_8267f474fe0a050bdbcaf6140c458ee11ad457fdc2afe9f79de12a23de8575e9",
+          "version_id": "version_6c9da15dd304e1be3d453ea1de9cbfd1e8cc54f0939ce516dd89cf0457f82a86",
+          "chunk_id": "chunk_fa9b6a3dd66908c89de9f8cf42d99e0e",
+          "authoring": "response-preference-faq@1.1",
+          "title": "Response Preference — FAQ (v1.1)",
+          "sections": [
+            "Instruction following"
+          ],
+          "source": {
+            "batch_id": null,
+            "channel_id": null,
+            "manual_key": "response-preference-faq",
+            "message_id": null,
+            "permalink": null,
+            "project_id": "response_preference",
+            "reference": null,
+            "system": "manual",
+            "thread_id": null,
+            "workspace_id": null
+          }
+        },
+        "source_type": "faq",
+        "record_kind": "faq",
+        "applicability": {
+          "state": "CURRENT",
+          "revision_state": "CURRENT",
+          "version_mode": "current",
+          "replaced_by": [],
+          "unverified_supersession": [],
+          "supersedes": [],
+          "enactment": null,
+          "other_revisions": []
+        },
+        "dates": {
+          "source_date": "2026-09-05T13:00:00Z",
+          "basis": "effective_at",
+          "effective_at": "2026-09-05T13:00:00Z",
+          "created_at": null,
+          "valid_until": null,
+          "expired_as_of": false,
+          "reference_time": "2026-10-02T12:00:00Z"
+        },
+        "scope": {
+          "project_id": "response_preference",
+          "batch_id": null,
+          "scope": "project",
+          "batch_relation": "project_wide"
+        },
+        "authority": {
+          "role": "TEAM_LEAD",
+          "actor": "U001",
+          "actor_relation": "RECORD_AUTHORITY",
+          "approval_status": "EXPLICIT_SOURCE_MARKER",
+          "provenance": "synthetic_manual_record"
+        },
+        "authorship": {
+          "author_id": null,
+          "verified": false,
+          "basis": "NO_AUTHOR_RECORDED"
+        },
+        "recorded_states": {
+          "status": "approved",
+          "decision_status": null,
+          "execution_status": null,
+          "outcome_status": null
+        },
+        "upstream_review": null,
+        "excerpt": "## Instruction following\n\n### Q: The prompt required JSON, but one response is well-written prose. Which response wins?\nThe required format is not optional: record its violation separately from factual accuracy. No universal tie-break rule is established for competing accuracy and instruction-following defects. If the actual pair and applicable guidance do not settle the preference, provide the prompt and both responses for TL confirmation.\n\n### Q: Can accuracy outweigh ignoring a requested output structure?\nScore the dimensions separately and identify whether the requested structure was mandatory. Do not infer a general priority rule from one example or decide without the other response's evidence."
+      }
+    },
+    "card": {
+      "contract_version": "agent3-advice-card-v4",
+      "record_type": "ADVICE_CARD",
+      "card_id": "card_22378e0f343b8f7d0d98b7eae8d6a979",
+      "project_id": "response_preference",
+      "topic_name": "Tie threshold for near-identical responses",
+      "card_line": "OBSERVATION",
+      "summary": "Two tutors ask when small differences justify a preference rather than a tie. The team lead answers one example and a QA tutor answers the other; both recommend a tie for the specific pair, rather than establishing a general threshold.",
+      "severity": {
+        "level": "LOW",
+        "assessment_status": "ASSESSED",
+        "rubric_version": "severity-rubric-v3-semantic-signals",
+        "rubric_content_sha256": "eccaa31a2ab84a0aa7c005216a92fc39681e1dd10107117344948235a76673f4",
+        "rubric_project_id": null,
+        "rubric_scope": "SHARED_DEFAULT",
+        "rationale": "These are contained clarification questions with pair-specific answers. The messages do not report incorrect submitted labels, conflicting QA decisions, or an inability to continue work.",
+        "matched_signals": [],
+        "evidence": [],
+        "occurrence": {
+          "affected_reporters": {
+            "status": "UNKNOWN",
+            "count": null,
+            "ids": [],
+            "basis": null,
+            "evidence": []
+          },
+          "affected_tasks": {
+            "status": "UNKNOWN",
+            "count": null,
+            "ids": [],
+            "basis": null,
+            "evidence": []
+          },
+          "relevant_threads": [
+            {
+              "project_id": "response_preference",
+              "batch_id": "rp_batch_15",
+              "channel_id": "C_RP_GENERAL",
+              "thread_id": "1790896509.000047",
+              "member_id": "member_4ae1700632c4a55ae1a24a4d"
+            },
+            {
+              "project_id": "response_preference",
+              "batch_id": "rp_batch_15",
+              "channel_id": "C_RP_GENERAL",
+              "thread_id": "1790931693.000046",
+              "member_id": "member_cbc21f1a0a95a7a98a8daec4"
+            }
+          ],
+          "reporting_window": {
+            "start": "2026-10-01T23:15:09.000047+00:00",
+            "end": "2026-10-02T09:02:24.000113+00:00"
+          },
+          "historical_recurrence": {
+            "status": "NOT_CHECKED",
+            "sources": [],
+            "event_series_ids": []
+          },
+          "known_denominator": null,
+          "structural": {
+            "threads": 2,
+            "messages": 5,
+            "distinct_participants": 5,
+            "duplicate_threads_ignored": 0,
+            "duplicate_messages_ignored": 0,
+            "computed_from": "topic member threads (original Slack messages)",
+            "participants_are_not_affected_reporters": true
+          },
+          "semantic_identification": "ASSESSED"
+        },
+        "inherited_from": {
+          "level": "UNKNOWN",
+          "assessment_status": "UNASSESSED",
+          "assessment_deferred_to": "AGENT3",
+          "reason": "Agent 2 performs taxonomy only."
+        }
+      },
+      "severity_is_provisional": false,
+      "resolution_status": "RESOLVED_IN_THREAD",
+      "recommended_action": null,
+      "reasoning": "What the evidence shows: A tutor asks how much improvement is needed to avoid a tie. A tutor reports that one response uses nicer wording while its information and coverage are identical to the other response. The team lead instructs the first thread to choose a tie for its example because cosmetic phrasing alone does not establish a meaningful quality difference, and says the exact user task should decide whether the difference is cosmetic. A tutor reports no major faults and a small difference in relevance, and asks whether to choose a tie or a preference. A QA tutor answers the second thread by recommending a tie for that example and explaining that cosmetic phrasing alone does not establish a meaningful quality difference. Current project instructions say to choose a tie when neither response has a meaningful quality advantage, do not treat cosmetic phrasing alone as sufficient for a preference, and require an explanation of the user-facing benefit when selecting a response on a small difference. The current FAQ requires a meaningful benefit to the user, says cosmetic phrasing alone usually does not provide one, and warns against generalizing an answer to one pair without matching its scope. The earlier batch's calibration follow-up records improved agreement in the reviewed sample after discussion, with one sampled pair still showing different decisions; it is a prior record, not a standing rule. The earlier batch's announcement tells reviewers to identify a user-facing benefit when choosing a response and to bring both rationales for disputed pairs to its eight-pair calibration review; it says it does not create a new numerical threshold. Thread status, read from each thread's own messages: resolved in thread ×2. Agent 1's earlier labels (an input, not evidence): resolved in thread ×2.",
+      "supporting_sources": [
+        {
+          "kind": "knowledge_source",
+          "project_id": "response_preference",
+          "batch_id": null,
+          "scope": "project",
+          "channel_id": null,
+          "thread_id": null,
+          "message_id": null,
+          "document_id": "knowledge_c49652bd3dfc0e71a42597bd9128f922ba1700cc4d7eb83a39cfbaad9a43ed6d",
+          "version_id": "version_497eb858ea77dcb88133f2ba1afd5eaf08d1a1d380c3a5cad663f8f55b7d3c65",
+          "authoring_document_id": "response-preference-instructions",
+          "authoring_version": "1.1",
+          "section": "Ties",
+          "chunk_id": "chunk_176ce67d1ceba70602148f9331ac3a5e",
+          "candidate_group_id": null,
+          "member_id": null,
+          "artifact": null,
+          "artifact_sha256": null,
+          "quote": null,
+          "note": "k:response-preference-instructions@1.1:176ce67d (CURRENT_GUIDANCE; CURRENT)"
+        },
+        {
+          "kind": "knowledge_source",
+          "project_id": "response_preference",
+          "batch_id": null,
+          "scope": "project",
+          "channel_id": null,
+          "thread_id": null,
+          "message_id": null,
+          "document_id": "knowledge_8267f474fe0a050bdbcaf6140c458ee11ad457fdc2afe9f79de12a23de8575e9",
+          "version_id": "version_6c9da15dd304e1be3d453ea1de9cbfd1e8cc54f0939ce516dd89cf0457f82a86",
+          "authoring_document_id": "response-preference-faq",
+          "authoring_version": "1.1",
+          "section": "Ties and preferences",
+          "chunk_id": "chunk_4683724f24eb1ddb53c613284c5f330b",
+          "candidate_group_id": null,
+          "member_id": null,
+          "artifact": null,
+          "artifact_sha256": null,
+          "quote": null,
+          "note": "k:response-preference-faq@1.1:4683724f (CURRENT_GUIDANCE; CURRENT)"
+        },
+        {
+          "kind": "knowledge_source",
+          "project_id": "response_preference",
+          "batch_id": "rp_batch_14",
+          "scope": "project",
+          "channel_id": null,
+          "thread_id": null,
+          "message_id": null,
+          "document_id": "knowledge_2172da2a2ef0f5ad329ced2418a84472dbe7d939455cf84fcb1b9d27c943e47c",
+          "version_id": "version_cd04873e2b6866bd014b1f72e268367237289452d2dd33d91010fbb0709cf007",
+          "authoring_document_id": "rp-tie-calibration-outcome",
+          "authoring_version": "1.0",
+          "section": "Review receipt",
+          "chunk_id": "chunk_f678161fcf576de1d8e9bbd685496695",
+          "candidate_group_id": null,
+          "member_id": null,
+          "artifact": null,
+          "artifact_sha256": null,
+          "quote": null,
+          "note": "k:rp-tie-calibration-outcome@1.0:f678161f (PRIOR_DECISION; CURRENT)"
+        },
+        {
+          "kind": "knowledge_source",
+          "project_id": "response_preference",
+          "batch_id": "rp_batch_14",
+          "scope": "project",
+          "channel_id": null,
+          "thread_id": null,
+          "message_id": null,
+          "document_id": "knowledge_45310f4cdc303d3697b6589b86dfcc3def7cefd37cba2e56b4a20a01bc548841",
+          "version_id": "version_da07d09f6758e77c7a4524b72e54e3ce672614472c8509957745aa892a73961b",
+          "authoring_document_id": "rp-tie-calibration-post",
+          "authoring_version": "1.0",
+          "section": null,
+          "chunk_id": "chunk_4a3c786f92797e2e8738accda1893ab4",
+          "candidate_group_id": null,
+          "member_id": null,
+          "artifact": null,
+          "artifact_sha256": null,
+          "quote": null,
+          "note": "k:rp-tie-calibration-post@1.0:4a3c786f (ANNOUNCEMENT; CURRENT)"
+        },
+        {
+          "kind": "slack_message",
+          "project_id": "response_preference",
+          "batch_id": "rp_batch_15",
+          "scope": "project",
+          "channel_id": "C_RP_GENERAL",
+          "thread_id": "1790896509.000047",
+          "message_id": "1790896509.000047",
+          "document_id": null,
+          "version_id": null,
+          "authoring_document_id": null,
+          "authoring_version": null,
+          "section": null,
+          "chunk_id": null,
+          "candidate_group_id": null,
+          "member_id": "member_4ae1700632c4a55ae1a24a4d",
+          "artifact": null,
+          "artifact_sha256": null,
+          "quote": null,
+          "note": "m:C_RP_GENERAL:1790896509.000047"
+        },
+        {
+          "kind": "slack_message",
+          "project_id": "response_preference",
+          "batch_id": "rp_batch_15",
+          "scope": "project",
+          "channel_id": "C_RP_GENERAL",
+          "thread_id": "1790896509.000047",
+          "message_id": "1790896559.000113",
+          "document_id": null,
+          "version_id": null,
+          "authoring_document_id": null,
+          "authoring_version": null,
+          "section": null,
+          "chunk_id": null,
+          "candidate_group_id": null,
+          "member_id": "member_4ae1700632c4a55ae1a24a4d",
+          "artifact": null,
+          "artifact_sha256": null,
+          "quote": null,
+          "note": "m:C_RP_GENERAL:1790896559.000113"
+        },
+        {
+          "kind": "slack_message",
+          "project_id": "response_preference",
+          "batch_id": "rp_batch_15",
+          "scope": "project",
+          "channel_id": "C_RP_GENERAL",
+          "thread_id": "1790896509.000047",
+          "message_id": "1790896608.000226",
+          "document_id": null,
+          "version_id": null,
+          "authoring_document_id": null,
+          "authoring_version": null,
+          "section": null,
+          "chunk_id": null,
+          "candidate_group_id": null,
+          "member_id": "member_4ae1700632c4a55ae1a24a4d",
+          "artifact": null,
+          "artifact_sha256": null,
+          "quote": null,
+          "note": "m:C_RP_GENERAL:1790896608.000226"
+        },
+        {
+          "kind": "slack_message",
+          "project_id": "response_preference",
+          "batch_id": "rp_batch_15",
+          "scope": "project",
+          "channel_id": "C_RP_GENERAL",
+          "thread_id": "1790931693.000046",
+          "message_id": "1790931693.000046",
+          "document_id": null,
+          "version_id": null,
+          "authoring_document_id": null,
+          "authoring_version": null,
+          "section": null,
+          "chunk_id": null,
+          "candidate_group_id": null,
+          "member_id": "member_cbc21f1a0a95a7a98a8daec4",
+          "artifact": null,
+          "artifact_sha256": null,
+          "quote": null,
+          "note": "m:C_RP_GENERAL:1790931693.000046"
+        },
+        {
+          "kind": "slack_message",
+          "project_id": "response_preference",
+          "batch_id": "rp_batch_15",
+          "scope": "project",
+          "channel_id": "C_RP_GENERAL",
+          "thread_id": "1790931693.000046",
+          "message_id": "1790931744.000113",
+          "document_id": null,
+          "version_id": null,
+          "authoring_document_id": null,
+          "authoring_version": null,
+          "section": null,
+          "chunk_id": null,
+          "candidate_group_id": null,
+          "member_id": "member_cbc21f1a0a95a7a98a8daec4",
+          "artifact": null,
+          "artifact_sha256": null,
+          "quote": null,
+          "note": "m:C_RP_GENERAL:1790931744.000113"
+        }
+      ],
+      "related_threads": [
+        {
+          "project_id": "response_preference",
+          "batch_id": "rp_batch_15",
+          "channel_id": "C_RP_GENERAL",
+          "thread_id": "1790896509.000047",
+          "member_id": "member_4ae1700632c4a55ae1a24a4d",
+          "permalink": null,
+          "display_reference": "1790896509.000047",
+          "label": "#response-preference-general, 2026-10-01, started by a tutor: \"How much improvement do we need to avoid a tie?\"",
+          "opening_text": "How much improvement do we need to avoid a tie?"
+        },
+        {
+          "project_id": "response_preference",
+          "batch_id": "rp_batch_15",
+          "channel_id": "C_RP_GENERAL",
+          "thread_id": "1790931693.000046",
+          "member_id": "member_cbc21f1a0a95a7a98a8daec4",
+          "permalink": null,
+          "display_reference": "1790931693.000046",
+          "label": "#response-preference-general, 2026-10-02, started by a tutor: \"Anyone else seeing this?\"",
+          "opening_text": "Anyone else seeing this? No major faults, just a small difference in relevance. Tie or preference?"
+        }
+      ],
+      "confidence": 0.94,
+      "confidence_band": "HIGH",
+      "needs_review_reasons": [],
+      "inherited_flags": [],
+      "checks": {
+        "grounding": "PASSED",
+        "temporal_conflict": "NONE_FOUND",
+        "open_confirmation": "NONE"
+      },
+      "lineage": {
+        "agent3_run_id": "agent3overnight_bdc099a76ee76bdc391050df2aded225",
+        "handoff_contract": "agent2-taxonomy-handoff-v2",
+        "agent2_export_sha256": "6f1f56bf5a5b1f02287d7ac958dc205c05cc9e0ea3e6d5f3fdd7279da0c9e1e7",
+        "agent2_schema_version": 8,
+        "candidate_group_id": "cluster_b3949f4d07900864",
+        "topic_id": "cluster_b3949f4d07900864/topic_1",
+        "member_ids": [
+          "member_4ae1700632c4a55ae1a24a4d",
+          "member_cbc21f1a0a95a7a98a8daec4"
+        ],
+        "project_id": "response_preference",
+        "batch_id": "rp_batch_15"
+      },
+      "review_notes": [],
+      "details": [
+        "In the first thread, a tutor reports nicer wording in one response but identical information and coverage.",
+        "In the second thread, a tutor reports a small difference in relevance with no major faults; a QA tutor answers in terms of cosmetic phrasing.",
+        "Current instructions require a meaningful quality advantage and an explanation of the user-facing benefit when choosing a response on a small difference.",
+        "An earlier batch's calibration follow-up records improved agreement on the reviewed sample, not a standing rule for this batch."
+      ],
+      "next_step": {
+        "status": "NO_ACTION_NEEDED",
+        "rationale": "Both questions received answers in their own threads, and current guidance already provides the meaningful-benefit criterion. The messages show no remaining request or conflicting judgments requiring intervention.",
+        "explanation": null
+      }
+    },
+    "review_items": [
+      {
+        "contract_version": "agent3-model-review-item-v1",
+        "record_type": "MODEL_REVIEW_ITEM",
+        "item_id": "review_a9441b6e2a9586dded5696da95f7ec44",
+        "origin": "agent1",
+        "kind": "inherited_agent1_review",
+        "project_id": "response_preference",
+        "batch_id": "rp_batch_15",
+        "candidate_group_id": "cluster_b3949f4d07900864",
+        "topic_id": "cluster_b3949f4d07900864/topic_2",
+        "member_ids": [
+          "member_0886e8fe7e7d998c1077ff10"
+        ],
+        "obligation_id": null,
+        "reason": "Still unverified after one targeted revision: Prose unit central_question:1: UNSUPPORTED.\nCandidate: Why was my tie marked as wrong again by QA on task RP-9595?\nSource establishes: Yuki reports their tie was marked wrong again by QA on task RP-9595, but does not explicitly ask why.\nReason: Yuki's message is a statement of fact, not a direct question about the reason. The candidate reframes it as a 'why' question, which is not present in the source.",
+        "source_obligation": {
+          "origin": "agent1",
+          "member_id": "member_0886e8fe7e7d998c1077ff10",
+          "project_id": "response_preference",
+          "batch_id": "rp_batch_15",
+          "channel_id": "C_RP_GENERAL",
+          "thread_id": "1790939595.000035",
+          "candidate_group_id": "cluster_b3949f4d07900864",
+          "candidate_sha256": "b7bc1e45fc3187f0c9b1deadb02daad1fbe4d74b2fbd170a4fc1ad34d89ffc86",
+          "source_sha256": "68041d809988323d6bbf567e383b40b8e8f6ff6baa715d64471b2a2be37ee65b",
+          "agent1_record": {
+            "project_id": "response_preference",
+            "batch_id": "rp_batch_15",
+            "channel_id": "C_RP_GENERAL",
+            "thread_id": "1790939595.000035",
+            "language": null,
+            "model": "openai/gpt-4o-mini-2024-07-18",
+            "run_config_sha256": "870eedfaf3fa8cbd76fa560cac924fedefdab58ed91ff72ccac0a6e4ca14b251",
+            "handoff_version": 1,
+            "verification_origin": "bounded_verification",
+            "input_sha256": "68041d809988323d6bbf567e383b40b8e8f6ff6baa715d64471b2a2be37ee65b",
+            "candidate_sha256": "b7bc1e45fc3187f0c9b1deadb02daad1fbe4d74b2fbd170a4fc1ad34d89ffc86",
+            "source_message_ids": [
+              "1790939595.000035",
+              "1790939653.000113",
+              "1790939697.000226",
+              "1790939731.000339"
+            ],
+            "interpretation": {
+              "thread_id": "1790939595.000035",
+              "summary": "Yuki reported that a QA marked their tie as wrong again, referencing task RP-9595. Sofia noted that a QA reviewer had accepted a similar tie the previous day, indicating inconsistency in QA feedback. Hana suggested comparing the written QA rationales against the same rubric criterion. Alex, the team lead, acknowledged the inconsistency and requested both rationales to calibrate before changing the tie threshold.",
+              "central_question": "Why was my tie marked as wrong again by QA on task RP-9595?",
+              "resolution_state": "UNRESOLVED",
+              "authoritative_response_present": false,
+              "authority_evidence_message_ids": [],
+              "resolution_rationale": "All replies either provide context, suggest diagnostic steps, or request further evidence, but none explain why the tie was marked wrong.",
+              "confidence": 0.7
+            },
+            "automated_verification_status": "NEEDS_REVIEW",
+            "verification_status": "NEEDS_REVIEW",
+            "review_required": true,
+            "revision_count": 1,
+            "provisional_fields": [
+              "central_question"
+            ],
+            "review_reason": "Still unverified after one targeted revision: Prose unit central_question:1: UNSUPPORTED.\nCandidate: Why was my tie marked as wrong again by QA on task RP-9595?\nSource establishes: Yuki reports their tie was marked wrong again by QA on task RP-9595, but does not explicitly ask why.\nReason: Yuki's message is a statement of fact, not a direct question about the reason. The candidate reframes it as a 'why' question, which is not present in the source.",
+            "review_reasons": [
+              "Still unverified after one targeted revision: Prose unit central_question:1: UNSUPPORTED.\nCandidate: Why was my tie marked as wrong again by QA on task RP-9595?\nSource establishes: Yuki reports their tie was marked wrong again by QA on task RP-9595, but does not explicitly ask why.\nReason: Yuki's message is a statement of fact, not a direct question about the reason. The candidate reframes it as a 'why' question, which is not present in the source."
+            ],
+            "review_findings": [
+              {
+                "category": "CENTRAL_QUESTION",
+                "explanation": "Prose unit central_question:1: UNSUPPORTED.\nCandidate: Why was my tie marked as wrong again by QA on task RP-9595?\nSource establishes: Yuki reports their tie was marked wrong again by QA on task RP-9595, but does not explicitly ask why.\nReason: Yuki's message is a statement of fact, not a direct question about the reason. The candidate reframes it as a 'why' question, which is not present in the source.",
+                "evidence_message_ids": [
+                  "1790939595.000035"
+                ],
+                "evidence_quotes": [
+                  "QA marked my tie as wrong again. (task ref RP-9595)"
+                ],
+                "disputed_fields": [
+                  "central_question"
+                ],
+                "origin": "automated_verification"
+              }
+            ],
+            "content_reviews": [],
+            "review_applicability": [],
+            "lineage": {
+              "baseline_file": "data\\experiments\\threadsense_full_v1\\stages\\agent1_interpret\\agent1_interpretations_v1\\interpretations.json",
+              "baseline_record_sha256": "607827e8b46bb3a89c9feedd64d2e297e42d4b13afcb077401ccad4b12ee5744",
+              "baseline_run_config_sha256": "b4a7353aace8119bb25073b3dbab05388e6036aa312a1f74d38f4b0268fbb7b8",
+              "baseline_model": "openai/gpt-4o-mini-2024-07-18",
+              "baseline_created_at": "2026-11-05T16:41:21.181359+00:00",
+              "source_file": "sources/68041d809988323d6bbf567e383b40b8e8f6ff6baa715d64471b2a2be37ee65b.json",
+              "verification_file": "records/1c85c7c7904068a60662535478551c689cee73204ac60377b2d77f59963154f0/result.json",
+              "effective_attempt": "revision",
+              "original_candidate_sha256": "85a888c1671752ca0df2324943ad048954121efd01718bea0e4935a3bc58c99a",
+              "revised_candidate_sha256": "b7bc1e45fc3187f0c9b1deadb02daad1fbe4d74b2fbd170a4fc1ad34d89ffc86",
+              "effective_candidate_sha256": "b7bc1e45fc3187f0c9b1deadb02daad1fbe4d74b2fbd170a4fc1ad34d89ffc86",
+              "original_candidate_reference": "records/1c85c7c7904068a60662535478551c689cee73204ac60377b2d77f59963154f0/result.json#/result/original_interpretation",
+              "revised_candidate_reference": "records/1c85c7c7904068a60662535478551c689cee73204ac60377b2d77f59963154f0/result.json#/result/revised_interpretation",
+              "audit_history_reference": "records/1c85c7c7904068a60662535478551c689cee73204ac60377b2d77f59963154f0/result.json#/result/passes"
+            }
+          },
+          "agent1_export_file": "D:\\Christie\\2026_AgenticAI\\threadsense\\data\\experiments\\threadsense_full_v1\\stages\\agent1_verify\\agent1_verified_v2\\interpretations.json",
+          "agent1_export_sha256": "0629a7346373addf833a86ba1caff676a537e543cc26954a9836fd6610485270",
+          "agent1_lineage_base": "D:\\Christie\\2026_AgenticAI\\threadsense\\data\\experiments\\threadsense_full_v1\\stages\\agent1_verify\\agent1_verified_v2"
+        },
+        "related_card_ids": [],
+        "actions": []
+      },
+      {
+        "contract_version": "agent3-model-review-item-v1",
+        "record_type": "MODEL_REVIEW_ITEM",
+        "item_id": "review_d06fa1a7e0069e39b4bdbdf04ca86d0b",
+        "origin": "agent1",
+        "kind": "inherited_agent1_review",
+        "project_id": "response_preference",
+        "batch_id": "rp_batch_15",
+        "candidate_group_id": "cluster_b3949f4d07900864",
+        "topic_id": "cluster_b3949f4d07900864/topic_2",
+        "member_ids": [
+          "member_cb06b7a6847122af7e6b8e4b"
+        ],
+        "obligation_id": null,
+        "reason": "Still unverified after one targeted revision: Independent evidence audit unavailable or invalid: ValueError: resolution_rationale:1: quotation is not verbatim source evidence.",
+        "source_obligation": {
+          "origin": "agent1",
+          "member_id": "member_cb06b7a6847122af7e6b8e4b",
+          "project_id": "response_preference",
+          "batch_id": "rp_batch_15",
+          "channel_id": "C_RP_QA",
+          "thread_id": "1790866003.000036",
+          "candidate_group_id": "cluster_b3949f4d07900864",
+          "candidate_sha256": "78c040f9dd14c963ef66f19273c16321665614084511560cea174e5e7927c3b8",
+          "source_sha256": "3e007be45c5c077b7f9243756b31314350f589b96143a767ef9c5d13fafa9509",
+          "agent1_record": {
+            "project_id": "response_preference",
+            "batch_id": "rp_batch_15",
+            "channel_id": "C_RP_QA",
+            "thread_id": "1790866003.000036",
+            "language": null,
+            "model": "openai/gpt-4o-mini-2024-07-18",
+            "run_config_sha256": "870eedfaf3fa8cbd76fa560cac924fedefdab58ed91ff72ccac0a6e4ca14b251",
+            "handoff_version": 1,
+            "verification_origin": "bounded_verification",
+            "input_sha256": "3e007be45c5c077b7f9243756b31314350f589b96143a767ef9c5d13fafa9509",
+            "candidate_sha256": "78c040f9dd14c963ef66f19273c16321665614084511560cea174e5e7927c3b8",
+            "source_message_ids": [
+              "1790866003.000036",
+              "1790866050.000113"
+            ],
+            "interpretation": {
+              "thread_id": "1790866003.000036",
+              "summary": "Linh reported that their tie was marked as wrong again by QA. Leo responded that for the discussed pair, neither response had a meaningful quality advantage, justifying the tie. He suggested using the same criterion for comparable pairs and noted that the two disputed tasks warrant a calibration check rather than a policy rewrite.",
+              "central_question": "Why was my tie marked as wrong again?",
+              "resolution_state": "PARTIALLY_RESOLVED",
+              "authoritative_response_present": true,
+              "authority_evidence_message_ids": [
+                "1790866050.000113"
+              ],
+              "resolution_rationale": "Leo's response indicates that the tie is justified based on the quality of the responses, but it does not fully address Linh's concern about the repeated marking of the tie as wrong. The need for a calibration check suggests that there may still be unresolved issues regarding the evaluation criteria.",
+              "confidence": 0.8
+            },
+            "automated_verification_status": "NEEDS_REVIEW",
+            "verification_status": "NEEDS_REVIEW",
+            "review_required": true,
+            "revision_count": 1,
+            "provisional_fields": [
+              "authoritative_response_present",
+              "authority_evidence_message_ids",
+              "central_question",
+              "confidence",
+              "resolution_rationale",
+              "resolution_state",
+              "summary"
+            ],
+            "review_reason": "Still unverified after one targeted revision: Independent evidence audit unavailable or invalid: ValueError: resolution_rationale:1: quotation is not verbatim source evidence.",
+            "review_reasons": [
+              "Still unverified after one targeted revision: Independent evidence audit unavailable or invalid: ValueError: resolution_rationale:1: quotation is not verbatim source evidence."
+            ],
+            "review_findings": [
+              {
+                "category": "CENTRAL_QUESTION",
+                "explanation": "Prose unit central_question:1: UNSUPPORTED.\nCandidate: Why was my tie marked as wrong again?\nSource establishes: Linh's message is: 'QA marked my tie as wrong again.' This is a statement, not a question, but it implies a concern or question about why this happened.\nReason: The candidate rephrases Linh's statement as a direct question. While Linh's message implies concern or confusion, it does not explicitly ask 'why.' Thus, the candidate's claim goes beyond the direct evidence.",
+                "evidence_message_ids": [
+                  "1790866003.000036"
+                ],
+                "evidence_quotes": [
+                  "QA marked my tie as wrong again."
+                ],
+                "disputed_fields": [
+                  "central_question"
+                ],
+                "origin": "automated_verification"
+              },
+              {
+                "category": "RESOLUTION",
+                "explanation": "Independent decision coverage establishes RESOLVED_IN_THREAD; interpretation reports PARTIALLY_RESOLVED. Leo explains that a tie is justified for the discussed pair, indicating that marking the tie as wrong was not correct in this instance.",
+                "evidence_message_ids": [
+                  "1790866050.000113"
+                ],
+                "evidence_quotes": [],
+                "disputed_fields": [
+                  "resolution_state",
+                  "resolution_rationale"
+                ],
+                "origin": "automated_verification"
+              }
+            ],
+            "content_reviews": [],
+            "review_applicability": [],
+            "lineage": {
+              "baseline_file": "data\\experiments\\threadsense_full_v1\\stages\\agent1_interpret\\agent1_interpretations_v1\\interpretations.json",
+              "baseline_record_sha256": "557529d55ccc7ac73f805e543fcfb0800250889d52335340e996c71d9ee4dd58",
+              "baseline_run_config_sha256": "b4a7353aace8119bb25073b3dbab05388e6036aa312a1f74d38f4b0268fbb7b8",
+              "baseline_model": "openai/gpt-4o-mini-2024-07-18",
+              "baseline_created_at": "2026-11-05T16:33:05.930692+00:00",
+              "source_file": "sources/3e007be45c5c077b7f9243756b31314350f589b96143a767ef9c5d13fafa9509.json",
+              "verification_file": "records/139c117dfc3ff8f1eb0947a0d39a1fe777cacee12982d32fd58ebc7c81a91135/result.json",
+              "effective_attempt": "original",
+              "original_candidate_sha256": "78c040f9dd14c963ef66f19273c16321665614084511560cea174e5e7927c3b8",
+              "revised_candidate_sha256": "748f27754e82227516b6619fc5772b776e1541c393abbed813ad919c93f39b2f",
+              "effective_candidate_sha256": "78c040f9dd14c963ef66f19273c16321665614084511560cea174e5e7927c3b8",
+              "original_candidate_reference": "records/139c117dfc3ff8f1eb0947a0d39a1fe777cacee12982d32fd58ebc7c81a91135/result.json#/result/original_interpretation",
+              "revised_candidate_reference": "records/139c117dfc3ff8f1eb0947a0d39a1fe777cacee12982d32fd58ebc7c81a91135/result.json#/result/revised_interpretation",
+              "audit_history_reference": "records/139c117dfc3ff8f1eb0947a0d39a1fe777cacee12982d32fd58ebc7c81a91135/result.json#/result/passes"
+            }
+          },
+          "agent1_export_file": "D:\\Christie\\2026_AgenticAI\\threadsense\\data\\experiments\\threadsense_full_v1\\stages\\agent1_verify\\agent1_verified_v2\\interpretations.json",
+          "agent1_export_sha256": "0629a7346373addf833a86ba1caff676a537e543cc26954a9836fd6610485270",
+          "agent1_lineage_base": "D:\\Christie\\2026_AgenticAI\\threadsense\\data\\experiments\\threadsense_full_v1\\stages\\agent1_verify\\agent1_verified_v2"
+        },
+        "related_card_ids": [],
+        "actions": []
+      }
+    ],
+    "coverage": {
+      "group_members_outside_this_card": [
+        "member_42af0c53b9dee102697caa09",
+        "member_bbcf413973c3114c816f502a"
+      ],
+      "uncarried_obligations": []
+    },
+    "budget": {
+      "consumed": {
+        "retrieval_calls": 1,
+        "model_calls": 2
+      },
+      "limits": {
+        "model_calls_per_topic": 4,
+        "model_calls_total": 28,
+        "retrieval_calls_per_topic": 6,
+        "retrieval_calls_total": 42
+      }
+    },
+    "diagnostics": []
+  }
+}

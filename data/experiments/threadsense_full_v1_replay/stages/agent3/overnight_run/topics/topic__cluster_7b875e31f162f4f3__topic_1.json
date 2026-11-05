@@ -1,0 +1,3591 @@
+{
+  "work_item": {
+    "candidate_group_id": "cluster_7b875e31f162f4f3",
+    "project_id": "audio_multimodal",
+    "batch_id": "audio_batch_06",
+    "work_id": "topic:cluster_7b875e31f162f4f3/topic_1",
+    "kind": "TOPIC",
+    "topic_id": "cluster_7b875e31f162f4f3/topic_1",
+    "topic_name": "Silent audio handling",
+    "member_ids": [
+      "member_22fa96f8f37e7ea4f79fd6fb",
+      "member_4e743fb698f42bc160fb10b9",
+      "member_45b305f64bc9ac187066f07c"
+    ],
+    "pilot_scenario": null,
+    "in_scope": true
+  },
+  "workflow": {
+    "outcome": "CARD",
+    "card_id": "card_071624af12542710d5da2c536f762d52",
+    "card_line": "NEEDS_REVIEW",
+    "grounding": "PASSED",
+    "stage_failures": [],
+    "semantic_source": "LIVE_MODEL"
+  },
+  "result": {
+    "scenario": {
+      "id": "topic:cluster_7b875e31f162f4f3/topic_1",
+      "candidate_group_id": "cluster_7b875e31f162f4f3",
+      "focus": "Silent audio handling",
+      "topic_id": "cluster_7b875e31f162f4f3/topic_1"
+    },
+    "status": "CARD",
+    "topic": {
+      "project_id": "audio_multimodal",
+      "batch_id": "audio_batch_06",
+      "candidate_group_id": "cluster_7b875e31f162f4f3",
+      "topic_id": "cluster_7b875e31f162f4f3/topic_1",
+      "topic_label": "Silent audio handling",
+      "projection_gap": null,
+      "as_of": "2026-10-02T12:00:00Z",
+      "member_ids": [
+        "member_22fa96f8f37e7ea4f79fd6fb",
+        "member_4e743fb698f42bc160fb10b9",
+        "member_45b305f64bc9ac187066f07c"
+      ],
+      "initial_query": "Silent audio handling. What is the correct handling for a task with no audio at all: should it be marked as Quarantine (QN) or given a bad score?"
+    },
+    "retrieval_trace": [
+      {
+        "step": 1,
+        "purpose": "initial_current_guidance",
+        "gap_id": null,
+        "query": "Silent audio handling. What is the correct handling for a task with no audio at all: should it be marked as Quarantine (QN) or given a bad score?",
+        "source_types": [
+          "guideline",
+          "faq",
+          "decision",
+          "announcement"
+        ],
+        "version_mode": "current",
+        "as_of": "2026-10-02T12:00:00Z",
+        "batch": "audio_batch_06",
+        "top_k": 5,
+        "status": "DONE",
+        "mode": "hybrid",
+        "use_mmr": true,
+        "mmr_lambda": 0.9,
+        "result_ids": [
+          "k:audio-multimodal-instructions@1.3:1c6df70e",
+          "k:slack:C_AUDIO_ANNOUNCEMENTS:1790892000.000901:1c524924",
+          "k:audio-multimodal-faq@1.1:c724358c",
+          "k:audio-playback-trial-approval@1.0:1779c36a",
+          "k:audio-headset-check-approval@1.0:bb33bb5d"
+        ],
+        "new_evidence_ids": [
+          "k:audio-multimodal-instructions@1.3:1c6df70e",
+          "k:slack:C_AUDIO_ANNOUNCEMENTS:1790892000.000901:1c524924",
+          "k:audio-multimodal-faq@1.1:c724358c",
+          "k:audio-playback-trial-approval@1.0:1779c36a",
+          "k:audio-headset-check-approval@1.0:bb33bb5d"
+        ],
+        "eligible_chunks": 27,
+        "added": []
+      }
+    ],
+    "retrieval_notes": {
+      "withheld_by_version": [],
+      "version_diagnostics": []
+    },
+    "follow_ups": [],
+    "unfilled_gaps": [
+      {
+        "gap_id": "g1",
+        "need": "OTHER",
+        "description": "The reports still need playback-state and prompt-requirement checks to distinguish unavailable audio from a silent recording. The first thread also lacks the verification requested by the team lead. These are diagnostic inputs, not an unsettled policy decision.",
+        "follow_up": null
+      }
+    ],
+    "model_calls": [
+      {
+        "stage": "draft",
+        "schema": "AdvisorDraft",
+        "agent1_context": {
+          "sha256": "d6418cd1e13aaf0e607a0b635aaf7b9f9690563e4bc2bf3aa7371b472254418c",
+          "boundary": "IN_HTTP_BODY"
+        },
+        "raw": "{\n  \"contract_version\": \"agent3-advisor-draft-v11\",\n  \"summary\": null,\n  \"summary_sentences\": [\n    {\n      \"text\": \"Two QA tutors and a tutor report no sound and ask how to handle their tasks; a second tutor reports empty-sounding output from prompts expecting speech.\",\n      \"support_claim_ids\": [\"c1\", \"c2\", \"c3\", \"c4\"],\n      \"depends_on\": []\n    },\n    {\n      \"text\": \"The threads do not yet establish whether playback is unavailable or the recordings are silent, so the scoring questions remain unresolved.\",\n      \"support_claim_ids\": [\"c8\"],\n      \"depends_on\": [1]\n    }\n  ],\n  \"detail_sentences\": [\n    {\n      \"text\": \"A tutor reports that AUDIO-5374 is completely silent despite a visible waveform and asks whether to use QN or a quality score.\",\n      \"support_claim_ids\": [\"c2\"],\n      \"depends_on\": [],\n      \"summary_depends_on\": []\n    },\n    {\n      \"text\": \"QA tutors ask about volume and a second clip in the first two threads, and a QA tutor asks whether silence or speech was requested in the third thread.\",\n      \"support_claim_ids\": [\"c5\"],\n      \"depends_on\": [],\n      \"summary_depends_on\": []\n    },\n    {\n      \"text\": \"In the first thread, the team lead asks for verification of intended silence and playback elsewhere; the supplied replies do not provide those results.\",\n      \"support_claim_ids\": [\"c6\", \"c8\"],\n      \"depends_on\": [],\n      \"summary_depends_on\": []\n    },\n    {\n      \"text\": \"Current instructions treat a visible waveform with no playback as a tool incident, but a waveform alone does not establish a silent recording.\",\n      \"support_claim_ids\": [\"c7\"],\n      \"depends_on\": [],\n      \"summary_depends_on\": []\n    },\n    {\n      \"text\": \"An earlier batch-05 record describes similar waveform-without-playback symptoms and an expired, limited reload trial, not a current remedy.\",\n      \"support_claim_ids\": [\"c10\"],\n      \"depends_on\": [],\n      \"summary_depends_on\": []\n    },\n    {\n      \"text\": \"An earlier batch-06 decision approved an output-device check for two specified tasks, but records neither execution nor an observed outcome and is not a standing rule.\",\n      \"support_claim_ids\": [\"c11\"],\n      \"depends_on\": [],\n      \"summary_depends_on\": []\n    }\n  ],\n  \"reasoning\": \"Repeated handling questions remain unanswered across three threads. Current guidance supplies a conditional answer for unavailable playback, not a rule for every silent-sounding recording. A focused reminder with diagnostic requests fits the evidence without declaring a cause, a repair, or a content-scoring decision. The earlier trials do not justify a general reload or settings-change instruction.\",\n  \"claims\": [\n    {\n      \"claim_id\": \"c1\",\n      \"kind\": \"INCIDENT_FACT\",\n      \"text\": \"A QA tutor reports no audio and asks whether to use QN or a bad score.\",\n      \"evidence_ids\": [\"m:C_AUDIO_GENERAL:1790879994.000128\"],\n      \"attributions\": [\n        {\n          \"user_id\": \"U007\",\n          \"relation\": \"AUTHOR\",\n          \"evidence_id\": \"m:C_AUDIO_GENERAL:1790879994.000128\"\n        }\n      ],\n      \"quote_kind\": \"PARAPHRASE\"\n    },\n    {\n      \"claim_id\": \"c2\",\n      \"kind\": \"INCIDENT_FACT\",\n      \"text\": \"A tutor reports that AUDIO-5374 is completely silent despite an existing waveform and asks whether to use QN or a quality score.\",\n      \"evidence_ids\": [\"m:C_AUDIO_GENERAL:1790915374.000127\"],\n      \"attributions\": [\n        {\n          \"user_id\": \"U010\",\n          \"relation\": \"AUTHOR\",\n          \"evidence_id\": \"m:C_AUDIO_GENERAL:1790915374.000127\"\n        }\n      ],\n      \"quote_kind\": \"PARAPHRASE\"\n    },\n    {\n      \"claim_id\": \"c3\",\n      \"kind\": \"INCIDENT_FACT\",\n      \"text\": \"A tutor reports that several prompts expecting speech return an empty-sounding file.\",\n      \"evidence_ids\": [\"m:C_AUDIO_GENERAL:1790915422.000113\"],\n      \"attributions\": [\n        {\n          \"user_id\": \"U015\",\n          \"relation\": \"AUTHOR\",\n          \"evidence_id\": \"m:C_AUDIO_GENERAL:1790915422.000113\"\n        }\n      ],\n      \"quote_kind\": \"PARAPHRASE\"\n    },\n    {\n      \"claim_id\": \"c4\",\n      \"kind\": \"INCIDENT_FACT\",\n      \"text\": \"A QA tutor reports zero sound, cannot tell whether silence is intentional, and asks for correct handling.\",\n      \"evidence_ids\": [\"m:C_AUDIO_QA:1790918811.000130\"],\n      \"attributions\": [\n        {\n          \"user_id\": \"U002\",\n          \"relation\": \"AUTHOR\",\n          \"evidence_id\": \"m:C_AUDIO_QA:1790918811.000130\"\n        }\n      ],\n      \"quote_kind\": \"PARAPHRASE\"\n    },\n    {\n      \"claim_id\": \"c5\",\n      \"kind\": \"INCIDENT_FACT\",\n      \"text\": \"A QA tutor asks about volume and a second clip in the first thread; a different QA tutor asks the same checks in the AUDIO-5374 thread; a third QA tutor asks whether silence or speech was requested in the third thread.\",\n      \"evidence_ids\": [\n        \"m:C_AUDIO_GENERAL:1790880048.000113\",\n        \"m:C_AUDIO_GENERAL:1790915470.000226\",\n        \"m:C_AUDIO_QA:1790918869.000113\"\n      ],\n      \"attributions\": [\n        {\n          \"user_id\": \"U019\",\n          \"relation\": \"AUTHOR\",\n          \"evidence_id\": \"m:C_AUDIO_GENERAL:1790880048.000113\"\n        },\n        {\n          \"user_id\": \"U014\",\n          \"relation\": \"AUTHOR\",\n          \"evidence_id\": \"m:C_AUDIO_GENERAL:1790915470.000226\"\n        },\n        {\n          \"user_id\": \"U008\",\n          \"relation\": \"AUTHOR\",\n          \"evidence_id\": \"m:C_AUDIO_QA:1790918869.000113\"\n        }\n      ],\n      \"quote_kind\": \"PARAPHRASE\"\n    },\n    {\n      \"claim_id\": \"c6\",\n      \"kind\": \"THREAD_INSTRUCTION\",\n      \"text\": \"In the first thread, the team lead instructs that intended silence and whether the file plays elsewhere need verification.\",\n      \"evidence_ids\": [\"m:C_AUDIO_GENERAL:1790880088.000226\"],\n      \"attributions\": [\n        {\n          \"user_id\": \"U006\",\n          \"relation\": \"AUTHOR\",\n          \"evidence_id\": \"m:C_AUDIO_GENERAL:1790880088.000226\"\n        }\n      ],\n      \"quote_kind\": \"PARAPHRASE\"\n    },\n    {\n      \"claim_id\": \"c7\",\n      \"kind\": \"GUIDANCE\",\n      \"text\": \"Current instructions and FAQ require a tool-incident report for unavailable playback, including a waveform with no playback, with the task ID and available reproduction details. Capture browser/error state and whether another clip plays. Unavailable playback alone is not a model-quality failure or a content-based QN reason; a waveform does not establish a silent recording, and handling guidance does not establish a repair.\",\n      \"evidence_ids\": [\n        \"k:audio-multimodal-instructions@1.3:1c6df70e\",\n        \"k:audio-multimodal-faq@1.1:c724358c\"\n      ],\n      \"attributions\": [],\n      \"quote_kind\": \"PARAPHRASE\"\n    },\n    {\n      \"claim_id\": \"c8\",\n      \"kind\": \"INFERENCE\",\n      \"text\": \"The supplied threads leave the handling questions unresolved: replies request checks of playback or intended output, but no results establish unavailable playback versus a silent recording, and no final scoring answer is posted.\",\n      \"evidence_ids\": [\n        \"m:C_AUDIO_GENERAL:1790879994.000128\",\n        \"m:C_AUDIO_GENERAL:1790880048.000113\",\n        \"m:C_AUDIO_GENERAL:1790880088.000226\",\n        \"m:C_AUDIO_GENERAL:1790915374.000127\",\n        \"m:C_AUDIO_GENERAL:1790915422.000113\",\n        \"m:C_AUDIO_GENERAL:1790915470.000226\",\n        \"m:C_AUDIO_QA:1790918811.000130\",\n        \"m:C_AUDIO_QA:1790918869.000113\"\n      ],\n      \"attributions\": [],\n      \"quote_kind\": \"PARAPHRASE\"\n    },\n    {\n      \"claim_id\": \"c9\",\n      \"kind\": \"GUIDANCE\",\n      \"text\": \"The current batch announcement directs reporting task ID, browser/error state, and whether another clip plays when the player never starts, including a waveform with no playback; it treats that condition as a tool incident and prohibits a model-quality failure or content QN solely for unavailable playback.\",\n      \"evidence_ids\": [\"k:slack:C_AUDIO_ANNOUNCEMENTS:1790892000.000901:1c524924\"],\n      \"attributions\": [],\n      \"quote_kind\": \"PARAPHRASE\"\n    },\n    {\n      \"claim_id\": \"c10\",\n      \"kind\": \"HISTORY\",\n      \"text\": \"The earlier batch-05 review records three incidents with a player stuck at 00:00 despite a waveform and a limited reload trial ending August 28. Its recorded execution was pending and outcome unobserved; it is expired history, not current guidance or a confirmed repair.\",\n      \"evidence_ids\": [\"k:audio-playback-trial-approval@1.0:1779c36a\"],\n      \"attributions\": [],\n      \"quote_kind\": \"PARAPHRASE\"\n    },\n    {\n      \"claim_id\": \"c11\",\n      \"kind\": \"HISTORY\",\n      \"text\": \"The September 21 prior decision approved an output-device check only for A06-H031 and A06-H032 on WS-A03, records no execution or observed outcome, and is not a standing rule. It explicitly rejects a general player-repair announcement or asking all tutors to change settings.\",\n      \"evidence_ids\": [\"k:audio-headset-check-approval@1.0:bb33bb5d\"],\n      \"attributions\": [],\n      \"quote_kind\": \"PARAPHRASE\"\n    }\n  ],\n  \"gaps\": [\n    {\n      \"gap_id\": \"g1\",\n      \"need\": \"OTHER\",\n      \"description\": \"The reports still need playback-state and prompt-requirement checks to distinguish unavailable audio from a silent recording. The first thread also lacks the verification requested by the team lead. These are diagnostic inputs, not an unsettled policy decision.\",\n      \"follow_up\": null\n    }\n  ],\n  \"evidence_sufficiency\": \"SUFFICIENT\",\n  \"proposed_action\": {\n    \"action_type\": \"POST_ALIGNMENT\",\n    \"intervention_need\": {\n      \"kind\": \"UNRESOLVED_HANDLING_QUESTION\",\n      \"statement\": \"Three threads still ask how to handle no-sound tasks, with diagnostic questions but no final handling answer, creating a need to distinguish playback incidents from content evaluation.\",\n      \"evidence_ids\": [\n        \"m:C_AUDIO_GENERAL:1790879994.000128\",\n        \"m:C_AUDIO_GENERAL:1790880088.000226\",\n        \"m:C_AUDIO_GENERAL:1790915374.000127\",\n        \"m:C_AUDIO_GENERAL:1790915470.000226\",\n        \"m:C_AUDIO_QA:1790918811.000130\",\n        \"m:C_AUDIO_QA:1790918869.000113\"\n      ]\n    },\n    \"instruction\": \"Post a focused reminder distinguishing unavailable playback from silent recordings, and request the checks needed to apply current handling.\",\n    \"rationale\": \"Current guidance answers the unavailable-playback case, but the threads have not established that condition. A conditional reminder addresses the repeated questions without assuming a technical cause or a content score.\",\n    \"draft_text\": \"Two QA tutors and a tutor report no sound; the tutor also sees a waveform on AUDIO-5374. A second tutor reports empty-sounding files from prompts expecting speech.\\n\\nPlease provide task IDs, browser/error state, whether playback starts, whether another clip plays, and whether the prompt requests silence or speech. For the first thread, also provide the requested result of playback elsewhere.\\n\\nIf playback is unavailable, including a waveform with no playback, report a tool incident. Do not assign a model-quality failure or content QN solely for unavailable playback. These instructions do not establish a repair or decide how to score a recording that actually plays silently.\",\n    \"scope_note\": \"The tool-incident handling applies only when playback is unavailable; the current reports do not yet establish that condition.\",\n    \"support_claim_ids\": [\"c1\", \"c2\", \"c3\", \"c4\", \"c6\", \"c7\", \"c8\", \"c9\"],\n    \"targets\": [],\n    \"context_claim_ids\": [\"c5\", \"c10\", \"c11\"]\n  },\n  \"severity\": {\n    \"level\": \"HIGH\",\n    \"rationale\": \"Two tutors and two QA tutors report comparable no-sound or empty-sounding output within the batch, suggesting broader evaluation or labeling risk. This does not establish a common cause or a batch-wide outage.\",\n    \"signals\": [\n      {\n        \"level\": \"HIGH\",\n        \"signal_index\": 3,\n        \"signal_text\": \"Multiple distinct people or affected tasks reporting a comparable problem within the relevant project, batch, and time window, suggesting broader disruption or systemic labeling risk. Consider the number affected relative to the known active group when that information is available; do not require an explicit statement of widespread impact\",\n        \"support\": \"Two QA tutors report no sound, a tutor reports a silent clip with a waveform, and a second tutor reports empty-sounding output from prompts expecting speech.\",\n        \"evidence_ids\": [\n          \"m:C_AUDIO_GENERAL:1790879994.000128\",\n          \"m:C_AUDIO_GENERAL:1790915374.000127\",\n          \"m:C_AUDIO_GENERAL:1790915422.000113\",\n          \"m:C_AUDIO_QA:1790918811.000130\"\n        ]\n      }\n    ],\n    \"affected_reporters\": [\n      {\n        \"author_id\": \"U007\",\n        \"evidence_id\": \"m:C_AUDIO_GENERAL:1790879994.000128\"\n      },\n      {\n        \"author_id\": \"U010\",\n        \"evidence_id\": \"m:C_AUDIO_GENERAL:1790915374.000127\"\n      },\n      {\n        \"author_id\": \"U015\",\n        \"evidence_id\": \"m:C_AUDIO_GENERAL:1790915422.000113\"\n      },\n      {\n        \"author_id\": \"U002\",\n        \"evidence_id\": \"m:C_AUDIO_QA:1790918811.000130\"\n      }\n    ],\n    \"recurrence\": \"FOUND\",\n    \"recurrence_evidence_ids\": [\"k:audio-playback-trial-approval@1.0:1779c36a\"],\n    \"reported_recurrence_evidence_ids\": []\n  },\n  \"confidence\": 0.9,\n  \"open_confirmation\": \"NONE\",\n  \"open_question\": null,\n  \"open_question_evidence_ids\": [],\n  \"source_conflicts\": [],\n  \"announcement_assessments\": [\n    {\n      \"evidence_id\": \"k:slack:C_AUDIO_ANNOUNCEMENTS:1790892000.000901:1c524924\",\n      \"relevant\": true,\n      \"directive\": true,\n      \"directive_quote\": \"Audio batch 06 — playback handling reminder: if the LT player never starts, including a visible waveform with no playback, report the task ID, browser/error state, and whether another clip plays.\",\n      \"rationale\": \"The announcement concerns the same project and batch and directly addresses the possible waveform-without-playback condition. Its handling is conditional on playback being unavailable, which the reports have not yet established.\"\n    }\n  ],\n  \"resolution\": [\n    {\n      \"member_id\": \"member_22fa96f8f37e7ea4f79fd6fb\",\n      \"state\": \"UNRESOLVED\",\n      \"evidence_ids\": [\n        \"m:C_AUDIO_GENERAL:1790879994.000128\",\n        \"m:C_AUDIO_GENERAL:1790880048.000113\",\n        \"m:C_AUDIO_GENERAL:1790880088.000226\"\n      ],\n      \"basis\": \"The QA tutor asks about QN versus a bad score; the replies request verification rather than provide a final answer, and no check results are supplied.\"\n    },\n    {\n      \"member_id\": \"member_4e743fb698f42bc160fb10b9\",\n      \"state\": \"UNRESOLVED\",\n      \"evidence_ids\": [\n        \"m:C_AUDIO_GENERAL:1790915374.000127\",\n        \"m:C_AUDIO_GENERAL:1790915422.000113\",\n        \"m:C_AUDIO_GENERAL:1790915470.000226\"\n      ],\n      \"basis\": \"The tutor asks about QN versus a quality score on AUDIO-5374; the replies add a related report and ask for playback checks without settling handling.\"\n    },\n    {\n      \"member_id\": \"member_45b305f64bc9ac187066f07c\",\n      \"state\": \"UNRESOLVED\",\n      \"evidence_ids\": [\n        \"m:C_AUDIO_QA:1790918811.000130\",\n        \"m:C_AUDIO_QA:1790918869.000113\"\n      ],\n      \"basis\": \"The QA tutor asks how to handle zero sound; the reply asks what the prompt required, with no answer or handling decision supplied.\"\n    }\n  ],\n  \"coverage\": [\n    {\n      \"need\": \"CURRENT_GUIDANCE\",\n      \"status\": \"COVERED\",\n      \"evidence_ids\": [\n        \"k:audio-multimodal-instructions@1.3:1c6df70e\",\n        \"k:audio-multimodal-faq@1.1:c724358c\"\n      ],\n      \"note\": \"Current instructions and FAQ establish handling for unavailable playback, not a blanket score for silent-sounding output.\"\n    },\n    {\n      \"need\": \"ANNOUNCEMENTS\",\n      \"status\": \"COVERED\",\n      \"evidence_ids\": [\"k:slack:C_AUDIO_ANNOUNCEMENTS:1790892000.000901:1c524924\"],\n      \"note\": \"The same-batch reminder directly covers player failure and specifies incident details.\"\n    },\n    {\n      \"need\": \"PRIOR_DECISIONS\",\n      \"status\": \"COVERED\",\n      \"evidence_ids\": [\n        \"k:audio-playback-trial-approval@1.0:1779c36a\",\n        \"k:audio-headset-check-approval@1.0:bb33bb5d\"\n      ],\n      \"note\": \"The retrieved prior records show narrow trials with no observed outcomes recorded. Neither supports a current general workaround; further outcome research is not needed for the proposed conditional reminder.\"\n    },\n    {\n      \"need\": \"MEMBER_QUESTIONS\",\n      \"status\": \"COVERED\",\n      \"evidence_ids\": [\n        \"m:C_AUDIO_GENERAL:1790879994.000128\",\n        \"m:C_AUDIO_GENERAL:1790880048.000113\",\n        \"m:C_AUDIO_GENERAL:1790880088.000226\",\n        \"m:C_AUDIO_GENERAL:1790915374.000127\",\n        \"m:C_AUDIO_GENERAL:1790915422.000113\",\n        \"m:C_AUDIO_GENERAL:1790915470.000226\",\n        \"m:C_AUDIO_QA:1790918811.000130\",\n        \"m:C_AUDIO_QA:1790918869.000113\"\n      ],\n      \"note\": \"All three supplied threads contain handling questions and requests for diagnostic context; none supplies the requested results or a final handling answer.\"\n    }\n  ],\n  \"review_note\": null,\n  \"action_choice\": null\n}",
+        "raw_sha256": "656bcc137803abad53a70592276379b8e2bc3f043e77dbd4e0d195edcf75fa3a",
+        "http_requests": {
+          "sent": 1,
+          "blocked": 0,
+          "hosts": [
+            "api.openai.com"
+          ],
+          "responses": [
+            {
+              "status_code": 200,
+              "seconds": 0.086,
+              "model": "gpt-6.1-sol",
+              "usage": {
+                "prompt_tokens": 12948,
+                "completion_tokens": 4499,
+                "total_tokens": 17447,
+                "prompt_tokens_details": {
+                  "cached_tokens": 0,
+                  "cache_write_tokens": 12945,
+                  "audio_tokens": 0
+                },
+                "completion_tokens_details": {
+                  "reasoning_tokens": 151,
+                  "audio_tokens": 0,
+                  "accepted_prediction_tokens": 0,
+                  "rejected_prediction_tokens": 0
+                }
+              },
+              "finish_reasons": [
+                "stop"
+              ]
+            }
+          ],
+          "input_tokens": 12954,
+          "refused": null,
+          "charged_usd": 0.070886
+        },
+        "input_tokens_estimate": 12954,
+        "status": "OK"
+      },
+      {
+        "stage": "grounding",
+        "schema": "GroundingJudgment",
+        "raw": "{\n  \"contract_version\": \"agent3-grounding-judgment-v5\",\n  \"verdicts\": [\n    {\n      \"statement_id\": \"claim:c1\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"U007 is a QA tutor and reports no audio while asking whether QN or a bad score is appropriate.\"\n    },\n    {\n      \"statement_id\": \"claim:c2\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"U010 reports a completely silent clip with an existing waveform, identifies AUDIO-5374, and asks about QN versus a quality score.\"\n    },\n    {\n      \"statement_id\": \"claim:c3\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"U015 explicitly reports several prompts expecting speech returning an empty-sounding file.\"\n    },\n    {\n      \"statement_id\": \"claim:c4\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"U002 reports zero sound, uncertainty about intentional silence, and asks for correct handling.\"\n    },\n    {\n      \"statement_id\": \"claim:c5\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The three cited messages are by distinct QA tutors and contain the respective volume, second-clip, and requested-output questions.\"\n    },\n    {\n      \"statement_id\": \"claim:c6\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The team lead explicitly calls for verifying intended silence and playback elsewhere in the first thread; the statement preserves that thread scope.\"\n    },\n    {\n      \"statement_id\": \"claim:c7\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The current instructions and FAQ jointly establish tool-incident reporting, diagnostic details, and the restrictions on scoring unavailable playback. The instructions expressly distinguish a waveform from proof of silence and handling guidance from repair confirmation.\"\n    },\n    {\n      \"statement_id\": \"claim:c8\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The complete supplied threads contain diagnostic questions but no results establishing playback availability or a final scoring answer.\"\n    },\n    {\n      \"statement_id\": \"claim:c9\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The same-batch announcement explicitly gives these conditional reporting and scoring directives. Its announcement-handling dependency is supported.\"\n    },\n    {\n      \"statement_id\": \"claim:c10\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The historical record describes three batch-05 incidents and a trial ending August 28. Its metadata records execution as pending and outcome as unobserved, and its historical status excludes current application.\"\n    },\n    {\n      \"statement_id\": \"claim:c11\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The September 21 prior record limits approval to the two named tasks and workstation, records no execution or observed outcome, and explicitly rejects a general repair announcement or settings change request.\"\n    },\n    {\n      \"statement_id\": \"summary:s1\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"U007 and U002 are QA tutors and U010 is a tutor; each reports no sound and asks about handling. U015 is a distinct tutor reporting empty-sounding output from speech prompts.\"\n    },\n    {\n      \"statement_id\": \"summary:s2\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"No supplied diagnostic results distinguish unavailable playback from silent recordings, and the threads provide no final scoring answer.\"\n    },\n    {\n      \"statement_id\": \"detail:d1\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The cited tutor message directly reports the silent clip, waveform, task reference, and scoring question.\"\n    },\n    {\n      \"statement_id\": \"detail:d2\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The cited QA tutors ask the stated checks in the respective three threads, with accurate roles and attribution.\"\n    },\n    {\n      \"statement_id\": \"detail:d3\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The team lead requests both verifications in the first thread, and none of the supplied replies supplies those results.\"\n    },\n    {\n      \"statement_id\": \"detail:d4\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The current instructions explicitly classify a waveform without playback as a tool incident and reject a waveform alone as evidence of a silent recording.\"\n    },\n    {\n      \"statement_id\": \"detail:d5\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The earlier record describes comparable waveform-without-playback symptoms and a limited, expired batch-05 trial rather than a current remedy.\"\n    },\n    {\n      \"statement_id\": \"detail:d6\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The prior batch-06 decision and its recorded states establish the limited approval, lack of execution and observed outcome, and non-standing status.\"\n    },\n    {\n      \"statement_id\": \"action\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The proposed reminder accurately summarizes the reports, requests relevant missing checks, preserves the first-thread scope of playback-elsewhere verification, and applies tool-incident handling only conditionally. It neither asserts a repair nor supplies an unsupported silent-recording score or concrete reporting route.\"\n    },\n    {\n      \"statement_id\": \"action:rationale\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"Current guidance addresses unavailable playback, while the reports do not establish that condition. A conditional reminder addresses the repeated handling requests without asserting a cause or content score.\"\n    },\n    {\n      \"statement_id\": \"action:need\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"All three threads contain unanswered handling requests and only diagnostic follow-up, supporting coordination to distinguish playback incidents from content evaluation.\"\n    },\n    {\n      \"statement_id\": \"announcement:k:slack:C_AUDIO_ANNOUNCEMENTS:1790892000.000901:1c524924\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The quotation matches the announcement. The announcement governs the same project and batch and explicitly directs handling for unavailable playback, including a waveform without playback. The statement correctly preserves that condition as unestablished in these reports.\"\n    },\n    {\n      \"statement_id\": \"resolution:member_22fa96f8f37e7ea4f79fd6fb\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The complete first thread contains the scoring question and verification requests, with neither results nor a final answer.\"\n    },\n    {\n      \"statement_id\": \"resolution:member_4e743fb698f42bc160fb10b9\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The complete AUDIO-5374 thread adds a related report and diagnostic question but does not settle handling.\"\n    },\n    {\n      \"statement_id\": \"resolution:member_45b305f64bc9ac187066f07c\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The complete third thread contains a handling request and a question about intended output, without a subsequent answer or decision.\"\n    },\n    {\n      \"statement_id\": \"severity:rationale\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"Four distinct reporters, comprising two tutors and two QA tutors, describe comparable symptoms. Their unresolved evaluation questions support the stated labeling-risk inference without establishing a common cause or batch-wide outage.\"\n    },\n    {\n      \"statement_id\": \"severity:signal:HIGH[3]\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The four distinct reporters describe comparable no-sound or empty-sounding output within the relevant batch and time window, satisfying the quoted multiple-reporter signal.\"\n    },\n    {\n      \"statement_id\": \"severity:recurrence\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The retrieved historical record documents earlier comparable waveform-without-playback incidents. This establishes prior occurrence of the symptom, not a shared cause.\"\n    },\n    {\n      \"statement_id\": \"reporter:U007\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"U007's own task-review message reports no audio and requests handling.\"\n    },\n    {\n      \"statement_id\": \"reporter:U010\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"U010's own message reports the silent AUDIO-5374 clip.\"\n    },\n    {\n      \"statement_id\": \"reporter:U015\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"U015's own message reports several speech prompts returning empty-sounding output.\"\n    },\n    {\n      \"statement_id\": \"reporter:U002\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"U002's own QA clarification reports zero sound and uncertainty about intended silence.\"\n    }\n  ],\n  \"action_sufficiency\": {\n    \"verdict\": \"SUFFICIENT\",\n    \"essential_statement_ids\": [\n      \"claim:c1\",\n      \"claim:c2\",\n      \"claim:c3\",\n      \"claim:c4\",\n      \"claim:c6\",\n      \"claim:c7\",\n      \"claim:c8\"\n    ],\n    \"rationale\": \"These supported premises justify the exact report summary, first-thread verification request, conditional handling instructions, and need for follow-up. The supported announcement reinforces the current guidance but is not essential because claim:c7 independently establishes the same handling. The action does not presume unavailable playback, prescribe an unverified repair, decide silent-recording scoring, or invent a reporting destination.\"\n  },\n  \"alternative_sufficiency\": [],\n  \"source_consistency\": {\n    \"assessed_evidence_ids\": [\n      \"k:audio-multimodal-instructions@1.3:1c6df70e\",\n      \"k:slack:C_AUDIO_ANNOUNCEMENTS:1790892000.000901:1c524924\",\n      \"k:audio-multimodal-faq@1.1:c724358c\"\n    ],\n    \"relations\": [\n      {\n        \"evidence_ids\": [\n          \"k:audio-multimodal-instructions@1.3:1c6df70e\",\n          \"k:slack:C_AUDIO_ANNOUNCEMENTS:1790892000.000901:1c524924\",\n          \"k:audio-multimodal-faq@1.1:c724358c\"\n        ],\n        \"relation\": \"AGREE\",\n        \"point\": \"Unavailable playback requires tool-incident reporting and does not alone justify a model-quality failure or content-based QN.\",\n        \"disagreement_scope\": null,\n        \"rationale\": \"All three current governing sources state this rule. The instructions and announcement provide additional diagnostic detail without conflicting with the FAQ.\"\n      },\n      {\n        \"evidence_ids\": [\n          \"k:audio-multimodal-instructions@1.3:1c6df70e\",\n          \"k:slack:C_AUDIO_ANNOUNCEMENTS:1790892000.000901:1c524924\"\n        ],\n        \"relation\": \"AGREE\",\n        \"point\": \"A visible waveform without playback remains a tool incident; capture browser/error state and whether another clip plays, without treating handling guidance as repair confirmation.\",\n        \"disagreement_scope\": null,\n        \"rationale\": \"Both sources explicitly cover waveform-without-playback cases, require the stated diagnostic information, and distinguish handling from a confirmed repair.\"\n      }\n    ],\n    \"declared_conflict_checks\": []\n  }\n}",
+        "raw_sha256": "33d4086c16a5d552fd20e2843440e6e722b46a9893323e4bc42a5de5977ba8f2",
+        "http_requests": {
+          "sent": 1,
+          "blocked": 0,
+          "hosts": [
+            "api.openai.com"
+          ],
+          "responses": [
+            {
+              "status_code": 200,
+              "seconds": 0.072,
+              "model": "gpt-6.1-sol",
+              "usage": {
+                "prompt_tokens": 11991,
+                "completion_tokens": 2651,
+                "total_tokens": 14642,
+                "prompt_tokens_details": {
+                  "cached_tokens": 0,
+                  "cache_write_tokens": 11988,
+                  "audio_tokens": 0
+                },
+                "completion_tokens_details": {
+                  "reasoning_tokens": 206,
+                  "audio_tokens": 0,
+                  "accepted_prediction_tokens": 0,
+                  "rejected_prediction_tokens": 0
+                }
+              },
+              "finish_reasons": [
+                "stop"
+              ]
+            }
+          ],
+          "input_tokens": 11997,
+          "refused": null,
+          "charged_usd": 0.050492
+        },
+        "input_tokens_estimate": 11997,
+        "status": "OK"
+      }
+    ],
+    "agent1_context": [
+      {
+        "sha256": "d6418cd1e13aaf0e607a0b635aaf7b9f9690563e4bc2bf3aa7371b472254418c",
+        "content": [
+          {
+            "member_id": "member_22fa96f8f37e7ea4f79fd6fb",
+            "thread_id": "1790879994.000128",
+            "summary": "Leo, a QA_TUTOR, raises an issue regarding a task where there is no audio, questioning whether it is a quality issue or a bad score, and asks for the correct handling of the task. Yuki, another QA_TUTOR, suggests verifying if the output is truly silent after checking the volume and another clip, noting that silent playback in one browser does not confirm the exported file is silent. Priya, a TEAM_LEAD, emphasizes the need to verify if the silence is intended and whether the file plays in other contexts.",
+            "central_question": "What is the correct handling for a task with no audio at all: should it be marked as Quarantine (QN) or given a bad score?",
+            "attributed_agent1_resolution": {
+              "state": "UNRESOLVED",
+              "rationale": "The thread does not provide a definitive answer to the original question about whether the issue is a quality problem or a bad score, leaving that aspect unresolved. Both replies request further diagnostics to confirm the nature of the silence but do not provide a substantive answer.",
+              "agent1_verification_status": "CORRECTED",
+              "note": "Agent 1 label, not evidence; NEEDS_REVIEW means Agent 1 did not verify it. Assess resolution from the member messages."
+            },
+            "agent1_review_required": false,
+            "agent1_review_reason": "",
+            "note": "Agent 1 interpretation, not source evidence; cite member messages for incident facts."
+          },
+          {
+            "member_id": "member_4e743fb698f42bc160fb10b9",
+            "thread_id": "1790915374.000127",
+            "summary": "Avery inquires whether a completely silent clip with an existing waveform should receive a quality score or a question number (QN) as part of task AUDIO-5374. Carla notes that several prompts expecting speech return an empty sounding file. Linh asks for confirmation that the output is truly silent after checking the volume and a second clip.",
+            "central_question": "Should a completely silent clip with an existing waveform receive a quality score or a question number (QN)?",
+            "attributed_agent1_resolution": {
+              "state": "UNRESOLVED",
+              "rationale": "The thread does not establish a substantive answer to Avery's question regarding the appropriate labeling for the silent clip. While there are related comments about the nature of the output, no definitive guidance or decision is provided.",
+              "agent1_verification_status": "VERIFIED",
+              "note": "Agent 1 label, not evidence; NEEDS_REVIEW means Agent 1 did not verify it. Assess resolution from the member messages."
+            },
+            "agent1_review_required": false,
+            "agent1_review_reason": "",
+            "note": "Agent 1 interpretation, not source evidence; cite member messages for incident facts."
+          },
+          {
+            "member_id": "member_45b305f64bc9ac187066f07c",
+            "thread_id": "1790918811.000130",
+            "summary": "Mina raised a QA clarification regarding an issue of zero sound on a track, questioning whether it is intentionally silent and asking for the correct handling for this task. Hana responded by inquiring whether silence was requested or if spoken output was required by the task.",
+            "central_question": "What is the correct handling for the task regarding zero sound on the track?",
+            "attributed_agent1_resolution": {
+              "state": "UNRESOLVED",
+              "rationale": "The thread does not provide a substantive answer or conclusion regarding the correct handling of the task. The responses are clarifying questions rather than providing guidance or a decision.",
+              "agent1_verification_status": "VERIFIED",
+              "note": "Agent 1 label, not evidence; NEEDS_REVIEW means Agent 1 did not verify it. Assess resolution from the member messages."
+            },
+            "agent1_review_required": false,
+            "agent1_review_reason": "",
+            "note": "Agent 1 interpretation, not source evidence; cite member messages for incident facts."
+          }
+        ]
+      }
+    ],
+    "drafts": {
+      "initial": {
+        "contract_version": "agent3-advisor-draft-v11",
+        "summary": "Two QA tutors and a tutor report no sound and ask how to handle their tasks; a second tutor reports empty-sounding output from prompts expecting speech. The threads do not yet establish whether playback is unavailable or the recordings are silent, so the scoring questions remain unresolved.",
+        "summary_sentences": [
+          {
+            "text": "Two QA tutors and a tutor report no sound and ask how to handle their tasks; a second tutor reports empty-sounding output from prompts expecting speech.",
+            "support_claim_ids": [
+              "c1",
+              "c2",
+              "c3",
+              "c4"
+            ],
+            "depends_on": []
+          },
+          {
+            "text": "The threads do not yet establish whether playback is unavailable or the recordings are silent, so the scoring questions remain unresolved.",
+            "support_claim_ids": [
+              "c8"
+            ],
+            "depends_on": [
+              1
+            ]
+          }
+        ],
+        "detail_sentences": [
+          {
+            "text": "A tutor reports that AUDIO-5374 is completely silent despite a visible waveform and asks whether to use QN or a quality score.",
+            "support_claim_ids": [
+              "c2"
+            ],
+            "depends_on": [],
+            "summary_depends_on": []
+          },
+          {
+            "text": "QA tutors ask about volume and a second clip in the first two threads, and a QA tutor asks whether silence or speech was requested in the third thread.",
+            "support_claim_ids": [
+              "c5"
+            ],
+            "depends_on": [],
+            "summary_depends_on": []
+          },
+          {
+            "text": "In the first thread, the team lead asks for verification of intended silence and playback elsewhere; the supplied replies do not provide those results.",
+            "support_claim_ids": [
+              "c6",
+              "c8"
+            ],
+            "depends_on": [],
+            "summary_depends_on": []
+          },
+          {
+            "text": "Current instructions treat a visible waveform with no playback as a tool incident, but a waveform alone does not establish a silent recording.",
+            "support_claim_ids": [
+              "c7"
+            ],
+            "depends_on": [],
+            "summary_depends_on": []
+          },
+          {
+            "text": "An earlier batch-05 record describes similar waveform-without-playback symptoms and an expired, limited reload trial, not a current remedy.",
+            "support_claim_ids": [
+              "c10"
+            ],
+            "depends_on": [],
+            "summary_depends_on": []
+          },
+          {
+            "text": "An earlier batch-06 decision approved an output-device check for two specified tasks, but records neither execution nor an observed outcome and is not a standing rule.",
+            "support_claim_ids": [
+              "c11"
+            ],
+            "depends_on": [],
+            "summary_depends_on": []
+          }
+        ],
+        "reasoning": "Repeated handling questions remain unanswered across three threads. Current guidance supplies a conditional answer for unavailable playback, not a rule for every silent-sounding recording. A focused reminder with diagnostic requests fits the evidence without declaring a cause, a repair, or a content-scoring decision. The earlier trials do not justify a general reload or settings-change instruction.",
+        "claims": [
+          {
+            "claim_id": "c1",
+            "kind": "INCIDENT_FACT",
+            "text": "A QA tutor reports no audio and asks whether to use QN or a bad score.",
+            "evidence_ids": [
+              "m:C_AUDIO_GENERAL:1790879994.000128"
+            ],
+            "attributions": [
+              {
+                "user_id": "U007",
+                "relation": "AUTHOR",
+                "evidence_id": "m:C_AUDIO_GENERAL:1790879994.000128"
+              }
+            ],
+            "quote": null,
+            "quote_kind": "PARAPHRASE",
+            "material": true
+          },
+          {
+            "claim_id": "c2",
+            "kind": "INCIDENT_FACT",
+            "text": "A tutor reports that AUDIO-5374 is completely silent despite an existing waveform and asks whether to use QN or a quality score.",
+            "evidence_ids": [
+              "m:C_AUDIO_GENERAL:1790915374.000127"
+            ],
+            "attributions": [
+              {
+                "user_id": "U010",
+                "relation": "AUTHOR",
+                "evidence_id": "m:C_AUDIO_GENERAL:1790915374.000127"
+              }
+            ],
+            "quote": null,
+            "quote_kind": "PARAPHRASE",
+            "material": true
+          },
+          {
+            "claim_id": "c3",
+            "kind": "INCIDENT_FACT",
+            "text": "A tutor reports that several prompts expecting speech return an empty-sounding file.",
+            "evidence_ids": [
+              "m:C_AUDIO_GENERAL:1790915422.000113"
+            ],
+            "attributions": [
+              {
+                "user_id": "U015",
+                "relation": "AUTHOR",
+                "evidence_id": "m:C_AUDIO_GENERAL:1790915422.000113"
+              }
+            ],
+            "quote": null,
+            "quote_kind": "PARAPHRASE",
+            "material": true
+          },
+          {
+            "claim_id": "c4",
+            "kind": "INCIDENT_FACT",
+            "text": "A QA tutor reports zero sound, cannot tell whether silence is intentional, and asks for correct handling.",
+            "evidence_ids": [
+              "m:C_AUDIO_QA:1790918811.000130"
+            ],
+            "attributions": [
+              {
+                "user_id": "U002",
+                "relation": "AUTHOR",
+                "evidence_id": "m:C_AUDIO_QA:1790918811.000130"
+              }
+            ],
+            "quote": null,
+            "quote_kind": "PARAPHRASE",
+            "material": true
+          },
+          {
+            "claim_id": "c5",
+            "kind": "INCIDENT_FACT",
+            "text": "A QA tutor asks about volume and a second clip in the first thread; a different QA tutor asks the same checks in the AUDIO-5374 thread; a third QA tutor asks whether silence or speech was requested in the third thread.",
+            "evidence_ids": [
+              "m:C_AUDIO_GENERAL:1790880048.000113",
+              "m:C_AUDIO_GENERAL:1790915470.000226",
+              "m:C_AUDIO_QA:1790918869.000113"
+            ],
+            "attributions": [
+              {
+                "user_id": "U019",
+                "relation": "AUTHOR",
+                "evidence_id": "m:C_AUDIO_GENERAL:1790880048.000113"
+              },
+              {
+                "user_id": "U014",
+                "relation": "AUTHOR",
+                "evidence_id": "m:C_AUDIO_GENERAL:1790915470.000226"
+              },
+              {
+                "user_id": "U008",
+                "relation": "AUTHOR",
+                "evidence_id": "m:C_AUDIO_QA:1790918869.000113"
+              }
+            ],
+            "quote": null,
+            "quote_kind": "PARAPHRASE",
+            "material": true
+          },
+          {
+            "claim_id": "c6",
+            "kind": "THREAD_INSTRUCTION",
+            "text": "In the first thread, the team lead instructs that intended silence and whether the file plays elsewhere need verification.",
+            "evidence_ids": [
+              "m:C_AUDIO_GENERAL:1790880088.000226"
+            ],
+            "attributions": [
+              {
+                "user_id": "U006",
+                "relation": "AUTHOR",
+                "evidence_id": "m:C_AUDIO_GENERAL:1790880088.000226"
+              }
+            ],
+            "quote": null,
+            "quote_kind": "PARAPHRASE",
+            "material": true
+          },
+          {
+            "claim_id": "c7",
+            "kind": "GUIDANCE",
+            "text": "Current instructions and FAQ require a tool-incident report for unavailable playback, including a waveform with no playback, with the task ID and available reproduction details. Capture browser/error state and whether another clip plays. Unavailable playback alone is not a model-quality failure or a content-based QN reason; a waveform does not establish a silent recording, and handling guidance does not establish a repair.",
+            "evidence_ids": [
+              "k:audio-multimodal-instructions@1.3:1c6df70e",
+              "k:audio-multimodal-faq@1.1:c724358c"
+            ],
+            "attributions": [],
+            "quote": null,
+            "quote_kind": "PARAPHRASE",
+            "material": true
+          },
+          {
+            "claim_id": "c8",
+            "kind": "INFERENCE",
+            "text": "The supplied threads leave the handling questions unresolved: replies request checks of playback or intended output, but no results establish unavailable playback versus a silent recording, and no final scoring answer is posted.",
+            "evidence_ids": [
+              "m:C_AUDIO_GENERAL:1790879994.000128",
+              "m:C_AUDIO_GENERAL:1790880048.000113",
+              "m:C_AUDIO_GENERAL:1790880088.000226",
+              "m:C_AUDIO_GENERAL:1790915374.000127",
+              "m:C_AUDIO_GENERAL:1790915422.000113",
+              "m:C_AUDIO_GENERAL:1790915470.000226",
+              "m:C_AUDIO_QA:1790918811.000130",
+              "m:C_AUDIO_QA:1790918869.000113"
+            ],
+            "attributions": [],
+            "quote": null,
+            "quote_kind": "PARAPHRASE",
+            "material": true
+          },
+          {
+            "claim_id": "c9",
+            "kind": "GUIDANCE",
+            "text": "The current batch announcement directs reporting task ID, browser/error state, and whether another clip plays when the player never starts, including a waveform with no playback; it treats that condition as a tool incident and prohibits a model-quality failure or content QN solely for unavailable playback.",
+            "evidence_ids": [
+              "k:slack:C_AUDIO_ANNOUNCEMENTS:1790892000.000901:1c524924"
+            ],
+            "attributions": [],
+            "quote": null,
+            "quote_kind": "PARAPHRASE",
+            "material": true
+          },
+          {
+            "claim_id": "c10",
+            "kind": "HISTORY",
+            "text": "The earlier batch-05 review records three incidents with a player stuck at 00:00 despite a waveform and a limited reload trial ending August 28. Its recorded execution was pending and outcome unobserved; it is expired history, not current guidance or a confirmed repair.",
+            "evidence_ids": [
+              "k:audio-playback-trial-approval@1.0:1779c36a"
+            ],
+            "attributions": [],
+            "quote": null,
+            "quote_kind": "PARAPHRASE",
+            "material": true
+          },
+          {
+            "claim_id": "c11",
+            "kind": "HISTORY",
+            "text": "The September 21 prior decision approved an output-device check only for A06-H031 and A06-H032 on WS-A03, records no execution or observed outcome, and is not a standing rule. It explicitly rejects a general player-repair announcement or asking all tutors to change settings.",
+            "evidence_ids": [
+              "k:audio-headset-check-approval@1.0:bb33bb5d"
+            ],
+            "attributions": [],
+            "quote": null,
+            "quote_kind": "PARAPHRASE",
+            "material": true
+          }
+        ],
+        "gaps": [
+          {
+            "gap_id": "g1",
+            "need": "OTHER",
+            "description": "The reports still need playback-state and prompt-requirement checks to distinguish unavailable audio from a silent recording. The first thread also lacks the verification requested by the team lead. These are diagnostic inputs, not an unsettled policy decision.",
+            "follow_up": null
+          }
+        ],
+        "evidence_sufficiency": "SUFFICIENT",
+        "proposed_action": {
+          "action_type": "POST_ALIGNMENT",
+          "intervention_need": {
+            "kind": "UNRESOLVED_HANDLING_QUESTION",
+            "statement": "Three threads still ask how to handle no-sound tasks, with diagnostic questions but no final handling answer, creating a need to distinguish playback incidents from content evaluation.",
+            "evidence_ids": [
+              "m:C_AUDIO_GENERAL:1790879994.000128",
+              "m:C_AUDIO_GENERAL:1790880088.000226",
+              "m:C_AUDIO_GENERAL:1790915374.000127",
+              "m:C_AUDIO_GENERAL:1790915470.000226",
+              "m:C_AUDIO_QA:1790918811.000130",
+              "m:C_AUDIO_QA:1790918869.000113"
+            ]
+          },
+          "instruction": "Post a focused reminder distinguishing unavailable playback from silent recordings, and request the checks needed to apply current handling.",
+          "rationale": "Current guidance answers the unavailable-playback case, but the threads have not established that condition. A conditional reminder addresses the repeated questions without assuming a technical cause or a content score.",
+          "draft_text": "Two QA tutors and a tutor report no sound; the tutor also sees a waveform on AUDIO-5374. A second tutor reports empty-sounding files from prompts expecting speech.\n\nPlease provide task IDs, browser/error state, whether playback starts, whether another clip plays, and whether the prompt requests silence or speech. For the first thread, also provide the requested result of playback elsewhere.\n\nIf playback is unavailable, including a waveform with no playback, report a tool incident. Do not assign a model-quality failure or content QN solely for unavailable playback. These instructions do not establish a repair or decide how to score a recording that actually plays silently.",
+          "scope_note": "The tool-incident handling applies only when playback is unavailable; the current reports do not yet establish that condition.",
+          "support_claim_ids": [
+            "c1",
+            "c2",
+            "c3",
+            "c4",
+            "c6",
+            "c7",
+            "c8",
+            "c9"
+          ],
+          "targets": [],
+          "context_claim_ids": [
+            "c5",
+            "c10",
+            "c11"
+          ]
+        },
+        "severity": {
+          "level": "HIGH",
+          "rationale": "Two tutors and two QA tutors report comparable no-sound or empty-sounding output within the batch, suggesting broader evaluation or labeling risk. This does not establish a common cause or a batch-wide outage.",
+          "signals": [
+            {
+              "level": "HIGH",
+              "signal_index": 3,
+              "signal_text": "Multiple distinct people or affected tasks reporting a comparable problem within the relevant project, batch, and time window, suggesting broader disruption or systemic labeling risk. Consider the number affected relative to the known active group when that information is available; do not require an explicit statement of widespread impact",
+              "support": "Two QA tutors report no sound, a tutor reports a silent clip with a waveform, and a second tutor reports empty-sounding output from prompts expecting speech.",
+              "evidence_ids": [
+                "m:C_AUDIO_GENERAL:1790879994.000128",
+                "m:C_AUDIO_GENERAL:1790915374.000127",
+                "m:C_AUDIO_GENERAL:1790915422.000113",
+                "m:C_AUDIO_QA:1790918811.000130"
+              ]
+            }
+          ],
+          "affected_reporters": [
+            {
+              "author_id": "U007",
+              "evidence_id": "m:C_AUDIO_GENERAL:1790879994.000128"
+            },
+            {
+              "author_id": "U010",
+              "evidence_id": "m:C_AUDIO_GENERAL:1790915374.000127"
+            },
+            {
+              "author_id": "U015",
+              "evidence_id": "m:C_AUDIO_GENERAL:1790915422.000113"
+            },
+            {
+              "author_id": "U002",
+              "evidence_id": "m:C_AUDIO_QA:1790918811.000130"
+            }
+          ],
+          "recurrence": "FOUND",
+          "recurrence_evidence_ids": [
+            "k:audio-playback-trial-approval@1.0:1779c36a"
+          ],
+          "reported_recurrence_evidence_ids": []
+        },
+        "confidence": 0.9,
+        "open_confirmation": "NONE",
+        "open_question": null,
+        "open_question_evidence_ids": [],
+        "source_conflicts": [],
+        "announcement_assessments": [
+          {
+            "evidence_id": "k:slack:C_AUDIO_ANNOUNCEMENTS:1790892000.000901:1c524924",
+            "relevant": true,
+            "directive": true,
+            "directive_quote": "Audio batch 06 — playback handling reminder: if the LT player never starts, including a visible waveform with no playback, report the task ID, browser/error state, and whether another clip plays.",
+            "rationale": "The announcement concerns the same project and batch and directly addresses the possible waveform-without-playback condition. Its handling is conditional on playback being unavailable, which the reports have not yet established."
+          }
+        ],
+        "resolution": [
+          {
+            "member_id": "member_22fa96f8f37e7ea4f79fd6fb",
+            "state": "UNRESOLVED",
+            "evidence_ids": [
+              "m:C_AUDIO_GENERAL:1790879994.000128",
+              "m:C_AUDIO_GENERAL:1790880048.000113",
+              "m:C_AUDIO_GENERAL:1790880088.000226"
+            ],
+            "basis": "The QA tutor asks about QN versus a bad score; the replies request verification rather than provide a final answer, and no check results are supplied."
+          },
+          {
+            "member_id": "member_4e743fb698f42bc160fb10b9",
+            "state": "UNRESOLVED",
+            "evidence_ids": [
+              "m:C_AUDIO_GENERAL:1790915374.000127",
+              "m:C_AUDIO_GENERAL:1790915422.000113",
+              "m:C_AUDIO_GENERAL:1790915470.000226"
+            ],
+            "basis": "The tutor asks about QN versus a quality score on AUDIO-5374; the replies add a related report and ask for playback checks without settling handling."
+          },
+          {
+            "member_id": "member_45b305f64bc9ac187066f07c",
+            "state": "UNRESOLVED",
+            "evidence_ids": [
+              "m:C_AUDIO_QA:1790918811.000130",
+              "m:C_AUDIO_QA:1790918869.000113"
+            ],
+            "basis": "The QA tutor asks how to handle zero sound; the reply asks what the prompt required, with no answer or handling decision supplied."
+          }
+        ],
+        "coverage": [
+          {
+            "need": "CURRENT_GUIDANCE",
+            "status": "COVERED",
+            "evidence_ids": [
+              "k:audio-multimodal-instructions@1.3:1c6df70e",
+              "k:audio-multimodal-faq@1.1:c724358c"
+            ],
+            "note": "Current instructions and FAQ establish handling for unavailable playback, not a blanket score for silent-sounding output.",
+            "gap_id": null
+          },
+          {
+            "need": "ANNOUNCEMENTS",
+            "status": "COVERED",
+            "evidence_ids": [
+              "k:slack:C_AUDIO_ANNOUNCEMENTS:1790892000.000901:1c524924"
+            ],
+            "note": "The same-batch reminder directly covers player failure and specifies incident details.",
+            "gap_id": null
+          },
+          {
+            "need": "PRIOR_DECISIONS",
+            "status": "COVERED",
+            "evidence_ids": [
+              "k:audio-playback-trial-approval@1.0:1779c36a",
+              "k:audio-headset-check-approval@1.0:bb33bb5d"
+            ],
+            "note": "The retrieved prior records show narrow trials with no observed outcomes recorded. Neither supports a current general workaround; further outcome research is not needed for the proposed conditional reminder.",
+            "gap_id": null
+          },
+          {
+            "need": "MEMBER_QUESTIONS",
+            "status": "COVERED",
+            "evidence_ids": [
+              "m:C_AUDIO_GENERAL:1790879994.000128",
+              "m:C_AUDIO_GENERAL:1790880048.000113",
+              "m:C_AUDIO_GENERAL:1790880088.000226",
+              "m:C_AUDIO_GENERAL:1790915374.000127",
+              "m:C_AUDIO_GENERAL:1790915422.000113",
+              "m:C_AUDIO_GENERAL:1790915470.000226",
+              "m:C_AUDIO_QA:1790918811.000130",
+              "m:C_AUDIO_QA:1790918869.000113"
+            ],
+            "note": "All three supplied threads contain handling questions and requests for diagnostic context; none supplies the requested results or a final handling answer.",
+            "gap_id": null
+          }
+        ],
+        "review_note": null,
+        "action_choice": null
+      },
+      "final": {
+        "contract_version": "agent3-advisor-draft-v11",
+        "summary": "Two QA tutors and a tutor report no sound and ask how to handle their tasks; a second tutor reports empty-sounding output from prompts expecting speech. The threads do not yet establish whether playback is unavailable or the recordings are silent, so the scoring questions remain unresolved.",
+        "summary_sentences": [
+          {
+            "text": "Two QA tutors and a tutor report no sound and ask how to handle their tasks; a second tutor reports empty-sounding output from prompts expecting speech.",
+            "support_claim_ids": [
+              "c1",
+              "c2",
+              "c3",
+              "c4"
+            ],
+            "depends_on": []
+          },
+          {
+            "text": "The threads do not yet establish whether playback is unavailable or the recordings are silent, so the scoring questions remain unresolved.",
+            "support_claim_ids": [
+              "c8"
+            ],
+            "depends_on": [
+              1
+            ]
+          }
+        ],
+        "detail_sentences": [
+          {
+            "text": "A tutor reports that AUDIO-5374 is completely silent despite a visible waveform and asks whether to use QN or a quality score.",
+            "support_claim_ids": [
+              "c2"
+            ],
+            "depends_on": [],
+            "summary_depends_on": []
+          },
+          {
+            "text": "QA tutors ask about volume and a second clip in the first two threads, and a QA tutor asks whether silence or speech was requested in the third thread.",
+            "support_claim_ids": [
+              "c5"
+            ],
+            "depends_on": [],
+            "summary_depends_on": []
+          },
+          {
+            "text": "In the first thread, the team lead asks for verification of intended silence and playback elsewhere; the supplied replies do not provide those results.",
+            "support_claim_ids": [
+              "c6",
+              "c8"
+            ],
+            "depends_on": [],
+            "summary_depends_on": []
+          },
+          {
+            "text": "Current instructions treat a visible waveform with no playback as a tool incident, but a waveform alone does not establish a silent recording.",
+            "support_claim_ids": [
+              "c7"
+            ],
+            "depends_on": [],
+            "summary_depends_on": []
+          },
+          {
+            "text": "An earlier batch-05 record describes similar waveform-without-playback symptoms and an expired, limited reload trial, not a current remedy.",
+            "support_claim_ids": [
+              "c10"
+            ],
+            "depends_on": [],
+            "summary_depends_on": []
+          },
+          {
+            "text": "An earlier batch-06 decision approved an output-device check for two specified tasks, but records neither execution nor an observed outcome and is not a standing rule.",
+            "support_claim_ids": [
+              "c11"
+            ],
+            "depends_on": [],
+            "summary_depends_on": []
+          }
+        ],
+        "reasoning": "Repeated handling questions remain unanswered across three threads. Current guidance supplies a conditional answer for unavailable playback, not a rule for every silent-sounding recording. A focused reminder with diagnostic requests fits the evidence without declaring a cause, a repair, or a content-scoring decision. The earlier trials do not justify a general reload or settings-change instruction.",
+        "claims": [
+          {
+            "claim_id": "c1",
+            "kind": "INCIDENT_FACT",
+            "text": "A QA tutor reports no audio and asks whether to use QN or a bad score.",
+            "evidence_ids": [
+              "m:C_AUDIO_GENERAL:1790879994.000128"
+            ],
+            "attributions": [
+              {
+                "user_id": "U007",
+                "relation": "AUTHOR",
+                "evidence_id": "m:C_AUDIO_GENERAL:1790879994.000128"
+              }
+            ],
+            "quote": null,
+            "quote_kind": "PARAPHRASE",
+            "material": true
+          },
+          {
+            "claim_id": "c2",
+            "kind": "INCIDENT_FACT",
+            "text": "A tutor reports that AUDIO-5374 is completely silent despite an existing waveform and asks whether to use QN or a quality score.",
+            "evidence_ids": [
+              "m:C_AUDIO_GENERAL:1790915374.000127"
+            ],
+            "attributions": [
+              {
+                "user_id": "U010",
+                "relation": "AUTHOR",
+                "evidence_id": "m:C_AUDIO_GENERAL:1790915374.000127"
+              }
+            ],
+            "quote": null,
+            "quote_kind": "PARAPHRASE",
+            "material": true
+          },
+          {
+            "claim_id": "c3",
+            "kind": "INCIDENT_FACT",
+            "text": "A tutor reports that several prompts expecting speech return an empty-sounding file.",
+            "evidence_ids": [
+              "m:C_AUDIO_GENERAL:1790915422.000113"
+            ],
+            "attributions": [
+              {
+                "user_id": "U015",
+                "relation": "AUTHOR",
+                "evidence_id": "m:C_AUDIO_GENERAL:1790915422.000113"
+              }
+            ],
+            "quote": null,
+            "quote_kind": "PARAPHRASE",
+            "material": true
+          },
+          {
+            "claim_id": "c4",
+            "kind": "INCIDENT_FACT",
+            "text": "A QA tutor reports zero sound, cannot tell whether silence is intentional, and asks for correct handling.",
+            "evidence_ids": [
+              "m:C_AUDIO_QA:1790918811.000130"
+            ],
+            "attributions": [
+              {
+                "user_id": "U002",
+                "relation": "AUTHOR",
+                "evidence_id": "m:C_AUDIO_QA:1790918811.000130"
+              }
+            ],
+            "quote": null,
+            "quote_kind": "PARAPHRASE",
+            "material": true
+          },
+          {
+            "claim_id": "c5",
+            "kind": "INCIDENT_FACT",
+            "text": "A QA tutor asks about volume and a second clip in the first thread; a different QA tutor asks the same checks in the AUDIO-5374 thread; a third QA tutor asks whether silence or speech was requested in the third thread.",
+            "evidence_ids": [
+              "m:C_AUDIO_GENERAL:1790880048.000113",
+              "m:C_AUDIO_GENERAL:1790915470.000226",
+              "m:C_AUDIO_QA:1790918869.000113"
+            ],
+            "attributions": [
+              {
+                "user_id": "U019",
+                "relation": "AUTHOR",
+                "evidence_id": "m:C_AUDIO_GENERAL:1790880048.000113"
+              },
+              {
+                "user_id": "U014",
+                "relation": "AUTHOR",
+                "evidence_id": "m:C_AUDIO_GENERAL:1790915470.000226"
+              },
+              {
+                "user_id": "U008",
+                "relation": "AUTHOR",
+                "evidence_id": "m:C_AUDIO_QA:1790918869.000113"
+              }
+            ],
+            "quote": null,
+            "quote_kind": "PARAPHRASE",
+            "material": true
+          },
+          {
+            "claim_id": "c6",
+            "kind": "THREAD_INSTRUCTION",
+            "text": "In the first thread, the team lead instructs that intended silence and whether the file plays elsewhere need verification.",
+            "evidence_ids": [
+              "m:C_AUDIO_GENERAL:1790880088.000226"
+            ],
+            "attributions": [
+              {
+                "user_id": "U006",
+                "relation": "AUTHOR",
+                "evidence_id": "m:C_AUDIO_GENERAL:1790880088.000226"
+              }
+            ],
+            "quote": null,
+            "quote_kind": "PARAPHRASE",
+            "material": true
+          },
+          {
+            "claim_id": "c7",
+            "kind": "GUIDANCE",
+            "text": "Current instructions and FAQ require a tool-incident report for unavailable playback, including a waveform with no playback, with the task ID and available reproduction details. Capture browser/error state and whether another clip plays. Unavailable playback alone is not a model-quality failure or a content-based QN reason; a waveform does not establish a silent recording, and handling guidance does not establish a repair.",
+            "evidence_ids": [
+              "k:audio-multimodal-instructions@1.3:1c6df70e",
+              "k:audio-multimodal-faq@1.1:c724358c"
+            ],
+            "attributions": [],
+            "quote": null,
+            "quote_kind": "PARAPHRASE",
+            "material": true
+          },
+          {
+            "claim_id": "c8",
+            "kind": "INFERENCE",
+            "text": "The supplied threads leave the handling questions unresolved: replies request checks of playback or intended output, but no results establish unavailable playback versus a silent recording, and no final scoring answer is posted.",
+            "evidence_ids": [
+              "m:C_AUDIO_GENERAL:1790879994.000128",
+              "m:C_AUDIO_GENERAL:1790880048.000113",
+              "m:C_AUDIO_GENERAL:1790880088.000226",
+              "m:C_AUDIO_GENERAL:1790915374.000127",
+              "m:C_AUDIO_GENERAL:1790915422.000113",
+              "m:C_AUDIO_GENERAL:1790915470.000226",
+              "m:C_AUDIO_QA:1790918811.000130",
+              "m:C_AUDIO_QA:1790918869.000113"
+            ],
+            "attributions": [],
+            "quote": null,
+            "quote_kind": "PARAPHRASE",
+            "material": true
+          },
+          {
+            "claim_id": "c9",
+            "kind": "GUIDANCE",
+            "text": "The current batch announcement directs reporting task ID, browser/error state, and whether another clip plays when the player never starts, including a waveform with no playback; it treats that condition as a tool incident and prohibits a model-quality failure or content QN solely for unavailable playback.",
+            "evidence_ids": [
+              "k:slack:C_AUDIO_ANNOUNCEMENTS:1790892000.000901:1c524924"
+            ],
+            "attributions": [],
+            "quote": null,
+            "quote_kind": "PARAPHRASE",
+            "material": true
+          },
+          {
+            "claim_id": "c10",
+            "kind": "HISTORY",
+            "text": "The earlier batch-05 review records three incidents with a player stuck at 00:00 despite a waveform and a limited reload trial ending August 28. Its recorded execution was pending and outcome unobserved; it is expired history, not current guidance or a confirmed repair.",
+            "evidence_ids": [
+              "k:audio-playback-trial-approval@1.0:1779c36a"
+            ],
+            "attributions": [],
+            "quote": null,
+            "quote_kind": "PARAPHRASE",
+            "material": true
+          },
+          {
+            "claim_id": "c11",
+            "kind": "HISTORY",
+            "text": "The September 21 prior decision approved an output-device check only for A06-H031 and A06-H032 on WS-A03, records no execution or observed outcome, and is not a standing rule. It explicitly rejects a general player-repair announcement or asking all tutors to change settings.",
+            "evidence_ids": [
+              "k:audio-headset-check-approval@1.0:bb33bb5d"
+            ],
+            "attributions": [],
+            "quote": null,
+            "quote_kind": "PARAPHRASE",
+            "material": true
+          }
+        ],
+        "gaps": [
+          {
+            "gap_id": "g1",
+            "need": "OTHER",
+            "description": "The reports still need playback-state and prompt-requirement checks to distinguish unavailable audio from a silent recording. The first thread also lacks the verification requested by the team lead. These are diagnostic inputs, not an unsettled policy decision.",
+            "follow_up": null
+          }
+        ],
+        "evidence_sufficiency": "SUFFICIENT",
+        "proposed_action": {
+          "action_type": "POST_ALIGNMENT",
+          "intervention_need": {
+            "kind": "UNRESOLVED_HANDLING_QUESTION",
+            "statement": "Three threads still ask how to handle no-sound tasks, with diagnostic questions but no final handling answer, creating a need to distinguish playback incidents from content evaluation.",
+            "evidence_ids": [
+              "m:C_AUDIO_GENERAL:1790879994.000128",
+              "m:C_AUDIO_GENERAL:1790880088.000226",
+              "m:C_AUDIO_GENERAL:1790915374.000127",
+              "m:C_AUDIO_GENERAL:1790915470.000226",
+              "m:C_AUDIO_QA:1790918811.000130",
+              "m:C_AUDIO_QA:1790918869.000113"
+            ]
+          },
+          "instruction": "Post a focused reminder distinguishing unavailable playback from silent recordings, and request the checks needed to apply current handling.",
+          "rationale": "Current guidance answers the unavailable-playback case, but the threads have not established that condition. A conditional reminder addresses the repeated questions without assuming a technical cause or a content score.",
+          "draft_text": "Two QA tutors and a tutor report no sound; the tutor also sees a waveform on AUDIO-5374. A second tutor reports empty-sounding files from prompts expecting speech.\n\nPlease provide task IDs, browser/error state, whether playback starts, whether another clip plays, and whether the prompt requests silence or speech. For the first thread, also provide the requested result of playback elsewhere.\n\nIf playback is unavailable, including a waveform with no playback, report a tool incident. Do not assign a model-quality failure or content QN solely for unavailable playback. These instructions do not establish a repair or decide how to score a recording that actually plays silently.",
+          "scope_note": "The tool-incident handling applies only when playback is unavailable; the current reports do not yet establish that condition.",
+          "support_claim_ids": [
+            "c1",
+            "c2",
+            "c3",
+            "c4",
+            "c6",
+            "c7",
+            "c8",
+            "c9"
+          ],
+          "targets": [],
+          "context_claim_ids": [
+            "c5",
+            "c10",
+            "c11"
+          ]
+        },
+        "severity": {
+          "level": "HIGH",
+          "rationale": "Two tutors and two QA tutors report comparable no-sound or empty-sounding output within the batch, suggesting broader evaluation or labeling risk. This does not establish a common cause or a batch-wide outage.",
+          "signals": [
+            {
+              "level": "HIGH",
+              "signal_index": 3,
+              "signal_text": "Multiple distinct people or affected tasks reporting a comparable problem within the relevant project, batch, and time window, suggesting broader disruption or systemic labeling risk. Consider the number affected relative to the known active group when that information is available; do not require an explicit statement of widespread impact",
+              "support": "Two QA tutors report no sound, a tutor reports a silent clip with a waveform, and a second tutor reports empty-sounding output from prompts expecting speech.",
+              "evidence_ids": [
+                "m:C_AUDIO_GENERAL:1790879994.000128",
+                "m:C_AUDIO_GENERAL:1790915374.000127",
+                "m:C_AUDIO_GENERAL:1790915422.000113",
+                "m:C_AUDIO_QA:1790918811.000130"
+              ]
+            }
+          ],
+          "affected_reporters": [
+            {
+              "author_id": "U007",
+              "evidence_id": "m:C_AUDIO_GENERAL:1790879994.000128"
+            },
+            {
+              "author_id": "U010",
+              "evidence_id": "m:C_AUDIO_GENERAL:1790915374.000127"
+            },
+            {
+              "author_id": "U015",
+              "evidence_id": "m:C_AUDIO_GENERAL:1790915422.000113"
+            },
+            {
+              "author_id": "U002",
+              "evidence_id": "m:C_AUDIO_QA:1790918811.000130"
+            }
+          ],
+          "recurrence": "FOUND",
+          "recurrence_evidence_ids": [
+            "k:audio-playback-trial-approval@1.0:1779c36a"
+          ],
+          "reported_recurrence_evidence_ids": []
+        },
+        "confidence": 0.9,
+        "open_confirmation": "NONE",
+        "open_question": null,
+        "open_question_evidence_ids": [],
+        "source_conflicts": [],
+        "announcement_assessments": [
+          {
+            "evidence_id": "k:slack:C_AUDIO_ANNOUNCEMENTS:1790892000.000901:1c524924",
+            "relevant": true,
+            "directive": true,
+            "directive_quote": "Audio batch 06 — playback handling reminder: if the LT player never starts, including a visible waveform with no playback, report the task ID, browser/error state, and whether another clip plays.",
+            "rationale": "The announcement concerns the same project and batch and directly addresses the possible waveform-without-playback condition. Its handling is conditional on playback being unavailable, which the reports have not yet established."
+          }
+        ],
+        "resolution": [
+          {
+            "member_id": "member_22fa96f8f37e7ea4f79fd6fb",
+            "state": "UNRESOLVED",
+            "evidence_ids": [
+              "m:C_AUDIO_GENERAL:1790879994.000128",
+              "m:C_AUDIO_GENERAL:1790880048.000113",
+              "m:C_AUDIO_GENERAL:1790880088.000226"
+            ],
+            "basis": "The QA tutor asks about QN versus a bad score; the replies request verification rather than provide a final answer, and no check results are supplied."
+          },
+          {
+            "member_id": "member_4e743fb698f42bc160fb10b9",
+            "state": "UNRESOLVED",
+            "evidence_ids": [
+              "m:C_AUDIO_GENERAL:1790915374.000127",
+              "m:C_AUDIO_GENERAL:1790915422.000113",
+              "m:C_AUDIO_GENERAL:1790915470.000226"
+            ],
+            "basis": "The tutor asks about QN versus a quality score on AUDIO-5374; the replies add a related report and ask for playback checks without settling handling."
+          },
+          {
+            "member_id": "member_45b305f64bc9ac187066f07c",
+            "state": "UNRESOLVED",
+            "evidence_ids": [
+              "m:C_AUDIO_QA:1790918811.000130",
+              "m:C_AUDIO_QA:1790918869.000113"
+            ],
+            "basis": "The QA tutor asks how to handle zero sound; the reply asks what the prompt required, with no answer or handling decision supplied."
+          }
+        ],
+        "coverage": [
+          {
+            "need": "CURRENT_GUIDANCE",
+            "status": "COVERED",
+            "evidence_ids": [
+              "k:audio-multimodal-instructions@1.3:1c6df70e",
+              "k:audio-multimodal-faq@1.1:c724358c"
+            ],
+            "note": "Current instructions and FAQ establish handling for unavailable playback, not a blanket score for silent-sounding output.",
+            "gap_id": null
+          },
+          {
+            "need": "ANNOUNCEMENTS",
+            "status": "COVERED",
+            "evidence_ids": [
+              "k:slack:C_AUDIO_ANNOUNCEMENTS:1790892000.000901:1c524924"
+            ],
+            "note": "The same-batch reminder directly covers player failure and specifies incident details.",
+            "gap_id": null
+          },
+          {
+            "need": "PRIOR_DECISIONS",
+            "status": "COVERED",
+            "evidence_ids": [
+              "k:audio-playback-trial-approval@1.0:1779c36a",
+              "k:audio-headset-check-approval@1.0:bb33bb5d"
+            ],
+            "note": "The retrieved prior records show narrow trials with no observed outcomes recorded. Neither supports a current general workaround; further outcome research is not needed for the proposed conditional reminder.",
+            "gap_id": null
+          },
+          {
+            "need": "MEMBER_QUESTIONS",
+            "status": "COVERED",
+            "evidence_ids": [
+              "m:C_AUDIO_GENERAL:1790879994.000128",
+              "m:C_AUDIO_GENERAL:1790880048.000113",
+              "m:C_AUDIO_GENERAL:1790880088.000226",
+              "m:C_AUDIO_GENERAL:1790915374.000127",
+              "m:C_AUDIO_GENERAL:1790915422.000113",
+              "m:C_AUDIO_GENERAL:1790915470.000226",
+              "m:C_AUDIO_QA:1790918811.000130",
+              "m:C_AUDIO_QA:1790918869.000113"
+            ],
+            "note": "All three supplied threads contain handling questions and requests for diagnostic context; none supplies the requested results or a final handling answer.",
+            "gap_id": null
+          }
+        ],
+        "review_note": null,
+        "action_choice": null
+      },
+      "revised": false
+    },
+    "grounding": {
+      "structural_issues": [],
+      "action_issues": [],
+      "unsupported": [],
+      "unjudged": [],
+      "extraneous_verdicts": [],
+      "rejected": {},
+      "pending": [],
+      "action_sufficiency": {
+        "verdict": "SUFFICIENT",
+        "essential_statement_ids": [
+          "claim:c1",
+          "claim:c2",
+          "claim:c3",
+          "claim:c4",
+          "claim:c6",
+          "claim:c7",
+          "claim:c8"
+        ],
+        "rationale": "These supported premises justify the exact report summary, first-thread verification request, conditional handling instructions, and need for follow-up. The supported announcement reinforces the current guidance but is not essential because claim:c7 independently establishes the same handling. The action does not presume unavailable playback, prescribe an unverified repair, decide silent-recording scoring, or invent a reporting destination."
+      },
+      "source_consistency": {
+        "assessed_evidence_ids": [
+          "k:audio-multimodal-instructions@1.3:1c6df70e",
+          "k:slack:C_AUDIO_ANNOUNCEMENTS:1790892000.000901:1c524924",
+          "k:audio-multimodal-faq@1.1:c724358c"
+        ],
+        "relations": [
+          {
+            "evidence_ids": [
+              "k:audio-multimodal-instructions@1.3:1c6df70e",
+              "k:slack:C_AUDIO_ANNOUNCEMENTS:1790892000.000901:1c524924",
+              "k:audio-multimodal-faq@1.1:c724358c"
+            ],
+            "relation": "AGREE",
+            "point": "Unavailable playback requires tool-incident reporting and does not alone justify a model-quality failure or content-based QN.",
+            "disagreement_scope": null,
+            "rationale": "All three current governing sources state this rule. The instructions and announcement provide additional diagnostic detail without conflicting with the FAQ."
+          },
+          {
+            "evidence_ids": [
+              "k:audio-multimodal-instructions@1.3:1c6df70e",
+              "k:slack:C_AUDIO_ANNOUNCEMENTS:1790892000.000901:1c524924"
+            ],
+            "relation": "AGREE",
+            "point": "A visible waveform without playback remains a tool incident; capture browser/error state and whether another clip plays, without treating handling guidance as repair confirmation.",
+            "disagreement_scope": null,
+            "rationale": "Both sources explicitly cover waveform-without-playback cases, require the stated diagnostic information, and distinguish handling from a confirmed repair."
+          }
+        ],
+        "declared_conflict_checks": []
+      },
+      "alternative_sufficiency": {},
+      "status": "PASSED",
+      "basis": "SEMANTIC",
+      "statements": [
+        {
+          "statement_id": "claim:c1",
+          "kind": "CLAIM_INCIDENT_FACT",
+          "text": "A QA tutor reports no audio and asks whether to use QN or a bad score.",
+          "blocking": true,
+          "evidence_ids": [
+            "m:C_AUDIO_GENERAL:1790879994.000128"
+          ],
+          "attributions": [
+            {
+              "user_id": "U007",
+              "relation": "AUTHOR",
+              "evidence_id": "m:C_AUDIO_GENERAL:1790879994.000128",
+              "role": "QA_TUTOR"
+            }
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "U007 is a QA tutor and reports no audio while asking whether QN or a bad score is appropriate."
+        },
+        {
+          "statement_id": "claim:c2",
+          "kind": "CLAIM_INCIDENT_FACT",
+          "text": "A tutor reports that AUDIO-5374 is completely silent despite an existing waveform and asks whether to use QN or a quality score.",
+          "blocking": true,
+          "evidence_ids": [
+            "m:C_AUDIO_GENERAL:1790915374.000127"
+          ],
+          "attributions": [
+            {
+              "user_id": "U010",
+              "relation": "AUTHOR",
+              "evidence_id": "m:C_AUDIO_GENERAL:1790915374.000127",
+              "role": "TUTOR"
+            }
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "U010 reports a completely silent clip with an existing waveform, identifies AUDIO-5374, and asks about QN versus a quality score."
+        },
+        {
+          "statement_id": "claim:c3",
+          "kind": "CLAIM_INCIDENT_FACT",
+          "text": "A tutor reports that several prompts expecting speech return an empty-sounding file.",
+          "blocking": true,
+          "evidence_ids": [
+            "m:C_AUDIO_GENERAL:1790915422.000113"
+          ],
+          "attributions": [
+            {
+              "user_id": "U015",
+              "relation": "AUTHOR",
+              "evidence_id": "m:C_AUDIO_GENERAL:1790915422.000113",
+              "role": "TUTOR"
+            }
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "U015 explicitly reports several prompts expecting speech returning an empty-sounding file."
+        },
+        {
+          "statement_id": "claim:c4",
+          "kind": "CLAIM_INCIDENT_FACT",
+          "text": "A QA tutor reports zero sound, cannot tell whether silence is intentional, and asks for correct handling.",
+          "blocking": true,
+          "evidence_ids": [
+            "m:C_AUDIO_QA:1790918811.000130"
+          ],
+          "attributions": [
+            {
+              "user_id": "U002",
+              "relation": "AUTHOR",
+              "evidence_id": "m:C_AUDIO_QA:1790918811.000130",
+              "role": "QA_TUTOR"
+            }
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "U002 reports zero sound, uncertainty about intentional silence, and asks for correct handling."
+        },
+        {
+          "statement_id": "claim:c5",
+          "kind": "CLAIM_INCIDENT_FACT",
+          "text": "A QA tutor asks about volume and a second clip in the first thread; a different QA tutor asks the same checks in the AUDIO-5374 thread; a third QA tutor asks whether silence or speech was requested in the third thread.",
+          "blocking": true,
+          "evidence_ids": [
+            "m:C_AUDIO_GENERAL:1790880048.000113",
+            "m:C_AUDIO_GENERAL:1790915470.000226",
+            "m:C_AUDIO_QA:1790918869.000113"
+          ],
+          "attributions": [
+            {
+              "user_id": "U019",
+              "relation": "AUTHOR",
+              "evidence_id": "m:C_AUDIO_GENERAL:1790880048.000113",
+              "role": "QA_TUTOR"
+            },
+            {
+              "user_id": "U014",
+              "relation": "AUTHOR",
+              "evidence_id": "m:C_AUDIO_GENERAL:1790915470.000226",
+              "role": "QA_TUTOR"
+            },
+            {
+              "user_id": "U008",
+              "relation": "AUTHOR",
+              "evidence_id": "m:C_AUDIO_QA:1790918869.000113",
+              "role": "QA_TUTOR"
+            }
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "The three cited messages are by distinct QA tutors and contain the respective volume, second-clip, and requested-output questions."
+        },
+        {
+          "statement_id": "claim:c6",
+          "kind": "CLAIM_THREAD_INSTRUCTION",
+          "text": "In the first thread, the team lead instructs that intended silence and whether the file plays elsewhere need verification.",
+          "blocking": true,
+          "evidence_ids": [
+            "m:C_AUDIO_GENERAL:1790880088.000226"
+          ],
+          "attributions": [
+            {
+              "user_id": "U006",
+              "relation": "AUTHOR",
+              "evidence_id": "m:C_AUDIO_GENERAL:1790880088.000226",
+              "role": "TEAM_LEAD"
+            }
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "The team lead explicitly calls for verifying intended silence and playback elsewhere in the first thread; the statement preserves that thread scope."
+        },
+        {
+          "statement_id": "claim:c7",
+          "kind": "CLAIM_GUIDANCE",
+          "text": "Current instructions and FAQ require a tool-incident report for unavailable playback, including a waveform with no playback, with the task ID and available reproduction details. Capture browser/error state and whether another clip plays. Unavailable playback alone is not a model-quality failure or a content-based QN reason; a waveform does not establish a silent recording, and handling guidance does not establish a repair.",
+          "blocking": true,
+          "evidence_ids": [
+            "k:audio-multimodal-instructions@1.3:1c6df70e",
+            "k:audio-multimodal-faq@1.1:c724358c"
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "The current instructions and FAQ jointly establish tool-incident reporting, diagnostic details, and the restrictions on scoring unavailable playback. The instructions expressly distinguish a waveform from proof of silence and handling guidance from repair confirmation."
+        },
+        {
+          "statement_id": "claim:c8",
+          "kind": "CLAIM_INFERENCE",
+          "text": "The supplied threads leave the handling questions unresolved: replies request checks of playback or intended output, but no results establish unavailable playback versus a silent recording, and no final scoring answer is posted.",
+          "blocking": true,
+          "evidence_ids": [
+            "m:C_AUDIO_GENERAL:1790879994.000128",
+            "m:C_AUDIO_GENERAL:1790880048.000113",
+            "m:C_AUDIO_GENERAL:1790880088.000226",
+            "m:C_AUDIO_GENERAL:1790915374.000127",
+            "m:C_AUDIO_GENERAL:1790915422.000113",
+            "m:C_AUDIO_GENERAL:1790915470.000226",
+            "m:C_AUDIO_QA:1790918811.000130",
+            "m:C_AUDIO_QA:1790918869.000113"
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "The complete supplied threads contain diagnostic questions but no results establishing playback availability or a final scoring answer."
+        },
+        {
+          "statement_id": "claim:c9",
+          "kind": "CLAIM_GUIDANCE",
+          "text": "The current batch announcement directs reporting task ID, browser/error state, and whether another clip plays when the player never starts, including a waveform with no playback; it treats that condition as a tool incident and prohibits a model-quality failure or content QN solely for unavailable playback.",
+          "blocking": true,
+          "evidence_ids": [
+            "k:slack:C_AUDIO_ANNOUNCEMENTS:1790892000.000901:1c524924"
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "The same-batch announcement explicitly gives these conditional reporting and scoring directives. Its announcement-handling dependency is supported."
+        },
+        {
+          "statement_id": "claim:c10",
+          "kind": "CLAIM_HISTORY",
+          "text": "The earlier batch-05 review records three incidents with a player stuck at 00:00 despite a waveform and a limited reload trial ending August 28. Its recorded execution was pending and outcome unobserved; it is expired history, not current guidance or a confirmed repair.",
+          "blocking": true,
+          "evidence_ids": [
+            "k:audio-playback-trial-approval@1.0:1779c36a"
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "The historical record describes three batch-05 incidents and a trial ending August 28. Its metadata records execution as pending and outcome as unobserved, and its historical status excludes current application."
+        },
+        {
+          "statement_id": "claim:c11",
+          "kind": "CLAIM_HISTORY",
+          "text": "The September 21 prior decision approved an output-device check only for A06-H031 and A06-H032 on WS-A03, records no execution or observed outcome, and is not a standing rule. It explicitly rejects a general player-repair announcement or asking all tutors to change settings.",
+          "blocking": true,
+          "evidence_ids": [
+            "k:audio-headset-check-approval@1.0:bb33bb5d"
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "The September 21 prior record limits approval to the two named tasks and workstation, records no execution or observed outcome, and explicitly rejects a general repair announcement or settings change request."
+        },
+        {
+          "statement_id": "summary:s1",
+          "kind": "SUMMARY",
+          "text": "Two QA tutors and a tutor report no sound and ask how to handle their tasks; a second tutor reports empty-sounding output from prompts expecting speech.",
+          "blocking": true,
+          "evidence_ids": [
+            "m:C_AUDIO_GENERAL:1790879994.000128",
+            "m:C_AUDIO_GENERAL:1790915374.000127",
+            "m:C_AUDIO_GENERAL:1790915422.000113",
+            "m:C_AUDIO_QA:1790918811.000130"
+          ],
+          "attributions": [
+            {
+              "user_id": "U007",
+              "relation": "AUTHOR",
+              "evidence_id": "m:C_AUDIO_GENERAL:1790879994.000128",
+              "role": "QA_TUTOR"
+            },
+            {
+              "user_id": "U010",
+              "relation": "AUTHOR",
+              "evidence_id": "m:C_AUDIO_GENERAL:1790915374.000127",
+              "role": "TUTOR"
+            },
+            {
+              "user_id": "U015",
+              "relation": "AUTHOR",
+              "evidence_id": "m:C_AUDIO_GENERAL:1790915422.000113",
+              "role": "TUTOR"
+            },
+            {
+              "user_id": "U002",
+              "relation": "AUTHOR",
+              "evidence_id": "m:C_AUDIO_QA:1790918811.000130",
+              "role": "QA_TUTOR"
+            }
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "U007 and U002 are QA tutors and U010 is a tutor; each reports no sound and asks about handling. U015 is a distinct tutor reporting empty-sounding output from speech prompts."
+        },
+        {
+          "statement_id": "summary:s2",
+          "kind": "SUMMARY",
+          "text": "The threads do not yet establish whether playback is unavailable or the recordings are silent, so the scoring questions remain unresolved.",
+          "blocking": true,
+          "evidence_ids": [
+            "m:C_AUDIO_GENERAL:1790879994.000128",
+            "m:C_AUDIO_GENERAL:1790880048.000113",
+            "m:C_AUDIO_GENERAL:1790880088.000226",
+            "m:C_AUDIO_GENERAL:1790915374.000127",
+            "m:C_AUDIO_GENERAL:1790915422.000113",
+            "m:C_AUDIO_GENERAL:1790915470.000226",
+            "m:C_AUDIO_QA:1790918811.000130",
+            "m:C_AUDIO_QA:1790918869.000113"
+          ],
+          "depends_on": [
+            "summary:s1"
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "No supplied diagnostic results distinguish unavailable playback from silent recordings, and the threads provide no final scoring answer."
+        },
+        {
+          "statement_id": "detail:d1",
+          "kind": "DETAIL",
+          "text": "A tutor reports that AUDIO-5374 is completely silent despite a visible waveform and asks whether to use QN or a quality score.",
+          "blocking": false,
+          "evidence_ids": [
+            "m:C_AUDIO_GENERAL:1790915374.000127"
+          ],
+          "attributions": [
+            {
+              "user_id": "U010",
+              "relation": "AUTHOR",
+              "evidence_id": "m:C_AUDIO_GENERAL:1790915374.000127",
+              "role": "TUTOR"
+            }
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "The cited tutor message directly reports the silent clip, waveform, task reference, and scoring question."
+        },
+        {
+          "statement_id": "detail:d2",
+          "kind": "DETAIL",
+          "text": "QA tutors ask about volume and a second clip in the first two threads, and a QA tutor asks whether silence or speech was requested in the third thread.",
+          "blocking": false,
+          "evidence_ids": [
+            "m:C_AUDIO_GENERAL:1790880048.000113",
+            "m:C_AUDIO_GENERAL:1790915470.000226",
+            "m:C_AUDIO_QA:1790918869.000113"
+          ],
+          "attributions": [
+            {
+              "user_id": "U019",
+              "relation": "AUTHOR",
+              "evidence_id": "m:C_AUDIO_GENERAL:1790880048.000113",
+              "role": "QA_TUTOR"
+            },
+            {
+              "user_id": "U014",
+              "relation": "AUTHOR",
+              "evidence_id": "m:C_AUDIO_GENERAL:1790915470.000226",
+              "role": "QA_TUTOR"
+            },
+            {
+              "user_id": "U008",
+              "relation": "AUTHOR",
+              "evidence_id": "m:C_AUDIO_QA:1790918869.000113",
+              "role": "QA_TUTOR"
+            }
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "The cited QA tutors ask the stated checks in the respective three threads, with accurate roles and attribution."
+        },
+        {
+          "statement_id": "detail:d3",
+          "kind": "DETAIL",
+          "text": "In the first thread, the team lead asks for verification of intended silence and playback elsewhere; the supplied replies do not provide those results.",
+          "blocking": false,
+          "evidence_ids": [
+            "m:C_AUDIO_GENERAL:1790880088.000226",
+            "m:C_AUDIO_GENERAL:1790879994.000128",
+            "m:C_AUDIO_GENERAL:1790880048.000113",
+            "m:C_AUDIO_GENERAL:1790915374.000127",
+            "m:C_AUDIO_GENERAL:1790915422.000113",
+            "m:C_AUDIO_GENERAL:1790915470.000226",
+            "m:C_AUDIO_QA:1790918811.000130",
+            "m:C_AUDIO_QA:1790918869.000113"
+          ],
+          "attributions": [
+            {
+              "user_id": "U006",
+              "relation": "AUTHOR",
+              "evidence_id": "m:C_AUDIO_GENERAL:1790880088.000226",
+              "role": "TEAM_LEAD"
+            }
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "The team lead requests both verifications in the first thread, and none of the supplied replies supplies those results."
+        },
+        {
+          "statement_id": "detail:d4",
+          "kind": "DETAIL",
+          "text": "Current instructions treat a visible waveform with no playback as a tool incident, but a waveform alone does not establish a silent recording.",
+          "blocking": false,
+          "evidence_ids": [
+            "k:audio-multimodal-instructions@1.3:1c6df70e",
+            "k:audio-multimodal-faq@1.1:c724358c"
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "The current instructions explicitly classify a waveform without playback as a tool incident and reject a waveform alone as evidence of a silent recording."
+        },
+        {
+          "statement_id": "detail:d5",
+          "kind": "DETAIL",
+          "text": "An earlier batch-05 record describes similar waveform-without-playback symptoms and an expired, limited reload trial, not a current remedy.",
+          "blocking": false,
+          "evidence_ids": [
+            "k:audio-playback-trial-approval@1.0:1779c36a"
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "The earlier record describes comparable waveform-without-playback symptoms and a limited, expired batch-05 trial rather than a current remedy."
+        },
+        {
+          "statement_id": "detail:d6",
+          "kind": "DETAIL",
+          "text": "An earlier batch-06 decision approved an output-device check for two specified tasks, but records neither execution nor an observed outcome and is not a standing rule.",
+          "blocking": false,
+          "evidence_ids": [
+            "k:audio-headset-check-approval@1.0:bb33bb5d"
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "The prior batch-06 decision and its recorded states establish the limited approval, lack of execution and observed outcome, and non-standing status."
+        },
+        {
+          "statement_id": "action",
+          "kind": "ACTION",
+          "text": "Post a reminder. Instruction: Post a focused reminder distinguishing unavailable playback from silent recordings, and request the checks needed to apply current handling. Draft to copy: Two QA tutors and a tutor report no sound; the tutor also sees a waveform on AUDIO-5374. A second tutor reports empty-sounding files from prompts expecting speech.\n\nPlease provide task IDs, browser/error state, whether playback starts, whether another clip plays, and whether the prompt requests silence or speech. For the first thread, also provide the requested result of playback elsewhere.\n\nIf playback is unavailable, including a waveform with no playback, report a tool incident. Do not assign a model-quality failure or content QN solely for unavailable playback. These instructions do not establish a repair or decide how to score a recording that actually plays silently. Scope: The tool-incident handling applies only when playback is unavailable; the current reports do not yet establish that condition.",
+          "blocking": true,
+          "evidence_ids": [
+            "m:C_AUDIO_GENERAL:1790879994.000128",
+            "m:C_AUDIO_GENERAL:1790915374.000127",
+            "m:C_AUDIO_GENERAL:1790915422.000113",
+            "m:C_AUDIO_QA:1790918811.000130",
+            "m:C_AUDIO_GENERAL:1790880088.000226",
+            "k:audio-multimodal-instructions@1.3:1c6df70e",
+            "k:audio-multimodal-faq@1.1:c724358c",
+            "m:C_AUDIO_GENERAL:1790880048.000113",
+            "m:C_AUDIO_GENERAL:1790915470.000226",
+            "m:C_AUDIO_QA:1790918869.000113",
+            "k:slack:C_AUDIO_ANNOUNCEMENTS:1790892000.000901:1c524924"
+          ],
+          "premises": [
+            "claim:c1",
+            "claim:c2",
+            "claim:c3",
+            "claim:c4",
+            "claim:c6",
+            "claim:c7",
+            "claim:c8",
+            "claim:c9"
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "The proposed reminder accurately summarizes the reports, requests relevant missing checks, preserves the first-thread scope of playback-elsewhere verification, and applies tool-incident handling only conditionally. It neither asserts a repair nor supplies an unsupported silent-recording score or concrete reporting route."
+        },
+        {
+          "statement_id": "action:rationale",
+          "kind": "ACTION_RATIONALE",
+          "text": "Why this helps: Current guidance answers the unavailable-playback case, but the threads have not established that condition. A conditional reminder addresses the repeated questions without assuming a technical cause or a content score.",
+          "blocking": false,
+          "evidence_ids": [
+            "m:C_AUDIO_GENERAL:1790879994.000128",
+            "m:C_AUDIO_GENERAL:1790915374.000127",
+            "m:C_AUDIO_GENERAL:1790915422.000113",
+            "m:C_AUDIO_QA:1790918811.000130",
+            "m:C_AUDIO_GENERAL:1790880088.000226",
+            "k:audio-multimodal-instructions@1.3:1c6df70e",
+            "k:audio-multimodal-faq@1.1:c724358c",
+            "m:C_AUDIO_GENERAL:1790880048.000113",
+            "m:C_AUDIO_GENERAL:1790915470.000226",
+            "m:C_AUDIO_QA:1790918869.000113",
+            "k:slack:C_AUDIO_ANNOUNCEMENTS:1790892000.000901:1c524924",
+            "k:audio-playback-trial-approval@1.0:1779c36a",
+            "k:audio-headset-check-approval@1.0:bb33bb5d"
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "Current guidance addresses unavailable playback, while the reports do not establish that condition. A conditional reminder addresses the repeated handling requests without asserting a cause or content score."
+        },
+        {
+          "statement_id": "action:need",
+          "kind": "INTERVENTION_NEED",
+          "text": "Why intervening now is needed (an unresolved handling question): Three threads still ask how to handle no-sound tasks, with diagnostic questions but no final handling answer, creating a need to distinguish playback incidents from content evaluation.",
+          "blocking": false,
+          "evidence_ids": [
+            "m:C_AUDIO_GENERAL:1790879994.000128",
+            "m:C_AUDIO_GENERAL:1790880088.000226",
+            "m:C_AUDIO_GENERAL:1790915374.000127",
+            "m:C_AUDIO_GENERAL:1790915470.000226",
+            "m:C_AUDIO_QA:1790918811.000130",
+            "m:C_AUDIO_QA:1790918869.000113"
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "All three threads contain unanswered handling requests and only diagnostic follow-up, supporting coordination to distinguish playback incidents from content evaluation."
+        },
+        {
+          "statement_id": "announcement:k:slack:C_AUDIO_ANNOUNCEMENTS:1790892000.000901:1c524924",
+          "kind": "ANNOUNCEMENT_HANDLING",
+          "text": "This announcement applies to this topic and directs current handling: \"Audio batch 06 — playback handling reminder: if the LT player never starts, including a visible waveform with no playback, report the task ID, browser/error state, and whether another clip plays.\". The announcement concerns the same project and batch and directly addresses the possible waveform-without-playback condition. Its handling is conditional on playback being unavailable, which the reports have not yet established.",
+          "blocking": true,
+          "evidence_ids": [
+            "k:slack:C_AUDIO_ANNOUNCEMENTS:1790892000.000901:1c524924"
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "The quotation matches the announcement. The announcement governs the same project and batch and explicitly directs handling for unavailable playback, including a waveform without playback. The statement correctly preserves that condition as unestablished in these reports."
+        },
+        {
+          "statement_id": "resolution:member_22fa96f8f37e7ea4f79fd6fb",
+          "kind": "RESOLUTION",
+          "text": "Member thread member_22fa96f8f37e7ea4f79fd6fb is UNRESOLVED: The QA tutor asks about QN versus a bad score; the replies request verification rather than provide a final answer, and no check results are supplied.",
+          "blocking": true,
+          "evidence_ids": [
+            "m:C_AUDIO_GENERAL:1790879994.000128",
+            "m:C_AUDIO_GENERAL:1790880048.000113",
+            "m:C_AUDIO_GENERAL:1790880088.000226"
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "The complete first thread contains the scoring question and verification requests, with neither results nor a final answer."
+        },
+        {
+          "statement_id": "resolution:member_4e743fb698f42bc160fb10b9",
+          "kind": "RESOLUTION",
+          "text": "Member thread member_4e743fb698f42bc160fb10b9 is UNRESOLVED: The tutor asks about QN versus a quality score on AUDIO-5374; the replies add a related report and ask for playback checks without settling handling.",
+          "blocking": true,
+          "evidence_ids": [
+            "m:C_AUDIO_GENERAL:1790915374.000127",
+            "m:C_AUDIO_GENERAL:1790915422.000113",
+            "m:C_AUDIO_GENERAL:1790915470.000226"
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "The complete AUDIO-5374 thread adds a related report and diagnostic question but does not settle handling."
+        },
+        {
+          "statement_id": "resolution:member_45b305f64bc9ac187066f07c",
+          "kind": "RESOLUTION",
+          "text": "Member thread member_45b305f64bc9ac187066f07c is UNRESOLVED: The QA tutor asks how to handle zero sound; the reply asks what the prompt required, with no answer or handling decision supplied.",
+          "blocking": true,
+          "evidence_ids": [
+            "m:C_AUDIO_QA:1790918811.000130",
+            "m:C_AUDIO_QA:1790918869.000113"
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "The complete third thread contains a handling request and a question about intended output, without a subsequent answer or decision."
+        },
+        {
+          "statement_id": "severity:rationale",
+          "kind": "SEVERITY_RATIONALE",
+          "text": "Severity HIGH: Two tutors and two QA tutors report comparable no-sound or empty-sounding output within the batch, suggesting broader evaluation or labeling risk. This does not establish a common cause or a batch-wide outage.",
+          "blocking": true,
+          "evidence_ids": [
+            "m:C_AUDIO_GENERAL:1790879994.000128",
+            "m:C_AUDIO_GENERAL:1790915374.000127",
+            "m:C_AUDIO_GENERAL:1790915422.000113",
+            "m:C_AUDIO_QA:1790918811.000130",
+            "m:C_AUDIO_GENERAL:1790880048.000113",
+            "m:C_AUDIO_GENERAL:1790915470.000226",
+            "m:C_AUDIO_QA:1790918869.000113"
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "Four distinct reporters, comprising two tutors and two QA tutors, describe comparable symptoms. Their unresolved evaluation questions support the stated labeling-risk inference without establishing a common cause or batch-wide outage."
+        },
+        {
+          "statement_id": "severity:signal:HIGH[3]",
+          "kind": "SEVERITY_SIGNAL",
+          "text": "Rubric signal met - \"Multiple distinct people or affected tasks reporting a comparable problem within the relevant project, batch, and time window, suggesting broader disruption or systemic labeling risk. Consider the number affected relative to the known active group when that information is available; do not require an explicit statement of widespread impact\": Two QA tutors report no sound, a tutor reports a silent clip with a waveform, and a second tutor reports empty-sounding output from prompts expecting speech.",
+          "blocking": true,
+          "evidence_ids": [
+            "m:C_AUDIO_GENERAL:1790879994.000128",
+            "m:C_AUDIO_GENERAL:1790915374.000127",
+            "m:C_AUDIO_GENERAL:1790915422.000113",
+            "m:C_AUDIO_QA:1790918811.000130"
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "The four distinct reporters describe comparable no-sound or empty-sounding output within the relevant batch and time window, satisfying the quoted multiple-reporter signal."
+        },
+        {
+          "statement_id": "severity:recurrence",
+          "kind": "HISTORICAL_RECURRENCE",
+          "text": "Retrieved records show this problem occurred before.",
+          "blocking": true,
+          "evidence_ids": [
+            "k:audio-playback-trial-approval@1.0:1779c36a"
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "The retrieved historical record documents earlier comparable waveform-without-playback incidents. This establishes prior occurrence of the symptom, not a shared cause."
+        },
+        {
+          "statement_id": "reporter:U007",
+          "kind": "AFFECTED_REPORTER",
+          "text": "U007 reports, in their own cited message, being affected by this problem.",
+          "blocking": true,
+          "evidence_ids": [
+            "m:C_AUDIO_GENERAL:1790879994.000128"
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "U007's own task-review message reports no audio and requests handling."
+        },
+        {
+          "statement_id": "reporter:U010",
+          "kind": "AFFECTED_REPORTER",
+          "text": "U010 reports, in their own cited message, being affected by this problem.",
+          "blocking": true,
+          "evidence_ids": [
+            "m:C_AUDIO_GENERAL:1790915374.000127"
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "U010's own message reports the silent AUDIO-5374 clip."
+        },
+        {
+          "statement_id": "reporter:U015",
+          "kind": "AFFECTED_REPORTER",
+          "text": "U015 reports, in their own cited message, being affected by this problem.",
+          "blocking": true,
+          "evidence_ids": [
+            "m:C_AUDIO_GENERAL:1790915422.000113"
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "U015's own message reports several speech prompts returning empty-sounding output."
+        },
+        {
+          "statement_id": "reporter:U002",
+          "kind": "AFFECTED_REPORTER",
+          "text": "U002 reports, in their own cited message, being affected by this problem.",
+          "blocking": true,
+          "evidence_ids": [
+            "m:C_AUDIO_QA:1790918811.000130"
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "U002's own QA clarification reports zero sound and uncertainty about intended silence."
+        }
+      ]
+    },
+    "temporal": {
+      "status": "NONE_FOUND",
+      "findings": [],
+      "source_consistency": "ASSESSED",
+      "ignored_revision_states": "NOT_YET_EFFECTIVE and NOT_APPROVED revisions never compete with applicable guidance."
+    },
+    "temporal_before_grounding": {
+      "status": "NONE_FOUND",
+      "findings": [],
+      "source_consistency": "NOT_ASSESSED",
+      "ignored_revision_states": "NOT_YET_EFFECTIVE and NOT_APPROVED revisions never compete with applicable guidance."
+    },
+    "severity": {
+      "assessment": {
+        "level": "HIGH",
+        "assessment_status": "ASSESSED",
+        "rubric_version": "severity-rubric-v3-semantic-signals",
+        "rubric_content_sha256": "eccaa31a2ab84a0aa7c005216a92fc39681e1dd10107117344948235a76673f4",
+        "rubric_project_id": null,
+        "rubric_scope": "SHARED_DEFAULT",
+        "rationale": "Two tutors and two QA tutors report comparable no-sound or empty-sounding output within the batch, suggesting broader evaluation or labeling risk. This does not establish a common cause or a batch-wide outage.",
+        "matched_signals": [
+          {
+            "level": "HIGH",
+            "signal_index": 3,
+            "signal_text": "Multiple distinct people or affected tasks reporting a comparable problem within the relevant project, batch, and time window, suggesting broader disruption or systemic labeling risk. Consider the number affected relative to the known active group when that information is available; do not require an explicit statement of widespread impact",
+            "support": "Two QA tutors report no sound, a tutor reports a silent clip with a waveform, and a second tutor reports empty-sounding output from prompts expecting speech.",
+            "evidence": [
+              {
+                "kind": "slack_message",
+                "project_id": "audio_multimodal",
+                "batch_id": "audio_batch_06",
+                "scope": "project",
+                "channel_id": "C_AUDIO_GENERAL",
+                "thread_id": "1790879994.000128",
+                "message_id": "1790879994.000128",
+                "document_id": null,
+                "version_id": null,
+                "authoring_document_id": null,
+                "authoring_version": null,
+                "section": null,
+                "chunk_id": null,
+                "candidate_group_id": null,
+                "member_id": "member_22fa96f8f37e7ea4f79fd6fb",
+                "artifact": null,
+                "artifact_sha256": null,
+                "quote": null,
+                "note": "m:C_AUDIO_GENERAL:1790879994.000128"
+              },
+              {
+                "kind": "slack_message",
+                "project_id": "audio_multimodal",
+                "batch_id": "audio_batch_06",
+                "scope": "project",
+                "channel_id": "C_AUDIO_GENERAL",
+                "thread_id": "1790915374.000127",
+                "message_id": "1790915374.000127",
+                "document_id": null,
+                "version_id": null,
+                "authoring_document_id": null,
+                "authoring_version": null,
+                "section": null,
+                "chunk_id": null,
+                "candidate_group_id": null,
+                "member_id": "member_4e743fb698f42bc160fb10b9",
+                "artifact": null,
+                "artifact_sha256": null,
+                "quote": null,
+                "note": "m:C_AUDIO_GENERAL:1790915374.000127"
+              },
+              {
+                "kind": "slack_message",
+                "project_id": "audio_multimodal",
+                "batch_id": "audio_batch_06",
+                "scope": "project",
+                "channel_id": "C_AUDIO_GENERAL",
+                "thread_id": "1790915374.000127",
+                "message_id": "1790915422.000113",
+                "document_id": null,
+                "version_id": null,
+                "authoring_document_id": null,
+                "authoring_version": null,
+                "section": null,
+                "chunk_id": null,
+                "candidate_group_id": null,
+                "member_id": "member_4e743fb698f42bc160fb10b9",
+                "artifact": null,
+                "artifact_sha256": null,
+                "quote": null,
+                "note": "m:C_AUDIO_GENERAL:1790915422.000113"
+              },
+              {
+                "kind": "slack_message",
+                "project_id": "audio_multimodal",
+                "batch_id": "audio_batch_06",
+                "scope": "project",
+                "channel_id": "C_AUDIO_QA",
+                "thread_id": "1790918811.000130",
+                "message_id": "1790918811.000130",
+                "document_id": null,
+                "version_id": null,
+                "authoring_document_id": null,
+                "authoring_version": null,
+                "section": null,
+                "chunk_id": null,
+                "candidate_group_id": null,
+                "member_id": "member_45b305f64bc9ac187066f07c",
+                "artifact": null,
+                "artifact_sha256": null,
+                "quote": null,
+                "note": "m:C_AUDIO_QA:1790918811.000130"
+              }
+            ]
+          }
+        ],
+        "evidence": [
+          {
+            "kind": "slack_message",
+            "project_id": "audio_multimodal",
+            "batch_id": "audio_batch_06",
+            "scope": "project",
+            "channel_id": "C_AUDIO_GENERAL",
+            "thread_id": "1790879994.000128",
+            "message_id": "1790879994.000128",
+            "document_id": null,
+            "version_id": null,
+            "authoring_document_id": null,
+            "authoring_version": null,
+            "section": null,
+            "chunk_id": null,
+            "candidate_group_id": null,
+            "member_id": "member_22fa96f8f37e7ea4f79fd6fb",
+            "artifact": null,
+            "artifact_sha256": null,
+            "quote": null,
+            "note": "m:C_AUDIO_GENERAL:1790879994.000128"
+          },
+          {
+            "kind": "slack_message",
+            "project_id": "audio_multimodal",
+            "batch_id": "audio_batch_06",
+            "scope": "project",
+            "channel_id": "C_AUDIO_GENERAL",
+            "thread_id": "1790915374.000127",
+            "message_id": "1790915374.000127",
+            "document_id": null,
+            "version_id": null,
+            "authoring_document_id": null,
+            "authoring_version": null,
+            "section": null,
+            "chunk_id": null,
+            "candidate_group_id": null,
+            "member_id": "member_4e743fb698f42bc160fb10b9",
+            "artifact": null,
+            "artifact_sha256": null,
+            "quote": null,
+            "note": "m:C_AUDIO_GENERAL:1790915374.000127"
+          },
+          {
+            "kind": "slack_message",
+            "project_id": "audio_multimodal",
+            "batch_id": "audio_batch_06",
+            "scope": "project",
+            "channel_id": "C_AUDIO_GENERAL",
+            "thread_id": "1790915374.000127",
+            "message_id": "1790915422.000113",
+            "document_id": null,
+            "version_id": null,
+            "authoring_document_id": null,
+            "authoring_version": null,
+            "section": null,
+            "chunk_id": null,
+            "candidate_group_id": null,
+            "member_id": "member_4e743fb698f42bc160fb10b9",
+            "artifact": null,
+            "artifact_sha256": null,
+            "quote": null,
+            "note": "m:C_AUDIO_GENERAL:1790915422.000113"
+          },
+          {
+            "kind": "slack_message",
+            "project_id": "audio_multimodal",
+            "batch_id": "audio_batch_06",
+            "scope": "project",
+            "channel_id": "C_AUDIO_QA",
+            "thread_id": "1790918811.000130",
+            "message_id": "1790918811.000130",
+            "document_id": null,
+            "version_id": null,
+            "authoring_document_id": null,
+            "authoring_version": null,
+            "section": null,
+            "chunk_id": null,
+            "candidate_group_id": null,
+            "member_id": "member_45b305f64bc9ac187066f07c",
+            "artifact": null,
+            "artifact_sha256": null,
+            "quote": null,
+            "note": "m:C_AUDIO_QA:1790918811.000130"
+          }
+        ],
+        "occurrence": {
+          "affected_reporters": {
+            "status": "LOWER_BOUND",
+            "count": 4,
+            "ids": [
+              "U007",
+              "U010",
+              "U015",
+              "U002"
+            ],
+            "basis": "Distinct authors whose own cited message reports the problem; other participants are not counted.",
+            "evidence": [
+              {
+                "kind": "slack_message",
+                "project_id": "audio_multimodal",
+                "batch_id": "audio_batch_06",
+                "scope": "project",
+                "channel_id": "C_AUDIO_GENERAL",
+                "thread_id": "1790879994.000128",
+                "message_id": "1790879994.000128",
+                "document_id": null,
+                "version_id": null,
+                "authoring_document_id": null,
+                "authoring_version": null,
+                "section": null,
+                "chunk_id": null,
+                "candidate_group_id": null,
+                "member_id": "member_22fa96f8f37e7ea4f79fd6fb",
+                "artifact": null,
+                "artifact_sha256": null,
+                "quote": null,
+                "note": "m:C_AUDIO_GENERAL:1790879994.000128"
+              },
+              {
+                "kind": "slack_message",
+                "project_id": "audio_multimodal",
+                "batch_id": "audio_batch_06",
+                "scope": "project",
+                "channel_id": "C_AUDIO_GENERAL",
+                "thread_id": "1790915374.000127",
+                "message_id": "1790915374.000127",
+                "document_id": null,
+                "version_id": null,
+                "authoring_document_id": null,
+                "authoring_version": null,
+                "section": null,
+                "chunk_id": null,
+                "candidate_group_id": null,
+                "member_id": "member_4e743fb698f42bc160fb10b9",
+                "artifact": null,
+                "artifact_sha256": null,
+                "quote": null,
+                "note": "m:C_AUDIO_GENERAL:1790915374.000127"
+              },
+              {
+                "kind": "slack_message",
+                "project_id": "audio_multimodal",
+                "batch_id": "audio_batch_06",
+                "scope": "project",
+                "channel_id": "C_AUDIO_GENERAL",
+                "thread_id": "1790915374.000127",
+                "message_id": "1790915422.000113",
+                "document_id": null,
+                "version_id": null,
+                "authoring_document_id": null,
+                "authoring_version": null,
+                "section": null,
+                "chunk_id": null,
+                "candidate_group_id": null,
+                "member_id": "member_4e743fb698f42bc160fb10b9",
+                "artifact": null,
+                "artifact_sha256": null,
+                "quote": null,
+                "note": "m:C_AUDIO_GENERAL:1790915422.000113"
+              },
+              {
+                "kind": "slack_message",
+                "project_id": "audio_multimodal",
+                "batch_id": "audio_batch_06",
+                "scope": "project",
+                "channel_id": "C_AUDIO_QA",
+                "thread_id": "1790918811.000130",
+                "message_id": "1790918811.000130",
+                "document_id": null,
+                "version_id": null,
+                "authoring_document_id": null,
+                "authoring_version": null,
+                "section": null,
+                "chunk_id": null,
+                "candidate_group_id": null,
+                "member_id": "member_45b305f64bc9ac187066f07c",
+                "artifact": null,
+                "artifact_sha256": null,
+                "quote": null,
+                "note": "m:C_AUDIO_QA:1790918811.000130"
+              }
+            ]
+          },
+          "affected_tasks": {
+            "status": "UNKNOWN",
+            "count": null,
+            "ids": [],
+            "basis": null,
+            "evidence": []
+          },
+          "relevant_threads": [
+            {
+              "project_id": "audio_multimodal",
+              "batch_id": "audio_batch_06",
+              "channel_id": "C_AUDIO_GENERAL",
+              "thread_id": "1790879994.000128",
+              "member_id": "member_22fa96f8f37e7ea4f79fd6fb"
+            },
+            {
+              "project_id": "audio_multimodal",
+              "batch_id": "audio_batch_06",
+              "channel_id": "C_AUDIO_GENERAL",
+              "thread_id": "1790915374.000127",
+              "member_id": "member_4e743fb698f42bc160fb10b9"
+            },
+            {
+              "project_id": "audio_multimodal",
+              "batch_id": "audio_batch_06",
+              "channel_id": "C_AUDIO_QA",
+              "thread_id": "1790918811.000130",
+              "member_id": "member_45b305f64bc9ac187066f07c"
+            }
+          ],
+          "reporting_window": {
+            "start": "2026-10-01T18:39:54.000128+00:00",
+            "end": "2026-10-02T05:27:49.000113+00:00"
+          },
+          "historical_recurrence": {
+            "status": "FOUND",
+            "sources": [
+              {
+                "kind": "knowledge_source",
+                "project_id": "audio_multimodal",
+                "batch_id": "audio_batch_05",
+                "scope": "project",
+                "channel_id": null,
+                "thread_id": null,
+                "message_id": null,
+                "document_id": "knowledge_9d0d30c7f163464d5c5c7814b5d008534f5be75756ac2ebc5b3ca7c33b76f978",
+                "version_id": "version_d9b063c2c27537819203ff0271b833092e188df5854a74b9323e160edf3bfa6b",
+                "authoring_document_id": "audio-playback-trial-approval",
+                "authoring_version": "1.0",
+                "section": "Evidence available at the review",
+                "chunk_id": "chunk_1779c36a5e5cf3bb5191d7cd6e6b435a",
+                "candidate_group_id": null,
+                "member_id": null,
+                "artifact": null,
+                "artifact_sha256": null,
+                "quote": null,
+                "note": "k:audio-playback-trial-approval@1.0:1779c36a (HISTORY_ONLY; CURRENT)"
+              }
+            ],
+            "event_series_ids": []
+          },
+          "known_denominator": null,
+          "structural": {
+            "threads": 3,
+            "messages": 8,
+            "distinct_participants": 8,
+            "duplicate_threads_ignored": 0,
+            "duplicate_messages_ignored": 0,
+            "computed_from": "topic member threads (original Slack messages)",
+            "participants_are_not_affected_reporters": true
+          },
+          "semantic_identification": "ASSESSED"
+        },
+        "inherited_from": {
+          "level": "UNKNOWN",
+          "assessment_status": "UNASSESSED",
+          "assessment_deferred_to": "AGENT3",
+          "reason": "Agent 2 performs taxonomy only."
+        }
+      },
+      "issues": [],
+      "notes": [],
+      "proposal": {
+        "level": "HIGH",
+        "rationale": "Two tutors and two QA tutors report comparable no-sound or empty-sounding output within the batch, suggesting broader evaluation or labeling risk. This does not establish a common cause or a batch-wide outage.",
+        "signals": [
+          {
+            "level": "HIGH",
+            "signal_index": 3,
+            "signal_text": "Multiple distinct people or affected tasks reporting a comparable problem within the relevant project, batch, and time window, suggesting broader disruption or systemic labeling risk. Consider the number affected relative to the known active group when that information is available; do not require an explicit statement of widespread impact",
+            "support": "Two QA tutors report no sound, a tutor reports a silent clip with a waveform, and a second tutor reports empty-sounding output from prompts expecting speech.",
+            "evidence_ids": [
+              "m:C_AUDIO_GENERAL:1790879994.000128",
+              "m:C_AUDIO_GENERAL:1790915374.000127",
+              "m:C_AUDIO_GENERAL:1790915422.000113",
+              "m:C_AUDIO_QA:1790918811.000130"
+            ]
+          }
+        ],
+        "affected_reporters": [
+          {
+            "author_id": "U007",
+            "evidence_id": "m:C_AUDIO_GENERAL:1790879994.000128"
+          },
+          {
+            "author_id": "U010",
+            "evidence_id": "m:C_AUDIO_GENERAL:1790915374.000127"
+          },
+          {
+            "author_id": "U015",
+            "evidence_id": "m:C_AUDIO_GENERAL:1790915422.000113"
+          },
+          {
+            "author_id": "U002",
+            "evidence_id": "m:C_AUDIO_QA:1790918811.000130"
+          }
+        ],
+        "recurrence": "FOUND",
+        "recurrence_evidence_ids": [
+          "k:audio-playback-trial-approval@1.0:1779c36a"
+        ],
+        "reported_recurrence_evidence_ids": []
+      }
+    },
+    "resolution": {
+      "topic": "UNRESOLVED",
+      "members": {
+        "member_22fa96f8f37e7ea4f79fd6fb": "UNRESOLVED",
+        "member_4e743fb698f42bc160fb10b9": "UNRESOLVED",
+        "member_45b305f64bc9ac187066f07c": "UNRESOLVED"
+      },
+      "agent1_attributed": [
+        {
+          "member_id": "member_22fa96f8f37e7ea4f79fd6fb",
+          "state": "UNRESOLVED",
+          "agent1_verification_status": "CORRECTED",
+          "agent1_review_required": false
+        },
+        {
+          "member_id": "member_4e743fb698f42bc160fb10b9",
+          "state": "UNRESOLVED",
+          "agent1_verification_status": "VERIFIED",
+          "agent1_review_required": false
+        },
+        {
+          "member_id": "member_45b305f64bc9ac187066f07c",
+          "state": "UNRESOLVED",
+          "agent1_verification_status": "VERIFIED",
+          "agent1_review_required": false
+        }
+      ]
+    },
+    "established_handling": [
+      "k:slack:C_AUDIO_ANNOUNCEMENTS:1790892000.000901:1c524924"
+    ],
+    "coverage_issues": [],
+    "action_source": "DRAFT",
+    "action_notes": [],
+    "tot": {
+      "status": "NOT_TRIGGERED",
+      "triggers": [],
+      "choice_after_grounding": {
+        "status": "NOT_COMPARED",
+        "viable": []
+      }
+    },
+    "evidence_ledger": {
+      "m:C_AUDIO_GENERAL:1790879994.000128": {
+        "evidence_id": "m:C_AUDIO_GENERAL:1790879994.000128",
+        "origin": "member_message",
+        "use": "MEMBER_REPORT",
+        "member_id": "member_22fa96f8f37e7ea4f79fd6fb",
+        "channel_id": "C_AUDIO_GENERAL",
+        "thread_id": "1790879994.000128",
+        "message_id": "1790879994.000128",
+        "author_id": "U007",
+        "author_name": "Leo",
+        "author_role": "QA_TUTOR",
+        "timestamp": "2026-10-01T18:39:54.000128Z",
+        "thread_starter_id": "U007",
+        "thread_starter_role": "QA_TUTOR",
+        "reactions": [],
+        "excerpt": "[Task review]\nIssue: No audio at all — QN or bad score?\nQuestion: what is the correct handling for this task?"
+      },
+      "m:C_AUDIO_GENERAL:1790880048.000113": {
+        "evidence_id": "m:C_AUDIO_GENERAL:1790880048.000113",
+        "origin": "member_message",
+        "use": "MEMBER_REPORT",
+        "member_id": "member_22fa96f8f37e7ea4f79fd6fb",
+        "channel_id": "C_AUDIO_GENERAL",
+        "thread_id": "1790879994.000128",
+        "message_id": "1790880048.000113",
+        "author_id": "U019",
+        "author_name": "Yuki",
+        "author_role": "QA_TUTOR",
+        "timestamp": "2026-10-01T18:40:48.000113Z",
+        "thread_starter_id": "U007",
+        "thread_starter_role": "QA_TUTOR",
+        "reactions": [],
+        "excerpt": "Is the output truly silent after checking volume and a second clip? Silent playback in one browser does not establish the exported file is silent."
+      },
+      "m:C_AUDIO_GENERAL:1790880088.000226": {
+        "evidence_id": "m:C_AUDIO_GENERAL:1790880088.000226",
+        "origin": "member_message",
+        "use": "MEMBER_REPORT",
+        "member_id": "member_22fa96f8f37e7ea4f79fd6fb",
+        "channel_id": "C_AUDIO_GENERAL",
+        "thread_id": "1790879994.000128",
+        "message_id": "1790880088.000226",
+        "author_id": "U006",
+        "author_name": "Priya",
+        "author_role": "TEAM_LEAD",
+        "timestamp": "2026-10-01T18:41:28.000226Z",
+        "thread_starter_id": "U007",
+        "thread_starter_role": "QA_TUTOR",
+        "reactions": [],
+        "excerpt": "We need to verify whether the silence is intended and whether the file plays elsewhere."
+      },
+      "m:C_AUDIO_GENERAL:1790915374.000127": {
+        "evidence_id": "m:C_AUDIO_GENERAL:1790915374.000127",
+        "origin": "member_message",
+        "use": "MEMBER_REPORT",
+        "member_id": "member_4e743fb698f42bc160fb10b9",
+        "channel_id": "C_AUDIO_GENERAL",
+        "thread_id": "1790915374.000127",
+        "message_id": "1790915374.000127",
+        "author_id": "U010",
+        "author_name": "Avery",
+        "author_role": "TUTOR",
+        "timestamp": "2026-10-02T04:29:34.000127Z",
+        "thread_starter_id": "U010",
+        "thread_starter_role": "TUTOR",
+        "reactions": [],
+        "excerpt": "Task check: Clip is completely silent, but the waveform exists. QN or quality score? (task ref AUDIO-5374)"
+      },
+      "m:C_AUDIO_GENERAL:1790915422.000113": {
+        "evidence_id": "m:C_AUDIO_GENERAL:1790915422.000113",
+        "origin": "member_message",
+        "use": "MEMBER_REPORT",
+        "member_id": "member_4e743fb698f42bc160fb10b9",
+        "channel_id": "C_AUDIO_GENERAL",
+        "thread_id": "1790915374.000127",
+        "message_id": "1790915422.000113",
+        "author_id": "U015",
+        "author_name": "Carla",
+        "author_role": "TUTOR",
+        "timestamp": "2026-10-02T04:30:22.000113Z",
+        "thread_starter_id": "U010",
+        "thread_starter_role": "TUTOR",
+        "reactions": [],
+        "excerpt": "Several prompts expecting speech return an empty sounding file."
+      },
+      "m:C_AUDIO_GENERAL:1790915470.000226": {
+        "evidence_id": "m:C_AUDIO_GENERAL:1790915470.000226",
+        "origin": "member_message",
+        "use": "MEMBER_REPORT",
+        "member_id": "member_4e743fb698f42bc160fb10b9",
+        "channel_id": "C_AUDIO_GENERAL",
+        "thread_id": "1790915374.000127",
+        "message_id": "1790915470.000226",
+        "author_id": "U014",
+        "author_name": "Linh",
+        "author_role": "QA_TUTOR",
+        "timestamp": "2026-10-02T04:31:10.000226Z",
+        "thread_starter_id": "U010",
+        "thread_starter_role": "TUTOR",
+        "reactions": [],
+        "excerpt": "Is the output truly silent after checking volume and a second clip?"
+      },
+      "m:C_AUDIO_QA:1790918811.000130": {
+        "evidence_id": "m:C_AUDIO_QA:1790918811.000130",
+        "origin": "member_message",
+        "use": "MEMBER_REPORT",
+        "member_id": "member_45b305f64bc9ac187066f07c",
+        "channel_id": "C_AUDIO_QA",
+        "thread_id": "1790918811.000130",
+        "message_id": "1790918811.000130",
+        "author_id": "U002",
+        "author_name": "Mina",
+        "author_role": "QA_TUTOR",
+        "timestamp": "2026-10-02T05:26:51.000130Z",
+        "thread_starter_id": "U002",
+        "thread_starter_role": "QA_TUTOR",
+        "reactions": [
+          {
+            "name": "eyes",
+            "users": [
+              {
+                "id": "U006",
+                "name": "Priya"
+              }
+            ]
+          }
+        ],
+        "excerpt": "[QA clarification]\nIssue: Zero sound on the track. Can't tell whether it's intentionally silent.\nQuestion: what is the correct handling for this task?"
+      },
+      "m:C_AUDIO_QA:1790918869.000113": {
+        "evidence_id": "m:C_AUDIO_QA:1790918869.000113",
+        "origin": "member_message",
+        "use": "MEMBER_REPORT",
+        "member_id": "member_45b305f64bc9ac187066f07c",
+        "channel_id": "C_AUDIO_QA",
+        "thread_id": "1790918811.000130",
+        "message_id": "1790918869.000113",
+        "author_id": "U008",
+        "author_name": "Hana",
+        "author_role": "QA_TUTOR",
+        "timestamp": "2026-10-02T05:27:49.000113Z",
+        "thread_starter_id": "U002",
+        "thread_starter_role": "QA_TUTOR",
+        "reactions": [],
+        "excerpt": "Was silence requested, or was spoken output required by the task?"
+      },
+      "k:audio-multimodal-instructions@1.3:1c6df70e": {
+        "evidence_id": "k:audio-multimodal-instructions@1.3:1c6df70e",
+        "origin": "retrieved_source",
+        "use": "CURRENT_GUIDANCE",
+        "citation": {
+          "document_id": "knowledge_3057c26d60654a68d0b76c025ba216366dd48f3e97b64f5aae68364a45170b8a",
+          "version_id": "version_03e4c185c65cbfbe35dccab040cc429ac6887e3cb0edc4f52cb5ea5a56970a24",
+          "chunk_id": "chunk_1c6df70e9f26fad116bae3d01bb66532",
+          "authoring": "audio-multimodal-instructions@1.3",
+          "title": "Audio Multimodal — Instructions (v1.3)",
+          "sections": [
+            "Playback and unavailable content"
+          ],
+          "source": {
+            "batch_id": null,
+            "channel_id": null,
+            "manual_key": "audio-multimodal-instructions",
+            "message_id": null,
+            "permalink": null,
+            "project_id": "audio_multimodal",
+            "reference": null,
+            "system": "manual",
+            "thread_id": null,
+            "workspace_id": null
+          }
+        },
+        "source_type": "guideline",
+        "record_kind": "guideline",
+        "applicability": {
+          "state": "CURRENT",
+          "revision_state": "CURRENT",
+          "version_mode": "current",
+          "replaced_by": [],
+          "unverified_supersession": [],
+          "supersedes": [],
+          "enactment": null,
+          "other_revisions": []
+        },
+        "dates": {
+          "source_date": "2026-09-15T13:00:00Z",
+          "basis": "effective_at",
+          "effective_at": "2026-09-15T13:00:00Z",
+          "created_at": null,
+          "valid_until": null,
+          "expired_as_of": false,
+          "reference_time": "2026-10-02T12:00:00Z"
+        },
+        "scope": {
+          "project_id": "audio_multimodal",
+          "batch_id": null,
+          "scope": "project",
+          "batch_relation": "project_wide"
+        },
+        "authority": {
+          "role": "TEAM_LEAD",
+          "actor": "U006",
+          "actor_relation": "RECORD_AUTHORITY",
+          "approval_status": "EXPLICIT_SOURCE_MARKER",
+          "provenance": "synthetic_manual_record"
+        },
+        "authorship": {
+          "author_id": null,
+          "verified": false,
+          "basis": "NO_AUTHOR_RECORDED"
+        },
+        "recorded_states": {
+          "status": "approved",
+          "decision_status": null,
+          "execution_status": null,
+          "outcome_status": null
+        },
+        "upstream_review": null,
+        "excerpt": "## Playback and unavailable content\n- If the player fails to load or start, report a tool incident with the task ID.\n- A visible waveform with no playback is still a playback/tool incident; the waveform alone does not establish that the recording is silent.\n- Do not score unavailable audio as a model-quality failure or make a content-based Quarantine (QN) decision solely because playback is unavailable.\n- Capture the browser/error state and whether another clip plays. An old workaround must be checked against the current symptoms; recurrence alone does not establish which fix was tried or why it failed.\n- Handling guidance does not confirm that playback has been repaired or that an affected task can be evaluated."
+      },
+      "k:slack:C_AUDIO_ANNOUNCEMENTS:1790892000.000901:1c524924": {
+        "evidence_id": "k:slack:C_AUDIO_ANNOUNCEMENTS:1790892000.000901:1c524924",
+        "origin": "retrieved_source",
+        "use": "ANNOUNCEMENT",
+        "citation": {
+          "document_id": "knowledge_5ed9124870dd8eefcb7205ccae406532b720c5974c8e33d94d542f1be6fe1bbb",
+          "version_id": "version_c7bc2edadbceff5bc2c01006e29f074c0a8434cc5b94d61a6d1542d2a2b2aa38",
+          "chunk_id": "chunk_1c5249242466a37751b706dd99a73e9c",
+          "authoring": null,
+          "title": "Slack announcement in audio-multimodal-announcements at 2026-10-01T22:00:00.000901+00:00",
+          "sections": [],
+          "source": {
+            "batch_id": "audio_batch_06",
+            "channel_id": "C_AUDIO_ANNOUNCEMENTS",
+            "manual_key": null,
+            "message_id": "1790892000.000901",
+            "permalink": null,
+            "project_id": "audio_multimodal",
+            "reference": null,
+            "system": "slack",
+            "thread_id": "1790892000.000901",
+            "workspace_id": null
+          }
+        },
+        "source_type": "announcement",
+        "record_kind": "announcement",
+        "applicability": {
+          "state": "CURRENT",
+          "revision_state": "CURRENT",
+          "version_mode": "current",
+          "replaced_by": [],
+          "unverified_supersession": [],
+          "supersedes": [],
+          "enactment": null,
+          "other_revisions": []
+        },
+        "dates": {
+          "source_date": "2026-10-01T22:00:00.000901+00:00",
+          "basis": "created_at",
+          "effective_at": null,
+          "created_at": "2026-10-01T22:00:00.000901+00:00",
+          "valid_until": null,
+          "expired_as_of": false,
+          "reference_time": "2026-10-02T12:00:00Z"
+        },
+        "scope": {
+          "project_id": "audio_multimodal",
+          "batch_id": "audio_batch_06",
+          "scope": "project",
+          "batch_relation": "same_batch"
+        },
+        "authority": {
+          "role": "TEAM_LEAD",
+          "actor": "U006",
+          "actor_relation": "MESSAGE_AUTHOR",
+          "approval_status": "UNKNOWN",
+          "provenance": null
+        },
+        "authorship": {
+          "author_id": "U006",
+          "verified": true,
+          "basis": "SLACK_MESSAGE_AUTHOR"
+        },
+        "recorded_states": {
+          "status": null,
+          "decision_status": null,
+          "execution_status": null,
+          "outcome_status": null
+        },
+        "upstream_review": null,
+        "excerpt": "[ANNOUNCEMENT posted 2026-10-01T22:00:00.000901+00:00 by TEAM_LEAD (audio_batch_06): not established as handling for this topic until you show it is relevant and gives a directive.]\nAudio batch 06 — playback handling reminder: if the LT player never starts, including a visible waveform with no playback, report the task ID, browser/error state, and whether another clip plays. Treat this as a tool incident. Do not score unavailable audio as a model-quality failure or choose content QN solely because playback is unavailable. This is handling guidance, not confirmation that the player has been fixed; retain the details needed to reproduce the incident."
+      },
+      "k:audio-multimodal-faq@1.1:c724358c": {
+        "evidence_id": "k:audio-multimodal-faq@1.1:c724358c",
+        "origin": "retrieved_source",
+        "use": "CURRENT_GUIDANCE",
+        "citation": {
+          "document_id": "knowledge_1f550e377f9c310f57f03e5bf482f810999d822a9cf4b1db3be5f2557678f15e",
+          "version_id": "version_66a170bbd46011e80d06da6d0bf5ec8b73486a84c13e015f60222fa711e05727",
+          "chunk_id": "chunk_c724358ccd850dc7fb3812e8af1ac1bc",
+          "authoring": "audio-multimodal-faq@1.1",
+          "title": "Audio Multimodal — FAQ (v1.1)",
+          "sections": [
+            "Playback and tool issues"
+          ],
+          "source": {
+            "batch_id": null,
+            "channel_id": null,
+            "manual_key": "audio-multimodal-faq",
+            "message_id": null,
+            "permalink": null,
+            "project_id": "audio_multimodal",
+            "reference": null,
+            "system": "manual",
+            "thread_id": null,
+            "workspace_id": null
+          }
+        },
+        "source_type": "faq",
+        "record_kind": "faq",
+        "applicability": {
+          "state": "CURRENT",
+          "revision_state": "CURRENT",
+          "version_mode": "current",
+          "replaced_by": [],
+          "unverified_supersession": [],
+          "supersedes": [],
+          "enactment": null,
+          "other_revisions": []
+        },
+        "dates": {
+          "source_date": "2026-09-20T13:00:00Z",
+          "basis": "effective_at",
+          "effective_at": "2026-09-20T13:00:00Z",
+          "created_at": null,
+          "valid_until": null,
+          "expired_as_of": false,
+          "reference_time": "2026-10-02T12:00:00Z"
+        },
+        "scope": {
+          "project_id": "audio_multimodal",
+          "batch_id": null,
+          "scope": "project",
+          "batch_relation": "project_wide"
+        },
+        "authority": {
+          "role": "TEAM_LEAD",
+          "actor": "U006",
+          "actor_relation": "RECORD_AUTHORITY",
+          "approval_status": "EXPLICIT_SOURCE_MARKER",
+          "provenance": "synthetic_manual_record"
+        },
+        "authorship": {
+          "author_id": null,
+          "verified": false,
+          "basis": "NO_AUTHOR_RECORDED"
+        },
+        "recorded_states": {
+          "status": "approved",
+          "decision_status": null,
+          "execution_status": null,
+          "outcome_status": null
+        },
+        "upstream_review": null,
+        "excerpt": "## Playback and tool issues\n\n### Q: What if the player spins forever or never loads?\nReport the task ID and available reproduction details as a tool incident. Do not score the recording as a model-quality failure while it cannot be evaluated.\n\n### Q: Can I use QN because playback is unavailable?\nPlayback failure alone does not establish a content-based QN reason. Report the tool incident. If other accessible evidence raises a separate content concern, retain it for review rather than assuming what the unavailable audio contains."
+      },
+      "k:audio-playback-trial-approval@1.0:1779c36a": {
+        "evidence_id": "k:audio-playback-trial-approval@1.0:1779c36a",
+        "origin": "retrieved_source",
+        "use": "HISTORY_ONLY",
+        "citation": {
+          "document_id": "knowledge_9d0d30c7f163464d5c5c7814b5d008534f5be75756ac2ebc5b3ca7c33b76f978",
+          "version_id": "version_d9b063c2c27537819203ff0271b833092e188df5854a74b9323e160edf3bfa6b",
+          "chunk_id": "chunk_1779c36a5e5cf3bb5191d7cd6e6b435a",
+          "authoring": "audio-playback-trial-approval@1.0",
+          "title": "AUDIO-20260824-01 — Approve a limited playback trial",
+          "sections": [
+            "Evidence available at the review",
+            "Suggested advice",
+            "TL decision"
+          ],
+          "source": {
+            "batch_id": "audio_batch_05",
+            "channel_id": null,
+            "manual_key": "audio-playback-trial-approval",
+            "message_id": null,
+            "permalink": null,
+            "project_id": "audio_multimodal",
+            "reference": null,
+            "system": "manual",
+            "thread_id": null,
+            "workspace_id": null
+          }
+        },
+        "source_type": "decision",
+        "record_kind": "advice_review",
+        "applicability": {
+          "state": "CURRENT",
+          "revision_state": "CURRENT",
+          "version_mode": "current",
+          "replaced_by": [],
+          "unverified_supersession": [],
+          "supersedes": [],
+          "enactment": {
+            "status": "NOT_ENACTED",
+            "basis": null,
+            "governing_sources": [],
+            "missing": [
+              "OUT_OF_SCOPE",
+              "NOT_A_POLICY_CHANGE",
+              "NO_ENACTMENT_EVIDENCE",
+              "EXPIRED"
+            ],
+            "recorded": {
+              "decision_status": "tl_approved",
+              "execution_status": "not_yet_executed",
+              "authority_role": "TEAM_LEAD",
+              "batch_id": "audio_batch_05",
+              "valid_until": "2026-08-28T21:00:00Z",
+              "effective_at": "2026-08-24T14:00:00Z"
+            }
+          },
+          "other_revisions": []
+        },
+        "dates": {
+          "source_date": "2026-08-24T14:00:00Z",
+          "basis": "effective_at",
+          "effective_at": "2026-08-24T14:00:00Z",
+          "created_at": null,
+          "valid_until": "2026-08-28T21:00:00Z",
+          "expired_as_of": true,
+          "reference_time": "2026-10-02T12:00:00Z"
+        },
+        "scope": {
+          "project_id": "audio_multimodal",
+          "batch_id": "audio_batch_05",
+          "scope": "project",
+          "batch_relation": "other_batch"
+        },
+        "authority": {
+          "role": "TEAM_LEAD",
+          "actor": "U006",
+          "actor_relation": "RECORD_AUTHORITY",
+          "approval_status": "EXPLICIT_SOURCE_MARKER",
+          "provenance": "synthetic_manual_record"
+        },
+        "authorship": {
+          "author_id": null,
+          "verified": false,
+          "basis": "NO_AUTHOR_RECORDED"
+        },
+        "recorded_states": {
+          "status": "tl_approved",
+          "decision_status": "tl_approved",
+          "execution_status": "not_yet_executed",
+          "outcome_status": "not_observed"
+        },
+        "upstream_review": null,
+        "excerpt": "[HISTORICAL - NOT CURRENT GUIDANCE: valid_until 2026-08-28T21:00:00Z has passed. May explain an old rule; do not apply it as current.]\n## Evidence available at the review\nThree batch-05 incident notes describe a player stuck at 00:00 even though the waveform appears. One Trainer reported that a single reload restored playback on A05-P101; two other tasks had not been retested. These notes establish a recurring symptom, not a confirmed cause.\n\n## Suggested advice\nA simulated prior Agent 3 card proposed a short alignment note allowing one reload while capturing task IDs and browser state. It did not claim that reload was a repair.\n\n## TL decision\nPriya approved a monitored trial for audio_batch_05 only, ending August 28 at 17:00 New York time. Trainers may try one reload, report whether another clip plays, and retain the failed task reference. No content score or QN decision should be inferred from unavailable playback.\n\nDo not repeatedly reload an affected task or mark it submitted without confirmation. Priya requested a short outcome review before extending the trial."
+      },
+      "k:audio-headset-check-approval@1.0:bb33bb5d": {
+        "evidence_id": "k:audio-headset-check-approval@1.0:bb33bb5d",
+        "origin": "retrieved_source",
+        "use": "PRIOR_DECISION",
+        "citation": {
+          "document_id": "knowledge_96cde53eae44a1e872d8bf0e405e2e1cda6efaae1097091e808caef77c22d5d3",
+          "version_id": "version_b8ca885f07c81a4ccbf6f21fbbc64a85703f0436c5f1369da2fd74dc16d5a16b",
+          "chunk_id": "chunk_bb33bb5d8247c453ff1577983dd9b798",
+          "authoring": "audio-headset-check-approval@1.0",
+          "title": "Approve a workstation output check for two silent-listening reports",
+          "sections": [
+            "TL response"
+          ],
+          "source": {
+            "batch_id": "audio_batch_06",
+            "channel_id": null,
+            "manual_key": "audio-headset-check-approval",
+            "message_id": null,
+            "permalink": null,
+            "project_id": "audio_multimodal",
+            "reference": null,
+            "system": "manual",
+            "thread_id": null,
+            "workspace_id": null
+          }
+        },
+        "source_type": "decision",
+        "record_kind": "advice_review",
+        "applicability": {
+          "state": "CURRENT",
+          "revision_state": "CURRENT",
+          "version_mode": "current",
+          "replaced_by": [],
+          "unverified_supersession": [],
+          "supersedes": [],
+          "enactment": {
+            "status": "NOT_ENACTED",
+            "basis": null,
+            "governing_sources": [],
+            "missing": [
+              "NOT_A_POLICY_CHANGE",
+              "NO_ENACTMENT_EVIDENCE"
+            ],
+            "recorded": {
+              "decision_status": "tl_approved",
+              "execution_status": "not_executed",
+              "authority_role": "TEAM_LEAD",
+              "batch_id": "audio_batch_06",
+              "valid_until": null,
+              "effective_at": "2026-09-21T14:00:00Z"
+            }
+          },
+          "other_revisions": []
+        },
+        "dates": {
+          "source_date": "2026-09-21T14:00:00Z",
+          "basis": "effective_at",
+          "effective_at": "2026-09-21T14:00:00Z",
+          "created_at": null,
+          "valid_until": null,
+          "expired_as_of": false,
+          "reference_time": "2026-10-02T12:00:00Z"
+        },
+        "scope": {
+          "project_id": "audio_multimodal",
+          "batch_id": "audio_batch_06",
+          "scope": "project",
+          "batch_relation": "same_batch"
+        },
+        "authority": {
+          "role": "TEAM_LEAD",
+          "actor": "U006",
+          "actor_relation": "RECORD_AUTHORITY",
+          "approval_status": "EXPLICIT_SOURCE_MARKER",
+          "provenance": "synthetic_manual_record"
+        },
+        "authorship": {
+          "author_id": null,
+          "verified": false,
+          "basis": "NO_AUTHOR_RECORDED"
+        },
+        "recorded_states": {
+          "status": "tl_approved",
+          "decision_status": "tl_approved",
+          "execution_status": "not_executed",
+          "outcome_status": "not_observed"
+        },
+        "upstream_review": null,
+        "excerpt": "[PRIOR RECORD (advice_review; decision_status: tl_approved; execution_status: not_executed; outcome_status: not_observed) - history, not a standing rule.]\n## TL response\n\nApproved for A06-H031 and A06-H032 on WS-A03. Mina should record the output-device state, the reference result, and each original task replay. Do not announce a general player repair or ask all tutors to change their settings."
+      }
+    },
+    "card": {
+      "contract_version": "agent3-advice-card-v4",
+      "record_type": "ADVICE_CARD",
+      "card_id": "card_071624af12542710d5da2c536f762d52",
+      "project_id": "audio_multimodal",
+      "topic_name": "Silent audio handling",
+      "card_line": "NEEDS_REVIEW",
+      "summary": "Two QA tutors and a tutor report no sound and ask how to handle their tasks; a second tutor reports empty-sounding output from prompts expecting speech. The threads do not yet establish whether playback is unavailable or the recordings are silent, so the scoring questions remain unresolved.",
+      "severity": {
+        "level": "HIGH",
+        "assessment_status": "ASSESSED",
+        "rubric_version": "severity-rubric-v3-semantic-signals",
+        "rubric_content_sha256": "eccaa31a2ab84a0aa7c005216a92fc39681e1dd10107117344948235a76673f4",
+        "rubric_project_id": null,
+        "rubric_scope": "SHARED_DEFAULT",
+        "rationale": "Two tutors and two QA tutors report comparable no-sound or empty-sounding output within the batch, suggesting broader evaluation or labeling risk. This does not establish a common cause or a batch-wide outage.",
+        "matched_signals": [
+          {
+            "level": "HIGH",
+            "signal_index": 3,
+            "signal_text": "Multiple distinct people or affected tasks reporting a comparable problem within the relevant project, batch, and time window, suggesting broader disruption or systemic labeling risk. Consider the number affected relative to the known active group when that information is available; do not require an explicit statement of widespread impact",
+            "support": "Two QA tutors report no sound, a tutor reports a silent clip with a waveform, and a second tutor reports empty-sounding output from prompts expecting speech.",
+            "evidence": [
+              {
+                "kind": "slack_message",
+                "project_id": "audio_multimodal",
+                "batch_id": "audio_batch_06",
+                "scope": "project",
+                "channel_id": "C_AUDIO_GENERAL",
+                "thread_id": "1790879994.000128",
+                "message_id": "1790879994.000128",
+                "document_id": null,
+                "version_id": null,
+                "authoring_document_id": null,
+                "authoring_version": null,
+                "section": null,
+                "chunk_id": null,
+                "candidate_group_id": null,
+                "member_id": "member_22fa96f8f37e7ea4f79fd6fb",
+                "artifact": null,
+                "artifact_sha256": null,
+                "quote": null,
+                "note": "m:C_AUDIO_GENERAL:1790879994.000128"
+              },
+              {
+                "kind": "slack_message",
+                "project_id": "audio_multimodal",
+                "batch_id": "audio_batch_06",
+                "scope": "project",
+                "channel_id": "C_AUDIO_GENERAL",
+                "thread_id": "1790915374.000127",
+                "message_id": "1790915374.000127",
+                "document_id": null,
+                "version_id": null,
+                "authoring_document_id": null,
+                "authoring_version": null,
+                "section": null,
+                "chunk_id": null,
+                "candidate_group_id": null,
+                "member_id": "member_4e743fb698f42bc160fb10b9",
+                "artifact": null,
+                "artifact_sha256": null,
+                "quote": null,
+                "note": "m:C_AUDIO_GENERAL:1790915374.000127"
+              },
+              {
+                "kind": "slack_message",
+                "project_id": "audio_multimodal",
+                "batch_id": "audio_batch_06",
+                "scope": "project",
+                "channel_id": "C_AUDIO_GENERAL",
+                "thread_id": "1790915374.000127",
+                "message_id": "1790915422.000113",
+                "document_id": null,
+                "version_id": null,
+                "authoring_document_id": null,
+                "authoring_version": null,
+                "section": null,
+                "chunk_id": null,
+                "candidate_group_id": null,
+                "member_id": "member_4e743fb698f42bc160fb10b9",
+                "artifact": null,
+                "artifact_sha256": null,
+                "quote": null,
+                "note": "m:C_AUDIO_GENERAL:1790915422.000113"
+              },
+              {
+                "kind": "slack_message",
+                "project_id": "audio_multimodal",
+                "batch_id": "audio_batch_06",
+                "scope": "project",
+                "channel_id": "C_AUDIO_QA",
+                "thread_id": "1790918811.000130",
+                "message_id": "1790918811.000130",
+                "document_id": null,
+                "version_id": null,
+                "authoring_document_id": null,
+                "authoring_version": null,
+                "section": null,
+                "chunk_id": null,
+                "candidate_group_id": null,
+                "member_id": "member_45b305f64bc9ac187066f07c",
+                "artifact": null,
+                "artifact_sha256": null,
+                "quote": null,
+                "note": "m:C_AUDIO_QA:1790918811.000130"
+              }
+            ]
+          }
+        ],
+        "evidence": [
+          {
+            "kind": "slack_message",
+            "project_id": "audio_multimodal",
+            "batch_id": "audio_batch_06",
+            "scope": "project",
+            "channel_id": "C_AUDIO_GENERAL",
+            "thread_id": "1790879994.000128",
+            "message_id": "1790879994.000128",
+            "document_id": null,
+            "version_id": null,
+            "authoring_document_id": null,
+            "authoring_version": null,
+            "section": null,
+            "chunk_id": null,
+            "candidate_group_id": null,
+            "member_id": "member_22fa96f8f37e7ea4f79fd6fb",
+            "artifact": null,
+            "artifact_sha256": null,
+            "quote": null,
+            "note": "m:C_AUDIO_GENERAL:1790879994.000128"
+          },
+          {
+            "kind": "slack_message",
+            "project_id": "audio_multimodal",
+            "batch_id": "audio_batch_06",
+            "scope": "project",
+            "channel_id": "C_AUDIO_GENERAL",
+            "thread_id": "1790915374.000127",
+            "message_id": "1790915374.000127",
+            "document_id": null,
+            "version_id": null,
+            "authoring_document_id": null,
+            "authoring_version": null,
+            "section": null,
+            "chunk_id": null,
+            "candidate_group_id": null,
+            "member_id": "member_4e743fb698f42bc160fb10b9",
+            "artifact": null,
+            "artifact_sha256": null,
+            "quote": null,
+            "note": "m:C_AUDIO_GENERAL:1790915374.000127"
+          },
+          {
+            "kind": "slack_message",
+            "project_id": "audio_multimodal",
+            "batch_id": "audio_batch_06",
+            "scope": "project",
+            "channel_id": "C_AUDIO_GENERAL",
+            "thread_id": "1790915374.000127",
+            "message_id": "1790915422.000113",
+            "document_id": null,
+            "version_id": null,
+            "authoring_document_id": null,
+            "authoring_version": null,
+            "section": null,
+            "chunk_id": null,
+            "candidate_group_id": null,
+            "member_id": "member_4e743fb698f42bc160fb10b9",
+            "artifact": null,
+            "artifact_sha256": null,
+            "quote": null,
+            "note": "m:C_AUDIO_GENERAL:1790915422.000113"
+          },
+          {
+            "kind": "slack_message",
+            "project_id": "audio_multimodal",
+            "batch_id": "audio_batch_06",
+            "scope": "project",
+            "channel_id": "C_AUDIO_QA",
+            "thread_id": "1790918811.000130",
+            "message_id": "1790918811.000130",
+            "document_id": null,
+            "version_id": null,
+            "authoring_document_id": null,
+            "authoring_version": null,
+            "section": null,
+            "chunk_id": null,
+            "candidate_group_id": null,
+            "member_id": "member_45b305f64bc9ac187066f07c",
+            "artifact": null,
+            "artifact_sha256": null,
+            "quote": null,
+            "note": "m:C_AUDIO_QA:1790918811.000130"
+          }
+        ],
+        "occurrence": {
+          "affected_reporters": {
+            "status": "LOWER_BOUND",
+            "count": 4,
+            "ids": [
+              "U007",
+              "U010",
+              "U015",
+              "U002"
+            ],
+            "basis": "Distinct authors whose own cited message reports the problem; other participants are not counted.",
+            "evidence": [
+              {
+                "kind": "slack_message",
+                "project_id": "audio_multimodal",
+                "batch_id": "audio_batch_06",
+                "scope": "project",
+                "channel_id": "C_AUDIO_GENERAL",
+                "thread_id": "1790879994.000128",
+                "message_id": "1790879994.000128",
+                "document_id": null,
+                "version_id": null,
+                "authoring_document_id": null,
+                "authoring_version": null,
+                "section": null,
+                "chunk_id": null,
+                "candidate_group_id": null,
+                "member_id": "member_22fa96f8f37e7ea4f79fd6fb",
+                "artifact": null,
+                "artifact_sha256": null,
+                "quote": null,
+                "note": "m:C_AUDIO_GENERAL:1790879994.000128"
+              },
+              {
+                "kind": "slack_message",
+                "project_id": "audio_multimodal",
+                "batch_id": "audio_batch_06",
+                "scope": "project",
+                "channel_id": "C_AUDIO_GENERAL",
+                "thread_id": "1790915374.000127",
+                "message_id": "1790915374.000127",
+                "document_id": null,
+                "version_id": null,
+                "authoring_document_id": null,
+                "authoring_version": null,
+                "section": null,
+                "chunk_id": null,
+                "candidate_group_id": null,
+                "member_id": "member_4e743fb698f42bc160fb10b9",
+                "artifact": null,
+                "artifact_sha256": null,
+                "quote": null,
+                "note": "m:C_AUDIO_GENERAL:1790915374.000127"
+              },
+              {
+                "kind": "slack_message",
+                "project_id": "audio_multimodal",
+                "batch_id": "audio_batch_06",
+                "scope": "project",
+                "channel_id": "C_AUDIO_GENERAL",
+                "thread_id": "1790915374.000127",
+                "message_id": "1790915422.000113",
+                "document_id": null,
+                "version_id": null,
+                "authoring_document_id": null,
+                "authoring_version": null,
+                "section": null,
+                "chunk_id": null,
+                "candidate_group_id": null,
+                "member_id": "member_4e743fb698f42bc160fb10b9",
+                "artifact": null,
+                "artifact_sha256": null,
+                "quote": null,
+                "note": "m:C_AUDIO_GENERAL:1790915422.000113"
+              },
+              {
+                "kind": "slack_message",
+                "project_id": "audio_multimodal",
+                "batch_id": "audio_batch_06",
+                "scope": "project",
+                "channel_id": "C_AUDIO_QA",
+                "thread_id": "1790918811.000130",
+                "message_id": "1790918811.000130",
+                "document_id": null,
+                "version_id": null,
+                "authoring_document_id": null,
+                "authoring_version": null,
+                "section": null,
+                "chunk_id": null,
+                "candidate_group_id": null,
+                "member_id": "member_45b305f64bc9ac187066f07c",
+                "artifact": null,
+                "artifact_sha256": null,
+                "quote": null,
+                "note": "m:C_AUDIO_QA:1790918811.000130"
+              }
+            ]
+          },
+          "affected_tasks": {
+            "status": "UNKNOWN",
+            "count": null,
+            "ids": [],
+            "basis": null,
+            "evidence": []
+          },
+          "relevant_threads": [
+            {
+              "project_id": "audio_multimodal",
+              "batch_id": "audio_batch_06",
+              "channel_id": "C_AUDIO_GENERAL",
+              "thread_id": "1790879994.000128",
+              "member_id": "member_22fa96f8f37e7ea4f79fd6fb"
+            },
+            {
+              "project_id": "audio_multimodal",
+              "batch_id": "audio_batch_06",
+              "channel_id": "C_AUDIO_GENERAL",
+              "thread_id": "1790915374.000127",
+              "member_id": "member_4e743fb698f42bc160fb10b9"
+            },
+            {
+              "project_id": "audio_multimodal",
+              "batch_id": "audio_batch_06",
+              "channel_id": "C_AUDIO_QA",
+              "thread_id": "1790918811.000130",
+              "member_id": "member_45b305f64bc9ac187066f07c"
+            }
+          ],
+          "reporting_window": {
+            "start": "2026-10-01T18:39:54.000128+00:00",
+            "end": "2026-10-02T05:27:49.000113+00:00"
+          },
+          "historical_recurrence": {
+            "status": "FOUND",
+            "sources": [
+              {
+                "kind": "knowledge_source",
+                "project_id": "audio_multimodal",
+                "batch_id": "audio_batch_05",
+                "scope": "project",
+                "channel_id": null,
+                "thread_id": null,
+                "message_id": null,
+                "document_id": "knowledge_9d0d30c7f163464d5c5c7814b5d008534f5be75756ac2ebc5b3ca7c33b76f978",
+                "version_id": "version_d9b063c2c27537819203ff0271b833092e188df5854a74b9323e160edf3bfa6b",
+                "authoring_document_id": "audio-playback-trial-approval",
+                "authoring_version": "1.0",
+                "section": "Evidence available at the review",
+                "chunk_id": "chunk_1779c36a5e5cf3bb5191d7cd6e6b435a",
+                "candidate_group_id": null,
+                "member_id": null,
+                "artifact": null,
+                "artifact_sha256": null,
+                "quote": null,
+                "note": "k:audio-playback-trial-approval@1.0:1779c36a (HISTORY_ONLY; CURRENT)"
+              }
+            ],
+            "event_series_ids": []
+          },
+          "known_denominator": null,
+          "structural": {
+            "threads": 3,
+            "messages": 8,
+            "distinct_participants": 8,
+            "duplicate_threads_ignored": 0,
+            "duplicate_messages_ignored": 0,
+            "computed_from": "topic member threads (original Slack messages)",
+            "participants_are_not_affected_reporters": true
+          },
+          "semantic_identification": "ASSESSED"
+        },
+        "inherited_from": {
+          "level": "UNKNOWN",
+          "assessment_status": "UNASSESSED",
+          "assessment_deferred_to": "AGENT3",
+          "reason": "Agent 2 performs taxonomy only."
+        }
+      },
+      "severity_is_provisional": false,
+      "resolution_status": "UNRESOLVED",
+      "recommended_action": {
+        "action_type": "POST_ALIGNMENT",
+        "draft_text": "Two QA tutors and a tutor report no sound; the tutor also sees a waveform on AUDIO-5374. A second tutor reports empty-sounding files from prompts expecting speech.\n\nPlease provide task IDs, browser/error state, whether playback starts, whether another clip plays, and whether the prompt requests silence or speech. For the first thread, also provide the requested result of playback elsewhere.\n\nIf playback is unavailable, including a waveform with no playback, report a tool incident. Do not assign a model-quality failure or content QN solely for unavailable playback. These instructions do not establish a repair or decide how to score a recording that actually plays silently.",
+        "scope_note": "The tool-incident handling applies only when playback is unavailable; the current reports do not yet establish that condition.",
+        "label": "Post a reminder",
+        "instruction": "Post a focused reminder distinguishing unavailable playback from silent recordings, and request the checks needed to apply current handling.",
+        "rationale": "Current guidance answers the unavailable-playback case, but the threads have not established that condition. A conditional reminder addresses the repeated questions without assuming a technical cause or a content score.",
+        "targets": [],
+        "essential_premise_ids": [
+          "claim:c1",
+          "claim:c2",
+          "claim:c3",
+          "claim:c4",
+          "claim:c6",
+          "claim:c7",
+          "claim:c8"
+        ],
+        "source": "DRAFT"
+      },
+      "reasoning": "What the evidence shows: A QA tutor reports no audio and asks whether to use QN or a bad score. A tutor reports that AUDIO-5374 is completely silent despite an existing waveform and asks whether to use QN or a quality score. A tutor reports that several prompts expecting speech return an empty-sounding file. A QA tutor reports zero sound, cannot tell whether silence is intentional, and asks for correct handling. A QA tutor asks about volume and a second clip in the first thread; a different QA tutor asks the same checks in the AUDIO-5374 thread; a third QA tutor asks whether silence or speech was requested in the third thread. In the first thread, the team lead instructs that intended silence and whether the file plays elsewhere need verification. Current instructions and FAQ require a tool-incident report for unavailable playback, including a waveform with no playback, with the task ID and available reproduction details. Capture browser/error state and whether another clip plays. Unavailable playback alone is not a model-quality failure or a content-based QN reason; a waveform does not establish a silent recording, and handling guidance does not establish a repair. The supplied threads leave the handling questions unresolved: replies request checks of playback or intended output, but no results establish unavailable playback versus a silent recording, and no final scoring answer is posted. The current batch announcement directs reporting task ID, browser/error state, and whether another clip plays when the player never starts, including a waveform with no playback; it treats that condition as a tool incident and prohibits a model-quality failure or content QN solely for unavailable playback. The earlier batch-05 review records three incidents with a player stuck at 00:00 despite a waveform and a limited reload trial ending August 28. Its recorded execution was pending and outcome unobserved; it is expired history, not current guidance or a confirmed repair. The September 21 prior decision approved an output-device check only for A06-H031 and A06-H032 on WS-A03, records no execution or observed outcome, and is not a standing rule. It explicitly rejects a general player-repair announcement or asking all tutors to change settings. Thread status, read from each thread's own messages: unresolved ×3. Agent 1's earlier labels (an input, not evidence): unresolved ×3.",
+      "supporting_sources": [
+        {
+          "kind": "knowledge_source",
+          "project_id": "audio_multimodal",
+          "batch_id": null,
+          "scope": "project",
+          "channel_id": null,
+          "thread_id": null,
+          "message_id": null,
+          "document_id": "knowledge_3057c26d60654a68d0b76c025ba216366dd48f3e97b64f5aae68364a45170b8a",
+          "version_id": "version_03e4c185c65cbfbe35dccab040cc429ac6887e3cb0edc4f52cb5ea5a56970a24",
+          "authoring_document_id": "audio-multimodal-instructions",
+          "authoring_version": "1.3",
+          "section": "Playback and unavailable content",
+          "chunk_id": "chunk_1c6df70e9f26fad116bae3d01bb66532",
+          "candidate_group_id": null,
+          "member_id": null,
+          "artifact": null,
+          "artifact_sha256": null,
+          "quote": null,
+          "note": "k:audio-multimodal-instructions@1.3:1c6df70e (CURRENT_GUIDANCE; CURRENT)"
+        },
+        {
+          "kind": "knowledge_source",
+          "project_id": "audio_multimodal",
+          "batch_id": null,
+          "scope": "project",
+          "channel_id": null,
+          "thread_id": null,
+          "message_id": null,
+          "document_id": "knowledge_1f550e377f9c310f57f03e5bf482f810999d822a9cf4b1db3be5f2557678f15e",
+          "version_id": "version_66a170bbd46011e80d06da6d0bf5ec8b73486a84c13e015f60222fa711e05727",
+          "authoring_document_id": "audio-multimodal-faq",
+          "authoring_version": "1.1",
+          "section": "Playback and tool issues",
+          "chunk_id": "chunk_c724358ccd850dc7fb3812e8af1ac1bc",
+          "candidate_group_id": null,
+          "member_id": null,
+          "artifact": null,
+          "artifact_sha256": null,
+          "quote": null,
+          "note": "k:audio-multimodal-faq@1.1:c724358c (CURRENT_GUIDANCE; CURRENT)"
+        },
+        {
+          "kind": "knowledge_source",
+          "project_id": "audio_multimodal",
+          "batch_id": "audio_batch_06",
+          "scope": "project",
+          "channel_id": null,
+          "thread_id": null,
+          "message_id": null,
+          "document_id": "knowledge_5ed9124870dd8eefcb7205ccae406532b720c5974c8e33d94d542f1be6fe1bbb",
+          "version_id": "version_c7bc2edadbceff5bc2c01006e29f074c0a8434cc5b94d61a6d1542d2a2b2aa38",
+          "authoring_document_id": null,
+          "authoring_version": null,
+          "section": null,
+          "chunk_id": "chunk_1c5249242466a37751b706dd99a73e9c",
+          "candidate_group_id": null,
+          "member_id": null,
+          "artifact": null,
+          "artifact_sha256": null,
+          "quote": null,
+          "note": "k:slack:C_AUDIO_ANNOUNCEMENTS:1790892000.000901:1c524924 (CURRENT_HANDLING (announcement verified for this topic); CURRENT)"
+        },
+        {
+          "kind": "knowledge_source",
+          "project_id": "audio_multimodal",
+          "batch_id": "audio_batch_05",
+          "scope": "project",
+          "channel_id": null,
+          "thread_id": null,
+          "message_id": null,
+          "document_id": "knowledge_9d0d30c7f163464d5c5c7814b5d008534f5be75756ac2ebc5b3ca7c33b76f978",
+          "version_id": "version_d9b063c2c27537819203ff0271b833092e188df5854a74b9323e160edf3bfa6b",
+          "authoring_document_id": "audio-playback-trial-approval",
+          "authoring_version": "1.0",
+          "section": "Evidence available at the review",
+          "chunk_id": "chunk_1779c36a5e5cf3bb5191d7cd6e6b435a",
+          "candidate_group_id": null,
+          "member_id": null,
+          "artifact": null,
+          "artifact_sha256": null,
+          "quote": null,
+          "note": "k:audio-playback-trial-approval@1.0:1779c36a (HISTORY_ONLY; CURRENT)"
+        },
+        {
+          "kind": "knowledge_source",
+          "project_id": "audio_multimodal",
+          "batch_id": "audio_batch_06",
+          "scope": "project",
+          "channel_id": null,
+          "thread_id": null,
+          "message_id": null,
+          "document_id": "knowledge_96cde53eae44a1e872d8bf0e405e2e1cda6efaae1097091e808caef77c22d5d3",
+          "version_id": "version_b8ca885f07c81a4ccbf6f21fbbc64a85703f0436c5f1369da2fd74dc16d5a16b",
+          "authoring_document_id": "audio-headset-check-approval",
+          "authoring_version": "1.0",
+          "section": "TL response",
+          "chunk_id": "chunk_bb33bb5d8247c453ff1577983dd9b798",
+          "candidate_group_id": null,
+          "member_id": null,
+          "artifact": null,
+          "artifact_sha256": null,
+          "quote": null,
+          "note": "k:audio-headset-check-approval@1.0:bb33bb5d (PRIOR_DECISION; CURRENT)"
+        },
+        {
+          "kind": "slack_message",
+          "project_id": "audio_multimodal",
+          "batch_id": "audio_batch_06",
+          "scope": "project",
+          "channel_id": "C_AUDIO_GENERAL",
+          "thread_id": "1790879994.000128",
+          "message_id": "1790879994.000128",
+          "document_id": null,
+          "version_id": null,
+          "authoring_document_id": null,
+          "authoring_version": null,
+          "section": null,
+          "chunk_id": null,
+          "candidate_group_id": null,
+          "member_id": "member_22fa96f8f37e7ea4f79fd6fb",
+          "artifact": null,
+          "artifact_sha256": null,
+          "quote": null,
+          "note": "m:C_AUDIO_GENERAL:1790879994.000128"
+        },
+        {
+          "kind": "slack_message",
+          "project_id": "audio_multimodal",
+          "batch_id": "audio_batch_06",
+          "scope": "project",
+          "channel_id": "C_AUDIO_GENERAL",
+          "thread_id": "1790915374.000127",
+          "message_id": "1790915374.000127",
+          "document_id": null,
+          "version_id": null,
+          "authoring_document_id": null,
+          "authoring_version": null,
+          "section": null,
+          "chunk_id": null,
+          "candidate_group_id": null,
+          "member_id": "member_4e743fb698f42bc160fb10b9",
+          "artifact": null,
+          "artifact_sha256": null,
+          "quote": null,
+          "note": "m:C_AUDIO_GENERAL:1790915374.000127"
+        },
+        {
+          "kind": "slack_message",
+          "project_id": "audio_multimodal",
+          "batch_id": "audio_batch_06",
+          "scope": "project",
+          "channel_id": "C_AUDIO_GENERAL",
+          "thread_id": "1790915374.000127",
+          "message_id": "1790915422.000113",
+          "document_id": null,
+          "version_id": null,
+          "authoring_document_id": null,
+          "authoring_version": null,
+          "section": null,
+          "chunk_id": null,
+          "candidate_group_id": null,
+          "member_id": "member_4e743fb698f42bc160fb10b9",
+          "artifact": null,
+          "artifact_sha256": null,
+          "quote": null,
+          "note": "m:C_AUDIO_GENERAL:1790915422.000113"
+        },
+        {
+          "kind": "slack_message",
+          "project_id": "audio_multimodal",
+          "batch_id": "audio_batch_06",
+          "scope": "project",
+          "channel_id": "C_AUDIO_QA",
+          "thread_id": "1790918811.000130",
+          "message_id": "1790918811.000130",
+          "document_id": null,
+          "version_id": null,
+          "authoring_document_id": null,
+          "authoring_version": null,
+          "section": null,
+          "chunk_id": null,
+          "candidate_group_id": null,
+          "member_id": "member_45b305f64bc9ac187066f07c",
+          "artifact": null,
+          "artifact_sha256": null,
+          "quote": null,
+          "note": "m:C_AUDIO_QA:1790918811.000130"
+        },
+        {
+          "kind": "slack_message",
+          "project_id": "audio_multimodal",
+          "batch_id": "audio_batch_06",
+          "scope": "project",
+          "channel_id": "C_AUDIO_GENERAL",
+          "thread_id": "1790879994.000128",
+          "message_id": "1790880048.000113",
+          "document_id": null,
+          "version_id": null,
+          "authoring_document_id": null,
+          "authoring_version": null,
+          "section": null,
+          "chunk_id": null,
+          "candidate_group_id": null,
+          "member_id": "member_22fa96f8f37e7ea4f79fd6fb",
+          "artifact": null,
+          "artifact_sha256": null,
+          "quote": null,
+          "note": "m:C_AUDIO_GENERAL:1790880048.000113"
+        },
+        {
+          "kind": "slack_message",
+          "project_id": "audio_multimodal",
+          "batch_id": "audio_batch_06",
+          "scope": "project",
+          "channel_id": "C_AUDIO_GENERAL",
+          "thread_id": "1790915374.000127",
+          "message_id": "1790915470.000226",
+          "document_id": null,
+          "version_id": null,
+          "authoring_document_id": null,
+          "authoring_version": null,
+          "section": null,
+          "chunk_id": null,
+          "candidate_group_id": null,
+          "member_id": "member_4e743fb698f42bc160fb10b9",
+          "artifact": null,
+          "artifact_sha256": null,
+          "quote": null,
+          "note": "m:C_AUDIO_GENERAL:1790915470.000226"
+        },
+        {
+          "kind": "slack_message",
+          "project_id": "audio_multimodal",
+          "batch_id": "audio_batch_06",
+          "scope": "project",
+          "channel_id": "C_AUDIO_QA",
+          "thread_id": "1790918811.000130",
+          "message_id": "1790918869.000113",
+          "document_id": null,
+          "version_id": null,
+          "authoring_document_id": null,
+          "authoring_version": null,
+          "section": null,
+          "chunk_id": null,
+          "candidate_group_id": null,
+          "member_id": "member_45b305f64bc9ac187066f07c",
+          "artifact": null,
+          "artifact_sha256": null,
+          "quote": null,
+          "note": "m:C_AUDIO_QA:1790918869.000113"
+        },
+        {
+          "kind": "slack_message",
+          "project_id": "audio_multimodal",
+          "batch_id": "audio_batch_06",
+          "scope": "project",
+          "channel_id": "C_AUDIO_GENERAL",
+          "thread_id": "1790879994.000128",
+          "message_id": "1790880088.000226",
+          "document_id": null,
+          "version_id": null,
+          "authoring_document_id": null,
+          "authoring_version": null,
+          "section": null,
+          "chunk_id": null,
+          "candidate_group_id": null,
+          "member_id": "member_22fa96f8f37e7ea4f79fd6fb",
+          "artifact": null,
+          "artifact_sha256": null,
+          "quote": null,
+          "note": "m:C_AUDIO_GENERAL:1790880088.000226"
+        }
+      ],
+      "related_threads": [
+        {
+          "project_id": "audio_multimodal",
+          "batch_id": "audio_batch_06",
+          "channel_id": "C_AUDIO_GENERAL",
+          "thread_id": "1790879994.000128",
+          "member_id": "member_22fa96f8f37e7ea4f79fd6fb",
+          "permalink": null,
+          "display_reference": "1790879994.000128",
+          "label": "#audio-multimodal-general, 2026-10-01, started by a QA tutor: \"Issue: No audio at all — QN or bad score?\"",
+          "opening_text": "[Task review]\nIssue: No audio at all — QN or bad score?\nQuestion: what is the correct handling for this task?"
+        },
+        {
+          "project_id": "audio_multimodal",
+          "batch_id": "audio_batch_06",
+          "channel_id": "C_AUDIO_GENERAL",
+          "thread_id": "1790915374.000127",
+          "member_id": "member_4e743fb698f42bc160fb10b9",
+          "permalink": null,
+          "display_reference": "1790915374.000127",
+          "label": "#audio-multimodal-general, 2026-10-02, started by a tutor: \"Task check: Clip is completely silent, but the waveform exists.\"",
+          "opening_text": "Task check: Clip is completely silent, but the waveform exists. QN or quality score? (task ref AUDIO-5374)"
+        },
+        {
+          "project_id": "audio_multimodal",
+          "batch_id": "audio_batch_06",
+          "channel_id": "C_AUDIO_QA",
+          "thread_id": "1790918811.000130",
+          "member_id": "member_45b305f64bc9ac187066f07c",
+          "permalink": null,
+          "display_reference": "1790918811.000130",
+          "label": "#audio-multimodal-qa, 2026-10-02, started by a QA tutor: \"Issue: Zero sound on the track.\"",
+          "opening_text": "[QA clarification]\nIssue: Zero sound on the track. Can't tell whether it's intentionally silent.\nQuestion: what is the correct handling for this task?"
+        }
+      ],
+      "confidence": 0.9,
+      "confidence_band": "HIGH",
+      "needs_review_reasons": [
+        {
+          "code": "HIGH_SEVERITY",
+          "detail": "Assessed HIGH under the shared default rubric.",
+          "obligation_ids": [],
+          "evidence": []
+        }
+      ],
+      "inherited_flags": [],
+      "checks": {
+        "grounding": "PASSED",
+        "temporal_conflict": "NONE_FOUND",
+        "open_confirmation": "NONE"
+      },
+      "lineage": {
+        "agent3_run_id": "agent3overnight_0b7636193a04d34b4fe271dfea902a96",
+        "handoff_contract": "agent2-taxonomy-handoff-v2",
+        "agent2_export_sha256": "7634a0c7af684201be9771b97e12c4379ed86cc8b4de7159caa55bd6816e9c26",
+        "agent2_schema_version": 8,
+        "candidate_group_id": "cluster_7b875e31f162f4f3",
+        "topic_id": "cluster_7b875e31f162f4f3/topic_1",
+        "member_ids": [
+          "member_22fa96f8f37e7ea4f79fd6fb",
+          "member_4e743fb698f42bc160fb10b9",
+          "member_45b305f64bc9ac187066f07c"
+        ],
+        "project_id": "audio_multimodal",
+        "batch_id": "audio_batch_06"
+      },
+      "review_notes": [
+        "Severity is high under the team rubric."
+      ],
+      "details": [
+        "A tutor reports that AUDIO-5374 is completely silent despite a visible waveform and asks whether to use QN or a quality score.",
+        "QA tutors ask about volume and a second clip in the first two threads, and a QA tutor asks whether silence or speech was requested in the third thread.",
+        "In the first thread, the team lead asks for verification of intended silence and playback elsewhere; the supplied replies do not provide those results.",
+        "Current instructions treat a visible waveform with no playback as a tool incident, but a waveform alone does not establish a silent recording.",
+        "An earlier batch-05 record describes similar waveform-without-playback symptoms and an expired, limited reload trial, not a current remedy.",
+        "An earlier batch-06 decision approved an output-device check for two specified tasks, but records neither execution nor an observed outcome and is not a standing rule."
+      ],
+      "next_step": {
+        "status": "ACTION_RECOMMENDED",
+        "rationale": "Current guidance answers the unavailable-playback case, but the threads have not established that condition. A conditional reminder addresses the repeated questions without assuming a technical cause or a content score.",
+        "explanation": null
+      }
+    },
+    "review_items": [],
+    "coverage": {
+      "group_members_outside_this_card": [],
+      "uncarried_obligations": []
+    },
+    "budget": {
+      "consumed": {
+        "retrieval_calls": 1,
+        "model_calls": 2
+      },
+      "limits": {
+        "model_calls_per_topic": 4,
+        "model_calls_total": 28,
+        "retrieval_calls_per_topic": 6,
+        "retrieval_calls_total": 42
+      }
+    },
+    "diagnostics": []
+  }
+}

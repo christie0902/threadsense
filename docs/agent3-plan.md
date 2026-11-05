@@ -2028,3 +2028,28 @@ blockers): retrieval misses (buffering trial outcome, tie-tracking announcement)
 rubric interpretation; awkward wording and repetition; experimental or not live-covered features. Test evidence: full suite
 1,072 passed before the run; 9 safeguard tests added; closeout 82 focused tests, frontend build and 13 UI tests passed.
 **Milestone closed for the local capstone/demo scope** (`data/experiments/agent3_v18_acceptance_v1/ACCEPTANCE.md`).
+
+## Full live run with a shared cache and budget ledger (2026-11-05, live)
+
+Execution layer `src/threadsense/execution/` (no change to fingerprinted agent code): a transport guard patches the
+httpx sync path (CrewAI/LiteLLM, Agent 1 interpretation and Agent 3) and `verification_requests.send_once` (Agent 1
+verification and Agent 2); async provider calls are refused, and REPLAY refuses non-loopback sockets. Each request body is
+saved before sending, and its raw response is saved on receipt, in a content-addressed store (`objects/`, verified on
+every read). The cache key is method, host, path and canonical body; headers and credentials are excluded. A SQLite
+ledger (WAL, `BEGIN IMMEDIATE`) reserves the conservative maximum charge before each request, settles from reported
+usage, and keeps uncertain requests charged. A key with an earlier unresolved attempt is never resent. Prices were
+verified on 2026-11-05 (`execution/pricing.py`); an unknown model stops the run. Stage manifests record dependencies,
+output tree hashes and request origins (FRESH_LIVE / REUSED_RUN / REUSED_PARENT). Runner `scripts/run_threadsense_full.py`
+(preflight, live, resume, replay, branch, render). Tests: `tests/test_execution_layer.py` (17),
+`tests/test_execution_pipeline.py` (7).
+
+Run `data/experiments/threadsense_full_v1/` (ceiling $39, target $30 or less; ReAct and flag-impact off):
+- Cost: 937 requests, $15.32, against a preflight estimate of $15.20.
+- Agent 1: 178 interpreted, 177 accepted. 1 was rejected (AUTHORITY_INELIGIBLE) and recorded as unfinished. Of the 177,
+  79 VERIFIED, 61 CORRECTED, 37 NEEDS_REVIEW.
+- Grouping and Agent 2: 76 groups, 76 consolidated.
+- Agent 3: 81 cards (61 Needs Review, 8 Recommended Action, 12 Observation), 37 queue items, accounting COMPLETE.
+
+Sol reported nearly all its input as 30-minute cache writes with no reads, about $1.15 above the input rate. The
+network-disabled replay `threadsense_full_v1_replay/` reused all 947 responses with 0 calls and reproduced all 89
+compared artifacts semantically. Acceptance and limitations: `data/experiments/threadsense_full_v1/ACCEPTANCE.md`.

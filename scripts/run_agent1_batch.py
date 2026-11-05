@@ -97,11 +97,15 @@ def main(argv: list[str] | None = None) -> int:
         "--output-dir", type=Path,
         default=PROJECT_ROOT / "data" / "processed" / "agent1",
     )
+    parser.add_argument("--fixture-root", type=Path, default=PROJECT_ROOT / "data" / "fixtures" / "slack_generated",
+                        help="Slack snapshot to interpret (default: the original fixture).")
+    parser.add_argument("--source-destination", type=Path, default=PROJECT_ROOT / "data" / "knowledge" / "decisions",
+                        help="Where live runs store extracted announcement sources (a run directory keeps the corpus unchanged).")
     args = parser.parse_args(argv)
     if args.limit < 0:
         parser.error("--limit must be zero or positive")
 
-    fixture_root = PROJECT_ROOT / "data" / "fixtures" / "slack_generated"
+    fixture_root = args.fixture_root
     if not args.dry_run and not args.cutoff:
         parser.error('Live processing requires an explicit timezone-aware --cutoff.')
     threads, announcements, routing = load_threads(fixture_root, args.channel, cutoff=args.cutoff, with_routing=True)
@@ -193,7 +197,7 @@ def main(argv: list[str] | None = None) -> int:
     write_json(manifest_path, config)
     # Persist the separate source route before interpreting eligible discussions.
     extraction = extraction_report(routed_threads, announcements, routing,
-        destination=PROJECT_ROOT/'data/knowledge/decisions',canonical_members=existing_members)
+        destination=args.source_destination,canonical_members=existing_members)
     write_json(output_dir/'routing_manifest.json', extraction)
     export_path = output_dir / "interpretations.json"
     review_path = output_dir / "review_required.json"

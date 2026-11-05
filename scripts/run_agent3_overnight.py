@@ -34,18 +34,21 @@ def live_settings():
     return pilot.live_settings(**module.ARMS[ARM])
 
 
-def build_runtime(out, mode, *, cutoff, only, max_requests, max_cost, release=(), index_dir=None, flag_impact=False):
+def build_runtime(out, mode, *, cutoff, only, max_requests, max_cost, release=(), index_dir=None, flag_impact=False,
+                  handoff=None, fixture_root=None, per_request=None):
     from threadsense.agents import advisor_pilot as pilot
     from threadsense.agents import overnight
     if mode == 'LIVE':
         settings = live_settings()
         prices = pilot.model_prices(settings['model'])
-        per_request = settings['input_token_limit'] * prices['input'] + settings['max_completion_tokens_per_call'] * prices['output']
+        per_request = per_request or (settings['input_token_limit'] * prices['input']
+                                      + settings['max_completion_tokens_per_call'] * prices['output'])
         ledger = overnight.PersistentLedger(max_cost, per_request)
         client = pilot.CrewAIClient(settings, ledger=ledger)
         return overnight.Runtime(out, client=client, cutoff=cutoff, only=only, max_requests=max_requests, ledger=ledger,
                                  mode=mode, release=release, settings=settings, index_dir=index_dir or overnight.INDEX_DIR,
-                                 flag_impact=flag_impact)
+                                 flag_impact=flag_impact, handoff=handoff or pilot.HANDOFF,
+                                 fixture_root=fixture_root or overnight.FIXTURE_ROOT)
     return overnight.Runtime(out, client=overnight.HandoffScriptedClient(), cutoff=cutoff, only=only,
                              max_requests=max_requests, mode=mode, release=release, index_dir=index_dir or overnight.INDEX_DIR,
                              flag_impact=flag_impact)

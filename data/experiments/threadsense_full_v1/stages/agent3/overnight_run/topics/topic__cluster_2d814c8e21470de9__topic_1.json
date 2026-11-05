@@ -1,0 +1,3487 @@
+{
+  "work_item": {
+    "candidate_group_id": "cluster_2d814c8e21470de9",
+    "project_id": "response_preference",
+    "batch_id": "rp_batch_15",
+    "work_id": "topic:cluster_2d814c8e21470de9/topic_1",
+    "kind": "TOPIC",
+    "topic_id": "cluster_2d814c8e21470de9/topic_1",
+    "topic_name": "Dead citation links vs factual correctness",
+    "member_ids": [
+      "member_db5c94522bcefd45ebceda5d",
+      "member_c65ff103e0472891ea361dce",
+      "member_f20d2b0a0010b5625d9af570",
+      "member_0d9923adfceafa1870cc4760"
+    ],
+    "pilot_scenario": null,
+    "in_scope": true
+  },
+  "workflow": {
+    "outcome": "CARD",
+    "card_id": "card_38db5d6ad2fde24fa4d3b8d621110159",
+    "card_line": "NEEDS_REVIEW",
+    "grounding": "PASSED",
+    "stage_failures": [],
+    "semantic_source": "LIVE_MODEL"
+  },
+  "result": {
+    "scenario": {
+      "id": "topic:cluster_2d814c8e21470de9/topic_1",
+      "candidate_group_id": "cluster_2d814c8e21470de9",
+      "focus": "Dead citation links vs factual correctness",
+      "topic_id": "cluster_2d814c8e21470de9/topic_1"
+    },
+    "status": "CARD",
+    "topic": {
+      "project_id": "response_preference",
+      "batch_id": "rp_batch_15",
+      "candidate_group_id": "cluster_2d814c8e21470de9",
+      "topic_id": "cluster_2d814c8e21470de9/topic_1",
+      "topic_label": "Dead citation links vs factual correctness",
+      "projection_gap": null,
+      "as_of": "2026-10-02T12:00:00Z",
+      "member_ids": [
+        "member_db5c94522bcefd45ebceda5d",
+        "member_c65ff103e0472891ea361dce",
+        "member_f20d2b0a0010b5625d9af570",
+        "member_0d9923adfceafa1870cc4760"
+      ],
+      "initial_query": "Dead citation links vs factual correctness. Should the answer be penalized due to the dead source link?"
+    },
+    "retrieval_trace": [
+      {
+        "step": 1,
+        "purpose": "initial_current_guidance",
+        "gap_id": null,
+        "query": "Dead citation links vs factual correctness. Should the answer be penalized due to the dead source link?",
+        "source_types": [
+          "guideline",
+          "faq",
+          "decision",
+          "announcement"
+        ],
+        "version_mode": "current",
+        "as_of": "2026-10-02T12:00:00Z",
+        "batch": "rp_batch_15",
+        "top_k": 5,
+        "status": "DONE",
+        "mode": "hybrid",
+        "use_mmr": true,
+        "mmr_lambda": 0.9,
+        "result_ids": [
+          "k:response-preference-faq@1.1:3db12f63",
+          "k:response-preference-instructions@1.1:a71c54c7",
+          "k:response-preference-instructions@1.1:3350bbc0",
+          "k:rp-tie-calibration-post@1.0:4a3c786f",
+          "k:response-preference-faq@1.1:4683724f"
+        ],
+        "new_evidence_ids": [
+          "k:response-preference-faq@1.1:3db12f63",
+          "k:response-preference-instructions@1.1:a71c54c7",
+          "k:response-preference-instructions@1.1:3350bbc0",
+          "k:rp-tie-calibration-post@1.0:4a3c786f",
+          "k:response-preference-faq@1.1:4683724f"
+        ],
+        "eligible_chunks": 28,
+        "added": []
+      }
+    ],
+    "retrieval_notes": {
+      "withheld_by_version": [],
+      "version_diagnostics": []
+    },
+    "follow_ups": [],
+    "unfilled_gaps": [],
+    "model_calls": [
+      {
+        "stage": "draft",
+        "schema": "AdvisorDraft",
+        "agent1_context": {
+          "sha256": "f6cf4880b95981907a5a85e70f0dc4dacc503d520e060fe8abc4ab916458190e",
+          "boundary": "IN_HTTP_BODY"
+        },
+        "raw": "{\n  \"contract_version\": \"agent3-advisor-draft-v11\",\n  \"summary\": null,\n  \"summary_sentences\": [\n    {\n      \"text\": \"Two QA tutors and a tutor ask how to handle otherwise correct answers with dead citation links, with handling questions still unanswered in three threads.\",\n      \"support_claim_ids\": [\"c1\", \"c3\", \"c5\", \"c7\", \"c10\"],\n      \"depends_on\": []\n    },\n    {\n      \"text\": \"Current guidance requires a verification note and says failed access alone does not establish that a claim is false or determine its error grade.\",\n      \"support_claim_ids\": [\"c8\", \"c9\"],\n      \"depends_on\": []\n    }\n  ],\n  \"detail_sentences\": [\n    {\n      \"text\": \"In the earlier QA tutor's thread, the team lead instructed the QA tutor to record the citation as unverifiable and not infer factual falsity solely from the failed URL.\",\n      \"support_claim_ids\": [\"c2\"],\n      \"depends_on\": [],\n      \"summary_depends_on\": []\n    },\n    {\n      \"text\": \"In the tutor's thread, a QA tutor asked whether the source was inaccessible or contradicted the claim; the supplied replies do not answer that question.\",\n      \"support_claim_ids\": [\"c4\", \"c10\"],\n      \"depends_on\": [],\n      \"summary_depends_on\": []\n    },\n    {\n      \"text\": \"For RP-3094, a QA tutor asks whether to penalize the answer, and a tutor reports that the URL also fails to load for them, leaving the supporting passage unverified.\",\n      \"support_claim_ids\": [\"c5\", \"c6\"],\n      \"depends_on\": [],\n      \"summary_depends_on\": []\n    },\n    {\n      \"text\": \"A QA tutor's latest question asks for correct handling on RP-0838 and has no substantive reply in the supplied thread.\",\n      \"support_claim_ids\": [\"c7\", \"c10\"],\n      \"depends_on\": [],\n      \"summary_depends_on\": []\n    }\n  ],\n  \"reasoning\": \"Repeated questions concern a scoring distinction that the current FAQ and instructions already explain. A reminder can answer the general handling question without inventing a task-specific grade or extending the team lead's earlier thread instruction to the project. No further retrieval is needed for this reminder; historical decisions and outcomes are not premises of the recommendation. The source of the access failure and the final grades of individual tasks are not established.\",\n  \"claims\": [\n    {\n      \"claim_id\": \"c1\",\n      \"kind\": \"INCIDENT_FACT\",\n      \"text\": \"A QA tutor asks whether to penalize an otherwise good answer because its source link is dead.\",\n      \"evidence_ids\": [\"m:C_RP_GENERAL:1790869452.000006\"],\n      \"attributions\": [\n        {\n          \"user_id\": \"U019\",\n          \"relation\": \"AUTHOR\",\n          \"evidence_id\": \"m:C_RP_GENERAL:1790869452.000006\"\n        }\n      ],\n      \"quote_kind\": \"PARAPHRASE\"\n    },\n    {\n      \"claim_id\": \"c2\",\n      \"kind\": \"THREAD_INSTRUCTION\",\n      \"text\": \"For the example in the QA tutor's thread, the team lead instructs the QA tutor to record that the citation cannot be verified and not conclude that the factual claim is false solely because the URL fails.\",\n      \"evidence_ids\": [\"m:C_RP_GENERAL:1790869502.000113\"],\n      \"attributions\": [\n        {\n          \"user_id\": \"U001\",\n          \"relation\": \"AUTHOR\",\n          \"evidence_id\": \"m:C_RP_GENERAL:1790869502.000113\"\n        },\n        {\n          \"user_id\": \"U019\",\n          \"relation\": \"THREAD_STARTER\",\n          \"evidence_id\": \"m:C_RP_GENERAL:1790869502.000113\"\n        }\n      ],\n      \"quote_kind\": \"PARAPHRASE\"\n    },\n    {\n      \"claim_id\": \"c3\",\n      \"kind\": \"INCIDENT_FACT\",\n      \"text\": \"A tutor asks how to handle an otherwise correct answer whose citations lead to a 404.\",\n      \"evidence_ids\": [\"m:C_RP_GENERAL:1790897883.000002\"],\n      \"attributions\": [\n        {\n          \"user_id\": \"U018\",\n          \"relation\": \"AUTHOR\",\n          \"evidence_id\": \"m:C_RP_GENERAL:1790897883.000002\"\n        }\n      ],\n      \"quote_kind\": \"PARAPHRASE\"\n    },\n    {\n      \"claim_id\": \"c4\",\n      \"kind\": \"INCIDENT_FACT\",\n      \"text\": \"In the tutor's thread, a QA tutor asks whether the issue is a dead link or a source contradicting the claim and says access failure must be distinguished from factual falsity.\",\n      \"evidence_ids\": [\"m:C_RP_GENERAL:1790897931.000113\"],\n      \"attributions\": [\n        {\n          \"user_id\": \"U008\",\n          \"relation\": \"AUTHOR\",\n          \"evidence_id\": \"m:C_RP_GENERAL:1790897931.000113\"\n        },\n        {\n          \"user_id\": \"U018\",\n          \"relation\": \"THREAD_STARTER\",\n          \"evidence_id\": \"m:C_RP_GENERAL:1790897931.000113\"\n        }\n      ],\n      \"quote_kind\": \"PARAPHRASE\"\n    },\n    {\n      \"claim_id\": \"c5\",\n      \"kind\": \"INCIDENT_FACT\",\n      \"text\": \"A QA tutor reports a good answer with a dead source link on RP-3094 and asks whether to penalize it.\",\n      \"evidence_ids\": [\"m:C_RP_QA:1790923094.000004\"],\n      \"attributions\": [\n        {\n          \"user_id\": \"U014\",\n          \"relation\": \"AUTHOR\",\n          \"evidence_id\": \"m:C_RP_QA:1790923094.000004\"\n        }\n      ],\n      \"quote_kind\": \"PARAPHRASE\"\n    },\n    {\n      \"claim_id\": \"c6\",\n      \"kind\": \"INCIDENT_FACT\",\n      \"text\": \"In the RP-3094 thread, a tutor reports that the URL also fails to load for them and that they cannot yet verify the supporting passage; the tutor distinguishes access failure from a false factual claim.\",\n      \"evidence_ids\": [\"m:C_RP_QA:1790923140.000113\"],\n      \"attributions\": [\n        {\n          \"user_id\": \"U013\",\n          \"relation\": \"AUTHOR\",\n          \"evidence_id\": \"m:C_RP_QA:1790923140.000113\"\n        }\n      ],\n      \"quote_kind\": \"PARAPHRASE\"\n    },\n    {\n      \"claim_id\": \"c7\",\n      \"kind\": \"INCIDENT_FACT\",\n      \"text\": \"A QA tutor asks for correct handling on RP-0838 when an otherwise correct answer has citations leading to a 404.\",\n      \"evidence_ids\": [\"m:C_RP_QA:1790940838.000005\"],\n      \"attributions\": [\n        {\n          \"user_id\": \"U019\",\n          \"relation\": \"AUTHOR\",\n          \"evidence_id\": \"m:C_RP_QA:1790940838.000005\"\n        }\n      ],\n      \"quote_kind\": \"PARAPHRASE\"\n    },\n    {\n      \"claim_id\": \"c8\",\n      \"kind\": \"GUIDANCE\",\n      \"text\": \"The current project FAQ requires recording that a dead-link citation could not be verified, says a failed URL alone does not prove the claim false, and distinguishes access failure from unsupported attribution or a fabricated reference.\",\n      \"evidence_ids\": [\"k:response-preference-faq@1.1:3db12f63\"],\n      \"attributions\": [],\n      \"quote_kind\": \"PARAPHRASE\"\n    },\n    {\n      \"claim_id\": \"c9\",\n      \"kind\": \"GUIDANCE\",\n      \"text\": \"The current project instructions require a verification note for an inaccessible link and say lack of access alone does not establish the claim's error grade; they distinguish a source that does not support a claim from an invented reference.\",\n      \"evidence_ids\": [\n        \"k:response-preference-instructions@1.1:a71c54c7\",\n        \"k:response-preference-instructions@1.1:3350bbc0\"\n      ],\n      \"attributions\": [],\n      \"quote_kind\": \"PARAPHRASE\"\n    },\n    {\n      \"claim_id\": \"c10\",\n      \"kind\": \"INFERENCE\",\n      \"text\": \"The supplied threads leave the tutor's handling question and the QA tutors' task-specific questions for RP-3094 and RP-0838 unanswered: the replies seek a distinction or report failed verification rather than give a handling decision.\",\n      \"evidence_ids\": [\n        \"m:C_RP_GENERAL:1790897883.000002\",\n        \"m:C_RP_GENERAL:1790897931.000113\",\n        \"m:C_RP_QA:1790923094.000004\",\n        \"m:C_RP_QA:1790923140.000113\",\n        \"m:C_RP_QA:1790940838.000005\"\n      ],\n      \"attributions\": [\n        {\n          \"user_id\": \"U018\",\n          \"relation\": \"AUTHOR\",\n          \"evidence_id\": \"m:C_RP_GENERAL:1790897883.000002\"\n        },\n        {\n          \"user_id\": \"U008\",\n          \"relation\": \"AUTHOR\",\n          \"evidence_id\": \"m:C_RP_GENERAL:1790897931.000113\"\n        },\n        {\n          \"user_id\": \"U014\",\n          \"relation\": \"AUTHOR\",\n          \"evidence_id\": \"m:C_RP_QA:1790923094.000004\"\n        },\n        {\n          \"user_id\": \"U013\",\n          \"relation\": \"AUTHOR\",\n          \"evidence_id\": \"m:C_RP_QA:1790923140.000113\"\n        },\n        {\n          \"user_id\": \"U019\",\n          \"relation\": \"AUTHOR\",\n          \"evidence_id\": \"m:C_RP_QA:1790940838.000005\"\n        }\n      ],\n      \"quote_kind\": \"PARAPHRASE\"\n    }\n  ],\n  \"gaps\": [],\n  \"evidence_sufficiency\": \"SUFFICIENT\",\n  \"proposed_action\": {\n    \"action_type\": \"POST_ALIGNMENT\",\n    \"intervention_need\": {\n      \"kind\": \"UNRESOLVED_HANDLING_QUESTION\",\n      \"statement\": \"Repeated questions about whether dead citations warrant penalties remain unanswered in three threads, so the current distinction needs to be brought to those questions now.\",\n      \"evidence_ids\": [\n        \"m:C_RP_GENERAL:1790897883.000002\",\n        \"m:C_RP_GENERAL:1790897931.000113\",\n        \"m:C_RP_QA:1790923094.000004\",\n        \"m:C_RP_QA:1790923140.000113\",\n        \"m:C_RP_QA:1790940838.000005\"\n      ]\n    },\n    \"instruction\": \"Post a reminder that dead links require a verification note, but failed access alone does not establish factual falsity or an error grade.\",\n    \"rationale\": \"The current FAQ and instructions already answer the repeated general handling question. A reminder applies that guidance without creating a new penalty rule.\",\n    \"draft_text\": \"For this batch, please follow the current FAQ and instructions when a citation link is dead:\\n- Record that the citation could not be verified.\\n- Do not conclude that the factual claim is false solely because the URL fails; lack of access alone does not establish its error grade.\\n- Distinguish access failure from an existing source that does not support the claim, an unsupported attribution, or an invented reference.\\nThis is a reminder of the current guidance, not a new penalty rule.\",\n    \"scope_note\": \"This reminder addresses access failure alone; it does not assign final grades to individual tasks or treat unsupported attribution and fabricated references as mere access failures.\",\n    \"support_claim_ids\": [\"c3\", \"c5\", \"c7\", \"c8\", \"c9\", \"c10\"],\n    \"targets\": [],\n    \"context_claim_ids\": [\"c1\", \"c2\", \"c4\", \"c6\"]\n  },\n  \"severity\": {\n    \"level\": \"MEDIUM\",\n    \"rationale\": \"Two QA tutors and a tutor repeatedly question how dead links affect scoring. That uncertainty could change labeling decisions, but the messages do not establish broad disruption or incorrect grades already applied.\",\n    \"signals\": [\n      {\n        \"level\": \"MEDIUM\",\n        \"signal_index\": 0,\n        \"signal_text\": \"Recurring confusion about the same rule, tool behavior, or scoring criterion that suggests meaningful workflow or labeling impact\",\n        \"support\": \"Two QA tutors and a tutor ask across four threads whether otherwise correct answers with dead citations should be penalized or how they should be handled.\",\n        \"evidence_ids\": [\n          \"m:C_RP_GENERAL:1790869452.000006\",\n          \"m:C_RP_GENERAL:1790897883.000002\",\n          \"m:C_RP_QA:1790923094.000004\",\n          \"m:C_RP_QA:1790940838.000005\"\n        ]\n      }\n    ],\n    \"affected_reporters\": [\n      {\n        \"author_id\": \"U014\",\n        \"evidence_id\": \"m:C_RP_QA:1790923094.000004\"\n      },\n      {\n        \"author_id\": \"U013\",\n        \"evidence_id\": \"m:C_RP_QA:1790923140.000113\"\n      }\n    ],\n    \"recurrence\": \"NOT_CHECKED\",\n    \"recurrence_evidence_ids\": [],\n    \"reported_recurrence_evidence_ids\": []\n  },\n  \"confidence\": 0.93,\n  \"open_confirmation\": \"NONE\",\n  \"open_question\": null,\n  \"open_question_evidence_ids\": [],\n  \"source_conflicts\": [],\n  \"announcement_assessments\": [\n    {\n      \"evidence_id\": \"k:rp-tie-calibration-post@1.0:4a3c786f\",\n      \"relevant\": false,\n      \"directive\": true,\n      \"directive_quote\": \"Bring both rationales for disputed pairs to the eight-pair calibration review.\",\n      \"rationale\": \"This announcement directs tie calibration for batch 14, not dead-citation handling in batch 15, so it is not a premise for the reminder.\"\n    }\n  ],\n  \"resolution\": [\n    {\n      \"member_id\": \"member_db5c94522bcefd45ebceda5d\",\n      \"state\": \"RESOLVED_IN_THREAD\",\n      \"evidence_ids\": [\n        \"m:C_RP_GENERAL:1790869452.000006\",\n        \"m:C_RP_GENERAL:1790869502.000113\"\n      ],\n      \"basis\": \"The team lead answers the QA tutor's dead-link question with example-specific handling: record failed verification and do not infer falsity solely from the URL failure.\"\n    },\n    {\n      \"member_id\": \"member_c65ff103e0472891ea361dce\",\n      \"state\": \"UNRESOLVED\",\n      \"evidence_ids\": [\n        \"m:C_RP_GENERAL:1790897883.000002\",\n        \"m:C_RP_GENERAL:1790897931.000113\"\n      ],\n      \"basis\": \"A QA tutor asks for a distinction between access failure and contradictory support but does not give the tutor a handling decision.\"\n    },\n    {\n      \"member_id\": \"member_f20d2b0a0010b5625d9af570\",\n      \"state\": \"UNRESOLVED\",\n      \"evidence_ids\": [\n        \"m:C_RP_QA:1790923094.000004\",\n        \"m:C_RP_QA:1790923140.000113\"\n      ],\n      \"basis\": \"A tutor reports the same URL failure and incomplete verification, but the QA tutor's penalty question is not answered.\"\n    },\n    {\n      \"member_id\": \"member_0d9923adfceafa1870cc4760\",\n      \"state\": \"UNRESOLVED\",\n      \"evidence_ids\": [\"m:C_RP_QA:1790940838.000005\"],\n      \"basis\": \"The supplied thread contains the QA tutor's handling question for RP-0838 without a substantive reply; the upstream review flag remains open.\"\n    }\n  ],\n  \"coverage\": [\n    {\n      \"need\": \"CURRENT_GUIDANCE\",\n      \"status\": \"COVERED\",\n      \"evidence_ids\": [\n        \"k:response-preference-faq@1.1:3db12f63\",\n        \"k:response-preference-instructions@1.1:a71c54c7\",\n        \"k:response-preference-instructions@1.1:3350bbc0\"\n      ],\n      \"note\": \"Current project-wide sources directly address failed citation access and its separation from factual falsity and error grading.\"\n    },\n    {\n      \"need\": \"ANNOUNCEMENTS\",\n      \"status\": \"COVERED\",\n      \"evidence_ids\": [\"k:rp-tie-calibration-post@1.0:4a3c786f\"],\n      \"note\": \"The retrieved announcement was assessed and is not applicable to this batch and problem; the reminder relies on current manuals instead.\"\n    },\n    {\n      \"need\": \"PRIOR_DECISIONS\",\n      \"status\": \"NOT_APPLICABLE\",\n      \"evidence_ids\": [],\n      \"note\": \"No earlier trial, policy change, or outcome is needed to restate the explicit current rule; the recommendation makes no historical recurrence or outcome claim.\"\n    },\n    {\n      \"need\": \"MEMBER_QUESTIONS\",\n      \"status\": \"COVERED\",\n      \"evidence_ids\": [\n        \"m:C_RP_GENERAL:1790869452.000006\",\n        \"m:C_RP_GENERAL:1790869502.000113\",\n        \"m:C_RP_GENERAL:1790897883.000002\",\n        \"m:C_RP_GENERAL:1790897931.000113\",\n        \"m:C_RP_QA:1790923094.000004\",\n        \"m:C_RP_QA:1790923140.000113\",\n        \"m:C_RP_QA:1790940838.000005\"\n      ],\n      \"note\": \"The supplied questions and replies show one answered thread and three threads without a handling decision; no member cites an earlier workaround requiring research.\"\n    }\n  ],\n  \"review_note\": null,\n  \"action_choice\": null\n}",
+        "raw_sha256": "f218c55b9cb3621b2d2b958b4d90598ef4b0b5e70ef67199a9c498a641189ca5",
+        "http_requests": {
+          "sent": 1,
+          "blocked": 0,
+          "hosts": [
+            "api.openai.com"
+          ],
+          "responses": [
+            {
+              "status_code": 200,
+              "seconds": 46.652,
+              "model": "gpt-6.1-sol",
+              "usage": {
+                "prompt_tokens": 12813,
+                "completion_tokens": 4280,
+                "total_tokens": 17093,
+                "prompt_tokens_details": {
+                  "cached_tokens": 0,
+                  "cache_write_tokens": 12810,
+                  "audio_tokens": 0
+                },
+                "completion_tokens_details": {
+                  "reasoning_tokens": 255,
+                  "audio_tokens": 0,
+                  "accepted_prediction_tokens": 0,
+                  "rejected_prediction_tokens": 0
+                }
+              },
+              "finish_reasons": [
+                "stop"
+              ]
+            }
+          ],
+          "input_tokens": 12819,
+          "refused": null,
+          "charged_usd": 0.068426
+        },
+        "input_tokens_estimate": 12819,
+        "status": "OK"
+      },
+      {
+        "stage": "grounding",
+        "schema": "GroundingJudgment",
+        "raw": "{\n  \"contract_version\": \"agent3-grounding-judgment-v5\",\n  \"verdicts\": [\n    {\n      \"statement_id\": \"claim:c1\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"U019 is a QA tutor and explicitly asks whether to penalize a good answer whose source link is dead.\"\n    },\n    {\n      \"statement_id\": \"claim:c2\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The team lead gives exactly this example-specific instruction in the thread started by QA tutor U019. The statement preserves its thread-limited scope.\"\n    },\n    {\n      \"statement_id\": \"claim:c3\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"Tutor U018 asks what to do when an otherwise right answer has citations leading to a 404.\"\n    },\n    {\n      \"statement_id\": \"claim:c4\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"QA tutor U008 asks whether the problem is a dead link or a source contradicting the claim and explicitly distinguishes access failure from factual falsity.\"\n    },\n    {\n      \"statement_id\": \"claim:c5\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"QA tutor U014 describes a good answer with a dead source link, identifies RP-3094, and asks whether to penalize it.\"\n    },\n    {\n      \"statement_id\": \"claim:c6\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"Tutor U013 reports that the URL also fails for them, says the supporting passage remains unverified, and distinguishes source-access failure from a false factual claim.\"\n    },\n    {\n      \"statement_id\": \"claim:c7\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"QA tutor U019 explicitly requests correct handling for RP-0838 when an otherwise right answer has citations leading to a 404.\"\n    },\n    {\n      \"statement_id\": \"claim:c8\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The current, project-wide FAQ explicitly requires recording failed verification, rejects treating URL failure alone as proof of falsity, and distinguishes access failure from unsupported attribution or a fabricated reference.\"\n    },\n    {\n      \"statement_id\": \"claim:c9\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The two current instruction excerpts require a verification note, state that inaccessible links alone do not establish the claim's error grade, and distinguish unsupported source content from invented references.\"\n    },\n    {\n      \"statement_id\": \"claim:c10\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The complete supplied threads contain a clarifying question for U018, a failed-verification report for RP-3094, and no reply for RP-0838. None provides a handling decision in those threads. Existing project guidance answers the general principle but does not constitute an in-thread response.\"\n    },\n    {\n      \"statement_id\": \"summary:s1\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The asking authors are two distinct QA tutors, U019 and U014, and tutor U018. Their questions concern otherwise good answers with dead citations, and three of the four supplied threads lack handling answers.\"\n    },\n    {\n      \"statement_id\": \"summary:s2\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The current FAQ and instructions jointly state both the verification-note requirement and the limits on inferring falsity or an error grade from access failure alone.\"\n    },\n    {\n      \"statement_id\": \"detail:d1\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The earlier thread contains the team lead's explicit instruction to record failed verification and not infer factual falsity solely from URL failure.\"\n    },\n    {\n      \"statement_id\": \"detail:d2\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"QA tutor U008 asks that diagnostic distinction in U018's thread, and the supplied context contains no subsequent answer to it.\"\n    },\n    {\n      \"statement_id\": \"detail:d3\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"U014 asks whether to penalize RP-3094, and tutor U013 reports the same loading failure and inability to verify its supporting passage.\"\n    },\n    {\n      \"statement_id\": \"detail:d4\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"U019's RP-0838 question is the latest supplied member message and has no substantive reply. The eyes reaction does not answer it.\"\n    },\n    {\n      \"statement_id\": \"action\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"Repeated unanswered handling requests justify an advisory reminder. Every substantive rule in the proposed copy follows from the current project-wide FAQ and instructions. The action specifies no unsupported posting route, creates no new penalty rule, and appropriately excludes individual final-grade decisions.\"\n    },\n    {\n      \"statement_id\": \"action:rationale\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The current sources already answer the general access-failure question raised repeatedly by members. The proposed reminder restates those rules rather than introducing a penalty policy.\"\n    },\n    {\n      \"statement_id\": \"action:need\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"Three supplied threads still lack answers to their handling requests. Bringing the existing distinction to those requests addresses an observable coordination need, not merely a hypothetical benefit or an unknown technical cause.\"\n    },\n    {\n      \"statement_id\": \"resolution:member_db5c94522bcefd45ebceda5d\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The team lead directly answers this thread's question with example-specific handling: record failed verification and do not infer falsity from URL failure alone.\"\n    },\n    {\n      \"statement_id\": \"resolution:member_c65ff103e0472891ea361dce\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The complete thread contains only the tutor's initial question and the QA tutor's request to distinguish access failure from contradictory support; no handling decision follows.\"\n    },\n    {\n      \"statement_id\": \"resolution:member_f20d2b0a0010b5625d9af570\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The reply confirms failed access and incomplete verification but does not answer whether the answer should be penalized.\"\n    },\n    {\n      \"statement_id\": \"resolution:member_0d9923adfceafa1870cc4760\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The supplied thread has no substantive reply to the RP-0838 handling question, and the provided open_review_flags explicitly retain an upstream review obligation for this member.\"\n    },\n    {\n      \"statement_id\": \"severity:rationale\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"Two QA tutors and one tutor raise the scoring or handling issue across four threads. This supports a meaningful potential labeling impact, while the statement correctly avoids claiming observed incorrect grades or broad disruption.\"\n    },\n    {\n      \"statement_id\": \"severity:signal:MEDIUM[0]\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The four cited thread starters comprise two distinct QA tutors and one tutor repeatedly asking about the same dead-citation handling criterion. Their penalty and task-handling questions support the stated workflow or labeling-impact signal.\"\n    },\n    {\n      \"statement_id\": \"reporter:U014\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"U014's own message reports the dead-link problem on the specific task RP-3094 and asks how to score it.\"\n    },\n    {\n      \"statement_id\": \"reporter:U013\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"U013 explicitly reports personally encountering the URL failure and being unable to verify the supporting passage.\"\n    }\n  ],\n  \"action_sufficiency\": {\n    \"verdict\": \"SUFFICIENT\",\n    \"essential_statement_ids\": [\n      \"claim:c8\",\n      \"claim:c9\",\n      \"claim:c10\"\n    ],\n    \"rationale\": \"The supported current-guidance premises justify the exact reminder, including its distinctions and limits. The supported account of three unanswered handling threads establishes its present applicability. No premise relies on an announcement, and no unsupported concrete route or task-specific grade is introduced.\"\n  },\n  \"alternative_sufficiency\": [],\n  \"source_consistency\": {\n    \"assessed_evidence_ids\": [\n      \"k:response-preference-faq@1.1:3db12f63\",\n      \"k:response-preference-instructions@1.1:a71c54c7\",\n      \"k:response-preference-instructions@1.1:3350bbc0\"\n    ],\n    \"relations\": [\n      {\n        \"evidence_ids\": [\n          \"k:response-preference-faq@1.1:3db12f63\",\n          \"k:response-preference-instructions@1.1:a71c54c7\",\n          \"k:response-preference-instructions@1.1:3350bbc0\"\n        ],\n        \"relation\": \"AGREE\",\n        \"point\": \"Dead citation links are access or verification failures and do not alone establish factual falsity or a claim's error grade.\",\n        \"disagreement_scope\": null,\n        \"rationale\": \"The FAQ requires recording failed verification and rejects inferring falsity from a failed URL. The content-quality rubric requires a verification note and rejects assigning an error grade from inaccessibility alone. The factual-errors section likewise rejects treating a broken link as proof of falsity. Their distinctions concerning unsupported attribution and invented references are compatible. The tie-calibration announcement concerns another batch and a different handling issue, and the ties FAQ does not govern dead-link handling.\"\n      }\n    ],\n    \"declared_conflict_checks\": []\n  }\n}",
+        "raw_sha256": "37dadb08f814ca78f373b0a145df1a543dcddcb14a10629334a38a6cbce3c49f",
+        "http_requests": {
+          "sent": 1,
+          "blocked": 0,
+          "hosts": [
+            "api.openai.com"
+          ],
+          "responses": [
+            {
+              "status_code": 200,
+              "seconds": 31.219,
+              "model": "gpt-6.1-sol",
+              "usage": {
+                "prompt_tokens": 11644,
+                "completion_tokens": 2388,
+                "total_tokens": 14032,
+                "prompt_tokens_details": {
+                  "cached_tokens": 0,
+                  "cache_write_tokens": 11641,
+                  "audio_tokens": 0
+                },
+                "completion_tokens_details": {
+                  "reasoning_tokens": 285,
+                  "audio_tokens": 0,
+                  "accepted_prediction_tokens": 0,
+                  "rejected_prediction_tokens": 0
+                }
+              },
+              "finish_reasons": [
+                "stop"
+              ]
+            }
+          ],
+          "input_tokens": 11650,
+          "refused": null,
+          "charged_usd": 0.047168
+        },
+        "input_tokens_estimate": 11650,
+        "status": "OK"
+      }
+    ],
+    "agent1_context": [
+      {
+        "sha256": "f6cf4880b95981907a5a85e70f0dc4dacc503d520e060fe8abc4ab916458190e",
+        "content": [
+          {
+            "member_id": "member_db5c94522bcefd45ebceda5d",
+            "thread_id": "1790869452.000006",
+            "summary": "Yuki questioned whether to penalize an answer due to a dead source link. Alex responded that the citation should be recorded as unverifiable, but the factual claim should not be deemed false solely based on the URL's failure.",
+            "central_question": "Should the answer be penalized due to the dead source link?",
+            "attributed_agent1_resolution": {
+              "state": "RESOLVED_IN_THREAD",
+              "rationale": "Alex provided guidance that the citation should be recorded as unverifiable, and clarified that the factual claim should not be considered false just because the URL is dead. This sufficiently addresses Yuki's concern about penalizing the answer.",
+              "agent1_verification_status": "VERIFIED",
+              "note": "Agent 1 label, not evidence; NEEDS_REVIEW means Agent 1 did not verify it. Assess resolution from the member messages."
+            },
+            "agent1_review_required": false,
+            "agent1_review_reason": "",
+            "note": "Agent 1 interpretation, not source evidence; cite member messages for incident facts."
+          },
+          {
+            "member_id": "member_c65ff103e0472891ea361dce",
+            "thread_id": "1790897883.000002",
+            "summary": "Omar asks about the implications of having a correct answer that cites a link leading to a 404 error. Hana follows up by questioning whether the issue is due to a dead link or a source that contradicts the claim, emphasizing the need to differentiate between a source-access failure and a false factual claim.",
+            "central_question": "What should be done if the answer is otherwise right but its citations go to a 404?",
+            "attributed_agent1_resolution": {
+              "state": "UNRESOLVED",
+              "rationale": "The thread does not establish a substantive answer to the central question. While Omar raises a valid concern about citations leading to 404 errors, and Hana seeks clarification on the nature of the problem, no definitive guidance or resolution is provided regarding how to handle such situations.",
+              "agent1_verification_status": "VERIFIED",
+              "note": "Agent 1 label, not evidence; NEEDS_REVIEW means Agent 1 did not verify it. Assess resolution from the member messages."
+            },
+            "agent1_review_required": false,
+            "agent1_review_reason": "",
+            "note": "Agent 1 interpretation, not source evidence; cite member messages for incident facts."
+          },
+          {
+            "member_id": "member_f20d2b0a0010b5625d9af570",
+            "thread_id": "1790923094.000004",
+            "summary": "Linh questions whether to penalize a response due to a dead source link, referencing task RP-3094. Jun confirms the URL fails to load and emphasizes the need to differentiate between a source-access failure and a false factual claim.",
+            "central_question": "Should we penalize the answer due to the dead source link?",
+            "attributed_agent1_resolution": {
+              "state": "UNRESOLVED",
+              "rationale": "The thread does not establish a clear decision regarding the penalty for the answer with the dead source link. While Linh raises the issue of penalization, Jun's response highlights the need for further verification and does not provide a definitive answer to the question posed.",
+              "agent1_verification_status": "VERIFIED",
+              "note": "Agent 1 label, not evidence; NEEDS_REVIEW means Agent 1 did not verify it. Assess resolution from the member messages."
+            },
+            "agent1_review_required": false,
+            "agent1_review_reason": "",
+            "note": "Agent 1 interpretation, not source evidence; cite member messages for incident facts."
+          },
+          {
+            "member_id": "member_0d9923adfceafa1870cc4760",
+            "thread_id": "1790940838.000005",
+            "summary": "Yuki, a QA_TUTOR, seeks clarification on how to handle a situation where an answer is correct but its citations lead to a 404 error. The specific task reference is RP-0838.",
+            "central_question": "What is the correct handling for this task? (task ref RP-0838)",
+            "attributed_agent1_resolution": {
+              "state": "UNRESOLVED",
+              "rationale": "The thread does not provide a substantive answer or relevant conclusion regarding the handling of the situation described. There is only a request for clarification without any follow-up responses that address the question.",
+              "agent1_verification_status": "NEEDS_REVIEW",
+              "note": "Agent 1 label, not evidence; NEEDS_REVIEW means Agent 1 did not verify it. Assess resolution from the member messages."
+            },
+            "agent1_review_required": true,
+            "agent1_review_reason": "Source analysis unavailable or invalid: ValueError: Reply coverage mismatch. Missing: []. Unknown: ['1790940838.000005'].",
+            "note": "Agent 1 interpretation, not source evidence; cite member messages for incident facts."
+          }
+        ]
+      }
+    ],
+    "drafts": {
+      "initial": {
+        "contract_version": "agent3-advisor-draft-v11",
+        "summary": "Two QA tutors and a tutor ask how to handle otherwise correct answers with dead citation links, with handling questions still unanswered in three threads. Current guidance requires a verification note and says failed access alone does not establish that a claim is false or determine its error grade.",
+        "summary_sentences": [
+          {
+            "text": "Two QA tutors and a tutor ask how to handle otherwise correct answers with dead citation links, with handling questions still unanswered in three threads.",
+            "support_claim_ids": [
+              "c1",
+              "c3",
+              "c5",
+              "c7",
+              "c10"
+            ],
+            "depends_on": []
+          },
+          {
+            "text": "Current guidance requires a verification note and says failed access alone does not establish that a claim is false or determine its error grade.",
+            "support_claim_ids": [
+              "c8",
+              "c9"
+            ],
+            "depends_on": []
+          }
+        ],
+        "detail_sentences": [
+          {
+            "text": "In the earlier QA tutor's thread, the team lead instructed the QA tutor to record the citation as unverifiable and not infer factual falsity solely from the failed URL.",
+            "support_claim_ids": [
+              "c2"
+            ],
+            "depends_on": [],
+            "summary_depends_on": []
+          },
+          {
+            "text": "In the tutor's thread, a QA tutor asked whether the source was inaccessible or contradicted the claim; the supplied replies do not answer that question.",
+            "support_claim_ids": [
+              "c4",
+              "c10"
+            ],
+            "depends_on": [],
+            "summary_depends_on": []
+          },
+          {
+            "text": "For RP-3094, a QA tutor asks whether to penalize the answer, and a tutor reports that the URL also fails to load for them, leaving the supporting passage unverified.",
+            "support_claim_ids": [
+              "c5",
+              "c6"
+            ],
+            "depends_on": [],
+            "summary_depends_on": []
+          },
+          {
+            "text": "A QA tutor's latest question asks for correct handling on RP-0838 and has no substantive reply in the supplied thread.",
+            "support_claim_ids": [
+              "c7",
+              "c10"
+            ],
+            "depends_on": [],
+            "summary_depends_on": []
+          }
+        ],
+        "reasoning": "Repeated questions concern a scoring distinction that the current FAQ and instructions already explain. A reminder can answer the general handling question without inventing a task-specific grade or extending the team lead's earlier thread instruction to the project. No further retrieval is needed for this reminder; historical decisions and outcomes are not premises of the recommendation. The source of the access failure and the final grades of individual tasks are not established.",
+        "claims": [
+          {
+            "claim_id": "c1",
+            "kind": "INCIDENT_FACT",
+            "text": "A QA tutor asks whether to penalize an otherwise good answer because its source link is dead.",
+            "evidence_ids": [
+              "m:C_RP_GENERAL:1790869452.000006"
+            ],
+            "attributions": [
+              {
+                "user_id": "U019",
+                "relation": "AUTHOR",
+                "evidence_id": "m:C_RP_GENERAL:1790869452.000006"
+              }
+            ],
+            "quote": null,
+            "quote_kind": "PARAPHRASE",
+            "material": true
+          },
+          {
+            "claim_id": "c2",
+            "kind": "THREAD_INSTRUCTION",
+            "text": "For the example in the QA tutor's thread, the team lead instructs the QA tutor to record that the citation cannot be verified and not conclude that the factual claim is false solely because the URL fails.",
+            "evidence_ids": [
+              "m:C_RP_GENERAL:1790869502.000113"
+            ],
+            "attributions": [
+              {
+                "user_id": "U001",
+                "relation": "AUTHOR",
+                "evidence_id": "m:C_RP_GENERAL:1790869502.000113"
+              },
+              {
+                "user_id": "U019",
+                "relation": "THREAD_STARTER",
+                "evidence_id": "m:C_RP_GENERAL:1790869502.000113"
+              }
+            ],
+            "quote": null,
+            "quote_kind": "PARAPHRASE",
+            "material": true
+          },
+          {
+            "claim_id": "c3",
+            "kind": "INCIDENT_FACT",
+            "text": "A tutor asks how to handle an otherwise correct answer whose citations lead to a 404.",
+            "evidence_ids": [
+              "m:C_RP_GENERAL:1790897883.000002"
+            ],
+            "attributions": [
+              {
+                "user_id": "U018",
+                "relation": "AUTHOR",
+                "evidence_id": "m:C_RP_GENERAL:1790897883.000002"
+              }
+            ],
+            "quote": null,
+            "quote_kind": "PARAPHRASE",
+            "material": true
+          },
+          {
+            "claim_id": "c4",
+            "kind": "INCIDENT_FACT",
+            "text": "In the tutor's thread, a QA tutor asks whether the issue is a dead link or a source contradicting the claim and says access failure must be distinguished from factual falsity.",
+            "evidence_ids": [
+              "m:C_RP_GENERAL:1790897931.000113"
+            ],
+            "attributions": [
+              {
+                "user_id": "U008",
+                "relation": "AUTHOR",
+                "evidence_id": "m:C_RP_GENERAL:1790897931.000113"
+              },
+              {
+                "user_id": "U018",
+                "relation": "THREAD_STARTER",
+                "evidence_id": "m:C_RP_GENERAL:1790897931.000113"
+              }
+            ],
+            "quote": null,
+            "quote_kind": "PARAPHRASE",
+            "material": true
+          },
+          {
+            "claim_id": "c5",
+            "kind": "INCIDENT_FACT",
+            "text": "A QA tutor reports a good answer with a dead source link on RP-3094 and asks whether to penalize it.",
+            "evidence_ids": [
+              "m:C_RP_QA:1790923094.000004"
+            ],
+            "attributions": [
+              {
+                "user_id": "U014",
+                "relation": "AUTHOR",
+                "evidence_id": "m:C_RP_QA:1790923094.000004"
+              }
+            ],
+            "quote": null,
+            "quote_kind": "PARAPHRASE",
+            "material": true
+          },
+          {
+            "claim_id": "c6",
+            "kind": "INCIDENT_FACT",
+            "text": "In the RP-3094 thread, a tutor reports that the URL also fails to load for them and that they cannot yet verify the supporting passage; the tutor distinguishes access failure from a false factual claim.",
+            "evidence_ids": [
+              "m:C_RP_QA:1790923140.000113"
+            ],
+            "attributions": [
+              {
+                "user_id": "U013",
+                "relation": "AUTHOR",
+                "evidence_id": "m:C_RP_QA:1790923140.000113"
+              }
+            ],
+            "quote": null,
+            "quote_kind": "PARAPHRASE",
+            "material": true
+          },
+          {
+            "claim_id": "c7",
+            "kind": "INCIDENT_FACT",
+            "text": "A QA tutor asks for correct handling on RP-0838 when an otherwise correct answer has citations leading to a 404.",
+            "evidence_ids": [
+              "m:C_RP_QA:1790940838.000005"
+            ],
+            "attributions": [
+              {
+                "user_id": "U019",
+                "relation": "AUTHOR",
+                "evidence_id": "m:C_RP_QA:1790940838.000005"
+              }
+            ],
+            "quote": null,
+            "quote_kind": "PARAPHRASE",
+            "material": true
+          },
+          {
+            "claim_id": "c8",
+            "kind": "GUIDANCE",
+            "text": "The current project FAQ requires recording that a dead-link citation could not be verified, says a failed URL alone does not prove the claim false, and distinguishes access failure from unsupported attribution or a fabricated reference.",
+            "evidence_ids": [
+              "k:response-preference-faq@1.1:3db12f63"
+            ],
+            "attributions": [],
+            "quote": null,
+            "quote_kind": "PARAPHRASE",
+            "material": true
+          },
+          {
+            "claim_id": "c9",
+            "kind": "GUIDANCE",
+            "text": "The current project instructions require a verification note for an inaccessible link and say lack of access alone does not establish the claim's error grade; they distinguish a source that does not support a claim from an invented reference.",
+            "evidence_ids": [
+              "k:response-preference-instructions@1.1:a71c54c7",
+              "k:response-preference-instructions@1.1:3350bbc0"
+            ],
+            "attributions": [],
+            "quote": null,
+            "quote_kind": "PARAPHRASE",
+            "material": true
+          },
+          {
+            "claim_id": "c10",
+            "kind": "INFERENCE",
+            "text": "The supplied threads leave the tutor's handling question and the QA tutors' task-specific questions for RP-3094 and RP-0838 unanswered: the replies seek a distinction or report failed verification rather than give a handling decision.",
+            "evidence_ids": [
+              "m:C_RP_GENERAL:1790897883.000002",
+              "m:C_RP_GENERAL:1790897931.000113",
+              "m:C_RP_QA:1790923094.000004",
+              "m:C_RP_QA:1790923140.000113",
+              "m:C_RP_QA:1790940838.000005"
+            ],
+            "attributions": [
+              {
+                "user_id": "U018",
+                "relation": "AUTHOR",
+                "evidence_id": "m:C_RP_GENERAL:1790897883.000002"
+              },
+              {
+                "user_id": "U008",
+                "relation": "AUTHOR",
+                "evidence_id": "m:C_RP_GENERAL:1790897931.000113"
+              },
+              {
+                "user_id": "U014",
+                "relation": "AUTHOR",
+                "evidence_id": "m:C_RP_QA:1790923094.000004"
+              },
+              {
+                "user_id": "U013",
+                "relation": "AUTHOR",
+                "evidence_id": "m:C_RP_QA:1790923140.000113"
+              },
+              {
+                "user_id": "U019",
+                "relation": "AUTHOR",
+                "evidence_id": "m:C_RP_QA:1790940838.000005"
+              }
+            ],
+            "quote": null,
+            "quote_kind": "PARAPHRASE",
+            "material": true
+          }
+        ],
+        "gaps": [],
+        "evidence_sufficiency": "SUFFICIENT",
+        "proposed_action": {
+          "action_type": "POST_ALIGNMENT",
+          "intervention_need": {
+            "kind": "UNRESOLVED_HANDLING_QUESTION",
+            "statement": "Repeated questions about whether dead citations warrant penalties remain unanswered in three threads, so the current distinction needs to be brought to those questions now.",
+            "evidence_ids": [
+              "m:C_RP_GENERAL:1790897883.000002",
+              "m:C_RP_GENERAL:1790897931.000113",
+              "m:C_RP_QA:1790923094.000004",
+              "m:C_RP_QA:1790923140.000113",
+              "m:C_RP_QA:1790940838.000005"
+            ]
+          },
+          "instruction": "Post a reminder that dead links require a verification note, but failed access alone does not establish factual falsity or an error grade.",
+          "rationale": "The current FAQ and instructions already answer the repeated general handling question. A reminder applies that guidance without creating a new penalty rule.",
+          "draft_text": "For this batch, please follow the current FAQ and instructions when a citation link is dead:\n- Record that the citation could not be verified.\n- Do not conclude that the factual claim is false solely because the URL fails; lack of access alone does not establish its error grade.\n- Distinguish access failure from an existing source that does not support the claim, an unsupported attribution, or an invented reference.\nThis is a reminder of the current guidance, not a new penalty rule.",
+          "scope_note": "This reminder addresses access failure alone; it does not assign final grades to individual tasks or treat unsupported attribution and fabricated references as mere access failures.",
+          "support_claim_ids": [
+            "c3",
+            "c5",
+            "c7",
+            "c8",
+            "c9",
+            "c10"
+          ],
+          "targets": [],
+          "context_claim_ids": [
+            "c1",
+            "c2",
+            "c4",
+            "c6"
+          ]
+        },
+        "severity": {
+          "level": "MEDIUM",
+          "rationale": "Two QA tutors and a tutor repeatedly question how dead links affect scoring. That uncertainty could change labeling decisions, but the messages do not establish broad disruption or incorrect grades already applied.",
+          "signals": [
+            {
+              "level": "MEDIUM",
+              "signal_index": 0,
+              "signal_text": "Recurring confusion about the same rule, tool behavior, or scoring criterion that suggests meaningful workflow or labeling impact",
+              "support": "Two QA tutors and a tutor ask across four threads whether otherwise correct answers with dead citations should be penalized or how they should be handled.",
+              "evidence_ids": [
+                "m:C_RP_GENERAL:1790869452.000006",
+                "m:C_RP_GENERAL:1790897883.000002",
+                "m:C_RP_QA:1790923094.000004",
+                "m:C_RP_QA:1790940838.000005"
+              ]
+            }
+          ],
+          "affected_reporters": [
+            {
+              "author_id": "U014",
+              "evidence_id": "m:C_RP_QA:1790923094.000004"
+            },
+            {
+              "author_id": "U013",
+              "evidence_id": "m:C_RP_QA:1790923140.000113"
+            }
+          ],
+          "recurrence": "NOT_CHECKED",
+          "recurrence_evidence_ids": [],
+          "reported_recurrence_evidence_ids": []
+        },
+        "confidence": 0.93,
+        "open_confirmation": "NONE",
+        "open_question": null,
+        "open_question_evidence_ids": [],
+        "source_conflicts": [],
+        "announcement_assessments": [
+          {
+            "evidence_id": "k:rp-tie-calibration-post@1.0:4a3c786f",
+            "relevant": false,
+            "directive": true,
+            "directive_quote": "Bring both rationales for disputed pairs to the eight-pair calibration review.",
+            "rationale": "This announcement directs tie calibration for batch 14, not dead-citation handling in batch 15, so it is not a premise for the reminder."
+          }
+        ],
+        "resolution": [
+          {
+            "member_id": "member_db5c94522bcefd45ebceda5d",
+            "state": "RESOLVED_IN_THREAD",
+            "evidence_ids": [
+              "m:C_RP_GENERAL:1790869452.000006",
+              "m:C_RP_GENERAL:1790869502.000113"
+            ],
+            "basis": "The team lead answers the QA tutor's dead-link question with example-specific handling: record failed verification and do not infer falsity solely from the URL failure."
+          },
+          {
+            "member_id": "member_c65ff103e0472891ea361dce",
+            "state": "UNRESOLVED",
+            "evidence_ids": [
+              "m:C_RP_GENERAL:1790897883.000002",
+              "m:C_RP_GENERAL:1790897931.000113"
+            ],
+            "basis": "A QA tutor asks for a distinction between access failure and contradictory support but does not give the tutor a handling decision."
+          },
+          {
+            "member_id": "member_f20d2b0a0010b5625d9af570",
+            "state": "UNRESOLVED",
+            "evidence_ids": [
+              "m:C_RP_QA:1790923094.000004",
+              "m:C_RP_QA:1790923140.000113"
+            ],
+            "basis": "A tutor reports the same URL failure and incomplete verification, but the QA tutor's penalty question is not answered."
+          },
+          {
+            "member_id": "member_0d9923adfceafa1870cc4760",
+            "state": "UNRESOLVED",
+            "evidence_ids": [
+              "m:C_RP_QA:1790940838.000005"
+            ],
+            "basis": "The supplied thread contains the QA tutor's handling question for RP-0838 without a substantive reply; the upstream review flag remains open."
+          }
+        ],
+        "coverage": [
+          {
+            "need": "CURRENT_GUIDANCE",
+            "status": "COVERED",
+            "evidence_ids": [
+              "k:response-preference-faq@1.1:3db12f63",
+              "k:response-preference-instructions@1.1:a71c54c7",
+              "k:response-preference-instructions@1.1:3350bbc0"
+            ],
+            "note": "Current project-wide sources directly address failed citation access and its separation from factual falsity and error grading.",
+            "gap_id": null
+          },
+          {
+            "need": "ANNOUNCEMENTS",
+            "status": "COVERED",
+            "evidence_ids": [
+              "k:rp-tie-calibration-post@1.0:4a3c786f"
+            ],
+            "note": "The retrieved announcement was assessed and is not applicable to this batch and problem; the reminder relies on current manuals instead.",
+            "gap_id": null
+          },
+          {
+            "need": "PRIOR_DECISIONS",
+            "status": "NOT_APPLICABLE",
+            "evidence_ids": [],
+            "note": "No earlier trial, policy change, or outcome is needed to restate the explicit current rule; the recommendation makes no historical recurrence or outcome claim.",
+            "gap_id": null
+          },
+          {
+            "need": "MEMBER_QUESTIONS",
+            "status": "COVERED",
+            "evidence_ids": [
+              "m:C_RP_GENERAL:1790869452.000006",
+              "m:C_RP_GENERAL:1790869502.000113",
+              "m:C_RP_GENERAL:1790897883.000002",
+              "m:C_RP_GENERAL:1790897931.000113",
+              "m:C_RP_QA:1790923094.000004",
+              "m:C_RP_QA:1790923140.000113",
+              "m:C_RP_QA:1790940838.000005"
+            ],
+            "note": "The supplied questions and replies show one answered thread and three threads without a handling decision; no member cites an earlier workaround requiring research.",
+            "gap_id": null
+          }
+        ],
+        "review_note": null,
+        "action_choice": null
+      },
+      "final": {
+        "contract_version": "agent3-advisor-draft-v11",
+        "summary": "Two QA tutors and a tutor ask how to handle otherwise correct answers with dead citation links, with handling questions still unanswered in three threads. Current guidance requires a verification note and says failed access alone does not establish that a claim is false or determine its error grade.",
+        "summary_sentences": [
+          {
+            "text": "Two QA tutors and a tutor ask how to handle otherwise correct answers with dead citation links, with handling questions still unanswered in three threads.",
+            "support_claim_ids": [
+              "c1",
+              "c3",
+              "c5",
+              "c7",
+              "c10"
+            ],
+            "depends_on": []
+          },
+          {
+            "text": "Current guidance requires a verification note and says failed access alone does not establish that a claim is false or determine its error grade.",
+            "support_claim_ids": [
+              "c8",
+              "c9"
+            ],
+            "depends_on": []
+          }
+        ],
+        "detail_sentences": [
+          {
+            "text": "In the earlier QA tutor's thread, the team lead instructed the QA tutor to record the citation as unverifiable and not infer factual falsity solely from the failed URL.",
+            "support_claim_ids": [
+              "c2"
+            ],
+            "depends_on": [],
+            "summary_depends_on": []
+          },
+          {
+            "text": "In the tutor's thread, a QA tutor asked whether the source was inaccessible or contradicted the claim; the supplied replies do not answer that question.",
+            "support_claim_ids": [
+              "c4",
+              "c10"
+            ],
+            "depends_on": [],
+            "summary_depends_on": []
+          },
+          {
+            "text": "For RP-3094, a QA tutor asks whether to penalize the answer, and a tutor reports that the URL also fails to load for them, leaving the supporting passage unverified.",
+            "support_claim_ids": [
+              "c5",
+              "c6"
+            ],
+            "depends_on": [],
+            "summary_depends_on": []
+          },
+          {
+            "text": "A QA tutor's latest question asks for correct handling on RP-0838 and has no substantive reply in the supplied thread.",
+            "support_claim_ids": [
+              "c7",
+              "c10"
+            ],
+            "depends_on": [],
+            "summary_depends_on": []
+          }
+        ],
+        "reasoning": "Repeated questions concern a scoring distinction that the current FAQ and instructions already explain. A reminder can answer the general handling question without inventing a task-specific grade or extending the team lead's earlier thread instruction to the project. No further retrieval is needed for this reminder; historical decisions and outcomes are not premises of the recommendation. The source of the access failure and the final grades of individual tasks are not established.",
+        "claims": [
+          {
+            "claim_id": "c1",
+            "kind": "INCIDENT_FACT",
+            "text": "A QA tutor asks whether to penalize an otherwise good answer because its source link is dead.",
+            "evidence_ids": [
+              "m:C_RP_GENERAL:1790869452.000006"
+            ],
+            "attributions": [
+              {
+                "user_id": "U019",
+                "relation": "AUTHOR",
+                "evidence_id": "m:C_RP_GENERAL:1790869452.000006"
+              }
+            ],
+            "quote": null,
+            "quote_kind": "PARAPHRASE",
+            "material": true
+          },
+          {
+            "claim_id": "c2",
+            "kind": "THREAD_INSTRUCTION",
+            "text": "For the example in the QA tutor's thread, the team lead instructs the QA tutor to record that the citation cannot be verified and not conclude that the factual claim is false solely because the URL fails.",
+            "evidence_ids": [
+              "m:C_RP_GENERAL:1790869502.000113"
+            ],
+            "attributions": [
+              {
+                "user_id": "U001",
+                "relation": "AUTHOR",
+                "evidence_id": "m:C_RP_GENERAL:1790869502.000113"
+              },
+              {
+                "user_id": "U019",
+                "relation": "THREAD_STARTER",
+                "evidence_id": "m:C_RP_GENERAL:1790869502.000113"
+              }
+            ],
+            "quote": null,
+            "quote_kind": "PARAPHRASE",
+            "material": true
+          },
+          {
+            "claim_id": "c3",
+            "kind": "INCIDENT_FACT",
+            "text": "A tutor asks how to handle an otherwise correct answer whose citations lead to a 404.",
+            "evidence_ids": [
+              "m:C_RP_GENERAL:1790897883.000002"
+            ],
+            "attributions": [
+              {
+                "user_id": "U018",
+                "relation": "AUTHOR",
+                "evidence_id": "m:C_RP_GENERAL:1790897883.000002"
+              }
+            ],
+            "quote": null,
+            "quote_kind": "PARAPHRASE",
+            "material": true
+          },
+          {
+            "claim_id": "c4",
+            "kind": "INCIDENT_FACT",
+            "text": "In the tutor's thread, a QA tutor asks whether the issue is a dead link or a source contradicting the claim and says access failure must be distinguished from factual falsity.",
+            "evidence_ids": [
+              "m:C_RP_GENERAL:1790897931.000113"
+            ],
+            "attributions": [
+              {
+                "user_id": "U008",
+                "relation": "AUTHOR",
+                "evidence_id": "m:C_RP_GENERAL:1790897931.000113"
+              },
+              {
+                "user_id": "U018",
+                "relation": "THREAD_STARTER",
+                "evidence_id": "m:C_RP_GENERAL:1790897931.000113"
+              }
+            ],
+            "quote": null,
+            "quote_kind": "PARAPHRASE",
+            "material": true
+          },
+          {
+            "claim_id": "c5",
+            "kind": "INCIDENT_FACT",
+            "text": "A QA tutor reports a good answer with a dead source link on RP-3094 and asks whether to penalize it.",
+            "evidence_ids": [
+              "m:C_RP_QA:1790923094.000004"
+            ],
+            "attributions": [
+              {
+                "user_id": "U014",
+                "relation": "AUTHOR",
+                "evidence_id": "m:C_RP_QA:1790923094.000004"
+              }
+            ],
+            "quote": null,
+            "quote_kind": "PARAPHRASE",
+            "material": true
+          },
+          {
+            "claim_id": "c6",
+            "kind": "INCIDENT_FACT",
+            "text": "In the RP-3094 thread, a tutor reports that the URL also fails to load for them and that they cannot yet verify the supporting passage; the tutor distinguishes access failure from a false factual claim.",
+            "evidence_ids": [
+              "m:C_RP_QA:1790923140.000113"
+            ],
+            "attributions": [
+              {
+                "user_id": "U013",
+                "relation": "AUTHOR",
+                "evidence_id": "m:C_RP_QA:1790923140.000113"
+              }
+            ],
+            "quote": null,
+            "quote_kind": "PARAPHRASE",
+            "material": true
+          },
+          {
+            "claim_id": "c7",
+            "kind": "INCIDENT_FACT",
+            "text": "A QA tutor asks for correct handling on RP-0838 when an otherwise correct answer has citations leading to a 404.",
+            "evidence_ids": [
+              "m:C_RP_QA:1790940838.000005"
+            ],
+            "attributions": [
+              {
+                "user_id": "U019",
+                "relation": "AUTHOR",
+                "evidence_id": "m:C_RP_QA:1790940838.000005"
+              }
+            ],
+            "quote": null,
+            "quote_kind": "PARAPHRASE",
+            "material": true
+          },
+          {
+            "claim_id": "c8",
+            "kind": "GUIDANCE",
+            "text": "The current project FAQ requires recording that a dead-link citation could not be verified, says a failed URL alone does not prove the claim false, and distinguishes access failure from unsupported attribution or a fabricated reference.",
+            "evidence_ids": [
+              "k:response-preference-faq@1.1:3db12f63"
+            ],
+            "attributions": [],
+            "quote": null,
+            "quote_kind": "PARAPHRASE",
+            "material": true
+          },
+          {
+            "claim_id": "c9",
+            "kind": "GUIDANCE",
+            "text": "The current project instructions require a verification note for an inaccessible link and say lack of access alone does not establish the claim's error grade; they distinguish a source that does not support a claim from an invented reference.",
+            "evidence_ids": [
+              "k:response-preference-instructions@1.1:a71c54c7",
+              "k:response-preference-instructions@1.1:3350bbc0"
+            ],
+            "attributions": [],
+            "quote": null,
+            "quote_kind": "PARAPHRASE",
+            "material": true
+          },
+          {
+            "claim_id": "c10",
+            "kind": "INFERENCE",
+            "text": "The supplied threads leave the tutor's handling question and the QA tutors' task-specific questions for RP-3094 and RP-0838 unanswered: the replies seek a distinction or report failed verification rather than give a handling decision.",
+            "evidence_ids": [
+              "m:C_RP_GENERAL:1790897883.000002",
+              "m:C_RP_GENERAL:1790897931.000113",
+              "m:C_RP_QA:1790923094.000004",
+              "m:C_RP_QA:1790923140.000113",
+              "m:C_RP_QA:1790940838.000005"
+            ],
+            "attributions": [
+              {
+                "user_id": "U018",
+                "relation": "AUTHOR",
+                "evidence_id": "m:C_RP_GENERAL:1790897883.000002"
+              },
+              {
+                "user_id": "U008",
+                "relation": "AUTHOR",
+                "evidence_id": "m:C_RP_GENERAL:1790897931.000113"
+              },
+              {
+                "user_id": "U014",
+                "relation": "AUTHOR",
+                "evidence_id": "m:C_RP_QA:1790923094.000004"
+              },
+              {
+                "user_id": "U013",
+                "relation": "AUTHOR",
+                "evidence_id": "m:C_RP_QA:1790923140.000113"
+              },
+              {
+                "user_id": "U019",
+                "relation": "AUTHOR",
+                "evidence_id": "m:C_RP_QA:1790940838.000005"
+              }
+            ],
+            "quote": null,
+            "quote_kind": "PARAPHRASE",
+            "material": true
+          }
+        ],
+        "gaps": [],
+        "evidence_sufficiency": "SUFFICIENT",
+        "proposed_action": {
+          "action_type": "POST_ALIGNMENT",
+          "intervention_need": {
+            "kind": "UNRESOLVED_HANDLING_QUESTION",
+            "statement": "Repeated questions about whether dead citations warrant penalties remain unanswered in three threads, so the current distinction needs to be brought to those questions now.",
+            "evidence_ids": [
+              "m:C_RP_GENERAL:1790897883.000002",
+              "m:C_RP_GENERAL:1790897931.000113",
+              "m:C_RP_QA:1790923094.000004",
+              "m:C_RP_QA:1790923140.000113",
+              "m:C_RP_QA:1790940838.000005"
+            ]
+          },
+          "instruction": "Post a reminder that dead links require a verification note, but failed access alone does not establish factual falsity or an error grade.",
+          "rationale": "The current FAQ and instructions already answer the repeated general handling question. A reminder applies that guidance without creating a new penalty rule.",
+          "draft_text": "For this batch, please follow the current FAQ and instructions when a citation link is dead:\n- Record that the citation could not be verified.\n- Do not conclude that the factual claim is false solely because the URL fails; lack of access alone does not establish its error grade.\n- Distinguish access failure from an existing source that does not support the claim, an unsupported attribution, or an invented reference.\nThis is a reminder of the current guidance, not a new penalty rule.",
+          "scope_note": "This reminder addresses access failure alone; it does not assign final grades to individual tasks or treat unsupported attribution and fabricated references as mere access failures.",
+          "support_claim_ids": [
+            "c3",
+            "c5",
+            "c7",
+            "c8",
+            "c9",
+            "c10"
+          ],
+          "targets": [],
+          "context_claim_ids": [
+            "c1",
+            "c2",
+            "c4",
+            "c6"
+          ]
+        },
+        "severity": {
+          "level": "MEDIUM",
+          "rationale": "Two QA tutors and a tutor repeatedly question how dead links affect scoring. That uncertainty could change labeling decisions, but the messages do not establish broad disruption or incorrect grades already applied.",
+          "signals": [
+            {
+              "level": "MEDIUM",
+              "signal_index": 0,
+              "signal_text": "Recurring confusion about the same rule, tool behavior, or scoring criterion that suggests meaningful workflow or labeling impact",
+              "support": "Two QA tutors and a tutor ask across four threads whether otherwise correct answers with dead citations should be penalized or how they should be handled.",
+              "evidence_ids": [
+                "m:C_RP_GENERAL:1790869452.000006",
+                "m:C_RP_GENERAL:1790897883.000002",
+                "m:C_RP_QA:1790923094.000004",
+                "m:C_RP_QA:1790940838.000005"
+              ]
+            }
+          ],
+          "affected_reporters": [
+            {
+              "author_id": "U014",
+              "evidence_id": "m:C_RP_QA:1790923094.000004"
+            },
+            {
+              "author_id": "U013",
+              "evidence_id": "m:C_RP_QA:1790923140.000113"
+            }
+          ],
+          "recurrence": "NOT_CHECKED",
+          "recurrence_evidence_ids": [],
+          "reported_recurrence_evidence_ids": []
+        },
+        "confidence": 0.93,
+        "open_confirmation": "NONE",
+        "open_question": null,
+        "open_question_evidence_ids": [],
+        "source_conflicts": [],
+        "announcement_assessments": [
+          {
+            "evidence_id": "k:rp-tie-calibration-post@1.0:4a3c786f",
+            "relevant": false,
+            "directive": true,
+            "directive_quote": "Bring both rationales for disputed pairs to the eight-pair calibration review.",
+            "rationale": "This announcement directs tie calibration for batch 14, not dead-citation handling in batch 15, so it is not a premise for the reminder."
+          }
+        ],
+        "resolution": [
+          {
+            "member_id": "member_db5c94522bcefd45ebceda5d",
+            "state": "RESOLVED_IN_THREAD",
+            "evidence_ids": [
+              "m:C_RP_GENERAL:1790869452.000006",
+              "m:C_RP_GENERAL:1790869502.000113"
+            ],
+            "basis": "The team lead answers the QA tutor's dead-link question with example-specific handling: record failed verification and do not infer falsity solely from the URL failure."
+          },
+          {
+            "member_id": "member_c65ff103e0472891ea361dce",
+            "state": "UNRESOLVED",
+            "evidence_ids": [
+              "m:C_RP_GENERAL:1790897883.000002",
+              "m:C_RP_GENERAL:1790897931.000113"
+            ],
+            "basis": "A QA tutor asks for a distinction between access failure and contradictory support but does not give the tutor a handling decision."
+          },
+          {
+            "member_id": "member_f20d2b0a0010b5625d9af570",
+            "state": "UNRESOLVED",
+            "evidence_ids": [
+              "m:C_RP_QA:1790923094.000004",
+              "m:C_RP_QA:1790923140.000113"
+            ],
+            "basis": "A tutor reports the same URL failure and incomplete verification, but the QA tutor's penalty question is not answered."
+          },
+          {
+            "member_id": "member_0d9923adfceafa1870cc4760",
+            "state": "UNRESOLVED",
+            "evidence_ids": [
+              "m:C_RP_QA:1790940838.000005"
+            ],
+            "basis": "The supplied thread contains the QA tutor's handling question for RP-0838 without a substantive reply; the upstream review flag remains open."
+          }
+        ],
+        "coverage": [
+          {
+            "need": "CURRENT_GUIDANCE",
+            "status": "COVERED",
+            "evidence_ids": [
+              "k:response-preference-faq@1.1:3db12f63",
+              "k:response-preference-instructions@1.1:a71c54c7",
+              "k:response-preference-instructions@1.1:3350bbc0"
+            ],
+            "note": "Current project-wide sources directly address failed citation access and its separation from factual falsity and error grading.",
+            "gap_id": null
+          },
+          {
+            "need": "ANNOUNCEMENTS",
+            "status": "COVERED",
+            "evidence_ids": [
+              "k:rp-tie-calibration-post@1.0:4a3c786f"
+            ],
+            "note": "The retrieved announcement was assessed and is not applicable to this batch and problem; the reminder relies on current manuals instead.",
+            "gap_id": null
+          },
+          {
+            "need": "PRIOR_DECISIONS",
+            "status": "NOT_APPLICABLE",
+            "evidence_ids": [],
+            "note": "No earlier trial, policy change, or outcome is needed to restate the explicit current rule; the recommendation makes no historical recurrence or outcome claim.",
+            "gap_id": null
+          },
+          {
+            "need": "MEMBER_QUESTIONS",
+            "status": "COVERED",
+            "evidence_ids": [
+              "m:C_RP_GENERAL:1790869452.000006",
+              "m:C_RP_GENERAL:1790869502.000113",
+              "m:C_RP_GENERAL:1790897883.000002",
+              "m:C_RP_GENERAL:1790897931.000113",
+              "m:C_RP_QA:1790923094.000004",
+              "m:C_RP_QA:1790923140.000113",
+              "m:C_RP_QA:1790940838.000005"
+            ],
+            "note": "The supplied questions and replies show one answered thread and three threads without a handling decision; no member cites an earlier workaround requiring research.",
+            "gap_id": null
+          }
+        ],
+        "review_note": null,
+        "action_choice": null
+      },
+      "revised": false
+    },
+    "grounding": {
+      "structural_issues": [],
+      "action_issues": [],
+      "unsupported": [],
+      "unjudged": [],
+      "extraneous_verdicts": [],
+      "rejected": {},
+      "pending": [],
+      "action_sufficiency": {
+        "verdict": "SUFFICIENT",
+        "essential_statement_ids": [
+          "claim:c8",
+          "claim:c9",
+          "claim:c10"
+        ],
+        "rationale": "The supported current-guidance premises justify the exact reminder, including its distinctions and limits. The supported account of three unanswered handling threads establishes its present applicability. No premise relies on an announcement, and no unsupported concrete route or task-specific grade is introduced."
+      },
+      "source_consistency": {
+        "assessed_evidence_ids": [
+          "k:response-preference-faq@1.1:3db12f63",
+          "k:response-preference-instructions@1.1:a71c54c7",
+          "k:response-preference-instructions@1.1:3350bbc0"
+        ],
+        "relations": [
+          {
+            "evidence_ids": [
+              "k:response-preference-faq@1.1:3db12f63",
+              "k:response-preference-instructions@1.1:a71c54c7",
+              "k:response-preference-instructions@1.1:3350bbc0"
+            ],
+            "relation": "AGREE",
+            "point": "Dead citation links are access or verification failures and do not alone establish factual falsity or a claim's error grade.",
+            "disagreement_scope": null,
+            "rationale": "The FAQ requires recording failed verification and rejects inferring falsity from a failed URL. The content-quality rubric requires a verification note and rejects assigning an error grade from inaccessibility alone. The factual-errors section likewise rejects treating a broken link as proof of falsity. Their distinctions concerning unsupported attribution and invented references are compatible. The tie-calibration announcement concerns another batch and a different handling issue, and the ties FAQ does not govern dead-link handling."
+          }
+        ],
+        "declared_conflict_checks": []
+      },
+      "alternative_sufficiency": {},
+      "status": "PASSED",
+      "basis": "SEMANTIC",
+      "statements": [
+        {
+          "statement_id": "claim:c1",
+          "kind": "CLAIM_INCIDENT_FACT",
+          "text": "A QA tutor asks whether to penalize an otherwise good answer because its source link is dead.",
+          "blocking": true,
+          "evidence_ids": [
+            "m:C_RP_GENERAL:1790869452.000006"
+          ],
+          "attributions": [
+            {
+              "user_id": "U019",
+              "relation": "AUTHOR",
+              "evidence_id": "m:C_RP_GENERAL:1790869452.000006",
+              "role": "QA_TUTOR"
+            }
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "U019 is a QA tutor and explicitly asks whether to penalize a good answer whose source link is dead."
+        },
+        {
+          "statement_id": "claim:c2",
+          "kind": "CLAIM_THREAD_INSTRUCTION",
+          "text": "For the example in the QA tutor's thread, the team lead instructs the QA tutor to record that the citation cannot be verified and not conclude that the factual claim is false solely because the URL fails.",
+          "blocking": true,
+          "evidence_ids": [
+            "m:C_RP_GENERAL:1790869502.000113"
+          ],
+          "attributions": [
+            {
+              "user_id": "U001",
+              "relation": "AUTHOR",
+              "evidence_id": "m:C_RP_GENERAL:1790869502.000113",
+              "role": "TEAM_LEAD"
+            },
+            {
+              "user_id": "U019",
+              "relation": "THREAD_STARTER",
+              "evidence_id": "m:C_RP_GENERAL:1790869502.000113",
+              "role": "QA_TUTOR"
+            }
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "The team lead gives exactly this example-specific instruction in the thread started by QA tutor U019. The statement preserves its thread-limited scope."
+        },
+        {
+          "statement_id": "claim:c3",
+          "kind": "CLAIM_INCIDENT_FACT",
+          "text": "A tutor asks how to handle an otherwise correct answer whose citations lead to a 404.",
+          "blocking": true,
+          "evidence_ids": [
+            "m:C_RP_GENERAL:1790897883.000002"
+          ],
+          "attributions": [
+            {
+              "user_id": "U018",
+              "relation": "AUTHOR",
+              "evidence_id": "m:C_RP_GENERAL:1790897883.000002",
+              "role": "TUTOR"
+            }
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "Tutor U018 asks what to do when an otherwise right answer has citations leading to a 404."
+        },
+        {
+          "statement_id": "claim:c4",
+          "kind": "CLAIM_INCIDENT_FACT",
+          "text": "In the tutor's thread, a QA tutor asks whether the issue is a dead link or a source contradicting the claim and says access failure must be distinguished from factual falsity.",
+          "blocking": true,
+          "evidence_ids": [
+            "m:C_RP_GENERAL:1790897931.000113"
+          ],
+          "attributions": [
+            {
+              "user_id": "U008",
+              "relation": "AUTHOR",
+              "evidence_id": "m:C_RP_GENERAL:1790897931.000113",
+              "role": "QA_TUTOR"
+            },
+            {
+              "user_id": "U018",
+              "relation": "THREAD_STARTER",
+              "evidence_id": "m:C_RP_GENERAL:1790897931.000113",
+              "role": "TUTOR"
+            }
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "QA tutor U008 asks whether the problem is a dead link or a source contradicting the claim and explicitly distinguishes access failure from factual falsity."
+        },
+        {
+          "statement_id": "claim:c5",
+          "kind": "CLAIM_INCIDENT_FACT",
+          "text": "A QA tutor reports a good answer with a dead source link on RP-3094 and asks whether to penalize it.",
+          "blocking": true,
+          "evidence_ids": [
+            "m:C_RP_QA:1790923094.000004"
+          ],
+          "attributions": [
+            {
+              "user_id": "U014",
+              "relation": "AUTHOR",
+              "evidence_id": "m:C_RP_QA:1790923094.000004",
+              "role": "QA_TUTOR"
+            }
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "QA tutor U014 describes a good answer with a dead source link, identifies RP-3094, and asks whether to penalize it."
+        },
+        {
+          "statement_id": "claim:c6",
+          "kind": "CLAIM_INCIDENT_FACT",
+          "text": "In the RP-3094 thread, a tutor reports that the URL also fails to load for them and that they cannot yet verify the supporting passage; the tutor distinguishes access failure from a false factual claim.",
+          "blocking": true,
+          "evidence_ids": [
+            "m:C_RP_QA:1790923140.000113"
+          ],
+          "attributions": [
+            {
+              "user_id": "U013",
+              "relation": "AUTHOR",
+              "evidence_id": "m:C_RP_QA:1790923140.000113",
+              "role": "TUTOR"
+            }
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "Tutor U013 reports that the URL also fails for them, says the supporting passage remains unverified, and distinguishes source-access failure from a false factual claim."
+        },
+        {
+          "statement_id": "claim:c7",
+          "kind": "CLAIM_INCIDENT_FACT",
+          "text": "A QA tutor asks for correct handling on RP-0838 when an otherwise correct answer has citations leading to a 404.",
+          "blocking": true,
+          "evidence_ids": [
+            "m:C_RP_QA:1790940838.000005"
+          ],
+          "attributions": [
+            {
+              "user_id": "U019",
+              "relation": "AUTHOR",
+              "evidence_id": "m:C_RP_QA:1790940838.000005",
+              "role": "QA_TUTOR"
+            }
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "QA tutor U019 explicitly requests correct handling for RP-0838 when an otherwise right answer has citations leading to a 404."
+        },
+        {
+          "statement_id": "claim:c8",
+          "kind": "CLAIM_GUIDANCE",
+          "text": "The current project FAQ requires recording that a dead-link citation could not be verified, says a failed URL alone does not prove the claim false, and distinguishes access failure from unsupported attribution or a fabricated reference.",
+          "blocking": true,
+          "evidence_ids": [
+            "k:response-preference-faq@1.1:3db12f63"
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "The current, project-wide FAQ explicitly requires recording failed verification, rejects treating URL failure alone as proof of falsity, and distinguishes access failure from unsupported attribution or a fabricated reference."
+        },
+        {
+          "statement_id": "claim:c9",
+          "kind": "CLAIM_GUIDANCE",
+          "text": "The current project instructions require a verification note for an inaccessible link and say lack of access alone does not establish the claim's error grade; they distinguish a source that does not support a claim from an invented reference.",
+          "blocking": true,
+          "evidence_ids": [
+            "k:response-preference-instructions@1.1:a71c54c7",
+            "k:response-preference-instructions@1.1:3350bbc0"
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "The two current instruction excerpts require a verification note, state that inaccessible links alone do not establish the claim's error grade, and distinguish unsupported source content from invented references."
+        },
+        {
+          "statement_id": "claim:c10",
+          "kind": "CLAIM_INFERENCE",
+          "text": "The supplied threads leave the tutor's handling question and the QA tutors' task-specific questions for RP-3094 and RP-0838 unanswered: the replies seek a distinction or report failed verification rather than give a handling decision.",
+          "blocking": true,
+          "evidence_ids": [
+            "m:C_RP_GENERAL:1790897883.000002",
+            "m:C_RP_GENERAL:1790897931.000113",
+            "m:C_RP_QA:1790923094.000004",
+            "m:C_RP_QA:1790923140.000113",
+            "m:C_RP_QA:1790940838.000005"
+          ],
+          "attributions": [
+            {
+              "user_id": "U018",
+              "relation": "AUTHOR",
+              "evidence_id": "m:C_RP_GENERAL:1790897883.000002",
+              "role": "TUTOR"
+            },
+            {
+              "user_id": "U008",
+              "relation": "AUTHOR",
+              "evidence_id": "m:C_RP_GENERAL:1790897931.000113",
+              "role": "QA_TUTOR"
+            },
+            {
+              "user_id": "U014",
+              "relation": "AUTHOR",
+              "evidence_id": "m:C_RP_QA:1790923094.000004",
+              "role": "QA_TUTOR"
+            },
+            {
+              "user_id": "U013",
+              "relation": "AUTHOR",
+              "evidence_id": "m:C_RP_QA:1790923140.000113",
+              "role": "TUTOR"
+            },
+            {
+              "user_id": "U019",
+              "relation": "AUTHOR",
+              "evidence_id": "m:C_RP_QA:1790940838.000005",
+              "role": "QA_TUTOR"
+            }
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "The complete supplied threads contain a clarifying question for U018, a failed-verification report for RP-3094, and no reply for RP-0838. None provides a handling decision in those threads. Existing project guidance answers the general principle but does not constitute an in-thread response."
+        },
+        {
+          "statement_id": "summary:s1",
+          "kind": "SUMMARY",
+          "text": "Two QA tutors and a tutor ask how to handle otherwise correct answers with dead citation links, with handling questions still unanswered in three threads.",
+          "blocking": true,
+          "evidence_ids": [
+            "m:C_RP_GENERAL:1790869452.000006",
+            "m:C_RP_GENERAL:1790897883.000002",
+            "m:C_RP_QA:1790923094.000004",
+            "m:C_RP_QA:1790940838.000005",
+            "m:C_RP_GENERAL:1790897931.000113",
+            "m:C_RP_QA:1790923140.000113"
+          ],
+          "attributions": [
+            {
+              "user_id": "U019",
+              "relation": "AUTHOR",
+              "evidence_id": "m:C_RP_GENERAL:1790869452.000006",
+              "role": "QA_TUTOR"
+            },
+            {
+              "user_id": "U018",
+              "relation": "AUTHOR",
+              "evidence_id": "m:C_RP_GENERAL:1790897883.000002",
+              "role": "TUTOR"
+            },
+            {
+              "user_id": "U014",
+              "relation": "AUTHOR",
+              "evidence_id": "m:C_RP_QA:1790923094.000004",
+              "role": "QA_TUTOR"
+            },
+            {
+              "user_id": "U019",
+              "relation": "AUTHOR",
+              "evidence_id": "m:C_RP_QA:1790940838.000005",
+              "role": "QA_TUTOR"
+            },
+            {
+              "user_id": "U008",
+              "relation": "AUTHOR",
+              "evidence_id": "m:C_RP_GENERAL:1790897931.000113",
+              "role": "QA_TUTOR"
+            },
+            {
+              "user_id": "U013",
+              "relation": "AUTHOR",
+              "evidence_id": "m:C_RP_QA:1790923140.000113",
+              "role": "TUTOR"
+            }
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "The asking authors are two distinct QA tutors, U019 and U014, and tutor U018. Their questions concern otherwise good answers with dead citations, and three of the four supplied threads lack handling answers."
+        },
+        {
+          "statement_id": "summary:s2",
+          "kind": "SUMMARY",
+          "text": "Current guidance requires a verification note and says failed access alone does not establish that a claim is false or determine its error grade.",
+          "blocking": true,
+          "evidence_ids": [
+            "k:response-preference-faq@1.1:3db12f63",
+            "k:response-preference-instructions@1.1:a71c54c7",
+            "k:response-preference-instructions@1.1:3350bbc0"
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "The current FAQ and instructions jointly state both the verification-note requirement and the limits on inferring falsity or an error grade from access failure alone."
+        },
+        {
+          "statement_id": "detail:d1",
+          "kind": "DETAIL",
+          "text": "In the earlier QA tutor's thread, the team lead instructed the QA tutor to record the citation as unverifiable and not infer factual falsity solely from the failed URL.",
+          "blocking": false,
+          "evidence_ids": [
+            "m:C_RP_GENERAL:1790869502.000113"
+          ],
+          "attributions": [
+            {
+              "user_id": "U001",
+              "relation": "AUTHOR",
+              "evidence_id": "m:C_RP_GENERAL:1790869502.000113",
+              "role": "TEAM_LEAD"
+            },
+            {
+              "user_id": "U019",
+              "relation": "THREAD_STARTER",
+              "evidence_id": "m:C_RP_GENERAL:1790869502.000113",
+              "role": "QA_TUTOR"
+            }
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "The earlier thread contains the team lead's explicit instruction to record failed verification and not infer factual falsity solely from URL failure."
+        },
+        {
+          "statement_id": "detail:d2",
+          "kind": "DETAIL",
+          "text": "In the tutor's thread, a QA tutor asked whether the source was inaccessible or contradicted the claim; the supplied replies do not answer that question.",
+          "blocking": false,
+          "evidence_ids": [
+            "m:C_RP_GENERAL:1790897931.000113",
+            "m:C_RP_GENERAL:1790897883.000002",
+            "m:C_RP_QA:1790923094.000004",
+            "m:C_RP_QA:1790923140.000113",
+            "m:C_RP_QA:1790940838.000005"
+          ],
+          "attributions": [
+            {
+              "user_id": "U008",
+              "relation": "AUTHOR",
+              "evidence_id": "m:C_RP_GENERAL:1790897931.000113",
+              "role": "QA_TUTOR"
+            },
+            {
+              "user_id": "U018",
+              "relation": "THREAD_STARTER",
+              "evidence_id": "m:C_RP_GENERAL:1790897931.000113",
+              "role": "TUTOR"
+            },
+            {
+              "user_id": "U018",
+              "relation": "AUTHOR",
+              "evidence_id": "m:C_RP_GENERAL:1790897883.000002",
+              "role": "TUTOR"
+            },
+            {
+              "user_id": "U014",
+              "relation": "AUTHOR",
+              "evidence_id": "m:C_RP_QA:1790923094.000004",
+              "role": "QA_TUTOR"
+            },
+            {
+              "user_id": "U013",
+              "relation": "AUTHOR",
+              "evidence_id": "m:C_RP_QA:1790923140.000113",
+              "role": "TUTOR"
+            },
+            {
+              "user_id": "U019",
+              "relation": "AUTHOR",
+              "evidence_id": "m:C_RP_QA:1790940838.000005",
+              "role": "QA_TUTOR"
+            }
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "QA tutor U008 asks that diagnostic distinction in U018's thread, and the supplied context contains no subsequent answer to it."
+        },
+        {
+          "statement_id": "detail:d3",
+          "kind": "DETAIL",
+          "text": "For RP-3094, a QA tutor asks whether to penalize the answer, and a tutor reports that the URL also fails to load for them, leaving the supporting passage unverified.",
+          "blocking": false,
+          "evidence_ids": [
+            "m:C_RP_QA:1790923094.000004",
+            "m:C_RP_QA:1790923140.000113"
+          ],
+          "attributions": [
+            {
+              "user_id": "U014",
+              "relation": "AUTHOR",
+              "evidence_id": "m:C_RP_QA:1790923094.000004",
+              "role": "QA_TUTOR"
+            },
+            {
+              "user_id": "U013",
+              "relation": "AUTHOR",
+              "evidence_id": "m:C_RP_QA:1790923140.000113",
+              "role": "TUTOR"
+            }
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "U014 asks whether to penalize RP-3094, and tutor U013 reports the same loading failure and inability to verify its supporting passage."
+        },
+        {
+          "statement_id": "detail:d4",
+          "kind": "DETAIL",
+          "text": "A QA tutor's latest question asks for correct handling on RP-0838 and has no substantive reply in the supplied thread.",
+          "blocking": false,
+          "evidence_ids": [
+            "m:C_RP_QA:1790940838.000005",
+            "m:C_RP_GENERAL:1790897883.000002",
+            "m:C_RP_GENERAL:1790897931.000113",
+            "m:C_RP_QA:1790923094.000004",
+            "m:C_RP_QA:1790923140.000113"
+          ],
+          "attributions": [
+            {
+              "user_id": "U019",
+              "relation": "AUTHOR",
+              "evidence_id": "m:C_RP_QA:1790940838.000005",
+              "role": "QA_TUTOR"
+            },
+            {
+              "user_id": "U018",
+              "relation": "AUTHOR",
+              "evidence_id": "m:C_RP_GENERAL:1790897883.000002",
+              "role": "TUTOR"
+            },
+            {
+              "user_id": "U008",
+              "relation": "AUTHOR",
+              "evidence_id": "m:C_RP_GENERAL:1790897931.000113",
+              "role": "QA_TUTOR"
+            },
+            {
+              "user_id": "U014",
+              "relation": "AUTHOR",
+              "evidence_id": "m:C_RP_QA:1790923094.000004",
+              "role": "QA_TUTOR"
+            },
+            {
+              "user_id": "U013",
+              "relation": "AUTHOR",
+              "evidence_id": "m:C_RP_QA:1790923140.000113",
+              "role": "TUTOR"
+            }
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "U019's RP-0838 question is the latest supplied member message and has no substantive reply. The eyes reaction does not answer it."
+        },
+        {
+          "statement_id": "action",
+          "kind": "ACTION",
+          "text": "Post a reminder. Instruction: Post a reminder that dead links require a verification note, but failed access alone does not establish factual falsity or an error grade. Draft to copy: For this batch, please follow the current FAQ and instructions when a citation link is dead:\n- Record that the citation could not be verified.\n- Do not conclude that the factual claim is false solely because the URL fails; lack of access alone does not establish its error grade.\n- Distinguish access failure from an existing source that does not support the claim, an unsupported attribution, or an invented reference.\nThis is a reminder of the current guidance, not a new penalty rule. Scope: This reminder addresses access failure alone; it does not assign final grades to individual tasks or treat unsupported attribution and fabricated references as mere access failures.",
+          "blocking": true,
+          "evidence_ids": [
+            "m:C_RP_GENERAL:1790897883.000002",
+            "m:C_RP_QA:1790923094.000004",
+            "m:C_RP_QA:1790940838.000005",
+            "k:response-preference-faq@1.1:3db12f63",
+            "k:response-preference-instructions@1.1:a71c54c7",
+            "k:response-preference-instructions@1.1:3350bbc0",
+            "m:C_RP_GENERAL:1790897931.000113",
+            "m:C_RP_QA:1790923140.000113"
+          ],
+          "premises": [
+            "claim:c3",
+            "claim:c5",
+            "claim:c7",
+            "claim:c8",
+            "claim:c9",
+            "claim:c10"
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "Repeated unanswered handling requests justify an advisory reminder. Every substantive rule in the proposed copy follows from the current project-wide FAQ and instructions. The action specifies no unsupported posting route, creates no new penalty rule, and appropriately excludes individual final-grade decisions."
+        },
+        {
+          "statement_id": "action:rationale",
+          "kind": "ACTION_RATIONALE",
+          "text": "Why this helps: The current FAQ and instructions already answer the repeated general handling question. A reminder applies that guidance without creating a new penalty rule.",
+          "blocking": false,
+          "evidence_ids": [
+            "m:C_RP_GENERAL:1790897883.000002",
+            "m:C_RP_QA:1790923094.000004",
+            "m:C_RP_QA:1790940838.000005",
+            "k:response-preference-faq@1.1:3db12f63",
+            "k:response-preference-instructions@1.1:a71c54c7",
+            "k:response-preference-instructions@1.1:3350bbc0",
+            "m:C_RP_GENERAL:1790897931.000113",
+            "m:C_RP_QA:1790923140.000113",
+            "m:C_RP_GENERAL:1790869452.000006",
+            "m:C_RP_GENERAL:1790869502.000113"
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "The current sources already answer the general access-failure question raised repeatedly by members. The proposed reminder restates those rules rather than introducing a penalty policy."
+        },
+        {
+          "statement_id": "action:need",
+          "kind": "INTERVENTION_NEED",
+          "text": "Why intervening now is needed (an unresolved handling question): Repeated questions about whether dead citations warrant penalties remain unanswered in three threads, so the current distinction needs to be brought to those questions now.",
+          "blocking": false,
+          "evidence_ids": [
+            "m:C_RP_GENERAL:1790897883.000002",
+            "m:C_RP_GENERAL:1790897931.000113",
+            "m:C_RP_QA:1790923094.000004",
+            "m:C_RP_QA:1790923140.000113",
+            "m:C_RP_QA:1790940838.000005"
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "Three supplied threads still lack answers to their handling requests. Bringing the existing distinction to those requests addresses an observable coordination need, not merely a hypothetical benefit or an unknown technical cause."
+        },
+        {
+          "statement_id": "resolution:member_db5c94522bcefd45ebceda5d",
+          "kind": "RESOLUTION",
+          "text": "Member thread member_db5c94522bcefd45ebceda5d is RESOLVED_IN_THREAD: The team lead answers the QA tutor's dead-link question with example-specific handling: record failed verification and do not infer falsity solely from the URL failure.",
+          "blocking": true,
+          "evidence_ids": [
+            "m:C_RP_GENERAL:1790869452.000006",
+            "m:C_RP_GENERAL:1790869502.000113"
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "The team lead directly answers this thread's question with example-specific handling: record failed verification and do not infer falsity from URL failure alone."
+        },
+        {
+          "statement_id": "resolution:member_c65ff103e0472891ea361dce",
+          "kind": "RESOLUTION",
+          "text": "Member thread member_c65ff103e0472891ea361dce is UNRESOLVED: A QA tutor asks for a distinction between access failure and contradictory support but does not give the tutor a handling decision.",
+          "blocking": true,
+          "evidence_ids": [
+            "m:C_RP_GENERAL:1790897883.000002",
+            "m:C_RP_GENERAL:1790897931.000113"
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "The complete thread contains only the tutor's initial question and the QA tutor's request to distinguish access failure from contradictory support; no handling decision follows."
+        },
+        {
+          "statement_id": "resolution:member_f20d2b0a0010b5625d9af570",
+          "kind": "RESOLUTION",
+          "text": "Member thread member_f20d2b0a0010b5625d9af570 is UNRESOLVED: A tutor reports the same URL failure and incomplete verification, but the QA tutor's penalty question is not answered.",
+          "blocking": true,
+          "evidence_ids": [
+            "m:C_RP_QA:1790923094.000004",
+            "m:C_RP_QA:1790923140.000113"
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "The reply confirms failed access and incomplete verification but does not answer whether the answer should be penalized."
+        },
+        {
+          "statement_id": "resolution:member_0d9923adfceafa1870cc4760",
+          "kind": "RESOLUTION",
+          "text": "Member thread member_0d9923adfceafa1870cc4760 is UNRESOLVED: The supplied thread contains the QA tutor's handling question for RP-0838 without a substantive reply; the upstream review flag remains open.",
+          "blocking": true,
+          "evidence_ids": [
+            "m:C_RP_QA:1790940838.000005"
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "The supplied thread has no substantive reply to the RP-0838 handling question, and the provided open_review_flags explicitly retain an upstream review obligation for this member."
+        },
+        {
+          "statement_id": "severity:rationale",
+          "kind": "SEVERITY_RATIONALE",
+          "text": "Severity MEDIUM: Two QA tutors and a tutor repeatedly question how dead links affect scoring. That uncertainty could change labeling decisions, but the messages do not establish broad disruption or incorrect grades already applied.",
+          "blocking": true,
+          "evidence_ids": [
+            "m:C_RP_GENERAL:1790869452.000006",
+            "m:C_RP_GENERAL:1790897883.000002",
+            "m:C_RP_QA:1790923094.000004",
+            "m:C_RP_QA:1790940838.000005",
+            "m:C_RP_QA:1790923140.000113",
+            "m:C_RP_GENERAL:1790897931.000113"
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "Two QA tutors and one tutor raise the scoring or handling issue across four threads. This supports a meaningful potential labeling impact, while the statement correctly avoids claiming observed incorrect grades or broad disruption."
+        },
+        {
+          "statement_id": "severity:signal:MEDIUM[0]",
+          "kind": "SEVERITY_SIGNAL",
+          "text": "Rubric signal met - \"Recurring confusion about the same rule, tool behavior, or scoring criterion that suggests meaningful workflow or labeling impact\": Two QA tutors and a tutor ask across four threads whether otherwise correct answers with dead citations should be penalized or how they should be handled.",
+          "blocking": true,
+          "evidence_ids": [
+            "m:C_RP_GENERAL:1790869452.000006",
+            "m:C_RP_GENERAL:1790897883.000002",
+            "m:C_RP_QA:1790923094.000004",
+            "m:C_RP_QA:1790940838.000005"
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "The four cited thread starters comprise two distinct QA tutors and one tutor repeatedly asking about the same dead-citation handling criterion. Their penalty and task-handling questions support the stated workflow or labeling-impact signal."
+        },
+        {
+          "statement_id": "reporter:U014",
+          "kind": "AFFECTED_REPORTER",
+          "text": "U014 reports, in their own cited message, being affected by this problem.",
+          "blocking": true,
+          "evidence_ids": [
+            "m:C_RP_QA:1790923094.000004"
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "U014's own message reports the dead-link problem on the specific task RP-3094 and asks how to score it."
+        },
+        {
+          "statement_id": "reporter:U013",
+          "kind": "AFFECTED_REPORTER",
+          "text": "U013 reports, in their own cited message, being affected by this problem.",
+          "blocking": true,
+          "evidence_ids": [
+            "m:C_RP_QA:1790923140.000113"
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "U013 explicitly reports personally encountering the URL failure and being unable to verify the supporting passage."
+        }
+      ]
+    },
+    "temporal": {
+      "status": "NONE_FOUND",
+      "findings": [],
+      "source_consistency": "ASSESSED",
+      "ignored_revision_states": "NOT_YET_EFFECTIVE and NOT_APPROVED revisions never compete with applicable guidance."
+    },
+    "temporal_before_grounding": {
+      "status": "NONE_FOUND",
+      "findings": [],
+      "source_consistency": "NOT_ASSESSED",
+      "ignored_revision_states": "NOT_YET_EFFECTIVE and NOT_APPROVED revisions never compete with applicable guidance."
+    },
+    "severity": {
+      "assessment": {
+        "level": "MEDIUM",
+        "assessment_status": "ASSESSED",
+        "rubric_version": "severity-rubric-v3-semantic-signals",
+        "rubric_content_sha256": "eccaa31a2ab84a0aa7c005216a92fc39681e1dd10107117344948235a76673f4",
+        "rubric_project_id": null,
+        "rubric_scope": "SHARED_DEFAULT",
+        "rationale": "Two QA tutors and a tutor repeatedly question how dead links affect scoring. That uncertainty could change labeling decisions, but the messages do not establish broad disruption or incorrect grades already applied.",
+        "matched_signals": [
+          {
+            "level": "MEDIUM",
+            "signal_index": 0,
+            "signal_text": "Recurring confusion about the same rule, tool behavior, or scoring criterion that suggests meaningful workflow or labeling impact",
+            "support": "Two QA tutors and a tutor ask across four threads whether otherwise correct answers with dead citations should be penalized or how they should be handled.",
+            "evidence": [
+              {
+                "kind": "slack_message",
+                "project_id": "response_preference",
+                "batch_id": "rp_batch_15",
+                "scope": "project",
+                "channel_id": "C_RP_GENERAL",
+                "thread_id": "1790869452.000006",
+                "message_id": "1790869452.000006",
+                "document_id": null,
+                "version_id": null,
+                "authoring_document_id": null,
+                "authoring_version": null,
+                "section": null,
+                "chunk_id": null,
+                "candidate_group_id": null,
+                "member_id": "member_db5c94522bcefd45ebceda5d",
+                "artifact": null,
+                "artifact_sha256": null,
+                "quote": null,
+                "note": "m:C_RP_GENERAL:1790869452.000006"
+              },
+              {
+                "kind": "slack_message",
+                "project_id": "response_preference",
+                "batch_id": "rp_batch_15",
+                "scope": "project",
+                "channel_id": "C_RP_GENERAL",
+                "thread_id": "1790897883.000002",
+                "message_id": "1790897883.000002",
+                "document_id": null,
+                "version_id": null,
+                "authoring_document_id": null,
+                "authoring_version": null,
+                "section": null,
+                "chunk_id": null,
+                "candidate_group_id": null,
+                "member_id": "member_c65ff103e0472891ea361dce",
+                "artifact": null,
+                "artifact_sha256": null,
+                "quote": null,
+                "note": "m:C_RP_GENERAL:1790897883.000002"
+              },
+              {
+                "kind": "slack_message",
+                "project_id": "response_preference",
+                "batch_id": "rp_batch_15",
+                "scope": "project",
+                "channel_id": "C_RP_QA",
+                "thread_id": "1790923094.000004",
+                "message_id": "1790923094.000004",
+                "document_id": null,
+                "version_id": null,
+                "authoring_document_id": null,
+                "authoring_version": null,
+                "section": null,
+                "chunk_id": null,
+                "candidate_group_id": null,
+                "member_id": "member_f20d2b0a0010b5625d9af570",
+                "artifact": null,
+                "artifact_sha256": null,
+                "quote": null,
+                "note": "m:C_RP_QA:1790923094.000004"
+              },
+              {
+                "kind": "slack_message",
+                "project_id": "response_preference",
+                "batch_id": "rp_batch_15",
+                "scope": "project",
+                "channel_id": "C_RP_QA",
+                "thread_id": "1790940838.000005",
+                "message_id": "1790940838.000005",
+                "document_id": null,
+                "version_id": null,
+                "authoring_document_id": null,
+                "authoring_version": null,
+                "section": null,
+                "chunk_id": null,
+                "candidate_group_id": null,
+                "member_id": "member_0d9923adfceafa1870cc4760",
+                "artifact": null,
+                "artifact_sha256": null,
+                "quote": null,
+                "note": "m:C_RP_QA:1790940838.000005"
+              }
+            ]
+          }
+        ],
+        "evidence": [
+          {
+            "kind": "slack_message",
+            "project_id": "response_preference",
+            "batch_id": "rp_batch_15",
+            "scope": "project",
+            "channel_id": "C_RP_GENERAL",
+            "thread_id": "1790869452.000006",
+            "message_id": "1790869452.000006",
+            "document_id": null,
+            "version_id": null,
+            "authoring_document_id": null,
+            "authoring_version": null,
+            "section": null,
+            "chunk_id": null,
+            "candidate_group_id": null,
+            "member_id": "member_db5c94522bcefd45ebceda5d",
+            "artifact": null,
+            "artifact_sha256": null,
+            "quote": null,
+            "note": "m:C_RP_GENERAL:1790869452.000006"
+          },
+          {
+            "kind": "slack_message",
+            "project_id": "response_preference",
+            "batch_id": "rp_batch_15",
+            "scope": "project",
+            "channel_id": "C_RP_GENERAL",
+            "thread_id": "1790897883.000002",
+            "message_id": "1790897883.000002",
+            "document_id": null,
+            "version_id": null,
+            "authoring_document_id": null,
+            "authoring_version": null,
+            "section": null,
+            "chunk_id": null,
+            "candidate_group_id": null,
+            "member_id": "member_c65ff103e0472891ea361dce",
+            "artifact": null,
+            "artifact_sha256": null,
+            "quote": null,
+            "note": "m:C_RP_GENERAL:1790897883.000002"
+          },
+          {
+            "kind": "slack_message",
+            "project_id": "response_preference",
+            "batch_id": "rp_batch_15",
+            "scope": "project",
+            "channel_id": "C_RP_QA",
+            "thread_id": "1790923094.000004",
+            "message_id": "1790923094.000004",
+            "document_id": null,
+            "version_id": null,
+            "authoring_document_id": null,
+            "authoring_version": null,
+            "section": null,
+            "chunk_id": null,
+            "candidate_group_id": null,
+            "member_id": "member_f20d2b0a0010b5625d9af570",
+            "artifact": null,
+            "artifact_sha256": null,
+            "quote": null,
+            "note": "m:C_RP_QA:1790923094.000004"
+          },
+          {
+            "kind": "slack_message",
+            "project_id": "response_preference",
+            "batch_id": "rp_batch_15",
+            "scope": "project",
+            "channel_id": "C_RP_QA",
+            "thread_id": "1790940838.000005",
+            "message_id": "1790940838.000005",
+            "document_id": null,
+            "version_id": null,
+            "authoring_document_id": null,
+            "authoring_version": null,
+            "section": null,
+            "chunk_id": null,
+            "candidate_group_id": null,
+            "member_id": "member_0d9923adfceafa1870cc4760",
+            "artifact": null,
+            "artifact_sha256": null,
+            "quote": null,
+            "note": "m:C_RP_QA:1790940838.000005"
+          }
+        ],
+        "occurrence": {
+          "affected_reporters": {
+            "status": "LOWER_BOUND",
+            "count": 2,
+            "ids": [
+              "U014",
+              "U013"
+            ],
+            "basis": "Distinct authors whose own cited message reports the problem; other participants are not counted.",
+            "evidence": [
+              {
+                "kind": "slack_message",
+                "project_id": "response_preference",
+                "batch_id": "rp_batch_15",
+                "scope": "project",
+                "channel_id": "C_RP_QA",
+                "thread_id": "1790923094.000004",
+                "message_id": "1790923094.000004",
+                "document_id": null,
+                "version_id": null,
+                "authoring_document_id": null,
+                "authoring_version": null,
+                "section": null,
+                "chunk_id": null,
+                "candidate_group_id": null,
+                "member_id": "member_f20d2b0a0010b5625d9af570",
+                "artifact": null,
+                "artifact_sha256": null,
+                "quote": null,
+                "note": "m:C_RP_QA:1790923094.000004"
+              },
+              {
+                "kind": "slack_message",
+                "project_id": "response_preference",
+                "batch_id": "rp_batch_15",
+                "scope": "project",
+                "channel_id": "C_RP_QA",
+                "thread_id": "1790923094.000004",
+                "message_id": "1790923140.000113",
+                "document_id": null,
+                "version_id": null,
+                "authoring_document_id": null,
+                "authoring_version": null,
+                "section": null,
+                "chunk_id": null,
+                "candidate_group_id": null,
+                "member_id": "member_f20d2b0a0010b5625d9af570",
+                "artifact": null,
+                "artifact_sha256": null,
+                "quote": null,
+                "note": "m:C_RP_QA:1790923140.000113"
+              }
+            ]
+          },
+          "affected_tasks": {
+            "status": "UNKNOWN",
+            "count": null,
+            "ids": [],
+            "basis": null,
+            "evidence": []
+          },
+          "relevant_threads": [
+            {
+              "project_id": "response_preference",
+              "batch_id": "rp_batch_15",
+              "channel_id": "C_RP_GENERAL",
+              "thread_id": "1790869452.000006",
+              "member_id": "member_db5c94522bcefd45ebceda5d"
+            },
+            {
+              "project_id": "response_preference",
+              "batch_id": "rp_batch_15",
+              "channel_id": "C_RP_GENERAL",
+              "thread_id": "1790897883.000002",
+              "member_id": "member_c65ff103e0472891ea361dce"
+            },
+            {
+              "project_id": "response_preference",
+              "batch_id": "rp_batch_15",
+              "channel_id": "C_RP_QA",
+              "thread_id": "1790923094.000004",
+              "member_id": "member_f20d2b0a0010b5625d9af570"
+            },
+            {
+              "project_id": "response_preference",
+              "batch_id": "rp_batch_15",
+              "channel_id": "C_RP_QA",
+              "thread_id": "1790940838.000005",
+              "member_id": "member_0d9923adfceafa1870cc4760"
+            }
+          ],
+          "reporting_window": {
+            "start": "2026-10-01T15:44:12.000006+00:00",
+            "end": "2026-10-02T11:33:58.000005+00:00"
+          },
+          "historical_recurrence": {
+            "status": "NOT_CHECKED",
+            "sources": [],
+            "event_series_ids": []
+          },
+          "known_denominator": null,
+          "structural": {
+            "threads": 4,
+            "messages": 7,
+            "distinct_participants": 6,
+            "duplicate_threads_ignored": 0,
+            "duplicate_messages_ignored": 0,
+            "computed_from": "topic member threads (original Slack messages)",
+            "participants_are_not_affected_reporters": true
+          },
+          "semantic_identification": "ASSESSED"
+        },
+        "inherited_from": {
+          "level": "UNKNOWN",
+          "assessment_status": "UNASSESSED",
+          "assessment_deferred_to": "AGENT3",
+          "reason": "Agent 2 performs taxonomy only."
+        }
+      },
+      "issues": [],
+      "notes": [],
+      "proposal": {
+        "level": "MEDIUM",
+        "rationale": "Two QA tutors and a tutor repeatedly question how dead links affect scoring. That uncertainty could change labeling decisions, but the messages do not establish broad disruption or incorrect grades already applied.",
+        "signals": [
+          {
+            "level": "MEDIUM",
+            "signal_index": 0,
+            "signal_text": "Recurring confusion about the same rule, tool behavior, or scoring criterion that suggests meaningful workflow or labeling impact",
+            "support": "Two QA tutors and a tutor ask across four threads whether otherwise correct answers with dead citations should be penalized or how they should be handled.",
+            "evidence_ids": [
+              "m:C_RP_GENERAL:1790869452.000006",
+              "m:C_RP_GENERAL:1790897883.000002",
+              "m:C_RP_QA:1790923094.000004",
+              "m:C_RP_QA:1790940838.000005"
+            ]
+          }
+        ],
+        "affected_reporters": [
+          {
+            "author_id": "U014",
+            "evidence_id": "m:C_RP_QA:1790923094.000004"
+          },
+          {
+            "author_id": "U013",
+            "evidence_id": "m:C_RP_QA:1790923140.000113"
+          }
+        ],
+        "recurrence": "NOT_CHECKED",
+        "recurrence_evidence_ids": [],
+        "reported_recurrence_evidence_ids": []
+      }
+    },
+    "resolution": {
+      "topic": "MIXED",
+      "members": {
+        "member_db5c94522bcefd45ebceda5d": "RESOLVED_IN_THREAD",
+        "member_c65ff103e0472891ea361dce": "UNRESOLVED",
+        "member_f20d2b0a0010b5625d9af570": "UNRESOLVED",
+        "member_0d9923adfceafa1870cc4760": "UNRESOLVED"
+      },
+      "agent1_attributed": [
+        {
+          "member_id": "member_db5c94522bcefd45ebceda5d",
+          "state": "RESOLVED_IN_THREAD",
+          "agent1_verification_status": "VERIFIED",
+          "agent1_review_required": false
+        },
+        {
+          "member_id": "member_c65ff103e0472891ea361dce",
+          "state": "UNRESOLVED",
+          "agent1_verification_status": "VERIFIED",
+          "agent1_review_required": false
+        },
+        {
+          "member_id": "member_f20d2b0a0010b5625d9af570",
+          "state": "UNRESOLVED",
+          "agent1_verification_status": "VERIFIED",
+          "agent1_review_required": false
+        },
+        {
+          "member_id": "member_0d9923adfceafa1870cc4760",
+          "state": "UNRESOLVED",
+          "agent1_verification_status": "NEEDS_REVIEW",
+          "agent1_review_required": true
+        }
+      ]
+    },
+    "established_handling": [],
+    "coverage_issues": [],
+    "action_source": "DRAFT",
+    "action_notes": [],
+    "tot": {
+      "status": "NOT_TRIGGERED",
+      "triggers": [],
+      "choice_after_grounding": {
+        "status": "NOT_COMPARED",
+        "viable": []
+      }
+    },
+    "evidence_ledger": {
+      "m:C_RP_GENERAL:1790869452.000006": {
+        "evidence_id": "m:C_RP_GENERAL:1790869452.000006",
+        "origin": "member_message",
+        "use": "MEMBER_REPORT",
+        "member_id": "member_db5c94522bcefd45ebceda5d",
+        "channel_id": "C_RP_GENERAL",
+        "thread_id": "1790869452.000006",
+        "message_id": "1790869452.000006",
+        "author_id": "U019",
+        "author_name": "Yuki",
+        "author_role": "QA_TUTOR",
+        "timestamp": "2026-10-01T15:44:12.000006Z",
+        "thread_starter_id": "U019",
+        "thread_starter_role": "QA_TUTOR",
+        "reactions": [],
+        "excerpt": "Answer is good but source link is dead — penalize?"
+      },
+      "m:C_RP_GENERAL:1790869502.000113": {
+        "evidence_id": "m:C_RP_GENERAL:1790869502.000113",
+        "origin": "member_message",
+        "use": "MEMBER_REPORT",
+        "member_id": "member_db5c94522bcefd45ebceda5d",
+        "channel_id": "C_RP_GENERAL",
+        "thread_id": "1790869452.000006",
+        "message_id": "1790869502.000113",
+        "author_id": "U001",
+        "author_name": "Alex",
+        "author_role": "TEAM_LEAD",
+        "timestamp": "2026-10-01T15:45:02.000113Z",
+        "thread_starter_id": "U019",
+        "thread_starter_role": "QA_TUTOR",
+        "reactions": [],
+        "excerpt": "For this example, the link is unavailable. Record that the citation cannot be verified; do not conclude the factual claim is false solely because the URL fails."
+      },
+      "m:C_RP_GENERAL:1790897883.000002": {
+        "evidence_id": "m:C_RP_GENERAL:1790897883.000002",
+        "origin": "member_message",
+        "use": "MEMBER_REPORT",
+        "member_id": "member_c65ff103e0472891ea361dce",
+        "channel_id": "C_RP_GENERAL",
+        "thread_id": "1790897883.000002",
+        "message_id": "1790897883.000002",
+        "author_id": "U018",
+        "author_name": "Omar",
+        "author_role": "TUTOR",
+        "timestamp": "2026-10-01T23:38:03.000002Z",
+        "thread_starter_id": "U018",
+        "thread_starter_role": "TUTOR",
+        "reactions": [
+          {
+            "name": "eyes",
+            "users": [
+              {
+                "id": "U001",
+                "name": "Alex"
+              }
+            ]
+          }
+        ],
+        "excerpt": "What if the answer is otherwise right but its citations go to a 404?"
+      },
+      "m:C_RP_GENERAL:1790897931.000113": {
+        "evidence_id": "m:C_RP_GENERAL:1790897931.000113",
+        "origin": "member_message",
+        "use": "MEMBER_REPORT",
+        "member_id": "member_c65ff103e0472891ea361dce",
+        "channel_id": "C_RP_GENERAL",
+        "thread_id": "1790897883.000002",
+        "message_id": "1790897931.000113",
+        "author_id": "U008",
+        "author_name": "Hana",
+        "author_role": "QA_TUTOR",
+        "timestamp": "2026-10-01T23:38:51.000113Z",
+        "thread_starter_id": "U018",
+        "thread_starter_role": "TUTOR",
+        "reactions": [],
+        "excerpt": "Do we know whether the problem is a dead link or a source that contradicts the claim? If the link is dead, we still need to distinguish a source-access failure from a false factual claim."
+      },
+      "m:C_RP_QA:1790923094.000004": {
+        "evidence_id": "m:C_RP_QA:1790923094.000004",
+        "origin": "member_message",
+        "use": "MEMBER_REPORT",
+        "member_id": "member_f20d2b0a0010b5625d9af570",
+        "channel_id": "C_RP_QA",
+        "thread_id": "1790923094.000004",
+        "message_id": "1790923094.000004",
+        "author_id": "U014",
+        "author_name": "Linh",
+        "author_role": "QA_TUTOR",
+        "timestamp": "2026-10-02T06:38:14.000004Z",
+        "thread_starter_id": "U014",
+        "thread_starter_role": "QA_TUTOR",
+        "reactions": [],
+        "excerpt": "Answer is good but source link is dead — penalize? (task ref RP-3094)"
+      },
+      "m:C_RP_QA:1790923140.000113": {
+        "evidence_id": "m:C_RP_QA:1790923140.000113",
+        "origin": "member_message",
+        "use": "MEMBER_REPORT",
+        "member_id": "member_f20d2b0a0010b5625d9af570",
+        "channel_id": "C_RP_QA",
+        "thread_id": "1790923094.000004",
+        "message_id": "1790923140.000113",
+        "author_id": "U013",
+        "author_name": "Jun",
+        "author_role": "TUTOR",
+        "timestamp": "2026-10-02T06:39:00.000113Z",
+        "thread_starter_id": "U014",
+        "thread_starter_role": "QA_TUTOR",
+        "reactions": [
+          {
+            "name": "thumbsup",
+            "users": [
+              {
+                "id": "U017",
+                "name": "Bea"
+              }
+            ]
+          }
+        ],
+        "excerpt": "That URL fails to load for me too, so I cannot verify the supporting passage yet. If the link is dead, we still need to distinguish a source-access failure from a false factual claim."
+      },
+      "m:C_RP_QA:1790940838.000005": {
+        "evidence_id": "m:C_RP_QA:1790940838.000005",
+        "origin": "member_message",
+        "use": "MEMBER_REPORT",
+        "member_id": "member_0d9923adfceafa1870cc4760",
+        "channel_id": "C_RP_QA",
+        "thread_id": "1790940838.000005",
+        "message_id": "1790940838.000005",
+        "author_id": "U019",
+        "author_name": "Yuki",
+        "author_role": "QA_TUTOR",
+        "timestamp": "2026-10-02T11:33:58.000005Z",
+        "thread_starter_id": "U019",
+        "thread_starter_role": "QA_TUTOR",
+        "reactions": [
+          {
+            "name": "eyes",
+            "users": [
+              {
+                "id": "U001",
+                "name": "Alex"
+              }
+            ]
+          }
+        ],
+        "excerpt": "[QA clarification]\nIssue: What if the answer is otherwise right but its citations go to a 404?\nQuestion: what is the correct handling for this task? (task ref RP-0838)"
+      },
+      "k:response-preference-faq@1.1:3db12f63": {
+        "evidence_id": "k:response-preference-faq@1.1:3db12f63",
+        "origin": "retrieved_source",
+        "use": "CURRENT_GUIDANCE",
+        "citation": {
+          "document_id": "knowledge_8267f474fe0a050bdbcaf6140c458ee11ad457fdc2afe9f79de12a23de8575e9",
+          "version_id": "version_6c9da15dd304e1be3d453ea1de9cbfd1e8cc54f0939ce516dd89cf0457f82a86",
+          "chunk_id": "chunk_3db12f63fa273df6f01b15a6ef7ed7f3",
+          "authoring": "response-preference-faq@1.1",
+          "title": "Response Preference — FAQ (v1.1)",
+          "sections": [
+            "Factual errors"
+          ],
+          "source": {
+            "batch_id": null,
+            "channel_id": null,
+            "manual_key": "response-preference-faq",
+            "message_id": null,
+            "permalink": null,
+            "project_id": "response_preference",
+            "reference": null,
+            "system": "manual",
+            "thread_id": null,
+            "workspace_id": null
+          }
+        },
+        "source_type": "faq",
+        "record_kind": "faq",
+        "applicability": {
+          "state": "CURRENT",
+          "revision_state": "CURRENT",
+          "version_mode": "current",
+          "replaced_by": [],
+          "unverified_supersession": [],
+          "supersedes": [],
+          "enactment": null,
+          "other_revisions": []
+        },
+        "dates": {
+          "source_date": "2026-09-05T13:00:00Z",
+          "basis": "effective_at",
+          "effective_at": "2026-09-05T13:00:00Z",
+          "created_at": null,
+          "valid_until": null,
+          "expired_as_of": false,
+          "reference_time": "2026-10-02T12:00:00Z"
+        },
+        "scope": {
+          "project_id": "response_preference",
+          "batch_id": null,
+          "scope": "project",
+          "batch_relation": "project_wide"
+        },
+        "authority": {
+          "role": "TEAM_LEAD",
+          "actor": "U001",
+          "actor_relation": "RECORD_AUTHORITY",
+          "approval_status": "EXPLICIT_SOURCE_MARKER",
+          "provenance": "synthetic_manual_record"
+        },
+        "authorship": {
+          "author_id": null,
+          "verified": false,
+          "basis": "NO_AUTHOR_RECORDED"
+        },
+        "recorded_states": {
+          "status": "approved",
+          "decision_status": null,
+          "execution_status": null,
+          "outcome_status": null
+        },
+        "upstream_review": null,
+        "excerpt": "## Factual errors\n\n### Q: What counts as a significant factual error?\nAn error that changes the central conclusion or the answer the user would act on. A nonessential background detail with no effect on the recommendation is minor.\n\n### Q: The source link is dead. Should I penalize the factual claim?\nRecord that the citation could not be verified. A failed URL alone does not prove the claim is false. Distinguish access failure from an unsupported attribution or fabricated reference."
+      },
+      "k:response-preference-instructions@1.1:a71c54c7": {
+        "evidence_id": "k:response-preference-instructions@1.1:a71c54c7",
+        "origin": "retrieved_source",
+        "use": "CURRENT_GUIDANCE",
+        "citation": {
+          "document_id": "knowledge_c49652bd3dfc0e71a42597bd9128f922ba1700cc4d7eb83a39cfbaad9a43ed6d",
+          "version_id": "version_497eb858ea77dcb88133f2ba1afd5eaf08d1a1d380c3a5cad663f8f55b7d3c65",
+          "chunk_id": "chunk_a71c54c718421d30748a010a14ec54a6",
+          "authoring": "response-preference-instructions@1.1",
+          "title": "Response Preference — Instructions (v1.1)",
+          "sections": [
+            "Content-quality rubric"
+          ],
+          "source": {
+            "batch_id": null,
+            "channel_id": null,
+            "manual_key": "response-preference-instructions",
+            "message_id": null,
+            "permalink": null,
+            "project_id": "response_preference",
+            "reference": null,
+            "system": "manual",
+            "thread_id": null,
+            "workspace_id": null
+          }
+        },
+        "source_type": "guideline",
+        "record_kind": "guideline",
+        "applicability": {
+          "state": "CURRENT",
+          "revision_state": "CURRENT",
+          "version_mode": "current",
+          "replaced_by": [],
+          "unverified_supersession": [],
+          "supersedes": [],
+          "enactment": null,
+          "other_revisions": []
+        },
+        "dates": {
+          "source_date": "2026-08-30T13:00:00Z",
+          "basis": "effective_at",
+          "effective_at": "2026-08-30T13:00:00Z",
+          "created_at": null,
+          "valid_until": null,
+          "expired_as_of": false,
+          "reference_time": "2026-10-02T12:00:00Z"
+        },
+        "scope": {
+          "project_id": "response_preference",
+          "batch_id": null,
+          "scope": "project",
+          "batch_relation": "project_wide"
+        },
+        "authority": {
+          "role": "TEAM_LEAD",
+          "actor": "U001",
+          "actor_relation": "RECORD_AUTHORITY",
+          "approval_status": "EXPLICIT_SOURCE_MARKER",
+          "provenance": "synthetic_manual_record"
+        },
+        "authorship": {
+          "author_id": null,
+          "verified": false,
+          "basis": "NO_AUTHOR_RECORDED"
+        },
+        "recorded_states": {
+          "status": "approved",
+          "decision_status": null,
+          "execution_status": null,
+          "outcome_status": null
+        },
+        "upstream_review": null,
+        "excerpt": "## Content-quality rubric\nMajor/minor describe task-quality defects and do not determine operational incident severity.\n\n| Dimension | Major defect | Minor defect | Acceptable / no automatic penalty |\n| --- | --- | --- | --- |\n| Factual accuracy | Error changes the central conclusion or actionable answer | Nonessential background error without that effect | Accurate paraphrase or an immaterial stylistic difference |\n| Instruction adherence | Explicit required format/structure is missing | Limited violation of an actual secondary requirement | A stylistic choice that violates no requirement |\n| Citation support | Fabricated reference or materially unsupported attribution | A limited citation-detail error where the source and support remain identifiable | A valid source that supports the claim |\n| Preference | Identify a meaningful benefit; grade underlying defects separately | Do not manufacture a defect to break a tie | No meaningful quality difference supports a tie |\n\nAn inaccessible link needs a verification note; lack of access alone does not establish the error grade of the claim."
+      },
+      "k:response-preference-instructions@1.1:3350bbc0": {
+        "evidence_id": "k:response-preference-instructions@1.1:3350bbc0",
+        "origin": "retrieved_source",
+        "use": "CURRENT_GUIDANCE",
+        "citation": {
+          "document_id": "knowledge_c49652bd3dfc0e71a42597bd9128f922ba1700cc4d7eb83a39cfbaad9a43ed6d",
+          "version_id": "version_497eb858ea77dcb88133f2ba1afd5eaf08d1a1d380c3a5cad663f8f55b7d3c65",
+          "chunk_id": "chunk_3350bbc0864a963b08fc08bb48e80bd1",
+          "authoring": "response-preference-instructions@1.1",
+          "title": "Response Preference — Instructions (v1.1)",
+          "sections": [
+            "Factual errors and citations"
+          ],
+          "source": {
+            "batch_id": null,
+            "channel_id": null,
+            "manual_key": "response-preference-instructions",
+            "message_id": null,
+            "permalink": null,
+            "project_id": "response_preference",
+            "reference": null,
+            "system": "manual",
+            "thread_id": null,
+            "workspace_id": null
+          }
+        },
+        "source_type": "guideline",
+        "record_kind": "guideline",
+        "applicability": {
+          "state": "CURRENT",
+          "revision_state": "CURRENT",
+          "version_mode": "current",
+          "replaced_by": [],
+          "unverified_supersession": [],
+          "supersedes": [],
+          "enactment": null,
+          "other_revisions": []
+        },
+        "dates": {
+          "source_date": "2026-08-30T13:00:00Z",
+          "basis": "effective_at",
+          "effective_at": "2026-08-30T13:00:00Z",
+          "created_at": null,
+          "valid_until": null,
+          "expired_as_of": false,
+          "reference_time": "2026-10-02T12:00:00Z"
+        },
+        "scope": {
+          "project_id": "response_preference",
+          "batch_id": null,
+          "scope": "project",
+          "batch_relation": "project_wide"
+        },
+        "authority": {
+          "role": "TEAM_LEAD",
+          "actor": "U001",
+          "actor_relation": "RECORD_AUTHORITY",
+          "approval_status": "EXPLICIT_SOURCE_MARKER",
+          "provenance": "synthetic_manual_record"
+        },
+        "authorship": {
+          "author_id": null,
+          "verified": false,
+          "basis": "NO_AUTHOR_RECORDED"
+        },
+        "recorded_states": {
+          "status": "approved",
+          "decision_status": null,
+          "execution_status": null,
+          "outcome_status": null
+        },
+        "upstream_review": null,
+        "excerpt": "## Factual errors and citations\n- A factual error is major when it changes the central conclusion or the answer a user would act on.\n- A nonessential background error with no effect on that conclusion is minor.\n- A broken link is an access/verification failure, not proof that the underlying factual claim is false.\n- Distinguish an existing source that does not support the claim from an invented reference."
+      },
+      "k:rp-tie-calibration-post@1.0:4a3c786f": {
+        "evidence_id": "k:rp-tie-calibration-post@1.0:4a3c786f",
+        "origin": "retrieved_source",
+        "use": "ANNOUNCEMENT",
+        "citation": {
+          "document_id": "knowledge_45310f4cdc303d3697b6589b86dfcc3def7cefd37cba2e56b4a20a01bc548841",
+          "version_id": "version_da07d09f6758e77c7a4524b72e54e3ce672614472c8509957745aa892a73961b",
+          "chunk_id": "chunk_4a3c786f92797e2e8738accda1893ab4",
+          "authoring": "rp-tie-calibration-post@1.0",
+          "title": "Tie calibration announcement",
+          "sections": [],
+          "source": {
+            "batch_id": "rp_batch_14",
+            "channel_id": "C_RP_ANNOUNCEMENTS",
+            "manual_key": null,
+            "message_id": "1789567200.700002",
+            "permalink": null,
+            "project_id": "response_preference",
+            "reference": null,
+            "system": "slack",
+            "thread_id": "1789567200.700002",
+            "workspace_id": null
+          }
+        },
+        "source_type": "announcement",
+        "record_kind": "channel_announcement",
+        "applicability": {
+          "state": "CURRENT",
+          "revision_state": "CURRENT",
+          "version_mode": "current",
+          "replaced_by": [],
+          "unverified_supersession": [],
+          "supersedes": [],
+          "enactment": null,
+          "other_revisions": []
+        },
+        "dates": {
+          "source_date": "2026-09-16T14:00:00Z",
+          "basis": "effective_at",
+          "effective_at": "2026-09-16T14:00:00Z",
+          "created_at": "2026-09-16T14:00:00.700002+00:00",
+          "valid_until": null,
+          "expired_as_of": false,
+          "reference_time": "2026-10-02T12:00:00Z"
+        },
+        "scope": {
+          "project_id": "response_preference",
+          "batch_id": "rp_batch_14",
+          "scope": "project",
+          "batch_relation": "other_batch"
+        },
+        "authority": {
+          "role": "TEAM_LEAD",
+          "actor": "U001",
+          "actor_relation": "MESSAGE_AUTHOR",
+          "approval_status": "EXPLICIT_SOURCE_MARKER",
+          "provenance": "synthetic_slack_archive"
+        },
+        "authorship": {
+          "author_id": "U001",
+          "verified": true,
+          "basis": "SLACK_MESSAGE_AUTHOR"
+        },
+        "recorded_states": {
+          "status": "tl_approved",
+          "decision_status": "tl_approved",
+          "execution_status": "posted",
+          "outcome_status": "not_observed"
+        },
+        "upstream_review": null,
+        "excerpt": "[ANNOUNCEMENT posted 2026-09-16T14:00:00Z by TEAM_LEAD (rp_batch_14): not established as handling for this topic until you show it is relevant and gives a directive.]\nPreference batch 14 calibration: choose a tie when neither answer offers a meaningful quality advantage. If choosing A or B, identify the user-facing benefit rather than saying only that it sounds nicer. Keep material factual or instruction-following defects separate. Bring both rationales for disputed pairs to the eight-pair calibration review. This message clarifies the existing criterion; it does not create a new numerical threshold."
+      },
+      "k:response-preference-faq@1.1:4683724f": {
+        "evidence_id": "k:response-preference-faq@1.1:4683724f",
+        "origin": "retrieved_source",
+        "use": "CURRENT_GUIDANCE",
+        "citation": {
+          "document_id": "knowledge_8267f474fe0a050bdbcaf6140c458ee11ad457fdc2afe9f79de12a23de8575e9",
+          "version_id": "version_6c9da15dd304e1be3d453ea1de9cbfd1e8cc54f0939ce516dd89cf0457f82a86",
+          "chunk_id": "chunk_4683724f24eb1ddb53c613284c5f330b",
+          "authoring": "response-preference-faq@1.1",
+          "title": "Response Preference — FAQ (v1.1)",
+          "sections": [
+            "Ties and preferences"
+          ],
+          "source": {
+            "batch_id": null,
+            "channel_id": null,
+            "manual_key": "response-preference-faq",
+            "message_id": null,
+            "permalink": null,
+            "project_id": "response_preference",
+            "reference": null,
+            "system": "manual",
+            "thread_id": null,
+            "workspace_id": null
+          }
+        },
+        "source_type": "faq",
+        "record_kind": "faq",
+        "applicability": {
+          "state": "CURRENT",
+          "revision_state": "CURRENT",
+          "version_mode": "current",
+          "replaced_by": [],
+          "unverified_supersession": [],
+          "supersedes": [],
+          "enactment": null,
+          "other_revisions": []
+        },
+        "dates": {
+          "source_date": "2026-09-05T13:00:00Z",
+          "basis": "effective_at",
+          "effective_at": "2026-09-05T13:00:00Z",
+          "created_at": null,
+          "valid_until": null,
+          "expired_as_of": false,
+          "reference_time": "2026-10-02T12:00:00Z"
+        },
+        "scope": {
+          "project_id": "response_preference",
+          "batch_id": null,
+          "scope": "project",
+          "batch_relation": "project_wide"
+        },
+        "authority": {
+          "role": "TEAM_LEAD",
+          "actor": "U001",
+          "actor_relation": "RECORD_AUTHORITY",
+          "approval_status": "EXPLICIT_SOURCE_MARKER",
+          "provenance": "synthetic_manual_record"
+        },
+        "authorship": {
+          "author_id": null,
+          "verified": false,
+          "basis": "NO_AUTHOR_RECORDED"
+        },
+        "recorded_states": {
+          "status": "approved",
+          "decision_status": null,
+          "execution_status": null,
+          "outcome_status": null
+        },
+        "upstream_review": null,
+        "excerpt": "## Ties and preferences\n\n### Q: How much improvement is needed to avoid a tie?\nThe difference must offer a meaningful benefit to the user. Cosmetic phrasing alone usually does not. Explain that benefit; otherwise a tie can be appropriate.\n\n### Q: QA is reversing ties on similar pairs. What should I do?\nShare the pairs, relevant prompt constraints and both rationales for calibration. Check whether the cases are actually comparable. An answer to one pair should not be generalized without matching its scope."
+      }
+    },
+    "card": {
+      "contract_version": "agent3-advice-card-v4",
+      "record_type": "ADVICE_CARD",
+      "card_id": "card_38db5d6ad2fde24fa4d3b8d621110159",
+      "project_id": "response_preference",
+      "topic_name": "Dead citation links vs factual correctness",
+      "card_line": "NEEDS_REVIEW",
+      "summary": "Two QA tutors and a tutor ask how to handle otherwise correct answers with dead citation links, with handling questions still unanswered in three threads. Current guidance requires a verification note and says failed access alone does not establish that a claim is false or determine its error grade.",
+      "severity": {
+        "level": "MEDIUM",
+        "assessment_status": "ASSESSED",
+        "rubric_version": "severity-rubric-v3-semantic-signals",
+        "rubric_content_sha256": "eccaa31a2ab84a0aa7c005216a92fc39681e1dd10107117344948235a76673f4",
+        "rubric_project_id": null,
+        "rubric_scope": "SHARED_DEFAULT",
+        "rationale": "Two QA tutors and a tutor repeatedly question how dead links affect scoring. That uncertainty could change labeling decisions, but the messages do not establish broad disruption or incorrect grades already applied.",
+        "matched_signals": [
+          {
+            "level": "MEDIUM",
+            "signal_index": 0,
+            "signal_text": "Recurring confusion about the same rule, tool behavior, or scoring criterion that suggests meaningful workflow or labeling impact",
+            "support": "Two QA tutors and a tutor ask across four threads whether otherwise correct answers with dead citations should be penalized or how they should be handled.",
+            "evidence": [
+              {
+                "kind": "slack_message",
+                "project_id": "response_preference",
+                "batch_id": "rp_batch_15",
+                "scope": "project",
+                "channel_id": "C_RP_GENERAL",
+                "thread_id": "1790869452.000006",
+                "message_id": "1790869452.000006",
+                "document_id": null,
+                "version_id": null,
+                "authoring_document_id": null,
+                "authoring_version": null,
+                "section": null,
+                "chunk_id": null,
+                "candidate_group_id": null,
+                "member_id": "member_db5c94522bcefd45ebceda5d",
+                "artifact": null,
+                "artifact_sha256": null,
+                "quote": null,
+                "note": "m:C_RP_GENERAL:1790869452.000006"
+              },
+              {
+                "kind": "slack_message",
+                "project_id": "response_preference",
+                "batch_id": "rp_batch_15",
+                "scope": "project",
+                "channel_id": "C_RP_GENERAL",
+                "thread_id": "1790897883.000002",
+                "message_id": "1790897883.000002",
+                "document_id": null,
+                "version_id": null,
+                "authoring_document_id": null,
+                "authoring_version": null,
+                "section": null,
+                "chunk_id": null,
+                "candidate_group_id": null,
+                "member_id": "member_c65ff103e0472891ea361dce",
+                "artifact": null,
+                "artifact_sha256": null,
+                "quote": null,
+                "note": "m:C_RP_GENERAL:1790897883.000002"
+              },
+              {
+                "kind": "slack_message",
+                "project_id": "response_preference",
+                "batch_id": "rp_batch_15",
+                "scope": "project",
+                "channel_id": "C_RP_QA",
+                "thread_id": "1790923094.000004",
+                "message_id": "1790923094.000004",
+                "document_id": null,
+                "version_id": null,
+                "authoring_document_id": null,
+                "authoring_version": null,
+                "section": null,
+                "chunk_id": null,
+                "candidate_group_id": null,
+                "member_id": "member_f20d2b0a0010b5625d9af570",
+                "artifact": null,
+                "artifact_sha256": null,
+                "quote": null,
+                "note": "m:C_RP_QA:1790923094.000004"
+              },
+              {
+                "kind": "slack_message",
+                "project_id": "response_preference",
+                "batch_id": "rp_batch_15",
+                "scope": "project",
+                "channel_id": "C_RP_QA",
+                "thread_id": "1790940838.000005",
+                "message_id": "1790940838.000005",
+                "document_id": null,
+                "version_id": null,
+                "authoring_document_id": null,
+                "authoring_version": null,
+                "section": null,
+                "chunk_id": null,
+                "candidate_group_id": null,
+                "member_id": "member_0d9923adfceafa1870cc4760",
+                "artifact": null,
+                "artifact_sha256": null,
+                "quote": null,
+                "note": "m:C_RP_QA:1790940838.000005"
+              }
+            ]
+          }
+        ],
+        "evidence": [
+          {
+            "kind": "slack_message",
+            "project_id": "response_preference",
+            "batch_id": "rp_batch_15",
+            "scope": "project",
+            "channel_id": "C_RP_GENERAL",
+            "thread_id": "1790869452.000006",
+            "message_id": "1790869452.000006",
+            "document_id": null,
+            "version_id": null,
+            "authoring_document_id": null,
+            "authoring_version": null,
+            "section": null,
+            "chunk_id": null,
+            "candidate_group_id": null,
+            "member_id": "member_db5c94522bcefd45ebceda5d",
+            "artifact": null,
+            "artifact_sha256": null,
+            "quote": null,
+            "note": "m:C_RP_GENERAL:1790869452.000006"
+          },
+          {
+            "kind": "slack_message",
+            "project_id": "response_preference",
+            "batch_id": "rp_batch_15",
+            "scope": "project",
+            "channel_id": "C_RP_GENERAL",
+            "thread_id": "1790897883.000002",
+            "message_id": "1790897883.000002",
+            "document_id": null,
+            "version_id": null,
+            "authoring_document_id": null,
+            "authoring_version": null,
+            "section": null,
+            "chunk_id": null,
+            "candidate_group_id": null,
+            "member_id": "member_c65ff103e0472891ea361dce",
+            "artifact": null,
+            "artifact_sha256": null,
+            "quote": null,
+            "note": "m:C_RP_GENERAL:1790897883.000002"
+          },
+          {
+            "kind": "slack_message",
+            "project_id": "response_preference",
+            "batch_id": "rp_batch_15",
+            "scope": "project",
+            "channel_id": "C_RP_QA",
+            "thread_id": "1790923094.000004",
+            "message_id": "1790923094.000004",
+            "document_id": null,
+            "version_id": null,
+            "authoring_document_id": null,
+            "authoring_version": null,
+            "section": null,
+            "chunk_id": null,
+            "candidate_group_id": null,
+            "member_id": "member_f20d2b0a0010b5625d9af570",
+            "artifact": null,
+            "artifact_sha256": null,
+            "quote": null,
+            "note": "m:C_RP_QA:1790923094.000004"
+          },
+          {
+            "kind": "slack_message",
+            "project_id": "response_preference",
+            "batch_id": "rp_batch_15",
+            "scope": "project",
+            "channel_id": "C_RP_QA",
+            "thread_id": "1790940838.000005",
+            "message_id": "1790940838.000005",
+            "document_id": null,
+            "version_id": null,
+            "authoring_document_id": null,
+            "authoring_version": null,
+            "section": null,
+            "chunk_id": null,
+            "candidate_group_id": null,
+            "member_id": "member_0d9923adfceafa1870cc4760",
+            "artifact": null,
+            "artifact_sha256": null,
+            "quote": null,
+            "note": "m:C_RP_QA:1790940838.000005"
+          }
+        ],
+        "occurrence": {
+          "affected_reporters": {
+            "status": "LOWER_BOUND",
+            "count": 2,
+            "ids": [
+              "U014",
+              "U013"
+            ],
+            "basis": "Distinct authors whose own cited message reports the problem; other participants are not counted.",
+            "evidence": [
+              {
+                "kind": "slack_message",
+                "project_id": "response_preference",
+                "batch_id": "rp_batch_15",
+                "scope": "project",
+                "channel_id": "C_RP_QA",
+                "thread_id": "1790923094.000004",
+                "message_id": "1790923094.000004",
+                "document_id": null,
+                "version_id": null,
+                "authoring_document_id": null,
+                "authoring_version": null,
+                "section": null,
+                "chunk_id": null,
+                "candidate_group_id": null,
+                "member_id": "member_f20d2b0a0010b5625d9af570",
+                "artifact": null,
+                "artifact_sha256": null,
+                "quote": null,
+                "note": "m:C_RP_QA:1790923094.000004"
+              },
+              {
+                "kind": "slack_message",
+                "project_id": "response_preference",
+                "batch_id": "rp_batch_15",
+                "scope": "project",
+                "channel_id": "C_RP_QA",
+                "thread_id": "1790923094.000004",
+                "message_id": "1790923140.000113",
+                "document_id": null,
+                "version_id": null,
+                "authoring_document_id": null,
+                "authoring_version": null,
+                "section": null,
+                "chunk_id": null,
+                "candidate_group_id": null,
+                "member_id": "member_f20d2b0a0010b5625d9af570",
+                "artifact": null,
+                "artifact_sha256": null,
+                "quote": null,
+                "note": "m:C_RP_QA:1790923140.000113"
+              }
+            ]
+          },
+          "affected_tasks": {
+            "status": "UNKNOWN",
+            "count": null,
+            "ids": [],
+            "basis": null,
+            "evidence": []
+          },
+          "relevant_threads": [
+            {
+              "project_id": "response_preference",
+              "batch_id": "rp_batch_15",
+              "channel_id": "C_RP_GENERAL",
+              "thread_id": "1790869452.000006",
+              "member_id": "member_db5c94522bcefd45ebceda5d"
+            },
+            {
+              "project_id": "response_preference",
+              "batch_id": "rp_batch_15",
+              "channel_id": "C_RP_GENERAL",
+              "thread_id": "1790897883.000002",
+              "member_id": "member_c65ff103e0472891ea361dce"
+            },
+            {
+              "project_id": "response_preference",
+              "batch_id": "rp_batch_15",
+              "channel_id": "C_RP_QA",
+              "thread_id": "1790923094.000004",
+              "member_id": "member_f20d2b0a0010b5625d9af570"
+            },
+            {
+              "project_id": "response_preference",
+              "batch_id": "rp_batch_15",
+              "channel_id": "C_RP_QA",
+              "thread_id": "1790940838.000005",
+              "member_id": "member_0d9923adfceafa1870cc4760"
+            }
+          ],
+          "reporting_window": {
+            "start": "2026-10-01T15:44:12.000006+00:00",
+            "end": "2026-10-02T11:33:58.000005+00:00"
+          },
+          "historical_recurrence": {
+            "status": "NOT_CHECKED",
+            "sources": [],
+            "event_series_ids": []
+          },
+          "known_denominator": null,
+          "structural": {
+            "threads": 4,
+            "messages": 7,
+            "distinct_participants": 6,
+            "duplicate_threads_ignored": 0,
+            "duplicate_messages_ignored": 0,
+            "computed_from": "topic member threads (original Slack messages)",
+            "participants_are_not_affected_reporters": true
+          },
+          "semantic_identification": "ASSESSED"
+        },
+        "inherited_from": {
+          "level": "UNKNOWN",
+          "assessment_status": "UNASSESSED",
+          "assessment_deferred_to": "AGENT3",
+          "reason": "Agent 2 performs taxonomy only."
+        }
+      },
+      "severity_is_provisional": false,
+      "resolution_status": "MIXED",
+      "recommended_action": {
+        "action_type": "POST_ALIGNMENT",
+        "draft_text": "For this batch, please follow the current FAQ and instructions when a citation link is dead:\n- Record that the citation could not be verified.\n- Do not conclude that the factual claim is false solely because the URL fails; lack of access alone does not establish its error grade.\n- Distinguish access failure from an existing source that does not support the claim, an unsupported attribution, or an invented reference.\nThis is a reminder of the current guidance, not a new penalty rule.",
+        "scope_note": "This reminder addresses access failure alone; it does not assign final grades to individual tasks or treat unsupported attribution and fabricated references as mere access failures.",
+        "label": "Post a reminder",
+        "instruction": "Post a reminder that dead links require a verification note, but failed access alone does not establish factual falsity or an error grade.",
+        "rationale": "The current FAQ and instructions already answer the repeated general handling question. A reminder applies that guidance without creating a new penalty rule.",
+        "targets": [],
+        "essential_premise_ids": [
+          "claim:c8",
+          "claim:c9",
+          "claim:c10"
+        ],
+        "source": "DRAFT"
+      },
+      "reasoning": "What the evidence shows: A QA tutor asks whether to penalize an otherwise good answer because its source link is dead. For the example in the QA tutor's thread, the team lead instructs the QA tutor to record that the citation cannot be verified and not conclude that the factual claim is false solely because the URL fails. A tutor asks how to handle an otherwise correct answer whose citations lead to a 404. In the tutor's thread, a QA tutor asks whether the issue is a dead link or a source contradicting the claim and says access failure must be distinguished from factual falsity. A QA tutor reports a good answer with a dead source link on RP-3094 and asks whether to penalize it. In the RP-3094 thread, a tutor reports that the URL also fails to load for them and that they cannot yet verify the supporting passage; the tutor distinguishes access failure from a false factual claim. A QA tutor asks for correct handling on RP-0838 when an otherwise correct answer has citations leading to a 404. The current project FAQ requires recording that a dead-link citation could not be verified, says a failed URL alone does not prove the claim false, and distinguishes access failure from unsupported attribution or a fabricated reference. The current project instructions require a verification note for an inaccessible link and say lack of access alone does not establish the claim's error grade; they distinguish a source that does not support a claim from an invented reference. The supplied threads leave the tutor's handling question and the QA tutors' task-specific questions for RP-3094 and RP-0838 unanswered: the replies seek a distinction or report failed verification rather than give a handling decision. Thread status, read from each thread's own messages: resolved in thread ×1, unresolved ×3. Agent 1's earlier labels (an input, not evidence): resolved in thread ×1, unresolved ×3; 1 of 4 were not verified by Agent 1.",
+      "supporting_sources": [
+        {
+          "kind": "knowledge_source",
+          "project_id": "response_preference",
+          "batch_id": null,
+          "scope": "project",
+          "channel_id": null,
+          "thread_id": null,
+          "message_id": null,
+          "document_id": "knowledge_8267f474fe0a050bdbcaf6140c458ee11ad457fdc2afe9f79de12a23de8575e9",
+          "version_id": "version_6c9da15dd304e1be3d453ea1de9cbfd1e8cc54f0939ce516dd89cf0457f82a86",
+          "authoring_document_id": "response-preference-faq",
+          "authoring_version": "1.1",
+          "section": "Factual errors",
+          "chunk_id": "chunk_3db12f63fa273df6f01b15a6ef7ed7f3",
+          "candidate_group_id": null,
+          "member_id": null,
+          "artifact": null,
+          "artifact_sha256": null,
+          "quote": null,
+          "note": "k:response-preference-faq@1.1:3db12f63 (CURRENT_GUIDANCE; CURRENT)"
+        },
+        {
+          "kind": "knowledge_source",
+          "project_id": "response_preference",
+          "batch_id": null,
+          "scope": "project",
+          "channel_id": null,
+          "thread_id": null,
+          "message_id": null,
+          "document_id": "knowledge_c49652bd3dfc0e71a42597bd9128f922ba1700cc4d7eb83a39cfbaad9a43ed6d",
+          "version_id": "version_497eb858ea77dcb88133f2ba1afd5eaf08d1a1d380c3a5cad663f8f55b7d3c65",
+          "authoring_document_id": "response-preference-instructions",
+          "authoring_version": "1.1",
+          "section": "Content-quality rubric",
+          "chunk_id": "chunk_a71c54c718421d30748a010a14ec54a6",
+          "candidate_group_id": null,
+          "member_id": null,
+          "artifact": null,
+          "artifact_sha256": null,
+          "quote": null,
+          "note": "k:response-preference-instructions@1.1:a71c54c7 (CURRENT_GUIDANCE; CURRENT)"
+        },
+        {
+          "kind": "knowledge_source",
+          "project_id": "response_preference",
+          "batch_id": null,
+          "scope": "project",
+          "channel_id": null,
+          "thread_id": null,
+          "message_id": null,
+          "document_id": "knowledge_c49652bd3dfc0e71a42597bd9128f922ba1700cc4d7eb83a39cfbaad9a43ed6d",
+          "version_id": "version_497eb858ea77dcb88133f2ba1afd5eaf08d1a1d380c3a5cad663f8f55b7d3c65",
+          "authoring_document_id": "response-preference-instructions",
+          "authoring_version": "1.1",
+          "section": "Factual errors and citations",
+          "chunk_id": "chunk_3350bbc0864a963b08fc08bb48e80bd1",
+          "candidate_group_id": null,
+          "member_id": null,
+          "artifact": null,
+          "artifact_sha256": null,
+          "quote": null,
+          "note": "k:response-preference-instructions@1.1:3350bbc0 (CURRENT_GUIDANCE; CURRENT)"
+        },
+        {
+          "kind": "slack_message",
+          "project_id": "response_preference",
+          "batch_id": "rp_batch_15",
+          "scope": "project",
+          "channel_id": "C_RP_GENERAL",
+          "thread_id": "1790869452.000006",
+          "message_id": "1790869452.000006",
+          "document_id": null,
+          "version_id": null,
+          "authoring_document_id": null,
+          "authoring_version": null,
+          "section": null,
+          "chunk_id": null,
+          "candidate_group_id": null,
+          "member_id": "member_db5c94522bcefd45ebceda5d",
+          "artifact": null,
+          "artifact_sha256": null,
+          "quote": null,
+          "note": "m:C_RP_GENERAL:1790869452.000006"
+        },
+        {
+          "kind": "slack_message",
+          "project_id": "response_preference",
+          "batch_id": "rp_batch_15",
+          "scope": "project",
+          "channel_id": "C_RP_GENERAL",
+          "thread_id": "1790869452.000006",
+          "message_id": "1790869502.000113",
+          "document_id": null,
+          "version_id": null,
+          "authoring_document_id": null,
+          "authoring_version": null,
+          "section": null,
+          "chunk_id": null,
+          "candidate_group_id": null,
+          "member_id": "member_db5c94522bcefd45ebceda5d",
+          "artifact": null,
+          "artifact_sha256": null,
+          "quote": null,
+          "note": "m:C_RP_GENERAL:1790869502.000113"
+        },
+        {
+          "kind": "slack_message",
+          "project_id": "response_preference",
+          "batch_id": "rp_batch_15",
+          "scope": "project",
+          "channel_id": "C_RP_GENERAL",
+          "thread_id": "1790897883.000002",
+          "message_id": "1790897883.000002",
+          "document_id": null,
+          "version_id": null,
+          "authoring_document_id": null,
+          "authoring_version": null,
+          "section": null,
+          "chunk_id": null,
+          "candidate_group_id": null,
+          "member_id": "member_c65ff103e0472891ea361dce",
+          "artifact": null,
+          "artifact_sha256": null,
+          "quote": null,
+          "note": "m:C_RP_GENERAL:1790897883.000002"
+        },
+        {
+          "kind": "slack_message",
+          "project_id": "response_preference",
+          "batch_id": "rp_batch_15",
+          "scope": "project",
+          "channel_id": "C_RP_GENERAL",
+          "thread_id": "1790897883.000002",
+          "message_id": "1790897931.000113",
+          "document_id": null,
+          "version_id": null,
+          "authoring_document_id": null,
+          "authoring_version": null,
+          "section": null,
+          "chunk_id": null,
+          "candidate_group_id": null,
+          "member_id": "member_c65ff103e0472891ea361dce",
+          "artifact": null,
+          "artifact_sha256": null,
+          "quote": null,
+          "note": "m:C_RP_GENERAL:1790897931.000113"
+        },
+        {
+          "kind": "slack_message",
+          "project_id": "response_preference",
+          "batch_id": "rp_batch_15",
+          "scope": "project",
+          "channel_id": "C_RP_QA",
+          "thread_id": "1790923094.000004",
+          "message_id": "1790923094.000004",
+          "document_id": null,
+          "version_id": null,
+          "authoring_document_id": null,
+          "authoring_version": null,
+          "section": null,
+          "chunk_id": null,
+          "candidate_group_id": null,
+          "member_id": "member_f20d2b0a0010b5625d9af570",
+          "artifact": null,
+          "artifact_sha256": null,
+          "quote": null,
+          "note": "m:C_RP_QA:1790923094.000004"
+        },
+        {
+          "kind": "slack_message",
+          "project_id": "response_preference",
+          "batch_id": "rp_batch_15",
+          "scope": "project",
+          "channel_id": "C_RP_QA",
+          "thread_id": "1790923094.000004",
+          "message_id": "1790923140.000113",
+          "document_id": null,
+          "version_id": null,
+          "authoring_document_id": null,
+          "authoring_version": null,
+          "section": null,
+          "chunk_id": null,
+          "candidate_group_id": null,
+          "member_id": "member_f20d2b0a0010b5625d9af570",
+          "artifact": null,
+          "artifact_sha256": null,
+          "quote": null,
+          "note": "m:C_RP_QA:1790923140.000113"
+        },
+        {
+          "kind": "slack_message",
+          "project_id": "response_preference",
+          "batch_id": "rp_batch_15",
+          "scope": "project",
+          "channel_id": "C_RP_QA",
+          "thread_id": "1790940838.000005",
+          "message_id": "1790940838.000005",
+          "document_id": null,
+          "version_id": null,
+          "authoring_document_id": null,
+          "authoring_version": null,
+          "section": null,
+          "chunk_id": null,
+          "candidate_group_id": null,
+          "member_id": "member_0d9923adfceafa1870cc4760",
+          "artifact": null,
+          "artifact_sha256": null,
+          "quote": null,
+          "note": "m:C_RP_QA:1790940838.000005"
+        }
+      ],
+      "related_threads": [
+        {
+          "project_id": "response_preference",
+          "batch_id": "rp_batch_15",
+          "channel_id": "C_RP_GENERAL",
+          "thread_id": "1790869452.000006",
+          "member_id": "member_db5c94522bcefd45ebceda5d",
+          "permalink": null,
+          "display_reference": "1790869452.000006",
+          "label": "#response-preference-general, 2026-10-01, started by a QA tutor: \"Answer is good but source link is dead — penalize?\"",
+          "opening_text": "Answer is good but source link is dead — penalize?"
+        },
+        {
+          "project_id": "response_preference",
+          "batch_id": "rp_batch_15",
+          "channel_id": "C_RP_GENERAL",
+          "thread_id": "1790897883.000002",
+          "member_id": "member_c65ff103e0472891ea361dce",
+          "permalink": null,
+          "display_reference": "1790897883.000002",
+          "label": "#response-preference-general, 2026-10-01, started by a tutor: \"What if the answer is otherwise right but its citations go to a 404?\"",
+          "opening_text": "What if the answer is otherwise right but its citations go to a 404?"
+        },
+        {
+          "project_id": "response_preference",
+          "batch_id": "rp_batch_15",
+          "channel_id": "C_RP_QA",
+          "thread_id": "1790923094.000004",
+          "member_id": "member_f20d2b0a0010b5625d9af570",
+          "permalink": null,
+          "display_reference": "1790923094.000004",
+          "label": "#response-preference-qa, 2026-10-02, started by a QA tutor: \"Answer is good but source link is dead — penalize?\"",
+          "opening_text": "Answer is good but source link is dead — penalize? (task ref RP-3094)"
+        },
+        {
+          "project_id": "response_preference",
+          "batch_id": "rp_batch_15",
+          "channel_id": "C_RP_QA",
+          "thread_id": "1790940838.000005",
+          "member_id": "member_0d9923adfceafa1870cc4760",
+          "permalink": null,
+          "display_reference": "1790940838.000005",
+          "label": "#response-preference-qa, 2026-10-02, started by a QA tutor: \"Issue: What if the answer is otherwise right but its citations go to a 404?\"",
+          "opening_text": "[QA clarification]\nIssue: What if the answer is otherwise right but its citations go to a 404?\nQuestion: what is the correct handling for this task? (task ref RP-0838)"
+        }
+      ],
+      "confidence": 0.93,
+      "confidence_band": "HIGH",
+      "needs_review_reasons": [
+        {
+          "code": "INHERITED_FLAG",
+          "detail": "Upstream obligations remain open: inherited_agent1_review x1",
+          "obligation_ids": [],
+          "evidence": []
+        }
+      ],
+      "inherited_flags": [
+        {
+          "origin": "agent1",
+          "kind": "inherited_agent1_review",
+          "candidate_group_id": "cluster_2d814c8e21470de9",
+          "obligation_id": null,
+          "member_ids": [
+            "member_0d9923adfceafa1870cc4760"
+          ],
+          "detail": "Source analysis unavailable or invalid: ValueError: Reply coverage mismatch. Missing: []. Unknown: ['1790940838.000005']."
+        }
+      ],
+      "checks": {
+        "grounding": "PASSED",
+        "temporal_conflict": "NONE_FOUND",
+        "open_confirmation": "NONE"
+      },
+      "lineage": {
+        "agent3_run_id": "agent3overnight_bdc099a76ee76bdc391050df2aded225",
+        "handoff_contract": "agent2-taxonomy-handoff-v2",
+        "agent2_export_sha256": "6f1f56bf5a5b1f02287d7ac958dc205c05cc9e0ea3e6d5f3fdd7279da0c9e1e7",
+        "agent2_schema_version": 8,
+        "candidate_group_id": "cluster_2d814c8e21470de9",
+        "topic_id": "cluster_2d814c8e21470de9/topic_1",
+        "member_ids": [
+          "member_db5c94522bcefd45ebceda5d",
+          "member_c65ff103e0472891ea361dce",
+          "member_f20d2b0a0010b5625d9af570",
+          "member_0d9923adfceafa1870cc4760"
+        ],
+        "project_id": "response_preference",
+        "batch_id": "rp_batch_15"
+      },
+      "review_notes": [
+        "1 earlier review flag is still open on these threads."
+      ],
+      "details": [
+        "In the earlier QA tutor's thread, the team lead instructed the QA tutor to record the citation as unverifiable and not infer factual falsity solely from the failed URL.",
+        "In the tutor's thread, a QA tutor asked whether the source was inaccessible or contradicted the claim; the supplied replies do not answer that question.",
+        "For RP-3094, a QA tutor asks whether to penalize the answer, and a tutor reports that the URL also fails to load for them, leaving the supporting passage unverified.",
+        "A QA tutor's latest question asks for correct handling on RP-0838 and has no substantive reply in the supplied thread."
+      ],
+      "next_step": {
+        "status": "ACTION_RECOMMENDED",
+        "rationale": "The current FAQ and instructions already answer the repeated general handling question. A reminder applies that guidance without creating a new penalty rule.",
+        "explanation": null
+      }
+    },
+    "review_items": [
+      {
+        "contract_version": "agent3-model-review-item-v1",
+        "record_type": "MODEL_REVIEW_ITEM",
+        "item_id": "review_3c836c7b5d8886f98b7f50266c7b1ccd",
+        "origin": "agent1",
+        "kind": "inherited_agent1_review",
+        "project_id": "response_preference",
+        "batch_id": "rp_batch_15",
+        "candidate_group_id": "cluster_2d814c8e21470de9",
+        "topic_id": "cluster_2d814c8e21470de9/topic_1",
+        "member_ids": [
+          "member_0d9923adfceafa1870cc4760"
+        ],
+        "obligation_id": null,
+        "reason": "Source analysis unavailable or invalid: ValueError: Reply coverage mismatch. Missing: []. Unknown: ['1790940838.000005'].",
+        "source_obligation": {
+          "origin": "agent1",
+          "member_id": "member_0d9923adfceafa1870cc4760",
+          "project_id": "response_preference",
+          "batch_id": "rp_batch_15",
+          "channel_id": "C_RP_QA",
+          "thread_id": "1790940838.000005",
+          "candidate_group_id": "cluster_2d814c8e21470de9",
+          "candidate_sha256": "f89e95cb08c14fb37c79b69b783a0d01a20697236a1416515ce27fec1a1bc981",
+          "source_sha256": "b8d35709ddb5231d8a9091d0781b595ab94e93495ce04eceff35a7a7e7a999d0",
+          "agent1_record": {
+            "project_id": "response_preference",
+            "batch_id": "rp_batch_15",
+            "channel_id": "C_RP_QA",
+            "thread_id": "1790940838.000005",
+            "language": null,
+            "model": "openai/gpt-4o-mini-2024-07-18",
+            "run_config_sha256": "870eedfaf3fa8cbd76fa560cac924fedefdab58ed91ff72ccac0a6e4ca14b251",
+            "handoff_version": 1,
+            "verification_origin": "bounded_verification",
+            "input_sha256": "b8d35709ddb5231d8a9091d0781b595ab94e93495ce04eceff35a7a7e7a999d0",
+            "candidate_sha256": "f89e95cb08c14fb37c79b69b783a0d01a20697236a1416515ce27fec1a1bc981",
+            "source_message_ids": [
+              "1790940838.000005"
+            ],
+            "interpretation": {
+              "thread_id": "1790940838.000005",
+              "summary": "Yuki, a QA_TUTOR, seeks clarification on how to handle a situation where an answer is correct but its citations lead to a 404 error. The specific task reference is RP-0838.",
+              "central_question": "What is the correct handling for this task? (task ref RP-0838)",
+              "resolution_state": "UNRESOLVED",
+              "authoritative_response_present": false,
+              "authority_evidence_message_ids": [],
+              "resolution_rationale": "The thread does not provide a substantive answer or relevant conclusion regarding the handling of the situation described. There is only a request for clarification without any follow-up responses that address the question.",
+              "confidence": 0.9
+            },
+            "automated_verification_status": "NEEDS_REVIEW",
+            "verification_status": "NEEDS_REVIEW",
+            "review_required": true,
+            "revision_count": 0,
+            "provisional_fields": [
+              "summary",
+              "central_question",
+              "resolution_state",
+              "resolution_rationale",
+              "authoritative_response_present",
+              "authority_evidence_message_ids",
+              "confidence"
+            ],
+            "review_reason": "Source analysis unavailable or invalid: ValueError: Reply coverage mismatch. Missing: []. Unknown: ['1790940838.000005'].",
+            "review_reasons": [
+              "Source analysis unavailable or invalid: ValueError: Reply coverage mismatch. Missing: []. Unknown: ['1790940838.000005']."
+            ],
+            "review_findings": [
+              {
+                "category": "EVIDENCE",
+                "explanation": "Source analysis unavailable or invalid: ValueError: Reply coverage mismatch. Missing: []. Unknown: ['1790940838.000005'].",
+                "evidence_message_ids": [],
+                "evidence_quotes": [],
+                "disputed_fields": [
+                  "summary",
+                  "central_question",
+                  "resolution_state",
+                  "resolution_rationale",
+                  "authoritative_response_present",
+                  "authority_evidence_message_ids",
+                  "confidence"
+                ],
+                "origin": "automated_verification"
+              }
+            ],
+            "content_reviews": [],
+            "review_applicability": [],
+            "lineage": {
+              "baseline_file": "data\\experiments\\threadsense_full_v1\\stages\\agent1_interpret\\agent1_interpretations_v1\\interpretations.json",
+              "baseline_record_sha256": "b71ec54cdce4480011e9570519d9f080597178d2cc0099bd4ef4a719b84b563e",
+              "baseline_run_config_sha256": "b4a7353aace8119bb25073b3dbab05388e6036aa312a1f74d38f4b0268fbb7b8",
+              "baseline_model": "openai/gpt-4o-mini-2024-07-18",
+              "baseline_created_at": "2026-11-05T16:38:19.336454+00:00",
+              "source_file": "sources/b8d35709ddb5231d8a9091d0781b595ab94e93495ce04eceff35a7a7e7a999d0.json",
+              "verification_file": "records/158077dec51f5d4500c6b617594ea5a5b329cdfccac563d095aaebcdf8256e97/result.json",
+              "effective_attempt": "original",
+              "original_candidate_sha256": "f89e95cb08c14fb37c79b69b783a0d01a20697236a1416515ce27fec1a1bc981",
+              "revised_candidate_sha256": null,
+              "effective_candidate_sha256": "f89e95cb08c14fb37c79b69b783a0d01a20697236a1416515ce27fec1a1bc981",
+              "original_candidate_reference": "records/158077dec51f5d4500c6b617594ea5a5b329cdfccac563d095aaebcdf8256e97/result.json#/result/original_interpretation",
+              "revised_candidate_reference": null,
+              "audit_history_reference": "records/158077dec51f5d4500c6b617594ea5a5b329cdfccac563d095aaebcdf8256e97/result.json#/result/passes"
+            }
+          },
+          "agent1_export_file": "D:\\Christie\\2026_AgenticAI\\threadsense\\data\\experiments\\threadsense_full_v1\\stages\\agent1_verify\\agent1_verified_v2\\interpretations.json",
+          "agent1_export_sha256": "0629a7346373addf833a86ba1caff676a537e543cc26954a9836fd6610485270",
+          "agent1_lineage_base": "D:\\Christie\\2026_AgenticAI\\threadsense\\data\\experiments\\threadsense_full_v1\\stages\\agent1_verify\\agent1_verified_v2"
+        },
+        "related_card_ids": [
+          "card_38db5d6ad2fde24fa4d3b8d621110159"
+        ],
+        "actions": []
+      }
+    ],
+    "coverage": {
+      "group_members_outside_this_card": [],
+      "uncarried_obligations": []
+    },
+    "budget": {
+      "consumed": {
+        "retrieval_calls": 1,
+        "model_calls": 2
+      },
+      "limits": {
+        "model_calls_per_topic": 4,
+        "model_calls_total": 28,
+        "retrieval_calls_per_topic": 6,
+        "retrieval_calls_total": 42
+      }
+    },
+    "diagnostics": []
+  }
+}

@@ -1,0 +1,52 @@
+{
+  "generated_at": "2026-11-05",
+  "run": "data/experiments/threadsense_full_v1",
+  "label": "FRESH_LIVE",
+  "accounting": {
+    "source_threads": 201,
+    "announcements_routed_to_knowledge": 23,
+    "discussion_threads_to_agent1": 178,
+    "agent1_accepted": 177,
+    "agent1_rejected_unfinished": 1,
+    "agent1_verification": {"VERIFIED": 79, "CORRECTED": 61, "NEEDS_REVIEW": 37, "retained": 177, "unprocessed": 0},
+    "grouping": {"threads": 177, "clusters": 76, "singletons": 27, "review_members": 37},
+    "agent2": {"groups_consolidated": 76, "unprocessed_groups": 0, "retained_identities": 177, "inherited_review_obligations": 37, "review_groups": 28},
+    "agent3": {"work_items": 81, "cards": 81, "members_on_cards": 177, "review_queue_items": 37, "incomplete_work": 0, "accounting_status": "COMPLETE"},
+    "closure": "177 on cards + 1 Agent 1 rejection (unfinished, recorded with its request/response) + 23 announcements = 201"
+  },
+  "card_check": {
+    "method": "Every card reference resolved against the topic's evidence ledger and the run snapshot; every statement not judged SUPPORTED searched for in displayed prose (summary, details, action, reasoning, next step, review notes).",
+    "cards": 81,
+    "card_references": 1238,
+    "unresolved_references": 0,
+    "statement_verdicts": {"SUPPORTED": 1816, "PARTIALLY_SUPPORTED": 33, "UNSUPPORTED": 18, "REJECTED_*": 6, "NO_INTERVENTION_NEED": 2, "NOT_JUDGED": 1},
+    "non_supported_statements_displayed": 0,
+    "grounding": {"PASSED": 56, "FAILED": 25},
+    "failed_grounding_cards_routed_to_needs_review": 25,
+    "recommended_action_cards_manually_read_against_messages": 8,
+    "manual_findings": [
+      "All facts, roles and counts on the 8 Recommended Action cards match the cited messages and author roles.",
+      "Wording defect: the Agent 2 topic name 'Majority threshold for incorrect dates and key facts' should read 'Major'; the card inherits it."
+    ]
+  },
+  "dashboard": {
+    "server": "scripts/run_dashboard.py --runs data/experiments/threadsense_full_v1/stages/agent3 (throwaway decision store, origin TEST)",
+    "endpoint_sweep": {"brief": 1, "cards": 81, "flags": 81, "evidence": 555, "member_threads": 177, "retrieved_source_threads_ok": 18, "retrieved_source_threads_404": 5, "review_queue_items": 37},
+    "404_explanation": "Five historical announcement documents from data/knowledge carry Slack anchors that predate the snapshot; their evidence panel offers a thread link that cannot load. Existing dashboard gap, independent of this run.",
+    "browser": "Chrome screenshot of the overview: 61 / 8 / 21 / 37, accounting complete, no console errors.",
+    "network_disabled_render": {"command": "scripts/run_threadsense_full.py render data/experiments/threadsense_full_v1", "brief_status": 200, "cards": 81}
+  },
+  "replay": {
+    "run": "data/experiments/threadsense_full_v1_replay",
+    "mode": "REPLAY (non-loopback sockets refused)",
+    "requests_reused": 947,
+    "requests_sent": 0,
+    "charged_usd": 0,
+    "stages_complete": 7,
+    "artifacts_compared": 89,
+    "semantically_identical": 89,
+    "byte_identical_examples": ["stages/agent3/overnight_run/morning_brief.md"],
+    "differences": "Only timestamps, run-directory paths, IDs and hashes derived from them (card_id, run_id, run_config_sha256, routing-manifest hash), response timing and the verification attempt directory name.",
+    "first_attempt": "Stopped without any call: an Agent 2 report write hit the known WinError 5 lock, and on resume Agent 3's own budget was computed from the replay's $0 ceiling (-$0.22), so every item was refused before reaching the cache. Fixed (pipeline.agent3_budget uses the parent's recorded Agent 3 budget in REPLAY; test added); kept outside the repo at D:/tsb/full/replay_attempt1_stopped."
+  }
+}

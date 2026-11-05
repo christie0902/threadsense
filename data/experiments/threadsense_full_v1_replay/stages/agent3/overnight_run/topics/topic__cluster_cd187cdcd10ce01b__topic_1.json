@@ -1,0 +1,1902 @@
+{
+  "work_item": {
+    "candidate_group_id": "cluster_cd187cdcd10ce01b",
+    "project_id": "audio_multimodal",
+    "batch_id": "audio_batch_06",
+    "work_id": "topic:cluster_cd187cdcd10ce01b/topic_1",
+    "kind": "TOPIC",
+    "topic_id": "cluster_cd187cdcd10ce01b/topic_1",
+    "topic_name": "Repeated ending phrase in generated answer",
+    "member_ids": [
+      "member_bf78a803da0c161765aa7bed"
+    ],
+    "pilot_scenario": null,
+    "in_scope": true
+  },
+  "workflow": {
+    "outcome": "CARD",
+    "card_id": "card_ee7cc9dee61f47be555153369dfbc8ce",
+    "card_line": "OBSERVATION",
+    "grounding": "PASSED",
+    "stage_failures": [],
+    "semantic_source": "LIVE_MODEL"
+  },
+  "result": {
+    "scenario": {
+      "id": "topic:cluster_cd187cdcd10ce01b/topic_1",
+      "candidate_group_id": "cluster_cd187cdcd10ce01b",
+      "focus": "Repeated ending phrase in generated answer",
+      "topic_id": "cluster_cd187cdcd10ce01b/topic_1"
+    },
+    "status": "CARD",
+    "topic": {
+      "project_id": "audio_multimodal",
+      "batch_id": "audio_batch_06",
+      "candidate_group_id": "cluster_cd187cdcd10ce01b",
+      "topic_id": "cluster_cd187cdcd10ce01b/topic_1",
+      "topic_label": "Repeated ending phrase in generated answer",
+      "projection_gap": null,
+      "as_of": "2026-10-02T12:00:00Z",
+      "member_ids": [
+        "member_bf78a803da0c161765aa7bed"
+      ],
+      "initial_query": "Repeated ending phrase in generated answer. Is the last phrase repeating verbatim in the generated answer, and if so, does this repetition occur at a fixed timestamp across playbacks?"
+    },
+    "retrieval_trace": [
+      {
+        "step": 1,
+        "purpose": "initial_current_guidance",
+        "gap_id": null,
+        "query": "Repeated ending phrase in generated answer. Is the last phrase repeating verbatim in the generated answer, and if so, does this repetition occur at a fixed timestamp across playbacks?",
+        "source_types": [
+          "guideline",
+          "faq",
+          "decision",
+          "announcement"
+        ],
+        "version_mode": "current",
+        "as_of": "2026-10-02T12:00:00Z",
+        "batch": "audio_batch_06",
+        "top_k": 5,
+        "status": "DONE",
+        "mode": "hybrid",
+        "use_mmr": true,
+        "mmr_lambda": 0.9,
+        "result_ids": [
+          "k:audio-multimodal-instructions@1.3:7a5ab59d",
+          "k:audio-repeat-observation-review@1.0:ae0550d0",
+          "k:audio-multimodal-instructions@1.3:eb85357a",
+          "k:audio-multimodal-faq@1.1:f72aa6db",
+          "k:audio-playback-trial-outcome@1.0:16332fce"
+        ],
+        "new_evidence_ids": [
+          "k:audio-multimodal-instructions@1.3:7a5ab59d",
+          "k:audio-repeat-observation-review@1.0:ae0550d0",
+          "k:audio-multimodal-instructions@1.3:eb85357a",
+          "k:audio-multimodal-faq@1.1:f72aa6db",
+          "k:audio-playback-trial-outcome@1.0:16332fce"
+        ],
+        "eligible_chunks": 27,
+        "added": []
+      }
+    ],
+    "retrieval_notes": {
+      "withheld_by_version": [],
+      "version_diagnostics": []
+    },
+    "follow_ups": [],
+    "unfilled_gaps": [
+      {
+        "gap_id": "g1",
+        "need": "OTHER",
+        "description": "Further assessment needs the result of the QA tutor's timestamp check and, if feasible, a downloaded-file versus player comparison. These require diagnostic observations rather than another policy search.",
+        "follow_up": null
+      }
+    ],
+    "model_calls": [
+      {
+        "stage": "draft",
+        "schema": "AdvisorDraft",
+        "agent1_context": {
+          "sha256": "ffea79787b2d588cc37b7c17ee79e014876ac5b32087e7defadebb3c43e8eecd",
+          "boundary": "IN_HTTP_BODY"
+        },
+        "raw": "{\n  \"contract_version\": \"agent3-advisor-draft-v11\",\n  \"summary\": null,\n  \"summary_sentences\": [\n    {\n      \"text\": \"A tutor reports that the last phrase repeats verbatim in a generated answer and asks whether anyone else sees it.\",\n      \"support_claim_ids\": [\"c1\"],\n      \"depends_on\": []\n    },\n    {\n      \"text\": \"A QA tutor asks whether the repetition occurs at a fixed timestamp across playbacks; the thread contains no answer yet.\",\n      \"support_claim_ids\": [\"c2\", \"c3\"],\n      \"depends_on\": []\n    }\n  ],\n  \"detail_sentences\": [\n    {\n      \"text\": \"Current guidance says to record where repetition occurs, compare the downloaded file with player output if feasible, and distinguish generation from playback before confirming a generation defect.\",\n      \"support_claim_ids\": [\"c4\"],\n      \"depends_on\": [],\n      \"summary_depends_on\": []\n    },\n    {\n      \"text\": \"An earlier same-batch review retained a repeated-ending report as an open observation, with no completed diagnostic comparison or engineering escalation recorded.\",\n      \"support_claim_ids\": [\"c5\"],\n      \"depends_on\": [],\n      \"summary_depends_on\": []\n    },\n    {\n      \"text\": \"The current thread provides no downloaded-file versus player comparison or description of operational impact.\",\n      \"support_claim_ids\": [\"c6\"],\n      \"depends_on\": [],\n      \"summary_depends_on\": []\n    }\n  ],\n  \"reasoning\": \"The report identifies a repeated phrase, but it does not establish a generation defect or meaningful disruption. Current guidance already specifies how to distinguish generation from playback, and the earlier same-batch review deliberately retained a similar report as an observation pending additional evidence. The QA tutor's diagnostic question remains unanswered; that is not an unsettled handling rule requiring a new team lead decision. The evidence supports continued observation rather than a new announcement, documentation change or engineering escalation.\",\n  \"claims\": [\n    {\n      \"claim_id\": \"c1\",\n      \"kind\": \"INCIDENT_FACT\",\n      \"text\": \"A tutor reports that the last phrase repeats verbatim in the generated answer and asks whether anyone else sees it.\",\n      \"evidence_ids\": [\"m:C_AUDIO_GENERAL:1790913477.000124\"],\n      \"attributions\": [\n        {\n          \"user_id\": \"U004\",\n          \"relation\": \"AUTHOR\",\n          \"evidence_id\": \"m:C_AUDIO_GENERAL:1790913477.000124\"\n        }\n      ],\n      \"quote\": \"Last phrase repeats verbatim in the generated answer. Anyone seeing this?\",\n      \"quote_kind\": \"VERBATIM\",\n      \"material\": true\n    },\n    {\n      \"claim_id\": \"c2\",\n      \"kind\": \"INCIDENT_FACT\",\n      \"text\": \"A QA tutor asks whether the repetition occurs at a fixed timestamp across playbacks.\",\n      \"evidence_ids\": [\"m:C_AUDIO_GENERAL:1790913533.000113\"],\n      \"attributions\": [\n        {\n          \"user_id\": \"U002\",\n          \"relation\": \"AUTHOR\",\n          \"evidence_id\": \"m:C_AUDIO_GENERAL:1790913533.000113\"\n        }\n      ],\n      \"quote\": \"Does the repetition occur at a fixed timestamp across playbacks?\",\n      \"quote_kind\": \"VERBATIM\",\n      \"material\": true\n    },\n    {\n      \"claim_id\": \"c3\",\n      \"kind\": \"INFERENCE\",\n      \"text\": \"The thread contains no answer to the QA tutor's timestamp question and no resolution of the tutor's report.\",\n      \"evidence_ids\": [\n        \"m:C_AUDIO_GENERAL:1790913477.000124\",\n        \"m:C_AUDIO_GENERAL:1790913533.000113\"\n      ],\n      \"attributions\": [\n        {\n          \"user_id\": \"U004\",\n          \"relation\": \"AUTHOR\",\n          \"evidence_id\": \"m:C_AUDIO_GENERAL:1790913477.000124\"\n        },\n        {\n          \"user_id\": \"U002\",\n          \"relation\": \"AUTHOR\",\n          \"evidence_id\": \"m:C_AUDIO_GENERAL:1790913533.000113\"\n        }\n      ],\n      \"quote\": null,\n      \"quote_kind\": \"PARAPHRASE\",\n      \"material\": true\n    },\n    {\n      \"claim_id\": \"c4\",\n      \"kind\": \"GUIDANCE\",\n      \"text\": \"Current project guidance requires recording where a phrase repeats, comparing the downloaded file with player output if feasible, and withholding a confirmed generation-defect label until available evidence distinguishes generation from playback.\",\n      \"evidence_ids\": [\"k:audio-multimodal-instructions@1.3:7a5ab59d\"],\n      \"attributions\": [],\n      \"quote\": \"When a phrase repeats, record where it occurs. If feasible, compare the downloaded file with player output. Do not call it a confirmed generation defect until the available evidence distinguishes generation from playback.\",\n      \"quote_kind\": \"VERBATIM\",\n      \"material\": true\n    },\n    {\n      \"claim_id\": \"c5\",\n      \"kind\": \"HISTORY\",\n      \"text\": \"The earlier same-batch review records a repeated-ending report retained as an open model/process observation, with a downloaded-file versus player comparison requested, no completed comparison or engineering escalation recorded, and reassessment conditional on evidence of a generation defect or material operational impact; it is history, not a standing rule.\",\n      \"evidence_ids\": [\"k:audio-repeat-observation-review@1.0:ae0550d0\"],\n      \"attributions\": [],\n      \"quote\": null,\n      \"quote_kind\": \"PARAPHRASE\",\n      \"material\": true\n    },\n    {\n      \"claim_id\": \"c6\",\n      \"kind\": \"INFERENCE\",\n      \"text\": \"The current thread provides no downloaded-file versus player comparison, confirmed cause, or description of operational impact.\",\n      \"evidence_ids\": [\n        \"m:C_AUDIO_GENERAL:1790913477.000124\",\n        \"m:C_AUDIO_GENERAL:1790913533.000113\"\n      ],\n      \"attributions\": [],\n      \"quote\": null,\n      \"quote_kind\": \"PARAPHRASE\",\n      \"material\": true\n    }\n  ],\n  \"gaps\": [\n    {\n      \"gap_id\": \"g1\",\n      \"need\": \"OTHER\",\n      \"description\": \"Further assessment needs the result of the QA tutor's timestamp check and, if feasible, a downloaded-file versus player comparison. These require diagnostic observations rather than another policy search.\",\n      \"follow_up\": null\n    }\n  ],\n  \"evidence_sufficiency\": \"SUFFICIENT\",\n  \"proposed_action\": {\n    \"action_type\": \"NO_ACTION\",\n    \"intervention_need\": null,\n    \"instruction\": \"Keep the report as an observation for now; do not initiate a new escalation or guidance change.\",\n    \"rationale\": \"Current guidance already covers the diagnostic distinction, and the earlier review deliberately retained a similar report as an observation. The current thread adds no comparison or operational-impact evidence warranting a new intervention.\",\n    \"draft_text\": null,\n    \"scope_note\": \"This does not classify the report as a confirmed generation defect; reassess if additional evidence establishes a generation defect or material operational impact.\",\n    \"support_claim_ids\": [\"c1\", \"c4\", \"c5\", \"c6\"],\n    \"targets\": [],\n    \"context_claim_ids\": [\"c2\", \"c3\"]\n  },\n  \"severity\": {\n    \"level\": \"LOW\",\n    \"rationale\": \"A tutor describes a localized repeated phrase, without reporting inability to work, scoring disagreement or broader disruption. The earlier similar observation does not establish meaningful current workflow impact.\",\n    \"signals\": [],\n    \"affected_reporters\": [\n      {\n        \"author_id\": \"U004\",\n        \"evidence_id\": \"m:C_AUDIO_GENERAL:1790913477.000124\"\n      }\n    ],\n    \"recurrence\": \"FOUND\",\n    \"recurrence_evidence_ids\": [\"k:audio-repeat-observation-review@1.0:ae0550d0\"],\n    \"reported_recurrence_evidence_ids\": []\n  },\n  \"confidence\": 0.9,\n  \"open_confirmation\": \"NONE\",\n  \"open_question\": null,\n  \"open_question_evidence_ids\": [],\n  \"source_conflicts\": [],\n  \"announcement_assessments\": [],\n  \"resolution\": [\n    {\n      \"member_id\": \"member_bf78a803da0c161765aa7bed\",\n      \"state\": \"UNRESOLVED\",\n      \"evidence_ids\": [\n        \"m:C_AUDIO_GENERAL:1790913477.000124\",\n        \"m:C_AUDIO_GENERAL:1790913533.000113\"\n      ],\n      \"basis\": \"The tutor reports repetition, and the QA tutor replies with a diagnostic question; the thread contains no answer or resolution.\"\n    }\n  ],\n  \"coverage\": [\n    {\n      \"need\": \"CURRENT_GUIDANCE\",\n      \"status\": \"COVERED\",\n      \"evidence_ids\": [\"k:audio-multimodal-instructions@1.3:7a5ab59d\"],\n      \"note\": \"The current repeated-audio section directly covers recording the location, comparing file and player when feasible, and avoiding premature generation-defect confirmation.\",\n      \"gap_id\": null\n    },\n    {\n      \"need\": \"ANNOUNCEMENTS\",\n      \"status\": \"NOT_APPLICABLE\",\n      \"evidence_ids\": [],\n      \"note\": \"No announcement was retrieved, and the observation-only advice needs no announcement-based procedure or destination.\",\n      \"gap_id\": null\n    },\n    {\n      \"need\": \"PRIOR_DECISIONS\",\n      \"status\": \"COVERED\",\n      \"evidence_ids\": [\n        \"k:audio-repeat-observation-review@1.0:ae0550d0\",\n        \"k:audio-playback-trial-outcome@1.0:16332fce\"\n      ],\n      \"note\": \"The same-batch review records an open repeated-ending observation and its unmet diagnostic request. The earlier other-batch playback trial records an unreliable reload workaround and does not establish a fix for this report.\",\n      \"gap_id\": null\n    },\n    {\n      \"need\": \"MEMBER_QUESTIONS\",\n      \"status\": \"COVERED\",\n      \"evidence_ids\": [\n        \"m:C_AUDIO_GENERAL:1790913477.000124\",\n        \"m:C_AUDIO_GENERAL:1790913533.000113\"\n      ],\n      \"note\": \"The tutor asks whether others see the repetition; the QA tutor asks about fixed timing across playbacks. Neither message provides a diagnostic result.\",\n      \"gap_id\": null\n    }\n  ],\n  \"review_note\": null,\n  \"action_choice\": null\n}",
+        "raw_sha256": "37965c8ab022230386dd0f527b2e109f090265da2f00d44cccf2bfec54009b86",
+        "http_requests": {
+          "sent": 1,
+          "blocked": 0,
+          "hosts": [
+            "api.openai.com"
+          ],
+          "responses": [
+            {
+              "status_code": 200,
+              "seconds": 0.09,
+              "model": "gpt-6.1-sol",
+              "usage": {
+                "prompt_tokens": 11142,
+                "completion_tokens": 2461,
+                "total_tokens": 13603,
+                "prompt_tokens_details": {
+                  "cached_tokens": 0,
+                  "cache_write_tokens": 11139,
+                  "audio_tokens": 0
+                },
+                "completion_tokens_details": {
+                  "reasoning_tokens": 173,
+                  "audio_tokens": 0,
+                  "accepted_prediction_tokens": 0,
+                  "rejected_prediction_tokens": 0
+                }
+              },
+              "finish_reasons": [
+                "stop"
+              ]
+            }
+          ],
+          "input_tokens": 11148,
+          "refused": null,
+          "charged_usd": 0.046894000000000005
+        },
+        "input_tokens_estimate": 11148,
+        "status": "OK"
+      },
+      {
+        "stage": "grounding",
+        "schema": "GroundingJudgment",
+        "raw": "{\n  \"contract_version\": \"agent3-grounding-judgment-v5\",\n  \"verdicts\": [\n    {\n      \"statement_id\": \"claim:c1\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The tutor's cited message reports the repeated final phrase and asks whether others see it. The quotation is exact.\"\n    },\n    {\n      \"statement_id\": \"claim:c2\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The cited QA tutor asks exactly this timestamp question, and the quotation matches.\"\n    },\n    {\n      \"statement_id\": \"claim:c3\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The complete provided thread contains only the report and diagnostic question, with no answer or resolution.\"\n    },\n    {\n      \"statement_id\": \"claim:c4\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The current project-wide instructions explicitly give these diagnostic requirements, including the feasibility qualification. The quotation is exact.\"\n    },\n    {\n      \"statement_id\": \"claim:c5\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The prior same-batch record states each described observation, request and conditional reassessment. The statement correctly identifies it as history rather than a standing rule.\"\n    },\n    {\n      \"statement_id\": \"claim:c6\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"Neither message supplies a file-versus-player comparison, establishes a cause or describes operational impact.\"\n    },\n    {\n      \"statement_id\": \"summary:s1\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"This accurately summarizes the tutor's own report and question without treating the reported generation issue as a verified cause.\"\n    },\n    {\n      \"statement_id\": \"summary:s2\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The QA tutor asks about a fixed timestamp across playbacks, and the complete thread contains no response.\"\n    },\n    {\n      \"statement_id\": \"detail:d1\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"This preserves the current instructions' requirements and the conditional nature of the comparison.\"\n    },\n    {\n      \"statement_id\": \"detail:d2\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The historical same-batch review explicitly records an open observation and no completed diagnostic comparison or engineering escalation.\"\n    },\n    {\n      \"statement_id\": \"detail:d3\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The complete current thread includes neither the comparison nor a description of operational impact.\"\n    },\n    {\n      \"statement_id\": \"action:no_action\",\n      \"verdict\": \"UNSUPPORTED\",\n      \"rationale\": \"Existing diagnostic guidance and a historical deferral do not establish that no further intervention is needed now. The current repetition report remains unresolved, the diagnostic question is unanswered, and the comparison contemplated by guidance has not been supplied. Absence of comparison or impact evidence does not establish that follow-up is unwarranted.\"\n    },\n    {\n      \"statement_id\": \"resolution:member_bf78a803da0c161765aa7bed\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The complete thread ends with the QA tutor's diagnostic question and contains no answer, confirmation of a fix or other resolution.\"\n    },\n    {\n      \"statement_id\": \"severity:rationale\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The current report concerns a repeated ending phrase and reports none of the listed workflow consequences. LOW is consistent with the limited reported impact, and the earlier observation does not establish current operational impact.\"\n    },\n    {\n      \"statement_id\": \"severity:recurrence\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The retrieved historical review documents an earlier report of the last phrase being spoken twice. This establishes an earlier occurrence of the reported symptom, not a shared verified cause.\"\n    },\n    {\n      \"statement_id\": \"reporter:U004\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"U004's own message directly reports encountering the repeated final phrase.\"\n    }\n  ],\n  \"action_sufficiency\": null,\n  \"alternative_sufficiency\": [],\n  \"source_consistency\": {\n    \"assessed_evidence_ids\": [\n      \"k:audio-multimodal-instructions@1.3:7a5ab59d\",\n      \"k:audio-multimodal-instructions@1.3:eb85357a\",\n      \"k:audio-multimodal-faq@1.1:f72aa6db\"\n    ],\n    \"relations\": [\n      {\n        \"evidence_ids\": [\n          \"k:audio-multimodal-instructions@1.3:7a5ab59d\",\n          \"k:audio-multimodal-faq@1.1:f72aa6db\"\n        ],\n        \"relation\": \"AGREE\",\n        \"point\": \"Confirm the requested language and permitted switching before classifying a language mismatch.\",\n        \"disagreement_scope\": null,\n        \"rationale\": \"Both current sources require this check. The FAQ adds classification detail without contradicting the instructions. Neither it nor the overlap section supplies a competing rule for repeated-phrase diagnostics.\"\n      }\n    ],\n    \"declared_conflict_checks\": []\n  }\n}",
+        "raw_sha256": "ccf1739835822e26eedfaa29b8efe58c3690de93e21767574b50a30eda34a07c",
+        "http_requests": {
+          "sent": 1,
+          "blocked": 0,
+          "hosts": [
+            "api.openai.com"
+          ],
+          "responses": [
+            {
+              "status_code": 200,
+              "seconds": 0.083,
+              "model": "gpt-6.1-sol",
+              "usage": {
+                "prompt_tokens": 7532,
+                "completion_tokens": 1370,
+                "total_tokens": 8902,
+                "prompt_tokens_details": {
+                  "cached_tokens": 0,
+                  "cache_write_tokens": 7529,
+                  "audio_tokens": 0
+                },
+                "completion_tokens_details": {
+                  "reasoning_tokens": 234,
+                  "audio_tokens": 0,
+                  "accepted_prediction_tokens": 0,
+                  "rejected_prediction_tokens": 0
+                }
+              },
+              "finish_reasons": [
+                "stop"
+              ]
+            }
+          ],
+          "input_tokens": 7538,
+          "refused": null,
+          "charged_usd": 0.028763999999999998
+        },
+        "input_tokens_estimate": 7538,
+        "status": "OK"
+      }
+    ],
+    "agent1_context": [
+      {
+        "sha256": "ffea79787b2d588cc37b7c17ee79e014876ac5b32087e7defadebb3c43e8eecd",
+        "content": [
+          {
+            "member_id": "member_bf78a803da0c161765aa7bed",
+            "thread_id": "1790913477.000124",
+            "summary": "Sofia raises a concern about the last phrase in a generated answer repeating verbatim. Mina asks if this repetition occurs at a fixed timestamp across playbacks, seeking clarification on the nature of the issue.",
+            "central_question": "Is the last phrase repeating verbatim in the generated answer, and if so, does this repetition occur at a fixed timestamp across playbacks?",
+            "attributed_agent1_resolution": {
+              "state": "UNRESOLVED",
+              "rationale": "The thread does not establish a substantive answer to the question of whether the last phrase repeats verbatim or if it occurs at a fixed timestamp. The responses are inquiries for clarification rather than resolutions.",
+              "agent1_verification_status": "VERIFIED",
+              "note": "Agent 1 label, not evidence; NEEDS_REVIEW means Agent 1 did not verify it. Assess resolution from the member messages."
+            },
+            "agent1_review_required": false,
+            "agent1_review_reason": "",
+            "note": "Agent 1 interpretation, not source evidence; cite member messages for incident facts."
+          }
+        ]
+      }
+    ],
+    "drafts": {
+      "initial": {
+        "contract_version": "agent3-advisor-draft-v11",
+        "summary": "A tutor reports that the last phrase repeats verbatim in a generated answer and asks whether anyone else sees it. A QA tutor asks whether the repetition occurs at a fixed timestamp across playbacks; the thread contains no answer yet.",
+        "summary_sentences": [
+          {
+            "text": "A tutor reports that the last phrase repeats verbatim in a generated answer and asks whether anyone else sees it.",
+            "support_claim_ids": [
+              "c1"
+            ],
+            "depends_on": []
+          },
+          {
+            "text": "A QA tutor asks whether the repetition occurs at a fixed timestamp across playbacks; the thread contains no answer yet.",
+            "support_claim_ids": [
+              "c2",
+              "c3"
+            ],
+            "depends_on": []
+          }
+        ],
+        "detail_sentences": [
+          {
+            "text": "Current guidance says to record where repetition occurs, compare the downloaded file with player output if feasible, and distinguish generation from playback before confirming a generation defect.",
+            "support_claim_ids": [
+              "c4"
+            ],
+            "depends_on": [],
+            "summary_depends_on": []
+          },
+          {
+            "text": "An earlier same-batch review retained a repeated-ending report as an open observation, with no completed diagnostic comparison or engineering escalation recorded.",
+            "support_claim_ids": [
+              "c5"
+            ],
+            "depends_on": [],
+            "summary_depends_on": []
+          },
+          {
+            "text": "The current thread provides no downloaded-file versus player comparison or description of operational impact.",
+            "support_claim_ids": [
+              "c6"
+            ],
+            "depends_on": [],
+            "summary_depends_on": []
+          }
+        ],
+        "reasoning": "The report identifies a repeated phrase, but it does not establish a generation defect or meaningful disruption. Current guidance already specifies how to distinguish generation from playback, and the earlier same-batch review deliberately retained a similar report as an observation pending additional evidence. The QA tutor's diagnostic question remains unanswered; that is not an unsettled handling rule requiring a new team lead decision. The evidence supports continued observation rather than a new announcement, documentation change or engineering escalation.",
+        "claims": [
+          {
+            "claim_id": "c1",
+            "kind": "INCIDENT_FACT",
+            "text": "A tutor reports that the last phrase repeats verbatim in the generated answer and asks whether anyone else sees it.",
+            "evidence_ids": [
+              "m:C_AUDIO_GENERAL:1790913477.000124"
+            ],
+            "attributions": [
+              {
+                "user_id": "U004",
+                "relation": "AUTHOR",
+                "evidence_id": "m:C_AUDIO_GENERAL:1790913477.000124"
+              }
+            ],
+            "quote": "Last phrase repeats verbatim in the generated answer. Anyone seeing this?",
+            "quote_kind": "VERBATIM",
+            "material": true
+          },
+          {
+            "claim_id": "c2",
+            "kind": "INCIDENT_FACT",
+            "text": "A QA tutor asks whether the repetition occurs at a fixed timestamp across playbacks.",
+            "evidence_ids": [
+              "m:C_AUDIO_GENERAL:1790913533.000113"
+            ],
+            "attributions": [
+              {
+                "user_id": "U002",
+                "relation": "AUTHOR",
+                "evidence_id": "m:C_AUDIO_GENERAL:1790913533.000113"
+              }
+            ],
+            "quote": "Does the repetition occur at a fixed timestamp across playbacks?",
+            "quote_kind": "VERBATIM",
+            "material": true
+          },
+          {
+            "claim_id": "c3",
+            "kind": "INFERENCE",
+            "text": "The thread contains no answer to the QA tutor's timestamp question and no resolution of the tutor's report.",
+            "evidence_ids": [
+              "m:C_AUDIO_GENERAL:1790913477.000124",
+              "m:C_AUDIO_GENERAL:1790913533.000113"
+            ],
+            "attributions": [
+              {
+                "user_id": "U004",
+                "relation": "AUTHOR",
+                "evidence_id": "m:C_AUDIO_GENERAL:1790913477.000124"
+              },
+              {
+                "user_id": "U002",
+                "relation": "AUTHOR",
+                "evidence_id": "m:C_AUDIO_GENERAL:1790913533.000113"
+              }
+            ],
+            "quote": null,
+            "quote_kind": "PARAPHRASE",
+            "material": true
+          },
+          {
+            "claim_id": "c4",
+            "kind": "GUIDANCE",
+            "text": "Current project guidance requires recording where a phrase repeats, comparing the downloaded file with player output if feasible, and withholding a confirmed generation-defect label until available evidence distinguishes generation from playback.",
+            "evidence_ids": [
+              "k:audio-multimodal-instructions@1.3:7a5ab59d"
+            ],
+            "attributions": [],
+            "quote": "When a phrase repeats, record where it occurs. If feasible, compare the downloaded file with player output. Do not call it a confirmed generation defect until the available evidence distinguishes generation from playback.",
+            "quote_kind": "VERBATIM",
+            "material": true
+          },
+          {
+            "claim_id": "c5",
+            "kind": "HISTORY",
+            "text": "The earlier same-batch review records a repeated-ending report retained as an open model/process observation, with a downloaded-file versus player comparison requested, no completed comparison or engineering escalation recorded, and reassessment conditional on evidence of a generation defect or material operational impact; it is history, not a standing rule.",
+            "evidence_ids": [
+              "k:audio-repeat-observation-review@1.0:ae0550d0"
+            ],
+            "attributions": [],
+            "quote": null,
+            "quote_kind": "PARAPHRASE",
+            "material": true
+          },
+          {
+            "claim_id": "c6",
+            "kind": "INFERENCE",
+            "text": "The current thread provides no downloaded-file versus player comparison, confirmed cause, or description of operational impact.",
+            "evidence_ids": [
+              "m:C_AUDIO_GENERAL:1790913477.000124",
+              "m:C_AUDIO_GENERAL:1790913533.000113"
+            ],
+            "attributions": [],
+            "quote": null,
+            "quote_kind": "PARAPHRASE",
+            "material": true
+          }
+        ],
+        "gaps": [
+          {
+            "gap_id": "g1",
+            "need": "OTHER",
+            "description": "Further assessment needs the result of the QA tutor's timestamp check and, if feasible, a downloaded-file versus player comparison. These require diagnostic observations rather than another policy search.",
+            "follow_up": null
+          }
+        ],
+        "evidence_sufficiency": "SUFFICIENT",
+        "proposed_action": {
+          "action_type": "NO_ACTION",
+          "intervention_need": null,
+          "instruction": "Keep the report as an observation for now; do not initiate a new escalation or guidance change.",
+          "rationale": "Current guidance already covers the diagnostic distinction, and the earlier review deliberately retained a similar report as an observation. The current thread adds no comparison or operational-impact evidence warranting a new intervention.",
+          "draft_text": null,
+          "scope_note": "This does not classify the report as a confirmed generation defect; reassess if additional evidence establishes a generation defect or material operational impact.",
+          "support_claim_ids": [
+            "c1",
+            "c4",
+            "c5",
+            "c6"
+          ],
+          "targets": [],
+          "context_claim_ids": [
+            "c2",
+            "c3"
+          ]
+        },
+        "severity": {
+          "level": "LOW",
+          "rationale": "A tutor describes a localized repeated phrase, without reporting inability to work, scoring disagreement or broader disruption. The earlier similar observation does not establish meaningful current workflow impact.",
+          "signals": [],
+          "affected_reporters": [
+            {
+              "author_id": "U004",
+              "evidence_id": "m:C_AUDIO_GENERAL:1790913477.000124"
+            }
+          ],
+          "recurrence": "FOUND",
+          "recurrence_evidence_ids": [
+            "k:audio-repeat-observation-review@1.0:ae0550d0"
+          ],
+          "reported_recurrence_evidence_ids": []
+        },
+        "confidence": 0.9,
+        "open_confirmation": "NONE",
+        "open_question": null,
+        "open_question_evidence_ids": [],
+        "source_conflicts": [],
+        "announcement_assessments": [],
+        "resolution": [
+          {
+            "member_id": "member_bf78a803da0c161765aa7bed",
+            "state": "UNRESOLVED",
+            "evidence_ids": [
+              "m:C_AUDIO_GENERAL:1790913477.000124",
+              "m:C_AUDIO_GENERAL:1790913533.000113"
+            ],
+            "basis": "The tutor reports repetition, and the QA tutor replies with a diagnostic question; the thread contains no answer or resolution."
+          }
+        ],
+        "coverage": [
+          {
+            "need": "CURRENT_GUIDANCE",
+            "status": "COVERED",
+            "evidence_ids": [
+              "k:audio-multimodal-instructions@1.3:7a5ab59d"
+            ],
+            "note": "The current repeated-audio section directly covers recording the location, comparing file and player when feasible, and avoiding premature generation-defect confirmation.",
+            "gap_id": null
+          },
+          {
+            "need": "ANNOUNCEMENTS",
+            "status": "NOT_APPLICABLE",
+            "evidence_ids": [],
+            "note": "No announcement was retrieved, and the observation-only advice needs no announcement-based procedure or destination.",
+            "gap_id": null
+          },
+          {
+            "need": "PRIOR_DECISIONS",
+            "status": "COVERED",
+            "evidence_ids": [
+              "k:audio-repeat-observation-review@1.0:ae0550d0",
+              "k:audio-playback-trial-outcome@1.0:16332fce"
+            ],
+            "note": "The same-batch review records an open repeated-ending observation and its unmet diagnostic request. The earlier other-batch playback trial records an unreliable reload workaround and does not establish a fix for this report.",
+            "gap_id": null
+          },
+          {
+            "need": "MEMBER_QUESTIONS",
+            "status": "COVERED",
+            "evidence_ids": [
+              "m:C_AUDIO_GENERAL:1790913477.000124",
+              "m:C_AUDIO_GENERAL:1790913533.000113"
+            ],
+            "note": "The tutor asks whether others see the repetition; the QA tutor asks about fixed timing across playbacks. Neither message provides a diagnostic result.",
+            "gap_id": null
+          }
+        ],
+        "review_note": null,
+        "action_choice": null
+      },
+      "final": {
+        "contract_version": "agent3-advisor-draft-v11",
+        "summary": "A tutor reports that the last phrase repeats verbatim in a generated answer and asks whether anyone else sees it. A QA tutor asks whether the repetition occurs at a fixed timestamp across playbacks; the thread contains no answer yet.",
+        "summary_sentences": [
+          {
+            "text": "A tutor reports that the last phrase repeats verbatim in a generated answer and asks whether anyone else sees it.",
+            "support_claim_ids": [
+              "c1"
+            ],
+            "depends_on": []
+          },
+          {
+            "text": "A QA tutor asks whether the repetition occurs at a fixed timestamp across playbacks; the thread contains no answer yet.",
+            "support_claim_ids": [
+              "c2",
+              "c3"
+            ],
+            "depends_on": []
+          }
+        ],
+        "detail_sentences": [
+          {
+            "text": "Current guidance says to record where repetition occurs, compare the downloaded file with player output if feasible, and distinguish generation from playback before confirming a generation defect.",
+            "support_claim_ids": [
+              "c4"
+            ],
+            "depends_on": [],
+            "summary_depends_on": []
+          },
+          {
+            "text": "An earlier same-batch review retained a repeated-ending report as an open observation, with no completed diagnostic comparison or engineering escalation recorded.",
+            "support_claim_ids": [
+              "c5"
+            ],
+            "depends_on": [],
+            "summary_depends_on": []
+          },
+          {
+            "text": "The current thread provides no downloaded-file versus player comparison or description of operational impact.",
+            "support_claim_ids": [
+              "c6"
+            ],
+            "depends_on": [],
+            "summary_depends_on": []
+          }
+        ],
+        "reasoning": "The report identifies a repeated phrase, but it does not establish a generation defect or meaningful disruption. Current guidance already specifies how to distinguish generation from playback, and the earlier same-batch review deliberately retained a similar report as an observation pending additional evidence. The QA tutor's diagnostic question remains unanswered; that is not an unsettled handling rule requiring a new team lead decision. The evidence supports continued observation rather than a new announcement, documentation change or engineering escalation.",
+        "claims": [
+          {
+            "claim_id": "c1",
+            "kind": "INCIDENT_FACT",
+            "text": "A tutor reports that the last phrase repeats verbatim in the generated answer and asks whether anyone else sees it.",
+            "evidence_ids": [
+              "m:C_AUDIO_GENERAL:1790913477.000124"
+            ],
+            "attributions": [
+              {
+                "user_id": "U004",
+                "relation": "AUTHOR",
+                "evidence_id": "m:C_AUDIO_GENERAL:1790913477.000124"
+              }
+            ],
+            "quote": "Last phrase repeats verbatim in the generated answer. Anyone seeing this?",
+            "quote_kind": "VERBATIM",
+            "material": true
+          },
+          {
+            "claim_id": "c2",
+            "kind": "INCIDENT_FACT",
+            "text": "A QA tutor asks whether the repetition occurs at a fixed timestamp across playbacks.",
+            "evidence_ids": [
+              "m:C_AUDIO_GENERAL:1790913533.000113"
+            ],
+            "attributions": [
+              {
+                "user_id": "U002",
+                "relation": "AUTHOR",
+                "evidence_id": "m:C_AUDIO_GENERAL:1790913533.000113"
+              }
+            ],
+            "quote": "Does the repetition occur at a fixed timestamp across playbacks?",
+            "quote_kind": "VERBATIM",
+            "material": true
+          },
+          {
+            "claim_id": "c3",
+            "kind": "INFERENCE",
+            "text": "The thread contains no answer to the QA tutor's timestamp question and no resolution of the tutor's report.",
+            "evidence_ids": [
+              "m:C_AUDIO_GENERAL:1790913477.000124",
+              "m:C_AUDIO_GENERAL:1790913533.000113"
+            ],
+            "attributions": [
+              {
+                "user_id": "U004",
+                "relation": "AUTHOR",
+                "evidence_id": "m:C_AUDIO_GENERAL:1790913477.000124"
+              },
+              {
+                "user_id": "U002",
+                "relation": "AUTHOR",
+                "evidence_id": "m:C_AUDIO_GENERAL:1790913533.000113"
+              }
+            ],
+            "quote": null,
+            "quote_kind": "PARAPHRASE",
+            "material": true
+          },
+          {
+            "claim_id": "c4",
+            "kind": "GUIDANCE",
+            "text": "Current project guidance requires recording where a phrase repeats, comparing the downloaded file with player output if feasible, and withholding a confirmed generation-defect label until available evidence distinguishes generation from playback.",
+            "evidence_ids": [
+              "k:audio-multimodal-instructions@1.3:7a5ab59d"
+            ],
+            "attributions": [],
+            "quote": "When a phrase repeats, record where it occurs. If feasible, compare the downloaded file with player output. Do not call it a confirmed generation defect until the available evidence distinguishes generation from playback.",
+            "quote_kind": "VERBATIM",
+            "material": true
+          },
+          {
+            "claim_id": "c5",
+            "kind": "HISTORY",
+            "text": "The earlier same-batch review records a repeated-ending report retained as an open model/process observation, with a downloaded-file versus player comparison requested, no completed comparison or engineering escalation recorded, and reassessment conditional on evidence of a generation defect or material operational impact; it is history, not a standing rule.",
+            "evidence_ids": [
+              "k:audio-repeat-observation-review@1.0:ae0550d0"
+            ],
+            "attributions": [],
+            "quote": null,
+            "quote_kind": "PARAPHRASE",
+            "material": true
+          },
+          {
+            "claim_id": "c6",
+            "kind": "INFERENCE",
+            "text": "The current thread provides no downloaded-file versus player comparison, confirmed cause, or description of operational impact.",
+            "evidence_ids": [
+              "m:C_AUDIO_GENERAL:1790913477.000124",
+              "m:C_AUDIO_GENERAL:1790913533.000113"
+            ],
+            "attributions": [],
+            "quote": null,
+            "quote_kind": "PARAPHRASE",
+            "material": true
+          }
+        ],
+        "gaps": [
+          {
+            "gap_id": "g1",
+            "need": "OTHER",
+            "description": "Further assessment needs the result of the QA tutor's timestamp check and, if feasible, a downloaded-file versus player comparison. These require diagnostic observations rather than another policy search.",
+            "follow_up": null
+          }
+        ],
+        "evidence_sufficiency": "SUFFICIENT",
+        "proposed_action": {
+          "action_type": "NO_ACTION",
+          "intervention_need": null,
+          "instruction": "Keep the report as an observation for now; do not initiate a new escalation or guidance change.",
+          "rationale": "Current guidance already covers the diagnostic distinction, and the earlier review deliberately retained a similar report as an observation. The current thread adds no comparison or operational-impact evidence warranting a new intervention.",
+          "draft_text": null,
+          "scope_note": "This does not classify the report as a confirmed generation defect; reassess if additional evidence establishes a generation defect or material operational impact.",
+          "support_claim_ids": [
+            "c1",
+            "c4",
+            "c5",
+            "c6"
+          ],
+          "targets": [],
+          "context_claim_ids": [
+            "c2",
+            "c3"
+          ]
+        },
+        "severity": {
+          "level": "LOW",
+          "rationale": "A tutor describes a localized repeated phrase, without reporting inability to work, scoring disagreement or broader disruption. The earlier similar observation does not establish meaningful current workflow impact.",
+          "signals": [],
+          "affected_reporters": [
+            {
+              "author_id": "U004",
+              "evidence_id": "m:C_AUDIO_GENERAL:1790913477.000124"
+            }
+          ],
+          "recurrence": "FOUND",
+          "recurrence_evidence_ids": [
+            "k:audio-repeat-observation-review@1.0:ae0550d0"
+          ],
+          "reported_recurrence_evidence_ids": []
+        },
+        "confidence": 0.9,
+        "open_confirmation": "NONE",
+        "open_question": null,
+        "open_question_evidence_ids": [],
+        "source_conflicts": [],
+        "announcement_assessments": [],
+        "resolution": [
+          {
+            "member_id": "member_bf78a803da0c161765aa7bed",
+            "state": "UNRESOLVED",
+            "evidence_ids": [
+              "m:C_AUDIO_GENERAL:1790913477.000124",
+              "m:C_AUDIO_GENERAL:1790913533.000113"
+            ],
+            "basis": "The tutor reports repetition, and the QA tutor replies with a diagnostic question; the thread contains no answer or resolution."
+          }
+        ],
+        "coverage": [
+          {
+            "need": "CURRENT_GUIDANCE",
+            "status": "COVERED",
+            "evidence_ids": [
+              "k:audio-multimodal-instructions@1.3:7a5ab59d"
+            ],
+            "note": "The current repeated-audio section directly covers recording the location, comparing file and player when feasible, and avoiding premature generation-defect confirmation.",
+            "gap_id": null
+          },
+          {
+            "need": "ANNOUNCEMENTS",
+            "status": "NOT_APPLICABLE",
+            "evidence_ids": [],
+            "note": "No announcement was retrieved, and the observation-only advice needs no announcement-based procedure or destination.",
+            "gap_id": null
+          },
+          {
+            "need": "PRIOR_DECISIONS",
+            "status": "COVERED",
+            "evidence_ids": [
+              "k:audio-repeat-observation-review@1.0:ae0550d0",
+              "k:audio-playback-trial-outcome@1.0:16332fce"
+            ],
+            "note": "The same-batch review records an open repeated-ending observation and its unmet diagnostic request. The earlier other-batch playback trial records an unreliable reload workaround and does not establish a fix for this report.",
+            "gap_id": null
+          },
+          {
+            "need": "MEMBER_QUESTIONS",
+            "status": "COVERED",
+            "evidence_ids": [
+              "m:C_AUDIO_GENERAL:1790913477.000124",
+              "m:C_AUDIO_GENERAL:1790913533.000113"
+            ],
+            "note": "The tutor asks whether others see the repetition; the QA tutor asks about fixed timing across playbacks. Neither message provides a diagnostic result.",
+            "gap_id": null
+          }
+        ],
+        "review_note": null,
+        "action_choice": null
+      },
+      "revised": false
+    },
+    "grounding": {
+      "structural_issues": [],
+      "action_issues": [],
+      "unsupported": [],
+      "unjudged": [],
+      "extraneous_verdicts": [],
+      "rejected": {},
+      "pending": [],
+      "action_sufficiency": null,
+      "source_consistency": {
+        "assessed_evidence_ids": [
+          "k:audio-multimodal-instructions@1.3:7a5ab59d",
+          "k:audio-multimodal-instructions@1.3:eb85357a",
+          "k:audio-multimodal-faq@1.1:f72aa6db"
+        ],
+        "relations": [
+          {
+            "evidence_ids": [
+              "k:audio-multimodal-instructions@1.3:7a5ab59d",
+              "k:audio-multimodal-faq@1.1:f72aa6db"
+            ],
+            "relation": "AGREE",
+            "point": "Confirm the requested language and permitted switching before classifying a language mismatch.",
+            "disagreement_scope": null,
+            "rationale": "Both current sources require this check. The FAQ adds classification detail without contradicting the instructions. Neither it nor the overlap section supplies a competing rule for repeated-phrase diagnostics."
+          }
+        ],
+        "declared_conflict_checks": []
+      },
+      "alternative_sufficiency": {},
+      "status": "PASSED",
+      "basis": "SEMANTIC",
+      "statements": [
+        {
+          "statement_id": "claim:c1",
+          "kind": "CLAIM_INCIDENT_FACT",
+          "text": "A tutor reports that the last phrase repeats verbatim in the generated answer and asks whether anyone else sees it. Verbatim quote: \"Last phrase repeats verbatim in the generated answer. Anyone seeing this?\"",
+          "blocking": true,
+          "evidence_ids": [
+            "m:C_AUDIO_GENERAL:1790913477.000124"
+          ],
+          "attributions": [
+            {
+              "user_id": "U004",
+              "relation": "AUTHOR",
+              "evidence_id": "m:C_AUDIO_GENERAL:1790913477.000124",
+              "role": "TUTOR"
+            }
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "The tutor's cited message reports the repeated final phrase and asks whether others see it. The quotation is exact."
+        },
+        {
+          "statement_id": "claim:c2",
+          "kind": "CLAIM_INCIDENT_FACT",
+          "text": "A QA tutor asks whether the repetition occurs at a fixed timestamp across playbacks. Verbatim quote: \"Does the repetition occur at a fixed timestamp across playbacks?\"",
+          "blocking": true,
+          "evidence_ids": [
+            "m:C_AUDIO_GENERAL:1790913533.000113"
+          ],
+          "attributions": [
+            {
+              "user_id": "U002",
+              "relation": "AUTHOR",
+              "evidence_id": "m:C_AUDIO_GENERAL:1790913533.000113",
+              "role": "QA_TUTOR"
+            }
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "The cited QA tutor asks exactly this timestamp question, and the quotation matches."
+        },
+        {
+          "statement_id": "claim:c3",
+          "kind": "CLAIM_INFERENCE",
+          "text": "The thread contains no answer to the QA tutor's timestamp question and no resolution of the tutor's report.",
+          "blocking": true,
+          "evidence_ids": [
+            "m:C_AUDIO_GENERAL:1790913477.000124",
+            "m:C_AUDIO_GENERAL:1790913533.000113"
+          ],
+          "attributions": [
+            {
+              "user_id": "U004",
+              "relation": "AUTHOR",
+              "evidence_id": "m:C_AUDIO_GENERAL:1790913477.000124",
+              "role": "TUTOR"
+            },
+            {
+              "user_id": "U002",
+              "relation": "AUTHOR",
+              "evidence_id": "m:C_AUDIO_GENERAL:1790913533.000113",
+              "role": "QA_TUTOR"
+            }
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "The complete provided thread contains only the report and diagnostic question, with no answer or resolution."
+        },
+        {
+          "statement_id": "claim:c4",
+          "kind": "CLAIM_GUIDANCE",
+          "text": "Current project guidance requires recording where a phrase repeats, comparing the downloaded file with player output if feasible, and withholding a confirmed generation-defect label until available evidence distinguishes generation from playback. Verbatim quote: \"When a phrase repeats, record where it occurs. If feasible, compare the downloaded file with player output. Do not call it a confirmed generation defect until the available evidence distinguishes generation from playback.\"",
+          "blocking": true,
+          "evidence_ids": [
+            "k:audio-multimodal-instructions@1.3:7a5ab59d"
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "The current project-wide instructions explicitly give these diagnostic requirements, including the feasibility qualification. The quotation is exact."
+        },
+        {
+          "statement_id": "claim:c5",
+          "kind": "CLAIM_HISTORY",
+          "text": "The earlier same-batch review records a repeated-ending report retained as an open model/process observation, with a downloaded-file versus player comparison requested, no completed comparison or engineering escalation recorded, and reassessment conditional on evidence of a generation defect or material operational impact; it is history, not a standing rule.",
+          "blocking": true,
+          "evidence_ids": [
+            "k:audio-repeat-observation-review@1.0:ae0550d0"
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "The prior same-batch record states each described observation, request and conditional reassessment. The statement correctly identifies it as history rather than a standing rule."
+        },
+        {
+          "statement_id": "claim:c6",
+          "kind": "CLAIM_INFERENCE",
+          "text": "The current thread provides no downloaded-file versus player comparison, confirmed cause, or description of operational impact.",
+          "blocking": true,
+          "evidence_ids": [
+            "m:C_AUDIO_GENERAL:1790913477.000124",
+            "m:C_AUDIO_GENERAL:1790913533.000113"
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "Neither message supplies a file-versus-player comparison, establishes a cause or describes operational impact."
+        },
+        {
+          "statement_id": "summary:s1",
+          "kind": "SUMMARY",
+          "text": "A tutor reports that the last phrase repeats verbatim in a generated answer and asks whether anyone else sees it.",
+          "blocking": true,
+          "evidence_ids": [
+            "m:C_AUDIO_GENERAL:1790913477.000124"
+          ],
+          "attributions": [
+            {
+              "user_id": "U004",
+              "relation": "AUTHOR",
+              "evidence_id": "m:C_AUDIO_GENERAL:1790913477.000124",
+              "role": "TUTOR"
+            }
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "This accurately summarizes the tutor's own report and question without treating the reported generation issue as a verified cause."
+        },
+        {
+          "statement_id": "summary:s2",
+          "kind": "SUMMARY",
+          "text": "A QA tutor asks whether the repetition occurs at a fixed timestamp across playbacks; the thread contains no answer yet.",
+          "blocking": true,
+          "evidence_ids": [
+            "m:C_AUDIO_GENERAL:1790913533.000113",
+            "m:C_AUDIO_GENERAL:1790913477.000124"
+          ],
+          "attributions": [
+            {
+              "user_id": "U002",
+              "relation": "AUTHOR",
+              "evidence_id": "m:C_AUDIO_GENERAL:1790913533.000113",
+              "role": "QA_TUTOR"
+            },
+            {
+              "user_id": "U004",
+              "relation": "AUTHOR",
+              "evidence_id": "m:C_AUDIO_GENERAL:1790913477.000124",
+              "role": "TUTOR"
+            }
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "The QA tutor asks about a fixed timestamp across playbacks, and the complete thread contains no response."
+        },
+        {
+          "statement_id": "detail:d1",
+          "kind": "DETAIL",
+          "text": "Current guidance says to record where repetition occurs, compare the downloaded file with player output if feasible, and distinguish generation from playback before confirming a generation defect.",
+          "blocking": false,
+          "evidence_ids": [
+            "k:audio-multimodal-instructions@1.3:7a5ab59d"
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "This preserves the current instructions' requirements and the conditional nature of the comparison."
+        },
+        {
+          "statement_id": "detail:d2",
+          "kind": "DETAIL",
+          "text": "An earlier same-batch review retained a repeated-ending report as an open observation, with no completed diagnostic comparison or engineering escalation recorded.",
+          "blocking": false,
+          "evidence_ids": [
+            "k:audio-repeat-observation-review@1.0:ae0550d0"
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "The historical same-batch review explicitly records an open observation and no completed diagnostic comparison or engineering escalation."
+        },
+        {
+          "statement_id": "detail:d3",
+          "kind": "DETAIL",
+          "text": "The current thread provides no downloaded-file versus player comparison or description of operational impact.",
+          "blocking": false,
+          "evidence_ids": [
+            "m:C_AUDIO_GENERAL:1790913477.000124",
+            "m:C_AUDIO_GENERAL:1790913533.000113"
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "The complete current thread includes neither the comparison nor a description of operational impact."
+        },
+        {
+          "statement_id": "action:no_action",
+          "kind": "NO_ACTION_RATIONALE",
+          "text": "Why no further action is needed now: Current guidance already covers the diagnostic distinction, and the earlier review deliberately retained a similar report as an observation. The current thread adds no comparison or operational-impact evidence warranting a new intervention.",
+          "blocking": false,
+          "evidence_ids": [
+            "m:C_AUDIO_GENERAL:1790913477.000124",
+            "k:audio-multimodal-instructions@1.3:7a5ab59d",
+            "k:audio-repeat-observation-review@1.0:ae0550d0",
+            "m:C_AUDIO_GENERAL:1790913533.000113"
+          ],
+          "verdict": "UNSUPPORTED",
+          "model_verdict": "UNSUPPORTED",
+          "rationale": "Existing diagnostic guidance and a historical deferral do not establish that no further intervention is needed now. The current repetition report remains unresolved, the diagnostic question is unanswered, and the comparison contemplated by guidance has not been supplied. Absence of comparison or impact evidence does not establish that follow-up is unwarranted."
+        },
+        {
+          "statement_id": "resolution:member_bf78a803da0c161765aa7bed",
+          "kind": "RESOLUTION",
+          "text": "Member thread member_bf78a803da0c161765aa7bed is UNRESOLVED: The tutor reports repetition, and the QA tutor replies with a diagnostic question; the thread contains no answer or resolution.",
+          "blocking": true,
+          "evidence_ids": [
+            "m:C_AUDIO_GENERAL:1790913477.000124",
+            "m:C_AUDIO_GENERAL:1790913533.000113"
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "The complete thread ends with the QA tutor's diagnostic question and contains no answer, confirmation of a fix or other resolution."
+        },
+        {
+          "statement_id": "severity:rationale",
+          "kind": "SEVERITY_RATIONALE",
+          "text": "Severity LOW: A tutor describes a localized repeated phrase, without reporting inability to work, scoring disagreement or broader disruption. The earlier similar observation does not establish meaningful current workflow impact.",
+          "blocking": true,
+          "evidence_ids": [
+            "m:C_AUDIO_GENERAL:1790913477.000124",
+            "m:C_AUDIO_GENERAL:1790913533.000113"
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "The current report concerns a repeated ending phrase and reports none of the listed workflow consequences. LOW is consistent with the limited reported impact, and the earlier observation does not establish current operational impact."
+        },
+        {
+          "statement_id": "severity:recurrence",
+          "kind": "HISTORICAL_RECURRENCE",
+          "text": "Retrieved records show this problem occurred before.",
+          "blocking": true,
+          "evidence_ids": [
+            "k:audio-repeat-observation-review@1.0:ae0550d0"
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "The retrieved historical review documents an earlier report of the last phrase being spoken twice. This establishes an earlier occurrence of the reported symptom, not a shared verified cause."
+        },
+        {
+          "statement_id": "reporter:U004",
+          "kind": "AFFECTED_REPORTER",
+          "text": "U004 reports, in their own cited message, being affected by this problem.",
+          "blocking": true,
+          "evidence_ids": [
+            "m:C_AUDIO_GENERAL:1790913477.000124"
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "U004's own message directly reports encountering the repeated final phrase."
+        }
+      ]
+    },
+    "temporal": {
+      "status": "NONE_FOUND",
+      "findings": [],
+      "source_consistency": "ASSESSED",
+      "ignored_revision_states": "NOT_YET_EFFECTIVE and NOT_APPROVED revisions never compete with applicable guidance."
+    },
+    "temporal_before_grounding": {
+      "status": "NONE_FOUND",
+      "findings": [],
+      "source_consistency": "NOT_ASSESSED",
+      "ignored_revision_states": "NOT_YET_EFFECTIVE and NOT_APPROVED revisions never compete with applicable guidance."
+    },
+    "severity": {
+      "assessment": {
+        "level": "LOW",
+        "assessment_status": "ASSESSED",
+        "rubric_version": "severity-rubric-v3-semantic-signals",
+        "rubric_content_sha256": "eccaa31a2ab84a0aa7c005216a92fc39681e1dd10107117344948235a76673f4",
+        "rubric_project_id": null,
+        "rubric_scope": "SHARED_DEFAULT",
+        "rationale": "A tutor describes a localized repeated phrase, without reporting inability to work, scoring disagreement or broader disruption. The earlier similar observation does not establish meaningful current workflow impact.",
+        "matched_signals": [],
+        "evidence": [],
+        "occurrence": {
+          "affected_reporters": {
+            "status": "LOWER_BOUND",
+            "count": 1,
+            "ids": [
+              "U004"
+            ],
+            "basis": "Distinct authors whose own cited message reports the problem; other participants are not counted.",
+            "evidence": [
+              {
+                "kind": "slack_message",
+                "project_id": "audio_multimodal",
+                "batch_id": "audio_batch_06",
+                "scope": "project",
+                "channel_id": "C_AUDIO_GENERAL",
+                "thread_id": "1790913477.000124",
+                "message_id": "1790913477.000124",
+                "document_id": null,
+                "version_id": null,
+                "authoring_document_id": null,
+                "authoring_version": null,
+                "section": null,
+                "chunk_id": null,
+                "candidate_group_id": null,
+                "member_id": "member_bf78a803da0c161765aa7bed",
+                "artifact": null,
+                "artifact_sha256": null,
+                "quote": null,
+                "note": "m:C_AUDIO_GENERAL:1790913477.000124"
+              }
+            ]
+          },
+          "affected_tasks": {
+            "status": "UNKNOWN",
+            "count": null,
+            "ids": [],
+            "basis": null,
+            "evidence": []
+          },
+          "relevant_threads": [
+            {
+              "project_id": "audio_multimodal",
+              "batch_id": "audio_batch_06",
+              "channel_id": "C_AUDIO_GENERAL",
+              "thread_id": "1790913477.000124",
+              "member_id": "member_bf78a803da0c161765aa7bed"
+            }
+          ],
+          "reporting_window": {
+            "start": "2026-10-02T03:57:57.000124+00:00",
+            "end": "2026-10-02T03:58:53.000113+00:00"
+          },
+          "historical_recurrence": {
+            "status": "FOUND",
+            "sources": [
+              {
+                "kind": "knowledge_source",
+                "project_id": "audio_multimodal",
+                "batch_id": "audio_batch_06",
+                "scope": "project",
+                "channel_id": null,
+                "thread_id": null,
+                "message_id": null,
+                "document_id": "knowledge_ab54b881b410b811d30b6755b3f03a93630cb02ff92bed49a00eebb6beba1631",
+                "version_id": "version_5a5f26377845f31ca6d86c95f37e4bd29cf834448ba7150c26bcff755640f4b6",
+                "authoring_document_id": "audio-repeat-observation-review",
+                "authoring_version": "1.0",
+                "section": "Evidence",
+                "chunk_id": "chunk_ae0550d0ca581c1d6e6ceced6f910af9",
+                "candidate_group_id": null,
+                "member_id": null,
+                "artifact": null,
+                "artifact_sha256": null,
+                "quote": null,
+                "note": "k:audio-repeat-observation-review@1.0:ae0550d0 (PRIOR_DECISION; CURRENT)"
+              }
+            ],
+            "event_series_ids": []
+          },
+          "known_denominator": null,
+          "structural": {
+            "threads": 1,
+            "messages": 2,
+            "distinct_participants": 2,
+            "duplicate_threads_ignored": 0,
+            "duplicate_messages_ignored": 0,
+            "computed_from": "topic member threads (original Slack messages)",
+            "participants_are_not_affected_reporters": true
+          },
+          "semantic_identification": "ASSESSED"
+        },
+        "inherited_from": {
+          "level": "UNKNOWN",
+          "assessment_status": "UNASSESSED",
+          "assessment_deferred_to": "AGENT3",
+          "reason": "Agent 2 performs taxonomy only."
+        }
+      },
+      "issues": [],
+      "notes": [],
+      "proposal": {
+        "level": "LOW",
+        "rationale": "A tutor describes a localized repeated phrase, without reporting inability to work, scoring disagreement or broader disruption. The earlier similar observation does not establish meaningful current workflow impact.",
+        "signals": [],
+        "affected_reporters": [
+          {
+            "author_id": "U004",
+            "evidence_id": "m:C_AUDIO_GENERAL:1790913477.000124"
+          }
+        ],
+        "recurrence": "FOUND",
+        "recurrence_evidence_ids": [
+          "k:audio-repeat-observation-review@1.0:ae0550d0"
+        ],
+        "reported_recurrence_evidence_ids": []
+      }
+    },
+    "resolution": {
+      "topic": "UNRESOLVED",
+      "members": {
+        "member_bf78a803da0c161765aa7bed": "UNRESOLVED"
+      },
+      "agent1_attributed": [
+        {
+          "member_id": "member_bf78a803da0c161765aa7bed",
+          "state": "UNRESOLVED",
+          "agent1_verification_status": "VERIFIED",
+          "agent1_review_required": false
+        }
+      ]
+    },
+    "established_handling": [],
+    "coverage_issues": [],
+    "action_source": "DRAFT",
+    "action_notes": [],
+    "tot": {
+      "status": "NOT_TRIGGERED",
+      "triggers": [],
+      "choice_after_grounding": {
+        "status": "NOT_COMPARED",
+        "viable": []
+      }
+    },
+    "evidence_ledger": {
+      "m:C_AUDIO_GENERAL:1790913477.000124": {
+        "evidence_id": "m:C_AUDIO_GENERAL:1790913477.000124",
+        "origin": "member_message",
+        "use": "MEMBER_REPORT",
+        "member_id": "member_bf78a803da0c161765aa7bed",
+        "channel_id": "C_AUDIO_GENERAL",
+        "thread_id": "1790913477.000124",
+        "message_id": "1790913477.000124",
+        "author_id": "U004",
+        "author_name": "Sofia",
+        "author_role": "TUTOR",
+        "timestamp": "2026-10-02T03:57:57.000124Z",
+        "thread_starter_id": "U004",
+        "thread_starter_role": "TUTOR",
+        "reactions": [
+          {
+            "name": "eyes",
+            "users": [
+              {
+                "id": "U006",
+                "name": "Priya"
+              }
+            ]
+          }
+        ],
+        "excerpt": "Last phrase repeats verbatim in the generated answer. Anyone seeing this?"
+      },
+      "m:C_AUDIO_GENERAL:1790913533.000113": {
+        "evidence_id": "m:C_AUDIO_GENERAL:1790913533.000113",
+        "origin": "member_message",
+        "use": "MEMBER_REPORT",
+        "member_id": "member_bf78a803da0c161765aa7bed",
+        "channel_id": "C_AUDIO_GENERAL",
+        "thread_id": "1790913477.000124",
+        "message_id": "1790913533.000113",
+        "author_id": "U002",
+        "author_name": "Mina",
+        "author_role": "QA_TUTOR",
+        "timestamp": "2026-10-02T03:58:53.000113Z",
+        "thread_starter_id": "U004",
+        "thread_starter_role": "TUTOR",
+        "reactions": [],
+        "excerpt": "Does the repetition occur at a fixed timestamp across playbacks?"
+      },
+      "k:audio-multimodal-instructions@1.3:7a5ab59d": {
+        "evidence_id": "k:audio-multimodal-instructions@1.3:7a5ab59d",
+        "origin": "retrieved_source",
+        "use": "CURRENT_GUIDANCE",
+        "citation": {
+          "document_id": "knowledge_3057c26d60654a68d0b76c025ba216366dd48f3e97b64f5aae68364a45170b8a",
+          "version_id": "version_03e4c185c65cbfbe35dccab040cc429ac6887e3cb0edc4f52cb5ea5a56970a24",
+          "chunk_id": "chunk_7a5ab59d9fc3e6054d7e7141693ea05f",
+          "authoring": "audio-multimodal-instructions@1.3",
+          "title": "Audio Multimodal — Instructions (v1.3)",
+          "sections": [
+            "Language and repeated audio"
+          ],
+          "source": {
+            "batch_id": null,
+            "channel_id": null,
+            "manual_key": "audio-multimodal-instructions",
+            "message_id": null,
+            "permalink": null,
+            "project_id": "audio_multimodal",
+            "reference": null,
+            "system": "manual",
+            "thread_id": null,
+            "workspace_id": null
+          }
+        },
+        "source_type": "guideline",
+        "record_kind": "guideline",
+        "applicability": {
+          "state": "CURRENT",
+          "revision_state": "CURRENT",
+          "version_mode": "current",
+          "replaced_by": [],
+          "unverified_supersession": [],
+          "supersedes": [],
+          "enactment": null,
+          "other_revisions": []
+        },
+        "dates": {
+          "source_date": "2026-09-15T13:00:00Z",
+          "basis": "effective_at",
+          "effective_at": "2026-09-15T13:00:00Z",
+          "created_at": null,
+          "valid_until": null,
+          "expired_as_of": false,
+          "reference_time": "2026-10-02T12:00:00Z"
+        },
+        "scope": {
+          "project_id": "audio_multimodal",
+          "batch_id": null,
+          "scope": "project",
+          "batch_relation": "project_wide"
+        },
+        "authority": {
+          "role": "TEAM_LEAD",
+          "actor": "U006",
+          "actor_relation": "RECORD_AUTHORITY",
+          "approval_status": "EXPLICIT_SOURCE_MARKER",
+          "provenance": "synthetic_manual_record"
+        },
+        "authorship": {
+          "author_id": null,
+          "verified": false,
+          "basis": "NO_AUTHOR_RECORDED"
+        },
+        "recorded_states": {
+          "status": "approved",
+          "decision_status": null,
+          "execution_status": null,
+          "outcome_status": null
+        },
+        "upstream_review": null,
+        "excerpt": "## Language and repeated audio\nConfirm the requested language and any permitted switching before recording a language mismatch. A familiar accent or an ordinary loanword is not automatically a defect.\n\nWhen a phrase repeats, record where it occurs. If feasible, compare the downloaded file with player output. Do not call it a confirmed generation defect until the available evidence distinguishes generation from playback."
+      },
+      "k:audio-repeat-observation-review@1.0:ae0550d0": {
+        "evidence_id": "k:audio-repeat-observation-review@1.0:ae0550d0",
+        "origin": "retrieved_source",
+        "use": "PRIOR_DECISION",
+        "citation": {
+          "document_id": "knowledge_ab54b881b410b811d30b6755b3f03a93630cb02ff92bed49a00eebb6beba1631",
+          "version_id": "version_5a5f26377845f31ca6d86c95f37e4bd29cf834448ba7150c26bcff755640f4b6",
+          "chunk_id": "chunk_ae0550d0ca581c1d6e6ceced6f910af9",
+          "authoring": "audio-repeat-observation-review@1.0",
+          "title": "Repeated ending retained as an observation",
+          "sections": [
+            "Evidence",
+            "Suggested advice",
+            "TL decision",
+            "State"
+          ],
+          "source": {
+            "batch_id": "audio_batch_06",
+            "channel_id": null,
+            "manual_key": "audio-repeat-observation-review",
+            "message_id": null,
+            "permalink": null,
+            "project_id": "audio_multimodal",
+            "reference": null,
+            "system": "manual",
+            "thread_id": null,
+            "workspace_id": null
+          }
+        },
+        "source_type": "decision",
+        "record_kind": "advice_review",
+        "applicability": {
+          "state": "CURRENT",
+          "revision_state": "CURRENT",
+          "version_mode": "current",
+          "replaced_by": [],
+          "unverified_supersession": [],
+          "supersedes": [],
+          "enactment": {
+            "status": "NOT_ENACTED",
+            "basis": null,
+            "governing_sources": [],
+            "missing": [
+              "NO_TL_APPROVAL",
+              "NOT_A_POLICY_CHANGE",
+              "NO_ENACTMENT_EVIDENCE"
+            ],
+            "recorded": {
+              "decision_status": "tl_deferred",
+              "execution_status": "evidence_requested",
+              "authority_role": "TEAM_LEAD",
+              "batch_id": "audio_batch_06",
+              "valid_until": null,
+              "effective_at": "2026-09-29T14:00:00Z"
+            }
+          },
+          "other_revisions": []
+        },
+        "dates": {
+          "source_date": "2026-09-29T14:00:00Z",
+          "basis": "effective_at",
+          "effective_at": "2026-09-29T14:00:00Z",
+          "created_at": null,
+          "valid_until": null,
+          "expired_as_of": false,
+          "reference_time": "2026-10-02T12:00:00Z"
+        },
+        "scope": {
+          "project_id": "audio_multimodal",
+          "batch_id": "audio_batch_06",
+          "scope": "project",
+          "batch_relation": "same_batch"
+        },
+        "authority": {
+          "role": "TEAM_LEAD",
+          "actor": "U006",
+          "actor_relation": "RECORD_AUTHORITY",
+          "approval_status": "NO_APPROVAL_MARKER",
+          "provenance": "synthetic_manual_record"
+        },
+        "authorship": {
+          "author_id": null,
+          "verified": false,
+          "basis": "NO_AUTHOR_RECORDED"
+        },
+        "recorded_states": {
+          "status": "tl_deferred",
+          "decision_status": "tl_deferred",
+          "execution_status": "evidence_requested",
+          "outcome_status": "undetermined"
+        },
+        "upstream_review": null,
+        "excerpt": "[PRIOR RECORD (advice_review; decision_status: tl_deferred; execution_status: evidence_requested; outcome_status: undetermined) - history, not a standing rule.]\n# Repeated ending retained as an observation\n\n## Evidence\nA06-REP-14 was reported as speaking the last phrase twice although its transcript showed the phrase once. The review packet contained a player screenshot and the transcript, but no downloaded recording or comparison on a second player.\n\n## Suggested advice\nA simulated Advisor card proposed escalating a confirmed audio-generation loop.\n\n## TL decision\nPriya deferred that claim and retained the report as a model/process observation. Request a downloaded-file versus player comparison when available. A repeated phrase in the player does not yet locate the defect in the generated file.\n\nNo FAQ rule change or confirmed model-defect announcement was approved. If the additional evidence establishes a generation defect or material operational impact, reassess the intervention.\n\n## State\nThe observation is open. There is no completed diagnostic comparison or engineering escalation in this record."
+      },
+      "k:audio-multimodal-instructions@1.3:eb85357a": {
+        "evidence_id": "k:audio-multimodal-instructions@1.3:eb85357a",
+        "origin": "retrieved_source",
+        "use": "CURRENT_GUIDANCE",
+        "citation": {
+          "document_id": "knowledge_3057c26d60654a68d0b76c025ba216366dd48f3e97b64f5aae68364a45170b8a",
+          "version_id": "version_03e4c185c65cbfbe35dccab040cc429ac6887e3cb0edc4f52cb5ea5a56970a24",
+          "chunk_id": "chunk_eb85357a2c0b0e254c4f95c9d38a0bae",
+          "authoring": "audio-multimodal-instructions@1.3",
+          "title": "Audio Multimodal — Instructions (v1.3)",
+          "sections": [
+            "Overlap and transcript correspondence"
+          ],
+          "source": {
+            "batch_id": null,
+            "channel_id": null,
+            "manual_key": "audio-multimodal-instructions",
+            "message_id": null,
+            "permalink": null,
+            "project_id": "audio_multimodal",
+            "reference": null,
+            "system": "manual",
+            "thread_id": null,
+            "workspace_id": null
+          }
+        },
+        "source_type": "guideline",
+        "record_kind": "guideline",
+        "applicability": {
+          "state": "CURRENT",
+          "revision_state": "CURRENT",
+          "version_mode": "current",
+          "replaced_by": [],
+          "unverified_supersession": [],
+          "supersedes": [],
+          "enactment": null,
+          "other_revisions": []
+        },
+        "dates": {
+          "source_date": "2026-09-15T13:00:00Z",
+          "basis": "effective_at",
+          "effective_at": "2026-09-15T13:00:00Z",
+          "created_at": null,
+          "valid_until": null,
+          "expired_as_of": false,
+          "reference_time": "2026-10-02T12:00:00Z"
+        },
+        "scope": {
+          "project_id": "audio_multimodal",
+          "batch_id": null,
+          "scope": "project",
+          "batch_relation": "project_wide"
+        },
+        "authority": {
+          "role": "TEAM_LEAD",
+          "actor": "U006",
+          "actor_relation": "RECORD_AUTHORITY",
+          "approval_status": "EXPLICIT_SOURCE_MARKER",
+          "provenance": "synthetic_manual_record"
+        },
+        "authorship": {
+          "author_id": null,
+          "verified": false,
+          "basis": "NO_AUTHOR_RECORDED"
+        },
+        "recorded_states": {
+          "status": "approved",
+          "decision_status": null,
+          "execution_status": null,
+          "outcome_status": null
+        },
+        "upstream_review": null,
+        "excerpt": "## Overlap and transcript correspondence\nMark the overlapping or unintelligible interval. Keep usable portions of the clip and timestamp the affected span. Distinguish words missing from the audio from mistakes in the reference transcript."
+      },
+      "k:audio-multimodal-faq@1.1:f72aa6db": {
+        "evidence_id": "k:audio-multimodal-faq@1.1:f72aa6db",
+        "origin": "retrieved_source",
+        "use": "CURRENT_GUIDANCE",
+        "citation": {
+          "document_id": "knowledge_1f550e377f9c310f57f03e5bf482f810999d822a9cf4b1db3be5f2557678f15e",
+          "version_id": "version_66a170bbd46011e80d06da6d0bf5ec8b73486a84c13e015f60222fa711e05727",
+          "chunk_id": "chunk_f72aa6dbc3db35c9f2e9e216b1c8c18f",
+          "authoring": "audio-multimodal-faq@1.1",
+          "title": "Audio Multimodal — FAQ (v1.1)",
+          "sections": [
+            "Language and TTS"
+          ],
+          "source": {
+            "batch_id": null,
+            "channel_id": null,
+            "manual_key": "audio-multimodal-faq",
+            "message_id": null,
+            "permalink": null,
+            "project_id": "audio_multimodal",
+            "reference": null,
+            "system": "manual",
+            "thread_id": null,
+            "workspace_id": null
+          }
+        },
+        "source_type": "faq",
+        "record_kind": "faq",
+        "applicability": {
+          "state": "CURRENT",
+          "revision_state": "CURRENT",
+          "version_mode": "current",
+          "replaced_by": [],
+          "unverified_supersession": [],
+          "supersedes": [],
+          "enactment": null,
+          "other_revisions": []
+        },
+        "dates": {
+          "source_date": "2026-09-20T13:00:00Z",
+          "basis": "effective_at",
+          "effective_at": "2026-09-20T13:00:00Z",
+          "created_at": null,
+          "valid_until": null,
+          "expired_as_of": false,
+          "reference_time": "2026-10-02T12:00:00Z"
+        },
+        "scope": {
+          "project_id": "audio_multimodal",
+          "batch_id": null,
+          "scope": "project",
+          "batch_relation": "project_wide"
+        },
+        "authority": {
+          "role": "TEAM_LEAD",
+          "actor": "U006",
+          "actor_relation": "RECORD_AUTHORITY",
+          "approval_status": "EXPLICIT_SOURCE_MARKER",
+          "provenance": "synthetic_manual_record"
+        },
+        "authorship": {
+          "author_id": null,
+          "verified": false,
+          "basis": "NO_AUTHOR_RECORDED"
+        },
+        "recorded_states": {
+          "status": "approved",
+          "decision_status": null,
+          "execution_status": null,
+          "outcome_status": null
+        },
+        "upstream_review": null,
+        "excerpt": "## Language and TTS\n\n### Q: The generated speech is in the wrong language. Is that a playback failure?\nConfirm the requested language and permitted switching. If the recording itself contains an unrequested language mismatch, record it as a language-quality issue rather than a playback failure."
+      },
+      "k:audio-playback-trial-outcome@1.0:16332fce": {
+        "evidence_id": "k:audio-playback-trial-outcome@1.0:16332fce",
+        "origin": "retrieved_source",
+        "use": "PRIOR_DECISION",
+        "citation": {
+          "document_id": "knowledge_0275b462748a8a7b5a600acb280fce9f69b723e516513fd4e3e4b597636d45aa",
+          "version_id": "version_1b6511c8fab4b27ab142d486c910793ba83b2bf9e5dbe3e96e720c0ce24d0443",
+          "chunk_id": "chunk_16332fce53141e95deee8eda018cb84a",
+          "authoring": "audio-playback-trial-outcome@1.0",
+          "title": "Playback trial follow-up — unsuitable as a general workaround",
+          "sections": [
+            "Trial observation",
+            "TL conclusion"
+          ],
+          "source": {
+            "batch_id": "audio_batch_05",
+            "channel_id": null,
+            "manual_key": "audio-playback-trial-outcome",
+            "message_id": null,
+            "permalink": null,
+            "project_id": "audio_multimodal",
+            "reference": null,
+            "system": "manual",
+            "thread_id": null,
+            "workspace_id": null
+          }
+        },
+        "source_type": "decision",
+        "record_kind": "follow_up",
+        "applicability": {
+          "state": "CURRENT",
+          "revision_state": "CURRENT",
+          "version_mode": "current",
+          "replaced_by": [],
+          "unverified_supersession": [],
+          "supersedes": [],
+          "enactment": {
+            "status": "NOT_ENACTED",
+            "basis": null,
+            "governing_sources": [],
+            "missing": [
+              "NO_TL_APPROVAL",
+              "OUT_OF_SCOPE",
+              "NOT_A_POLICY_CHANGE",
+              "NO_ENACTMENT_EVIDENCE"
+            ],
+            "recorded": {
+              "decision_status": "reported",
+              "execution_status": "trial_completed",
+              "authority_role": "TEAM_LEAD",
+              "batch_id": "audio_batch_05",
+              "valid_until": null,
+              "effective_at": "2026-08-27T16:00:00Z"
+            }
+          },
+          "other_revisions": []
+        },
+        "dates": {
+          "source_date": "2026-08-27T16:00:00Z",
+          "basis": "effective_at",
+          "effective_at": "2026-08-27T16:00:00Z",
+          "created_at": null,
+          "valid_until": null,
+          "expired_as_of": false,
+          "reference_time": "2026-10-02T12:00:00Z"
+        },
+        "scope": {
+          "project_id": "audio_multimodal",
+          "batch_id": "audio_batch_05",
+          "scope": "project",
+          "batch_relation": "other_batch"
+        },
+        "authority": {
+          "role": "TEAM_LEAD",
+          "actor": "U006",
+          "actor_relation": "RECORD_AUTHORITY",
+          "approval_status": "NO_APPROVAL_MARKER",
+          "provenance": "synthetic_manual_record"
+        },
+        "authorship": {
+          "author_id": null,
+          "verified": false,
+          "basis": "NO_AUTHOR_RECORDED"
+        },
+        "recorded_states": {
+          "status": "reported",
+          "decision_status": "reported",
+          "execution_status": "trial_completed",
+          "outcome_status": "unsuccessful_in_sample"
+        },
+        "upstream_review": null,
+        "excerpt": "[PRIOR RECORD (follow_up; decision_status: reported; execution_status: trial_completed; outcome_status: unsuccessful_in_sample) - history, not a standing rule.]\n## Trial observation\nPriya reviewed the six reported trial attempts below. Each row records the participant's observed result after one reload; the review did not establish a common underlying cause.\n\n| Task | Playback after one reload |\n| --- | --- |\n| A05-P101 | Started |\n| A05-P102 | Still stuck |\n| A05-P103 | Still stuck |\n| A05-P104 | Started |\n| A05-P105 | Still stuck |\n| A05-P106 | Still stuck |\n\n## TL conclusion\nTwo of six attempts restored playback; four did not. The trial did not provide a dependable general workaround. The batch-05 authorization remains time-limited and is not extended into a later queue.\n\nContinue recording task IDs and reproduction details. Do not describe the incident as fixed or assume that a new batch has the same cause."
+      }
+    },
+    "card": {
+      "contract_version": "agent3-advice-card-v4",
+      "record_type": "ADVICE_CARD",
+      "card_id": "card_ee7cc9dee61f47be555153369dfbc8ce",
+      "project_id": "audio_multimodal",
+      "topic_name": "Repeated ending phrase in generated answer",
+      "card_line": "OBSERVATION",
+      "summary": "A tutor reports that the last phrase repeats verbatim in a generated answer and asks whether anyone else sees it. A QA tutor asks whether the repetition occurs at a fixed timestamp across playbacks; the thread contains no answer yet.",
+      "severity": {
+        "level": "LOW",
+        "assessment_status": "ASSESSED",
+        "rubric_version": "severity-rubric-v3-semantic-signals",
+        "rubric_content_sha256": "eccaa31a2ab84a0aa7c005216a92fc39681e1dd10107117344948235a76673f4",
+        "rubric_project_id": null,
+        "rubric_scope": "SHARED_DEFAULT",
+        "rationale": "A tutor describes a localized repeated phrase, without reporting inability to work, scoring disagreement or broader disruption. The earlier similar observation does not establish meaningful current workflow impact.",
+        "matched_signals": [],
+        "evidence": [],
+        "occurrence": {
+          "affected_reporters": {
+            "status": "LOWER_BOUND",
+            "count": 1,
+            "ids": [
+              "U004"
+            ],
+            "basis": "Distinct authors whose own cited message reports the problem; other participants are not counted.",
+            "evidence": [
+              {
+                "kind": "slack_message",
+                "project_id": "audio_multimodal",
+                "batch_id": "audio_batch_06",
+                "scope": "project",
+                "channel_id": "C_AUDIO_GENERAL",
+                "thread_id": "1790913477.000124",
+                "message_id": "1790913477.000124",
+                "document_id": null,
+                "version_id": null,
+                "authoring_document_id": null,
+                "authoring_version": null,
+                "section": null,
+                "chunk_id": null,
+                "candidate_group_id": null,
+                "member_id": "member_bf78a803da0c161765aa7bed",
+                "artifact": null,
+                "artifact_sha256": null,
+                "quote": null,
+                "note": "m:C_AUDIO_GENERAL:1790913477.000124"
+              }
+            ]
+          },
+          "affected_tasks": {
+            "status": "UNKNOWN",
+            "count": null,
+            "ids": [],
+            "basis": null,
+            "evidence": []
+          },
+          "relevant_threads": [
+            {
+              "project_id": "audio_multimodal",
+              "batch_id": "audio_batch_06",
+              "channel_id": "C_AUDIO_GENERAL",
+              "thread_id": "1790913477.000124",
+              "member_id": "member_bf78a803da0c161765aa7bed"
+            }
+          ],
+          "reporting_window": {
+            "start": "2026-10-02T03:57:57.000124+00:00",
+            "end": "2026-10-02T03:58:53.000113+00:00"
+          },
+          "historical_recurrence": {
+            "status": "FOUND",
+            "sources": [
+              {
+                "kind": "knowledge_source",
+                "project_id": "audio_multimodal",
+                "batch_id": "audio_batch_06",
+                "scope": "project",
+                "channel_id": null,
+                "thread_id": null,
+                "message_id": null,
+                "document_id": "knowledge_ab54b881b410b811d30b6755b3f03a93630cb02ff92bed49a00eebb6beba1631",
+                "version_id": "version_5a5f26377845f31ca6d86c95f37e4bd29cf834448ba7150c26bcff755640f4b6",
+                "authoring_document_id": "audio-repeat-observation-review",
+                "authoring_version": "1.0",
+                "section": "Evidence",
+                "chunk_id": "chunk_ae0550d0ca581c1d6e6ceced6f910af9",
+                "candidate_group_id": null,
+                "member_id": null,
+                "artifact": null,
+                "artifact_sha256": null,
+                "quote": null,
+                "note": "k:audio-repeat-observation-review@1.0:ae0550d0 (PRIOR_DECISION; CURRENT)"
+              }
+            ],
+            "event_series_ids": []
+          },
+          "known_denominator": null,
+          "structural": {
+            "threads": 1,
+            "messages": 2,
+            "distinct_participants": 2,
+            "duplicate_threads_ignored": 0,
+            "duplicate_messages_ignored": 0,
+            "computed_from": "topic member threads (original Slack messages)",
+            "participants_are_not_affected_reporters": true
+          },
+          "semantic_identification": "ASSESSED"
+        },
+        "inherited_from": {
+          "level": "UNKNOWN",
+          "assessment_status": "UNASSESSED",
+          "assessment_deferred_to": "AGENT3",
+          "reason": "Agent 2 performs taxonomy only."
+        }
+      },
+      "severity_is_provisional": false,
+      "resolution_status": "UNRESOLVED",
+      "recommended_action": null,
+      "reasoning": "What the evidence shows: A tutor reports that the last phrase repeats verbatim in the generated answer and asks whether anyone else sees it. A QA tutor asks whether the repetition occurs at a fixed timestamp across playbacks. The thread contains no answer to the QA tutor's timestamp question and no resolution of the tutor's report. Current project guidance requires recording where a phrase repeats, comparing the downloaded file with player output if feasible, and withholding a confirmed generation-defect label until available evidence distinguishes generation from playback. The earlier same-batch review records a repeated-ending report retained as an open model/process observation, with a downloaded-file versus player comparison requested, no completed comparison or engineering escalation recorded, and reassessment conditional on evidence of a generation defect or material operational impact; it is history, not a standing rule. The current thread provides no downloaded-file versus player comparison, confirmed cause, or description of operational impact. Thread status, read from each thread's own messages: unresolved ×1. Agent 1's earlier labels (an input, not evidence): unresolved ×1. 1 advisor statement was not supported by the evidence and not shown.",
+      "supporting_sources": [
+        {
+          "kind": "knowledge_source",
+          "project_id": "audio_multimodal",
+          "batch_id": null,
+          "scope": "project",
+          "channel_id": null,
+          "thread_id": null,
+          "message_id": null,
+          "document_id": "knowledge_3057c26d60654a68d0b76c025ba216366dd48f3e97b64f5aae68364a45170b8a",
+          "version_id": "version_03e4c185c65cbfbe35dccab040cc429ac6887e3cb0edc4f52cb5ea5a56970a24",
+          "authoring_document_id": "audio-multimodal-instructions",
+          "authoring_version": "1.3",
+          "section": "Language and repeated audio",
+          "chunk_id": "chunk_7a5ab59d9fc3e6054d7e7141693ea05f",
+          "candidate_group_id": null,
+          "member_id": null,
+          "artifact": null,
+          "artifact_sha256": null,
+          "quote": null,
+          "note": "k:audio-multimodal-instructions@1.3:7a5ab59d (CURRENT_GUIDANCE; CURRENT)"
+        },
+        {
+          "kind": "knowledge_source",
+          "project_id": "audio_multimodal",
+          "batch_id": "audio_batch_06",
+          "scope": "project",
+          "channel_id": null,
+          "thread_id": null,
+          "message_id": null,
+          "document_id": "knowledge_ab54b881b410b811d30b6755b3f03a93630cb02ff92bed49a00eebb6beba1631",
+          "version_id": "version_5a5f26377845f31ca6d86c95f37e4bd29cf834448ba7150c26bcff755640f4b6",
+          "authoring_document_id": "audio-repeat-observation-review",
+          "authoring_version": "1.0",
+          "section": "Evidence",
+          "chunk_id": "chunk_ae0550d0ca581c1d6e6ceced6f910af9",
+          "candidate_group_id": null,
+          "member_id": null,
+          "artifact": null,
+          "artifact_sha256": null,
+          "quote": null,
+          "note": "k:audio-repeat-observation-review@1.0:ae0550d0 (PRIOR_DECISION; CURRENT)"
+        },
+        {
+          "kind": "slack_message",
+          "project_id": "audio_multimodal",
+          "batch_id": "audio_batch_06",
+          "scope": "project",
+          "channel_id": "C_AUDIO_GENERAL",
+          "thread_id": "1790913477.000124",
+          "message_id": "1790913477.000124",
+          "document_id": null,
+          "version_id": null,
+          "authoring_document_id": null,
+          "authoring_version": null,
+          "section": null,
+          "chunk_id": null,
+          "candidate_group_id": null,
+          "member_id": "member_bf78a803da0c161765aa7bed",
+          "artifact": null,
+          "artifact_sha256": null,
+          "quote": null,
+          "note": "m:C_AUDIO_GENERAL:1790913477.000124"
+        },
+        {
+          "kind": "slack_message",
+          "project_id": "audio_multimodal",
+          "batch_id": "audio_batch_06",
+          "scope": "project",
+          "channel_id": "C_AUDIO_GENERAL",
+          "thread_id": "1790913477.000124",
+          "message_id": "1790913533.000113",
+          "document_id": null,
+          "version_id": null,
+          "authoring_document_id": null,
+          "authoring_version": null,
+          "section": null,
+          "chunk_id": null,
+          "candidate_group_id": null,
+          "member_id": "member_bf78a803da0c161765aa7bed",
+          "artifact": null,
+          "artifact_sha256": null,
+          "quote": null,
+          "note": "m:C_AUDIO_GENERAL:1790913533.000113"
+        }
+      ],
+      "related_threads": [
+        {
+          "project_id": "audio_multimodal",
+          "batch_id": "audio_batch_06",
+          "channel_id": "C_AUDIO_GENERAL",
+          "thread_id": "1790913477.000124",
+          "member_id": "member_bf78a803da0c161765aa7bed",
+          "permalink": null,
+          "display_reference": "1790913477.000124",
+          "label": "#audio-multimodal-general, 2026-10-02, started by a tutor: \"Last phrase repeats verbatim in the generated answer.\"",
+          "opening_text": "Last phrase repeats verbatim in the generated answer. Anyone seeing this?"
+        }
+      ],
+      "confidence": 0.9,
+      "confidence_band": "HIGH",
+      "needs_review_reasons": [],
+      "inherited_flags": [],
+      "checks": {
+        "grounding": "PASSED",
+        "temporal_conflict": "NONE_FOUND",
+        "open_confirmation": "NONE"
+      },
+      "lineage": {
+        "agent3_run_id": "agent3overnight_0b7636193a04d34b4fe271dfea902a96",
+        "handoff_contract": "agent2-taxonomy-handoff-v2",
+        "agent2_export_sha256": "7634a0c7af684201be9771b97e12c4379ed86cc8b4de7159caa55bd6816e9c26",
+        "agent2_schema_version": 8,
+        "candidate_group_id": "cluster_cd187cdcd10ce01b",
+        "topic_id": "cluster_cd187cdcd10ce01b/topic_1",
+        "member_ids": [
+          "member_bf78a803da0c161765aa7bed"
+        ],
+        "project_id": "audio_multimodal",
+        "batch_id": "audio_batch_06"
+      },
+      "review_notes": [],
+      "details": [
+        "Current guidance says to record where repetition occurs, compare the downloaded file with player output if feasible, and distinguish generation from playback before confirming a generation defect.",
+        "An earlier same-batch review retained a repeated-ending report as an open observation, with no completed diagnostic comparison or engineering escalation recorded.",
+        "The current thread provides no downloaded-file versus player comparison or description of operational impact."
+      ],
+      "next_step": {
+        "status": "NO_INTERVENTION_PROPOSED",
+        "rationale": null,
+        "explanation": "The advisor chose not to propose an intervention. Its reason is not shown because the evidence check found no support for it in the cited evidence. Treat this as the advisor's choice, not a confirmed decision."
+      }
+    },
+    "review_items": [],
+    "coverage": {
+      "group_members_outside_this_card": [],
+      "uncarried_obligations": []
+    },
+    "budget": {
+      "consumed": {
+        "retrieval_calls": 1,
+        "model_calls": 2
+      },
+      "limits": {
+        "model_calls_per_topic": 4,
+        "model_calls_total": 28,
+        "retrieval_calls_per_topic": 6,
+        "retrieval_calls_total": 42
+      }
+    },
+    "diagnostics": [
+      {
+        "code": "WITHHELD_STATEMENT",
+        "statement_id": "action:no_action",
+        "kind": "NO_ACTION_RATIONALE",
+        "text": "Why no further action is needed now: Current guidance already covers the diagnostic distinction, and the earlier review deliberately retained a similar report as an observation. The current thread adds no comparison or operational-impact evidence warranting a new intervention.",
+        "verdict": "UNSUPPORTED",
+        "rationale": "Existing diagnostic guidance and a historical deferral do not establish that no further intervention is needed now. The current repetition report remains unresolved, the diagnostic question is unanswered, and the comparison contemplated by guidance has not been supplied. Absence of comparison or impact evidence does not establish that follow-up is unwarranted.",
+        "blocking": false
+      }
+    ]
+  }
+}
