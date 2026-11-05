@@ -164,8 +164,10 @@ def test_participant_suggestion_attributed_passes_and_presented_as_policy_fails(
 
 def test_v16_changes_only_the_writing_guidance(frozen):
     manifest = json.loads((RUN/'run_manifest.json').read_text(encoding='utf-8'))
-    assert pilot.PROMPT_VERSION == 'agent3-advisor-prompts-v17'
-    assert pilot.grounding_inputs(manifest['fingerprints']['prompts']) == pilot.grounding_inputs(pilot.prompt_fingerprints())
+    assert pilot.PROMPT_VERSION == 'agent3-advisor-prompts-v18'
+    # v16 and v17 kept the grounding inputs; v18 adds the DETAIL and NO_ACTION_RATIONALE kinds, so this run's recorded
+    # verdicts are no longer reused in replay.
+    assert pilot.grounding_inputs(manifest['fingerprints']['prompts']) != pilot.grounding_inputs(pilot.prompt_fingerprints())
     for phrase in ("team lead's own voice", 'at the strength and scope of the governing source',
                    'is not stated as a rule unless a current guideline', 'Keep requests apart by who made them',
                    'without commenting on its absence', 'including severity.rationale', 'in the supplied batch context'):

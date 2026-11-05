@@ -1948,3 +1948,78 @@ human labels for the flags, not reviewer assessments; (c) an agreed resolution p
 RESOLVED_IN_THREAD without acceptance; (d) a decision on how much clearance an UNCERTAIN prior finding needs (human
 adjudication route); (e) dashboard handling for released flags. Until then INHERITED_FLAG routing is unchanged.
 
+## Flag-impact milestone closed (2026-11-04)
+
+Final status: flag-impact assessment is optional (`advise(flag_impact=True)`, `run_agent3_overnight.py --flag-impact`),
+shadow only, and cannot release a production review requirement; INHERITED_FLAG routing is unchanged. Completed:
+provenance and card dependencies, the opt-in assessment in the reserved grounding request, one live shadow experiment
+(`agent3_flag_impact_live_v1`, 3 topics, 6 requests, $0.37; unpaired, so no causal quality claim), and the offline
+reliability repairs (`agent3_flag_impact_reliability_v1`). Historical finding classifications (PriorFinding OPEN /
+CORRECTED / SUPERSEDED / UNCERTAIN) describe Agent 1's own record only; they never resolve, close or create a Model
+Review Queue obligation (every run keeps its 52 items: 41 + 8 + 3). Committed as `4df65ef`.
+
+## Representative end-to-end evaluation: preparation (2026-11-04, zero calls)
+
+Baseline: commit `4df65ef` (branch dashboard_design), clean working tree when fingerprinted (combined fingerprint
+`98aa45f5…`), prompts v17, production workflow with ReAct and flag-impact off. Selection and proposed expectations:
+`data/evaluation/agent3_e2e_eval_v1.json` (PROPOSED_EVALUATOR_ASSESSMENT; owner approval fields blank).
+
+Inventory (87 items, input properties only): 79 topics (47 unflagged, 32 flagged) and 8 projection gaps (all flagged by
+construction). Selected: six non-demo topics, two per project with the anchors (English audio generated in Spanish;
+tú/usted; language-day greetings; cosmetic ties; safety response-fetch failure; quoted harmful wording) and two anchors
+(Submit projection gap; audio buffering after the playback reminder). Three flagged, five unflagged.
+
+Preview (zero calls): 8 of 87 work items in scope (7 topics, 1 gap), snapshot `4da16f09…` and 23 window announcements
+compatible, scripted run accounting COMPLETE (22 members on cards, 52 queue items), real dashboard path loads all eight
+cards, draft requests 10,661-14,688 / 24,000. Live: 32 requests maximum, worst-case reservation 32 x $0.21184 = $6.78.
+Proposed command (paid, not run): `run_agent3_overnight.py --cutoff 2026-10-02T12:00:00Z --only <8 work IDs> --run
+--max-requests 32 --max-cost 7 --write data/experiments/agent3_e2e_eval_v1`.
+
+Run once 2026-11-05 (`data/experiments/agent3_e2e_eval_v1/`: expectations frozen before the run, live output in `run/`,
+evaluator inspection in `evaluation.json`): 17 requests, $0.93, accounting COMPLETE; 8/8 actions in the proposed sets,
+no displayed unsupported claim; one unnecessary review (cosmetic ties: a correct severity rationale withheld for a
+missing citation); missed evidence on buffering (batch-05 trial outcome not retrieved, as in the open evaluation case).
+
+## Presentation pass: two levels and an explicit next step (2026-11-05, offline)
+
+Problem: closed cards mixed situation, reporter breakdowns, policy and history in the summary, and a card with no action
+box left the team lead guessing whether no action was needed or a recommendation was withheld.
+
+Design (smallest compatible change):
+- Draft v11 adds `detail_sentences` (up to 6): the opened card's "What happened" (symptoms with roles, counts and task
+  references, requests made and what is missing, earlier records). Each condenses named claims and may refer back to
+  summary (`summary_depends_on`) or earlier detail sentences (`depends_on`); it is judged as one DETAIL statement
+  (`detail:dN`) in the existing final grounding call and shown only if SUPPORTED with every condensed claim and referenced
+  sentence shown. DETAIL is non-blocking: its claims block on their own, so a withheld detail sentence is listed for
+  review without changing which cards need review.
+- A NO_ACTION proposal's reason is judged as `action:no_action` (NO_ACTION_RATIONALE, non-blocking).
+- AdviceCard v4 adds `details` and `next_step` {status, rationale (judged text), explanation (fixed wording)}:
+  ACTION_RECOMMENDED, NO_ACTION_NEEDED (a supported NO_ACTION reason or action), NO_INTERVENTION_PROPOSED (NO_ACTION whose
+  reason was not validated), RECOMMENDATION_WITHHELD (an operational action that failed the checks), NO_RECOMMENDATION_
+  AVAILABLE. An absent action is never read as NO_ACTION_NEEDED. Card line and review reasons are computed as before.
+- Prompts v18: the writing guide gives each field one purpose (summary about 35-55 words: the situation and the open
+  point; instruction about 15-25 words; rationale says why the step fits; a diagnostic request stated once) and replaces
+  the earlier summary/rationale wording; the grounding rules gain DETAIL and NO_ACTION_RATIONALE, so verdicts recorded
+  under earlier grounding rules are not reused in replay. No new model call or stage.
+- Flag bindings: both new statements enter the element catalogue; dependency links map them to SUMMARY and
+  ACTION_RATIONALE (CardDependencies v1 unchanged); `card_text` covers v4 fields (v3 digests unchanged).
+- Dashboard: closed cards show the action box or the next-step line; opened cards show What happened, Why this next step
+  (or the state's explanation), What to check, then the draft with its scope note beside it. v3 cards load unchanged;
+  their state is derived read-only from the saved topic result (`Run.presentation`) and their saved reasoning is shown,
+  collapsed and labelled as earlier wording. The recorded cosmetic-ties card reads "No intervention proposed": the draft
+  chose NO_ACTION, whose reason was never judged; its failed severity assessment and Needs Review status stay.
+
+Evidence: prepared fixture run `data/experiments/agent3_presentation_prepared_v1/` (recorded e2e drafts plus hand-written
+detail sentences and hand-set verdicts; demonstrates the fields, not writing quality). Request size under v18 for Submit:
+draft 15,338 and grounding 16,343 tokens (38 statements) of 24,000. A live check of v18 writing needs separate
+authorization.
+
+
+Live acceptance 2026-11-05 (`data/experiments/agent3_v18_acceptance_v1/`, prompts v18, same eight items and member
+bindings, 16 requests, $0.86, no failures, accounting COMPLETE, 52 queue items): every card grounding PASSED; 8/8 actions
+in the unchanged proposed sets; no displayed unsupported content found on manual inspection; NO_ACTION_NEEDED on greetings
+and cosmetic ties (reasons judged SUPPORTED), NO_INTERVENTION_PROPOSED on English->Spanish (reason partly supported);
+v4 decision saved and replayed once in a throwaway demo database. Safeguard tests: `tests/test_agent3_presentation_safeguards.py`.
+Follow-ups (not blockers): check copy that says "recommendation passed" on cards without one; processing-flavoured words
+("retrieved conversations", "supplied thread"); one imprecise "close" for an open incident; documented retrieval misses;
+severity variation between runs. Recommendation: close the milestone.

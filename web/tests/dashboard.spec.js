@@ -465,3 +465,42 @@ test('closed cards are easy to scan; an opened card leads with what to check, wi
   await expect(box.getByTestId('what-to-review').getByTestId('review-item-reason')).toHaveCount(5)
   await expect(box.getByRole('tab', { name: 'Technical', selected: true })).toHaveCount(0)
 })
+
+// AdviceCard v4 (prepared fixture run, not model output) and a v3 card whose state is derived from its saved result.
+const PREPARED = 'agent3_presentation_prepared_v1'
+test('closed cards state the next step; opened cards explain what happened and why, and v3 cards stay as saved', async ({ page }) => {
+  server = await startServer('presentation')
+  await open(page, PREPARED)
+  const ties = cardBox(page, 'Tie judgments when differences are only cosmetic')
+  await expect(ties).toHaveAttribute('data-card-line', 'NEEDS_REVIEW')
+  await expect(ties.getByTestId('next-step-status')).toHaveAttribute('data-status', 'NO_ACTION_NEEDED')
+  await expect(ties.getByTestId('action-box')).toHaveCount(0)
+  await expect(ties.getByTestId('what-happened')).toHaveCount(0) // closed
+  await details(ties)
+  await expect(ties.getByTestId('detail-sentence')).toHaveCount(3)
+  await expect(ties.getByTestId('why-next-step')).toHaveAttribute('data-status', 'NO_ACTION_NEEDED')
+  await expect(ties.getByTestId('next-step-rationale')).toContainText('do not establish a remaining handling question')
+  await expect(ties.getByTestId('what-to-check')).toBeVisible() // the failed severity assessment still needs review
+  const submit = page.locator('[data-testid=card][data-topic-name^="Unassigned members of routed_440e64c7fbdcc49f"]')
+  await expect(submit.getByTestId('action-box')).toBeVisible()
+  await details(submit)
+  await expect(submit.getByTestId('detail-sentence')).toHaveCount(4) // sentence 4 unsupported, 5 withheld with it
+  await expect(submit.getByTestId('detail-sentence').filter({ hasText: 'validation fault' })).toHaveCount(0)
+  await expect(submit.getByTestId('why-next-step')).toContainText('Why this next step')
+  await expect(submit.getByTestId('action-scope')).toContainText('Applies only as stated')
+  const greet = cardBox(page, 'Language-day social greetings')
+  await expect(greet.getByTestId('next-step-status')).toHaveAttribute('data-status', 'NO_ACTION_NEEDED')
+  await details(greet)
+  await expect(greet.getByTestId('no-details')).toBeVisible()
+
+  const before = await server.api(`/api/runs/${ROUTING}/brief`)
+  await open(page, ROUTING)
+  const legacy = page.getByTestId('card').first()
+  const id = await legacy.getAttribute('data-card-id')
+  const saved = before.cards.find(c => c.card.card_id === id)
+  expect(saved.card.contract_version).toBe('agent3-advice-card-v3')
+  await expect(legacy.getByTestId('card-summary')).toHaveText(saved.card.summary)
+  await details(legacy)
+  await expect(legacy.getByTestId('what-happened')).toHaveAttribute('data-source', 'SAVED_REASONING')
+  await expect(legacy.getByTestId('next-step-derived')).toBeVisible()
+})

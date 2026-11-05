@@ -29,7 +29,7 @@ from pathlib import Path
 from typing import TypedDict
 
 from threadsense.agents import advisor_pilot as pilot
-from threadsense.agents.advice_contracts import AdviceCardV3, ModelReviewItem, stable_id
+from threadsense.agents.advice_contracts import ModelReviewItem, stable_id, validate_card
 from threadsense.agents.advice_inputs import (
     accounting_issues, load_effective_view, obligation_keys, review_items_from_announcement_route, review_items_from_view,
 )
@@ -425,7 +425,7 @@ def process_topic(rt, state):
         result = rt.advise(scenario, view=rt.view, retriever=rt.retriever, client=rt.client, budget=rt.state.budget,
                            rubric=rt.rubric, run_id=run_id(rt), as_of=rt.retriever.manifest['cutoff'],
                            **({'flag_impact': True} if rt.flag_impact else {}))
-        AdviceCardV3.model_validate(result['card'])
+        validate_card(result['card'])
         failed = [c for c in result['model_calls'] if c['status'] != 'OK']
         workflow = {'outcome': 'CARD_WITH_STAGE_FAILURES' if failed else 'CARD', 'card_id': result['card']['card_id'],
                     'card_line': result['card']['card_line'], 'grounding': result['grounding']['status'],
@@ -553,7 +553,7 @@ def review_queue(rt, card_of):
 
 def aggregate(rt):
     """The morning brief from validated card content only (no narrative generation)."""
-    cards = [AdviceCardV3.model_validate(r['result']['card']).model_dump(mode='json') for r in rt.results.values() if r.get('result')]
+    cards = [validate_card(r['result']['card']).model_dump(mode='json') for r in rt.results.values() if r.get('result')]
     sources = {r['result']['card']['card_id']: rt.outcomes[wid].get('semantic_source') for wid, r in rt.results.items() if r.get('result')}
     usage = usage_of(rt)
     status = ('ACCOUNTING_FAILED' if rt.accounting['status'] != 'COMPLETE' else
@@ -599,6 +599,7 @@ def brief_card(card, semantic_source):
             'recommended_action': {k: action[k] for k in ('label', 'instruction', 'rationale', 'draft_text', 'scope_note',
                                                           'targets', 'source')} if action else None,
             'review_notes': card['review_notes'], 'reasoning': card['reasoning'],
+            **({'details': card['details'], 'next_step': card['next_step']} if 'next_step' in card else {}),
             'related_threads': [{k: t[k] for k in ('label', 'display_reference', 'permalink', 'channel_id', 'thread_id', 'member_id')}
                                 for t in card['related_threads']],
             'sources': [s for s in card['supporting_sources'] if s['kind'] == 'knowledge_source'],

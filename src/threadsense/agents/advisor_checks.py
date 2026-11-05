@@ -42,7 +42,7 @@ import re
 from pydantic import ValidationError
 
 from threadsense.agents.advice_contracts import (
-    ACTION_LABELS, GROUPING_LABEL, AdviceCardV3, CountEvidence, EvidenceRef, InheritedFlag, OccurrenceEvidence, RelatedThreadV2,
+    ACTION_LABELS, GROUPING_LABEL, AdviceCardV4, CountEvidence, EvidenceRef, InheritedFlag, OccurrenceEvidence, RelatedThreadV2,
     ReviewReason, SeverityAssessment, SignalMatch, stable_id, unassessed_severity,
 )
 from threadsense.agents.advice_inputs import structural_occurrence
@@ -446,6 +446,33 @@ def summary_parts(draft):
     return parts
 
 
+def detail_parts(draft):
+    """The expanded view's statements (draft v11): one per detail sentence, with the evidence and attributions of the
+    claims it condenses and the summary or earlier detail sentences it refers back to."""
+    claims = {c.claim_id: c for c in draft.claims}
+    parts = []
+    for n, s in enumerate(getattr(draft, 'detail_sentences', None) or [], 1):
+        support = [claims[i] for i in s.support_claim_ids]
+        attributions = list({(a.user_id, a.relation, a.evidence_id): a for c in support for a in c.attributions}.values())
+        parts.append({'statement_id': f'detail:d{n}', 'text': s.text, 'claim_ids': list(s.support_claim_ids),
+                      'evidence_ids': [e for c in support for e in c.evidence_ids], 'attributions': attributions,
+                      'depends_on': [f'summary:s{d}' for d in s.summary_depends_on] + [f'detail:d{d}' for d in s.depends_on]})
+    return parts
+
+
+def no_action_reason(draft):
+    """A NO_ACTION proposal's stated reason as one judged statement (text, evidence IDs), or None. A NO_ACTION with a
+    draft to copy is judged as the action itself (statement 'action')."""
+    action = draft.proposed_action
+    if (action is None or action.action_type != 'NO_ACTION' or action.draft_text or not (action.rationale or '').strip()
+            or draft.evidence_sufficiency == 'UNSUPPORTED'):
+        return None
+    claims = {c.claim_id: c for c in draft.claims}
+    ids = [e for i in list(action.support_claim_ids) + list(getattr(action, 'context_claim_ids', [])) if i in claims
+           for e in claims[i].evidence_ids]
+    return action.rationale, ids
+
+
 def shown_summary(draft, ok):
     """The summary the card may show: SUPPORTED sentences whose condensed claims are SUPPORTED and whose earlier
     sentences are shown; never rewritten. Returns (text or None, [(statement_id, why withheld)] for SUPPORTED
@@ -463,6 +490,30 @@ def shown_summary(draft, ok):
     return (' '.join(p['text'] for p in shown) or None), held
 
 
+def shown_summary_ids(draft, ok):
+    """Statement IDs of the summary sentences shown_summary keeps."""
+    _, held = shown_summary(draft, ok)
+    held_ids = {sid for sid, _ in held}
+    return {p['statement_id'] for p in summary_parts(draft) if ok(p['statement_id']) and p['statement_id'] not in held_ids}
+
+
+def shown_details(draft, ok):
+    """The detail sentences the card may show, by the summary rule: SUPPORTED, every condensed claim SUPPORTED, and
+    every summary or detail sentence it refers back to shown. Never rewritten. Returns ([text], [(statement_id, why
+    withheld)] for SUPPORTED sentences withheld by a dependency)."""
+    shown, held, ids = [], [], shown_summary_ids(draft, ok)
+    for p in detail_parts(draft):
+        if not ok(p['statement_id']):
+            continue
+        missing = [f'claim:{c}' for c in p['claim_ids'] if not ok(f'claim:{c}')] + [d for d in p['depends_on'] if d not in ids]
+        if missing:
+            held.append((p['statement_id'], 'depends on withheld ' + ', '.join(missing)))
+        else:
+            shown.append(p['text'])
+            ids.add(p['statement_id'])
+    return shown, held
+
+
 def presentation_issues(draft, ledger):
     """Prose checks for every non-claim statement that can reach the card (claims are checked in claim_issues)."""
     claims = {c.claim_id: c for c in draft.claims}
@@ -472,7 +523,10 @@ def presentation_issues(draft, ledger):
     material = [e for c in draft.claims if c.material for e in c.evidence_ids]
     # (statement, text, cited evidence, shown to the team lead as written); a summary sentence is counted against
     # the authors of the claims it condenses.
-    texts = [(p['statement_id'], p['text'], p['evidence_ids'], True) for p in summary_parts(draft)]
+    texts = [(p['statement_id'], p['text'], p['evidence_ids'], True) for p in summary_parts(draft) + detail_parts(draft)]
+    reason = no_action_reason(draft)
+    if reason is not None:
+        texts.append(('action:no_action', reason[0], reason[1], True))
     action = draft.proposed_action
     if action is not None:
         support = [e for i in action.support_claim_ids if i in claims for e in claims[i].evidence_ids] + [
@@ -607,6 +661,21 @@ def statements(draft, ledger, *, severity=None, alternatives=(), handling=None):
                                        for a in p['attributions']]
         if p['depends_on']:
             out[-1]['depends_on'] = p['depends_on']
+    for p in detail_parts(draft):
+        # Expanded-view sentences (draft v11), judged and shown like summary sentences. Non-blocking: the claims they
+        # condense are judged (and block) on their own, so a withheld detail sentence is listed for review without
+        # changing which cards need review.
+        add(p['statement_id'], 'DETAIL', p['text'], p['evidence_ids'], blocking=False)
+        if p['attributions']:
+            directory = user_directory()
+            out[-1]['attributions'] = [{**a.model_dump(), 'role': (directory.get(a.user_id) or {}).get('role')}
+                                       for a in p['attributions']]
+        if p['depends_on']:
+            out[-1]['depends_on'] = p['depends_on']
+    reason = no_action_reason(draft)
+    if reason is not None:  # Shown only if SUPPORTED; non-blocking, so it never changes the card's review status.
+        add('action:no_action', 'NO_ACTION_RATIONALE', f'Why no further action is needed now: {reason[0]}', reason[1],
+            blocking=False)
     action = draft.proposed_action
     # A bare NO_ACTION (no text) states nothing to judge; anything with text or an operation is judged.
     if action is not None and draft.evidence_sufficiency != 'UNSUPPORTED' and (action.action_type != 'NO_ACTION' or action.draft_text):
@@ -1161,10 +1230,13 @@ def authorize(draft, grounding, ledger, packet, *, severity, severity_issues, ru
     resolution = topic_resolution(packet['member_ids'], states)
     withheld = [s for s in grounding['statements'] if s['verdict'] != 'SUPPORTED']
     summary, held = shown_summary(draft, ok)
+    details, held_details = shown_details(draft, ok)
     texts = {s['statement_id']: s for s in grounding['statements']}
-    withheld += [{**texts[sid], 'withheld_because': why} for sid, why in held]
+    withheld += [{**texts[sid], 'withheld_because': why} for sid, why in held + held_details]
+    reason = no_action_reason(draft)
     return {'claims': claims, 'action': action, 'handling': handling, 'severity': severity, 'severity_issues': issues,
-            'severity_notes': notes, 'summary': summary, 'resolution': resolution,
+            'severity_notes': notes, 'summary': summary, 'details': details, 'resolution': resolution,
+            'no_action_rationale': reason[0] if reason and ok('action:no_action') else None,
             'action_rationale': action.rationale if action and ok('action:rationale') else None,
             'review_note': draft.review_note if ok('review_note') else None,
             'open_question_supported': ok('open_question') if draft.open_confirmation == 'OPEN' else None,
@@ -1217,7 +1289,8 @@ def _reassess(p, ok, ledger, packet, rubric, severity, issues, notes):
 def unauthorized(packet, severity_issues=()):
     """Nothing authorized (no draft): the card carries members and obligations only."""
     return {'claims': [], 'action': None, 'handling': set(), 'severity': unassessed_severity(packet.get('preliminary_severity')),
-            'severity_issues': list(severity_issues), 'severity_notes': [], 'summary': None, 'resolution': 'UNKNOWN',
+            'severity_issues': list(severity_issues), 'severity_notes': [], 'summary': None, 'details': [],
+            'no_action_rationale': None, 'resolution': 'UNKNOWN',
             'open_question_supported': None, 'open_question_verdict': None, 'action_rationale': None, 'review_note': None,
             'member_resolution': {m: 'UNKNOWN' for m in packet['member_ids']}, 'withheld': []}
 
@@ -1263,7 +1336,8 @@ def _reasoning(final, packet):
         parts.append(f'{len(withheld)} advisor statement{"s were" if len(withheld) != 1 else " was"} not supported by the '
                      'evidence and not shown.')
     if held:
-        parts.append(f'{len(held)} summary sentence{"s were" if len(held) != 1 else " was"} not shown because '
+        kind = 'summary or detail' if any(w['statement_id'].startswith('detail:') for w in held) else 'summary'
+        parts.append(f'{len(held)} {kind} sentence{"s were" if len(held) != 1 else " was"} not shown because '
                      f'{"they depend" if len(held) != 1 else "it depends"} on text that was not shown.')
     return ' '.join(parts)
 
@@ -1288,6 +1362,65 @@ def _stage_note(failure):
     cause = {'RESOURCE': ' (a request limit was reached)', 'CONFIGURATION': ' (a configuration problem)',
              'SCHEMA': ' (the response was not valid)'}.get(failure.get('failure_class'), '')
     return f'The {stage} step did not complete{cause}; details are in the diagnostics.'
+
+
+WITHHELD_WHY = {
+    'NO_INTERVENTION_NEED': 'the evidence did not show a need to intervene now',
+    'PARTIALLY_SUPPORTED': 'the evidence check found it only partly supported',
+    'UNSUPPORTED': 'the evidence check found no support for it in the cited evidence',
+    'PENDING': 'it has not been judged against the evidence (replay)', 'NOT_JUDGED': 'the evidence check did not judge it',
+    'NO_EVIDENCE': 'it cited no evidence'}
+INSUFFICIENT = ('INSUFFICIENT_PREMISES', 'NO_ESSENTIAL_PREMISE_NAMED', 'ESSENTIAL_ID_NOT_A_PREMISE',
+                'ESSENTIAL_PREMISE_VOIDED_BY_DEPENDENCY', 'ESSENTIAL_PREMISE_NOT_PASSED', 'SUFFICIENCY_NOT_JUDGED')
+
+
+def _withheld_why(verdict):
+    if verdict in WITHHELD_WHY:
+        return WITHHELD_WHY[verdict]
+    if (verdict or '').startswith('REJECTED_'):
+        return 'it failed a deterministic check before the evidence check'
+    if verdict in INSUFFICIENT:
+        return 'the supported evidence did not justify it as worded'
+    return 'it did not pass the evidence check'
+
+
+def next_step_state(card_action, proposed, verdicts, *, has_draft, evidence_sufficiency=None, no_action_rationale=None,
+                    saved=True):
+    """The card's next-step state from structured results only (the card's action, the final draft's proposed_action
+    and the final statement verdicts, as dicts). An absent action is never read as NO_ACTION_NEEDED: that needs a
+    supported NO_ACTION reason (statement action:no_action) or a supported NO_ACTION action. `saved` False: the run did
+    not save the topic result, so the state cannot be established. Explanations are fixed wording; the rationale is
+    judged advisor text."""
+    if card_action and card_action.get('action_type') != 'NO_ACTION':
+        return {'status': 'ACTION_RECOMMENDED', 'rationale': card_action.get('rationale'), 'explanation': None}
+    if card_action:  # A supported NO_ACTION action (judged with its draft text).
+        return {'status': 'NO_ACTION_NEEDED', 'rationale': card_action.get('rationale'), 'explanation': None}
+    if not saved:
+        return {'status': 'NO_RECOMMENDATION_AVAILABLE', 'rationale': None, 'explanation':
+                'This run did not save the details needed to tell whether a next step was considered.'}
+    if not has_draft:
+        return {'status': 'NO_RECOMMENDATION_AVAILABLE', 'rationale': None, 'explanation':
+                'The advisor produced no usable draft, so no next step can be stated.'}
+    if not proposed:
+        return {'status': 'NO_RECOMMENDATION_AVAILABLE', 'rationale': None, 'explanation':
+                'The advisor did not state a next step for this topic.'}
+    if proposed.get('action_type') == 'NO_ACTION':
+        if no_action_rationale:
+            return {'status': 'NO_ACTION_NEEDED', 'rationale': no_action_rationale, 'explanation': None}
+        verdict = verdicts.get('action:no_action') or verdicts.get('action')
+        if verdict is None:
+            why = ('Its reason was not checked against the evidence in this run.' if (proposed.get('rationale') or '').strip()
+                   else 'It gave no reason that could be checked.')
+        else:
+            why = f'Its reason is not shown because {_withheld_why(verdict)}.'
+        return {'status': 'NO_INTERVENTION_PROPOSED', 'rationale': None, 'explanation':
+                f"The advisor chose not to propose an intervention. {why} Treat this as the advisor's choice, not a "
+                'confirmed decision.'}
+    label = ACTION_LABELS.get(proposed.get('action_type'), 'an action')
+    why = ('the evidence was not enough to recommend an action' if evidence_sufficiency == 'UNSUPPORTED'
+           else _withheld_why(verdicts.get('action')))
+    return {'status': 'RECOMMENDATION_WITHHELD', 'rationale': None, 'explanation':
+            f'The advisor proposed "{label}", but it is not shown because {why}.'}
 
 
 def assemble_card(outcome, packet, *, run_id):
@@ -1394,6 +1527,7 @@ def assemble_card(outcome, packet, *, run_id):
                                'source': 'TOT_FALLBACK' if final.get('essential') is not None else outcome.get('action_source') or 'DRAFT'}
         if action else None,
         'reasoning': _reasoning(final, packet) if draft else 'No advisor reasoning is available. ' + _attributed_note(packet['agent1_resolution']),
+        'details': list(final.get('details') or []),
         'supporting_sources': [evidence_ref(ledger[e], packet, final['handling']).model_dump(mode='json') for e in cited],
         'related_threads': [related_thread(m, packet).model_dump(mode='json') for m in packet['members']],
         'confidence': confidence, 'needs_review_reasons': [r.model_dump(mode='json') for r in reasons],
@@ -1407,18 +1541,23 @@ def assemble_card(outcome, packet, *, run_id):
                     'candidate_group_id': packet['candidate_group_id'], 'topic_id': packet['topic_id'],
                     'member_ids': packet['member_ids'], 'project_id': packet['project_id'], 'batch_id': packet['batch_id']},
     }
+    data['next_step'] = next_step_state(
+        data['recommended_action'], proposed.model_dump(mode='json') if proposed else None,
+        {s['statement_id']: s['verdict'] for s in grounding['statements']}, has_draft=draft is not None,
+        evidence_sufficiency=sufficiency, no_action_rationale=final.get('no_action_rationale'))
     leaks = card_names(data) + card_ids(data)
     if leaks:  # Guard: display text uses roles and plain words; a leak is reported, never rewritten.
         data['needs_review_reasons'].append(_reason('OTHER', 'Internal identifier or personal name in card text: '
                                                     + '; '.join(leaks)).model_dump(mode='json'))
         data['review_notes'].append('Some card text contains a name or internal identifier; check the wording.')
         data['card_line'] = 'NEEDS_REVIEW'
-    return AdviceCardV3.model_validate(data)
+    return AdviceCardV4.model_validate(data)
 
 
 def _display_fields(data):
     action = data.get('recommended_action') or {}
     return {'topic_name': data['topic_name'], 'summary': data['summary'], 'reasoning': data['reasoning'],
+            'details': ' '.join(data.get('details') or []), 'next_step': (data.get('next_step') or {}).get('rationale') or '',
             'action': ' '.join(action.get(k) or '' for k in ('instruction', 'rationale', 'draft_text', 'scope_note')),
             'review_notes': ' '.join(data.get('review_notes') or [])}
 

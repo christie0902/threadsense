@@ -11,7 +11,8 @@ from hashlib import sha256
 import json
 from pathlib import Path
 
-from threadsense.agents.advice_contracts import ACTION_LABELS, AdviceCardV3, ModelReviewItem
+from threadsense.agents.advice_contracts import ACTION_LABELS, NEXT_STEP_LABELS, ModelReviewItem, validate_card
+from threadsense.agents.advisor_checks import next_step_state
 from threadsense.agents.flag_impact import NOT_ASSESSED_NOTE, flag_id
 from threadsense.agents.flag_provenance import FlagSource, dependencies
 from threadsense.dashboard.review import review_view
@@ -89,10 +90,10 @@ class Run:
 
     @cached_property
     def cards(self):
-        """Every saved card, validated as AdviceCard v3 and returned unchanged."""
+        """Every saved card, validated under its own contract (AdviceCard v3 or v4) and returned unchanged."""
         cards = {}
         for raw in read_json(self.path/'cards.json'):
-            AdviceCardV3.model_validate(raw)
+            validate_card(raw)
             cards[raw['card_id']] = raw
         return cards
 
@@ -220,6 +221,25 @@ class Run:
         queue = [i.model_dump(mode='json') for i in self.queue.values() if card_id in i.related_card_ids]
         provenance = [p.model_dump(mode='json') for p in self.flag_source.provenance(self.cards[card_id])]
         return review_view(self.cards[card_id], (self.topics.get(card_id) or {}).get('result'), queue, provenance)
+
+    def presentation(self, card_id):
+        """The opened card's "What happened" and next-step state. A v4 card states both; for an earlier card the state
+        is derived from its saved topic result (never from an absent action alone) and its saved reasoning is shown as
+        written, labelled as such; nothing is generated or reworded."""
+        card = self.cards[card_id]
+        if 'next_step' in card:
+            step, details = dict(card['next_step']), {'source': 'CARD', 'sentences': card['details'],
+                                                      'findings': card['reasoning']}
+        else:
+            result = (self.topics.get(card_id) or {}).get('result')
+            draft = ((result or {}).get('drafts') or {}).get('final')
+            verdicts = {s['statement_id']: s['verdict'] for s in ((result or {}).get('grounding') or {}).get('statements') or []}
+            step = next_step_state(card.get('recommended_action'), (draft or {}).get('proposed_action'), verdicts,
+                                   has_draft=draft is not None, evidence_sufficiency=(draft or {}).get('evidence_sufficiency'),
+                                   saved=result is not None)
+            details = {'source': 'SAVED_REASONING', 'sentences': [], 'findings': card['reasoning']}
+        return {'next_step': {**step, 'label': NEXT_STEP_LABELS[step['status']],
+                              'derived': 'next_step' not in card}, 'details': details}
 
     @cached_property
     def flag_source(self):

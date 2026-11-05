@@ -547,7 +547,7 @@ def test_card_lists_related_threads_with_labels_and_permalink_or_thread_id(retri
     from threadsense.agents.advisor_checks import related_thread
     result = run('json_vs_prose', Fake(draft=draft_for, grounding=supported), retriever, view)
     card = result['card']
-    assert card['contract_version'] == 'agent3-advice-card-v3'
+    assert card['contract_version'] == 'agent3-advice-card-v4'  # v4 (pilot v7) keeps v3's related-thread fields.
     threads = card['related_threads']
     assert [t['thread_id'] for t in threads] == [m['thread_id'] for m in topic_packet(view, SCEN['json_vs_prose'])['members']]
     assert all(t['permalink'] is None and t['display_reference'] == t['thread_id'] and t['label'].startswith('#')
@@ -697,7 +697,7 @@ def test_rules_are_sent_once_and_prompt_version_is_recorded():
     assert STYLE_EXAMPLES in DRAFT_RULES and STYLE_EXAMPLES not in REVISION_RULES
     assert 'STYLE ONLY, NOT EVIDENCE' in STYLE_EXAMPLES and 'never copy their facts' in STYLE_EXAMPLES
     fingerprints = prompt_fingerprints()
-    assert fingerprints['prompt_version'] == 'agent3-advisor-prompts-v17' and fingerprints['style_examples']
+    assert fingerprints['prompt_version'] == 'agent3-advisor-prompts-v18' and fingerprints['style_examples']
     assert INPUT_TOKEN_LIMIT == 24_000 and live_settings('openai/gpt-6.1-sol')['input_token_limit'] == 24_000
 
 

@@ -44,7 +44,10 @@ REAL_STATES = ('UNRESOLVED', 'PARTIALLY_RESOLVED', 'RESOLVED_IN_THREAD')
 LABELS = {'inherited_agent1_review': 'Agent 1 interpretation not verified',
           'inherited_agent1_review_announcement_route': 'Agent 1 interpretation not verified (announcement route)',
           'assisted_content_review': 'Content review caution', 'projection_gap': GROUPING_LABEL}
-ELEMENTS = (('claim:', 'CLAIM'), ('summary', 'SUMMARY'), ('action:rationale', 'ACTION_RATIONALE'),
+# Detail sentences (draft v11) are summary-level prose and the NO_ACTION reason is the action's rationale: they reuse
+# those element kinds (CardDependencies v1 unchanged); element_id keeps them apart.
+ELEMENTS = (('claim:', 'CLAIM'), ('summary', 'SUMMARY'), ('detail:', 'SUMMARY'), ('action:rationale', 'ACTION_RATIONALE'),
+            ('action:no_action', 'ACTION_RATIONALE'),
             ('action:need', 'ACTION_NEED'), ('action', 'ACTION'), ('severity', 'SEVERITY'), ('reporter:', 'REPORTER'),
             ('review_note', 'REVIEW_NOTE'), ('resolution:', 'MEMBER_RESOLUTION'), ('alternative:', 'ALTERNATIVE'),
             ('open_question', 'OPEN_QUESTION'))
@@ -352,6 +355,9 @@ def dependencies(card, result, prov, source=None):
             through(sentence.get('support_claim_ids') or [], 'SUMMARY', sid, shown.get(sid, False), 'This summary sentence')
     elif 'summary' in shown:
         gaps.append('This run records no sentence-to-claim links; the summary is traced through its cited evidence only.')
+    for n, sentence in enumerate(draft.get('detail_sentences') or [], 1):  # Draft v11: the opened card's details.
+        sid = f'detail:d{n}'
+        through(sentence.get('support_claim_ids') or [], 'SUMMARY', sid, shown.get(sid, False), 'This detail sentence')
     action, proposed = card.get('recommended_action'), draft.get('proposed_action') or {}
     if action and action['action_type'] != 'NO_ACTION':
         if result.get('action_source') == 'DRAFT' and proposed.get('action_type') == action['action_type']:

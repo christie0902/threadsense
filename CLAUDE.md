@@ -19,7 +19,7 @@ uv run --locked --extra dev python -m pytest tests/test_x.py   # single file
 ```
 
 - Always pass a **fresh** `--basetemp .cache/pytest-<name>`: pytest wipes it at start.
-- Full suite: 982 tests, ~13 min, all expected to pass. Intermittent `WinError 5` on `os.replace` is a Windows file lock (see Known issues), not a code failure.
+- Full suite: 1072 tests, ~13 min, all expected to pass. Intermittent `WinError 5` on `os.replace` is a Windows file lock (see Known issues), not a code failure.
 - No linter/formatter configured. No build step beyond the editable install.
 - UI tests: `npm --prefix web run build` then `npm --prefix web run test:ui` (Playwright, system Chrome; temp output
   in `TS_UI_TMP`, default `D:/tsb/ui-<time>`). Frontend deps are pinned in `web/package.json` + `package-lock.json`.
@@ -138,6 +138,8 @@ because `action:context` was not catalogued. Reliability pass (offline, closeout
 UNCERTAIN), FlagImpactAssessment/Record v2 with finding_ids and deterministic references, grounding v7; recorded live flag
 judgments need a new judgment (statement verdicts stay reusable). Report and corrections to the live review:
 `data/experiments/agent3_flag_impact_reliability_v1/`. **Feature status: experimental, opt-in, shadow only; routing unchanged.**
+Flag-impact milestone closed (commit `4df65ef`). End-to-end evaluation run once (live `data/experiments/agent3_e2e_eval_v1/`, 8 items, 17 requests, $0.93; expectations frozen before the run, inspection in `evaluation.json`).
+Presentation pass (2026-11-05, offline): draft v11 `detail_sentences` (opened card "What happened", each judged as DETAIL, non-blocking), judged NO_ACTION reason (`action:no_action`, NO_ACTION_RATIONALE, non-blocking), AdviceCard v4 (`details`, `next_step`: ACTION_RECOMMENDED / NO_ACTION_NEEDED / NO_INTERVENTION_PROPOSED / RECOMMENDATION_WITHHELD / NO_RECOMMENDATION_AVAILABLE; review status unchanged), prompts v18 (grounding rules changed, so earlier recorded verdicts are not reused in replay), pilot v7. v3 cards load unchanged; the dashboard derives their state from the saved result (`runs.presentation`). Prepared demo run `data/experiments/agent3_presentation_prepared_v1/` (PREPARED fixture, not model output). Live acceptance `data/experiments/agent3_v18_acceptance_v1/` (same 8 items, 16 requests, $0.86, accounting COMPLETE, queue 52; development evaluation in `evaluation.json`): no displayed unsupported content, both NO_ACTION_NEEDED states judged SUPPORTED, follow-ups listed there. Milestone recommended for closure.
 Further `--run`s are paid (ask first). Full plan: [docs/agent3-plan.md](docs/agent3-plan.md).
 - Agent 3 input: `data/processed/agent2_handoff_v2_projection/` (schema 8 / handoff v2, a zero-call projection of the v7 release; load with `advice_inputs.load_effective_view`): 81 groups / 79 topics / 161 assigned + 17 unassigned / 41 + 8 announcement-route obligations / 3 carried cautions. The frozen v7 release (handoff v1: 90 / 97 / 49 / 3 / 41) is unchanged.
 - Demo Slack input: `data/fixtures/slack_generated_demo/` (201 threads / 517 messages, cutoff `2026-10-02T12:00:00Z`); the original `slack_generated/` (200 / 516) stays unchanged.

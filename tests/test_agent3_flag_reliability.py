@@ -208,9 +208,11 @@ def test_live_tie_judgments_replayed_under_v2_diagnostic_only():
 
 
 @live
-def test_recorded_live_flag_judgments_need_a_new_judgment_but_statement_verdicts_stay_reusable():
+def test_recorded_live_flag_judgments_need_a_new_judgment():
     client = pilot.ReplayClient(EXP/LIVE)
-    assert client.grounding_inputs_same and not client.flag_rules_same
+    # Prompts v18 changed the grounding rules (DETAIL, NO_ACTION_RATIONALE), so the recorded statement verdicts are no
+    # longer reusable either; until then they were (grounding inputs unchanged through v17).
+    assert not client.grounding_inputs_same and not client.flag_rules_same
     payload = {'scenario_id': next(iter(client.recorded)), 'statements': [], 'member_threads': [], 'retrieved_sources': [],
                'flag_impacts': []}
     assert client._judgment(payload, client.recorded[payload['scenario_id']])['flag_impacts'] == []

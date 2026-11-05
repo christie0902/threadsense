@@ -46,7 +46,7 @@ from threadsense.handoff_inputs import ROOT, file_hash, read_json
 from threadsense.retrieval.config import DEFAULTS
 from threadsense.severity_rubric import load_rubric
 
-PILOT_VERSION = 'agent3-advisor-pilot-v6'
+PILOT_VERSION = 'agent3-advisor-pilot-v7'  # v7: AdviceCard v4 (details, next_step) from draft v11.
 # Prompt text version, recorded in every manifest with the rule fingerprints. v6: team lead-facing writing guide and two
 # STYLE ONLY examples in the draft/revision rules; display-text rules in grounding and ToT; rules sent once per request
 # (agent3_readability_v1 ran v6). v6.1: grounding also receives the open upstream review flags (open_review_flags).
@@ -78,7 +78,13 @@ PILOT_VERSION = 'agent3-advisor-pilot-v6'
 # instructions ("Ties"), so the final grounding standard was not changed.
 # v17 (writing guide only; grounding unchanged): plain wording covers severity.rationale and rubric-signal support too,
 # with familiar substitutes when they keep the meaning, exact quotes, and no processing phrases ("supplied batch context").
-PROMPT_VERSION = 'agent3-advisor-prompts-v17'
+# v18 (draft v11, AdviceCard v4): two presentation levels. The summary is the closed card (situation and the open point,
+# about 35-55 words); detail_sentences are the opened card's "What happened", each judged like a summary sentence
+# (DETAIL); the instruction targets about 15-25 words; the rationale says why the step fits (no incident retelling, no
+# recipient instructions); a NO_ACTION reason is judged (NO_ACTION_RATIONALE, non-blocking); a diagnostic request is
+# stated once where it serves its purpose. Grounding rules gain the two statement kinds, so verdicts recorded under
+# earlier grounding rules are not reused in replay.
+PROMPT_VERSION = 'agent3-advisor-prompts-v18'
 # Replayed recorded drafts older than v7 are read under the last contract they satisfy (no intervention_need).
 LEGACY_LABELS = {'AdvisorDraft': 'agent3-advisor-draft-v6', 'ToTComparison': 'agent3-tot-comparison-v2',
                  'GroundingJudgment': 'agent3-grounding-judgment-v4'}
@@ -188,17 +194,29 @@ DRAFT_RULES = (
     'UNSUPPORTED and propose no operational action. Upstream review flags stay open; you cannot clear them. Everything '
     'that reaches the card is checked statement by statement against the full topic context.')
 WRITING_GUIDE = (
-    'Card writing. The team lead reads these fields exactly as you write them: summary_sentences (what happened, usually '
-    '1-2 short sentences, up to 3 when needed; leave summary null: it is their text joined). Each summary sentence is '
-    'judged and shown on its own, so make each one complete; list the claims it condenses in support_claim_ids and, in '
-    'depends_on, the positions (1, 2, ...) of earlier sentences it refers back to ("this", "their questions"). A '
-    'sentence says nothing its claims do not support, and one unsupported part withholds the whole sentence: give facts '
+    'Card writing. The team lead reads these fields exactly as you write them. A card has two levels: closed, it shows '
+    'the summary and the action\'s instruction; opened, it adds the detail sentences, the rationale, the draft and what to '
+    'check. Give each field one purpose. summary_sentences (the closed card: the situation and the important point that '
+    'is still open or already settled, usually two sentences and about 35-55 words in all, up to 3 sentences when facts '
+    'with different evidence need them; leave summary null: it is their text joined); leave reporter-by-reporter '
+    'breakdowns, policy explanations and earlier records to detail_sentences unless the situation cannot be understood '
+    'without them. detail_sentences (the opened card\'s "What happened", up to 6 short sentences; empty when the summary '
+    'already says everything useful): the distinct symptoms with the roles and counts that reported each and their task '
+    'references or threads; the requests already made (who asked, in which threads) and the information still missing; '
+    'earlier records, described as earlier records and kept apart from current reports. Do not repeat a summary sentence '
+    'or list every message. Each summary and detail sentence is judged and shown on its own, so make each one complete; '
+    'list the claims it condenses in support_claim_ids and the earlier sentences it refers back to ("this", "their '
+    'questions"): depends_on gives positions (1, 2, ...) of earlier sentences at the same level, and summary_depends_on '
+    '(detail sentences only) positions of summary sentences. A sentence says nothing its claims do not support, and one unsupported part withholds the whole sentence: give facts '
     'with different evidence their own sentences (what members report; current handling or what the team lead has '
     'asked for; what earlier records show) rather than joining unrelated facts to stay within two sentences. A sentence whose subject is several people ("three tutors ask ...") states only what '
     'each of them asked or reported: when their questions or reports differ, say how ("a QA tutor asks X; two others '
-    'ask Y") or use wording that covers each one, as the claims do; proposed_action.instruction (one concrete sentence telling the team lead what to do); '
-    'proposed_action.rationale (why that helps and any explanatory context, 1-2 short sentences; judged and shown on '
-    'its own); proposed_action.scope_note (only conditions and limits the action depends on); proposed_action.draft_text (a copyable draft suited '
+    'ask Y") or use wording that covers each one, as the claims do. proposed_action.instruction (one concrete sentence telling the '
+    'team lead what to do, about 15-25 words); proposed_action.rationale (why the evidence and the applicable guidance '
+    'make this step fit, 1-2 short sentences, judged and shown on its own; do not retell the incident, which belongs in '
+    'detail_sentences, or give instructions to recipients, which belong in the draft; for NO_ACTION, say why no further '
+    'intervention is needed now, from the evidence; the reason is judged and shown only if supported); '
+    'proposed_action.scope_note (only conditions and limits the action depends on); proposed_action.draft_text (a copyable draft suited '
     'to the action: an announcement of about 60-120 words, with bullets when useful, or the message to send for an '
     'escalation or referral; when it covers several reports, group them by the symptom they share, with counts and '
     'roles ("two tutors and a QA tutor report a grey Submit button after choosing B; a tutor reports that clicking Submit '
@@ -207,7 +225,10 @@ WRITING_GUIDE = (
     'and who reported it); review_note (only for a specific check the team lead still has to make that the card does '
     'not already list, and which threads or sources it concerns, for example requested details that are still missing; '
     'the card itself lists high severity, the open upstream review flags and their count, withheld statements and the '
-    'open question, so do not restate those; otherwise null). A draft the team lead will post is in the team lead\'s own '
+    'open question, so do not restate those; otherwise null). State a diagnostic request or a missing detail once, where '
+    'it serves its purpose (what is still missing in detail_sentences, what recipients should provide in the draft); '
+    'repeat it in the instruction, rationale, scope note or review note only when that field needs it for a different '
+    'purpose. A draft the team lead will post is in the team lead\'s own '
     'voice and addressed to its recipients: tell them what to provide or do; do not refer to the team lead in the third '
     'person or include steps only the team lead takes (those belong in the instruction). Put policy wording in a draft '
     'only when it helps the recipients act, and then at the strength and scope of the governing source it comes from '
@@ -247,10 +268,14 @@ STYLE_EXAMPLES = (
     'captions are submitted." proposed_action.draft_text: "Reminder for this batch: leave watermark text out of captions. '
     '- Exception: describe the watermark when it is the main subject of the image. - If you are unsure, ask in this thread '
     'before submitting. This follows the current captioning guideline; nothing else has changed." review_note: null. '
+    'Example 1 detail_sentences: [] (the summary already says everything useful). '
     'Example 2 (fictional video-timestamp batch). Supplied facts: three annotators report that timestamps move by about one '
-    'second after saving; an engineer asked for task IDs; no cause is confirmed. Selected action: report a technical issue '
-    'to engineering. summary_sentences: "Three annotators report that timestamps move after saving.", "The cause is not '
-    'confirmed." (depends on sentence 1). '
+    'second after saving, two of them on VID-101 and VID-117 and one only after reopening a saved task; an engineer asked '
+    'for task IDs; no cause is confirmed. Selected action: report a technical issue to engineering. summary_sentences: '
+    '"Three annotators report that timestamps move after saving.", "The cause is not confirmed." (depends on sentence 1). '
+    'detail_sentences: "Two annotators report a one-second shift on VID-101 and VID-117; a third sees it only after '
+    'reopening a saved task." (condenses the three report claims), "An engineer asked for the affected task IDs; steps '
+    'that reproduce the shift have not been posted." (condenses the request claim). '
     'proposed_action.instruction: "Report a technical issue to engineering with the affected task IDs and the steps that '
     'reproduce the shift." proposed_action.rationale: "Engineering asked for task IDs; one report with reproduction steps '
     'lets them check the save step without each annotator filing separately." proposed_action.draft_text: "Timestamps '
@@ -294,7 +319,12 @@ GROUNDING_RULES = (
     '...) is judged on its own and shown only if SUPPORTED; its attributions name the people its role wording refers '
     'to, and wording that groups several people is SUPPORTED only if what it says they asked or reported is stated in '
     'each of their cited messages. A SUMMARY sentence with depends_on is read after the sentences it lists (for words '
-    'such as "this" or "their"), but judged only on what it adds.ACTION and ALTERNATIVE are recommendations: judge whether '
+    'such as "this" or "their"), but judged only on what it adds. A DETAIL sentence (statement_id detail:d1, detail:d2, ...) is shown when the card is '
+    'opened and is judged exactly like a SUMMARY sentence: on its own, shown only if SUPPORTED, read after the sentences '
+    'in its depends_on but judged only on what it adds. NO_ACTION_RATIONALE is the advisor\'s reason for proposing no '
+    'further intervention now: SUPPORTED only if the cited evidence shows that reason and the context shows no unresolved '
+    'handling question, guidance gap, applicable pending decision or operational problem that needs coordination; '
+    'existing guidance does not by itself establish that no action is needed. ACTION and ALTERNATIVE are recommendations: judge whether '
     'their premises are supported, whether the action applies to this topic and whether the rationale follows; a source '
     'need not literally prescribe the action. ' + ROUTING_RULE + ' Judge a proposed recipient the same way in ACTION, '
     'ALTERNATIVE, INTERVENTION_NEED, ACTION_RATIONALE and REVIEW_NOTE: on whether the incident evidence shows a problem '
@@ -327,8 +357,8 @@ GROUNDING_RULES = (
     'guidance and decisions in the context really leave that specific question unsettled and it is a handling or policy '
     'question for the team lead; a not-yet-diagnosed cause, pending diagnostic results or a pending expert assessment is '
     'not one. Return exactly one verdict '
-    'for every statement_id. The team lead reads SUMMARY, ACTION (label, instruction, draft to copy, scope and '
-    'changes), ACTION_RATIONALE, REVIEW_NOTE and OPEN_QUESTION exactly as written: judge that exact text, including its '
+    'for every statement_id. The team lead reads SUMMARY, DETAIL, ACTION (label, instruction, draft to copy, scope and '
+    'changes), ACTION_RATIONALE, NO_ACTION_RATIONALE, REVIEW_NOTE and OPEN_QUESTION exactly as written: judge that exact text, including its '
     'conditions, uncertainty, scope and who reported, asked, confirmed or instructed; plain wording is expected, but it '
     'must not overstate the evidence. A quoted passage must match its source exactly. open_review_flags lists the '
     'upstream review obligations still open on these threads; a REVIEW_NOTE may rely on them. '

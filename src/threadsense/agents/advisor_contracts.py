@@ -28,6 +28,9 @@ back to, and is judged and shown on its own; `summary` is then their text joined
 summary statement judged as a whole. Draft v10 adds SOURCE_FACT claims (what a retrieved source says, described with
 its status and dates, without asserting that it governs current handling, a procedure or a destination) and
 ActionProposal.context_claim_ids (claims only the action's rationale draws on: explanatory context, not premises).
+Draft v11 adds detail_sentences: the expanded "What happened" behind a short summary (symptoms, affected tasks, counts
+and roles, requests made and what is missing, earlier records). Each condenses named claims like a summary sentence, may
+refer back to summary or earlier detail sentences, and is judged and shown on its own.
 """
 from typing import Any, Literal
 
@@ -219,11 +222,23 @@ class SummarySentence(Strict):
     depends_on: list[int] = Field(default_factory=list)
 
 
+class DetailSentence(Strict):
+    """One expanded-view sentence (draft v11), judged and shown on its own. support_claim_ids: the claims it condenses;
+    depends_on: 1-based positions of earlier detail sentences it refers back to; summary_depends_on: positions of summary
+    sentences it refers back to."""
+    text: Text
+    support_claim_ids: list[str] = Field(min_length=1)
+    depends_on: list[int] = Field(default_factory=list)
+    summary_depends_on: list[int] = Field(default_factory=list)
+
+
 class AdvisorDraft(Strict):
-    contract_version: Literal['agent3-advisor-draft-v10', 'agent3-advisor-draft-v9', 'agent3-advisor-draft-v8',
-                              'agent3-advisor-draft-v7', 'agent3-advisor-draft-v6'] = 'agent3-advisor-draft-v10'
+    contract_version: Literal['agent3-advisor-draft-v11', 'agent3-advisor-draft-v10', 'agent3-advisor-draft-v9',
+                              'agent3-advisor-draft-v8', 'agent3-advisor-draft-v7',
+                              'agent3-advisor-draft-v6'] = 'agent3-advisor-draft-v11'
     summary: Text | None = None  # What happened, 1-2 short sentences for the team lead (with sentences: their text).
     summary_sentences: list[SummarySentence] = Field(default_factory=list, max_length=3)
+    detail_sentences: list[DetailSentence] = Field(default_factory=list, max_length=6)  # Draft v11: expanded view.
     reasoning: Text
     claims: list[Claim] = Field(default_factory=list)
     gaps: list[EvidenceGap] = Field(default_factory=list)
@@ -263,6 +278,15 @@ class AdvisorDraft(Strict):
                 raise ValueError(f'Summary sentence {n} must condense claims in this draft.')
             if any(not 1 <= d < n for d in s.depends_on):
                 raise ValueError(f'Summary sentence {n} may depend only on earlier sentences.')
+        if self.detail_sentences and self.contract_version != 'agent3-advisor-draft-v11':
+            raise ValueError('detail_sentences need draft v11.')
+        for n, s in enumerate(self.detail_sentences, 1):
+            if set(s.support_claim_ids) - set(claims):
+                raise ValueError(f'Detail sentence {n} must condense claims in this draft.')
+            if any(not 1 <= d < n for d in s.depends_on):
+                raise ValueError(f'Detail sentence {n} may depend only on earlier detail sentences.')
+            if any(not 1 <= d <= len(self.summary_sentences) for d in s.summary_depends_on):
+                raise ValueError(f'Detail sentence {n} may refer back only to summary sentences in this draft.')
         if self.summary_sentences:
             joined = ' '.join(s.text.strip() for s in self.summary_sentences)
             if self.summary is not None and ' '.join(self.summary.split()) != ' '.join(joined.split()):

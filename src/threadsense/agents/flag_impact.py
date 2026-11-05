@@ -271,7 +271,9 @@ def card_text(card):
     return digest({'topic_name': card['topic_name'], 'summary': card['summary'], 'reasoning': card['reasoning'],
                    'action': {k: action.get(k) for k in ('action_type', 'instruction', 'rationale', 'draft_text', 'scope_note')},
                    'severity': {k: card['severity'].get(k) for k in ('level', 'rationale')},
-                   'resolution_status': card['resolution_status'], 'review_notes': card['review_notes']})
+                   'resolution_status': card['resolution_status'], 'review_notes': card['review_notes'],
+                   # v4 cards also display details and the next-step reason (v3 digests unchanged).
+                   **({'details': card['details'], 'next_step': card['next_step']} if 'next_step' in card else {})})
 
 
 def record(assessments, prepared, *, payload, ledger, card):

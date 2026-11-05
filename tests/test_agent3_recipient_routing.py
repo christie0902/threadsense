@@ -35,7 +35,7 @@ def test_recorded_rejection_required_an_intake_route_for_the_recipient():
 
 
 def test_one_rule_in_drafting_and_grounding_and_the_contradiction_is_gone():
-    assert PROMPT_VERSION == 'agent3-advisor-prompts-v17'
+    assert PROMPT_VERSION == 'agent3-advisor-prompts-v18'
     for rules in (DRAFT_RULES, REVISION_RULES, GROUNDING_RULES):
         assert rules.count(ROUTING_RULE) == 1 and V13_ROUTE_REQUIREMENT not in rules
     assert 'evidence of an established intake route is not required' in ROUTING_RULE

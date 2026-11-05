@@ -1,4 +1,4 @@
-"""Agent 3 v1 contracts: AdviceCard, DecisionRecord, AnnouncementRecord, ModelReviewItem.
+"""Agent 3 contracts: AdviceCard (v1-v4), DecisionRecord, AnnouncementRecord, ModelReviewItem.
 
 Validators enforce structural guardrails only. They do not ground claims, assess
 severity or detect conflicts; those checks are recorded here by later stages.
@@ -450,6 +450,56 @@ class AdviceCardV3(AdviceCardV2):
     recommended_action: DisplayAction | None = None
     related_threads: list[RelatedThreadV2] = Field(default_factory=list)
     review_notes: list[str] = Field(default_factory=list)
+
+
+# Whether a card states a next step, from structured results only (advisor_checks.next_step_state). An absent action
+# never means NO_ACTION_NEEDED by itself.
+NextStepStatus = Literal['ACTION_RECOMMENDED', 'NO_ACTION_NEEDED', 'NO_INTERVENTION_PROPOSED', 'RECOMMENDATION_WITHHELD',
+                         'NO_RECOMMENDATION_AVAILABLE']
+NEXT_STEP_LABELS = {'ACTION_RECOMMENDED': 'Recommended next step', 'NO_ACTION_NEEDED': 'No action needed',
+                    'NO_INTERVENTION_PROPOSED': 'No intervention proposed', 'RECOMMENDATION_WITHHELD': 'Recommendation withheld',
+                    'NO_RECOMMENDATION_AVAILABLE': 'No recommendation available'}
+
+
+class NextStep(Frozen):
+    """v4: the next-step state. rationale: judged advisor text (why the action fits, or why no action is needed);
+    explanation: fixed wording describing the state when it is not a supported decision (no model text)."""
+    status: NextStepStatus
+    rationale: str | None = None
+    explanation: str | None = None
+
+
+class AdviceCardV4(AdviceCardV3):
+    """v4: two presentation levels. summary is the short closed-card text; details are the expanded "What happened"
+    sentences, each judged and shown on its own (draft v11 detail_sentences; empty when none passed). next_step says
+    whether an action is recommended, explicitly not needed, proposed without validation, withheld or unavailable.
+    Review status (card_line, needs_review_reasons) is unchanged and separate."""
+    contract_version: Literal['agent3-advice-card-v4'] = 'agent3-advice-card-v4'
+    details: list[str] = Field(default_factory=list)
+    next_step: NextStep
+
+    @model_validator(mode='after')
+    def stated(self):
+        action, status = self.recommended_action, self.next_step.status
+        operational = action is not None and action.action_type != 'NO_ACTION'
+        if operational != (status == 'ACTION_RECOMMENDED'):
+            raise ValueError('next_step is ACTION_RECOMMENDED exactly when the card shows an operational action.')
+        if status == 'NO_ACTION_NEEDED' and not (self.next_step.rationale or action is not None):
+            raise ValueError('NO_ACTION_NEEDED needs a supported reason (or a supported NO_ACTION action).')
+        if status not in ('ACTION_RECOMMENDED', 'NO_ACTION_NEEDED') and (action is not None or self.next_step.rationale):
+            raise ValueError(f'{status} shows no action and no advisor rationale.')
+        return self
+
+
+CARD_CONTRACTS = {'agent3-advice-card-v3': AdviceCardV3, 'agent3-advice-card-v4': AdviceCardV4}
+
+
+def validate_card(raw):
+    """Validate a saved operational card under its own contract version (v3 and v4 are both current)."""
+    model = CARD_CONTRACTS.get((raw or {}).get('contract_version'))
+    if model is None:
+        raise ValueError(f"Unsupported card contract {(raw or {}).get('contract_version')!r}.")
+    return model.model_validate(raw)
 
 
 class ReviewAction(Frozen):

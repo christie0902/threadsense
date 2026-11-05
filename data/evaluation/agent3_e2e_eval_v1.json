@@ -1,0 +1,798 @@
+{
+ "version": "agent3-e2e-eval-v1",
+ "recorded": "2026-11-04",
+ "label": "PROPOSED_EVALUATOR_ASSESSMENT: proposed by the coding assistant from the original threads and current knowledge before any new output; not human-validated ground truth. owner_approval fields are left blank for the project owner.",
+ "scoring": "As agent3_demo_scenarios.json: any listed action passes; required_review_reasons are deterministic from the handoff; source recall is reported, not required; must_not is checked by reading the card; severity is recorded, not scored.",
+ "selection_rule": "Six topics outside the nine demo scenarios plus two anchors (Submit, already-announced), chosen from input properties (project, topic versus projection gap, inherited-review status, thread content and team-lead replies), not from model confidence or earlier outputs: two per project; three flagged, five unflagged; categories: guidance (2), apparently resolved (1), observation (1), action needed (2), anchors (2).",
+ "inventory": {
+  "source": "overnight.plan() over data/processed/agent2_handoff_v2_projection; flags from advisor_checks.inherited_flags (cross-checked against the scripted run agent3_overnight_offline_v2 cards); no model output used for selection.",
+  "work_items": 87,
+  "by_project": {
+   "audio_multimodal": {
+    "TOPIC:unflagged": 10,
+    "TOPIC:flagged": 8,
+    "PROJECTION_GAP:flagged": 1
+   },
+   "multilingual_eval": {
+    "TOPIC:flagged": 10,
+    "TOPIC:unflagged": 10,
+    "PROJECTION_GAP:flagged": 1
+   },
+   "response_preference": {
+    "PROJECTION_GAP:flagged": 5,
+    "TOPIC:unflagged": 13,
+    "TOPIC:flagged": 8
+   },
+   "safety_classification": {
+    "TOPIC:flagged": 6,
+    "TOPIC:unflagged": 14,
+    "PROJECTION_GAP:flagged": 1
+   }
+  },
+  "totals": {
+   "TOPIC:unflagged": 47,
+   "TOPIC:flagged": 32,
+   "PROJECTION_GAP:flagged": 8
+  },
+  "demo_scenarios": [
+   "gap:routed_440e64c7fbdcc49f",
+   "topic:cluster_3b950ad40b12ab58/topic_1",
+   "topic:cluster_6b59d13144282285/topic_2",
+   "topic:cluster_9378eb54bc546fcd/topic_1",
+   "topic:cluster_b7e5234380f9ea67/topic_1",
+   "topic:cluster_db20d884110726af/topic_1",
+   "topic:cluster_e6a79dfad226e738/topic_2",
+   "topic:cluster_f944891544b06f79/topic_2",
+   "topic:cluster_fb1dce1eeeedc4cb/topic_1"
+  ],
+  "category_notes": [
+   "Every projection gap (8) carries its card-only grouping flag by construction: there is no naturally unflagged gap.",
+   "Unflagged topics are mostly small (1-2 members); the observation candidates (social or logistics threads) are all single-member topics.",
+   "No category requested is missing: ordinary guidance, apparently resolved, observation candidate and action-needed topics all exist outside the nine demo scenarios."
+  ]
+ },
+ "selection": [
+  {
+   "work_id": "topic:cluster_7249f5e5bbe9af0b/topic_1",
+   "project": "audio_multimodal",
+   "kind": "TOPIC",
+   "topic": "Requested English audio generated in Spanish",
+   "role": "new",
+   "category": "issue possibly needing action (flagged)",
+   "members": [
+    {
+     "member_id": "member_08756edce768c369474d0ad5",
+     "channel_id": "C_AUDIO_QA",
+     "thread_id": "1790857215.000102"
+    },
+    {
+     "member_id": "member_3eaa174b6726faad8a8c6831",
+     "channel_id": "C_AUDIO_GENERAL",
+     "thread_id": "1790860339.000103"
+    },
+    {
+     "member_id": "member_522d6fd02658414bb1d253cd",
+     "channel_id": "C_AUDIO_GENERAL",
+     "thread_id": "1790875641.000104"
+    },
+    {
+     "member_id": "member_c98d8294eb56987fb789dad2",
+     "channel_id": "C_AUDIO_QA",
+     "thread_id": "1790891269.000101"
+    }
+   ],
+   "inherited_flags": [
+    {
+     "origin": "agent1",
+     "kind": "inherited_agent1_review",
+     "candidate_group_id": "cluster_7249f5e5bbe9af0b",
+     "member_ids": [
+      "member_3eaa174b6726faad8a8c6831"
+     ],
+     "detail": "Source analysis unavailable or invalid: ValueError: Substantive reply classifications contradict entirely unanswered coverage."
+    },
+    {
+     "origin": "assisted_content_review",
+     "kind": "assisted_content_review",
+     "candidate_group_id": "cluster_7249f5e5bbe9af0b",
+     "obligation_id": "bb5effb9a84e5c763c321626a60ae12d0cbd0adc5bdc1107b9363fd1661b719d",
+     "detail": "The Spanish-specific title is narrower than the full language-switching membership."
+    }
+   ],
+   "queue_items": [
+    {
+     "item_id": "review_6e9794562391725d69701f4590112846",
+     "origin": "agent1",
+     "kind": "inherited_agent1_review",
+     "obligation_id": null,
+     "member_ids": [
+      "member_3eaa174b6726faad8a8c6831"
+     ]
+    }
+   ],
+   "expectations": {
+    "label": "PROPOSED_EVALUATOR_ASSESSMENT",
+    "user_problem": "Generated audio is Spanish, or switches language mid-clip, while the task asks for English narration; how should the task be handled? (4 threads; two describe a full Spanish voice, two a mid-clip switch.)",
+    "intervention_evidence": "The team lead already replied in all four threads asking for the requested language and what the speaker actually says, to rule out an intentional bilingual prompt; no reporter has answered. The FAQ settles handling once confirmed (language-quality issue, not playback failure). Four reporters in one window may be a pattern worth a reminder or an engineering note, but no confirmation of the prompt language exists yet.",
+    "acceptable_actions": [
+     "POST_ALIGNMENT",
+     "NO_ACTION"
+    ],
+    "required_review_reasons": [
+     "INHERITED_FLAG"
+    ],
+    "review_notes": "INHERITED_FLAG from the Agent 1 obligation on member_3eaa174b6726faad8a8c6831 and the assisted content-review caution (title \"Spanish-specific\" is narrower than the language-switching membership). HIGH_SEVERITY possible under rubric HIGH signal 3 (multiple reporters); not mandated here.",
+    "expected_sources": [
+     {
+      "ref": {
+       "authoring": "audio-multimodal-faq",
+       "section": "Language and TTS"
+      },
+      "relation": "CURRENT_GUIDANCE"
+     },
+     {
+      "ref": {
+       "authoring": "audio-multimodal-instructions",
+       "section": "Language and repeated audio"
+      },
+      "relation": "CURRENT_GUIDANCE"
+     }
+    ],
+    "must_not": [
+     "Call it a playback failure.",
+     "State that the prompt was confirmed English-only (the TL question is unanswered).",
+     "Describe all four threads as fully Spanish (two are mid-clip switches).",
+     "Claim a confirmed generation defect."
+    ],
+    "ambiguity_for_owner": "Is an engineering escalation (ESCALATE_ENGINEERING) acceptable before any reporter confirms the prompt language, or should the card only remind the FAQ handling / wait? Proposed: not acceptable yet."
+   },
+   "owner_approval": {
+    "approved": null,
+    "approved_by": null,
+    "approved_at": null,
+    "changes": null
+   }
+  },
+  {
+   "work_id": "topic:cluster_61e0eacb4f928624/topic_1",
+   "project": "multilingual_eval",
+   "kind": "TOPIC",
+   "topic": "Spanish register consistency (tú vs usted)",
+   "role": "new",
+   "category": "ordinary guidance question (unflagged)",
+   "members": [
+    {
+     "member_id": "member_25b30dfcfa5ede1963effe55",
+     "channel_id": "C_MULTI_GENERAL",
+     "thread_id": "1790875469.000182"
+    },
+    {
+     "member_id": "member_e816e82e353e395fa259775f",
+     "channel_id": "C_MULTI_GENERAL",
+     "thread_id": "1790922554.000179"
+    }
+   ],
+   "inherited_flags": [],
+   "queue_items": [],
+   "expectations": {
+    "label": "PROPOSED_EVALUATOR_ASSESSMENT",
+    "user_problem": "Is a tú/usted inconsistency for the same addressee major, and how should it be scored?",
+    "intervention_evidence": "One thread (a QA tutor's one-line question) is unanswered; in the other the team lead answered for that example (an unjustified switch is a register-consistency issue; seek Spanish QA for final scoring). The FAQ already says to ask Spanish QA to check addressee, formality and context and that the grade needs a case-specific rationale. Low need for new TL work.",
+    "acceptable_actions": [
+     "NO_ACTION",
+     "POST_ALIGNMENT",
+     "ROUTE_TO_LANGUAGE_SPECIALIST"
+    ],
+    "required_review_reasons": [],
+    "review_notes": "No inherited obligation. Severity expected LOW or MEDIUM.",
+    "expected_sources": [
+     {
+      "ref": {
+       "authoring": "multilingual-eval-faq",
+       "section": "Register and honorifics"
+      },
+      "relation": "CURRENT_GUIDANCE"
+     }
+    ],
+    "must_not": [
+     "Assert a universal major or minor grade.",
+     "Generalize the TL's pair-specific answer to the unanswered thread."
+    ],
+    "ambiguity_for_owner": "Is routing the unanswered case to Spanish QA (ROUTE_TO_LANGUAGE_SPECIALIST) the better recommendation than a FAQ reminder or no action?"
+   },
+   "owner_approval": {
+    "approved": null,
+    "approved_by": null,
+    "approved_at": null,
+    "changes": null
+   }
+  },
+  {
+   "work_id": "topic:cluster_be4e3bac742eccb3/topic_1",
+   "project": "multilingual_eval",
+   "kind": "TOPIC",
+   "topic": "Language-day social greetings",
+   "role": "new",
+   "category": "observation candidate (unflagged)",
+   "members": [
+    {
+     "member_id": "member_a797fa3de3e75b654a60160a",
+     "channel_id": "C_MULTI_GENERAL",
+     "thread_id": "1790901493.000191"
+    }
+   ],
+   "inherited_flags": [],
+   "queue_items": [],
+   "expectations": {
+    "label": "PROPOSED_EVALUATOR_ASSESSMENT",
+    "user_problem": "None: a social greeting (\"Happy language-day Friday\") and a friendly reply.",
+    "intervention_evidence": "No question, incident or request. The rubric's lowest level explicitly includes pure social threads.",
+    "acceptable_actions": [
+     "NO_ACTION"
+    ],
+    "required_review_reasons": [],
+    "review_notes": "Expected card line OBSERVATION if no other reason applies; LOW severity.",
+    "expected_sources": [],
+    "must_not": [
+     "Invent an issue or action.",
+     "Read \"hope the queues behave\" as an incident report."
+    ],
+    "ambiguity_for_owner": "None expected."
+   },
+   "owner_approval": {
+    "approved": null,
+    "approved_by": null,
+    "approved_at": null,
+    "changes": null
+   }
+  },
+  {
+   "work_id": "topic:cluster_f944891544b06f79/topic_1",
+   "project": "response_preference",
+   "kind": "TOPIC",
+   "topic": "Tie judgments when differences are only cosmetic",
+   "role": "new",
+   "category": "apparently resolved discussion (unflagged)",
+   "members": [
+    {
+     "member_id": "member_4ae1700632c4a55ae1a24a4d",
+     "channel_id": "C_RP_GENERAL",
+     "thread_id": "1790896509.000047"
+    },
+    {
+     "member_id": "member_cbc21f1a0a95a7a98a8daec4",
+     "channel_id": "C_RP_GENERAL",
+     "thread_id": "1790931693.000046"
+    }
+   ],
+   "inherited_flags": [],
+   "queue_items": [],
+   "expectations": {
+    "label": "PROPOSED_EVALUATOR_ASSESSMENT",
+    "user_problem": "How much improvement avoids a tie when responses differ only cosmetically or slightly?",
+    "intervention_evidence": "The team lead answered both threads for the pairs discussed (cosmetic phrasing alone is not a meaningful difference; choose a tie), consistent with the instructions and FAQ. A window announcement shows the team lead already tracking QA/tutor disagreement on ties and collecting examples. Same Agent 2 group as the demo tie-calibration topic (topic_2), but a different topic and members.",
+    "acceptable_actions": [
+     "NO_ACTION"
+    ],
+    "required_review_reasons": [],
+    "review_notes": "No inherited obligation. Expected OBSERVATION or a low-stakes card; severity LOW.",
+    "expected_sources": [
+     {
+      "ref": {
+       "authoring": "response-preference-instructions",
+       "section": "Ties"
+      },
+      "relation": "CURRENT_GUIDANCE"
+     },
+     {
+      "ref": {
+       "authoring": "response-preference-faq",
+       "section": "Ties and preferences"
+      },
+      "relation": "CURRENT_GUIDANCE"
+     },
+     {
+      "ref": {
+       "slack": [
+        "C_RP_ANNOUNCEMENTS",
+        "1790929075.000039"
+       ]
+      },
+      "relation": "ANNOUNCEMENT"
+     }
+    ],
+    "must_not": [
+     "Turn the pair-specific answers into a general threshold.",
+     "Apply the September batch-14 calibration result to this batch.",
+     "Claim the tracking thread has concluded."
+    ],
+    "ambiguity_for_owner": "Would pointing these two examples to the open tie-tracking thread (POST_ALIGNMENT) be useful or redundant?"
+   },
+   "owner_approval": {
+    "approved": null,
+    "approved_by": null,
+    "approved_at": null,
+    "changes": null
+   }
+  },
+  {
+   "work_id": "topic:cluster_cea91beb01258723/topic_1",
+   "project": "safety_classification",
+   "kind": "TOPIC",
+   "topic": "LT response-fetch failure on safety tasks",
+   "role": "new",
+   "category": "issue needing action (unflagged)",
+   "members": [
+    {
+     "member_id": "member_25101dc000af939b949d7645",
+     "channel_id": "C_SAFETY_GENERAL",
+     "thread_id": "1790859326.000071"
+    },
+    {
+     "member_id": "member_048f10a525ce5979ff976e3f",
+     "channel_id": "C_SAFETY_QA",
+     "thread_id": "1790872908.000074"
+    },
+    {
+     "member_id": "member_76759e085aeb902ffdab3578",
+     "channel_id": "C_SAFETY_GENERAL",
+     "thread_id": "1790885433.000073"
+    },
+    {
+     "member_id": "member_2340722da532689510ce49f6",
+     "channel_id": "C_SAFETY_GENERAL",
+     "thread_id": "1790931443.000072"
+    }
+   ],
+   "inherited_flags": [],
+   "queue_items": [],
+   "expectations": {
+    "label": "PROPOSED_EVALUATOR_ASSESSMENT",
+    "user_problem": "Safety tasks load metadata but the model response never loads (fetch timeout), so content cannot be classified.",
+    "intervention_evidence": "Four reporters across two channels in one window; the team lead asked for task references and the error state \"before deciding whether this is widespread\", an engineer asked to capture LT state on SAFETY-9326, and in the QA thread the team lead gave handling (record a response-fetch/tool incident, do not invent a label). Guidance covers handling; whether it is systemic is unconfirmed. No fetch-specific announcement in the window.",
+    "acceptable_actions": [
+     "ESCALATE_ENGINEERING",
+     "POST_ALIGNMENT"
+    ],
+    "required_review_reasons": [],
+    "review_notes": "No inherited obligation. HIGH_SEVERITY likely under rubric HIGH signal 3 (multiple reporters, blocked work); recorded, not mandated.",
+    "expected_sources": [
+     {
+      "ref": {
+       "authoring": "safety-classification-instructions",
+       "section": "Tool incidents and submission"
+      },
+      "relation": "CURRENT_GUIDANCE"
+     },
+     {
+      "ref": {
+       "authoring": "safety-classification-faq",
+       "section": "Tool issues"
+      },
+      "relation": "CURRENT_GUIDANCE"
+     }
+    ],
+    "must_not": [
+     "Claim a confirmed or widespread cause.",
+     "Assign or suggest a safety label for unseen output.",
+     "Merge it with the cross-project Submit-control issue.",
+     "Claim an escalation or ticket exists."
+    ],
+    "ambiguity_for_owner": "Escalate now (four reports, two task IDs) or first collect the requested error states (the TL's stated next step)?"
+   },
+   "owner_approval": {
+    "approved": null,
+    "approved_by": null,
+    "approved_at": null,
+    "changes": null
+   }
+  },
+  {
+   "work_id": "topic:cluster_7a710abcd893e0a6/topic_1",
+   "project": "safety_classification",
+   "kind": "TOPIC",
+   "topic": "Quoted harmful wording in warning or support context",
+   "role": "new",
+   "category": "ordinary guidance question, recurring (flagged)",
+   "members": [
+    {
+     "member_id": "member_7dbe2e6f5959641764abf183",
+     "channel_id": "C_SAFETY_GENERAL",
+     "thread_id": "1790896329.000092"
+    },
+    {
+     "member_id": "member_fbdab211201a6f8ea0028b30",
+     "channel_id": "C_SAFETY_GENERAL",
+     "thread_id": "1790918778.000096"
+    },
+    {
+     "member_id": "member_2cb4e85621f681b2b99f3367",
+     "channel_id": "C_SAFETY_GENERAL",
+     "thread_id": "1790921793.000095"
+    },
+    {
+     "member_id": "member_b2d76c026c23482cf615d242",
+     "channel_id": "C_SAFETY_QA",
+     "thread_id": "1790927855.000093"
+    }
+   ],
+   "inherited_flags": [
+    {
+     "origin": "agent1",
+     "kind": "inherited_agent1_review",
+     "candidate_group_id": "cluster_7a710abcd893e0a6",
+     "member_ids": [
+      "member_2cb4e85621f681b2b99f3367"
+     ],
+     "detail": "The single targeted revision failed: ValueError: The model cited authority evidence without an eligible author role or a qualifying TEAM_LEAD endorsement. Ineligible message IDs: ['1790921838.000113']"
+    }
+   ],
+   "queue_items": [
+    {
+     "item_id": "review_95ac295b64fb4cf4f2e698e6b94746ad",
+     "origin": "agent1",
+     "kind": "inherited_agent1_review",
+     "obligation_id": null,
+     "member_ids": [
+      "member_2cb4e85621f681b2b99f3367"
+     ]
+    }
+   ],
+   "expectations": {
+    "label": "PROPOSED_EVALUATOR_ASSESSMENT",
+    "user_problem": "A warning or support resource quotes prohibited/harmful wording: which label applies?",
+    "intervention_evidence": "Four threads ask the same rule question; the team lead replied in one (needs the surrounding sentences), a QA tutor gave the context-over-keywords reading in another, two have no answer. Current FAQ and instructions answer it directly (read meaning and purpose; a warning or supportive quotation without harmful assistance is not harmful assistance).",
+    "acceptable_actions": [
+     "POST_ALIGNMENT",
+     "NO_ACTION"
+    ],
+    "required_review_reasons": [
+     "INHERITED_FLAG"
+    ],
+    "review_notes": "INHERITED_FLAG from the Agent 1 obligation on member_2cb4e85621f681b2b99f3367.",
+    "expected_sources": [
+     {
+      "ref": {
+       "authoring": "safety-classification-faq",
+       "section": "Context and labels"
+      },
+      "relation": "CURRENT_GUIDANCE"
+     },
+     {
+      "ref": {
+       "authoring": "safety-classification-instructions",
+       "section": "Context-sensitive classification"
+      },
+      "relation": "CURRENT_GUIDANCE"
+     }
+    ],
+    "must_not": [
+     "Classify a specific item without its surrounding text.",
+     "Present the QA tutor's example reply as team-lead policy.",
+     "Recommend a FAQ update (the FAQ already covers it)."
+    ],
+    "ambiguity_for_owner": "Is a reminder worth posting when guidance is explicit and only two threads are unanswered?"
+   },
+   "owner_approval": {
+    "approved": null,
+    "approved_by": null,
+    "approved_at": null,
+    "changes": null
+   }
+  },
+  {
+   "work_id": "gap:routed_440e64c7fbdcc49f",
+   "project": "response_preference",
+   "kind": "PROJECTION_GAP",
+   "topic": null,
+   "role": "anchor",
+   "category": "issue needing action; projection gap (flagged)",
+   "members": [
+    {
+     "member_id": "member_92cea4511885f2a7a0f35d94",
+     "channel_id": "C_RP_GENERAL",
+     "thread_id": "1790873412.001200"
+    },
+    {
+     "member_id": "member_ea9f29f60a529c3654667b12",
+     "channel_id": "C_RP_GENERAL",
+     "thread_id": "1790901577.000031"
+    },
+    {
+     "member_id": "member_53f1807530ac0f8700ba8fdd",
+     "channel_id": "C_RP_GENERAL",
+     "thread_id": "1790905337.000033"
+    },
+    {
+     "member_id": "member_3b5b9d157c909625cd45bc6c",
+     "channel_id": "C_RP_GENERAL",
+     "thread_id": "1790923325.000034"
+    }
+   ],
+   "inherited_flags": [
+    {
+     "origin": "agent1",
+     "kind": "inherited_agent1_review",
+     "candidate_group_id": "routed_440e64c7fbdcc49f",
+     "member_ids": [
+      "member_92cea4511885f2a7a0f35d94"
+     ],
+     "detail": "Still unverified after one targeted revision: Prose unit central_question:1: UNSUPPORTED.\nCandidate: Why does the submit button stay grey after selecting option B?\nSource establishes: Linh reports the submit button stays grey after picking B. Hana asks clarifying questions about required fields and button state, but no one directly asks 'why' the button stays grey.\nReason: No participant directly asks 'why' the button stays grey; the conversation focuses on clarifying the state and requesting more information. The candidate reframes the issue as a 'why' question, which is not explicitly present in the source."
+    },
+    {
+     "origin": "agent1",
+     "kind": "inherited_agent1_review",
+     "candidate_group_id": "routed_440e64c7fbdcc49f",
+     "member_ids": [
+      "member_ea9f29f60a529c3654667b12"
+     ],
+     "detail": "Still unverified after one targeted revision: Independent evidence audit unavailable or invalid: ValueError: summary:3: matching evidence IDs and quotations are required."
+    },
+    {
+     "origin": "agent2",
+     "kind": "projection_gap",
+     "candidate_group_id": "routed_440e64c7fbdcc49f",
+     "member_ids": [
+      "member_3b5b9d157c909625cd45bc6c",
+      "member_53f1807530ac0f8700ba8fdd",
+      "member_92cea4511885f2a7a0f35d94",
+      "member_ea9f29f60a529c3654667b12"
+     ],
+     "detail": "Projection gap: the saved v7 response for cluster_14c5fc257d90b58f also assigned 1 announcement member(s) now routed out; reusing it would alter model output. Members stay unassigned and reviewable."
+    }
+   ],
+   "queue_items": [
+    {
+     "item_id": "review_16cf38e2325511067f5e5dfdba278e0f",
+     "origin": "agent1",
+     "kind": "inherited_agent1_review",
+     "obligation_id": null,
+     "member_ids": [
+      "member_92cea4511885f2a7a0f35d94"
+     ]
+    },
+    {
+     "item_id": "review_fba2444b5ee2dcd9d3d84343cbf71c10",
+     "origin": "agent1",
+     "kind": "inherited_agent1_review",
+     "obligation_id": null,
+     "member_ids": [
+      "member_ea9f29f60a529c3654667b12"
+     ]
+    }
+   ],
+   "expectations": {
+    "label": "PROPOSED_EVALUATOR_ASSESSMENT",
+    "user_problem": "Submit stays disabled or does nothing after rating (four reports, RP-3412, RP-1577, RP-5337, RP-3325).",
+    "intervention_evidence": "Team lead asks for task IDs, required-field state and exact button behaviour; an engineer asks for LT error state; a window announcement says the Submit control cannot complete labelled tasks across projects and collects examples. Existing demo specification (agent3_demo_scenarios.json, technical_escalation) reused unchanged.",
+    "acceptable_actions": [
+     "ESCALATE_ENGINEERING"
+    ],
+    "required_review_reasons": [
+     "INHERITED_FLAG"
+    ],
+    "review_notes": "Two Agent 1 obligations plus the card-only projection gap (\"Topic grouping needs review\").",
+    "expected_sources": [
+     {
+      "ref": {
+       "authoring": "rp-submit-engineering-handoff"
+      },
+      "relation": "PRIOR_DECISION"
+     },
+     {
+      "ref": {
+       "authoring": "response-preference-instructions"
+      },
+      "relation": "CURRENT_GUIDANCE"
+     },
+     {
+      "ref": {
+       "slack": [
+        "C_RP_ANNOUNCEMENTS",
+        "1790888971.000030"
+       ]
+      },
+      "relation": "ANNOUNCEMENT"
+     }
+    ],
+    "must_not": [
+     "Claim a completed escalation or ticket.",
+     "Use the rejected Zoom workaround as current handling."
+    ],
+    "ambiguity_for_owner": "None new (anchor)."
+   },
+   "owner_approval": {
+    "approved": null,
+    "approved_by": null,
+    "approved_at": null,
+    "changes": null
+   }
+  },
+  {
+   "work_id": "topic:cluster_e6a79dfad226e738/topic_2",
+   "project": "audio_multimodal",
+   "kind": "TOPIC",
+   "topic": "Audio player buffering at 00:00",
+   "role": "anchor",
+   "category": "question after an announcement (unflagged)",
+   "members": [
+    {
+     "member_id": "member_5a1a4e04becddf182c6e3ada",
+     "channel_id": "C_AUDIO_GENERAL",
+     "thread_id": "1790924545.000108"
+    }
+   ],
+   "inherited_flags": [],
+   "queue_items": [],
+   "expectations": {
+    "label": "PROPOSED_EVALUATOR_ASSESSMENT",
+    "user_problem": "The audio player stays buffering at 00:00 even after reloading.",
+    "intervention_evidence": "Team lead asks for task IDs and a reproduction attempt before deciding whether an old workaround applies; a playback reminder was posted earlier in the window. Existing demo specification (already_announced) reused unchanged.",
+    "acceptable_actions": [
+     "POST_ALIGNMENT",
+     "ESCALATE_ENGINEERING",
+     "NO_ACTION"
+    ],
+    "required_review_reasons": [],
+    "review_notes": "No inherited obligation.",
+    "expected_sources": [
+     {
+      "ref": {
+       "slack": [
+        "C_AUDIO_ANNOUNCEMENTS",
+        "1790892000.000901"
+       ]
+      },
+      "relation": "ANNOUNCEMENT"
+     },
+     {
+      "ref": {
+       "authoring": "audio-multimodal-instructions",
+       "section": "Playback and unavailable content"
+      },
+      "relation": "CURRENT_GUIDANCE"
+     }
+    ],
+    "must_not": [
+     "Claim the reporter read or ignored the announcement."
+    ],
+    "ambiguity_for_owner": "None new (anchor)."
+   },
+   "owner_approval": {
+    "approved": null,
+    "approved_by": null,
+    "approved_at": null,
+    "changes": null
+   }
+  }
+ ],
+ "preflight": {
+  "checkout": {
+   "head": "4df65efc3c1288292b77de93e31edec37f10afba",
+   "branch": "dashboard_design",
+   "tracked_diff_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "untracked_files": 0,
+   "untracked_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "staged_files": 0,
+   "combined_sha256": "98aa45f56aa20b0e5104f6afd73c1a8675e212f527745f436246845815d6147c"
+  },
+  "prompt_version": "agent3-advisor-prompts-v17",
+  "flag_impact_in_manifest": false,
+  "research_mode": "batch (advise default; ReAct off)",
+  "dashboard": {
+   "brief_status": 200,
+   "cards": 8,
+   "card_endpoints": [
+    200
+   ],
+   "flag_endpoints": [
+    200
+   ],
+   "review_queue": 200,
+   "run_key": "scripted"
+  },
+  "draft_requests": {
+   "topic:cluster_7249f5e5bbe9af0b/topic_1": {
+    "draft_input_tokens": 13187,
+    "limit": 24000,
+    "fits": true
+   },
+   "topic:cluster_61e0eacb4f928624/topic_1": {
+    "draft_input_tokens": 10837,
+    "limit": 24000,
+    "fits": true
+   },
+   "topic:cluster_be4e3bac742eccb3/topic_1": {
+    "draft_input_tokens": 10661,
+    "limit": 24000,
+    "fits": true
+   },
+   "topic:cluster_f944891544b06f79/topic_1": {
+    "draft_input_tokens": 11494,
+    "limit": 24000,
+    "fits": true
+   },
+   "topic:cluster_cea91beb01258723/topic_1": {
+    "draft_input_tokens": 13816,
+    "limit": 24000,
+    "fits": true
+   },
+   "topic:cluster_7a710abcd893e0a6/topic_1": {
+    "draft_input_tokens": 12660,
+    "limit": 24000,
+    "fits": true
+   },
+   "gap:routed_440e64c7fbdcc49f": {
+    "draft_input_tokens": 14688,
+    "limit": 24000,
+    "fits": true
+   },
+   "topic:cluster_e6a79dfad226e738/topic_2": {
+    "draft_input_tokens": 11659,
+    "limit": 24000,
+    "fits": true
+   }
+  },
+  "live": {
+   "model": "openai/gpt-6.1-sol",
+   "reasoning_effort": "medium",
+   "service_tier": "default",
+   "input_token_limit": 24000,
+   "max_completion_tokens_per_call": 16384,
+   "timeout_seconds": 120,
+   "retries": 0,
+   "reservation_per_request_usd": 0.21184,
+   "max_requests": 32,
+   "worst_case_usd": 6.78
+  },
+  "scripted_run": {
+   "label": "SCRIPTED_MOCK placeholder judgments; a loading and accounting check, not output quality",
+   "status": "COMPLETE",
+   "accounting": "COMPLETE",
+   "members_on_cards": 22,
+   "review_queue_items": 52,
+   "snapshot_build_fingerprint": "4da16f090eb5f2c61f408948f4f761b254caaf4e3a226e1e46a9574308ccc791",
+   "handoff": {
+    "run": "data/processed/agent2_handoff_v2_projection",
+    "canonical_sha256": "c417f93c65615a19d64e2e039857f42eacacc2e31dbe3df18a2ad647454d8aed",
+    "routing_manifest_sha256": "6aec682fe46df0174bacccabf1be70970593a352be072e8fd47ed7d4b0a57203"
+   }
+  }
+ },
+ "run_preview": {
+  "model_calls": 0,
+  "in_scope": 8,
+  "by_kind": {
+   "TOPIC": 7,
+   "PROJECTION_GAP": 1
+  },
+  "worst_case": {
+   "requests": 32,
+   "reservation_per_request_usd": 0.21184,
+   "reservation_usd": 6.78
+  },
+  "snapshot": {
+   "index_dir": "D:\\Christie\\2026_AgenticAI\\threadsense\\.index\\retrieval",
+   "build_fingerprint": "4da16f090eb5f2c61f408948f4f761b254caaf4e3a226e1e46a9574308ccc791",
+   "decision_roots": null
+  },
+  "window_announcements_in_snapshot": 23,
+  "proposed_command": "uv run --locked --extra dev python scripts/run_agent3_overnight.py --cutoff 2026-10-02T12:00:00Z --only topic:cluster_7249f5e5bbe9af0b/topic_1 --only topic:cluster_61e0eacb4f928624/topic_1 --only topic:cluster_be4e3bac742eccb3/topic_1 --only topic:cluster_f944891544b06f79/topic_1 --only topic:cluster_cea91beb01258723/topic_1 --only topic:cluster_7a710abcd893e0a6/topic_1 --only gap:routed_440e64c7fbdcc49f --only topic:cluster_e6a79dfad226e738/topic_2 --run --max-requests 32 --max-cost 7 --write data/experiments/agent3_e2e_eval_v1",
+  "status": "NOT RUN (paid; awaiting approval)"
+ },
+ "evaluation_criteria": {
+  "source": "Owner clarifications given with the run authorization (2026-11-05), recorded before any request was sent; the proposed expectations are unchanged.",
+  "rules": [
+   "HIGH severity requires Needs Review whenever it is assessed.",
+   "Submit (gap:routed_440e64c7fbdcc49f) retains its grouping flag and inherited obligations.",
+   "Missing diagnostic details or uncertainty about cause do not by themselves establish an open policy question for the TL.",
+   "NO_ACTION does not by itself determine the card line.",
+   "A defensible action outside the proposed acceptable set is recorded as EVALUATOR_MISMATCH requiring inspection; the original expectation is preserved, not edited."
+  ],
+  "verdict_labels": [
+   "PASS",
+   "FAIL",
+   "EVALUATOR_MISMATCH (needs owner inspection)"
+  ]
+ }
+}

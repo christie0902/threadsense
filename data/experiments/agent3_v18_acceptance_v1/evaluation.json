@@ -1,0 +1,119 @@
+{
+ "label": "DEVELOPMENT EVALUATION (manual inspection; not independently validated ground truth). Model confidence is not verified correctness.",
+ "run": "run/",
+ "expectations": "data/experiments/agent3_e2e_eval_v1/expectations.json (unchanged)",
+ "usage": {
+  "requests": 16,
+  "blocked": 0,
+  "charged_usd": 0.8634,
+  "input_tokens": 193733,
+  "output_tokens": 47597,
+  "reasoning_tokens": 3794,
+  "failures": 0,
+  "revisions": 0,
+  "tot": "not triggered"
+ },
+ "accounting": {
+  "status": "COMPLETE",
+  "members_on_cards": 22,
+  "out_of_scope_members": 156,
+  "review_queue_items": 52,
+  "inherited_agent1_obligations": 41,
+  "announcement_route_obligations": 8,
+  "naming_cautions": 3,
+  "projection_gaps": 8
+ },
+ "rows": [
+  {
+   "work_id": "topic:cluster_7249f5e5bbe9af0b/topic_1",
+   "card_line": "NEEDS_REVIEW",
+   "next_step": "NO_INTERVENTION_PROPOSED",
+   "grounding": "PASSED",
+   "withheld": [
+    "action:no_action (PARTIALLY_SUPPORTED; non-blocking)"
+   ],
+   "expectation": "PASS (NO_ACTION acceptable; INHERITED_FLAG present)",
+   "finding": "Accurate: separates full-Spanish reports from mid-clip switches and keeps the same tutor across threads. The judge declined \"no additional intervention is needed\" because a handling question and playback questions are unanswered; the card shows the unvalidated state, not \"No action needed\". Summary says \"the retrieved conversations\" (processing-flavoured)."
+  },
+  {
+   "work_id": "topic:cluster_e6a79dfad226e738/topic_2",
+   "card_line": "NEEDS_REVIEW",
+   "next_step": "ACTION_RECOMMENDED",
+   "grounding": "PASSED",
+   "withheld": [],
+   "expectation": "PASS (ESCALATE_ENGINEERING acceptable)",
+   "finding": "Accurate. Detail 3 says the trial outcome is not in the retrieved records: correctly qualified, but the batch-05 outcome record exists and was not retrieved (documented retrieval limitation). HIGH from two reporters in one thread remains generous."
+  },
+  {
+   "work_id": "topic:cluster_61e0eacb4f928624/topic_1",
+   "card_line": "RECOMMENDED_ACTION",
+   "next_step": "ACTION_RECOMMENDED",
+   "grounding": "PASSED",
+   "withheld": [],
+   "expectation": "PASS (ROUTE_TO_LANGUAGE_SPECIALIST acceptable; no review reason)",
+   "finding": "Accurate and well scoped; detail 3 uses \"supplied thread\" (processing-flavoured)."
+  },
+  {
+   "work_id": "topic:cluster_be4e3bac742eccb3/topic_1",
+   "card_line": "OBSERVATION",
+   "next_step": "NO_ACTION_NEEDED",
+   "grounding": "PASSED",
+   "withheld": [],
+   "expectation": "PASS (NO_ACTION; severity N/A, the earlier expectation said LOW and was an evaluator error, preserved)",
+   "finding": "Accurate; supported NO_ACTION reason shown; no detail sentences (none needed)."
+  },
+  {
+   "work_id": "gap:routed_440e64c7fbdcc49f",
+   "card_line": "NEEDS_REVIEW",
+   "next_step": "ACTION_RECOMMENDED",
+   "grounding": "PASSED",
+   "withheld": [],
+   "expectation": "PASS (ESCALATE_ENGINEERING; INHERITED_FLAG with 2 Agent 1 flags and the projection gap retained)",
+   "finding": "Accurate roles, counts, task references and requests; draft in the team lead voice. Detail 6 \"at its September 28 close\" is imprecise wording: the record says the incident remained open at 17:00 UTC (the sentence does say no cause or repair was confirmed). Fixed copy \"the summary and recommendation passed the evidence check\" is correct here."
+  },
+  {
+   "work_id": "topic:cluster_f944891544b06f79/topic_1",
+   "card_line": "OBSERVATION",
+   "next_step": "NO_ACTION_NEEDED",
+   "grounding": "PASSED",
+   "withheld": [],
+   "expectation": "PASS (NO_ACTION; OBSERVATION; LOW); source recall 2/3: the open tie-tracking announcement was again not retrieved",
+   "finding": "Accurate. This run the severity rationale passed (LOW), so there is no failed assessment and no review reason; the earlier run withheld it for a missing citation. Detail 2 notes the QA answer addresses cosmetic phrasing although the tutor described a relevance difference. NO_ACTION reason judged SUPPORTED; it rests on these messages and does not mention the team lead collecting tie examples (not retrieved)."
+  },
+  {
+   "work_id": "topic:cluster_7a710abcd893e0a6/topic_1",
+   "card_line": "NEEDS_REVIEW",
+   "next_step": "ACTION_RECOMMENDED",
+   "grounding": "PASSED",
+   "withheld": [],
+   "expectation": "PASS (POST_ALIGNMENT; INHERITED_FLAG). Disagreement: severity HIGH (signal 3) where the earlier run assessed MEDIUM; not mandated or excluded by the expectation",
+   "finding": "Accurate; reminder states policy at its source strength and keeps the surrounding-sentences request scoped."
+  },
+  {
+   "work_id": "topic:cluster_cea91beb01258723/topic_1",
+   "card_line": "NEEDS_REVIEW",
+   "next_step": "ACTION_RECOMMENDED",
+   "grounding": "PASSED",
+   "withheld": [],
+   "expectation": "PASS (ESCALATE_ENGINEERING)",
+   "finding": "Accurate; detail 5 now records that the latest tutor's handling question is unanswered (still not answered by the action). \"A tutor and another tutor\" is awkward."
+  }
+ ],
+ "safety": {
+  "displayed_unsupported_content": "none found",
+  "unjustified_no_action_needed": "none (both NO_ACTION_NEEDED states judged SUPPORTED; English->Spanish shown as NO_INTERVENTION_PROPOSED)",
+  "raw_ids_or_names_in_card_prose": "none (card_ids/card_names and dashboard text scan)"
+ },
+ "dashboard": {
+  "cards_loaded": 8,
+  "page_errors": 0,
+  "decision_v4": "APPROVE_ACTION on tú/usted saved (201), replayed with the same key (200, replayed, identical entry, 1 row), NOT_EXECUTED / NOT_OBSERVED, namespace demo, throwaway database outside the repo"
+ },
+ "follow_ups": [
+  "Fixed check copy \"The summary and recommendation passed the evidence check\" also appears on cards without a recommendation (English->Spanish).",
+  "Processing-flavoured words in card prose (\"retrieved conversations\", \"supplied thread\").",
+  "Submit detail 6: \"at its September 28 close\" for an incident that remained open.",
+  "Retrieval misses (documented): batch-05 trial outcome (buffering); tie-tracking announcement (cosmetic ties).",
+  "Severity calibration variation between runs (quoted wording HIGH vs MEDIUM; buffering HIGH from two reporters)."
+ ]
+}

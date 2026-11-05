@@ -13,6 +13,11 @@ const RELATIONS = {
   DIFFERENT_ACTION: 'A different kind of action.',
 }
 const MODES = { LIVE: 'Live model run', SCRIPTED: 'Scripted run (prepared judgments)', TEST_FIXTURE: 'Test fixture (hand-written)' }
+// The closed card's line when it shows no action box (next_step from runs.presentation); wording is fixed UI copy.
+const STEP_STYLES = {
+  NO_ACTION_NEEDED: ['check', 'text-emerald-300'], NO_INTERVENTION_PROPOSED: ['eye', 'text-violet-300'],
+  RECOMMENDATION_WITHHELD: ['alert', 'text-amber-300'], NO_RECOMMENDATION_AVAILABLE: ['alert', 'text-slate-400'],
+}
 
 function Section({ label, children, testid }) {
   return (
@@ -28,17 +33,23 @@ function ActionTab({ action, alternatives, closeCall }) {
   const shown = action && action.action_type !== 'NO_ACTION'
   return (
     <div className="space-y-6">
-      {shown && action.rationale && <Section label="Why" testid="action-rationale">{action.rationale}</Section>}
       {shown && action.draft_text && (
         <div>
           <div className="flex flex-wrap items-center justify-between gap-2">
             <span className="eyebrow">Draft to copy</span>
             <CopyButton text={action.draft_text} />
           </div>
+          {action.scope_note && (
+            <div className="prose-pre mt-2 rounded-lg border border-amber-300/15 bg-amber-300/[0.04] px-3 py-2 text-xs leading-relaxed text-amber-100/90" data-testid="action-scope">
+              <b className="font-semibold">Applies only as stated: </b>{action.scope_note}
+            </div>
+          )}
           <div className="quote mt-2" data-testid="action-draft">{action.draft_text}</div>
         </div>
       )}
-      {shown && action.scope_note && <div className="prose-pre text-xs leading-relaxed text-slate-400">{action.scope_note}</div>}
+      {shown && !action.draft_text && action.scope_note && (
+        <div className="prose-pre text-xs leading-relaxed text-amber-100/90" data-testid="action-scope"><b className="font-semibold">Applies only as stated: </b>{action.scope_note}</div>
+      )}
       {alternatives.length > 0 && (
         <section className="rounded-2xl border border-indigo-400/20 bg-indigo-400/[0.05] p-4 sm:p-6" data-testid="alternatives">
           <div className="eyebrow text-indigo-300" data-testid="alternatives-heading">{closeCall ? 'Closely matched options (none preferred)' : 'Supported alternatives'}</div>
@@ -79,6 +90,49 @@ function ActionTab({ action, alternatives, closeCall }) {
         </section>
       )}
       {!shown && alternatives.length === 0 && <div className="text-sm text-slate-400">No action text on this card.</div>}
+    </div>
+  )
+}
+
+/** The opened card's account: what happened (detail sentences, or an earlier card's saved findings) and why this next step. */
+function Account({ presentation, action }) {
+  if (!presentation) return null
+  const { details, next_step: step } = presentation
+  const operational = action && action.action_type !== 'NO_ACTION'
+  return (
+    <div className="grid gap-5 md:grid-cols-2">
+      <section data-testid="what-happened" data-source={details.source}>
+        <h4 className="eyebrow">What happened</h4>
+        {details.source === 'CARD' && details.sentences.length > 0 && (
+          <ul className="mt-1.5 list-disc space-y-1 pl-5 text-sm leading-relaxed text-slate-200">
+            {details.sentences.map((d, i) => <li key={i} className="prose-pre" data-testid="detail-sentence">{d}</li>)}
+          </ul>
+        )}
+        {details.source === 'CARD' && details.sentences.length === 0 && (
+          <div className="mt-1.5 text-sm text-slate-400" data-testid="no-details">No further detail is shown beyond the summary.</div>
+        )}
+        {details.source === 'SAVED_REASONING' && (
+          <details className="group mt-1.5" data-testid="saved-reasoning">
+            <summary className="flex cursor-pointer list-none items-center gap-1.5 text-sm text-slate-300 hover:text-white [&::-webkit-details-marker]:hidden">
+              <Icon name="chevron" className="h-3.5 w-3.5 text-slate-500 transition group-open:rotate-90" />Show the supported findings
+            </summary>
+            <div className="mt-1 text-[11px] text-slate-500" data-testid="saved-reasoning-note">Saved wording from an earlier card version (written before short and detailed text were separated): the findings that passed the evidence check.</div>
+            <div className="prose-pre mt-1.5 text-sm leading-relaxed text-slate-300">{details.findings}</div>
+          </details>
+        )}
+        {details.source === 'CARD' && details.findings && (
+          <details className="mt-2 text-xs" data-testid="supported-findings">
+            <summary className="cursor-pointer text-slate-500 hover:text-slate-300">All supported findings</summary>
+            <div className="prose-pre mt-1 leading-relaxed text-slate-400">{details.findings}</div>
+          </details>
+        )}
+      </section>
+      <section data-testid="why-next-step" data-status={step.status}>
+        <h4 className="eyebrow">{operational ? 'Why this next step' : step.label}</h4>
+        {step.rationale && <div className="prose-pre mt-1.5 text-sm leading-relaxed text-slate-200" data-testid="next-step-rationale">{step.rationale}</div>}
+        {step.explanation && <div className="prose-pre mt-1.5 text-sm leading-relaxed text-slate-400" data-testid="next-step-explanation">{step.explanation}</div>}
+        {step.derived && <div className="mt-1.5 text-[11px] text-slate-500" data-testid="next-step-derived">Read from this run's saved result (an earlier card version).</div>}
+      </section>
     </div>
   )
 }
@@ -158,7 +212,8 @@ function TechnicalTab({ card, detail, run, displayTitle }) {
 }
 
 export default function CardView({ runKey, run, item, actor, decisionState, onDecisionChanged, openPanel, openQueueItem, wide = false }) {
-  const { card, alternatives, cited_evidence: cited, allowed_decisions: allowed, semantic_source: source, review } = item
+  const { card, alternatives, cited_evidence: cited, allowed_decisions: allowed, semantic_source: source, review, presentation } = item
+  const step = presentation?.next_step
   const displayTitle = item.display_title || card.topic_name
   const action = card.recommended_action
   const closeCall = alternatives.some(a => a.closely_matched)
@@ -230,7 +285,13 @@ export default function CardView({ runKey, run, item, actor, decisionState, onDe
             </div>
           </div>
         )}
-        {action?.action_type === 'NO_ACTION' && (
+        {!operational && step && (
+          <div className={`mt-4 flex items-center gap-2 text-sm text-slate-300 ${open || wide ? 'lg:mt-2' : ''}`} data-testid="next-step-status" data-status={step.status}>
+            <Icon name={(STEP_STYLES[step.status] || STEP_STYLES.NO_RECOMMENDATION_AVAILABLE)[0]} className={`h-4 w-4 ${(STEP_STYLES[step.status] || STEP_STYLES.NO_RECOMMENDATION_AVAILABLE)[1]}`} />
+            <span data-testid="action-label">{action?.action_type === 'NO_ACTION' ? action.label : step.label}</span>
+          </div>
+        )}
+        {!operational && !step && action?.action_type === 'NO_ACTION' && (
           <div className={`mt-4 flex items-center gap-2 text-sm text-slate-300 ${open || wide ? 'lg:mt-2' : ''}`}><Icon name="eye" className="h-4 w-4 text-violet-300" /><span data-testid="action-label">{action.label}</span></div>
         )}
         </div>
@@ -248,7 +309,8 @@ export default function CardView({ runKey, run, item, actor, decisionState, onDe
           {open && (
             <motion.div key="detail" initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }}
               transition={{ duration: 0.2 }} className="overflow-hidden" data-testid="card-detail">
-              <div className="mt-4 space-y-3">
+              <div className="mt-4 space-y-5">
+                <Account presentation={presentation} action={action} />
                 <WhatToCheck checks={review?.checks} openPanel={openPanel} openQueueItem={openQueueItem} />
                 {review && (review.items.length > 0 || review.withheld?.length > 0 || review.other_notes.length > 0) && (
                   <details className="group panel-inset" data-testid="all-reasons">

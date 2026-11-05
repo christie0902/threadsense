@@ -193,5 +193,5 @@ def test_current_handling_survives_when_the_history_sentence_is_withheld(recorde
 
 
 def test_guide_separates_facts_with_different_evidence_and_allows_three_sentences():
-    assert 'up to 3 when needed' in WRITING_GUIDE and 'rather than joining unrelated facts' in WRITING_GUIDE
+    assert 'up to 3 sentences when facts' in WRITING_GUIDE and 'rather than joining unrelated facts' in WRITING_GUIDE
     assert AdvisorDraft.model_fields['summary_sentences'].metadata[0].max_length == 3

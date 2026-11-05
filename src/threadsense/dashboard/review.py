@@ -113,9 +113,12 @@ def _field(statement_id, kind, links, alternatives):
         return 'Recommended action', []
     if sid.startswith('action:'):
         return {'action:rationale': 'Why the action helps', 'action:need': 'Why intervening now is needed',
-                'action:choice': 'Choice between actions'}.get(sid, 'Recommended action'), []
+                'action:choice': 'Choice between actions',
+                'action:no_action': 'Why no action is needed'}.get(sid, 'Recommended action'), []
     if m := re.fullmatch(r'summary:s(\d+)', sid):
         return f'Summary, sentence {m.group(1)}', []
+    if m := re.fullmatch(r'detail:d(\d+)', sid):
+        return f'What happened, sentence {m.group(1)}', []
     if sid.startswith('claim:'):
         return f"Finding ({_words((kind or 'claim').replace('CLAIM_', ''))})", []
     if sid == 'review_note':
