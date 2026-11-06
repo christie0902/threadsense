@@ -94,10 +94,18 @@ function ActionTab({ action, alternatives, closeCall }) {
   )
 }
 
+// Processing notes for a pending follow-up, shown only in the opened card.
+const KIND_NOTES = {
+  WAITING_ON_REQUESTED_STEP: 'A team-lead request in the thread has no recorded answer yet.',
+  THREAD_STILL_OPEN: 'The thread was judged still open; no team-lead request is pending.',
+  OPEN_QUESTION: 'An open question in the thread was judged supported.',
+  MONITORING: 'No action is needed now, but the thread was judged still open.',
+}
+
 /** The opened card's account: what happened (detail sentences, or an earlier card's saved findings) and why this next step. */
 function Account({ presentation, action }) {
   if (!presentation) return null
-  const { details, next_step: step } = presentation
+  const { details, next_step: step, outstanding_step: outstanding, briefing } = presentation
   const operational = action && action.action_type !== 'NO_ACTION'
   return (
     <div className="grid gap-5 md:grid-cols-2">
@@ -132,6 +140,17 @@ function Account({ presentation, action }) {
         {step.rationale && <div className="prose-pre mt-1.5 text-sm leading-relaxed text-slate-200" data-testid="next-step-rationale">{step.rationale}</div>}
         {step.explanation && <div className="prose-pre mt-1.5 text-sm leading-relaxed text-slate-400" data-testid="next-step-explanation">{step.explanation}</div>}
         {step.derived && <div className="mt-1.5 text-[11px] text-slate-500" data-testid="next-step-derived">Read from this run's saved result (an earlier card version).</div>}
+        {outstanding && outstanding.text_source === 'SUPPORTED_STATEMENTS' && (
+          <div className="mt-3 text-[11px] leading-relaxed text-slate-500" data-testid="outstanding-detail" data-kind={outstanding.kind}>
+            {KIND_NOTES[outstanding.kind] ? `${KIND_NOTES[outstanding.kind]} ` : ''}The text in the highlighted box is saved wording the final evidence check judged supported.
+          </div>
+        )}
+        {briefing && briefing.status !== 'IN_BRIEFING' && (
+          <div className="mt-3 text-xs leading-relaxed text-slate-400" data-testid="history-basis">
+            <span className="eyebrow">Why it is in history</span>
+            <div className="mt-1">{briefing.basis || `Relevance label ${briefing.label_id}.`} Nothing was resolved or deleted; the card, its threads and accounting are unchanged.</div>
+          </div>
+        )}
       </section>
     </div>
   )
@@ -214,6 +233,8 @@ function TechnicalTab({ card, detail, run, displayTitle }) {
 export default function CardView({ runKey, run, item, actor, decisionState, onDecisionChanged, openPanel, openQueueItem, wide = false }) {
   const { card, alternatives, cited_evidence: cited, allowed_decisions: allowed, semantic_source: source, review, presentation } = item
   const step = presentation?.next_step
+  const outstanding = presentation?.outstanding_step
+  const briefing = presentation?.briefing
   const displayTitle = item.display_title || card.topic_name
   const action = card.recommended_action
   const closeCall = alternatives.some(a => a.closely_matched)
@@ -253,6 +274,7 @@ export default function CardView({ runKey, run, item, actor, decisionState, onDe
               <Badge>{card.project_id}</Badge>
               <SourceBadge source={source} />
               <Badge>{words(card.resolution_status)}</Badge>
+              {briefing && briefing.status !== 'IN_BRIEFING' && <Badge data-testid="history-badge">Not in this brief · {words(briefing.relevance)}</Badge>}
             </div>
             <h3 className="mt-2.5 font-display text-lg font-semibold leading-snug text-white" data-testid="card-topic">{displayTitle}</h3>
           </div>
@@ -289,6 +311,19 @@ export default function CardView({ runKey, run, item, actor, decisionState, onDe
           <div className={`mt-4 flex items-center gap-2 text-sm text-slate-300 ${open || wide ? 'lg:mt-2' : ''}`} data-testid="next-step-status" data-status={step.status}>
             <Icon name={(STEP_STYLES[step.status] || STEP_STYLES.NO_RECOMMENDATION_AVAILABLE)[0]} className={`h-4 w-4 ${(STEP_STYLES[step.status] || STEP_STYLES.NO_RECOMMENDATION_AVAILABLE)[1]}`} />
             <span data-testid="action-label">{action?.action_type === 'NO_ACTION' ? action.label : step.label}</span>
+          </div>
+        )}
+        {!operational && outstanding && (
+          <div className="mt-2 rounded-lg border border-amber-300/20 bg-amber-300/[0.05] px-3 py-2 text-sm" data-testid="outstanding-step" data-kind={outstanding.kind}>
+            <div className="font-medium text-amber-100" data-testid="outstanding-label">{outstanding.label}</div>
+            {outstanding.text_source === 'SUPPORTED_STATEMENTS' && (open
+              ? outstanding.details.map((d, i) => <div key={i} className="prose-pre mt-0.5 text-xs leading-relaxed text-slate-300" data-testid="outstanding-text">{d}</div>)
+              : <div className="prose-pre mt-0.5 line-clamp-2 text-xs leading-relaxed text-slate-300" data-testid="outstanding-text">{outstanding.details[0]}</div>)}
+          </div>
+        )}
+        {presentation?.unsupported_observation && (
+          <div className="mt-2 rounded-lg border border-amber-300/20 bg-amber-300/[0.05] px-3 py-2 text-xs text-amber-100" data-testid="unsupported-observation">
+            Filed as an observation without a supported no-action reason: treat it as needing review.
           </div>
         )}
         {!operational && !step && action?.action_type === 'NO_ACTION' && (
@@ -339,7 +374,7 @@ export default function CardView({ runKey, run, item, actor, decisionState, onDe
 
         <div className="mt-5 border-t border-white/[0.06] pt-4" data-testid="decision-block">
           <DecisionPanel runKey={runKey} card={card} alternatives={alternatives} allowed={allowed} actor={actor}
-            state={decisionState} onChanged={onDecisionChanged} />
+            state={decisionState} onChanged={onDecisionChanged} presentation={presentation} />
         </div>
       </div>
     </motion.article>

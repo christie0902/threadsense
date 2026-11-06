@@ -140,9 +140,13 @@ def test_rejected_no_action_reason_is_never_sent_and_never_no_action_needed(env)
     assert reasons(result['card']) == ['GROUNDING_FAILURE', 'OTHER']
 
 
-def test_no_action_state_never_adds_or_removes_review(env):
+def test_an_unjudged_no_action_reason_keeps_review_instead_of_observation(env):
+    # briefing-routing-v1: an observation needs a supported no-action reason; without one the card stays in review.
     supported = advise(env, GREETINGS)['card']
     unjudged = advise(env, GREETINGS, verdicts={'action:no_action': None})['card']
     assert (supported['card_line'], supported['next_step']['status']) == ('OBSERVATION', 'NO_ACTION_NEEDED')
-    assert (unjudged['card_line'], unjudged['next_step']['status']) == ('OBSERVATION', 'NO_INTERVENTION_PROPOSED')
-    assert reasons(unjudged) == reasons(supported) == []
+    assert reasons(supported) == []
+    assert (unjudged['card_line'], unjudged['next_step']['status']) == ('NEEDS_REVIEW', 'NO_INTERVENTION_PROPOSED')
+    assert reasons(unjudged) == ['OTHER']
+    assert unjudged['needs_review_reasons'][0]['detail'] == 'Observation not established: next step NO_INTERVENTION_PROPOSED.'
+    assert 'No-action choice needs review: its reason did not pass the evidence check.' in unjudged['review_notes']

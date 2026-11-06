@@ -1,0 +1,3701 @@
+{
+ "work_item": {
+  "candidate_group_id": "cluster_dc219b33a3be1a2e",
+  "project_id": "response_preference",
+  "batch_id": "rp_batch_15",
+  "work_id": "topic:cluster_dc219b33a3be1a2e/topic_1",
+  "kind": "TOPIC",
+  "topic_id": "cluster_dc219b33a3be1a2e/topic_1",
+  "topic_name": "LT response-fetch timeout investigation",
+  "member_ids": [
+   "member_39be46641107cea5c7626e55",
+   "member_a2f0abeaf568ff6802ec5e14"
+  ],
+  "pilot_scenario": null,
+  "in_scope": true
+ },
+ "workflow": {
+  "outcome": "CARD",
+  "card_id": "card_93b3b02af1b28a8a3f2ffe09142aa567",
+  "card_line": "NEEDS_REVIEW",
+  "grounding": "PASSED",
+  "stage_failures": [],
+  "semantic_source": "LIVE_MODEL"
+ },
+ "result": {
+  "scenario": {
+   "id": "topic:cluster_dc219b33a3be1a2e/topic_1",
+   "candidate_group_id": "cluster_dc219b33a3be1a2e",
+   "focus": "LT response-fetch timeout investigation",
+   "topic_id": "cluster_dc219b33a3be1a2e/topic_1"
+  },
+  "status": "CARD",
+  "topic": {
+   "project_id": "response_preference",
+   "batch_id": "rp_batch_15",
+   "candidate_group_id": "cluster_dc219b33a3be1a2e",
+   "topic_id": "cluster_dc219b33a3be1a2e/topic_1",
+   "topic_label": "LT response-fetch timeout investigation",
+   "projection_gap": null,
+   "as_of": "2026-10-02T12:00:00Z",
+   "member_ids": [
+    "member_39be46641107cea5c7626e55",
+    "member_a2f0abeaf568ff6802ec5e14"
+   ],
+   "initial_query": "LT response-fetch timeout investigation. What is the task reference and error state to assess whether the issue is widespread or task-specific?"
+  },
+  "retrieval_trace": [
+   {
+    "step": 1,
+    "purpose": "initial_current_guidance",
+    "gap_id": null,
+    "query": "LT response-fetch timeout investigation. What is the task reference and error state to assess whether the issue is widespread or task-specific?",
+    "source_types": [
+     "guideline",
+     "faq",
+     "decision",
+     "announcement"
+    ],
+    "version_mode": "current",
+    "as_of": "2026-10-02T12:00:00Z",
+    "batch": "rp_batch_15",
+    "top_k": 5,
+    "status": "DONE",
+    "mode": "hybrid",
+    "use_mmr": true,
+    "mmr_lambda": 0.9,
+    "result_ids": [
+     "k:response-preference-instructions@1.1:36683c52",
+     "k:rp-submit-engineering-handoff@1.0:6afb6e6d",
+     "k:response-preference-instructions@1.1:3350bbc0",
+     "k:slack:C_RP_ANNOUNCEMENTS:1790883558.000028:d0ddced2",
+     "k:rp-submit-engineering-handoff@1.0:d84c905d"
+    ],
+    "new_evidence_ids": [
+     "k:response-preference-instructions@1.1:36683c52",
+     "k:rp-submit-engineering-handoff@1.0:6afb6e6d",
+     "k:response-preference-instructions@1.1:3350bbc0",
+     "k:slack:C_RP_ANNOUNCEMENTS:1790883558.000028:d0ddced2",
+     "k:rp-submit-engineering-handoff@1.0:d84c905d",
+     "k:response-preference-faq@1.1:fa9b6a3d"
+    ],
+    "eligible_chunks": 28,
+    "added": [
+     {
+      "evidence_id": "k:response-preference-faq@1.1:fa9b6a3d",
+      "role": "TYPE_COVERAGE",
+      "detail": "best-ranked faq for this query (rank 8), outside the top 5"
+     }
+    ]
+   }
+  ],
+  "retrieval_notes": {
+   "withheld_by_version": [],
+   "version_diagnostics": []
+  },
+  "follow_ups": [],
+  "unfilled_gaps": [
+   {
+    "gap_id": "g1",
+    "need": "OTHER",
+    "description": "The incident investigation still needs the task references and error states requested by the team lead, the retry outcomes requested by a QA tutor, and the failure time and metadata visibility requested in the QA thread. These require replies from the affected reporters rather than a guidance search.",
+    "follow_up": null
+   }
+  ],
+  "model_calls": [
+   {
+    "stage": "draft",
+    "schema": "AdvisorDraft",
+    "agent1_context": {
+     "sha256": "255d52629f7c862f73f710d873fe530c9fb4e253c82f1de7cfe1a9135cacf215",
+     "boundary": "IN_HTTP_BODY"
+    },
+    "raw": "{\n  \"contract_version\": \"agent3-advisor-draft-v11\",\n  \"summary\": null,\n  \"summary_sentences\": [\n    {\n      \"text\": \"Three tutors and a QA tutor report that response content does not appear or cannot be fetched, preventing evaluation.\",\n      \"support_claim_ids\": [\"c1\", \"c2\", \"c3\", \"c4\"],\n      \"depends_on\": []\n    },\n    {\n      \"text\": \"The team lead has requested task references and error states in both threads before deciding whether the problem is widespread or task-specific; those inputs have not been supplied.\",\n      \"support_claim_ids\": [\"c6\", \"c7\"],\n      \"depends_on\": []\n    }\n  ],\n  \"detail_sentences\": [\n    {\n      \"text\": \"In the general thread, a tutor reports a timeout before Responses A and B appear; a second tutor reports visible task metadata but no response content.\",\n      \"support_claim_ids\": [\"c1\", \"c2\"],\n      \"depends_on\": [],\n      \"summary_depends_on\": []\n    },\n    {\n      \"text\": \"In the QA thread, a QA tutor reports a response-fetch failure before comparison, and a tutor reports that a second item also failed to display a response.\",\n      \"support_claim_ids\": [\"c3\", \"c4\"],\n      \"depends_on\": [],\n      \"summary_depends_on\": []\n    },\n    {\n      \"text\": \"A QA tutor asks for task IDs and retry outcomes in both threads and asks whether metadata was visible in the QA thread; a tutor also asks for the failure time in the QA thread.\",\n      \"support_claim_ids\": [\"c4\", \"c5\"],\n      \"depends_on\": [],\n      \"summary_depends_on\": []\n    },\n    {\n      \"text\": \"Current instructions say to record a fetch incident when response panes never load and not infer response quality.\",\n      \"support_claim_ids\": [\"c8\"],\n      \"depends_on\": [],\n      \"summary_depends_on\": []\n    },\n    {\n      \"text\": \"The earlier engineering handoff concerns disabled Submit controls, remained open on September 28, and does not establish a shared cause for these response-loading reports.\",\n      \"support_claim_ids\": [\"c9\"],\n      \"depends_on\": [],\n      \"summary_depends_on\": []\n    }\n  ],\n  \"reasoning\": \"The reports describe unavailable evaluation content across four distinct authors, supporting a technical report to engineering without claiming a confirmed cause or widespread outage. Current instructions distinguish fetch incidents from response quality. The team lead has already specified the inputs needed to assess the extent of the problem, so that assessment is pending information rather than an unanswered policy question. The earlier Submit handoff is historical context, not a standing route or evidence of recurrence. Further research should first obtain the requested incident details; no additional source search is necessary to support this advisory escalation.\",\n  \"claims\": [\n    {\n      \"claim_id\": \"c1\",\n      \"kind\": \"INCIDENT_FACT\",\n      \"text\": \"A tutor reports that LT times out before Responses A and B are displayed.\",\n      \"evidence_ids\": [\"m:C_RP_GENERAL:1790897195.000027\"],\n      \"attributions\": [\n        {\n          \"user_id\": \"U003\",\n          \"relation\": \"AUTHOR\",\n          \"evidence_id\": \"m:C_RP_GENERAL:1790897195.000027\"\n        }\n      ],\n      \"quote\": null,\n      \"quote_kind\": \"PARAPHRASE\",\n      \"material\": true\n    },\n    {\n      \"claim_id\": \"c2\",\n      \"kind\": \"INCIDENT_FACT\",\n      \"text\": \"A tutor reports that task metadata loads but no response content is available to evaluate.\",\n      \"evidence_ids\": [\"m:C_RP_GENERAL:1790897253.000113\"],\n      \"attributions\": [\n        {\n          \"user_id\": \"U004\",\n          \"relation\": \"AUTHOR\",\n          \"evidence_id\": \"m:C_RP_GENERAL:1790897253.000113\"\n        }\n      ],\n      \"quote\": null,\n      \"quote_kind\": \"PARAPHRASE\",\n      \"material\": true\n    },\n    {\n      \"claim_id\": \"c3\",\n      \"kind\": \"INCIDENT_FACT\",\n      \"text\": \"A QA tutor reports that response-fetch fails before the pair can be compared.\",\n      \"evidence_ids\": [\"m:C_RP_QA:1790920271.000026\"],\n      \"attributions\": [\n        {\n          \"user_id\": \"U019\",\n          \"relation\": \"AUTHOR\",\n          \"evidence_id\": \"m:C_RP_QA:1790920271.000026\"\n        }\n      ],\n      \"quote\": null,\n      \"quote_kind\": \"PARAPHRASE\",\n      \"material\": true\n    },\n    {\n      \"claim_id\": \"c4\",\n      \"kind\": \"INCIDENT_FACT\",\n      \"text\": \"A tutor reports that a second item also failed to display a response and asks for the task ID and time of the response-fetch failure in the QA thread.\",\n      \"evidence_ids\": [\"m:C_RP_QA:1790920325.000113\"],\n      \"attributions\": [\n        {\n          \"user_id\": \"U015\",\n          \"relation\": \"AUTHOR\",\n          \"evidence_id\": \"m:C_RP_QA:1790920325.000113\"\n        }\n      ],\n      \"quote\": null,\n      \"quote_kind\": \"PARAPHRASE\",\n      \"material\": true\n    },\n    {\n      \"claim_id\": \"c5\",\n      \"kind\": \"INCIDENT_FACT\",\n      \"text\": \"A QA tutor asks for affected task IDs and retry outcomes in both threads and asks whether task metadata was visible before the output pane timed out in the QA thread.\",\n      \"evidence_ids\": [\n        \"m:C_RP_GENERAL:1790897298.000226\",\n        \"m:C_RP_QA:1790920371.000226\"\n      ],\n      \"attributions\": [\n        {\n          \"user_id\": \"U002\",\n          \"relation\": \"AUTHOR\",\n          \"evidence_id\": \"m:C_RP_GENERAL:1790897298.000226\"\n        },\n        {\n          \"user_id\": \"U002\",\n          \"relation\": \"AUTHOR\",\n          \"evidence_id\": \"m:C_RP_QA:1790920371.000226\"\n        }\n      ],\n      \"quote\": null,\n      \"quote_kind\": \"PARAPHRASE\",\n      \"material\": true\n    },\n    {\n      \"claim_id\": \"c6\",\n      \"kind\": \"THREAD_INSTRUCTION\",\n      \"text\": \"The team lead requests task references and error states in both threads before deciding whether the issue is widespread or task-specific; in the QA thread, the team lead also says to separate infrastructure failures from model-evaluation results.\",\n      \"evidence_ids\": [\n        \"m:C_RP_GENERAL:1790897339.000339\",\n        \"m:C_RP_QA:1790920419.000339\"\n      ],\n      \"attributions\": [\n        {\n          \"user_id\": \"U001\",\n          \"relation\": \"AUTHOR\",\n          \"evidence_id\": \"m:C_RP_GENERAL:1790897339.000339\"\n        },\n        {\n          \"user_id\": \"U001\",\n          \"relation\": \"AUTHOR\",\n          \"evidence_id\": \"m:C_RP_QA:1790920419.000339\"\n        }\n      ],\n      \"quote\": null,\n      \"quote_kind\": \"PARAPHRASE\",\n      \"material\": true\n    },\n    {\n      \"claim_id\": \"c7\",\n      \"kind\": \"INFERENCE\",\n      \"text\": \"The provided threads contain no task references, specific error states, retry outcomes or failure times answering the diagnostic requests, and neither thread records recovery.\",\n      \"evidence_ids\": [\n        \"m:C_RP_GENERAL:1790897195.000027\",\n        \"m:C_RP_GENERAL:1790897253.000113\",\n        \"m:C_RP_GENERAL:1790897298.000226\",\n        \"m:C_RP_GENERAL:1790897339.000339\",\n        \"m:C_RP_QA:1790920271.000026\",\n        \"m:C_RP_QA:1790920325.000113\",\n        \"m:C_RP_QA:1790920371.000226\",\n        \"m:C_RP_QA:1790920419.000339\"\n      ],\n      \"attributions\": [],\n      \"quote\": null,\n      \"quote_kind\": \"PARAPHRASE\",\n      \"material\": true\n    },\n    {\n      \"claim_id\": \"c8\",\n      \"kind\": \"GUIDANCE\",\n      \"text\": \"Current project instructions say that if response panes never load, record a fetch incident and do not infer response quality; tool impact must be assessed separately from the content rubric.\",\n      \"evidence_ids\": [\"k:response-preference-instructions@1.1:36683c52\"],\n      \"attributions\": [],\n      \"quote\": \"If response panes never load, record a fetch incident and do not infer response quality.\",\n      \"quote_kind\": \"VERBATIM\",\n      \"material\": true\n    },\n    {\n      \"claim_id\": \"c9\",\n      \"kind\": \"HISTORY\",\n      \"text\": \"The earlier handoff records disabled Submit controls after required fields were filled, an engineering handoff on September 28, and an open outcome with no recorded fix or successful submission at 17:00 UTC; it does not verify a shared cause with the current response-loading reports.\",\n      \"evidence_ids\": [\n        \"k:rp-submit-engineering-handoff@1.0:d84c905d\",\n        \"k:rp-submit-engineering-handoff@1.0:6afb6e6d\"\n      ],\n      \"attributions\": [],\n      \"quote\": null,\n      \"quote_kind\": \"PARAPHRASE\",\n      \"material\": true\n    },\n    {\n      \"claim_id\": \"c10\",\n      \"kind\": \"SOURCE_FACT\",\n      \"text\": \"The October 1 batch announcement by the team lead tracks model/task connection drops, asks for affected task references in its thread, and says no policy change has been announced.\",\n      \"evidence_ids\": [\"k:slack:C_RP_ANNOUNCEMENTS:1790883558.000028:d0ddced2\"],\n      \"attributions\": [\n        {\n          \"user_id\": \"U001\",\n          \"relation\": \"AUTHOR\",\n          \"evidence_id\": \"k:slack:C_RP_ANNOUNCEMENTS:1790883558.000028:d0ddced2\"\n        }\n      ],\n      \"quote\": null,\n      \"quote_kind\": \"PARAPHRASE\",\n      \"material\": false\n    }\n  ],\n  \"gaps\": [\n    {\n      \"gap_id\": \"g1\",\n      \"need\": \"OTHER\",\n      \"description\": \"The incident investigation still needs the task references and error states requested by the team lead, the retry outcomes requested by a QA tutor, and the failure time and metadata visibility requested in the QA thread. These require replies from the affected reporters rather than a guidance search.\",\n      \"follow_up\": null\n    }\n  ],\n  \"evidence_sufficiency\": \"SUFFICIENT\",\n  \"proposed_action\": {\n    \"action_type\": \"ESCALATE_ENGINEERING\",\n    \"intervention_need\": {\n      \"kind\": \"OPERATIONAL_PROBLEM\",\n      \"statement\": \"Three tutors and a QA tutor report unavailable response content, with no recovery recorded, so engineering investigation is warranted while the requested incident details are collected.\",\n      \"evidence_ids\": [\n        \"m:C_RP_GENERAL:1790897195.000027\",\n        \"m:C_RP_GENERAL:1790897253.000113\",\n        \"m:C_RP_QA:1790920271.000026\",\n        \"m:C_RP_QA:1790920325.000113\",\n        \"m:C_RP_GENERAL:1790897339.000339\",\n        \"m:C_RP_QA:1790920419.000339\"\n      ]\n    },\n    \"instruction\": \"Report the response-loading failures to engineering, keeping the extent of the problem unclassified until the requested incident details arrive.\",\n    \"rationale\": \"Missing response content calls for technical investigation rather than a content-scoring clarification. Current instructions already identify this behavior as a fetch incident, while the team lead's requested inputs are still pending.\",\n    \"draft_text\": \"Please investigate response-loading failures in batch 15. Three tutors and a QA tutor report unavailable response content:\\n- In the general thread, a tutor reports LT timing out before Responses A and B appear; a second tutor reports that metadata loads but response content does not.\\n- In the QA thread, a QA tutor reports response-fetch failing before comparison; a tutor reports that a second item also failed to display a response.\\nTask references and specific error states are still awaited. Please investigate response loading separately from response quality; the reports do not yet establish whether the problem is widespread or task-specific.\",\n    \"scope_note\": \"This is a report of response-loading symptoms, not a confirmed cause or a classification of how widely the problem extends.\",\n    \"support_claim_ids\": [\"c1\", \"c2\", \"c3\", \"c4\", \"c6\", \"c7\", \"c8\"],\n    \"targets\": [],\n    \"context_claim_ids\": [\"c5\", \"c9\", \"c10\"]\n  },\n  \"severity\": {\n    \"level\": \"HIGH\",\n    \"rationale\": \"Unavailable response content prevents evaluation, and four distinct reporters describe comparable failures in the same batch over several hours. This supports serious operational impact without establishing a batch-wide outage.\",\n    \"signals\": [\n      {\n        \"level\": \"HIGH\",\n        \"signal_index\": 0,\n        \"signal_text\": \"Explicit statement that assigned work cannot be completed or evaluated\",\n        \"support\": \"A tutor reports no response content to evaluate, and a QA tutor reports a fetch failure before comparison.\",\n        \"evidence_ids\": [\n          \"m:C_RP_GENERAL:1790897253.000113\",\n          \"m:C_RP_QA:1790920271.000026\"\n        ]\n      },\n      {\n        \"level\": \"HIGH\",\n        \"signal_index\": 3,\n        \"signal_text\": \"Multiple distinct people or affected tasks reporting a comparable problem within the relevant project, batch, and time window, suggesting broader disruption or systemic labeling risk. Consider the number affected relative to the known active group when that information is available; do not require an explicit statement of widespread impact\",\n        \"support\": \"Three tutors and a QA tutor independently describe unavailable response content across the two threads; the active-group size is not provided.\",\n        \"evidence_ids\": [\n          \"m:C_RP_GENERAL:1790897195.000027\",\n          \"m:C_RP_GENERAL:1790897253.000113\",\n          \"m:C_RP_QA:1790920271.000026\",\n          \"m:C_RP_QA:1790920325.000113\"\n        ]\n      }\n    ],\n    \"affected_reporters\": [\n      {\n        \"author_id\": \"U003\",\n        \"evidence_id\": \"m:C_RP_GENERAL:1790897195.000027\"\n      },\n      {\n        \"author_id\": \"U004\",\n        \"evidence_id\": \"m:C_RP_GENERAL:1790897253.000113\"\n      },\n      {\n        \"author_id\": \"U019\",\n        \"evidence_id\": \"m:C_RP_QA:1790920271.000026\"\n      },\n      {\n        \"author_id\": \"U015\",\n        \"evidence_id\": \"m:C_RP_QA:1790920325.000113\"\n      }\n    ],\n    \"recurrence\": \"NONE_FOUND\",\n    \"recurrence_evidence_ids\": [],\n    \"reported_recurrence_evidence_ids\": []\n  },\n  \"confidence\": 0.9,\n  \"open_confirmation\": \"NONE\",\n  \"open_question\": null,\n  \"open_question_evidence_ids\": [],\n  \"source_conflicts\": [],\n  \"announcement_assessments\": [\n    {\n      \"evidence_id\": \"k:slack:C_RP_ANNOUNCEMENTS:1790883558.000028:d0ddced2\",\n      \"relevant\": false,\n      \"directive\": true,\n      \"directive_quote\": \"Add affected task references here; no policy change has been announced.\",\n      \"rationale\": \"The announcement is for the same project and batch, but the records do not establish that the tracked connection drops are the same problem as these response-fetch failures. Its directive collects examples; it does not establish an engineering intake route. Its upstream review flags remain open.\"\n    }\n  ],\n  \"resolution\": [\n    {\n      \"member_id\": \"member_39be46641107cea5c7626e55\",\n      \"state\": \"UNRESOLVED\",\n      \"evidence_ids\": [\n        \"m:C_RP_GENERAL:1790897195.000027\",\n        \"m:C_RP_GENERAL:1790897253.000113\",\n        \"m:C_RP_GENERAL:1790897298.000226\",\n        \"m:C_RP_GENERAL:1790897339.000339\"\n      ],\n      \"basis\": \"The thread reports missing response content and ends with requests for diagnostic information; it records neither the requested task details nor recovery.\"\n    },\n    {\n      \"member_id\": \"member_a2f0abeaf568ff6802ec5e14\",\n      \"state\": \"UNRESOLVED\",\n      \"evidence_ids\": [\n        \"m:C_RP_QA:1790920271.000026\",\n        \"m:C_RP_QA:1790920325.000113\",\n        \"m:C_RP_QA:1790920371.000226\",\n        \"m:C_RP_QA:1790920419.000339\"\n      ],\n      \"basis\": \"The thread reports fetch failures, including a failed second item, and ends with diagnostic requests and the team lead's distinction between infrastructure failures and evaluation results; no recovery is recorded.\"\n    }\n  ],\n  \"coverage\": [\n    {\n      \"need\": \"CURRENT_GUIDANCE\",\n      \"status\": \"COVERED\",\n      \"evidence_ids\": [\"k:response-preference-instructions@1.1:36683c52\"],\n      \"note\": \"Current project instructions directly address response panes that never load and distinguish tool impact from response quality.\",\n      \"gap_id\": null\n    },\n    {\n      \"need\": \"ANNOUNCEMENTS\",\n      \"status\": \"COVERED\",\n      \"evidence_ids\": [\"k:slack:C_RP_ANNOUNCEMENTS:1790883558.000028:d0ddced2\"],\n      \"note\": \"The retrieved batch announcement was assessed but is not used as current handling or as an engineering route.\",\n      \"gap_id\": null\n    },\n    {\n      \"need\": \"PRIOR_DECISIONS\",\n      \"status\": \"COVERED\",\n      \"evidence_ids\": [\n        \"k:rp-submit-engineering-handoff@1.0:d84c905d\",\n        \"k:rp-submit-engineering-handoff@1.0:6afb6e6d\"\n      ],\n      \"note\": \"The earlier handoff and its open outcome are available, but concern disabled Submit controls. The records retrieved for this run do not corroborate historical recurrence of these response-loading failures.\",\n      \"gap_id\": null\n    },\n    {\n      \"need\": \"MEMBER_QUESTIONS\",\n      \"status\": \"COVERED\",\n      \"evidence_ids\": [\n        \"m:C_RP_GENERAL:1790897298.000226\",\n        \"m:C_RP_GENERAL:1790897339.000339\",\n        \"m:C_RP_QA:1790920325.000113\",\n        \"m:C_RP_QA:1790920371.000226\",\n        \"m:C_RP_QA:1790920419.000339\"\n      ],\n      \"note\": \"Both threads include diagnostic requests. Their missing replies are an incident-information gap, not an unresolved handling rule.\",\n      \"gap_id\": null\n    }\n  ],\n  \"review_note\": null,\n  \"action_choice\": null\n}",
+    "raw_sha256": "3d4dcdeeb28d397017ccdbeff3c2092dfc3f8b308c0dc7633e51faf05d65db81",
+    "http_requests": {
+     "sent": 1,
+     "blocked": 0,
+     "hosts": [
+      "api.openai.com"
+     ],
+     "responses": [
+      {
+       "status_code": 200,
+       "seconds": 52.19,
+       "model": "gpt-6.1-sol",
+       "usage": {
+        "prompt_tokens": 13037,
+        "completion_tokens": 4627,
+        "total_tokens": 17664,
+        "prompt_tokens_details": {
+         "cached_tokens": 0,
+         "cache_write_tokens": 13034,
+         "audio_tokens": 0
+        },
+        "completion_tokens_details": {
+         "reasoning_tokens": 301,
+         "audio_tokens": 0,
+         "accepted_prediction_tokens": 0,
+         "rejected_prediction_tokens": 0
+        }
+       },
+       "finish_reasons": [
+        "stop"
+       ]
+      }
+     ],
+     "input_tokens": 13043,
+     "refused": null,
+     "charged_usd": 0.072344
+    },
+    "input_tokens_estimate": 13043,
+    "status": "OK"
+   },
+   {
+    "stage": "grounding",
+    "schema": "GroundingJudgment",
+    "raw": "{\n  \"contract_version\": \"agent3-grounding-judgment-v5\",\n  \"verdicts\": [\n    {\n      \"statement_id\": \"claim:c1\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"U003 is a tutor and explicitly reports LT timing out before Responses A and B appear.\"\n    },\n    {\n      \"statement_id\": \"claim:c2\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"U004 explicitly reports that task metadata loads but there is no response content to evaluate.\"\n    },\n    {\n      \"statement_id\": \"claim:c3\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"U019 is a QA tutor and explicitly reports response-fetch failing before comparison.\"\n    },\n    {\n      \"statement_id\": \"claim:c4\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"U015 reports trying a second item whose response also failed to appear and requests the task ID and failure time.\"\n    },\n    {\n      \"statement_id\": \"claim:c5\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"U002 requests affected task IDs and retry outcomes in both threads and asks about metadata visibility in the QA thread.\"\n    },\n    {\n      \"statement_id\": \"claim:c6\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The team lead makes the stated diagnostic request in both threads and explicitly separates infrastructure failures from model-evaluation results in the QA thread.\"\n    },\n    {\n      \"statement_id\": \"claim:c7\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"Neither complete thread supplies the requested diagnostic details or records recovery. Trying a second item does not supply the requested retry outcome for an affected task.\"\n    },\n    {\n      \"statement_id\": \"claim:c8\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The current instructions contain the exact quotation and separately require assessing tool impact apart from the content rubric.\"\n    },\n    {\n      \"statement_id\": \"claim:c9\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The prior records document disabled Submit controls, the September 28 engineering handoff, and the open outcome at 17:00 UTC without a recorded fix or successful submission. They establish no shared cause with the present reports.\"\n    },\n    {\n      \"statement_id\": \"claim:c10\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The October 1 announcement has verified team-lead authorship and states each reported point. This describes its contents without turning the example-collection thread into an engineering intake route.\"\n    },\n    {\n      \"statement_id\": \"summary:s1\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The four cited authors are three tutors and one QA tutor, each reporting unavailable response content or a fetch failure that prevents comparison or evaluation.\"\n    },\n    {\n      \"statement_id\": \"summary:s2\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The team lead requests task references and error states in both threads before classifying extent, and the provided complete threads contain no subsequent supply of those inputs.\"\n    },\n    {\n      \"statement_id\": \"detail:d1\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The two general-thread messages directly state the timeout and metadata-without-content symptoms, with accurate role attributions.\"\n    },\n    {\n      \"statement_id\": \"detail:d2\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The QA-thread messages directly report a fetch failure before comparison and another item's response failing to appear.\"\n    },\n    {\n      \"statement_id\": \"detail:d3\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The cited QA tutor requests IDs and retry outcomes in both threads and metadata visibility in the QA thread; the cited tutor requests the failure time there.\"\n    },\n    {\n      \"statement_id\": \"detail:d4\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The current instructions explicitly require recording a fetch incident when response panes never load and prohibit inferring response quality.\"\n    },\n    {\n      \"statement_id\": \"detail:d5\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The earlier record concerns disabled Submit controls and an open September 28 outcome; it does not establish a common cause with these loading failures.\"\n    },\n    {\n      \"statement_id\": \"action\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The four accurately attributed reports establish a technical response-loading problem warranting engineering investigation. The recommendation leaves the route unspecified, preserves the pending extent classification, and does not assert a verified cause or conflate tool failure with response quality.\"\n    },\n    {\n      \"statement_id\": \"action:rationale\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"Unavailable response content warrants technical investigation, the current instructions classify never-loading panes as a fetch incident, and the requested diagnostic inputs remain absent.\"\n    },\n    {\n      \"statement_id\": \"action:need\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"Four distinct reporters describe operational failures that prevent evaluation, with no recorded recovery. This supports coordinating engineering investigation while collecting the missing details.\"\n    },\n    {\n      \"statement_id\": \"resolution:member_39be46641107cea5c7626e55\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The complete general thread ends with diagnostic requests and contains neither the requested task details nor a recovery report.\"\n    },\n    {\n      \"statement_id\": \"resolution:member_a2f0abeaf568ff6802ec5e14\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The complete QA thread records fetch failures, a failed second item, diagnostic requests, and the team lead's distinction, but no recovery.\"\n    },\n    {\n      \"statement_id\": \"severity:rationale\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"Four distinct authors report comparable evaluation-blocking symptoms in this batch approximately six hours apart. Serious operational impact is supported without establishing a batch-wide outage.\"\n    },\n    {\n      \"statement_id\": \"severity:signal:HIGH[0]\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"One reporter explicitly has no response content to evaluate, and another cannot compare the pair because response-fetch fails.\"\n    },\n    {\n      \"statement_id\": \"severity:signal:HIGH[3]\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"Three distinct tutors and one QA tutor report comparable missing-content symptoms across the two threads. The context provides no active-group size.\"\n    },\n    {\n      \"statement_id\": \"reporter:U003\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"U003's own message reports LT timing out before either response appears.\"\n    },\n    {\n      \"statement_id\": \"reporter:U004\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"U004's own message reports loaded metadata but no response content to evaluate.\"\n    },\n    {\n      \"statement_id\": \"reporter:U019\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"U019 explicitly reports being unable to compare the pair because response-fetch fails.\"\n    },\n    {\n      \"statement_id\": \"reporter:U015\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"U015 explicitly reports trying a second item and still encountering a missing response.\"\n    }\n  ],\n  \"action_sufficiency\": {\n    \"verdict\": \"SUFFICIENT\",\n    \"essential_statement_ids\": [\n      \"claim:c1\",\n      \"claim:c2\",\n      \"claim:c3\",\n      \"claim:c4\",\n      \"claim:c6\",\n      \"claim:c7\",\n      \"claim:c8\"\n    ],\n    \"rationale\": \"All listed premises have final status SUPPORTED. They justify the exact symptom report, its four attributed reporters, engineering as the functional recipient, the pending diagnostic details and extent classification, and separation from response quality. No concrete intake route or shared cause is asserted.\"\n  },\n  \"alternative_sufficiency\": [],\n  \"source_consistency\": {\n    \"assessed_evidence_ids\": [\n      \"k:response-preference-instructions@1.1:36683c52\",\n      \"k:slack:C_RP_ANNOUNCEMENTS:1790883558.000028:d0ddced2\"\n    ],\n    \"relations\": [],\n    \"declared_conflict_checks\": []\n  }\n}",
+    "raw_sha256": "c2a58e833b883af26e8c3b36b6f3ca93aa53f540373bc8ac85d5b3ccca120969",
+    "http_requests": {
+     "sent": 1,
+     "blocked": 0,
+     "hosts": [
+      "api.openai.com"
+     ],
+     "responses": [
+      {
+       "status_code": 200,
+       "seconds": 24.22,
+       "model": "gpt-6.1-sol",
+       "usage": {
+        "prompt_tokens": 12004,
+        "completion_tokens": 1940,
+        "total_tokens": 13944,
+        "prompt_tokens_details": {
+         "cached_tokens": 0,
+         "cache_write_tokens": 12001,
+         "audio_tokens": 0
+        },
+        "completion_tokens_details": {
+         "reasoning_tokens": 131,
+         "audio_tokens": 0,
+         "accepted_prediction_tokens": 0,
+         "rejected_prediction_tokens": 0
+        }
+       },
+       "finish_reasons": [
+        "stop"
+       ]
+      }
+     ],
+     "input_tokens": 12010,
+     "refused": null,
+     "charged_usd": 0.043408
+    },
+    "input_tokens_estimate": 12010,
+    "status": "OK"
+   }
+  ],
+  "agent1_context": [
+   {
+    "sha256": "255d52629f7c862f73f710d873fe530c9fb4e253c82f1de7cfe1a9135cacf215",
+    "content": [
+     {
+      "member_id": "member_39be46641107cea5c7626e55",
+      "thread_id": "1790897195.000027",
+      "summary": "The thread discusses an issue where LT times out before displaying Response A and B, and the task metadata loads without response content. Mina suggests keeping track of the affected task ID and retry outcomes, while Alex requests the task reference and error state to determine if the issue is widespread or task-specific.",
+      "central_question": "What is the task reference and error state to assess whether the issue is widespread or task-specific?",
+      "attributed_agent1_resolution": {
+       "state": "UNRESOLVED",
+       "rationale": "The thread does not provide a substantive answer or conclusion regarding the requested decision about the task reference and error state. Alex's request for information remains unanswered, and no evidence has been gathered to establish the nature of the issue.",
+       "agent1_verification_status": "VERIFIED",
+       "note": "Agent 1 label, not evidence; NEEDS_REVIEW means Agent 1 did not verify it. Assess resolution from the member messages."
+      },
+      "agent1_review_required": false,
+      "agent1_review_reason": "",
+      "note": "Agent 1 interpretation, not source evidence; cite member messages for incident facts."
+     },
+     {
+      "member_id": "member_a2f0abeaf568ff6802ec5e14",
+      "thread_id": "1790920271.000026",
+      "summary": "The thread discusses issues with response-fetch failures during a task. Yuki reports that the response-fetch fails before comparison can be made. Carla confirms a second item also failed to fetch a response and suggests keeping track of the task ID and time of failure. Mina asks for the affected task ID and whether a retry changed the outcome, as well as if the task metadata was visible before the output pane timed out. Alex, the team lead, emphasizes the need for the task reference and error state to determine if the issue is widespread or task-specific, and to differentiate between infrastructure failures and model-evaluation results.",
+      "central_question": "What should be done about the response-fetch failure that prevents comparison of this pair?",
+      "attributed_agent1_resolution": {
+       "state": "UNRESOLVED",
+       "rationale": "The thread establishes that information about the task reference and error state is needed to assess the situation, but it does not provide a complete resolution to the original question about how to handle the response-fetch failures. The responses indicate a need for further evidence gathering before a judgment can be made.",
+       "agent1_verification_status": "CORRECTED",
+       "note": "Agent 1 label, not evidence; NEEDS_REVIEW means Agent 1 did not verify it. Assess resolution from the member messages."
+      },
+      "agent1_review_required": false,
+      "agent1_review_reason": "",
+      "note": "Agent 1 interpretation, not source evidence; cite member messages for incident facts."
+     }
+    ]
+   }
+  ],
+  "drafts": {
+   "initial": {
+    "contract_version": "agent3-advisor-draft-v11",
+    "summary": "Three tutors and a QA tutor report that response content does not appear or cannot be fetched, preventing evaluation. The team lead has requested task references and error states in both threads before deciding whether the problem is widespread or task-specific; those inputs have not been supplied.",
+    "summary_sentences": [
+     {
+      "text": "Three tutors and a QA tutor report that response content does not appear or cannot be fetched, preventing evaluation.",
+      "support_claim_ids": [
+       "c1",
+       "c2",
+       "c3",
+       "c4"
+      ],
+      "depends_on": []
+     },
+     {
+      "text": "The team lead has requested task references and error states in both threads before deciding whether the problem is widespread or task-specific; those inputs have not been supplied.",
+      "support_claim_ids": [
+       "c6",
+       "c7"
+      ],
+      "depends_on": []
+     }
+    ],
+    "detail_sentences": [
+     {
+      "text": "In the general thread, a tutor reports a timeout before Responses A and B appear; a second tutor reports visible task metadata but no response content.",
+      "support_claim_ids": [
+       "c1",
+       "c2"
+      ],
+      "depends_on": [],
+      "summary_depends_on": []
+     },
+     {
+      "text": "In the QA thread, a QA tutor reports a response-fetch failure before comparison, and a tutor reports that a second item also failed to display a response.",
+      "support_claim_ids": [
+       "c3",
+       "c4"
+      ],
+      "depends_on": [],
+      "summary_depends_on": []
+     },
+     {
+      "text": "A QA tutor asks for task IDs and retry outcomes in both threads and asks whether metadata was visible in the QA thread; a tutor also asks for the failure time in the QA thread.",
+      "support_claim_ids": [
+       "c4",
+       "c5"
+      ],
+      "depends_on": [],
+      "summary_depends_on": []
+     },
+     {
+      "text": "Current instructions say to record a fetch incident when response panes never load and not infer response quality.",
+      "support_claim_ids": [
+       "c8"
+      ],
+      "depends_on": [],
+      "summary_depends_on": []
+     },
+     {
+      "text": "The earlier engineering handoff concerns disabled Submit controls, remained open on September 28, and does not establish a shared cause for these response-loading reports.",
+      "support_claim_ids": [
+       "c9"
+      ],
+      "depends_on": [],
+      "summary_depends_on": []
+     }
+    ],
+    "reasoning": "The reports describe unavailable evaluation content across four distinct authors, supporting a technical report to engineering without claiming a confirmed cause or widespread outage. Current instructions distinguish fetch incidents from response quality. The team lead has already specified the inputs needed to assess the extent of the problem, so that assessment is pending information rather than an unanswered policy question. The earlier Submit handoff is historical context, not a standing route or evidence of recurrence. Further research should first obtain the requested incident details; no additional source search is necessary to support this advisory escalation.",
+    "claims": [
+     {
+      "claim_id": "c1",
+      "kind": "INCIDENT_FACT",
+      "text": "A tutor reports that LT times out before Responses A and B are displayed.",
+      "evidence_ids": [
+       "m:C_RP_GENERAL:1790897195.000027"
+      ],
+      "attributions": [
+       {
+        "user_id": "U003",
+        "relation": "AUTHOR",
+        "evidence_id": "m:C_RP_GENERAL:1790897195.000027"
+       }
+      ],
+      "quote": null,
+      "quote_kind": "PARAPHRASE",
+      "material": true
+     },
+     {
+      "claim_id": "c2",
+      "kind": "INCIDENT_FACT",
+      "text": "A tutor reports that task metadata loads but no response content is available to evaluate.",
+      "evidence_ids": [
+       "m:C_RP_GENERAL:1790897253.000113"
+      ],
+      "attributions": [
+       {
+        "user_id": "U004",
+        "relation": "AUTHOR",
+        "evidence_id": "m:C_RP_GENERAL:1790897253.000113"
+       }
+      ],
+      "quote": null,
+      "quote_kind": "PARAPHRASE",
+      "material": true
+     },
+     {
+      "claim_id": "c3",
+      "kind": "INCIDENT_FACT",
+      "text": "A QA tutor reports that response-fetch fails before the pair can be compared.",
+      "evidence_ids": [
+       "m:C_RP_QA:1790920271.000026"
+      ],
+      "attributions": [
+       {
+        "user_id": "U019",
+        "relation": "AUTHOR",
+        "evidence_id": "m:C_RP_QA:1790920271.000026"
+       }
+      ],
+      "quote": null,
+      "quote_kind": "PARAPHRASE",
+      "material": true
+     },
+     {
+      "claim_id": "c4",
+      "kind": "INCIDENT_FACT",
+      "text": "A tutor reports that a second item also failed to display a response and asks for the task ID and time of the response-fetch failure in the QA thread.",
+      "evidence_ids": [
+       "m:C_RP_QA:1790920325.000113"
+      ],
+      "attributions": [
+       {
+        "user_id": "U015",
+        "relation": "AUTHOR",
+        "evidence_id": "m:C_RP_QA:1790920325.000113"
+       }
+      ],
+      "quote": null,
+      "quote_kind": "PARAPHRASE",
+      "material": true
+     },
+     {
+      "claim_id": "c5",
+      "kind": "INCIDENT_FACT",
+      "text": "A QA tutor asks for affected task IDs and retry outcomes in both threads and asks whether task metadata was visible before the output pane timed out in the QA thread.",
+      "evidence_ids": [
+       "m:C_RP_GENERAL:1790897298.000226",
+       "m:C_RP_QA:1790920371.000226"
+      ],
+      "attributions": [
+       {
+        "user_id": "U002",
+        "relation": "AUTHOR",
+        "evidence_id": "m:C_RP_GENERAL:1790897298.000226"
+       },
+       {
+        "user_id": "U002",
+        "relation": "AUTHOR",
+        "evidence_id": "m:C_RP_QA:1790920371.000226"
+       }
+      ],
+      "quote": null,
+      "quote_kind": "PARAPHRASE",
+      "material": true
+     },
+     {
+      "claim_id": "c6",
+      "kind": "THREAD_INSTRUCTION",
+      "text": "The team lead requests task references and error states in both threads before deciding whether the issue is widespread or task-specific; in the QA thread, the team lead also says to separate infrastructure failures from model-evaluation results.",
+      "evidence_ids": [
+       "m:C_RP_GENERAL:1790897339.000339",
+       "m:C_RP_QA:1790920419.000339"
+      ],
+      "attributions": [
+       {
+        "user_id": "U001",
+        "relation": "AUTHOR",
+        "evidence_id": "m:C_RP_GENERAL:1790897339.000339"
+       },
+       {
+        "user_id": "U001",
+        "relation": "AUTHOR",
+        "evidence_id": "m:C_RP_QA:1790920419.000339"
+       }
+      ],
+      "quote": null,
+      "quote_kind": "PARAPHRASE",
+      "material": true
+     },
+     {
+      "claim_id": "c7",
+      "kind": "INFERENCE",
+      "text": "The provided threads contain no task references, specific error states, retry outcomes or failure times answering the diagnostic requests, and neither thread records recovery.",
+      "evidence_ids": [
+       "m:C_RP_GENERAL:1790897195.000027",
+       "m:C_RP_GENERAL:1790897253.000113",
+       "m:C_RP_GENERAL:1790897298.000226",
+       "m:C_RP_GENERAL:1790897339.000339",
+       "m:C_RP_QA:1790920271.000026",
+       "m:C_RP_QA:1790920325.000113",
+       "m:C_RP_QA:1790920371.000226",
+       "m:C_RP_QA:1790920419.000339"
+      ],
+      "attributions": [],
+      "quote": null,
+      "quote_kind": "PARAPHRASE",
+      "material": true
+     },
+     {
+      "claim_id": "c8",
+      "kind": "GUIDANCE",
+      "text": "Current project instructions say that if response panes never load, record a fetch incident and do not infer response quality; tool impact must be assessed separately from the content rubric.",
+      "evidence_ids": [
+       "k:response-preference-instructions@1.1:36683c52"
+      ],
+      "attributions": [],
+      "quote": "If response panes never load, record a fetch incident and do not infer response quality.",
+      "quote_kind": "VERBATIM",
+      "material": true
+     },
+     {
+      "claim_id": "c9",
+      "kind": "HISTORY",
+      "text": "The earlier handoff records disabled Submit controls after required fields were filled, an engineering handoff on September 28, and an open outcome with no recorded fix or successful submission at 17:00 UTC; it does not verify a shared cause with the current response-loading reports.",
+      "evidence_ids": [
+       "k:rp-submit-engineering-handoff@1.0:d84c905d",
+       "k:rp-submit-engineering-handoff@1.0:6afb6e6d"
+      ],
+      "attributions": [],
+      "quote": null,
+      "quote_kind": "PARAPHRASE",
+      "material": true
+     },
+     {
+      "claim_id": "c10",
+      "kind": "SOURCE_FACT",
+      "text": "The October 1 batch announcement by the team lead tracks model/task connection drops, asks for affected task references in its thread, and says no policy change has been announced.",
+      "evidence_ids": [
+       "k:slack:C_RP_ANNOUNCEMENTS:1790883558.000028:d0ddced2"
+      ],
+      "attributions": [
+       {
+        "user_id": "U001",
+        "relation": "AUTHOR",
+        "evidence_id": "k:slack:C_RP_ANNOUNCEMENTS:1790883558.000028:d0ddced2"
+       }
+      ],
+      "quote": null,
+      "quote_kind": "PARAPHRASE",
+      "material": false
+     }
+    ],
+    "gaps": [
+     {
+      "gap_id": "g1",
+      "need": "OTHER",
+      "description": "The incident investigation still needs the task references and error states requested by the team lead, the retry outcomes requested by a QA tutor, and the failure time and metadata visibility requested in the QA thread. These require replies from the affected reporters rather than a guidance search.",
+      "follow_up": null
+     }
+    ],
+    "evidence_sufficiency": "SUFFICIENT",
+    "proposed_action": {
+     "action_type": "ESCALATE_ENGINEERING",
+     "intervention_need": {
+      "kind": "OPERATIONAL_PROBLEM",
+      "statement": "Three tutors and a QA tutor report unavailable response content, with no recovery recorded, so engineering investigation is warranted while the requested incident details are collected.",
+      "evidence_ids": [
+       "m:C_RP_GENERAL:1790897195.000027",
+       "m:C_RP_GENERAL:1790897253.000113",
+       "m:C_RP_QA:1790920271.000026",
+       "m:C_RP_QA:1790920325.000113",
+       "m:C_RP_GENERAL:1790897339.000339",
+       "m:C_RP_QA:1790920419.000339"
+      ]
+     },
+     "instruction": "Report the response-loading failures to engineering, keeping the extent of the problem unclassified until the requested incident details arrive.",
+     "rationale": "Missing response content calls for technical investigation rather than a content-scoring clarification. Current instructions already identify this behavior as a fetch incident, while the team lead's requested inputs are still pending.",
+     "draft_text": "Please investigate response-loading failures in batch 15. Three tutors and a QA tutor report unavailable response content:\n- In the general thread, a tutor reports LT timing out before Responses A and B appear; a second tutor reports that metadata loads but response content does not.\n- In the QA thread, a QA tutor reports response-fetch failing before comparison; a tutor reports that a second item also failed to display a response.\nTask references and specific error states are still awaited. Please investigate response loading separately from response quality; the reports do not yet establish whether the problem is widespread or task-specific.",
+     "scope_note": "This is a report of response-loading symptoms, not a confirmed cause or a classification of how widely the problem extends.",
+     "support_claim_ids": [
+      "c1",
+      "c2",
+      "c3",
+      "c4",
+      "c6",
+      "c7",
+      "c8"
+     ],
+     "targets": [],
+     "context_claim_ids": [
+      "c5",
+      "c9",
+      "c10"
+     ]
+    },
+    "severity": {
+     "level": "HIGH",
+     "rationale": "Unavailable response content prevents evaluation, and four distinct reporters describe comparable failures in the same batch over several hours. This supports serious operational impact without establishing a batch-wide outage.",
+     "signals": [
+      {
+       "level": "HIGH",
+       "signal_index": 0,
+       "signal_text": "Explicit statement that assigned work cannot be completed or evaluated",
+       "support": "A tutor reports no response content to evaluate, and a QA tutor reports a fetch failure before comparison.",
+       "evidence_ids": [
+        "m:C_RP_GENERAL:1790897253.000113",
+        "m:C_RP_QA:1790920271.000026"
+       ]
+      },
+      {
+       "level": "HIGH",
+       "signal_index": 3,
+       "signal_text": "Multiple distinct people or affected tasks reporting a comparable problem within the relevant project, batch, and time window, suggesting broader disruption or systemic labeling risk. Consider the number affected relative to the known active group when that information is available; do not require an explicit statement of widespread impact",
+       "support": "Three tutors and a QA tutor independently describe unavailable response content across the two threads; the active-group size is not provided.",
+       "evidence_ids": [
+        "m:C_RP_GENERAL:1790897195.000027",
+        "m:C_RP_GENERAL:1790897253.000113",
+        "m:C_RP_QA:1790920271.000026",
+        "m:C_RP_QA:1790920325.000113"
+       ]
+      }
+     ],
+     "affected_reporters": [
+      {
+       "author_id": "U003",
+       "evidence_id": "m:C_RP_GENERAL:1790897195.000027"
+      },
+      {
+       "author_id": "U004",
+       "evidence_id": "m:C_RP_GENERAL:1790897253.000113"
+      },
+      {
+       "author_id": "U019",
+       "evidence_id": "m:C_RP_QA:1790920271.000026"
+      },
+      {
+       "author_id": "U015",
+       "evidence_id": "m:C_RP_QA:1790920325.000113"
+      }
+     ],
+     "recurrence": "NONE_FOUND",
+     "recurrence_evidence_ids": [],
+     "reported_recurrence_evidence_ids": []
+    },
+    "confidence": 0.9,
+    "open_confirmation": "NONE",
+    "open_question": null,
+    "open_question_evidence_ids": [],
+    "source_conflicts": [],
+    "announcement_assessments": [
+     {
+      "evidence_id": "k:slack:C_RP_ANNOUNCEMENTS:1790883558.000028:d0ddced2",
+      "relevant": false,
+      "directive": true,
+      "directive_quote": "Add affected task references here; no policy change has been announced.",
+      "rationale": "The announcement is for the same project and batch, but the records do not establish that the tracked connection drops are the same problem as these response-fetch failures. Its directive collects examples; it does not establish an engineering intake route. Its upstream review flags remain open."
+     }
+    ],
+    "resolution": [
+     {
+      "member_id": "member_39be46641107cea5c7626e55",
+      "state": "UNRESOLVED",
+      "evidence_ids": [
+       "m:C_RP_GENERAL:1790897195.000027",
+       "m:C_RP_GENERAL:1790897253.000113",
+       "m:C_RP_GENERAL:1790897298.000226",
+       "m:C_RP_GENERAL:1790897339.000339"
+      ],
+      "basis": "The thread reports missing response content and ends with requests for diagnostic information; it records neither the requested task details nor recovery."
+     },
+     {
+      "member_id": "member_a2f0abeaf568ff6802ec5e14",
+      "state": "UNRESOLVED",
+      "evidence_ids": [
+       "m:C_RP_QA:1790920271.000026",
+       "m:C_RP_QA:1790920325.000113",
+       "m:C_RP_QA:1790920371.000226",
+       "m:C_RP_QA:1790920419.000339"
+      ],
+      "basis": "The thread reports fetch failures, including a failed second item, and ends with diagnostic requests and the team lead's distinction between infrastructure failures and evaluation results; no recovery is recorded."
+     }
+    ],
+    "coverage": [
+     {
+      "need": "CURRENT_GUIDANCE",
+      "status": "COVERED",
+      "evidence_ids": [
+       "k:response-preference-instructions@1.1:36683c52"
+      ],
+      "note": "Current project instructions directly address response panes that never load and distinguish tool impact from response quality.",
+      "gap_id": null
+     },
+     {
+      "need": "ANNOUNCEMENTS",
+      "status": "COVERED",
+      "evidence_ids": [
+       "k:slack:C_RP_ANNOUNCEMENTS:1790883558.000028:d0ddced2"
+      ],
+      "note": "The retrieved batch announcement was assessed but is not used as current handling or as an engineering route.",
+      "gap_id": null
+     },
+     {
+      "need": "PRIOR_DECISIONS",
+      "status": "COVERED",
+      "evidence_ids": [
+       "k:rp-submit-engineering-handoff@1.0:d84c905d",
+       "k:rp-submit-engineering-handoff@1.0:6afb6e6d"
+      ],
+      "note": "The earlier handoff and its open outcome are available, but concern disabled Submit controls. The records retrieved for this run do not corroborate historical recurrence of these response-loading failures.",
+      "gap_id": null
+     },
+     {
+      "need": "MEMBER_QUESTIONS",
+      "status": "COVERED",
+      "evidence_ids": [
+       "m:C_RP_GENERAL:1790897298.000226",
+       "m:C_RP_GENERAL:1790897339.000339",
+       "m:C_RP_QA:1790920325.000113",
+       "m:C_RP_QA:1790920371.000226",
+       "m:C_RP_QA:1790920419.000339"
+      ],
+      "note": "Both threads include diagnostic requests. Their missing replies are an incident-information gap, not an unresolved handling rule.",
+      "gap_id": null
+     }
+    ],
+    "review_note": null,
+    "action_choice": null
+   },
+   "final": {
+    "contract_version": "agent3-advisor-draft-v11",
+    "summary": "Three tutors and a QA tutor report that response content does not appear or cannot be fetched, preventing evaluation. The team lead has requested task references and error states in both threads before deciding whether the problem is widespread or task-specific; those inputs have not been supplied.",
+    "summary_sentences": [
+     {
+      "text": "Three tutors and a QA tutor report that response content does not appear or cannot be fetched, preventing evaluation.",
+      "support_claim_ids": [
+       "c1",
+       "c2",
+       "c3",
+       "c4"
+      ],
+      "depends_on": []
+     },
+     {
+      "text": "The team lead has requested task references and error states in both threads before deciding whether the problem is widespread or task-specific; those inputs have not been supplied.",
+      "support_claim_ids": [
+       "c6",
+       "c7"
+      ],
+      "depends_on": []
+     }
+    ],
+    "detail_sentences": [
+     {
+      "text": "In the general thread, a tutor reports a timeout before Responses A and B appear; a second tutor reports visible task metadata but no response content.",
+      "support_claim_ids": [
+       "c1",
+       "c2"
+      ],
+      "depends_on": [],
+      "summary_depends_on": []
+     },
+     {
+      "text": "In the QA thread, a QA tutor reports a response-fetch failure before comparison, and a tutor reports that a second item also failed to display a response.",
+      "support_claim_ids": [
+       "c3",
+       "c4"
+      ],
+      "depends_on": [],
+      "summary_depends_on": []
+     },
+     {
+      "text": "A QA tutor asks for task IDs and retry outcomes in both threads and asks whether metadata was visible in the QA thread; a tutor also asks for the failure time in the QA thread.",
+      "support_claim_ids": [
+       "c4",
+       "c5"
+      ],
+      "depends_on": [],
+      "summary_depends_on": []
+     },
+     {
+      "text": "Current instructions say to record a fetch incident when response panes never load and not infer response quality.",
+      "support_claim_ids": [
+       "c8"
+      ],
+      "depends_on": [],
+      "summary_depends_on": []
+     },
+     {
+      "text": "The earlier engineering handoff concerns disabled Submit controls, remained open on September 28, and does not establish a shared cause for these response-loading reports.",
+      "support_claim_ids": [
+       "c9"
+      ],
+      "depends_on": [],
+      "summary_depends_on": []
+     }
+    ],
+    "reasoning": "The reports describe unavailable evaluation content across four distinct authors, supporting a technical report to engineering without claiming a confirmed cause or widespread outage. Current instructions distinguish fetch incidents from response quality. The team lead has already specified the inputs needed to assess the extent of the problem, so that assessment is pending information rather than an unanswered policy question. The earlier Submit handoff is historical context, not a standing route or evidence of recurrence. Further research should first obtain the requested incident details; no additional source search is necessary to support this advisory escalation.",
+    "claims": [
+     {
+      "claim_id": "c1",
+      "kind": "INCIDENT_FACT",
+      "text": "A tutor reports that LT times out before Responses A and B are displayed.",
+      "evidence_ids": [
+       "m:C_RP_GENERAL:1790897195.000027"
+      ],
+      "attributions": [
+       {
+        "user_id": "U003",
+        "relation": "AUTHOR",
+        "evidence_id": "m:C_RP_GENERAL:1790897195.000027"
+       }
+      ],
+      "quote": null,
+      "quote_kind": "PARAPHRASE",
+      "material": true
+     },
+     {
+      "claim_id": "c2",
+      "kind": "INCIDENT_FACT",
+      "text": "A tutor reports that task metadata loads but no response content is available to evaluate.",
+      "evidence_ids": [
+       "m:C_RP_GENERAL:1790897253.000113"
+      ],
+      "attributions": [
+       {
+        "user_id": "U004",
+        "relation": "AUTHOR",
+        "evidence_id": "m:C_RP_GENERAL:1790897253.000113"
+       }
+      ],
+      "quote": null,
+      "quote_kind": "PARAPHRASE",
+      "material": true
+     },
+     {
+      "claim_id": "c3",
+      "kind": "INCIDENT_FACT",
+      "text": "A QA tutor reports that response-fetch fails before the pair can be compared.",
+      "evidence_ids": [
+       "m:C_RP_QA:1790920271.000026"
+      ],
+      "attributions": [
+       {
+        "user_id": "U019",
+        "relation": "AUTHOR",
+        "evidence_id": "m:C_RP_QA:1790920271.000026"
+       }
+      ],
+      "quote": null,
+      "quote_kind": "PARAPHRASE",
+      "material": true
+     },
+     {
+      "claim_id": "c4",
+      "kind": "INCIDENT_FACT",
+      "text": "A tutor reports that a second item also failed to display a response and asks for the task ID and time of the response-fetch failure in the QA thread.",
+      "evidence_ids": [
+       "m:C_RP_QA:1790920325.000113"
+      ],
+      "attributions": [
+       {
+        "user_id": "U015",
+        "relation": "AUTHOR",
+        "evidence_id": "m:C_RP_QA:1790920325.000113"
+       }
+      ],
+      "quote": null,
+      "quote_kind": "PARAPHRASE",
+      "material": true
+     },
+     {
+      "claim_id": "c5",
+      "kind": "INCIDENT_FACT",
+      "text": "A QA tutor asks for affected task IDs and retry outcomes in both threads and asks whether task metadata was visible before the output pane timed out in the QA thread.",
+      "evidence_ids": [
+       "m:C_RP_GENERAL:1790897298.000226",
+       "m:C_RP_QA:1790920371.000226"
+      ],
+      "attributions": [
+       {
+        "user_id": "U002",
+        "relation": "AUTHOR",
+        "evidence_id": "m:C_RP_GENERAL:1790897298.000226"
+       },
+       {
+        "user_id": "U002",
+        "relation": "AUTHOR",
+        "evidence_id": "m:C_RP_QA:1790920371.000226"
+       }
+      ],
+      "quote": null,
+      "quote_kind": "PARAPHRASE",
+      "material": true
+     },
+     {
+      "claim_id": "c6",
+      "kind": "THREAD_INSTRUCTION",
+      "text": "The team lead requests task references and error states in both threads before deciding whether the issue is widespread or task-specific; in the QA thread, the team lead also says to separate infrastructure failures from model-evaluation results.",
+      "evidence_ids": [
+       "m:C_RP_GENERAL:1790897339.000339",
+       "m:C_RP_QA:1790920419.000339"
+      ],
+      "attributions": [
+       {
+        "user_id": "U001",
+        "relation": "AUTHOR",
+        "evidence_id": "m:C_RP_GENERAL:1790897339.000339"
+       },
+       {
+        "user_id": "U001",
+        "relation": "AUTHOR",
+        "evidence_id": "m:C_RP_QA:1790920419.000339"
+       }
+      ],
+      "quote": null,
+      "quote_kind": "PARAPHRASE",
+      "material": true
+     },
+     {
+      "claim_id": "c7",
+      "kind": "INFERENCE",
+      "text": "The provided threads contain no task references, specific error states, retry outcomes or failure times answering the diagnostic requests, and neither thread records recovery.",
+      "evidence_ids": [
+       "m:C_RP_GENERAL:1790897195.000027",
+       "m:C_RP_GENERAL:1790897253.000113",
+       "m:C_RP_GENERAL:1790897298.000226",
+       "m:C_RP_GENERAL:1790897339.000339",
+       "m:C_RP_QA:1790920271.000026",
+       "m:C_RP_QA:1790920325.000113",
+       "m:C_RP_QA:1790920371.000226",
+       "m:C_RP_QA:1790920419.000339"
+      ],
+      "attributions": [],
+      "quote": null,
+      "quote_kind": "PARAPHRASE",
+      "material": true
+     },
+     {
+      "claim_id": "c8",
+      "kind": "GUIDANCE",
+      "text": "Current project instructions say that if response panes never load, record a fetch incident and do not infer response quality; tool impact must be assessed separately from the content rubric.",
+      "evidence_ids": [
+       "k:response-preference-instructions@1.1:36683c52"
+      ],
+      "attributions": [],
+      "quote": "If response panes never load, record a fetch incident and do not infer response quality.",
+      "quote_kind": "VERBATIM",
+      "material": true
+     },
+     {
+      "claim_id": "c9",
+      "kind": "HISTORY",
+      "text": "The earlier handoff records disabled Submit controls after required fields were filled, an engineering handoff on September 28, and an open outcome with no recorded fix or successful submission at 17:00 UTC; it does not verify a shared cause with the current response-loading reports.",
+      "evidence_ids": [
+       "k:rp-submit-engineering-handoff@1.0:d84c905d",
+       "k:rp-submit-engineering-handoff@1.0:6afb6e6d"
+      ],
+      "attributions": [],
+      "quote": null,
+      "quote_kind": "PARAPHRASE",
+      "material": true
+     },
+     {
+      "claim_id": "c10",
+      "kind": "SOURCE_FACT",
+      "text": "The October 1 batch announcement by the team lead tracks model/task connection drops, asks for affected task references in its thread, and says no policy change has been announced.",
+      "evidence_ids": [
+       "k:slack:C_RP_ANNOUNCEMENTS:1790883558.000028:d0ddced2"
+      ],
+      "attributions": [
+       {
+        "user_id": "U001",
+        "relation": "AUTHOR",
+        "evidence_id": "k:slack:C_RP_ANNOUNCEMENTS:1790883558.000028:d0ddced2"
+       }
+      ],
+      "quote": null,
+      "quote_kind": "PARAPHRASE",
+      "material": false
+     }
+    ],
+    "gaps": [
+     {
+      "gap_id": "g1",
+      "need": "OTHER",
+      "description": "The incident investigation still needs the task references and error states requested by the team lead, the retry outcomes requested by a QA tutor, and the failure time and metadata visibility requested in the QA thread. These require replies from the affected reporters rather than a guidance search.",
+      "follow_up": null
+     }
+    ],
+    "evidence_sufficiency": "SUFFICIENT",
+    "proposed_action": {
+     "action_type": "ESCALATE_ENGINEERING",
+     "intervention_need": {
+      "kind": "OPERATIONAL_PROBLEM",
+      "statement": "Three tutors and a QA tutor report unavailable response content, with no recovery recorded, so engineering investigation is warranted while the requested incident details are collected.",
+      "evidence_ids": [
+       "m:C_RP_GENERAL:1790897195.000027",
+       "m:C_RP_GENERAL:1790897253.000113",
+       "m:C_RP_QA:1790920271.000026",
+       "m:C_RP_QA:1790920325.000113",
+       "m:C_RP_GENERAL:1790897339.000339",
+       "m:C_RP_QA:1790920419.000339"
+      ]
+     },
+     "instruction": "Report the response-loading failures to engineering, keeping the extent of the problem unclassified until the requested incident details arrive.",
+     "rationale": "Missing response content calls for technical investigation rather than a content-scoring clarification. Current instructions already identify this behavior as a fetch incident, while the team lead's requested inputs are still pending.",
+     "draft_text": "Please investigate response-loading failures in batch 15. Three tutors and a QA tutor report unavailable response content:\n- In the general thread, a tutor reports LT timing out before Responses A and B appear; a second tutor reports that metadata loads but response content does not.\n- In the QA thread, a QA tutor reports response-fetch failing before comparison; a tutor reports that a second item also failed to display a response.\nTask references and specific error states are still awaited. Please investigate response loading separately from response quality; the reports do not yet establish whether the problem is widespread or task-specific.",
+     "scope_note": "This is a report of response-loading symptoms, not a confirmed cause or a classification of how widely the problem extends.",
+     "support_claim_ids": [
+      "c1",
+      "c2",
+      "c3",
+      "c4",
+      "c6",
+      "c7",
+      "c8"
+     ],
+     "targets": [],
+     "context_claim_ids": [
+      "c5",
+      "c9",
+      "c10"
+     ]
+    },
+    "severity": {
+     "level": "HIGH",
+     "rationale": "Unavailable response content prevents evaluation, and four distinct reporters describe comparable failures in the same batch over several hours. This supports serious operational impact without establishing a batch-wide outage.",
+     "signals": [
+      {
+       "level": "HIGH",
+       "signal_index": 0,
+       "signal_text": "Explicit statement that assigned work cannot be completed or evaluated",
+       "support": "A tutor reports no response content to evaluate, and a QA tutor reports a fetch failure before comparison.",
+       "evidence_ids": [
+        "m:C_RP_GENERAL:1790897253.000113",
+        "m:C_RP_QA:1790920271.000026"
+       ]
+      },
+      {
+       "level": "HIGH",
+       "signal_index": 3,
+       "signal_text": "Multiple distinct people or affected tasks reporting a comparable problem within the relevant project, batch, and time window, suggesting broader disruption or systemic labeling risk. Consider the number affected relative to the known active group when that information is available; do not require an explicit statement of widespread impact",
+       "support": "Three tutors and a QA tutor independently describe unavailable response content across the two threads; the active-group size is not provided.",
+       "evidence_ids": [
+        "m:C_RP_GENERAL:1790897195.000027",
+        "m:C_RP_GENERAL:1790897253.000113",
+        "m:C_RP_QA:1790920271.000026",
+        "m:C_RP_QA:1790920325.000113"
+       ]
+      }
+     ],
+     "affected_reporters": [
+      {
+       "author_id": "U003",
+       "evidence_id": "m:C_RP_GENERAL:1790897195.000027"
+      },
+      {
+       "author_id": "U004",
+       "evidence_id": "m:C_RP_GENERAL:1790897253.000113"
+      },
+      {
+       "author_id": "U019",
+       "evidence_id": "m:C_RP_QA:1790920271.000026"
+      },
+      {
+       "author_id": "U015",
+       "evidence_id": "m:C_RP_QA:1790920325.000113"
+      }
+     ],
+     "recurrence": "NONE_FOUND",
+     "recurrence_evidence_ids": [],
+     "reported_recurrence_evidence_ids": []
+    },
+    "confidence": 0.9,
+    "open_confirmation": "NONE",
+    "open_question": null,
+    "open_question_evidence_ids": [],
+    "source_conflicts": [],
+    "announcement_assessments": [
+     {
+      "evidence_id": "k:slack:C_RP_ANNOUNCEMENTS:1790883558.000028:d0ddced2",
+      "relevant": false,
+      "directive": true,
+      "directive_quote": "Add affected task references here; no policy change has been announced.",
+      "rationale": "The announcement is for the same project and batch, but the records do not establish that the tracked connection drops are the same problem as these response-fetch failures. Its directive collects examples; it does not establish an engineering intake route. Its upstream review flags remain open."
+     }
+    ],
+    "resolution": [
+     {
+      "member_id": "member_39be46641107cea5c7626e55",
+      "state": "UNRESOLVED",
+      "evidence_ids": [
+       "m:C_RP_GENERAL:1790897195.000027",
+       "m:C_RP_GENERAL:1790897253.000113",
+       "m:C_RP_GENERAL:1790897298.000226",
+       "m:C_RP_GENERAL:1790897339.000339"
+      ],
+      "basis": "The thread reports missing response content and ends with requests for diagnostic information; it records neither the requested task details nor recovery."
+     },
+     {
+      "member_id": "member_a2f0abeaf568ff6802ec5e14",
+      "state": "UNRESOLVED",
+      "evidence_ids": [
+       "m:C_RP_QA:1790920271.000026",
+       "m:C_RP_QA:1790920325.000113",
+       "m:C_RP_QA:1790920371.000226",
+       "m:C_RP_QA:1790920419.000339"
+      ],
+      "basis": "The thread reports fetch failures, including a failed second item, and ends with diagnostic requests and the team lead's distinction between infrastructure failures and evaluation results; no recovery is recorded."
+     }
+    ],
+    "coverage": [
+     {
+      "need": "CURRENT_GUIDANCE",
+      "status": "COVERED",
+      "evidence_ids": [
+       "k:response-preference-instructions@1.1:36683c52"
+      ],
+      "note": "Current project instructions directly address response panes that never load and distinguish tool impact from response quality.",
+      "gap_id": null
+     },
+     {
+      "need": "ANNOUNCEMENTS",
+      "status": "COVERED",
+      "evidence_ids": [
+       "k:slack:C_RP_ANNOUNCEMENTS:1790883558.000028:d0ddced2"
+      ],
+      "note": "The retrieved batch announcement was assessed but is not used as current handling or as an engineering route.",
+      "gap_id": null
+     },
+     {
+      "need": "PRIOR_DECISIONS",
+      "status": "COVERED",
+      "evidence_ids": [
+       "k:rp-submit-engineering-handoff@1.0:d84c905d",
+       "k:rp-submit-engineering-handoff@1.0:6afb6e6d"
+      ],
+      "note": "The earlier handoff and its open outcome are available, but concern disabled Submit controls. The records retrieved for this run do not corroborate historical recurrence of these response-loading failures.",
+      "gap_id": null
+     },
+     {
+      "need": "MEMBER_QUESTIONS",
+      "status": "COVERED",
+      "evidence_ids": [
+       "m:C_RP_GENERAL:1790897298.000226",
+       "m:C_RP_GENERAL:1790897339.000339",
+       "m:C_RP_QA:1790920325.000113",
+       "m:C_RP_QA:1790920371.000226",
+       "m:C_RP_QA:1790920419.000339"
+      ],
+      "note": "Both threads include diagnostic requests. Their missing replies are an incident-information gap, not an unresolved handling rule.",
+      "gap_id": null
+     }
+    ],
+    "review_note": null,
+    "action_choice": null
+   },
+   "revised": false
+  },
+  "grounding": {
+   "structural_issues": [],
+   "action_issues": [],
+   "unsupported": [],
+   "unjudged": [],
+   "extraneous_verdicts": [],
+   "rejected": {},
+   "pending": [],
+   "action_sufficiency": {
+    "verdict": "SUFFICIENT",
+    "essential_statement_ids": [
+     "claim:c1",
+     "claim:c2",
+     "claim:c3",
+     "claim:c4",
+     "claim:c6",
+     "claim:c7",
+     "claim:c8"
+    ],
+    "rationale": "All listed premises have final status SUPPORTED. They justify the exact symptom report, its four attributed reporters, engineering as the functional recipient, the pending diagnostic details and extent classification, and separation from response quality. No concrete intake route or shared cause is asserted."
+   },
+   "source_consistency": {
+    "assessed_evidence_ids": [
+     "k:response-preference-instructions@1.1:36683c52",
+     "k:slack:C_RP_ANNOUNCEMENTS:1790883558.000028:d0ddced2"
+    ],
+    "relations": [],
+    "declared_conflict_checks": []
+   },
+   "alternative_sufficiency": {},
+   "status": "PASSED",
+   "basis": "SEMANTIC",
+   "statements": [
+    {
+     "statement_id": "claim:c1",
+     "kind": "CLAIM_INCIDENT_FACT",
+     "text": "A tutor reports that LT times out before Responses A and B are displayed.",
+     "blocking": true,
+     "evidence_ids": [
+      "m:C_RP_GENERAL:1790897195.000027"
+     ],
+     "attributions": [
+      {
+       "user_id": "U003",
+       "relation": "AUTHOR",
+       "evidence_id": "m:C_RP_GENERAL:1790897195.000027",
+       "role": "TUTOR"
+      }
+     ],
+     "verdict": "SUPPORTED",
+     "model_verdict": "SUPPORTED",
+     "rationale": "U003 is a tutor and explicitly reports LT timing out before Responses A and B appear."
+    },
+    {
+     "statement_id": "claim:c2",
+     "kind": "CLAIM_INCIDENT_FACT",
+     "text": "A tutor reports that task metadata loads but no response content is available to evaluate.",
+     "blocking": true,
+     "evidence_ids": [
+      "m:C_RP_GENERAL:1790897253.000113"
+     ],
+     "attributions": [
+      {
+       "user_id": "U004",
+       "relation": "AUTHOR",
+       "evidence_id": "m:C_RP_GENERAL:1790897253.000113",
+       "role": "TUTOR"
+      }
+     ],
+     "verdict": "SUPPORTED",
+     "model_verdict": "SUPPORTED",
+     "rationale": "U004 explicitly reports that task metadata loads but there is no response content to evaluate."
+    },
+    {
+     "statement_id": "claim:c3",
+     "kind": "CLAIM_INCIDENT_FACT",
+     "text": "A QA tutor reports that response-fetch fails before the pair can be compared.",
+     "blocking": true,
+     "evidence_ids": [
+      "m:C_RP_QA:1790920271.000026"
+     ],
+     "attributions": [
+      {
+       "user_id": "U019",
+       "relation": "AUTHOR",
+       "evidence_id": "m:C_RP_QA:1790920271.000026",
+       "role": "QA_TUTOR"
+      }
+     ],
+     "verdict": "SUPPORTED",
+     "model_verdict": "SUPPORTED",
+     "rationale": "U019 is a QA tutor and explicitly reports response-fetch failing before comparison."
+    },
+    {
+     "statement_id": "claim:c4",
+     "kind": "CLAIM_INCIDENT_FACT",
+     "text": "A tutor reports that a second item also failed to display a response and asks for the task ID and time of the response-fetch failure in the QA thread.",
+     "blocking": true,
+     "evidence_ids": [
+      "m:C_RP_QA:1790920325.000113"
+     ],
+     "attributions": [
+      {
+       "user_id": "U015",
+       "relation": "AUTHOR",
+       "evidence_id": "m:C_RP_QA:1790920325.000113",
+       "role": "TUTOR"
+      }
+     ],
+     "verdict": "SUPPORTED",
+     "model_verdict": "SUPPORTED",
+     "rationale": "U015 reports trying a second item whose response also failed to appear and requests the task ID and failure time."
+    },
+    {
+     "statement_id": "claim:c5",
+     "kind": "CLAIM_INCIDENT_FACT",
+     "text": "A QA tutor asks for affected task IDs and retry outcomes in both threads and asks whether task metadata was visible before the output pane timed out in the QA thread.",
+     "blocking": true,
+     "evidence_ids": [
+      "m:C_RP_GENERAL:1790897298.000226",
+      "m:C_RP_QA:1790920371.000226"
+     ],
+     "attributions": [
+      {
+       "user_id": "U002",
+       "relation": "AUTHOR",
+       "evidence_id": "m:C_RP_GENERAL:1790897298.000226",
+       "role": "QA_TUTOR"
+      },
+      {
+       "user_id": "U002",
+       "relation": "AUTHOR",
+       "evidence_id": "m:C_RP_QA:1790920371.000226",
+       "role": "QA_TUTOR"
+      }
+     ],
+     "verdict": "SUPPORTED",
+     "model_verdict": "SUPPORTED",
+     "rationale": "U002 requests affected task IDs and retry outcomes in both threads and asks about metadata visibility in the QA thread."
+    },
+    {
+     "statement_id": "claim:c6",
+     "kind": "CLAIM_THREAD_INSTRUCTION",
+     "text": "The team lead requests task references and error states in both threads before deciding whether the issue is widespread or task-specific; in the QA thread, the team lead also says to separate infrastructure failures from model-evaluation results.",
+     "blocking": true,
+     "evidence_ids": [
+      "m:C_RP_GENERAL:1790897339.000339",
+      "m:C_RP_QA:1790920419.000339"
+     ],
+     "attributions": [
+      {
+       "user_id": "U001",
+       "relation": "AUTHOR",
+       "evidence_id": "m:C_RP_GENERAL:1790897339.000339",
+       "role": "TEAM_LEAD"
+      },
+      {
+       "user_id": "U001",
+       "relation": "AUTHOR",
+       "evidence_id": "m:C_RP_QA:1790920419.000339",
+       "role": "TEAM_LEAD"
+      }
+     ],
+     "verdict": "SUPPORTED",
+     "model_verdict": "SUPPORTED",
+     "rationale": "The team lead makes the stated diagnostic request in both threads and explicitly separates infrastructure failures from model-evaluation results in the QA thread."
+    },
+    {
+     "statement_id": "claim:c7",
+     "kind": "CLAIM_INFERENCE",
+     "text": "The provided threads contain no task references, specific error states, retry outcomes or failure times answering the diagnostic requests, and neither thread records recovery.",
+     "blocking": true,
+     "evidence_ids": [
+      "m:C_RP_GENERAL:1790897195.000027",
+      "m:C_RP_GENERAL:1790897253.000113",
+      "m:C_RP_GENERAL:1790897298.000226",
+      "m:C_RP_GENERAL:1790897339.000339",
+      "m:C_RP_QA:1790920271.000026",
+      "m:C_RP_QA:1790920325.000113",
+      "m:C_RP_QA:1790920371.000226",
+      "m:C_RP_QA:1790920419.000339"
+     ],
+     "verdict": "SUPPORTED",
+     "model_verdict": "SUPPORTED",
+     "rationale": "Neither complete thread supplies the requested diagnostic details or records recovery. Trying a second item does not supply the requested retry outcome for an affected task."
+    },
+    {
+     "statement_id": "claim:c8",
+     "kind": "CLAIM_GUIDANCE",
+     "text": "Current project instructions say that if response panes never load, record a fetch incident and do not infer response quality; tool impact must be assessed separately from the content rubric. Verbatim quote: \"If response panes never load, record a fetch incident and do not infer response quality.\"",
+     "blocking": true,
+     "evidence_ids": [
+      "k:response-preference-instructions@1.1:36683c52"
+     ],
+     "verdict": "SUPPORTED",
+     "model_verdict": "SUPPORTED",
+     "rationale": "The current instructions contain the exact quotation and separately require assessing tool impact apart from the content rubric."
+    },
+    {
+     "statement_id": "claim:c9",
+     "kind": "CLAIM_HISTORY",
+     "text": "The earlier handoff records disabled Submit controls after required fields were filled, an engineering handoff on September 28, and an open outcome with no recorded fix or successful submission at 17:00 UTC; it does not verify a shared cause with the current response-loading reports.",
+     "blocking": true,
+     "evidence_ids": [
+      "k:rp-submit-engineering-handoff@1.0:d84c905d",
+      "k:rp-submit-engineering-handoff@1.0:6afb6e6d"
+     ],
+     "verdict": "SUPPORTED",
+     "model_verdict": "SUPPORTED",
+     "rationale": "The prior records document disabled Submit controls, the September 28 engineering handoff, and the open outcome at 17:00 UTC without a recorded fix or successful submission. They establish no shared cause with the present reports."
+    },
+    {
+     "statement_id": "claim:c10",
+     "kind": "CLAIM_SOURCE_FACT",
+     "text": "The October 1 batch announcement by the team lead tracks model/task connection drops, asks for affected task references in its thread, and says no policy change has been announced.",
+     "blocking": false,
+     "evidence_ids": [
+      "k:slack:C_RP_ANNOUNCEMENTS:1790883558.000028:d0ddced2"
+     ],
+     "attributions": [
+      {
+       "user_id": "U001",
+       "relation": "AUTHOR",
+       "evidence_id": "k:slack:C_RP_ANNOUNCEMENTS:1790883558.000028:d0ddced2",
+       "role": "TEAM_LEAD"
+      }
+     ],
+     "verdict": "SUPPORTED",
+     "model_verdict": "SUPPORTED",
+     "rationale": "The October 1 announcement has verified team-lead authorship and states each reported point. This describes its contents without turning the example-collection thread into an engineering intake route."
+    },
+    {
+     "statement_id": "summary:s1",
+     "kind": "SUMMARY",
+     "text": "Three tutors and a QA tutor report that response content does not appear or cannot be fetched, preventing evaluation.",
+     "blocking": true,
+     "evidence_ids": [
+      "m:C_RP_GENERAL:1790897195.000027",
+      "m:C_RP_GENERAL:1790897253.000113",
+      "m:C_RP_QA:1790920271.000026",
+      "m:C_RP_QA:1790920325.000113"
+     ],
+     "attributions": [
+      {
+       "user_id": "U003",
+       "relation": "AUTHOR",
+       "evidence_id": "m:C_RP_GENERAL:1790897195.000027",
+       "role": "TUTOR"
+      },
+      {
+       "user_id": "U004",
+       "relation": "AUTHOR",
+       "evidence_id": "m:C_RP_GENERAL:1790897253.000113",
+       "role": "TUTOR"
+      },
+      {
+       "user_id": "U019",
+       "relation": "AUTHOR",
+       "evidence_id": "m:C_RP_QA:1790920271.000026",
+       "role": "QA_TUTOR"
+      },
+      {
+       "user_id": "U015",
+       "relation": "AUTHOR",
+       "evidence_id": "m:C_RP_QA:1790920325.000113",
+       "role": "TUTOR"
+      }
+     ],
+     "verdict": "SUPPORTED",
+     "model_verdict": "SUPPORTED",
+     "rationale": "The four cited authors are three tutors and one QA tutor, each reporting unavailable response content or a fetch failure that prevents comparison or evaluation."
+    },
+    {
+     "statement_id": "summary:s2",
+     "kind": "SUMMARY",
+     "text": "The team lead has requested task references and error states in both threads before deciding whether the problem is widespread or task-specific; those inputs have not been supplied.",
+     "blocking": true,
+     "evidence_ids": [
+      "m:C_RP_GENERAL:1790897339.000339",
+      "m:C_RP_QA:1790920419.000339",
+      "m:C_RP_GENERAL:1790897195.000027",
+      "m:C_RP_GENERAL:1790897253.000113",
+      "m:C_RP_GENERAL:1790897298.000226",
+      "m:C_RP_QA:1790920271.000026",
+      "m:C_RP_QA:1790920325.000113",
+      "m:C_RP_QA:1790920371.000226"
+     ],
+     "attributions": [
+      {
+       "user_id": "U001",
+       "relation": "AUTHOR",
+       "evidence_id": "m:C_RP_GENERAL:1790897339.000339",
+       "role": "TEAM_LEAD"
+      },
+      {
+       "user_id": "U001",
+       "relation": "AUTHOR",
+       "evidence_id": "m:C_RP_QA:1790920419.000339",
+       "role": "TEAM_LEAD"
+      }
+     ],
+     "verdict": "SUPPORTED",
+     "model_verdict": "SUPPORTED",
+     "rationale": "The team lead requests task references and error states in both threads before classifying extent, and the provided complete threads contain no subsequent supply of those inputs."
+    },
+    {
+     "statement_id": "detail:d1",
+     "kind": "DETAIL",
+     "text": "In the general thread, a tutor reports a timeout before Responses A and B appear; a second tutor reports visible task metadata but no response content.",
+     "blocking": false,
+     "evidence_ids": [
+      "m:C_RP_GENERAL:1790897195.000027",
+      "m:C_RP_GENERAL:1790897253.000113"
+     ],
+     "attributions": [
+      {
+       "user_id": "U003",
+       "relation": "AUTHOR",
+       "evidence_id": "m:C_RP_GENERAL:1790897195.000027",
+       "role": "TUTOR"
+      },
+      {
+       "user_id": "U004",
+       "relation": "AUTHOR",
+       "evidence_id": "m:C_RP_GENERAL:1790897253.000113",
+       "role": "TUTOR"
+      }
+     ],
+     "verdict": "SUPPORTED",
+     "model_verdict": "SUPPORTED",
+     "rationale": "The two general-thread messages directly state the timeout and metadata-without-content symptoms, with accurate role attributions."
+    },
+    {
+     "statement_id": "detail:d2",
+     "kind": "DETAIL",
+     "text": "In the QA thread, a QA tutor reports a response-fetch failure before comparison, and a tutor reports that a second item also failed to display a response.",
+     "blocking": false,
+     "evidence_ids": [
+      "m:C_RP_QA:1790920271.000026",
+      "m:C_RP_QA:1790920325.000113"
+     ],
+     "attributions": [
+      {
+       "user_id": "U019",
+       "relation": "AUTHOR",
+       "evidence_id": "m:C_RP_QA:1790920271.000026",
+       "role": "QA_TUTOR"
+      },
+      {
+       "user_id": "U015",
+       "relation": "AUTHOR",
+       "evidence_id": "m:C_RP_QA:1790920325.000113",
+       "role": "TUTOR"
+      }
+     ],
+     "verdict": "SUPPORTED",
+     "model_verdict": "SUPPORTED",
+     "rationale": "The QA-thread messages directly report a fetch failure before comparison and another item's response failing to appear."
+    },
+    {
+     "statement_id": "detail:d3",
+     "kind": "DETAIL",
+     "text": "A QA tutor asks for task IDs and retry outcomes in both threads and asks whether metadata was visible in the QA thread; a tutor also asks for the failure time in the QA thread.",
+     "blocking": false,
+     "evidence_ids": [
+      "m:C_RP_QA:1790920325.000113",
+      "m:C_RP_GENERAL:1790897298.000226",
+      "m:C_RP_QA:1790920371.000226"
+     ],
+     "attributions": [
+      {
+       "user_id": "U015",
+       "relation": "AUTHOR",
+       "evidence_id": "m:C_RP_QA:1790920325.000113",
+       "role": "TUTOR"
+      },
+      {
+       "user_id": "U002",
+       "relation": "AUTHOR",
+       "evidence_id": "m:C_RP_GENERAL:1790897298.000226",
+       "role": "QA_TUTOR"
+      },
+      {
+       "user_id": "U002",
+       "relation": "AUTHOR",
+       "evidence_id": "m:C_RP_QA:1790920371.000226",
+       "role": "QA_TUTOR"
+      }
+     ],
+     "verdict": "SUPPORTED",
+     "model_verdict": "SUPPORTED",
+     "rationale": "The cited QA tutor requests IDs and retry outcomes in both threads and metadata visibility in the QA thread; the cited tutor requests the failure time there."
+    },
+    {
+     "statement_id": "detail:d4",
+     "kind": "DETAIL",
+     "text": "Current instructions say to record a fetch incident when response panes never load and not infer response quality.",
+     "blocking": false,
+     "evidence_ids": [
+      "k:response-preference-instructions@1.1:36683c52"
+     ],
+     "verdict": "SUPPORTED",
+     "model_verdict": "SUPPORTED",
+     "rationale": "The current instructions explicitly require recording a fetch incident when response panes never load and prohibit inferring response quality."
+    },
+    {
+     "statement_id": "detail:d5",
+     "kind": "DETAIL",
+     "text": "The earlier engineering handoff concerns disabled Submit controls, remained open on September 28, and does not establish a shared cause for these response-loading reports.",
+     "blocking": false,
+     "evidence_ids": [
+      "k:rp-submit-engineering-handoff@1.0:d84c905d",
+      "k:rp-submit-engineering-handoff@1.0:6afb6e6d"
+     ],
+     "verdict": "SUPPORTED",
+     "model_verdict": "SUPPORTED",
+     "rationale": "The earlier record concerns disabled Submit controls and an open September 28 outcome; it does not establish a common cause with these loading failures."
+    },
+    {
+     "statement_id": "action",
+     "kind": "ACTION",
+     "text": "Report a technical issue to engineering. Instruction: Report the response-loading failures to engineering, keeping the extent of the problem unclassified until the requested incident details arrive. Draft to copy: Please investigate response-loading failures in batch 15. Three tutors and a QA tutor report unavailable response content:\n- In the general thread, a tutor reports LT timing out before Responses A and B appear; a second tutor reports that metadata loads but response content does not.\n- In the QA thread, a QA tutor reports response-fetch failing before comparison; a tutor reports that a second item also failed to display a response.\nTask references and specific error states are still awaited. Please investigate response loading separately from response quality; the reports do not yet establish whether the problem is widespread or task-specific. Scope: This is a report of response-loading symptoms, not a confirmed cause or a classification of how widely the problem extends.",
+     "blocking": true,
+     "evidence_ids": [
+      "m:C_RP_GENERAL:1790897195.000027",
+      "m:C_RP_GENERAL:1790897253.000113",
+      "m:C_RP_QA:1790920271.000026",
+      "m:C_RP_QA:1790920325.000113",
+      "m:C_RP_GENERAL:1790897339.000339",
+      "m:C_RP_QA:1790920419.000339",
+      "m:C_RP_GENERAL:1790897298.000226",
+      "m:C_RP_QA:1790920371.000226",
+      "k:response-preference-instructions@1.1:36683c52"
+     ],
+     "premises": [
+      "claim:c1",
+      "claim:c2",
+      "claim:c3",
+      "claim:c4",
+      "claim:c6",
+      "claim:c7",
+      "claim:c8"
+     ],
+     "verdict": "SUPPORTED",
+     "model_verdict": "SUPPORTED",
+     "rationale": "The four accurately attributed reports establish a technical response-loading problem warranting engineering investigation. The recommendation leaves the route unspecified, preserves the pending extent classification, and does not assert a verified cause or conflate tool failure with response quality."
+    },
+    {
+     "statement_id": "action:rationale",
+     "kind": "ACTION_RATIONALE",
+     "text": "Why this helps: Missing response content calls for technical investigation rather than a content-scoring clarification. Current instructions already identify this behavior as a fetch incident, while the team lead's requested inputs are still pending.",
+     "blocking": false,
+     "evidence_ids": [
+      "m:C_RP_GENERAL:1790897195.000027",
+      "m:C_RP_GENERAL:1790897253.000113",
+      "m:C_RP_QA:1790920271.000026",
+      "m:C_RP_QA:1790920325.000113",
+      "m:C_RP_GENERAL:1790897339.000339",
+      "m:C_RP_QA:1790920419.000339",
+      "m:C_RP_GENERAL:1790897298.000226",
+      "m:C_RP_QA:1790920371.000226",
+      "k:response-preference-instructions@1.1:36683c52",
+      "k:rp-submit-engineering-handoff@1.0:d84c905d",
+      "k:rp-submit-engineering-handoff@1.0:6afb6e6d",
+      "k:slack:C_RP_ANNOUNCEMENTS:1790883558.000028:d0ddced2"
+     ],
+     "verdict": "SUPPORTED",
+     "model_verdict": "SUPPORTED",
+     "rationale": "Unavailable response content warrants technical investigation, the current instructions classify never-loading panes as a fetch incident, and the requested diagnostic inputs remain absent."
+    },
+    {
+     "statement_id": "action:need",
+     "kind": "INTERVENTION_NEED",
+     "text": "Why intervening now is needed (an operational problem that needs coordination): Three tutors and a QA tutor report unavailable response content, with no recovery recorded, so engineering investigation is warranted while the requested incident details are collected.",
+     "blocking": false,
+     "evidence_ids": [
+      "m:C_RP_GENERAL:1790897195.000027",
+      "m:C_RP_GENERAL:1790897253.000113",
+      "m:C_RP_QA:1790920271.000026",
+      "m:C_RP_QA:1790920325.000113",
+      "m:C_RP_GENERAL:1790897339.000339",
+      "m:C_RP_QA:1790920419.000339"
+     ],
+     "verdict": "SUPPORTED",
+     "model_verdict": "SUPPORTED",
+     "rationale": "Four distinct reporters describe operational failures that prevent evaluation, with no recorded recovery. This supports coordinating engineering investigation while collecting the missing details."
+    },
+    {
+     "statement_id": "resolution:member_39be46641107cea5c7626e55",
+     "kind": "RESOLUTION",
+     "text": "Member thread member_39be46641107cea5c7626e55 is UNRESOLVED: The thread reports missing response content and ends with requests for diagnostic information; it records neither the requested task details nor recovery.",
+     "blocking": true,
+     "evidence_ids": [
+      "m:C_RP_GENERAL:1790897195.000027",
+      "m:C_RP_GENERAL:1790897253.000113",
+      "m:C_RP_GENERAL:1790897298.000226",
+      "m:C_RP_GENERAL:1790897339.000339"
+     ],
+     "verdict": "SUPPORTED",
+     "model_verdict": "SUPPORTED",
+     "rationale": "The complete general thread ends with diagnostic requests and contains neither the requested task details nor a recovery report."
+    },
+    {
+     "statement_id": "resolution:member_a2f0abeaf568ff6802ec5e14",
+     "kind": "RESOLUTION",
+     "text": "Member thread member_a2f0abeaf568ff6802ec5e14 is UNRESOLVED: The thread reports fetch failures, including a failed second item, and ends with diagnostic requests and the team lead's distinction between infrastructure failures and evaluation results; no recovery is recorded.",
+     "blocking": true,
+     "evidence_ids": [
+      "m:C_RP_QA:1790920271.000026",
+      "m:C_RP_QA:1790920325.000113",
+      "m:C_RP_QA:1790920371.000226",
+      "m:C_RP_QA:1790920419.000339"
+     ],
+     "verdict": "SUPPORTED",
+     "model_verdict": "SUPPORTED",
+     "rationale": "The complete QA thread records fetch failures, a failed second item, diagnostic requests, and the team lead's distinction, but no recovery."
+    },
+    {
+     "statement_id": "severity:rationale",
+     "kind": "SEVERITY_RATIONALE",
+     "text": "Severity HIGH: Unavailable response content prevents evaluation, and four distinct reporters describe comparable failures in the same batch over several hours. This supports serious operational impact without establishing a batch-wide outage.",
+     "blocking": true,
+     "evidence_ids": [
+      "m:C_RP_GENERAL:1790897253.000113",
+      "m:C_RP_QA:1790920271.000026",
+      "m:C_RP_GENERAL:1790897195.000027",
+      "m:C_RP_QA:1790920325.000113",
+      "m:C_RP_GENERAL:1790897298.000226",
+      "m:C_RP_QA:1790920371.000226"
+     ],
+     "verdict": "SUPPORTED",
+     "model_verdict": "SUPPORTED",
+     "rationale": "Four distinct authors report comparable evaluation-blocking symptoms in this batch approximately six hours apart. Serious operational impact is supported without establishing a batch-wide outage."
+    },
+    {
+     "statement_id": "severity:signal:HIGH[0]",
+     "kind": "SEVERITY_SIGNAL",
+     "text": "Rubric signal met - \"Explicit statement that assigned work cannot be completed or evaluated\": A tutor reports no response content to evaluate, and a QA tutor reports a fetch failure before comparison.",
+     "blocking": true,
+     "evidence_ids": [
+      "m:C_RP_GENERAL:1790897253.000113",
+      "m:C_RP_QA:1790920271.000026"
+     ],
+     "verdict": "SUPPORTED",
+     "model_verdict": "SUPPORTED",
+     "rationale": "One reporter explicitly has no response content to evaluate, and another cannot compare the pair because response-fetch fails."
+    },
+    {
+     "statement_id": "severity:signal:HIGH[3]",
+     "kind": "SEVERITY_SIGNAL",
+     "text": "Rubric signal met - \"Multiple distinct people or affected tasks reporting a comparable problem within the relevant project, batch, and time window, suggesting broader disruption or systemic labeling risk. Consider the number affected relative to the known active group when that information is available; do not require an explicit statement of widespread impact\": Three tutors and a QA tutor independently describe unavailable response content across the two threads; the active-group size is not provided.",
+     "blocking": true,
+     "evidence_ids": [
+      "m:C_RP_GENERAL:1790897195.000027",
+      "m:C_RP_GENERAL:1790897253.000113",
+      "m:C_RP_QA:1790920271.000026",
+      "m:C_RP_QA:1790920325.000113"
+     ],
+     "verdict": "SUPPORTED",
+     "model_verdict": "SUPPORTED",
+     "rationale": "Three distinct tutors and one QA tutor report comparable missing-content symptoms across the two threads. The context provides no active-group size."
+    },
+    {
+     "statement_id": "reporter:U003",
+     "kind": "AFFECTED_REPORTER",
+     "text": "U003 reports, in their own cited message, being affected by this problem.",
+     "blocking": true,
+     "evidence_ids": [
+      "m:C_RP_GENERAL:1790897195.000027"
+     ],
+     "verdict": "SUPPORTED",
+     "model_verdict": "SUPPORTED",
+     "rationale": "U003's own message reports LT timing out before either response appears."
+    },
+    {
+     "statement_id": "reporter:U004",
+     "kind": "AFFECTED_REPORTER",
+     "text": "U004 reports, in their own cited message, being affected by this problem.",
+     "blocking": true,
+     "evidence_ids": [
+      "m:C_RP_GENERAL:1790897253.000113"
+     ],
+     "verdict": "SUPPORTED",
+     "model_verdict": "SUPPORTED",
+     "rationale": "U004's own message reports loaded metadata but no response content to evaluate."
+    },
+    {
+     "statement_id": "reporter:U019",
+     "kind": "AFFECTED_REPORTER",
+     "text": "U019 reports, in their own cited message, being affected by this problem.",
+     "blocking": true,
+     "evidence_ids": [
+      "m:C_RP_QA:1790920271.000026"
+     ],
+     "verdict": "SUPPORTED",
+     "model_verdict": "SUPPORTED",
+     "rationale": "U019 explicitly reports being unable to compare the pair because response-fetch fails."
+    },
+    {
+     "statement_id": "reporter:U015",
+     "kind": "AFFECTED_REPORTER",
+     "text": "U015 reports, in their own cited message, being affected by this problem.",
+     "blocking": true,
+     "evidence_ids": [
+      "m:C_RP_QA:1790920325.000113"
+     ],
+     "verdict": "SUPPORTED",
+     "model_verdict": "SUPPORTED",
+     "rationale": "U015 explicitly reports trying a second item and still encountering a missing response."
+    }
+   ]
+  },
+  "temporal": {
+   "status": "NONE_FOUND",
+   "findings": [],
+   "source_consistency": "ASSESSED",
+   "ignored_revision_states": "NOT_YET_EFFECTIVE and NOT_APPROVED revisions never compete with applicable guidance."
+  },
+  "temporal_before_grounding": {
+   "status": "NONE_FOUND",
+   "findings": [],
+   "source_consistency": "NOT_ASSESSED",
+   "ignored_revision_states": "NOT_YET_EFFECTIVE and NOT_APPROVED revisions never compete with applicable guidance."
+  },
+  "severity": {
+   "assessment": {
+    "level": "HIGH",
+    "assessment_status": "ASSESSED",
+    "rubric_version": "severity-rubric-v3-semantic-signals",
+    "rubric_content_sha256": "eccaa31a2ab84a0aa7c005216a92fc39681e1dd10107117344948235a76673f4",
+    "rubric_project_id": null,
+    "rubric_scope": "SHARED_DEFAULT",
+    "rationale": "Unavailable response content prevents evaluation, and four distinct reporters describe comparable failures in the same batch over several hours. This supports serious operational impact without establishing a batch-wide outage.",
+    "matched_signals": [
+     {
+      "level": "HIGH",
+      "signal_index": 0,
+      "signal_text": "Explicit statement that assigned work cannot be completed or evaluated",
+      "support": "A tutor reports no response content to evaluate, and a QA tutor reports a fetch failure before comparison.",
+      "evidence": [
+       {
+        "kind": "slack_message",
+        "project_id": "response_preference",
+        "batch_id": "rp_batch_15",
+        "scope": "project",
+        "channel_id": "C_RP_GENERAL",
+        "thread_id": "1790897195.000027",
+        "message_id": "1790897253.000113",
+        "document_id": null,
+        "version_id": null,
+        "authoring_document_id": null,
+        "authoring_version": null,
+        "section": null,
+        "chunk_id": null,
+        "candidate_group_id": null,
+        "member_id": "member_39be46641107cea5c7626e55",
+        "artifact": null,
+        "artifact_sha256": null,
+        "quote": null,
+        "note": "m:C_RP_GENERAL:1790897253.000113"
+       },
+       {
+        "kind": "slack_message",
+        "project_id": "response_preference",
+        "batch_id": "rp_batch_15",
+        "scope": "project",
+        "channel_id": "C_RP_QA",
+        "thread_id": "1790920271.000026",
+        "message_id": "1790920271.000026",
+        "document_id": null,
+        "version_id": null,
+        "authoring_document_id": null,
+        "authoring_version": null,
+        "section": null,
+        "chunk_id": null,
+        "candidate_group_id": null,
+        "member_id": "member_a2f0abeaf568ff6802ec5e14",
+        "artifact": null,
+        "artifact_sha256": null,
+        "quote": null,
+        "note": "m:C_RP_QA:1790920271.000026"
+       }
+      ]
+     },
+     {
+      "level": "HIGH",
+      "signal_index": 3,
+      "signal_text": "Multiple distinct people or affected tasks reporting a comparable problem within the relevant project, batch, and time window, suggesting broader disruption or systemic labeling risk. Consider the number affected relative to the known active group when that information is available; do not require an explicit statement of widespread impact",
+      "support": "Three tutors and a QA tutor independently describe unavailable response content across the two threads; the active-group size is not provided.",
+      "evidence": [
+       {
+        "kind": "slack_message",
+        "project_id": "response_preference",
+        "batch_id": "rp_batch_15",
+        "scope": "project",
+        "channel_id": "C_RP_GENERAL",
+        "thread_id": "1790897195.000027",
+        "message_id": "1790897195.000027",
+        "document_id": null,
+        "version_id": null,
+        "authoring_document_id": null,
+        "authoring_version": null,
+        "section": null,
+        "chunk_id": null,
+        "candidate_group_id": null,
+        "member_id": "member_39be46641107cea5c7626e55",
+        "artifact": null,
+        "artifact_sha256": null,
+        "quote": null,
+        "note": "m:C_RP_GENERAL:1790897195.000027"
+       },
+       {
+        "kind": "slack_message",
+        "project_id": "response_preference",
+        "batch_id": "rp_batch_15",
+        "scope": "project",
+        "channel_id": "C_RP_GENERAL",
+        "thread_id": "1790897195.000027",
+        "message_id": "1790897253.000113",
+        "document_id": null,
+        "version_id": null,
+        "authoring_document_id": null,
+        "authoring_version": null,
+        "section": null,
+        "chunk_id": null,
+        "candidate_group_id": null,
+        "member_id": "member_39be46641107cea5c7626e55",
+        "artifact": null,
+        "artifact_sha256": null,
+        "quote": null,
+        "note": "m:C_RP_GENERAL:1790897253.000113"
+       },
+       {
+        "kind": "slack_message",
+        "project_id": "response_preference",
+        "batch_id": "rp_batch_15",
+        "scope": "project",
+        "channel_id": "C_RP_QA",
+        "thread_id": "1790920271.000026",
+        "message_id": "1790920271.000026",
+        "document_id": null,
+        "version_id": null,
+        "authoring_document_id": null,
+        "authoring_version": null,
+        "section": null,
+        "chunk_id": null,
+        "candidate_group_id": null,
+        "member_id": "member_a2f0abeaf568ff6802ec5e14",
+        "artifact": null,
+        "artifact_sha256": null,
+        "quote": null,
+        "note": "m:C_RP_QA:1790920271.000026"
+       },
+       {
+        "kind": "slack_message",
+        "project_id": "response_preference",
+        "batch_id": "rp_batch_15",
+        "scope": "project",
+        "channel_id": "C_RP_QA",
+        "thread_id": "1790920271.000026",
+        "message_id": "1790920325.000113",
+        "document_id": null,
+        "version_id": null,
+        "authoring_document_id": null,
+        "authoring_version": null,
+        "section": null,
+        "chunk_id": null,
+        "candidate_group_id": null,
+        "member_id": "member_a2f0abeaf568ff6802ec5e14",
+        "artifact": null,
+        "artifact_sha256": null,
+        "quote": null,
+        "note": "m:C_RP_QA:1790920325.000113"
+       }
+      ]
+     }
+    ],
+    "evidence": [
+     {
+      "kind": "slack_message",
+      "project_id": "response_preference",
+      "batch_id": "rp_batch_15",
+      "scope": "project",
+      "channel_id": "C_RP_GENERAL",
+      "thread_id": "1790897195.000027",
+      "message_id": "1790897253.000113",
+      "document_id": null,
+      "version_id": null,
+      "authoring_document_id": null,
+      "authoring_version": null,
+      "section": null,
+      "chunk_id": null,
+      "candidate_group_id": null,
+      "member_id": "member_39be46641107cea5c7626e55",
+      "artifact": null,
+      "artifact_sha256": null,
+      "quote": null,
+      "note": "m:C_RP_GENERAL:1790897253.000113"
+     },
+     {
+      "kind": "slack_message",
+      "project_id": "response_preference",
+      "batch_id": "rp_batch_15",
+      "scope": "project",
+      "channel_id": "C_RP_QA",
+      "thread_id": "1790920271.000026",
+      "message_id": "1790920271.000026",
+      "document_id": null,
+      "version_id": null,
+      "authoring_document_id": null,
+      "authoring_version": null,
+      "section": null,
+      "chunk_id": null,
+      "candidate_group_id": null,
+      "member_id": "member_a2f0abeaf568ff6802ec5e14",
+      "artifact": null,
+      "artifact_sha256": null,
+      "quote": null,
+      "note": "m:C_RP_QA:1790920271.000026"
+     },
+     {
+      "kind": "slack_message",
+      "project_id": "response_preference",
+      "batch_id": "rp_batch_15",
+      "scope": "project",
+      "channel_id": "C_RP_GENERAL",
+      "thread_id": "1790897195.000027",
+      "message_id": "1790897195.000027",
+      "document_id": null,
+      "version_id": null,
+      "authoring_document_id": null,
+      "authoring_version": null,
+      "section": null,
+      "chunk_id": null,
+      "candidate_group_id": null,
+      "member_id": "member_39be46641107cea5c7626e55",
+      "artifact": null,
+      "artifact_sha256": null,
+      "quote": null,
+      "note": "m:C_RP_GENERAL:1790897195.000027"
+     },
+     {
+      "kind": "slack_message",
+      "project_id": "response_preference",
+      "batch_id": "rp_batch_15",
+      "scope": "project",
+      "channel_id": "C_RP_GENERAL",
+      "thread_id": "1790897195.000027",
+      "message_id": "1790897253.000113",
+      "document_id": null,
+      "version_id": null,
+      "authoring_document_id": null,
+      "authoring_version": null,
+      "section": null,
+      "chunk_id": null,
+      "candidate_group_id": null,
+      "member_id": "member_39be46641107cea5c7626e55",
+      "artifact": null,
+      "artifact_sha256": null,
+      "quote": null,
+      "note": "m:C_RP_GENERAL:1790897253.000113"
+     },
+     {
+      "kind": "slack_message",
+      "project_id": "response_preference",
+      "batch_id": "rp_batch_15",
+      "scope": "project",
+      "channel_id": "C_RP_QA",
+      "thread_id": "1790920271.000026",
+      "message_id": "1790920271.000026",
+      "document_id": null,
+      "version_id": null,
+      "authoring_document_id": null,
+      "authoring_version": null,
+      "section": null,
+      "chunk_id": null,
+      "candidate_group_id": null,
+      "member_id": "member_a2f0abeaf568ff6802ec5e14",
+      "artifact": null,
+      "artifact_sha256": null,
+      "quote": null,
+      "note": "m:C_RP_QA:1790920271.000026"
+     },
+     {
+      "kind": "slack_message",
+      "project_id": "response_preference",
+      "batch_id": "rp_batch_15",
+      "scope": "project",
+      "channel_id": "C_RP_QA",
+      "thread_id": "1790920271.000026",
+      "message_id": "1790920325.000113",
+      "document_id": null,
+      "version_id": null,
+      "authoring_document_id": null,
+      "authoring_version": null,
+      "section": null,
+      "chunk_id": null,
+      "candidate_group_id": null,
+      "member_id": "member_a2f0abeaf568ff6802ec5e14",
+      "artifact": null,
+      "artifact_sha256": null,
+      "quote": null,
+      "note": "m:C_RP_QA:1790920325.000113"
+     }
+    ],
+    "occurrence": {
+     "affected_reporters": {
+      "status": "LOWER_BOUND",
+      "count": 4,
+      "ids": [
+       "U003",
+       "U004",
+       "U019",
+       "U015"
+      ],
+      "basis": "Distinct authors whose own cited message reports the problem; other participants are not counted.",
+      "evidence": [
+       {
+        "kind": "slack_message",
+        "project_id": "response_preference",
+        "batch_id": "rp_batch_15",
+        "scope": "project",
+        "channel_id": "C_RP_GENERAL",
+        "thread_id": "1790897195.000027",
+        "message_id": "1790897195.000027",
+        "document_id": null,
+        "version_id": null,
+        "authoring_document_id": null,
+        "authoring_version": null,
+        "section": null,
+        "chunk_id": null,
+        "candidate_group_id": null,
+        "member_id": "member_39be46641107cea5c7626e55",
+        "artifact": null,
+        "artifact_sha256": null,
+        "quote": null,
+        "note": "m:C_RP_GENERAL:1790897195.000027"
+       },
+       {
+        "kind": "slack_message",
+        "project_id": "response_preference",
+        "batch_id": "rp_batch_15",
+        "scope": "project",
+        "channel_id": "C_RP_GENERAL",
+        "thread_id": "1790897195.000027",
+        "message_id": "1790897253.000113",
+        "document_id": null,
+        "version_id": null,
+        "authoring_document_id": null,
+        "authoring_version": null,
+        "section": null,
+        "chunk_id": null,
+        "candidate_group_id": null,
+        "member_id": "member_39be46641107cea5c7626e55",
+        "artifact": null,
+        "artifact_sha256": null,
+        "quote": null,
+        "note": "m:C_RP_GENERAL:1790897253.000113"
+       },
+       {
+        "kind": "slack_message",
+        "project_id": "response_preference",
+        "batch_id": "rp_batch_15",
+        "scope": "project",
+        "channel_id": "C_RP_QA",
+        "thread_id": "1790920271.000026",
+        "message_id": "1790920271.000026",
+        "document_id": null,
+        "version_id": null,
+        "authoring_document_id": null,
+        "authoring_version": null,
+        "section": null,
+        "chunk_id": null,
+        "candidate_group_id": null,
+        "member_id": "member_a2f0abeaf568ff6802ec5e14",
+        "artifact": null,
+        "artifact_sha256": null,
+        "quote": null,
+        "note": "m:C_RP_QA:1790920271.000026"
+       },
+       {
+        "kind": "slack_message",
+        "project_id": "response_preference",
+        "batch_id": "rp_batch_15",
+        "scope": "project",
+        "channel_id": "C_RP_QA",
+        "thread_id": "1790920271.000026",
+        "message_id": "1790920325.000113",
+        "document_id": null,
+        "version_id": null,
+        "authoring_document_id": null,
+        "authoring_version": null,
+        "section": null,
+        "chunk_id": null,
+        "candidate_group_id": null,
+        "member_id": "member_a2f0abeaf568ff6802ec5e14",
+        "artifact": null,
+        "artifact_sha256": null,
+        "quote": null,
+        "note": "m:C_RP_QA:1790920325.000113"
+       }
+      ]
+     },
+     "affected_tasks": {
+      "status": "UNKNOWN",
+      "count": null,
+      "ids": [],
+      "basis": null,
+      "evidence": []
+     },
+     "relevant_threads": [
+      {
+       "project_id": "response_preference",
+       "batch_id": "rp_batch_15",
+       "channel_id": "C_RP_GENERAL",
+       "thread_id": "1790897195.000027",
+       "member_id": "member_39be46641107cea5c7626e55"
+      },
+      {
+       "project_id": "response_preference",
+       "batch_id": "rp_batch_15",
+       "channel_id": "C_RP_QA",
+       "thread_id": "1790920271.000026",
+       "member_id": "member_a2f0abeaf568ff6802ec5e14"
+      }
+     ],
+     "reporting_window": {
+      "start": "2026-10-01T23:26:35.000027+00:00",
+      "end": "2026-10-02T05:53:39.000339+00:00"
+     },
+     "historical_recurrence": {
+      "status": "NONE_FOUND",
+      "sources": [],
+      "event_series_ids": []
+     },
+     "known_denominator": null,
+     "structural": {
+      "threads": 2,
+      "messages": 8,
+      "distinct_participants": 6,
+      "duplicate_threads_ignored": 0,
+      "duplicate_messages_ignored": 0,
+      "computed_from": "topic member threads (original Slack messages)",
+      "participants_are_not_affected_reporters": true
+     },
+     "semantic_identification": "ASSESSED"
+    },
+    "inherited_from": {
+     "level": "UNKNOWN",
+     "assessment_status": "UNASSESSED",
+     "assessment_deferred_to": "AGENT3",
+     "reason": "Agent 2 performs taxonomy only."
+    }
+   },
+   "issues": [],
+   "notes": [],
+   "proposal": {
+    "level": "HIGH",
+    "rationale": "Unavailable response content prevents evaluation, and four distinct reporters describe comparable failures in the same batch over several hours. This supports serious operational impact without establishing a batch-wide outage.",
+    "signals": [
+     {
+      "level": "HIGH",
+      "signal_index": 0,
+      "signal_text": "Explicit statement that assigned work cannot be completed or evaluated",
+      "support": "A tutor reports no response content to evaluate, and a QA tutor reports a fetch failure before comparison.",
+      "evidence_ids": [
+       "m:C_RP_GENERAL:1790897253.000113",
+       "m:C_RP_QA:1790920271.000026"
+      ]
+     },
+     {
+      "level": "HIGH",
+      "signal_index": 3,
+      "signal_text": "Multiple distinct people or affected tasks reporting a comparable problem within the relevant project, batch, and time window, suggesting broader disruption or systemic labeling risk. Consider the number affected relative to the known active group when that information is available; do not require an explicit statement of widespread impact",
+      "support": "Three tutors and a QA tutor independently describe unavailable response content across the two threads; the active-group size is not provided.",
+      "evidence_ids": [
+       "m:C_RP_GENERAL:1790897195.000027",
+       "m:C_RP_GENERAL:1790897253.000113",
+       "m:C_RP_QA:1790920271.000026",
+       "m:C_RP_QA:1790920325.000113"
+      ]
+     }
+    ],
+    "affected_reporters": [
+     {
+      "author_id": "U003",
+      "evidence_id": "m:C_RP_GENERAL:1790897195.000027"
+     },
+     {
+      "author_id": "U004",
+      "evidence_id": "m:C_RP_GENERAL:1790897253.000113"
+     },
+     {
+      "author_id": "U019",
+      "evidence_id": "m:C_RP_QA:1790920271.000026"
+     },
+     {
+      "author_id": "U015",
+      "evidence_id": "m:C_RP_QA:1790920325.000113"
+     }
+    ],
+    "recurrence": "NONE_FOUND",
+    "recurrence_evidence_ids": [],
+    "reported_recurrence_evidence_ids": []
+   }
+  },
+  "resolution": {
+   "topic": "UNRESOLVED",
+   "members": {
+    "member_39be46641107cea5c7626e55": "UNRESOLVED",
+    "member_a2f0abeaf568ff6802ec5e14": "UNRESOLVED"
+   },
+   "agent1_attributed": [
+    {
+     "member_id": "member_39be46641107cea5c7626e55",
+     "state": "UNRESOLVED",
+     "agent1_verification_status": "VERIFIED",
+     "agent1_review_required": false
+    },
+    {
+     "member_id": "member_a2f0abeaf568ff6802ec5e14",
+     "state": "UNRESOLVED",
+     "agent1_verification_status": "CORRECTED",
+     "agent1_review_required": false
+    }
+   ]
+  },
+  "established_handling": [],
+  "coverage_issues": [],
+  "action_source": "DRAFT",
+  "action_notes": [],
+  "tot": {
+   "status": "NOT_TRIGGERED",
+   "triggers": [],
+   "choice_after_grounding": {
+    "status": "NOT_COMPARED",
+    "viable": []
+   }
+  },
+  "evidence_ledger": {
+   "m:C_RP_GENERAL:1790897195.000027": {
+    "evidence_id": "m:C_RP_GENERAL:1790897195.000027",
+    "origin": "member_message",
+    "use": "MEMBER_REPORT",
+    "member_id": "member_39be46641107cea5c7626e55",
+    "channel_id": "C_RP_GENERAL",
+    "thread_id": "1790897195.000027",
+    "message_id": "1790897195.000027",
+    "author_id": "U003",
+    "author_name": "Jordan",
+    "author_role": "TUTOR",
+    "timestamp": "2026-10-01T23:26:35.000027Z",
+    "thread_starter_id": "U003",
+    "thread_starter_role": "TUTOR",
+    "reactions": [],
+    "excerpt": "LT times out before Response A and B are displayed."
+   },
+   "m:C_RP_GENERAL:1790897253.000113": {
+    "evidence_id": "m:C_RP_GENERAL:1790897253.000113",
+    "origin": "member_message",
+    "use": "MEMBER_REPORT",
+    "member_id": "member_39be46641107cea5c7626e55",
+    "channel_id": "C_RP_GENERAL",
+    "thread_id": "1790897195.000027",
+    "message_id": "1790897253.000113",
+    "author_id": "U004",
+    "author_name": "Sofia",
+    "author_role": "TUTOR",
+    "timestamp": "2026-10-01T23:27:33.000113Z",
+    "thread_starter_id": "U003",
+    "thread_starter_role": "TUTOR",
+    "reactions": [],
+    "excerpt": "The task metadata loads but there is no response content to evaluate."
+   },
+   "m:C_RP_GENERAL:1790897298.000226": {
+    "evidence_id": "m:C_RP_GENERAL:1790897298.000226",
+    "origin": "member_message",
+    "use": "MEMBER_REPORT",
+    "member_id": "member_39be46641107cea5c7626e55",
+    "channel_id": "C_RP_GENERAL",
+    "thread_id": "1790897195.000027",
+    "message_id": "1790897298.000226",
+    "author_id": "U002",
+    "author_name": "Mina",
+    "author_role": "QA_TUTOR",
+    "timestamp": "2026-10-01T23:28:18.000226Z",
+    "thread_starter_id": "U003",
+    "thread_starter_role": "TUTOR",
+    "reactions": [],
+    "excerpt": "Please keep the affected task ID and whether a retry changed the outcome."
+   },
+   "m:C_RP_GENERAL:1790897339.000339": {
+    "evidence_id": "m:C_RP_GENERAL:1790897339.000339",
+    "origin": "member_message",
+    "use": "MEMBER_REPORT",
+    "member_id": "member_39be46641107cea5c7626e55",
+    "channel_id": "C_RP_GENERAL",
+    "thread_id": "1790897195.000027",
+    "message_id": "1790897339.000339",
+    "author_id": "U001",
+    "author_name": "Alex",
+    "author_role": "TEAM_LEAD",
+    "timestamp": "2026-10-01T23:28:59.000339Z",
+    "thread_starter_id": "U003",
+    "thread_starter_role": "TUTOR",
+    "reactions": [],
+    "excerpt": "We need the task reference and the error state before deciding whether this is widespread or task-specific."
+   },
+   "m:C_RP_QA:1790920271.000026": {
+    "evidence_id": "m:C_RP_QA:1790920271.000026",
+    "origin": "member_message",
+    "use": "MEMBER_REPORT",
+    "member_id": "member_a2f0abeaf568ff6802ec5e14",
+    "channel_id": "C_RP_QA",
+    "thread_id": "1790920271.000026",
+    "message_id": "1790920271.000026",
+    "author_id": "U019",
+    "author_name": "Yuki",
+    "author_role": "QA_TUTOR",
+    "timestamp": "2026-10-02T05:51:11.000026Z",
+    "thread_starter_id": "U019",
+    "thread_starter_role": "QA_TUTOR",
+    "reactions": [],
+    "excerpt": "Response-fetch fails before I can compare this pair."
+   },
+   "m:C_RP_QA:1790920325.000113": {
+    "evidence_id": "m:C_RP_QA:1790920325.000113",
+    "origin": "member_message",
+    "use": "MEMBER_REPORT",
+    "member_id": "member_a2f0abeaf568ff6802ec5e14",
+    "channel_id": "C_RP_QA",
+    "thread_id": "1790920271.000026",
+    "message_id": "1790920325.000113",
+    "author_id": "U015",
+    "author_name": "Carla",
+    "author_role": "TUTOR",
+    "timestamp": "2026-10-02T05:52:05.000113Z",
+    "thread_starter_id": "U019",
+    "thread_starter_role": "QA_TUTOR",
+    "reactions": [
+     {
+      "name": "eyes",
+      "users": [
+       {
+        "id": "U009",
+        "name": "Nico"
+       }
+      ]
+     }
+    ],
+    "excerpt": "I tried a second item and the response still failed to appear. Please keep the task ID and the time of the response-fetch failure."
+   },
+   "m:C_RP_QA:1790920371.000226": {
+    "evidence_id": "m:C_RP_QA:1790920371.000226",
+    "origin": "member_message",
+    "use": "MEMBER_REPORT",
+    "member_id": "member_a2f0abeaf568ff6802ec5e14",
+    "channel_id": "C_RP_QA",
+    "thread_id": "1790920271.000026",
+    "message_id": "1790920371.000226",
+    "author_id": "U002",
+    "author_name": "Mina",
+    "author_role": "QA_TUTOR",
+    "timestamp": "2026-10-02T05:52:51.000226Z",
+    "thread_starter_id": "U019",
+    "thread_starter_role": "QA_TUTOR",
+    "reactions": [],
+    "excerpt": "Please keep the affected task ID and whether a retry changed the outcome. Was the task metadata visible before the output pane timed out?"
+   },
+   "m:C_RP_QA:1790920419.000339": {
+    "evidence_id": "m:C_RP_QA:1790920419.000339",
+    "origin": "member_message",
+    "use": "MEMBER_REPORT",
+    "member_id": "member_a2f0abeaf568ff6802ec5e14",
+    "channel_id": "C_RP_QA",
+    "thread_id": "1790920271.000026",
+    "message_id": "1790920419.000339",
+    "author_id": "U001",
+    "author_name": "Alex",
+    "author_role": "TEAM_LEAD",
+    "timestamp": "2026-10-02T05:53:39.000339Z",
+    "thread_starter_id": "U019",
+    "thread_starter_role": "QA_TUTOR",
+    "reactions": [],
+    "excerpt": "We need the task reference and the error state before deciding whether this is widespread or task-specific. We should separate infrastructure failures from model-evaluation results."
+   },
+   "k:response-preference-instructions@1.1:36683c52": {
+    "evidence_id": "k:response-preference-instructions@1.1:36683c52",
+    "origin": "retrieved_source",
+    "use": "CURRENT_GUIDANCE",
+    "citation": {
+     "document_id": "knowledge_c49652bd3dfc0e71a42597bd9128f922ba1700cc4d7eb83a39cfbaad9a43ed6d",
+     "version_id": "version_497eb858ea77dcb88133f2ba1afd5eaf08d1a1d380c3a5cad663f8f55b7d3c65",
+     "chunk_id": "chunk_36683c5243b08e3c0a35f9659ac8a1e4",
+     "authoring": "response-preference-instructions@1.1",
+     "title": "Response Preference — Instructions (v1.1)",
+     "sections": [
+      "Tool incidents and submission"
+     ],
+     "source": {
+      "batch_id": null,
+      "channel_id": null,
+      "manual_key": "response-preference-instructions",
+      "message_id": null,
+      "permalink": null,
+      "project_id": "response_preference",
+      "reference": null,
+      "system": "manual",
+      "thread_id": null,
+      "workspace_id": null
+     }
+    },
+    "source_type": "guideline",
+    "record_kind": "guideline",
+    "applicability": {
+     "state": "CURRENT",
+     "revision_state": "CURRENT",
+     "version_mode": "current",
+     "replaced_by": [],
+     "unverified_supersession": [],
+     "supersedes": [],
+     "enactment": null,
+     "other_revisions": []
+    },
+    "dates": {
+     "source_date": "2026-08-30T13:00:00Z",
+     "basis": "effective_at",
+     "effective_at": "2026-08-30T13:00:00Z",
+     "created_at": null,
+     "valid_until": null,
+     "expired_as_of": false,
+     "reference_time": "2026-10-02T12:00:00Z"
+    },
+    "scope": {
+     "project_id": "response_preference",
+     "batch_id": null,
+     "scope": "project",
+     "batch_relation": "project_wide"
+    },
+    "authority": {
+     "role": "TEAM_LEAD",
+     "actor": "U001",
+     "actor_relation": "RECORD_AUTHORITY",
+     "approval_status": "EXPLICIT_SOURCE_MARKER",
+     "provenance": "synthetic_manual_record"
+    },
+    "authorship": {
+     "author_id": null,
+     "verified": false,
+     "basis": "NO_AUTHOR_RECORDED"
+    },
+    "recorded_states": {
+     "status": "approved",
+     "decision_status": null,
+     "execution_status": null,
+     "outcome_status": null
+    },
+    "upstream_review": null,
+    "excerpt": "## Tool incidents and submission\nIf response panes never load, record a fetch incident and do not infer response quality. If Submit fails, capture the task ID, required-field state, error and exact button behavior. A selected label is not a completed submission until LT confirms it. Assess tool impact separately from the content rubric."
+   },
+   "k:rp-submit-engineering-handoff@1.0:6afb6e6d": {
+    "evidence_id": "k:rp-submit-engineering-handoff@1.0:6afb6e6d",
+    "origin": "retrieved_source",
+    "use": "PRIOR_DECISION",
+    "citation": {
+     "document_id": "knowledge_3e7a1b72e2cf18094e8ebdb42ce485e4d466f60a4061b710fec446f6df78c702",
+     "version_id": "version_0015dc851ae270a7401d7b60cf8e52fb2005ad4327ed91edcdd848d41a1494f2",
+     "chunk_id": "chunk_6afb6e6dd1a6f6d896b5dee210f59dd8",
+     "authoring": "rp-submit-engineering-handoff@1.0",
+     "title": "Submission incident handed to engineering; diagnosis remains open",
+     "sections": [
+      "Current recorded state"
+     ],
+     "source": {
+      "batch_id": "rp_batch_15",
+      "channel_id": null,
+      "manual_key": "rp-submit-engineering-handoff",
+      "message_id": null,
+      "permalink": null,
+      "project_id": "response_preference",
+      "reference": null,
+      "system": "manual",
+      "thread_id": null,
+      "workspace_id": null
+     }
+    },
+    "source_type": "decision",
+    "record_kind": "escalation_receipt",
+    "applicability": {
+     "state": "CURRENT",
+     "revision_state": "CURRENT",
+     "version_mode": "current",
+     "replaced_by": [],
+     "unverified_supersession": [],
+     "supersedes": [],
+     "enactment": {
+      "status": "NOT_ENACTED",
+      "basis": null,
+      "governing_sources": [],
+      "missing": [
+       "NOT_A_POLICY_CHANGE",
+       "NO_ENACTMENT_EVIDENCE"
+      ],
+      "recorded": {
+       "decision_status": "tl_approved",
+       "execution_status": "handoff_recorded",
+       "authority_role": "TEAM_LEAD",
+       "batch_id": "rp_batch_15",
+       "valid_until": null,
+       "effective_at": "2026-09-28T17:00:00Z"
+      }
+     },
+     "other_revisions": []
+    },
+    "dates": {
+     "source_date": "2026-09-28T17:00:00Z",
+     "basis": "effective_at",
+     "effective_at": "2026-09-28T17:00:00Z",
+     "created_at": null,
+     "valid_until": null,
+     "expired_as_of": false,
+     "reference_time": "2026-10-02T12:00:00Z"
+    },
+    "scope": {
+     "project_id": "response_preference",
+     "batch_id": "rp_batch_15",
+     "scope": "project",
+     "batch_relation": "same_batch"
+    },
+    "authority": {
+     "role": "TEAM_LEAD",
+     "actor": "U001",
+     "actor_relation": "RECORD_AUTHORITY",
+     "approval_status": "EXPLICIT_SOURCE_MARKER",
+     "provenance": "synthetic_manual_record"
+    },
+    "authorship": {
+     "author_id": null,
+     "verified": false,
+     "basis": "NO_AUTHOR_RECORDED"
+    },
+    "recorded_states": {
+     "status": "tl_approved",
+     "decision_status": "tl_approved",
+     "execution_status": "handoff_recorded",
+     "outcome_status": "open"
+    },
+    "upstream_review": null,
+    "excerpt": "[PRIOR RECORD (escalation_receipt; decision_status: tl_approved; execution_status: handoff_recorded; outcome_status: open) - history, not a standing rule.]\n## Current recorded state\nThe handoff occurred and the incident remained open at 17:00 UTC. No fix or successful submission was recorded. New task reports must be matched to the symptoms before linking them to this incident; a similar button state does not establish the same cause."
+   },
+   "k:response-preference-instructions@1.1:3350bbc0": {
+    "evidence_id": "k:response-preference-instructions@1.1:3350bbc0",
+    "origin": "retrieved_source",
+    "use": "CURRENT_GUIDANCE",
+    "citation": {
+     "document_id": "knowledge_c49652bd3dfc0e71a42597bd9128f922ba1700cc4d7eb83a39cfbaad9a43ed6d",
+     "version_id": "version_497eb858ea77dcb88133f2ba1afd5eaf08d1a1d380c3a5cad663f8f55b7d3c65",
+     "chunk_id": "chunk_3350bbc0864a963b08fc08bb48e80bd1",
+     "authoring": "response-preference-instructions@1.1",
+     "title": "Response Preference — Instructions (v1.1)",
+     "sections": [
+      "Factual errors and citations"
+     ],
+     "source": {
+      "batch_id": null,
+      "channel_id": null,
+      "manual_key": "response-preference-instructions",
+      "message_id": null,
+      "permalink": null,
+      "project_id": "response_preference",
+      "reference": null,
+      "system": "manual",
+      "thread_id": null,
+      "workspace_id": null
+     }
+    },
+    "source_type": "guideline",
+    "record_kind": "guideline",
+    "applicability": {
+     "state": "CURRENT",
+     "revision_state": "CURRENT",
+     "version_mode": "current",
+     "replaced_by": [],
+     "unverified_supersession": [],
+     "supersedes": [],
+     "enactment": null,
+     "other_revisions": []
+    },
+    "dates": {
+     "source_date": "2026-08-30T13:00:00Z",
+     "basis": "effective_at",
+     "effective_at": "2026-08-30T13:00:00Z",
+     "created_at": null,
+     "valid_until": null,
+     "expired_as_of": false,
+     "reference_time": "2026-10-02T12:00:00Z"
+    },
+    "scope": {
+     "project_id": "response_preference",
+     "batch_id": null,
+     "scope": "project",
+     "batch_relation": "project_wide"
+    },
+    "authority": {
+     "role": "TEAM_LEAD",
+     "actor": "U001",
+     "actor_relation": "RECORD_AUTHORITY",
+     "approval_status": "EXPLICIT_SOURCE_MARKER",
+     "provenance": "synthetic_manual_record"
+    },
+    "authorship": {
+     "author_id": null,
+     "verified": false,
+     "basis": "NO_AUTHOR_RECORDED"
+    },
+    "recorded_states": {
+     "status": "approved",
+     "decision_status": null,
+     "execution_status": null,
+     "outcome_status": null
+    },
+    "upstream_review": null,
+    "excerpt": "## Factual errors and citations\n- A factual error is major when it changes the central conclusion or the answer a user would act on.\n- A nonessential background error with no effect on that conclusion is minor.\n- A broken link is an access/verification failure, not proof that the underlying factual claim is false.\n- Distinguish an existing source that does not support the claim from an invented reference."
+   },
+   "k:slack:C_RP_ANNOUNCEMENTS:1790883558.000028:d0ddced2": {
+    "evidence_id": "k:slack:C_RP_ANNOUNCEMENTS:1790883558.000028:d0ddced2",
+    "origin": "retrieved_source",
+    "use": "ANNOUNCEMENT",
+    "citation": {
+     "document_id": "knowledge_7fc19a0d63fa4064c72475fc9f7a177f7d220630686ec558071baa2902726fcc",
+     "version_id": "version_60b3e89e8c9519c74cff2483967904df14f58243724f59f5aae4eae24bb31cec",
+     "chunk_id": "chunk_d0ddced26213c2ad458fc35bf4f7c16c",
+     "authoring": null,
+     "title": "Slack announcement in response-preference-announcements at 2026-10-01T19:39:18.000028+00:00",
+     "sections": [],
+     "source": {
+      "batch_id": "rp_batch_15",
+      "channel_id": "C_RP_ANNOUNCEMENTS",
+      "manual_key": null,
+      "message_id": "1790883558.000028",
+      "permalink": null,
+      "project_id": "response_preference",
+      "reference": null,
+      "system": "slack",
+      "thread_id": "1790883558.000028",
+      "workspace_id": null
+     }
+    },
+    "source_type": "announcement",
+    "record_kind": "announcement",
+    "applicability": {
+     "state": "CURRENT",
+     "revision_state": "CURRENT",
+     "version_mode": "current",
+     "replaced_by": [],
+     "unverified_supersession": [],
+     "supersedes": [],
+     "enactment": null,
+     "other_revisions": []
+    },
+    "dates": {
+     "source_date": "2026-10-01T19:39:18.000028+00:00",
+     "basis": "created_at",
+     "effective_at": null,
+     "created_at": "2026-10-01T19:39:18.000028+00:00",
+     "valid_until": null,
+     "expired_as_of": false,
+     "reference_time": "2026-10-02T12:00:00Z"
+    },
+    "scope": {
+     "project_id": "response_preference",
+     "batch_id": "rp_batch_15",
+     "scope": "project",
+     "batch_relation": "same_batch"
+    },
+    "authority": {
+     "role": "TEAM_LEAD",
+     "actor": "U001",
+     "actor_relation": "MESSAGE_AUTHOR",
+     "approval_status": "UNKNOWN",
+     "provenance": null
+    },
+    "authorship": {
+     "author_id": "U001",
+     "verified": true,
+     "basis": "SLACK_MESSAGE_AUTHOR"
+    },
+    "recorded_states": {
+     "status": null,
+     "decision_status": null,
+     "execution_status": null,
+     "outcome_status": null
+    },
+    "upstream_review": {
+     "review_required": true,
+     "review_reasons": [
+      "Still unverified after one targeted revision: Independent evidence audit unavailable or invalid: ValueError: summary:3: quotation is not verbatim source evidence.",
+      "The only message instructs participants to add affected task references while tracking an issue. The candidate calls this a requested decision about which references should be added. An information-collection request and a request for a selection rule are different; the one-message source does not resolve that framing ambiguity. Keep these fields provisional rather than claiming a definite contradiction or an answered policy question."
+     ]
+    },
+    "excerpt": "[ANNOUNCEMENT posted 2026-10-01T19:39:18.000028+00:00 by TEAM_LEAD (rp_batch_15): not established as handling for this topic until you show it is relevant and gives a directive.]\nQA tracking (RP-3558): Model/task connection drops during preference evaluation. Add affected task references here; no policy change has been announced."
+   },
+   "k:rp-submit-engineering-handoff@1.0:d84c905d": {
+    "evidence_id": "k:rp-submit-engineering-handoff@1.0:d84c905d",
+    "origin": "retrieved_source",
+    "use": "PRIOR_DECISION",
+    "citation": {
+     "document_id": "knowledge_3e7a1b72e2cf18094e8ebdb42ce485e4d466f60a4061b710fec446f6df78c702",
+     "version_id": "version_0015dc851ae270a7401d7b60cf8e52fb2005ad4327ed91edcdd848d41a1494f2",
+     "chunk_id": "chunk_d84c905df82c2e5e3b295444d4a1d1b6",
+     "authoring": "rp-submit-engineering-handoff@1.0",
+     "title": "Submission incident handed to engineering; diagnosis remains open",
+     "sections": [
+      "Incident scope",
+      "Advice and approval",
+      "Handoff receipt"
+     ],
+     "source": {
+      "batch_id": "rp_batch_15",
+      "channel_id": null,
+      "manual_key": "rp-submit-engineering-handoff",
+      "message_id": null,
+      "permalink": null,
+      "project_id": "response_preference",
+      "reference": null,
+      "system": "manual",
+      "thread_id": null,
+      "workspace_id": null
+     }
+    },
+    "source_type": "decision",
+    "record_kind": "escalation_receipt",
+    "applicability": {
+     "state": "CURRENT",
+     "revision_state": "CURRENT",
+     "version_mode": "current",
+     "replaced_by": [],
+     "unverified_supersession": [],
+     "supersedes": [],
+     "enactment": {
+      "status": "NOT_ENACTED",
+      "basis": null,
+      "governing_sources": [],
+      "missing": [
+       "NOT_A_POLICY_CHANGE",
+       "NO_ENACTMENT_EVIDENCE"
+      ],
+      "recorded": {
+       "decision_status": "tl_approved",
+       "execution_status": "handoff_recorded",
+       "authority_role": "TEAM_LEAD",
+       "batch_id": "rp_batch_15",
+       "valid_until": null,
+       "effective_at": "2026-09-28T17:00:00Z"
+      }
+     },
+     "other_revisions": []
+    },
+    "dates": {
+     "source_date": "2026-09-28T17:00:00Z",
+     "basis": "effective_at",
+     "effective_at": "2026-09-28T17:00:00Z",
+     "created_at": null,
+     "valid_until": null,
+     "expired_as_of": false,
+     "reference_time": "2026-10-02T12:00:00Z"
+    },
+    "scope": {
+     "project_id": "response_preference",
+     "batch_id": "rp_batch_15",
+     "scope": "project",
+     "batch_relation": "same_batch"
+    },
+    "authority": {
+     "role": "TEAM_LEAD",
+     "actor": "U001",
+     "actor_relation": "RECORD_AUTHORITY",
+     "approval_status": "EXPLICIT_SOURCE_MARKER",
+     "provenance": "synthetic_manual_record"
+    },
+    "authorship": {
+     "author_id": null,
+     "verified": false,
+     "basis": "NO_AUTHOR_RECORDED"
+    },
+    "recorded_states": {
+     "status": "tl_approved",
+     "decision_status": "tl_approved",
+     "execution_status": "handoff_recorded",
+     "outcome_status": "open"
+    },
+    "upstream_review": null,
+    "excerpt": "[PRIOR RECORD (escalation_receipt; decision_status: tl_approved; execution_status: handoff_recorded; outcome_status: open) - history, not a standing rule.]\n## Incident scope\nEarlier batch-15 reports RP15-S201, RP15-S202 and RP15-S203 described a disabled Submit button after the required fields were filled. The local record identifier is SIM-ENG-RP-20260928-01; it is a synthetic internal receipt, not a link to a real ticketing service.\n\n## Advice and approval\nThe simulated Advisor recommended collecting field state, task IDs, time and button behavior, then escalating the report. Alex approved an engineering handoff.\n\n## Handoff receipt\nAt 16:30 UTC on September 28, Alex recorded sending the three task references and screenshots to Daniel (U005, ENGINEER). Daniel's recorded acknowledgment at 16:45 UTC was: “Received these three examples. I can reproduce a disabled control in one trace; checking the validation state. No shared cause or repair is confirmed.”"
+   },
+   "k:response-preference-faq@1.1:fa9b6a3d": {
+    "evidence_id": "k:response-preference-faq@1.1:fa9b6a3d",
+    "origin": "retrieved_source",
+    "use": "CURRENT_GUIDANCE",
+    "citation": {
+     "document_id": "knowledge_8267f474fe0a050bdbcaf6140c458ee11ad457fdc2afe9f79de12a23de8575e9",
+     "version_id": "version_6c9da15dd304e1be3d453ea1de9cbfd1e8cc54f0939ce516dd89cf0457f82a86",
+     "chunk_id": "chunk_fa9b6a3dd66908c89de9f8cf42d99e0e",
+     "authoring": "response-preference-faq@1.1",
+     "title": "Response Preference — FAQ (v1.1)",
+     "sections": [
+      "Instruction following"
+     ],
+     "source": {
+      "batch_id": null,
+      "channel_id": null,
+      "manual_key": "response-preference-faq",
+      "message_id": null,
+      "permalink": null,
+      "project_id": "response_preference",
+      "reference": null,
+      "system": "manual",
+      "thread_id": null,
+      "workspace_id": null
+     }
+    },
+    "source_type": "faq",
+    "record_kind": "faq",
+    "applicability": {
+     "state": "CURRENT",
+     "revision_state": "CURRENT",
+     "version_mode": "current",
+     "replaced_by": [],
+     "unverified_supersession": [],
+     "supersedes": [],
+     "enactment": null,
+     "other_revisions": []
+    },
+    "dates": {
+     "source_date": "2026-09-05T13:00:00Z",
+     "basis": "effective_at",
+     "effective_at": "2026-09-05T13:00:00Z",
+     "created_at": null,
+     "valid_until": null,
+     "expired_as_of": false,
+     "reference_time": "2026-10-02T12:00:00Z"
+    },
+    "scope": {
+     "project_id": "response_preference",
+     "batch_id": null,
+     "scope": "project",
+     "batch_relation": "project_wide"
+    },
+    "authority": {
+     "role": "TEAM_LEAD",
+     "actor": "U001",
+     "actor_relation": "RECORD_AUTHORITY",
+     "approval_status": "EXPLICIT_SOURCE_MARKER",
+     "provenance": "synthetic_manual_record"
+    },
+    "authorship": {
+     "author_id": null,
+     "verified": false,
+     "basis": "NO_AUTHOR_RECORDED"
+    },
+    "recorded_states": {
+     "status": "approved",
+     "decision_status": null,
+     "execution_status": null,
+     "outcome_status": null
+    },
+    "upstream_review": null,
+    "excerpt": "[ADDED FOR TYPE COVERAGE: best-ranked faq for this query (rank 8), outside the top 5.]\n## Instruction following\n\n### Q: The prompt required JSON, but one response is well-written prose. Which response wins?\nThe required format is not optional: record its violation separately from factual accuracy. No universal tie-break rule is established for competing accuracy and instruction-following defects. If the actual pair and applicable guidance do not settle the preference, provide the prompt and both responses for TL confirmation.\n\n### Q: Can accuracy outweigh ignoring a requested output structure?\nScore the dimensions separately and identify whether the requested structure was mandatory. Do not infer a general priority rule from one example or decide without the other response's evidence.",
+    "retrieved_as": {
+     "role": "TYPE_COVERAGE",
+     "detail": "best-ranked faq for this query (rank 8), outside the top 5"
+    }
+   }
+  },
+  "card": {
+   "contract_version": "agent3-advice-card-v5",
+   "record_type": "ADVICE_CARD",
+   "card_id": "card_93b3b02af1b28a8a3f2ffe09142aa567",
+   "project_id": "response_preference",
+   "topic_name": "LT response-fetch timeout investigation",
+   "card_line": "NEEDS_REVIEW",
+   "summary": "Three tutors and a QA tutor report that response content does not appear or cannot be fetched, preventing evaluation. The team lead has requested task references and error states in both threads before deciding whether the problem is widespread or task-specific; those inputs have not been supplied.",
+   "severity": {
+    "level": "HIGH",
+    "assessment_status": "ASSESSED",
+    "rubric_version": "severity-rubric-v3-semantic-signals",
+    "rubric_content_sha256": "eccaa31a2ab84a0aa7c005216a92fc39681e1dd10107117344948235a76673f4",
+    "rubric_project_id": null,
+    "rubric_scope": "SHARED_DEFAULT",
+    "rationale": "Unavailable response content prevents evaluation, and four distinct reporters describe comparable failures in the same batch over several hours. This supports serious operational impact without establishing a batch-wide outage.",
+    "matched_signals": [
+     {
+      "level": "HIGH",
+      "signal_index": 0,
+      "signal_text": "Explicit statement that assigned work cannot be completed or evaluated",
+      "support": "A tutor reports no response content to evaluate, and a QA tutor reports a fetch failure before comparison.",
+      "evidence": [
+       {
+        "kind": "slack_message",
+        "project_id": "response_preference",
+        "batch_id": "rp_batch_15",
+        "scope": "project",
+        "channel_id": "C_RP_GENERAL",
+        "thread_id": "1790897195.000027",
+        "message_id": "1790897253.000113",
+        "document_id": null,
+        "version_id": null,
+        "authoring_document_id": null,
+        "authoring_version": null,
+        "section": null,
+        "chunk_id": null,
+        "candidate_group_id": null,
+        "member_id": "member_39be46641107cea5c7626e55",
+        "artifact": null,
+        "artifact_sha256": null,
+        "quote": null,
+        "note": "m:C_RP_GENERAL:1790897253.000113"
+       },
+       {
+        "kind": "slack_message",
+        "project_id": "response_preference",
+        "batch_id": "rp_batch_15",
+        "scope": "project",
+        "channel_id": "C_RP_QA",
+        "thread_id": "1790920271.000026",
+        "message_id": "1790920271.000026",
+        "document_id": null,
+        "version_id": null,
+        "authoring_document_id": null,
+        "authoring_version": null,
+        "section": null,
+        "chunk_id": null,
+        "candidate_group_id": null,
+        "member_id": "member_a2f0abeaf568ff6802ec5e14",
+        "artifact": null,
+        "artifact_sha256": null,
+        "quote": null,
+        "note": "m:C_RP_QA:1790920271.000026"
+       }
+      ]
+     },
+     {
+      "level": "HIGH",
+      "signal_index": 3,
+      "signal_text": "Multiple distinct people or affected tasks reporting a comparable problem within the relevant project, batch, and time window, suggesting broader disruption or systemic labeling risk. Consider the number affected relative to the known active group when that information is available; do not require an explicit statement of widespread impact",
+      "support": "Three tutors and a QA tutor independently describe unavailable response content across the two threads; the active-group size is not provided.",
+      "evidence": [
+       {
+        "kind": "slack_message",
+        "project_id": "response_preference",
+        "batch_id": "rp_batch_15",
+        "scope": "project",
+        "channel_id": "C_RP_GENERAL",
+        "thread_id": "1790897195.000027",
+        "message_id": "1790897195.000027",
+        "document_id": null,
+        "version_id": null,
+        "authoring_document_id": null,
+        "authoring_version": null,
+        "section": null,
+        "chunk_id": null,
+        "candidate_group_id": null,
+        "member_id": "member_39be46641107cea5c7626e55",
+        "artifact": null,
+        "artifact_sha256": null,
+        "quote": null,
+        "note": "m:C_RP_GENERAL:1790897195.000027"
+       },
+       {
+        "kind": "slack_message",
+        "project_id": "response_preference",
+        "batch_id": "rp_batch_15",
+        "scope": "project",
+        "channel_id": "C_RP_GENERAL",
+        "thread_id": "1790897195.000027",
+        "message_id": "1790897253.000113",
+        "document_id": null,
+        "version_id": null,
+        "authoring_document_id": null,
+        "authoring_version": null,
+        "section": null,
+        "chunk_id": null,
+        "candidate_group_id": null,
+        "member_id": "member_39be46641107cea5c7626e55",
+        "artifact": null,
+        "artifact_sha256": null,
+        "quote": null,
+        "note": "m:C_RP_GENERAL:1790897253.000113"
+       },
+       {
+        "kind": "slack_message",
+        "project_id": "response_preference",
+        "batch_id": "rp_batch_15",
+        "scope": "project",
+        "channel_id": "C_RP_QA",
+        "thread_id": "1790920271.000026",
+        "message_id": "1790920271.000026",
+        "document_id": null,
+        "version_id": null,
+        "authoring_document_id": null,
+        "authoring_version": null,
+        "section": null,
+        "chunk_id": null,
+        "candidate_group_id": null,
+        "member_id": "member_a2f0abeaf568ff6802ec5e14",
+        "artifact": null,
+        "artifact_sha256": null,
+        "quote": null,
+        "note": "m:C_RP_QA:1790920271.000026"
+       },
+       {
+        "kind": "slack_message",
+        "project_id": "response_preference",
+        "batch_id": "rp_batch_15",
+        "scope": "project",
+        "channel_id": "C_RP_QA",
+        "thread_id": "1790920271.000026",
+        "message_id": "1790920325.000113",
+        "document_id": null,
+        "version_id": null,
+        "authoring_document_id": null,
+        "authoring_version": null,
+        "section": null,
+        "chunk_id": null,
+        "candidate_group_id": null,
+        "member_id": "member_a2f0abeaf568ff6802ec5e14",
+        "artifact": null,
+        "artifact_sha256": null,
+        "quote": null,
+        "note": "m:C_RP_QA:1790920325.000113"
+       }
+      ]
+     }
+    ],
+    "evidence": [
+     {
+      "kind": "slack_message",
+      "project_id": "response_preference",
+      "batch_id": "rp_batch_15",
+      "scope": "project",
+      "channel_id": "C_RP_GENERAL",
+      "thread_id": "1790897195.000027",
+      "message_id": "1790897253.000113",
+      "document_id": null,
+      "version_id": null,
+      "authoring_document_id": null,
+      "authoring_version": null,
+      "section": null,
+      "chunk_id": null,
+      "candidate_group_id": null,
+      "member_id": "member_39be46641107cea5c7626e55",
+      "artifact": null,
+      "artifact_sha256": null,
+      "quote": null,
+      "note": "m:C_RP_GENERAL:1790897253.000113"
+     },
+     {
+      "kind": "slack_message",
+      "project_id": "response_preference",
+      "batch_id": "rp_batch_15",
+      "scope": "project",
+      "channel_id": "C_RP_QA",
+      "thread_id": "1790920271.000026",
+      "message_id": "1790920271.000026",
+      "document_id": null,
+      "version_id": null,
+      "authoring_document_id": null,
+      "authoring_version": null,
+      "section": null,
+      "chunk_id": null,
+      "candidate_group_id": null,
+      "member_id": "member_a2f0abeaf568ff6802ec5e14",
+      "artifact": null,
+      "artifact_sha256": null,
+      "quote": null,
+      "note": "m:C_RP_QA:1790920271.000026"
+     },
+     {
+      "kind": "slack_message",
+      "project_id": "response_preference",
+      "batch_id": "rp_batch_15",
+      "scope": "project",
+      "channel_id": "C_RP_GENERAL",
+      "thread_id": "1790897195.000027",
+      "message_id": "1790897195.000027",
+      "document_id": null,
+      "version_id": null,
+      "authoring_document_id": null,
+      "authoring_version": null,
+      "section": null,
+      "chunk_id": null,
+      "candidate_group_id": null,
+      "member_id": "member_39be46641107cea5c7626e55",
+      "artifact": null,
+      "artifact_sha256": null,
+      "quote": null,
+      "note": "m:C_RP_GENERAL:1790897195.000027"
+     },
+     {
+      "kind": "slack_message",
+      "project_id": "response_preference",
+      "batch_id": "rp_batch_15",
+      "scope": "project",
+      "channel_id": "C_RP_GENERAL",
+      "thread_id": "1790897195.000027",
+      "message_id": "1790897253.000113",
+      "document_id": null,
+      "version_id": null,
+      "authoring_document_id": null,
+      "authoring_version": null,
+      "section": null,
+      "chunk_id": null,
+      "candidate_group_id": null,
+      "member_id": "member_39be46641107cea5c7626e55",
+      "artifact": null,
+      "artifact_sha256": null,
+      "quote": null,
+      "note": "m:C_RP_GENERAL:1790897253.000113"
+     },
+     {
+      "kind": "slack_message",
+      "project_id": "response_preference",
+      "batch_id": "rp_batch_15",
+      "scope": "project",
+      "channel_id": "C_RP_QA",
+      "thread_id": "1790920271.000026",
+      "message_id": "1790920271.000026",
+      "document_id": null,
+      "version_id": null,
+      "authoring_document_id": null,
+      "authoring_version": null,
+      "section": null,
+      "chunk_id": null,
+      "candidate_group_id": null,
+      "member_id": "member_a2f0abeaf568ff6802ec5e14",
+      "artifact": null,
+      "artifact_sha256": null,
+      "quote": null,
+      "note": "m:C_RP_QA:1790920271.000026"
+     },
+     {
+      "kind": "slack_message",
+      "project_id": "response_preference",
+      "batch_id": "rp_batch_15",
+      "scope": "project",
+      "channel_id": "C_RP_QA",
+      "thread_id": "1790920271.000026",
+      "message_id": "1790920325.000113",
+      "document_id": null,
+      "version_id": null,
+      "authoring_document_id": null,
+      "authoring_version": null,
+      "section": null,
+      "chunk_id": null,
+      "candidate_group_id": null,
+      "member_id": "member_a2f0abeaf568ff6802ec5e14",
+      "artifact": null,
+      "artifact_sha256": null,
+      "quote": null,
+      "note": "m:C_RP_QA:1790920325.000113"
+     }
+    ],
+    "occurrence": {
+     "affected_reporters": {
+      "status": "LOWER_BOUND",
+      "count": 4,
+      "ids": [
+       "U003",
+       "U004",
+       "U019",
+       "U015"
+      ],
+      "basis": "Distinct authors whose own cited message reports the problem; other participants are not counted.",
+      "evidence": [
+       {
+        "kind": "slack_message",
+        "project_id": "response_preference",
+        "batch_id": "rp_batch_15",
+        "scope": "project",
+        "channel_id": "C_RP_GENERAL",
+        "thread_id": "1790897195.000027",
+        "message_id": "1790897195.000027",
+        "document_id": null,
+        "version_id": null,
+        "authoring_document_id": null,
+        "authoring_version": null,
+        "section": null,
+        "chunk_id": null,
+        "candidate_group_id": null,
+        "member_id": "member_39be46641107cea5c7626e55",
+        "artifact": null,
+        "artifact_sha256": null,
+        "quote": null,
+        "note": "m:C_RP_GENERAL:1790897195.000027"
+       },
+       {
+        "kind": "slack_message",
+        "project_id": "response_preference",
+        "batch_id": "rp_batch_15",
+        "scope": "project",
+        "channel_id": "C_RP_GENERAL",
+        "thread_id": "1790897195.000027",
+        "message_id": "1790897253.000113",
+        "document_id": null,
+        "version_id": null,
+        "authoring_document_id": null,
+        "authoring_version": null,
+        "section": null,
+        "chunk_id": null,
+        "candidate_group_id": null,
+        "member_id": "member_39be46641107cea5c7626e55",
+        "artifact": null,
+        "artifact_sha256": null,
+        "quote": null,
+        "note": "m:C_RP_GENERAL:1790897253.000113"
+       },
+       {
+        "kind": "slack_message",
+        "project_id": "response_preference",
+        "batch_id": "rp_batch_15",
+        "scope": "project",
+        "channel_id": "C_RP_QA",
+        "thread_id": "1790920271.000026",
+        "message_id": "1790920271.000026",
+        "document_id": null,
+        "version_id": null,
+        "authoring_document_id": null,
+        "authoring_version": null,
+        "section": null,
+        "chunk_id": null,
+        "candidate_group_id": null,
+        "member_id": "member_a2f0abeaf568ff6802ec5e14",
+        "artifact": null,
+        "artifact_sha256": null,
+        "quote": null,
+        "note": "m:C_RP_QA:1790920271.000026"
+       },
+       {
+        "kind": "slack_message",
+        "project_id": "response_preference",
+        "batch_id": "rp_batch_15",
+        "scope": "project",
+        "channel_id": "C_RP_QA",
+        "thread_id": "1790920271.000026",
+        "message_id": "1790920325.000113",
+        "document_id": null,
+        "version_id": null,
+        "authoring_document_id": null,
+        "authoring_version": null,
+        "section": null,
+        "chunk_id": null,
+        "candidate_group_id": null,
+        "member_id": "member_a2f0abeaf568ff6802ec5e14",
+        "artifact": null,
+        "artifact_sha256": null,
+        "quote": null,
+        "note": "m:C_RP_QA:1790920325.000113"
+       }
+      ]
+     },
+     "affected_tasks": {
+      "status": "UNKNOWN",
+      "count": null,
+      "ids": [],
+      "basis": null,
+      "evidence": []
+     },
+     "relevant_threads": [
+      {
+       "project_id": "response_preference",
+       "batch_id": "rp_batch_15",
+       "channel_id": "C_RP_GENERAL",
+       "thread_id": "1790897195.000027",
+       "member_id": "member_39be46641107cea5c7626e55"
+      },
+      {
+       "project_id": "response_preference",
+       "batch_id": "rp_batch_15",
+       "channel_id": "C_RP_QA",
+       "thread_id": "1790920271.000026",
+       "member_id": "member_a2f0abeaf568ff6802ec5e14"
+      }
+     ],
+     "reporting_window": {
+      "start": "2026-10-01T23:26:35.000027+00:00",
+      "end": "2026-10-02T05:53:39.000339+00:00"
+     },
+     "historical_recurrence": {
+      "status": "NONE_FOUND",
+      "sources": [],
+      "event_series_ids": []
+     },
+     "known_denominator": null,
+     "structural": {
+      "threads": 2,
+      "messages": 8,
+      "distinct_participants": 6,
+      "duplicate_threads_ignored": 0,
+      "duplicate_messages_ignored": 0,
+      "computed_from": "topic member threads (original Slack messages)",
+      "participants_are_not_affected_reporters": true
+     },
+     "semantic_identification": "ASSESSED"
+    },
+    "inherited_from": {
+     "level": "UNKNOWN",
+     "assessment_status": "UNASSESSED",
+     "assessment_deferred_to": "AGENT3",
+     "reason": "Agent 2 performs taxonomy only."
+    }
+   },
+   "severity_is_provisional": false,
+   "resolution_status": "UNRESOLVED",
+   "recommended_action": {
+    "action_type": "ESCALATE_ENGINEERING",
+    "draft_text": "Please investigate response-loading failures in batch 15. Three tutors and a QA tutor report unavailable response content:\n- In the general thread, a tutor reports LT timing out before Responses A and B appear; a second tutor reports that metadata loads but response content does not.\n- In the QA thread, a QA tutor reports response-fetch failing before comparison; a tutor reports that a second item also failed to display a response.\nTask references and specific error states are still awaited. Please investigate response loading separately from response quality; the reports do not yet establish whether the problem is widespread or task-specific.",
+    "scope_note": "This is a report of response-loading symptoms, not a confirmed cause or a classification of how widely the problem extends.",
+    "label": "Report a technical issue to engineering",
+    "instruction": "Report the response-loading failures to engineering, keeping the extent of the problem unclassified until the requested incident details arrive.",
+    "rationale": "Missing response content calls for technical investigation rather than a content-scoring clarification. Current instructions already identify this behavior as a fetch incident, while the team lead's requested inputs are still pending.",
+    "targets": [],
+    "essential_premise_ids": [
+     "claim:c1",
+     "claim:c2",
+     "claim:c3",
+     "claim:c4",
+     "claim:c6",
+     "claim:c7",
+     "claim:c8"
+    ],
+    "source": "DRAFT"
+   },
+   "reasoning": "What the evidence shows: A tutor reports that LT times out before Responses A and B are displayed. A tutor reports that task metadata loads but no response content is available to evaluate. A QA tutor reports that response-fetch fails before the pair can be compared. A tutor reports that a second item also failed to display a response and asks for the task ID and time of the response-fetch failure in the QA thread. A QA tutor asks for affected task IDs and retry outcomes in both threads and asks whether task metadata was visible before the output pane timed out in the QA thread. The team lead requests task references and error states in both threads before deciding whether the issue is widespread or task-specific; in the QA thread, the team lead also says to separate infrastructure failures from model-evaluation results. The provided threads contain no task references, specific error states, retry outcomes or failure times answering the diagnostic requests, and neither thread records recovery. Current project instructions say that if response panes never load, record a fetch incident and do not infer response quality; tool impact must be assessed separately from the content rubric. The earlier handoff records disabled Submit controls after required fields were filled, an engineering handoff on September 28, and an open outcome with no recorded fix or successful submission at 17:00 UTC; it does not verify a shared cause with the current response-loading reports. The October 1 batch announcement by the team lead tracks model/task connection drops, asks for affected task references in its thread, and says no policy change has been announced. Thread status, read from each thread's own messages: unresolved ×2. Agent 1's earlier labels (an input, not evidence): unresolved ×2.",
+   "supporting_sources": [
+    {
+     "kind": "knowledge_source",
+     "project_id": "response_preference",
+     "batch_id": null,
+     "scope": "project",
+     "channel_id": null,
+     "thread_id": null,
+     "message_id": null,
+     "document_id": "knowledge_c49652bd3dfc0e71a42597bd9128f922ba1700cc4d7eb83a39cfbaad9a43ed6d",
+     "version_id": "version_497eb858ea77dcb88133f2ba1afd5eaf08d1a1d380c3a5cad663f8f55b7d3c65",
+     "authoring_document_id": "response-preference-instructions",
+     "authoring_version": "1.1",
+     "section": "Tool incidents and submission",
+     "chunk_id": "chunk_36683c5243b08e3c0a35f9659ac8a1e4",
+     "candidate_group_id": null,
+     "member_id": null,
+     "artifact": null,
+     "artifact_sha256": null,
+     "quote": null,
+     "note": "k:response-preference-instructions@1.1:36683c52 (CURRENT_GUIDANCE; CURRENT)"
+    },
+    {
+     "kind": "knowledge_source",
+     "project_id": "response_preference",
+     "batch_id": "rp_batch_15",
+     "scope": "project",
+     "channel_id": null,
+     "thread_id": null,
+     "message_id": null,
+     "document_id": "knowledge_3e7a1b72e2cf18094e8ebdb42ce485e4d466f60a4061b710fec446f6df78c702",
+     "version_id": "version_0015dc851ae270a7401d7b60cf8e52fb2005ad4327ed91edcdd848d41a1494f2",
+     "authoring_document_id": "rp-submit-engineering-handoff",
+     "authoring_version": "1.0",
+     "section": "Incident scope",
+     "chunk_id": "chunk_d84c905df82c2e5e3b295444d4a1d1b6",
+     "candidate_group_id": null,
+     "member_id": null,
+     "artifact": null,
+     "artifact_sha256": null,
+     "quote": null,
+     "note": "k:rp-submit-engineering-handoff@1.0:d84c905d (PRIOR_DECISION; CURRENT)"
+    },
+    {
+     "kind": "knowledge_source",
+     "project_id": "response_preference",
+     "batch_id": "rp_batch_15",
+     "scope": "project",
+     "channel_id": null,
+     "thread_id": null,
+     "message_id": null,
+     "document_id": "knowledge_3e7a1b72e2cf18094e8ebdb42ce485e4d466f60a4061b710fec446f6df78c702",
+     "version_id": "version_0015dc851ae270a7401d7b60cf8e52fb2005ad4327ed91edcdd848d41a1494f2",
+     "authoring_document_id": "rp-submit-engineering-handoff",
+     "authoring_version": "1.0",
+     "section": "Current recorded state",
+     "chunk_id": "chunk_6afb6e6dd1a6f6d896b5dee210f59dd8",
+     "candidate_group_id": null,
+     "member_id": null,
+     "artifact": null,
+     "artifact_sha256": null,
+     "quote": null,
+     "note": "k:rp-submit-engineering-handoff@1.0:6afb6e6d (PRIOR_DECISION; CURRENT)"
+    },
+    {
+     "kind": "knowledge_source",
+     "project_id": "response_preference",
+     "batch_id": "rp_batch_15",
+     "scope": "project",
+     "channel_id": null,
+     "thread_id": null,
+     "message_id": null,
+     "document_id": "knowledge_7fc19a0d63fa4064c72475fc9f7a177f7d220630686ec558071baa2902726fcc",
+     "version_id": "version_60b3e89e8c9519c74cff2483967904df14f58243724f59f5aae4eae24bb31cec",
+     "authoring_document_id": null,
+     "authoring_version": null,
+     "section": null,
+     "chunk_id": "chunk_d0ddced26213c2ad458fc35bf4f7c16c",
+     "candidate_group_id": null,
+     "member_id": null,
+     "artifact": null,
+     "artifact_sha256": null,
+     "quote": null,
+     "note": "k:slack:C_RP_ANNOUNCEMENTS:1790883558.000028:d0ddced2 (ANNOUNCEMENT; CURRENT)"
+    },
+    {
+     "kind": "slack_message",
+     "project_id": "response_preference",
+     "batch_id": "rp_batch_15",
+     "scope": "project",
+     "channel_id": "C_RP_GENERAL",
+     "thread_id": "1790897195.000027",
+     "message_id": "1790897195.000027",
+     "document_id": null,
+     "version_id": null,
+     "authoring_document_id": null,
+     "authoring_version": null,
+     "section": null,
+     "chunk_id": null,
+     "candidate_group_id": null,
+     "member_id": "member_39be46641107cea5c7626e55",
+     "artifact": null,
+     "artifact_sha256": null,
+     "quote": null,
+     "note": "m:C_RP_GENERAL:1790897195.000027"
+    },
+    {
+     "kind": "slack_message",
+     "project_id": "response_preference",
+     "batch_id": "rp_batch_15",
+     "scope": "project",
+     "channel_id": "C_RP_GENERAL",
+     "thread_id": "1790897195.000027",
+     "message_id": "1790897253.000113",
+     "document_id": null,
+     "version_id": null,
+     "authoring_document_id": null,
+     "authoring_version": null,
+     "section": null,
+     "chunk_id": null,
+     "candidate_group_id": null,
+     "member_id": "member_39be46641107cea5c7626e55",
+     "artifact": null,
+     "artifact_sha256": null,
+     "quote": null,
+     "note": "m:C_RP_GENERAL:1790897253.000113"
+    },
+    {
+     "kind": "slack_message",
+     "project_id": "response_preference",
+     "batch_id": "rp_batch_15",
+     "scope": "project",
+     "channel_id": "C_RP_QA",
+     "thread_id": "1790920271.000026",
+     "message_id": "1790920271.000026",
+     "document_id": null,
+     "version_id": null,
+     "authoring_document_id": null,
+     "authoring_version": null,
+     "section": null,
+     "chunk_id": null,
+     "candidate_group_id": null,
+     "member_id": "member_a2f0abeaf568ff6802ec5e14",
+     "artifact": null,
+     "artifact_sha256": null,
+     "quote": null,
+     "note": "m:C_RP_QA:1790920271.000026"
+    },
+    {
+     "kind": "slack_message",
+     "project_id": "response_preference",
+     "batch_id": "rp_batch_15",
+     "scope": "project",
+     "channel_id": "C_RP_QA",
+     "thread_id": "1790920271.000026",
+     "message_id": "1790920325.000113",
+     "document_id": null,
+     "version_id": null,
+     "authoring_document_id": null,
+     "authoring_version": null,
+     "section": null,
+     "chunk_id": null,
+     "candidate_group_id": null,
+     "member_id": "member_a2f0abeaf568ff6802ec5e14",
+     "artifact": null,
+     "artifact_sha256": null,
+     "quote": null,
+     "note": "m:C_RP_QA:1790920325.000113"
+    },
+    {
+     "kind": "slack_message",
+     "project_id": "response_preference",
+     "batch_id": "rp_batch_15",
+     "scope": "project",
+     "channel_id": "C_RP_GENERAL",
+     "thread_id": "1790897195.000027",
+     "message_id": "1790897298.000226",
+     "document_id": null,
+     "version_id": null,
+     "authoring_document_id": null,
+     "authoring_version": null,
+     "section": null,
+     "chunk_id": null,
+     "candidate_group_id": null,
+     "member_id": "member_39be46641107cea5c7626e55",
+     "artifact": null,
+     "artifact_sha256": null,
+     "quote": null,
+     "note": "m:C_RP_GENERAL:1790897298.000226"
+    },
+    {
+     "kind": "slack_message",
+     "project_id": "response_preference",
+     "batch_id": "rp_batch_15",
+     "scope": "project",
+     "channel_id": "C_RP_QA",
+     "thread_id": "1790920271.000026",
+     "message_id": "1790920371.000226",
+     "document_id": null,
+     "version_id": null,
+     "authoring_document_id": null,
+     "authoring_version": null,
+     "section": null,
+     "chunk_id": null,
+     "candidate_group_id": null,
+     "member_id": "member_a2f0abeaf568ff6802ec5e14",
+     "artifact": null,
+     "artifact_sha256": null,
+     "quote": null,
+     "note": "m:C_RP_QA:1790920371.000226"
+    },
+    {
+     "kind": "slack_message",
+     "project_id": "response_preference",
+     "batch_id": "rp_batch_15",
+     "scope": "project",
+     "channel_id": "C_RP_GENERAL",
+     "thread_id": "1790897195.000027",
+     "message_id": "1790897339.000339",
+     "document_id": null,
+     "version_id": null,
+     "authoring_document_id": null,
+     "authoring_version": null,
+     "section": null,
+     "chunk_id": null,
+     "candidate_group_id": null,
+     "member_id": "member_39be46641107cea5c7626e55",
+     "artifact": null,
+     "artifact_sha256": null,
+     "quote": null,
+     "note": "m:C_RP_GENERAL:1790897339.000339"
+    },
+    {
+     "kind": "slack_message",
+     "project_id": "response_preference",
+     "batch_id": "rp_batch_15",
+     "scope": "project",
+     "channel_id": "C_RP_QA",
+     "thread_id": "1790920271.000026",
+     "message_id": "1790920419.000339",
+     "document_id": null,
+     "version_id": null,
+     "authoring_document_id": null,
+     "authoring_version": null,
+     "section": null,
+     "chunk_id": null,
+     "candidate_group_id": null,
+     "member_id": "member_a2f0abeaf568ff6802ec5e14",
+     "artifact": null,
+     "artifact_sha256": null,
+     "quote": null,
+     "note": "m:C_RP_QA:1790920419.000339"
+    }
+   ],
+   "related_threads": [
+    {
+     "project_id": "response_preference",
+     "batch_id": "rp_batch_15",
+     "channel_id": "C_RP_GENERAL",
+     "thread_id": "1790897195.000027",
+     "member_id": "member_39be46641107cea5c7626e55",
+     "permalink": null,
+     "display_reference": "1790897195.000027",
+     "label": "#response-preference-general, 2026-10-01, started by a tutor: \"LT times out before Response A and B are displayed.\"",
+     "opening_text": "LT times out before Response A and B are displayed."
+    },
+    {
+     "project_id": "response_preference",
+     "batch_id": "rp_batch_15",
+     "channel_id": "C_RP_QA",
+     "thread_id": "1790920271.000026",
+     "member_id": "member_a2f0abeaf568ff6802ec5e14",
+     "permalink": null,
+     "display_reference": "1790920271.000026",
+     "label": "#response-preference-qa, 2026-10-02, started by a QA tutor: \"Response-fetch fails before I can compare this pair.\"",
+     "opening_text": "Response-fetch fails before I can compare this pair."
+    }
+   ],
+   "confidence": 0.9,
+   "confidence_band": "HIGH",
+   "needs_review_reasons": [
+    {
+     "code": "HIGH_SEVERITY",
+     "detail": "Assessed HIGH under the shared default rubric.",
+     "obligation_ids": [],
+     "evidence": []
+    }
+   ],
+   "inherited_flags": [],
+   "checks": {
+    "grounding": "PASSED",
+    "temporal_conflict": "NONE_FOUND",
+    "open_confirmation": "NONE"
+   },
+   "lineage": {
+    "agent3_run_id": "agent3overnight_bdc099a76ee76bdc391050df2aded225",
+    "handoff_contract": "agent2-taxonomy-handoff-v2",
+    "agent2_export_sha256": "6f1f56bf5a5b1f02287d7ac958dc205c05cc9e0ea3e6d5f3fdd7279da0c9e1e7",
+    "agent2_schema_version": 8,
+    "candidate_group_id": "cluster_dc219b33a3be1a2e",
+    "topic_id": "cluster_dc219b33a3be1a2e/topic_1",
+    "member_ids": [
+     "member_39be46641107cea5c7626e55",
+     "member_a2f0abeaf568ff6802ec5e14"
+    ],
+    "project_id": "response_preference",
+    "batch_id": "rp_batch_15"
+   },
+   "review_notes": [
+    "Severity is high under the team rubric."
+   ],
+   "details": [
+    "In the general thread, a tutor reports a timeout before Responses A and B appear; a second tutor reports visible task metadata but no response content.",
+    "In the QA thread, a QA tutor reports a response-fetch failure before comparison, and a tutor reports that a second item also failed to display a response.",
+    "A QA tutor asks for task IDs and retry outcomes in both threads and asks whether metadata was visible in the QA thread; a tutor also asks for the failure time in the QA thread.",
+    "Current instructions say to record a fetch incident when response panes never load and not infer response quality.",
+    "The earlier engineering handoff concerns disabled Submit controls, remained open on September 28, and does not establish a shared cause for these response-loading reports."
+   ],
+   "next_step": {
+    "status": "ACTION_RECOMMENDED",
+    "rationale": "Missing response content calls for technical investigation rather than a content-scoring clarification. Current instructions already identify this behavior as a fetch incident, while the team lead's requested inputs are still pending.",
+    "explanation": null
+   },
+   "briefing": {
+    "status": "IN_BRIEFING",
+    "relevance": "PROJECT",
+    "label_id": "rel_cluster_dc219b33a3be1a2e_topic_1",
+    "label_source": "DEVELOPER_AUDIT_2026-11-05 (prepared by the coding assistant from the saved source threads; not confirmed by a team lead)",
+    "kept_because": []
+   },
+   "outstanding_step": null,
+   "derivation": {
+    "policy_version": "briefing-routing-v1",
+    "provenance": "OFFLINE_POLICY_APPLICATION",
+    "text_provenance": "PARENT_RUN_JUDGMENTS",
+    "parent_run": "data/experiments/threadsense_full_v1/stages/agent3/overnight_run",
+    "parent_run_instance": "4a48d67e4d8322cf6912e26032663b41fd5f0447103ed8081e5581b3d3183ff8",
+    "parent_card_id": "card_2428743edc7a97291fba7775972179f8",
+    "parent_card_sha256": "235f1fcc171fa3a720164dc789c8b870bf7185cb8965630d94a8ed1ec4c4998f",
+    "parent_contract_version": "agent3-advice-card-v4",
+    "changes": []
+   }
+  },
+  "review_items": [],
+  "coverage": {
+   "group_members_outside_this_card": [],
+   "uncarried_obligations": []
+  },
+  "budget": {
+   "consumed": {
+    "retrieval_calls": 1,
+    "model_calls": 2
+   },
+   "limits": {
+    "model_calls_per_topic": 4,
+    "model_calls_total": 28,
+    "retrieval_calls_per_topic": 6,
+    "retrieval_calls_total": 42
+   }
+  },
+  "diagnostics": []
+ },
+ "derivation": {
+  "policy_version": "briefing-routing-v1",
+  "parent_topic_file": "data/experiments/threadsense_full_v1/stages/agent3/overnight_run/topics/topic__cluster_dc219b33a3be1a2e__topic_1.json",
+  "parent_topic_sha256": "7c2478c889c473456051d34391be838c0051686599b0216fc31773a389d7701a",
+  "replaced": [
+   "result.card",
+   "workflow.card_id",
+   "workflow.card_line"
+  ]
+ }
+}

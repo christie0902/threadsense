@@ -2053,3 +2053,62 @@ Run `data/experiments/threadsense_full_v1/` (ceiling $39, target $30 or less; Re
 Sol reported nearly all its input as 30-minute cache writes with no reads, about $1.15 above the input rate. The
 network-disabled replay `threadsense_full_v1_replay/` reused all 947 responses with 0 calls and reproduced all 89
 compared artifacts semantically. Acceptance and limitations: `data/experiments/threadsense_full_v1/ACCEPTANCE.md`.
+
+## Briefing eligibility and Observation routing repair (2026-11-05, offline)
+
+Root cause: `advisor_checks.assemble_card` routed every card with no review reason and no shown action to OBSERVATION.
+So a withheld recommendation, or a no-action choice whose reason failed grounding, appeared as an observation, and the
+dashboard said "Observations need no decision". No stage judged briefing relevance, so greetings reached the brief.
+
+briefing-routing-v1 (`agents/briefing_policy.py`, AdviceCard v5):
+- OBSERVATION requires next step NO_ACTION_NEEDED, meaning a supported no-action reason.
+- A withheld, unproven or unavailable next step stays in NEEDS_REVIEW with an explicit reason (RECOMMENDATION_WITHHELD,
+  NO_ACTION_NOT_SUPPORTED, NO_RECOMMENDATION, plus OPEN_FOLLOW_UP when a judged-open thread remains). Its outstanding
+  step is shown from SUPPORTED resolution statements, or from the fixed next-step explanation.
+- Relevance comes from versioned labels bound to the card's members and saved messages
+  (`data/evaluation/briefing_relevance_labels_v1.json`). It is a developer audit, unconfirmed by a team lead.
+- Unlabelled or changed threads stay in the brief. A social or routine label moves a card to history only when it has a
+  supported no-action reason and no review reason, flag, queue item, projection gap or outstanding step.
+- Cards are never deleted, and obligations are never resolved by exclusion.
+
+For runs from now on: `assemble_card` keeps a non-NO_ACTION_NEEDED card in review (reason OTHER, "Observation not
+established").
+
+Derived run `data/experiments/threadsense_full_v1_briefing_v1/` (`scripts/derive_briefing_repair.py`, zero calls):
+- Parent unchanged; card text and verdicts identical; new card IDs, so no parent decision carries over.
+- Lines: before 61 Needs Review / 8 Recommended Action / 12 Observation; after 66 / 8 / 7.
+- In the brief: 79 (66 / 8 / 5). Two greetings are kept in history.
+- 17 cards now state an outstanding or monitoring step.
+- Accounting: 177 members and 37 queue items unchanged.
+- Human judgment and possible targeted revisions are listed in `derivation.json` (`manual_review`,
+  `revision_candidates`); the audit is in `AUDIT.md`.
+
+Tests: `tests/test_briefing_policy.py`, `web/tests/briefing.spec.js`.
+
+### Briefing repair closeout: briefing-routing-v2 (2026-11-06, offline)
+
+Same parent run, no model call, no prompt change. v1 files (`briefing_relevance_labels_v1.json`,
+`threadsense_full_v1_briefing_v1/`) are kept unchanged.
+
+- Relevance filtering uses **audited, input-bound labels only** (`data/evaluation/briefing_relevance_labels_v2.json`,
+  developer audit, not confirmed by a team lead). There is no automatic relevance classifier; an unlabelled card, or one
+  whose saved messages changed, stays in the brief.
+- New label values: `ROUTINE_ADMIN` (an administrative exchange can go to history while its thread is still open; the
+  resolution state and MONITORING step stay on the card) and `ROUTINE_NOTICE` (history only when every notice's latest
+  possible end is at or before the saved briefing cutoff; expiry is never read as completion).
+- A label's `evidence_statement_ids` must be SUPPORTED statements in the saved result, or the label does not exclude.
+- AdviceCard v5 was extended additively: two relevance values, `briefing.basis` and `briefing.evidence_statement_ids`,
+  and an open MONITORING step allowed only on a ROUTINE_ADMIN history card. v1-derived cards still validate.
+- Audit decisions:
+  - Team avatar: ROUTINE_ADMIN, moved to history, still PARTIALLY_RESOLVED.
+  - Queue coverage/closure: kept in the brief. No timezone is recorded, so ends are bounded over UTC-12:00 to UTC+14:00.
+    The closure could still be open at 12:30Z (after the 12:00Z cutoff), and the coverage is for a later day.
+  - Suggestive vs explicit: kept. The retrieved instructions state no boundary (claim c5, detail d2), which is a guidance gap.
+  - Tie threshold: moved to history. Both answers are consistent with current guidance (claims c6, c7), and the
+    tie-consistency issue stays on its own card.
+- UI: the follow-up label is "Pending follow-up". Its text is shown once (in the card box). Processing notes (text
+  source, kind, derivation details, why a card is in history) appear only in expanded details.
+- Derived run `data/experiments/threadsense_full_v1_briefing_v2/`: lines 66 / 8 / 7. In the brief: 77 (66 / 8 / 3).
+  History: 4 (2 social, avatar, tie). Accounting: 177 members and 37 queue items unchanged.
+- Isolation regression `test_original_and_derived_runs_stay_isolated_across_loading_evidence_and_writes` covers card
+  loading, evidence lookup, card decisions and review actions across the two runs that share a run ID.

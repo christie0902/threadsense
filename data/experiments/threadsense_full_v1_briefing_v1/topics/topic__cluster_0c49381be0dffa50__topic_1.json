@@ -1,0 +1,2615 @@
+{
+ "work_item": {
+  "candidate_group_id": "cluster_0c49381be0dffa50",
+  "project_id": "response_preference",
+  "batch_id": "rp_batch_15",
+  "work_id": "topic:cluster_0c49381be0dffa50/topic_1",
+  "kind": "TOPIC",
+  "topic_id": "cluster_0c49381be0dffa50/topic_1",
+  "topic_name": "Response fetch failure in comparison view",
+  "member_ids": [
+   "member_bb78d680dd30a22ffa11cce1"
+  ],
+  "pilot_scenario": null,
+  "in_scope": true
+ },
+ "workflow": {
+  "outcome": "CARD",
+  "card_id": "card_2029f5bdf3f402b80d2d111756b18a8d",
+  "card_line": "NEEDS_REVIEW",
+  "grounding": "PASSED",
+  "stage_failures": [],
+  "semantic_source": "LIVE_MODEL"
+ },
+ "result": {
+  "scenario": {
+   "id": "topic:cluster_0c49381be0dffa50/topic_1",
+   "candidate_group_id": "cluster_0c49381be0dffa50",
+   "focus": "Response fetch failure in comparison view",
+   "topic_id": "cluster_0c49381be0dffa50/topic_1"
+  },
+  "status": "CARD",
+  "topic": {
+   "project_id": "response_preference",
+   "batch_id": "rp_batch_15",
+   "candidate_group_id": "cluster_0c49381be0dffa50",
+   "topic_id": "cluster_0c49381be0dffa50/topic_1",
+   "topic_label": "Response fetch failure in comparison view",
+   "projection_gap": null,
+   "as_of": "2026-10-02T12:00:00Z",
+   "member_ids": [
+    "member_bb78d680dd30a22ffa11cce1"
+   ],
+   "initial_query": "Response fetch failure in comparison view. Is there a known issue causing both answer panes to spin when opening a comparison for task RP-8073, and how should it be labeled?"
+  },
+  "retrieval_trace": [
+   {
+    "step": 1,
+    "purpose": "initial_current_guidance",
+    "gap_id": null,
+    "query": "Response fetch failure in comparison view. Is there a known issue causing both answer panes to spin when opening a comparison for task RP-8073, and how should it be labeled?",
+    "source_types": [
+     "guideline",
+     "faq",
+     "decision",
+     "announcement"
+    ],
+    "version_mode": "current",
+    "as_of": "2026-10-02T12:00:00Z",
+    "batch": "rp_batch_15",
+    "top_k": 5,
+    "status": "DONE",
+    "mode": "hybrid",
+    "use_mmr": true,
+    "mmr_lambda": 0.9,
+    "result_ids": [
+     "k:response-preference-instructions@1.1:36683c52",
+     "k:response-preference-faq@1.1:4683724f",
+     "k:response-preference-instructions@1.1:47ed0c14",
+     "k:response-preference-instructions@1.1:3350bbc0",
+     "k:rp-submit-zoom-generalization-rejected@1.0:044e436d"
+    ],
+    "new_evidence_ids": [
+     "k:response-preference-instructions@1.1:36683c52",
+     "k:response-preference-faq@1.1:4683724f",
+     "k:response-preference-instructions@1.1:47ed0c14",
+     "k:response-preference-instructions@1.1:3350bbc0",
+     "k:rp-submit-zoom-generalization-rejected@1.0:044e436d"
+    ],
+    "eligible_chunks": 28,
+    "added": []
+   }
+  ],
+  "retrieval_notes": {
+   "withheld_by_version": [],
+   "version_diagnostics": []
+  },
+  "follow_ups": [],
+  "unfilled_gaps": [],
+  "model_calls": [
+   {
+    "stage": "draft",
+    "schema": "AdvisorDraft",
+    "agent1_context": {
+     "sha256": "0ec636355edda8372c13fa6a06df6b3c2ae5871ac10e5cf254e5b28d92dcf707",
+     "boundary": "IN_HTTP_BODY"
+    },
+    "raw": "{\n  \"contract_version\": \"agent3-advisor-draft-v11\",\n  \"summary\": null,\n  \"summary_sentences\": [\n    {\n      \"text\": \"Two tutors report that responses fail to appear in comparisons, including spinning answer panes on RP-8073.\",\n      \"support_claim_ids\": [\"c1\", \"c2\"],\n      \"depends_on\": []\n    },\n    {\n      \"text\": \"The team lead instructed the thread to record the affected item as a response-fetch/tool incident without inventing a quality label; the thread does not report restored access.\",\n      \"support_claim_ids\": [\"c5\", \"c7\"],\n      \"depends_on\": []\n    }\n  ],\n  \"detail_sentences\": [\n    {\n      \"text\": \"A tutor reports that both answer panes keep spinning when opening RP-8073; a second tutor reports that a response still failed to appear after trying a second item.\",\n      \"support_claim_ids\": [\"c1\", \"c2\"],\n      \"depends_on\": [],\n      \"summary_depends_on\": []\n    },\n    {\n      \"text\": \"A QA tutor asked whether the failure happens before model responses are displayed.\",\n      \"support_claim_ids\": [\"c3\"],\n      \"depends_on\": [],\n      \"summary_depends_on\": []\n    },\n    {\n      \"text\": \"The team lead stated that no model output was available to evaluate for the affected item.\",\n      \"support_claim_ids\": [\"c4\"],\n      \"depends_on\": [],\n      \"summary_depends_on\": []\n    },\n    {\n      \"text\": \"Current project instructions say to record a fetch incident when response panes never load and not infer response quality.\",\n      \"support_claim_ids\": [\"c6\"],\n      \"depends_on\": [],\n      \"summary_depends_on\": []\n    }\n  ],\n  \"reasoning\": \"The thread settles how to classify the affected item, but it does not establish that responses became accessible again. Two tutors describe comparable response-loading failures, supporting an advisory report to engineering rather than another labeling reminder. The current instructions support keeping the tool incident separate from response-quality judgments. No additional record research is needed to support this report; technical diagnosis remains work for engineering. The inherited upstream review flag remains open.\",\n  \"claims\": [\n    {\n      \"claim_id\": \"c1\",\n      \"kind\": \"INCIDENT_FACT\",\n      \"text\": \"A tutor reports that both answer panes keep spinning when opening a comparison on RP-8073 and asks whether others see the same behavior.\",\n      \"evidence_ids\": [\"m:C_RP_GENERAL:1790908073.000029\"],\n      \"attributions\": [\n        {\n          \"user_id\": \"U010\",\n          \"relation\": \"AUTHOR\",\n          \"evidence_id\": \"m:C_RP_GENERAL:1790908073.000029\"\n        }\n      ],\n      \"quote_kind\": \"PARAPHRASE\"\n    },\n    {\n      \"claim_id\": \"c2\",\n      \"kind\": \"INCIDENT_FACT\",\n      \"text\": \"A second tutor reports trying a second item and finding that the response still failed to appear.\",\n      \"evidence_ids\": [\"m:C_RP_GENERAL:1790908127.000113\"],\n      \"attributions\": [\n        {\n          \"user_id\": \"U015\",\n          \"relation\": \"AUTHOR\",\n          \"evidence_id\": \"m:C_RP_GENERAL:1790908127.000113\"\n        }\n      ],\n      \"quote_kind\": \"PARAPHRASE\"\n    },\n    {\n      \"claim_id\": \"c3\",\n      \"kind\": \"INCIDENT_FACT\",\n      \"text\": \"A QA tutor asks whether the failure happens before model responses are displayed.\",\n      \"evidence_ids\": [\"m:C_RP_GENERAL:1790908167.000226\"],\n      \"attributions\": [\n        {\n          \"user_id\": \"U002\",\n          \"relation\": \"AUTHOR\",\n          \"evidence_id\": \"m:C_RP_GENERAL:1790908167.000226\"\n        }\n      ],\n      \"quote_kind\": \"PARAPHRASE\"\n    },\n    {\n      \"claim_id\": \"c4\",\n      \"kind\": \"INCIDENT_FACT\",\n      \"text\": \"The team lead states that no model output was available to evaluate for the affected item.\",\n      \"evidence_ids\": [\"m:C_RP_GENERAL:1790908211.000339\"],\n      \"attributions\": [\n        {\n          \"user_id\": \"U001\",\n          \"relation\": \"AUTHOR\",\n          \"evidence_id\": \"m:C_RP_GENERAL:1790908211.000339\"\n        }\n      ],\n      \"quote_kind\": \"PARAPHRASE\"\n    },\n    {\n      \"claim_id\": \"c5\",\n      \"kind\": \"THREAD_INSTRUCTION\",\n      \"text\": \"The team lead instructs the thread to mark the affected item as a response-fetch/tool incident and not invent a quality label.\",\n      \"evidence_ids\": [\"m:C_RP_GENERAL:1790908211.000339\"],\n      \"attributions\": [\n        {\n          \"user_id\": \"U001\",\n          \"relation\": \"AUTHOR\",\n          \"evidence_id\": \"m:C_RP_GENERAL:1790908211.000339\"\n        }\n      ],\n      \"quote\": \"For the affected item, no model output was available to evaluate. Mark it as a response-fetch/tool incident and do not invent a quality label.\",\n      \"quote_kind\": \"VERBATIM\"\n    },\n    {\n      \"claim_id\": \"c6\",\n      \"kind\": \"GUIDANCE\",\n      \"text\": \"Current project instructions require recording a fetch incident when response panes never load and prohibit inferring response quality.\",\n      \"evidence_ids\": [\"k:response-preference-instructions@1.1:36683c52\"],\n      \"attributions\": [],\n      \"quote\": \"If response panes never load, record a fetch incident and do not infer response quality.\",\n      \"quote_kind\": \"VERBATIM\"\n    },\n    {\n      \"claim_id\": \"c7\",\n      \"kind\": \"INFERENCE\",\n      \"text\": \"The thread provides handling instructions but contains no report that response access recovered for either tutor.\",\n      \"evidence_ids\": [\n        \"m:C_RP_GENERAL:1790908073.000029\",\n        \"m:C_RP_GENERAL:1790908127.000113\",\n        \"m:C_RP_GENERAL:1790908167.000226\",\n        \"m:C_RP_GENERAL:1790908211.000339\"\n      ],\n      \"attributions\": [\n        {\n          \"user_id\": \"U010\",\n          \"relation\": \"AUTHOR\",\n          \"evidence_id\": \"m:C_RP_GENERAL:1790908073.000029\"\n        },\n        {\n          \"user_id\": \"U015\",\n          \"relation\": \"AUTHOR\",\n          \"evidence_id\": \"m:C_RP_GENERAL:1790908127.000113\"\n        },\n        {\n          \"user_id\": \"U001\",\n          \"relation\": \"AUTHOR\",\n          \"evidence_id\": \"m:C_RP_GENERAL:1790908211.000339\"\n        }\n      ],\n      \"quote_kind\": \"PARAPHRASE\"\n    }\n  ],\n  \"gaps\": [],\n  \"evidence_sufficiency\": \"SUFFICIENT\",\n  \"proposed_action\": {\n    \"action_type\": \"ESCALATE_ENGINEERING\",\n    \"intervention_need\": {\n      \"kind\": \"OPERATIONAL_PROBLEM\",\n      \"statement\": \"Two tutors report response-loading failures that prevent viewing the responses, and the thread supplies classification instructions without reporting restored access.\",\n      \"evidence_ids\": [\n        \"m:C_RP_GENERAL:1790908073.000029\",\n        \"m:C_RP_GENERAL:1790908127.000113\",\n        \"m:C_RP_GENERAL:1790908211.000339\"\n      ]\n    },\n    \"instruction\": \"Report the response-loading failures to engineering, including RP-8073 and the second tutor's report, while retaining the existing fetch-incident handling.\",\n    \"rationale\": \"The labeling instruction addresses classification, not restored access. Engineering can investigate the reported loading behavior while current guidance keeps missing output separate from response quality.\",\n    \"draft_text\": \"Please investigate response-loading failures in this batch. Two tutors report responses failing to appear:\\n- A tutor reports that both answer panes keep spinning when opening comparison task RP-8073.\\n- A second tutor reports that a response still failed to appear after trying a second item.\\nFor the affected item, no model output was available to evaluate. It is being handled as a response-fetch/tool incident, without an invented quality label. Please check the loading behavior and advise on restoring access.\",\n    \"scope_note\": \"This report concerns the reported loading failures; it does not establish a technical cause or extend the thread-specific instruction to unrelated incidents.\",\n    \"support_claim_ids\": [\"c1\", \"c2\", \"c4\", \"c5\", \"c6\", \"c7\"],\n    \"targets\": [],\n    \"context_claim_ids\": [\"c3\"]\n  },\n  \"severity\": {\n    \"level\": \"HIGH\",\n    \"rationale\": \"Two distinct tutors report comparable failures to display responses, indicating disruption beyond one reporter; the team lead states that the affected item had no output to evaluate.\",\n    \"signals\": [\n      {\n        \"level\": \"HIGH\",\n        \"signal_index\": 3,\n        \"signal_text\": \"Multiple distinct people or affected tasks reporting a comparable problem within the relevant project, batch, and time window, suggesting broader disruption or systemic labeling risk. Consider the number affected relative to the known active group when that information is available; do not require an explicit statement of widespread impact\",\n        \"support\": \"Two tutors report responses failing to appear in the same thread, including spinning panes on RP-8073 and a failure after trying a second item.\",\n        \"evidence_ids\": [\n          \"m:C_RP_GENERAL:1790908073.000029\",\n          \"m:C_RP_GENERAL:1790908127.000113\"\n        ]\n      }\n    ],\n    \"affected_reporters\": [\n      {\n        \"author_id\": \"U010\",\n        \"evidence_id\": \"m:C_RP_GENERAL:1790908073.000029\"\n      },\n      {\n        \"author_id\": \"U015\",\n        \"evidence_id\": \"m:C_RP_GENERAL:1790908127.000113\"\n      }\n    ],\n    \"recurrence\": \"NOT_CHECKED\",\n    \"recurrence_evidence_ids\": [],\n    \"reported_recurrence_evidence_ids\": []\n  },\n  \"confidence\": 0.93,\n  \"open_confirmation\": \"NONE\",\n  \"open_question\": null,\n  \"open_question_evidence_ids\": [],\n  \"source_conflicts\": [],\n  \"announcement_assessments\": [],\n  \"resolution\": [\n    {\n      \"member_id\": \"member_bb78d680dd30a22ffa11cce1\",\n      \"state\": \"PARTIALLY_RESOLVED\",\n      \"evidence_ids\": [\n        \"m:C_RP_GENERAL:1790908073.000029\",\n        \"m:C_RP_GENERAL:1790908127.000113\",\n        \"m:C_RP_GENERAL:1790908167.000226\",\n        \"m:C_RP_GENERAL:1790908211.000339\"\n      ],\n      \"basis\": \"The team lead settles the affected item's classification as a fetch/tool incident without a quality label. The complete thread contains no report that either tutor regained access to responses.\"\n    }\n  ],\n  \"coverage\": [\n    {\n      \"need\": \"CURRENT_GUIDANCE\",\n      \"status\": \"COVERED\",\n      \"evidence_ids\": [\"k:response-preference-instructions@1.1:36683c52\"],\n      \"note\": \"Current project instructions directly address response panes that never load.\"\n    },\n    {\n      \"need\": \"ANNOUNCEMENTS\",\n      \"status\": \"NOT_APPLICABLE\",\n      \"evidence_ids\": [],\n      \"note\": \"The proposed engineering report relies on the incident reports and current instructions, not an announcement or a designated delivery route.\"\n    },\n    {\n      \"need\": \"PRIOR_DECISIONS\",\n      \"status\": \"NOT_APPLICABLE\",\n      \"evidence_ids\": [\"k:rp-submit-zoom-generalization-rejected@1.0:044e436d\"],\n      \"note\": \"The retrieved earlier review concerns hidden Submit controls at browser zoom in another batch, not response loading. No historical workaround or recurrence claim is needed for this report.\"\n    },\n    {\n      \"need\": \"MEMBER_QUESTIONS\",\n      \"status\": \"COVERED\",\n      \"evidence_ids\": [\n        \"m:C_RP_GENERAL:1790908073.000029\",\n        \"m:C_RP_GENERAL:1790908167.000226\",\n        \"m:C_RP_GENERAL:1790908211.000339\"\n      ],\n      \"note\": \"The thread includes a tutor asking whether others see the behavior, a QA tutor asking when the failure occurs, and the team lead's finding and handling instruction.\"\n    }\n  ],\n  \"review_note\": null,\n  \"action_choice\": null\n}",
+    "raw_sha256": "908e601854b2c236fcdf379e1a5066c579cc5190f863a9d5980b50b03d9c1767",
+    "http_requests": {
+     "sent": 1,
+     "blocked": 0,
+     "hosts": [
+      "api.openai.com"
+     ],
+     "responses": [
+      {
+       "status_code": 200,
+       "seconds": 38.183,
+       "model": "gpt-6.1-sol",
+       "usage": {
+        "prompt_tokens": 11393,
+        "completion_tokens": 3038,
+        "total_tokens": 14431,
+        "prompt_tokens_details": {
+         "cached_tokens": 0,
+         "cache_write_tokens": 11390,
+         "audio_tokens": 0
+        },
+        "completion_tokens_details": {
+         "reasoning_tokens": 260,
+         "audio_tokens": 0,
+         "accepted_prediction_tokens": 0,
+         "rejected_prediction_tokens": 0
+        }
+       },
+       "finish_reasons": [
+        "stop"
+       ]
+      }
+     ],
+     "input_tokens": 11399,
+     "refused": null,
+     "charged_usd": 0.053166000000000005
+    },
+    "input_tokens_estimate": 11399,
+    "status": "OK"
+   },
+   {
+    "stage": "grounding",
+    "schema": "GroundingJudgment",
+    "raw": "{\n  \"contract_version\": \"agent3-grounding-judgment-v5\",\n  \"verdicts\": [\n    {\n      \"statement_id\": \"claim:c1\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"U010, a tutor, reports both panes spinning on RP-8073 and asks whether others see the same behavior.\"\n    },\n    {\n      \"statement_id\": \"claim:c2\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"U015, a distinct tutor, explicitly reports trying a second item and the response still failing to appear.\"\n    },\n    {\n      \"statement_id\": \"claim:c3\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The cited QA tutor asks exactly whether the failure occurs before model responses are displayed.\"\n    },\n    {\n      \"statement_id\": \"claim:c4\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The team lead explicitly states that no model output was available to evaluate for the affected item.\"\n    },\n    {\n      \"statement_id\": \"claim:c5\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The quotation matches the team lead's message exactly, and the statement correctly limits the instruction to the thread's affected item.\"\n    },\n    {\n      \"statement_id\": \"claim:c6\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The current project-wide instructions contain the quoted sentence verbatim and establish the stated fetch-incident handling.\"\n    },\n    {\n      \"statement_id\": \"claim:c7\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The complete thread supplies classification instructions but contains no report that either tutor regained response access.\"\n    },\n    {\n      \"statement_id\": \"summary:s1\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"Two distinct tutors report responses not appearing; U010 specifically describes spinning answer panes on RP-8073.\"\n    },\n    {\n      \"statement_id\": \"summary:s2\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The team lead gives the stated classification instruction, and no message in the complete thread reports restored access.\"\n    },\n    {\n      \"statement_id\": \"detail:d1\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"Both reports and their attribution to distinct tutors accurately preserve the cited messages.\"\n    },\n    {\n      \"statement_id\": \"detail:d2\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The cited author is a QA tutor and asks the stated diagnostic question.\"\n    },\n    {\n      \"statement_id\": \"detail:d3\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The team lead explicitly states that the affected item had no model output available to evaluate.\"\n    },\n    {\n      \"statement_id\": \"detail:d4\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The current instructions explicitly require recording a fetch incident when panes never load and prohibit inferring response quality.\"\n    },\n    {\n      \"statement_id\": \"action\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The two loading-failure reports justify technical investigation by engineering. The draft accurately preserves the reported symptoms and existing classification handling, names no unsupported concrete route, and does not assert a cause or broaden the thread instruction.\"\n    },\n    {\n      \"statement_id\": \"action:rationale\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"Classification guidance does not restore response access. The reported loading failures justify engineering investigation while the current instructions keep missing output separate from response quality.\"\n    },\n    {\n      \"statement_id\": \"action:need\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"Two tutors report an operational obstacle to viewing responses, and the thread addresses classification without reporting recovery. This supports coordination for the loading problem despite settled labeling guidance.\"\n    },\n    {\n      \"statement_id\": \"resolution:member_bb78d680dd30a22ffa11cce1\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The team lead settles classification, but the complete thread provides no report of restored response access, supporting partial rather than complete resolution.\"\n    },\n    {\n      \"statement_id\": \"severity:rationale\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The evidence establishes comparable response-display failures reported by two distinct tutors and the team lead's statement that the affected item lacked output to evaluate.\"\n    },\n    {\n      \"statement_id\": \"severity:signal:HIGH[3]\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"Two distinct tutors report comparable failures within the same batch thread, satisfying the stated multiple-reporter signal without requiring an assertion of widespread impact.\"\n    },\n    {\n      \"statement_id\": \"reporter:U010\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"U010's own message reports spinning response panes when opening a comparison.\"\n    },\n    {\n      \"statement_id\": \"reporter:U015\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"U015's own message reports that responses still failed to appear after trying a second item.\"\n    }\n  ],\n  \"action_sufficiency\": {\n    \"verdict\": \"SUFFICIENT\",\n    \"essential_statement_ids\": [\n      \"claim:c1\",\n      \"claim:c2\",\n      \"claim:c4\",\n      \"claim:c5\",\n      \"claim:c6\",\n      \"claim:c7\"\n    ],\n    \"rationale\": \"All listed premises are supported and have no announcement dependencies. Together they justify reporting both loading failures to engineering for investigation while preserving the current fetch-incident classification and avoiding a quality judgment. Engineering is a justified functional recipient for this operational problem; the recommendation specifies no concrete intake route and asserts no technical cause.\"\n  },\n  \"alternative_sufficiency\": [],\n  \"source_consistency\": {\n    \"assessed_evidence_ids\": [\n      \"k:response-preference-instructions@1.1:36683c52\",\n      \"k:response-preference-faq@1.1:4683724f\",\n      \"k:response-preference-instructions@1.1:47ed0c14\",\n      \"k:response-preference-instructions@1.1:3350bbc0\"\n    ],\n    \"relations\": [],\n    \"declared_conflict_checks\": []\n  }\n}",
+    "raw_sha256": "3c86479fcdf0e4f1696849d4c3f0a3e51ab15d2d7e2ca8d0827ada03ada27241",
+    "http_requests": {
+     "sent": 1,
+     "blocked": 0,
+     "hosts": [
+      "api.openai.com"
+     ],
+     "responses": [
+      {
+       "status_code": 200,
+       "seconds": 17.018,
+       "model": "gpt-6.1-sol",
+       "usage": {
+        "prompt_tokens": 9070,
+        "completion_tokens": 1398,
+        "total_tokens": 10468,
+        "prompt_tokens_details": {
+         "cached_tokens": 0,
+         "cache_write_tokens": 9067,
+         "audio_tokens": 0
+        },
+        "completion_tokens_details": {
+         "reasoning_tokens": 45,
+         "audio_tokens": 0,
+         "accepted_prediction_tokens": 0,
+         "rejected_prediction_tokens": 0
+        }
+       },
+       "finish_reasons": [
+        "stop"
+       ]
+      }
+     ],
+     "input_tokens": 9076,
+     "refused": null,
+     "charged_usd": 0.03212
+    },
+    "input_tokens_estimate": 9076,
+    "status": "OK"
+   }
+  ],
+  "agent1_context": [
+   {
+    "sha256": "0ec636355edda8372c13fa6a06df6b3c2ae5871ac10e5cf254e5b28d92dcf707",
+    "content": [
+     {
+      "member_id": "member_bb78d680dd30a22ffa11cce1",
+      "thread_id": "1790908073.000029",
+      "summary": "Avery reports an issue where both answer panes keep spinning when attempting to open a comparison for task RP-8073. Carla confirms that the response fails to appear for a second item as well. Mina inquires whether the failure occurs before model responses are displayed. Alex, the team lead, concludes that for the affected item, no model output was available to evaluate and instructs to mark it as a response-fetch/tool incident without inventing a quality label.",
+      "central_question": "Is there a known issue causing both answer panes to spin when opening a comparison for task RP-8073, and how should it be labeled?",
+      "attributed_agent1_resolution": {
+       "state": "RESOLVED_IN_THREAD",
+       "rationale": "Alex provided a clear conclusion regarding the issue, stating that no model output was available for evaluation and instructed how to label the incident. This sufficiently addresses the original question about the issue and its labeling.",
+       "agent1_verification_status": "NEEDS_REVIEW",
+       "note": "Agent 1 label, not evidence; NEEDS_REVIEW means Agent 1 did not verify it. Assess resolution from the member messages."
+      },
+      "agent1_review_required": true,
+      "agent1_review_reason": "The single targeted revision failed: ValueError: The model cited authority evidence without an eligible author role or a qualifying TEAM_LEAD endorsement. Ineligible message IDs: ['1790908127.000113']",
+      "note": "Agent 1 interpretation, not source evidence; cite member messages for incident facts."
+     }
+    ]
+   }
+  ],
+  "drafts": {
+   "initial": {
+    "contract_version": "agent3-advisor-draft-v11",
+    "summary": "Two tutors report that responses fail to appear in comparisons, including spinning answer panes on RP-8073. The team lead instructed the thread to record the affected item as a response-fetch/tool incident without inventing a quality label; the thread does not report restored access.",
+    "summary_sentences": [
+     {
+      "text": "Two tutors report that responses fail to appear in comparisons, including spinning answer panes on RP-8073.",
+      "support_claim_ids": [
+       "c1",
+       "c2"
+      ],
+      "depends_on": []
+     },
+     {
+      "text": "The team lead instructed the thread to record the affected item as a response-fetch/tool incident without inventing a quality label; the thread does not report restored access.",
+      "support_claim_ids": [
+       "c5",
+       "c7"
+      ],
+      "depends_on": []
+     }
+    ],
+    "detail_sentences": [
+     {
+      "text": "A tutor reports that both answer panes keep spinning when opening RP-8073; a second tutor reports that a response still failed to appear after trying a second item.",
+      "support_claim_ids": [
+       "c1",
+       "c2"
+      ],
+      "depends_on": [],
+      "summary_depends_on": []
+     },
+     {
+      "text": "A QA tutor asked whether the failure happens before model responses are displayed.",
+      "support_claim_ids": [
+       "c3"
+      ],
+      "depends_on": [],
+      "summary_depends_on": []
+     },
+     {
+      "text": "The team lead stated that no model output was available to evaluate for the affected item.",
+      "support_claim_ids": [
+       "c4"
+      ],
+      "depends_on": [],
+      "summary_depends_on": []
+     },
+     {
+      "text": "Current project instructions say to record a fetch incident when response panes never load and not infer response quality.",
+      "support_claim_ids": [
+       "c6"
+      ],
+      "depends_on": [],
+      "summary_depends_on": []
+     }
+    ],
+    "reasoning": "The thread settles how to classify the affected item, but it does not establish that responses became accessible again. Two tutors describe comparable response-loading failures, supporting an advisory report to engineering rather than another labeling reminder. The current instructions support keeping the tool incident separate from response-quality judgments. No additional record research is needed to support this report; technical diagnosis remains work for engineering. The inherited upstream review flag remains open.",
+    "claims": [
+     {
+      "claim_id": "c1",
+      "kind": "INCIDENT_FACT",
+      "text": "A tutor reports that both answer panes keep spinning when opening a comparison on RP-8073 and asks whether others see the same behavior.",
+      "evidence_ids": [
+       "m:C_RP_GENERAL:1790908073.000029"
+      ],
+      "attributions": [
+       {
+        "user_id": "U010",
+        "relation": "AUTHOR",
+        "evidence_id": "m:C_RP_GENERAL:1790908073.000029"
+       }
+      ],
+      "quote": null,
+      "quote_kind": "PARAPHRASE",
+      "material": true
+     },
+     {
+      "claim_id": "c2",
+      "kind": "INCIDENT_FACT",
+      "text": "A second tutor reports trying a second item and finding that the response still failed to appear.",
+      "evidence_ids": [
+       "m:C_RP_GENERAL:1790908127.000113"
+      ],
+      "attributions": [
+       {
+        "user_id": "U015",
+        "relation": "AUTHOR",
+        "evidence_id": "m:C_RP_GENERAL:1790908127.000113"
+       }
+      ],
+      "quote": null,
+      "quote_kind": "PARAPHRASE",
+      "material": true
+     },
+     {
+      "claim_id": "c3",
+      "kind": "INCIDENT_FACT",
+      "text": "A QA tutor asks whether the failure happens before model responses are displayed.",
+      "evidence_ids": [
+       "m:C_RP_GENERAL:1790908167.000226"
+      ],
+      "attributions": [
+       {
+        "user_id": "U002",
+        "relation": "AUTHOR",
+        "evidence_id": "m:C_RP_GENERAL:1790908167.000226"
+       }
+      ],
+      "quote": null,
+      "quote_kind": "PARAPHRASE",
+      "material": true
+     },
+     {
+      "claim_id": "c4",
+      "kind": "INCIDENT_FACT",
+      "text": "The team lead states that no model output was available to evaluate for the affected item.",
+      "evidence_ids": [
+       "m:C_RP_GENERAL:1790908211.000339"
+      ],
+      "attributions": [
+       {
+        "user_id": "U001",
+        "relation": "AUTHOR",
+        "evidence_id": "m:C_RP_GENERAL:1790908211.000339"
+       }
+      ],
+      "quote": null,
+      "quote_kind": "PARAPHRASE",
+      "material": true
+     },
+     {
+      "claim_id": "c5",
+      "kind": "THREAD_INSTRUCTION",
+      "text": "The team lead instructs the thread to mark the affected item as a response-fetch/tool incident and not invent a quality label.",
+      "evidence_ids": [
+       "m:C_RP_GENERAL:1790908211.000339"
+      ],
+      "attributions": [
+       {
+        "user_id": "U001",
+        "relation": "AUTHOR",
+        "evidence_id": "m:C_RP_GENERAL:1790908211.000339"
+       }
+      ],
+      "quote": "For the affected item, no model output was available to evaluate. Mark it as a response-fetch/tool incident and do not invent a quality label.",
+      "quote_kind": "VERBATIM",
+      "material": true
+     },
+     {
+      "claim_id": "c6",
+      "kind": "GUIDANCE",
+      "text": "Current project instructions require recording a fetch incident when response panes never load and prohibit inferring response quality.",
+      "evidence_ids": [
+       "k:response-preference-instructions@1.1:36683c52"
+      ],
+      "attributions": [],
+      "quote": "If response panes never load, record a fetch incident and do not infer response quality.",
+      "quote_kind": "VERBATIM",
+      "material": true
+     },
+     {
+      "claim_id": "c7",
+      "kind": "INFERENCE",
+      "text": "The thread provides handling instructions but contains no report that response access recovered for either tutor.",
+      "evidence_ids": [
+       "m:C_RP_GENERAL:1790908073.000029",
+       "m:C_RP_GENERAL:1790908127.000113",
+       "m:C_RP_GENERAL:1790908167.000226",
+       "m:C_RP_GENERAL:1790908211.000339"
+      ],
+      "attributions": [
+       {
+        "user_id": "U010",
+        "relation": "AUTHOR",
+        "evidence_id": "m:C_RP_GENERAL:1790908073.000029"
+       },
+       {
+        "user_id": "U015",
+        "relation": "AUTHOR",
+        "evidence_id": "m:C_RP_GENERAL:1790908127.000113"
+       },
+       {
+        "user_id": "U001",
+        "relation": "AUTHOR",
+        "evidence_id": "m:C_RP_GENERAL:1790908211.000339"
+       }
+      ],
+      "quote": null,
+      "quote_kind": "PARAPHRASE",
+      "material": true
+     }
+    ],
+    "gaps": [],
+    "evidence_sufficiency": "SUFFICIENT",
+    "proposed_action": {
+     "action_type": "ESCALATE_ENGINEERING",
+     "intervention_need": {
+      "kind": "OPERATIONAL_PROBLEM",
+      "statement": "Two tutors report response-loading failures that prevent viewing the responses, and the thread supplies classification instructions without reporting restored access.",
+      "evidence_ids": [
+       "m:C_RP_GENERAL:1790908073.000029",
+       "m:C_RP_GENERAL:1790908127.000113",
+       "m:C_RP_GENERAL:1790908211.000339"
+      ]
+     },
+     "instruction": "Report the response-loading failures to engineering, including RP-8073 and the second tutor's report, while retaining the existing fetch-incident handling.",
+     "rationale": "The labeling instruction addresses classification, not restored access. Engineering can investigate the reported loading behavior while current guidance keeps missing output separate from response quality.",
+     "draft_text": "Please investigate response-loading failures in this batch. Two tutors report responses failing to appear:\n- A tutor reports that both answer panes keep spinning when opening comparison task RP-8073.\n- A second tutor reports that a response still failed to appear after trying a second item.\nFor the affected item, no model output was available to evaluate. It is being handled as a response-fetch/tool incident, without an invented quality label. Please check the loading behavior and advise on restoring access.",
+     "scope_note": "This report concerns the reported loading failures; it does not establish a technical cause or extend the thread-specific instruction to unrelated incidents.",
+     "support_claim_ids": [
+      "c1",
+      "c2",
+      "c4",
+      "c5",
+      "c6",
+      "c7"
+     ],
+     "targets": [],
+     "context_claim_ids": [
+      "c3"
+     ]
+    },
+    "severity": {
+     "level": "HIGH",
+     "rationale": "Two distinct tutors report comparable failures to display responses, indicating disruption beyond one reporter; the team lead states that the affected item had no output to evaluate.",
+     "signals": [
+      {
+       "level": "HIGH",
+       "signal_index": 3,
+       "signal_text": "Multiple distinct people or affected tasks reporting a comparable problem within the relevant project, batch, and time window, suggesting broader disruption or systemic labeling risk. Consider the number affected relative to the known active group when that information is available; do not require an explicit statement of widespread impact",
+       "support": "Two tutors report responses failing to appear in the same thread, including spinning panes on RP-8073 and a failure after trying a second item.",
+       "evidence_ids": [
+        "m:C_RP_GENERAL:1790908073.000029",
+        "m:C_RP_GENERAL:1790908127.000113"
+       ]
+      }
+     ],
+     "affected_reporters": [
+      {
+       "author_id": "U010",
+       "evidence_id": "m:C_RP_GENERAL:1790908073.000029"
+      },
+      {
+       "author_id": "U015",
+       "evidence_id": "m:C_RP_GENERAL:1790908127.000113"
+      }
+     ],
+     "recurrence": "NOT_CHECKED",
+     "recurrence_evidence_ids": [],
+     "reported_recurrence_evidence_ids": []
+    },
+    "confidence": 0.93,
+    "open_confirmation": "NONE",
+    "open_question": null,
+    "open_question_evidence_ids": [],
+    "source_conflicts": [],
+    "announcement_assessments": [],
+    "resolution": [
+     {
+      "member_id": "member_bb78d680dd30a22ffa11cce1",
+      "state": "PARTIALLY_RESOLVED",
+      "evidence_ids": [
+       "m:C_RP_GENERAL:1790908073.000029",
+       "m:C_RP_GENERAL:1790908127.000113",
+       "m:C_RP_GENERAL:1790908167.000226",
+       "m:C_RP_GENERAL:1790908211.000339"
+      ],
+      "basis": "The team lead settles the affected item's classification as a fetch/tool incident without a quality label. The complete thread contains no report that either tutor regained access to responses."
+     }
+    ],
+    "coverage": [
+     {
+      "need": "CURRENT_GUIDANCE",
+      "status": "COVERED",
+      "evidence_ids": [
+       "k:response-preference-instructions@1.1:36683c52"
+      ],
+      "note": "Current project instructions directly address response panes that never load.",
+      "gap_id": null
+     },
+     {
+      "need": "ANNOUNCEMENTS",
+      "status": "NOT_APPLICABLE",
+      "evidence_ids": [],
+      "note": "The proposed engineering report relies on the incident reports and current instructions, not an announcement or a designated delivery route.",
+      "gap_id": null
+     },
+     {
+      "need": "PRIOR_DECISIONS",
+      "status": "NOT_APPLICABLE",
+      "evidence_ids": [
+       "k:rp-submit-zoom-generalization-rejected@1.0:044e436d"
+      ],
+      "note": "The retrieved earlier review concerns hidden Submit controls at browser zoom in another batch, not response loading. No historical workaround or recurrence claim is needed for this report.",
+      "gap_id": null
+     },
+     {
+      "need": "MEMBER_QUESTIONS",
+      "status": "COVERED",
+      "evidence_ids": [
+       "m:C_RP_GENERAL:1790908073.000029",
+       "m:C_RP_GENERAL:1790908167.000226",
+       "m:C_RP_GENERAL:1790908211.000339"
+      ],
+      "note": "The thread includes a tutor asking whether others see the behavior, a QA tutor asking when the failure occurs, and the team lead's finding and handling instruction.",
+      "gap_id": null
+     }
+    ],
+    "review_note": null,
+    "action_choice": null
+   },
+   "final": {
+    "contract_version": "agent3-advisor-draft-v11",
+    "summary": "Two tutors report that responses fail to appear in comparisons, including spinning answer panes on RP-8073. The team lead instructed the thread to record the affected item as a response-fetch/tool incident without inventing a quality label; the thread does not report restored access.",
+    "summary_sentences": [
+     {
+      "text": "Two tutors report that responses fail to appear in comparisons, including spinning answer panes on RP-8073.",
+      "support_claim_ids": [
+       "c1",
+       "c2"
+      ],
+      "depends_on": []
+     },
+     {
+      "text": "The team lead instructed the thread to record the affected item as a response-fetch/tool incident without inventing a quality label; the thread does not report restored access.",
+      "support_claim_ids": [
+       "c5",
+       "c7"
+      ],
+      "depends_on": []
+     }
+    ],
+    "detail_sentences": [
+     {
+      "text": "A tutor reports that both answer panes keep spinning when opening RP-8073; a second tutor reports that a response still failed to appear after trying a second item.",
+      "support_claim_ids": [
+       "c1",
+       "c2"
+      ],
+      "depends_on": [],
+      "summary_depends_on": []
+     },
+     {
+      "text": "A QA tutor asked whether the failure happens before model responses are displayed.",
+      "support_claim_ids": [
+       "c3"
+      ],
+      "depends_on": [],
+      "summary_depends_on": []
+     },
+     {
+      "text": "The team lead stated that no model output was available to evaluate for the affected item.",
+      "support_claim_ids": [
+       "c4"
+      ],
+      "depends_on": [],
+      "summary_depends_on": []
+     },
+     {
+      "text": "Current project instructions say to record a fetch incident when response panes never load and not infer response quality.",
+      "support_claim_ids": [
+       "c6"
+      ],
+      "depends_on": [],
+      "summary_depends_on": []
+     }
+    ],
+    "reasoning": "The thread settles how to classify the affected item, but it does not establish that responses became accessible again. Two tutors describe comparable response-loading failures, supporting an advisory report to engineering rather than another labeling reminder. The current instructions support keeping the tool incident separate from response-quality judgments. No additional record research is needed to support this report; technical diagnosis remains work for engineering. The inherited upstream review flag remains open.",
+    "claims": [
+     {
+      "claim_id": "c1",
+      "kind": "INCIDENT_FACT",
+      "text": "A tutor reports that both answer panes keep spinning when opening a comparison on RP-8073 and asks whether others see the same behavior.",
+      "evidence_ids": [
+       "m:C_RP_GENERAL:1790908073.000029"
+      ],
+      "attributions": [
+       {
+        "user_id": "U010",
+        "relation": "AUTHOR",
+        "evidence_id": "m:C_RP_GENERAL:1790908073.000029"
+       }
+      ],
+      "quote": null,
+      "quote_kind": "PARAPHRASE",
+      "material": true
+     },
+     {
+      "claim_id": "c2",
+      "kind": "INCIDENT_FACT",
+      "text": "A second tutor reports trying a second item and finding that the response still failed to appear.",
+      "evidence_ids": [
+       "m:C_RP_GENERAL:1790908127.000113"
+      ],
+      "attributions": [
+       {
+        "user_id": "U015",
+        "relation": "AUTHOR",
+        "evidence_id": "m:C_RP_GENERAL:1790908127.000113"
+       }
+      ],
+      "quote": null,
+      "quote_kind": "PARAPHRASE",
+      "material": true
+     },
+     {
+      "claim_id": "c3",
+      "kind": "INCIDENT_FACT",
+      "text": "A QA tutor asks whether the failure happens before model responses are displayed.",
+      "evidence_ids": [
+       "m:C_RP_GENERAL:1790908167.000226"
+      ],
+      "attributions": [
+       {
+        "user_id": "U002",
+        "relation": "AUTHOR",
+        "evidence_id": "m:C_RP_GENERAL:1790908167.000226"
+       }
+      ],
+      "quote": null,
+      "quote_kind": "PARAPHRASE",
+      "material": true
+     },
+     {
+      "claim_id": "c4",
+      "kind": "INCIDENT_FACT",
+      "text": "The team lead states that no model output was available to evaluate for the affected item.",
+      "evidence_ids": [
+       "m:C_RP_GENERAL:1790908211.000339"
+      ],
+      "attributions": [
+       {
+        "user_id": "U001",
+        "relation": "AUTHOR",
+        "evidence_id": "m:C_RP_GENERAL:1790908211.000339"
+       }
+      ],
+      "quote": null,
+      "quote_kind": "PARAPHRASE",
+      "material": true
+     },
+     {
+      "claim_id": "c5",
+      "kind": "THREAD_INSTRUCTION",
+      "text": "The team lead instructs the thread to mark the affected item as a response-fetch/tool incident and not invent a quality label.",
+      "evidence_ids": [
+       "m:C_RP_GENERAL:1790908211.000339"
+      ],
+      "attributions": [
+       {
+        "user_id": "U001",
+        "relation": "AUTHOR",
+        "evidence_id": "m:C_RP_GENERAL:1790908211.000339"
+       }
+      ],
+      "quote": "For the affected item, no model output was available to evaluate. Mark it as a response-fetch/tool incident and do not invent a quality label.",
+      "quote_kind": "VERBATIM",
+      "material": true
+     },
+     {
+      "claim_id": "c6",
+      "kind": "GUIDANCE",
+      "text": "Current project instructions require recording a fetch incident when response panes never load and prohibit inferring response quality.",
+      "evidence_ids": [
+       "k:response-preference-instructions@1.1:36683c52"
+      ],
+      "attributions": [],
+      "quote": "If response panes never load, record a fetch incident and do not infer response quality.",
+      "quote_kind": "VERBATIM",
+      "material": true
+     },
+     {
+      "claim_id": "c7",
+      "kind": "INFERENCE",
+      "text": "The thread provides handling instructions but contains no report that response access recovered for either tutor.",
+      "evidence_ids": [
+       "m:C_RP_GENERAL:1790908073.000029",
+       "m:C_RP_GENERAL:1790908127.000113",
+       "m:C_RP_GENERAL:1790908167.000226",
+       "m:C_RP_GENERAL:1790908211.000339"
+      ],
+      "attributions": [
+       {
+        "user_id": "U010",
+        "relation": "AUTHOR",
+        "evidence_id": "m:C_RP_GENERAL:1790908073.000029"
+       },
+       {
+        "user_id": "U015",
+        "relation": "AUTHOR",
+        "evidence_id": "m:C_RP_GENERAL:1790908127.000113"
+       },
+       {
+        "user_id": "U001",
+        "relation": "AUTHOR",
+        "evidence_id": "m:C_RP_GENERAL:1790908211.000339"
+       }
+      ],
+      "quote": null,
+      "quote_kind": "PARAPHRASE",
+      "material": true
+     }
+    ],
+    "gaps": [],
+    "evidence_sufficiency": "SUFFICIENT",
+    "proposed_action": {
+     "action_type": "ESCALATE_ENGINEERING",
+     "intervention_need": {
+      "kind": "OPERATIONAL_PROBLEM",
+      "statement": "Two tutors report response-loading failures that prevent viewing the responses, and the thread supplies classification instructions without reporting restored access.",
+      "evidence_ids": [
+       "m:C_RP_GENERAL:1790908073.000029",
+       "m:C_RP_GENERAL:1790908127.000113",
+       "m:C_RP_GENERAL:1790908211.000339"
+      ]
+     },
+     "instruction": "Report the response-loading failures to engineering, including RP-8073 and the second tutor's report, while retaining the existing fetch-incident handling.",
+     "rationale": "The labeling instruction addresses classification, not restored access. Engineering can investigate the reported loading behavior while current guidance keeps missing output separate from response quality.",
+     "draft_text": "Please investigate response-loading failures in this batch. Two tutors report responses failing to appear:\n- A tutor reports that both answer panes keep spinning when opening comparison task RP-8073.\n- A second tutor reports that a response still failed to appear after trying a second item.\nFor the affected item, no model output was available to evaluate. It is being handled as a response-fetch/tool incident, without an invented quality label. Please check the loading behavior and advise on restoring access.",
+     "scope_note": "This report concerns the reported loading failures; it does not establish a technical cause or extend the thread-specific instruction to unrelated incidents.",
+     "support_claim_ids": [
+      "c1",
+      "c2",
+      "c4",
+      "c5",
+      "c6",
+      "c7"
+     ],
+     "targets": [],
+     "context_claim_ids": [
+      "c3"
+     ]
+    },
+    "severity": {
+     "level": "HIGH",
+     "rationale": "Two distinct tutors report comparable failures to display responses, indicating disruption beyond one reporter; the team lead states that the affected item had no output to evaluate.",
+     "signals": [
+      {
+       "level": "HIGH",
+       "signal_index": 3,
+       "signal_text": "Multiple distinct people or affected tasks reporting a comparable problem within the relevant project, batch, and time window, suggesting broader disruption or systemic labeling risk. Consider the number affected relative to the known active group when that information is available; do not require an explicit statement of widespread impact",
+       "support": "Two tutors report responses failing to appear in the same thread, including spinning panes on RP-8073 and a failure after trying a second item.",
+       "evidence_ids": [
+        "m:C_RP_GENERAL:1790908073.000029",
+        "m:C_RP_GENERAL:1790908127.000113"
+       ]
+      }
+     ],
+     "affected_reporters": [
+      {
+       "author_id": "U010",
+       "evidence_id": "m:C_RP_GENERAL:1790908073.000029"
+      },
+      {
+       "author_id": "U015",
+       "evidence_id": "m:C_RP_GENERAL:1790908127.000113"
+      }
+     ],
+     "recurrence": "NOT_CHECKED",
+     "recurrence_evidence_ids": [],
+     "reported_recurrence_evidence_ids": []
+    },
+    "confidence": 0.93,
+    "open_confirmation": "NONE",
+    "open_question": null,
+    "open_question_evidence_ids": [],
+    "source_conflicts": [],
+    "announcement_assessments": [],
+    "resolution": [
+     {
+      "member_id": "member_bb78d680dd30a22ffa11cce1",
+      "state": "PARTIALLY_RESOLVED",
+      "evidence_ids": [
+       "m:C_RP_GENERAL:1790908073.000029",
+       "m:C_RP_GENERAL:1790908127.000113",
+       "m:C_RP_GENERAL:1790908167.000226",
+       "m:C_RP_GENERAL:1790908211.000339"
+      ],
+      "basis": "The team lead settles the affected item's classification as a fetch/tool incident without a quality label. The complete thread contains no report that either tutor regained access to responses."
+     }
+    ],
+    "coverage": [
+     {
+      "need": "CURRENT_GUIDANCE",
+      "status": "COVERED",
+      "evidence_ids": [
+       "k:response-preference-instructions@1.1:36683c52"
+      ],
+      "note": "Current project instructions directly address response panes that never load.",
+      "gap_id": null
+     },
+     {
+      "need": "ANNOUNCEMENTS",
+      "status": "NOT_APPLICABLE",
+      "evidence_ids": [],
+      "note": "The proposed engineering report relies on the incident reports and current instructions, not an announcement or a designated delivery route.",
+      "gap_id": null
+     },
+     {
+      "need": "PRIOR_DECISIONS",
+      "status": "NOT_APPLICABLE",
+      "evidence_ids": [
+       "k:rp-submit-zoom-generalization-rejected@1.0:044e436d"
+      ],
+      "note": "The retrieved earlier review concerns hidden Submit controls at browser zoom in another batch, not response loading. No historical workaround or recurrence claim is needed for this report.",
+      "gap_id": null
+     },
+     {
+      "need": "MEMBER_QUESTIONS",
+      "status": "COVERED",
+      "evidence_ids": [
+       "m:C_RP_GENERAL:1790908073.000029",
+       "m:C_RP_GENERAL:1790908167.000226",
+       "m:C_RP_GENERAL:1790908211.000339"
+      ],
+      "note": "The thread includes a tutor asking whether others see the behavior, a QA tutor asking when the failure occurs, and the team lead's finding and handling instruction.",
+      "gap_id": null
+     }
+    ],
+    "review_note": null,
+    "action_choice": null
+   },
+   "revised": false
+  },
+  "grounding": {
+   "structural_issues": [],
+   "action_issues": [],
+   "unsupported": [],
+   "unjudged": [],
+   "extraneous_verdicts": [],
+   "rejected": {},
+   "pending": [],
+   "action_sufficiency": {
+    "verdict": "SUFFICIENT",
+    "essential_statement_ids": [
+     "claim:c1",
+     "claim:c2",
+     "claim:c4",
+     "claim:c5",
+     "claim:c6",
+     "claim:c7"
+    ],
+    "rationale": "All listed premises are supported and have no announcement dependencies. Together they justify reporting both loading failures to engineering for investigation while preserving the current fetch-incident classification and avoiding a quality judgment. Engineering is a justified functional recipient for this operational problem; the recommendation specifies no concrete intake route and asserts no technical cause."
+   },
+   "source_consistency": {
+    "assessed_evidence_ids": [
+     "k:response-preference-instructions@1.1:36683c52",
+     "k:response-preference-faq@1.1:4683724f",
+     "k:response-preference-instructions@1.1:47ed0c14",
+     "k:response-preference-instructions@1.1:3350bbc0"
+    ],
+    "relations": [],
+    "declared_conflict_checks": []
+   },
+   "alternative_sufficiency": {},
+   "status": "PASSED",
+   "basis": "SEMANTIC",
+   "statements": [
+    {
+     "statement_id": "claim:c1",
+     "kind": "CLAIM_INCIDENT_FACT",
+     "text": "A tutor reports that both answer panes keep spinning when opening a comparison on RP-8073 and asks whether others see the same behavior.",
+     "blocking": true,
+     "evidence_ids": [
+      "m:C_RP_GENERAL:1790908073.000029"
+     ],
+     "attributions": [
+      {
+       "user_id": "U010",
+       "relation": "AUTHOR",
+       "evidence_id": "m:C_RP_GENERAL:1790908073.000029",
+       "role": "TUTOR"
+      }
+     ],
+     "verdict": "SUPPORTED",
+     "model_verdict": "SUPPORTED",
+     "rationale": "U010, a tutor, reports both panes spinning on RP-8073 and asks whether others see the same behavior."
+    },
+    {
+     "statement_id": "claim:c2",
+     "kind": "CLAIM_INCIDENT_FACT",
+     "text": "A second tutor reports trying a second item and finding that the response still failed to appear.",
+     "blocking": true,
+     "evidence_ids": [
+      "m:C_RP_GENERAL:1790908127.000113"
+     ],
+     "attributions": [
+      {
+       "user_id": "U015",
+       "relation": "AUTHOR",
+       "evidence_id": "m:C_RP_GENERAL:1790908127.000113",
+       "role": "TUTOR"
+      }
+     ],
+     "verdict": "SUPPORTED",
+     "model_verdict": "SUPPORTED",
+     "rationale": "U015, a distinct tutor, explicitly reports trying a second item and the response still failing to appear."
+    },
+    {
+     "statement_id": "claim:c3",
+     "kind": "CLAIM_INCIDENT_FACT",
+     "text": "A QA tutor asks whether the failure happens before model responses are displayed.",
+     "blocking": true,
+     "evidence_ids": [
+      "m:C_RP_GENERAL:1790908167.000226"
+     ],
+     "attributions": [
+      {
+       "user_id": "U002",
+       "relation": "AUTHOR",
+       "evidence_id": "m:C_RP_GENERAL:1790908167.000226",
+       "role": "QA_TUTOR"
+      }
+     ],
+     "verdict": "SUPPORTED",
+     "model_verdict": "SUPPORTED",
+     "rationale": "The cited QA tutor asks exactly whether the failure occurs before model responses are displayed."
+    },
+    {
+     "statement_id": "claim:c4",
+     "kind": "CLAIM_INCIDENT_FACT",
+     "text": "The team lead states that no model output was available to evaluate for the affected item.",
+     "blocking": true,
+     "evidence_ids": [
+      "m:C_RP_GENERAL:1790908211.000339"
+     ],
+     "attributions": [
+      {
+       "user_id": "U001",
+       "relation": "AUTHOR",
+       "evidence_id": "m:C_RP_GENERAL:1790908211.000339",
+       "role": "TEAM_LEAD"
+      }
+     ],
+     "verdict": "SUPPORTED",
+     "model_verdict": "SUPPORTED",
+     "rationale": "The team lead explicitly states that no model output was available to evaluate for the affected item."
+    },
+    {
+     "statement_id": "claim:c5",
+     "kind": "CLAIM_THREAD_INSTRUCTION",
+     "text": "The team lead instructs the thread to mark the affected item as a response-fetch/tool incident and not invent a quality label. Verbatim quote: \"For the affected item, no model output was available to evaluate. Mark it as a response-fetch/tool incident and do not invent a quality label.\"",
+     "blocking": true,
+     "evidence_ids": [
+      "m:C_RP_GENERAL:1790908211.000339"
+     ],
+     "attributions": [
+      {
+       "user_id": "U001",
+       "relation": "AUTHOR",
+       "evidence_id": "m:C_RP_GENERAL:1790908211.000339",
+       "role": "TEAM_LEAD"
+      }
+     ],
+     "verdict": "SUPPORTED",
+     "model_verdict": "SUPPORTED",
+     "rationale": "The quotation matches the team lead's message exactly, and the statement correctly limits the instruction to the thread's affected item."
+    },
+    {
+     "statement_id": "claim:c6",
+     "kind": "CLAIM_GUIDANCE",
+     "text": "Current project instructions require recording a fetch incident when response panes never load and prohibit inferring response quality. Verbatim quote: \"If response panes never load, record a fetch incident and do not infer response quality.\"",
+     "blocking": true,
+     "evidence_ids": [
+      "k:response-preference-instructions@1.1:36683c52"
+     ],
+     "verdict": "SUPPORTED",
+     "model_verdict": "SUPPORTED",
+     "rationale": "The current project-wide instructions contain the quoted sentence verbatim and establish the stated fetch-incident handling."
+    },
+    {
+     "statement_id": "claim:c7",
+     "kind": "CLAIM_INFERENCE",
+     "text": "The thread provides handling instructions but contains no report that response access recovered for either tutor.",
+     "blocking": true,
+     "evidence_ids": [
+      "m:C_RP_GENERAL:1790908073.000029",
+      "m:C_RP_GENERAL:1790908127.000113",
+      "m:C_RP_GENERAL:1790908167.000226",
+      "m:C_RP_GENERAL:1790908211.000339"
+     ],
+     "attributions": [
+      {
+       "user_id": "U010",
+       "relation": "AUTHOR",
+       "evidence_id": "m:C_RP_GENERAL:1790908073.000029",
+       "role": "TUTOR"
+      },
+      {
+       "user_id": "U015",
+       "relation": "AUTHOR",
+       "evidence_id": "m:C_RP_GENERAL:1790908127.000113",
+       "role": "TUTOR"
+      },
+      {
+       "user_id": "U001",
+       "relation": "AUTHOR",
+       "evidence_id": "m:C_RP_GENERAL:1790908211.000339",
+       "role": "TEAM_LEAD"
+      }
+     ],
+     "verdict": "SUPPORTED",
+     "model_verdict": "SUPPORTED",
+     "rationale": "The complete thread supplies classification instructions but contains no report that either tutor regained response access."
+    },
+    {
+     "statement_id": "summary:s1",
+     "kind": "SUMMARY",
+     "text": "Two tutors report that responses fail to appear in comparisons, including spinning answer panes on RP-8073.",
+     "blocking": true,
+     "evidence_ids": [
+      "m:C_RP_GENERAL:1790908073.000029",
+      "m:C_RP_GENERAL:1790908127.000113"
+     ],
+     "attributions": [
+      {
+       "user_id": "U010",
+       "relation": "AUTHOR",
+       "evidence_id": "m:C_RP_GENERAL:1790908073.000029",
+       "role": "TUTOR"
+      },
+      {
+       "user_id": "U015",
+       "relation": "AUTHOR",
+       "evidence_id": "m:C_RP_GENERAL:1790908127.000113",
+       "role": "TUTOR"
+      }
+     ],
+     "verdict": "SUPPORTED",
+     "model_verdict": "SUPPORTED",
+     "rationale": "Two distinct tutors report responses not appearing; U010 specifically describes spinning answer panes on RP-8073."
+    },
+    {
+     "statement_id": "summary:s2",
+     "kind": "SUMMARY",
+     "text": "The team lead instructed the thread to record the affected item as a response-fetch/tool incident without inventing a quality label; the thread does not report restored access.",
+     "blocking": true,
+     "evidence_ids": [
+      "m:C_RP_GENERAL:1790908211.000339",
+      "m:C_RP_GENERAL:1790908073.000029",
+      "m:C_RP_GENERAL:1790908127.000113",
+      "m:C_RP_GENERAL:1790908167.000226"
+     ],
+     "attributions": [
+      {
+       "user_id": "U001",
+       "relation": "AUTHOR",
+       "evidence_id": "m:C_RP_GENERAL:1790908211.000339",
+       "role": "TEAM_LEAD"
+      },
+      {
+       "user_id": "U010",
+       "relation": "AUTHOR",
+       "evidence_id": "m:C_RP_GENERAL:1790908073.000029",
+       "role": "TUTOR"
+      },
+      {
+       "user_id": "U015",
+       "relation": "AUTHOR",
+       "evidence_id": "m:C_RP_GENERAL:1790908127.000113",
+       "role": "TUTOR"
+      }
+     ],
+     "verdict": "SUPPORTED",
+     "model_verdict": "SUPPORTED",
+     "rationale": "The team lead gives the stated classification instruction, and no message in the complete thread reports restored access."
+    },
+    {
+     "statement_id": "detail:d1",
+     "kind": "DETAIL",
+     "text": "A tutor reports that both answer panes keep spinning when opening RP-8073; a second tutor reports that a response still failed to appear after trying a second item.",
+     "blocking": false,
+     "evidence_ids": [
+      "m:C_RP_GENERAL:1790908073.000029",
+      "m:C_RP_GENERAL:1790908127.000113"
+     ],
+     "attributions": [
+      {
+       "user_id": "U010",
+       "relation": "AUTHOR",
+       "evidence_id": "m:C_RP_GENERAL:1790908073.000029",
+       "role": "TUTOR"
+      },
+      {
+       "user_id": "U015",
+       "relation": "AUTHOR",
+       "evidence_id": "m:C_RP_GENERAL:1790908127.000113",
+       "role": "TUTOR"
+      }
+     ],
+     "verdict": "SUPPORTED",
+     "model_verdict": "SUPPORTED",
+     "rationale": "Both reports and their attribution to distinct tutors accurately preserve the cited messages."
+    },
+    {
+     "statement_id": "detail:d2",
+     "kind": "DETAIL",
+     "text": "A QA tutor asked whether the failure happens before model responses are displayed.",
+     "blocking": false,
+     "evidence_ids": [
+      "m:C_RP_GENERAL:1790908167.000226"
+     ],
+     "attributions": [
+      {
+       "user_id": "U002",
+       "relation": "AUTHOR",
+       "evidence_id": "m:C_RP_GENERAL:1790908167.000226",
+       "role": "QA_TUTOR"
+      }
+     ],
+     "verdict": "SUPPORTED",
+     "model_verdict": "SUPPORTED",
+     "rationale": "The cited author is a QA tutor and asks the stated diagnostic question."
+    },
+    {
+     "statement_id": "detail:d3",
+     "kind": "DETAIL",
+     "text": "The team lead stated that no model output was available to evaluate for the affected item.",
+     "blocking": false,
+     "evidence_ids": [
+      "m:C_RP_GENERAL:1790908211.000339"
+     ],
+     "attributions": [
+      {
+       "user_id": "U001",
+       "relation": "AUTHOR",
+       "evidence_id": "m:C_RP_GENERAL:1790908211.000339",
+       "role": "TEAM_LEAD"
+      }
+     ],
+     "verdict": "SUPPORTED",
+     "model_verdict": "SUPPORTED",
+     "rationale": "The team lead explicitly states that the affected item had no model output available to evaluate."
+    },
+    {
+     "statement_id": "detail:d4",
+     "kind": "DETAIL",
+     "text": "Current project instructions say to record a fetch incident when response panes never load and not infer response quality.",
+     "blocking": false,
+     "evidence_ids": [
+      "k:response-preference-instructions@1.1:36683c52"
+     ],
+     "verdict": "SUPPORTED",
+     "model_verdict": "SUPPORTED",
+     "rationale": "The current instructions explicitly require recording a fetch incident when panes never load and prohibit inferring response quality."
+    },
+    {
+     "statement_id": "action",
+     "kind": "ACTION",
+     "text": "Report a technical issue to engineering. Instruction: Report the response-loading failures to engineering, including RP-8073 and the second tutor's report, while retaining the existing fetch-incident handling. Draft to copy: Please investigate response-loading failures in this batch. Two tutors report responses failing to appear:\n- A tutor reports that both answer panes keep spinning when opening comparison task RP-8073.\n- A second tutor reports that a response still failed to appear after trying a second item.\nFor the affected item, no model output was available to evaluate. It is being handled as a response-fetch/tool incident, without an invented quality label. Please check the loading behavior and advise on restoring access. Scope: This report concerns the reported loading failures; it does not establish a technical cause or extend the thread-specific instruction to unrelated incidents.",
+     "blocking": true,
+     "evidence_ids": [
+      "m:C_RP_GENERAL:1790908073.000029",
+      "m:C_RP_GENERAL:1790908127.000113",
+      "m:C_RP_GENERAL:1790908211.000339",
+      "k:response-preference-instructions@1.1:36683c52",
+      "m:C_RP_GENERAL:1790908167.000226"
+     ],
+     "premises": [
+      "claim:c1",
+      "claim:c2",
+      "claim:c4",
+      "claim:c5",
+      "claim:c6",
+      "claim:c7"
+     ],
+     "verdict": "SUPPORTED",
+     "model_verdict": "SUPPORTED",
+     "rationale": "The two loading-failure reports justify technical investigation by engineering. The draft accurately preserves the reported symptoms and existing classification handling, names no unsupported concrete route, and does not assert a cause or broaden the thread instruction."
+    },
+    {
+     "statement_id": "action:rationale",
+     "kind": "ACTION_RATIONALE",
+     "text": "Why this helps: The labeling instruction addresses classification, not restored access. Engineering can investigate the reported loading behavior while current guidance keeps missing output separate from response quality.",
+     "blocking": false,
+     "evidence_ids": [
+      "m:C_RP_GENERAL:1790908073.000029",
+      "m:C_RP_GENERAL:1790908127.000113",
+      "m:C_RP_GENERAL:1790908211.000339",
+      "k:response-preference-instructions@1.1:36683c52",
+      "m:C_RP_GENERAL:1790908167.000226"
+     ],
+     "verdict": "SUPPORTED",
+     "model_verdict": "SUPPORTED",
+     "rationale": "Classification guidance does not restore response access. The reported loading failures justify engineering investigation while the current instructions keep missing output separate from response quality."
+    },
+    {
+     "statement_id": "action:need",
+     "kind": "INTERVENTION_NEED",
+     "text": "Why intervening now is needed (an operational problem that needs coordination): Two tutors report response-loading failures that prevent viewing the responses, and the thread supplies classification instructions without reporting restored access.",
+     "blocking": false,
+     "evidence_ids": [
+      "m:C_RP_GENERAL:1790908073.000029",
+      "m:C_RP_GENERAL:1790908127.000113",
+      "m:C_RP_GENERAL:1790908211.000339"
+     ],
+     "verdict": "SUPPORTED",
+     "model_verdict": "SUPPORTED",
+     "rationale": "Two tutors report an operational obstacle to viewing responses, and the thread addresses classification without reporting recovery. This supports coordination for the loading problem despite settled labeling guidance."
+    },
+    {
+     "statement_id": "resolution:member_bb78d680dd30a22ffa11cce1",
+     "kind": "RESOLUTION",
+     "text": "Member thread member_bb78d680dd30a22ffa11cce1 is PARTIALLY_RESOLVED: The team lead settles the affected item's classification as a fetch/tool incident without a quality label. The complete thread contains no report that either tutor regained access to responses.",
+     "blocking": true,
+     "evidence_ids": [
+      "m:C_RP_GENERAL:1790908073.000029",
+      "m:C_RP_GENERAL:1790908127.000113",
+      "m:C_RP_GENERAL:1790908167.000226",
+      "m:C_RP_GENERAL:1790908211.000339"
+     ],
+     "verdict": "SUPPORTED",
+     "model_verdict": "SUPPORTED",
+     "rationale": "The team lead settles classification, but the complete thread provides no report of restored response access, supporting partial rather than complete resolution."
+    },
+    {
+     "statement_id": "severity:rationale",
+     "kind": "SEVERITY_RATIONALE",
+     "text": "Severity HIGH: Two distinct tutors report comparable failures to display responses, indicating disruption beyond one reporter; the team lead states that the affected item had no output to evaluate.",
+     "blocking": true,
+     "evidence_ids": [
+      "m:C_RP_GENERAL:1790908073.000029",
+      "m:C_RP_GENERAL:1790908127.000113",
+      "m:C_RP_GENERAL:1790908167.000226",
+      "m:C_RP_GENERAL:1790908211.000339"
+     ],
+     "verdict": "SUPPORTED",
+     "model_verdict": "SUPPORTED",
+     "rationale": "The evidence establishes comparable response-display failures reported by two distinct tutors and the team lead's statement that the affected item lacked output to evaluate."
+    },
+    {
+     "statement_id": "severity:signal:HIGH[3]",
+     "kind": "SEVERITY_SIGNAL",
+     "text": "Rubric signal met - \"Multiple distinct people or affected tasks reporting a comparable problem within the relevant project, batch, and time window, suggesting broader disruption or systemic labeling risk. Consider the number affected relative to the known active group when that information is available; do not require an explicit statement of widespread impact\": Two tutors report responses failing to appear in the same thread, including spinning panes on RP-8073 and a failure after trying a second item.",
+     "blocking": true,
+     "evidence_ids": [
+      "m:C_RP_GENERAL:1790908073.000029",
+      "m:C_RP_GENERAL:1790908127.000113"
+     ],
+     "verdict": "SUPPORTED",
+     "model_verdict": "SUPPORTED",
+     "rationale": "Two distinct tutors report comparable failures within the same batch thread, satisfying the stated multiple-reporter signal without requiring an assertion of widespread impact."
+    },
+    {
+     "statement_id": "reporter:U010",
+     "kind": "AFFECTED_REPORTER",
+     "text": "U010 reports, in their own cited message, being affected by this problem.",
+     "blocking": true,
+     "evidence_ids": [
+      "m:C_RP_GENERAL:1790908073.000029"
+     ],
+     "verdict": "SUPPORTED",
+     "model_verdict": "SUPPORTED",
+     "rationale": "U010's own message reports spinning response panes when opening a comparison."
+    },
+    {
+     "statement_id": "reporter:U015",
+     "kind": "AFFECTED_REPORTER",
+     "text": "U015 reports, in their own cited message, being affected by this problem.",
+     "blocking": true,
+     "evidence_ids": [
+      "m:C_RP_GENERAL:1790908127.000113"
+     ],
+     "verdict": "SUPPORTED",
+     "model_verdict": "SUPPORTED",
+     "rationale": "U015's own message reports that responses still failed to appear after trying a second item."
+    }
+   ]
+  },
+  "temporal": {
+   "status": "NONE_FOUND",
+   "findings": [],
+   "source_consistency": "ASSESSED",
+   "ignored_revision_states": "NOT_YET_EFFECTIVE and NOT_APPROVED revisions never compete with applicable guidance."
+  },
+  "temporal_before_grounding": {
+   "status": "NONE_FOUND",
+   "findings": [],
+   "source_consistency": "NOT_ASSESSED",
+   "ignored_revision_states": "NOT_YET_EFFECTIVE and NOT_APPROVED revisions never compete with applicable guidance."
+  },
+  "severity": {
+   "assessment": {
+    "level": "HIGH",
+    "assessment_status": "ASSESSED",
+    "rubric_version": "severity-rubric-v3-semantic-signals",
+    "rubric_content_sha256": "eccaa31a2ab84a0aa7c005216a92fc39681e1dd10107117344948235a76673f4",
+    "rubric_project_id": null,
+    "rubric_scope": "SHARED_DEFAULT",
+    "rationale": "Two distinct tutors report comparable failures to display responses, indicating disruption beyond one reporter; the team lead states that the affected item had no output to evaluate.",
+    "matched_signals": [
+     {
+      "level": "HIGH",
+      "signal_index": 3,
+      "signal_text": "Multiple distinct people or affected tasks reporting a comparable problem within the relevant project, batch, and time window, suggesting broader disruption or systemic labeling risk. Consider the number affected relative to the known active group when that information is available; do not require an explicit statement of widespread impact",
+      "support": "Two tutors report responses failing to appear in the same thread, including spinning panes on RP-8073 and a failure after trying a second item.",
+      "evidence": [
+       {
+        "kind": "slack_message",
+        "project_id": "response_preference",
+        "batch_id": "rp_batch_15",
+        "scope": "project",
+        "channel_id": "C_RP_GENERAL",
+        "thread_id": "1790908073.000029",
+        "message_id": "1790908073.000029",
+        "document_id": null,
+        "version_id": null,
+        "authoring_document_id": null,
+        "authoring_version": null,
+        "section": null,
+        "chunk_id": null,
+        "candidate_group_id": null,
+        "member_id": "member_bb78d680dd30a22ffa11cce1",
+        "artifact": null,
+        "artifact_sha256": null,
+        "quote": null,
+        "note": "m:C_RP_GENERAL:1790908073.000029"
+       },
+       {
+        "kind": "slack_message",
+        "project_id": "response_preference",
+        "batch_id": "rp_batch_15",
+        "scope": "project",
+        "channel_id": "C_RP_GENERAL",
+        "thread_id": "1790908073.000029",
+        "message_id": "1790908127.000113",
+        "document_id": null,
+        "version_id": null,
+        "authoring_document_id": null,
+        "authoring_version": null,
+        "section": null,
+        "chunk_id": null,
+        "candidate_group_id": null,
+        "member_id": "member_bb78d680dd30a22ffa11cce1",
+        "artifact": null,
+        "artifact_sha256": null,
+        "quote": null,
+        "note": "m:C_RP_GENERAL:1790908127.000113"
+       }
+      ]
+     }
+    ],
+    "evidence": [
+     {
+      "kind": "slack_message",
+      "project_id": "response_preference",
+      "batch_id": "rp_batch_15",
+      "scope": "project",
+      "channel_id": "C_RP_GENERAL",
+      "thread_id": "1790908073.000029",
+      "message_id": "1790908073.000029",
+      "document_id": null,
+      "version_id": null,
+      "authoring_document_id": null,
+      "authoring_version": null,
+      "section": null,
+      "chunk_id": null,
+      "candidate_group_id": null,
+      "member_id": "member_bb78d680dd30a22ffa11cce1",
+      "artifact": null,
+      "artifact_sha256": null,
+      "quote": null,
+      "note": "m:C_RP_GENERAL:1790908073.000029"
+     },
+     {
+      "kind": "slack_message",
+      "project_id": "response_preference",
+      "batch_id": "rp_batch_15",
+      "scope": "project",
+      "channel_id": "C_RP_GENERAL",
+      "thread_id": "1790908073.000029",
+      "message_id": "1790908127.000113",
+      "document_id": null,
+      "version_id": null,
+      "authoring_document_id": null,
+      "authoring_version": null,
+      "section": null,
+      "chunk_id": null,
+      "candidate_group_id": null,
+      "member_id": "member_bb78d680dd30a22ffa11cce1",
+      "artifact": null,
+      "artifact_sha256": null,
+      "quote": null,
+      "note": "m:C_RP_GENERAL:1790908127.000113"
+     }
+    ],
+    "occurrence": {
+     "affected_reporters": {
+      "status": "LOWER_BOUND",
+      "count": 2,
+      "ids": [
+       "U010",
+       "U015"
+      ],
+      "basis": "Distinct authors whose own cited message reports the problem; other participants are not counted.",
+      "evidence": [
+       {
+        "kind": "slack_message",
+        "project_id": "response_preference",
+        "batch_id": "rp_batch_15",
+        "scope": "project",
+        "channel_id": "C_RP_GENERAL",
+        "thread_id": "1790908073.000029",
+        "message_id": "1790908073.000029",
+        "document_id": null,
+        "version_id": null,
+        "authoring_document_id": null,
+        "authoring_version": null,
+        "section": null,
+        "chunk_id": null,
+        "candidate_group_id": null,
+        "member_id": "member_bb78d680dd30a22ffa11cce1",
+        "artifact": null,
+        "artifact_sha256": null,
+        "quote": null,
+        "note": "m:C_RP_GENERAL:1790908073.000029"
+       },
+       {
+        "kind": "slack_message",
+        "project_id": "response_preference",
+        "batch_id": "rp_batch_15",
+        "scope": "project",
+        "channel_id": "C_RP_GENERAL",
+        "thread_id": "1790908073.000029",
+        "message_id": "1790908127.000113",
+        "document_id": null,
+        "version_id": null,
+        "authoring_document_id": null,
+        "authoring_version": null,
+        "section": null,
+        "chunk_id": null,
+        "candidate_group_id": null,
+        "member_id": "member_bb78d680dd30a22ffa11cce1",
+        "artifact": null,
+        "artifact_sha256": null,
+        "quote": null,
+        "note": "m:C_RP_GENERAL:1790908127.000113"
+       }
+      ]
+     },
+     "affected_tasks": {
+      "status": "UNKNOWN",
+      "count": null,
+      "ids": [],
+      "basis": null,
+      "evidence": []
+     },
+     "relevant_threads": [
+      {
+       "project_id": "response_preference",
+       "batch_id": "rp_batch_15",
+       "channel_id": "C_RP_GENERAL",
+       "thread_id": "1790908073.000029",
+       "member_id": "member_bb78d680dd30a22ffa11cce1"
+      }
+     ],
+     "reporting_window": {
+      "start": "2026-10-02T02:27:53.000029+00:00",
+      "end": "2026-10-02T02:30:11.000339+00:00"
+     },
+     "historical_recurrence": {
+      "status": "NOT_CHECKED",
+      "sources": [],
+      "event_series_ids": []
+     },
+     "known_denominator": null,
+     "structural": {
+      "threads": 1,
+      "messages": 4,
+      "distinct_participants": 4,
+      "duplicate_threads_ignored": 0,
+      "duplicate_messages_ignored": 0,
+      "computed_from": "topic member threads (original Slack messages)",
+      "participants_are_not_affected_reporters": true
+     },
+     "semantic_identification": "ASSESSED"
+    },
+    "inherited_from": {
+     "level": "UNKNOWN",
+     "assessment_status": "UNASSESSED",
+     "assessment_deferred_to": "AGENT3",
+     "reason": "Agent 2 performs taxonomy only."
+    }
+   },
+   "issues": [],
+   "notes": [],
+   "proposal": {
+    "level": "HIGH",
+    "rationale": "Two distinct tutors report comparable failures to display responses, indicating disruption beyond one reporter; the team lead states that the affected item had no output to evaluate.",
+    "signals": [
+     {
+      "level": "HIGH",
+      "signal_index": 3,
+      "signal_text": "Multiple distinct people or affected tasks reporting a comparable problem within the relevant project, batch, and time window, suggesting broader disruption or systemic labeling risk. Consider the number affected relative to the known active group when that information is available; do not require an explicit statement of widespread impact",
+      "support": "Two tutors report responses failing to appear in the same thread, including spinning panes on RP-8073 and a failure after trying a second item.",
+      "evidence_ids": [
+       "m:C_RP_GENERAL:1790908073.000029",
+       "m:C_RP_GENERAL:1790908127.000113"
+      ]
+     }
+    ],
+    "affected_reporters": [
+     {
+      "author_id": "U010",
+      "evidence_id": "m:C_RP_GENERAL:1790908073.000029"
+     },
+     {
+      "author_id": "U015",
+      "evidence_id": "m:C_RP_GENERAL:1790908127.000113"
+     }
+    ],
+    "recurrence": "NOT_CHECKED",
+    "recurrence_evidence_ids": [],
+    "reported_recurrence_evidence_ids": []
+   }
+  },
+  "resolution": {
+   "topic": "PARTIALLY_RESOLVED",
+   "members": {
+    "member_bb78d680dd30a22ffa11cce1": "PARTIALLY_RESOLVED"
+   },
+   "agent1_attributed": [
+    {
+     "member_id": "member_bb78d680dd30a22ffa11cce1",
+     "state": "RESOLVED_IN_THREAD",
+     "agent1_verification_status": "NEEDS_REVIEW",
+     "agent1_review_required": true
+    }
+   ]
+  },
+  "established_handling": [],
+  "coverage_issues": [],
+  "action_source": "DRAFT",
+  "action_notes": [],
+  "tot": {
+   "status": "NOT_TRIGGERED",
+   "triggers": [],
+   "choice_after_grounding": {
+    "status": "NOT_COMPARED",
+    "viable": []
+   }
+  },
+  "evidence_ledger": {
+   "m:C_RP_GENERAL:1790908073.000029": {
+    "evidence_id": "m:C_RP_GENERAL:1790908073.000029",
+    "origin": "member_message",
+    "use": "MEMBER_REPORT",
+    "member_id": "member_bb78d680dd30a22ffa11cce1",
+    "channel_id": "C_RP_GENERAL",
+    "thread_id": "1790908073.000029",
+    "message_id": "1790908073.000029",
+    "author_id": "U010",
+    "author_name": "Avery",
+    "author_role": "TUTOR",
+    "timestamp": "2026-10-02T02:27:53.000029Z",
+    "thread_starter_id": "U010",
+    "thread_starter_role": "TUTOR",
+    "reactions": [],
+    "excerpt": "Anyone else seeing this? Both answer panes keep spinning when I open a comparison. (task ref RP-8073)"
+   },
+   "m:C_RP_GENERAL:1790908127.000113": {
+    "evidence_id": "m:C_RP_GENERAL:1790908127.000113",
+    "origin": "member_message",
+    "use": "MEMBER_REPORT",
+    "member_id": "member_bb78d680dd30a22ffa11cce1",
+    "channel_id": "C_RP_GENERAL",
+    "thread_id": "1790908073.000029",
+    "message_id": "1790908127.000113",
+    "author_id": "U015",
+    "author_name": "Carla",
+    "author_role": "TUTOR",
+    "timestamp": "2026-10-02T02:28:47.000113Z",
+    "thread_starter_id": "U010",
+    "thread_starter_role": "TUTOR",
+    "reactions": [],
+    "excerpt": "I tried a second item and the response still failed to appear."
+   },
+   "m:C_RP_GENERAL:1790908167.000226": {
+    "evidence_id": "m:C_RP_GENERAL:1790908167.000226",
+    "origin": "member_message",
+    "use": "MEMBER_REPORT",
+    "member_id": "member_bb78d680dd30a22ffa11cce1",
+    "channel_id": "C_RP_GENERAL",
+    "thread_id": "1790908073.000029",
+    "message_id": "1790908167.000226",
+    "author_id": "U002",
+    "author_name": "Mina",
+    "author_role": "QA_TUTOR",
+    "timestamp": "2026-10-02T02:29:27.000226Z",
+    "thread_starter_id": "U010",
+    "thread_starter_role": "TUTOR",
+    "reactions": [],
+    "excerpt": "Does the failure happen before model responses are displayed?"
+   },
+   "m:C_RP_GENERAL:1790908211.000339": {
+    "evidence_id": "m:C_RP_GENERAL:1790908211.000339",
+    "origin": "member_message",
+    "use": "MEMBER_REPORT",
+    "member_id": "member_bb78d680dd30a22ffa11cce1",
+    "channel_id": "C_RP_GENERAL",
+    "thread_id": "1790908073.000029",
+    "message_id": "1790908211.000339",
+    "author_id": "U001",
+    "author_name": "Alex",
+    "author_role": "TEAM_LEAD",
+    "timestamp": "2026-10-02T02:30:11.000339Z",
+    "thread_starter_id": "U010",
+    "thread_starter_role": "TUTOR",
+    "reactions": [],
+    "excerpt": "For the affected item, no model output was available to evaluate. Mark it as a response-fetch/tool incident and do not invent a quality label."
+   },
+   "k:response-preference-instructions@1.1:36683c52": {
+    "evidence_id": "k:response-preference-instructions@1.1:36683c52",
+    "origin": "retrieved_source",
+    "use": "CURRENT_GUIDANCE",
+    "citation": {
+     "document_id": "knowledge_c49652bd3dfc0e71a42597bd9128f922ba1700cc4d7eb83a39cfbaad9a43ed6d",
+     "version_id": "version_497eb858ea77dcb88133f2ba1afd5eaf08d1a1d380c3a5cad663f8f55b7d3c65",
+     "chunk_id": "chunk_36683c5243b08e3c0a35f9659ac8a1e4",
+     "authoring": "response-preference-instructions@1.1",
+     "title": "Response Preference — Instructions (v1.1)",
+     "sections": [
+      "Tool incidents and submission"
+     ],
+     "source": {
+      "batch_id": null,
+      "channel_id": null,
+      "manual_key": "response-preference-instructions",
+      "message_id": null,
+      "permalink": null,
+      "project_id": "response_preference",
+      "reference": null,
+      "system": "manual",
+      "thread_id": null,
+      "workspace_id": null
+     }
+    },
+    "source_type": "guideline",
+    "record_kind": "guideline",
+    "applicability": {
+     "state": "CURRENT",
+     "revision_state": "CURRENT",
+     "version_mode": "current",
+     "replaced_by": [],
+     "unverified_supersession": [],
+     "supersedes": [],
+     "enactment": null,
+     "other_revisions": []
+    },
+    "dates": {
+     "source_date": "2026-08-30T13:00:00Z",
+     "basis": "effective_at",
+     "effective_at": "2026-08-30T13:00:00Z",
+     "created_at": null,
+     "valid_until": null,
+     "expired_as_of": false,
+     "reference_time": "2026-10-02T12:00:00Z"
+    },
+    "scope": {
+     "project_id": "response_preference",
+     "batch_id": null,
+     "scope": "project",
+     "batch_relation": "project_wide"
+    },
+    "authority": {
+     "role": "TEAM_LEAD",
+     "actor": "U001",
+     "actor_relation": "RECORD_AUTHORITY",
+     "approval_status": "EXPLICIT_SOURCE_MARKER",
+     "provenance": "synthetic_manual_record"
+    },
+    "authorship": {
+     "author_id": null,
+     "verified": false,
+     "basis": "NO_AUTHOR_RECORDED"
+    },
+    "recorded_states": {
+     "status": "approved",
+     "decision_status": null,
+     "execution_status": null,
+     "outcome_status": null
+    },
+    "upstream_review": null,
+    "excerpt": "## Tool incidents and submission\nIf response panes never load, record a fetch incident and do not infer response quality. If Submit fails, capture the task ID, required-field state, error and exact button behavior. A selected label is not a completed submission until LT confirms it. Assess tool impact separately from the content rubric."
+   },
+   "k:response-preference-faq@1.1:4683724f": {
+    "evidence_id": "k:response-preference-faq@1.1:4683724f",
+    "origin": "retrieved_source",
+    "use": "CURRENT_GUIDANCE",
+    "citation": {
+     "document_id": "knowledge_8267f474fe0a050bdbcaf6140c458ee11ad457fdc2afe9f79de12a23de8575e9",
+     "version_id": "version_6c9da15dd304e1be3d453ea1de9cbfd1e8cc54f0939ce516dd89cf0457f82a86",
+     "chunk_id": "chunk_4683724f24eb1ddb53c613284c5f330b",
+     "authoring": "response-preference-faq@1.1",
+     "title": "Response Preference — FAQ (v1.1)",
+     "sections": [
+      "Ties and preferences"
+     ],
+     "source": {
+      "batch_id": null,
+      "channel_id": null,
+      "manual_key": "response-preference-faq",
+      "message_id": null,
+      "permalink": null,
+      "project_id": "response_preference",
+      "reference": null,
+      "system": "manual",
+      "thread_id": null,
+      "workspace_id": null
+     }
+    },
+    "source_type": "faq",
+    "record_kind": "faq",
+    "applicability": {
+     "state": "CURRENT",
+     "revision_state": "CURRENT",
+     "version_mode": "current",
+     "replaced_by": [],
+     "unverified_supersession": [],
+     "supersedes": [],
+     "enactment": null,
+     "other_revisions": []
+    },
+    "dates": {
+     "source_date": "2026-09-05T13:00:00Z",
+     "basis": "effective_at",
+     "effective_at": "2026-09-05T13:00:00Z",
+     "created_at": null,
+     "valid_until": null,
+     "expired_as_of": false,
+     "reference_time": "2026-10-02T12:00:00Z"
+    },
+    "scope": {
+     "project_id": "response_preference",
+     "batch_id": null,
+     "scope": "project",
+     "batch_relation": "project_wide"
+    },
+    "authority": {
+     "role": "TEAM_LEAD",
+     "actor": "U001",
+     "actor_relation": "RECORD_AUTHORITY",
+     "approval_status": "EXPLICIT_SOURCE_MARKER",
+     "provenance": "synthetic_manual_record"
+    },
+    "authorship": {
+     "author_id": null,
+     "verified": false,
+     "basis": "NO_AUTHOR_RECORDED"
+    },
+    "recorded_states": {
+     "status": "approved",
+     "decision_status": null,
+     "execution_status": null,
+     "outcome_status": null
+    },
+    "upstream_review": null,
+    "excerpt": "## Ties and preferences\n\n### Q: How much improvement is needed to avoid a tie?\nThe difference must offer a meaningful benefit to the user. Cosmetic phrasing alone usually does not. Explain that benefit; otherwise a tie can be appropriate.\n\n### Q: QA is reversing ties on similar pairs. What should I do?\nShare the pairs, relevant prompt constraints and both rationales for calibration. Check whether the cases are actually comparable. An answer to one pair should not be generalized without matching its scope."
+   },
+   "k:response-preference-instructions@1.1:47ed0c14": {
+    "evidence_id": "k:response-preference-instructions@1.1:47ed0c14",
+    "origin": "retrieved_source",
+    "use": "CURRENT_GUIDANCE",
+    "citation": {
+     "document_id": "knowledge_c49652bd3dfc0e71a42597bd9128f922ba1700cc4d7eb83a39cfbaad9a43ed6d",
+     "version_id": "version_497eb858ea77dcb88133f2ba1afd5eaf08d1a1d380c3a5cad663f8f55b7d3c65",
+     "chunk_id": "chunk_47ed0c146d2fe3870aed4a64ce14d76e",
+     "authoring": "response-preference-instructions@1.1",
+     "title": "Response Preference — Instructions (v1.1)",
+     "sections": [
+      "Instruction adherence versus accuracy"
+     ],
+     "source": {
+      "batch_id": null,
+      "channel_id": null,
+      "manual_key": "response-preference-instructions",
+      "message_id": null,
+      "permalink": null,
+      "project_id": "response_preference",
+      "reference": null,
+      "system": "manual",
+      "thread_id": null,
+      "workspace_id": null
+     }
+    },
+    "source_type": "guideline",
+    "record_kind": "guideline",
+    "applicability": {
+     "state": "CURRENT",
+     "revision_state": "CURRENT",
+     "version_mode": "current",
+     "replaced_by": [],
+     "unverified_supersession": [],
+     "supersedes": [],
+     "enactment": null,
+     "other_revisions": []
+    },
+    "dates": {
+     "source_date": "2026-08-30T13:00:00Z",
+     "basis": "effective_at",
+     "effective_at": "2026-08-30T13:00:00Z",
+     "created_at": null,
+     "valid_until": null,
+     "expired_as_of": false,
+     "reference_time": "2026-10-02T12:00:00Z"
+    },
+    "scope": {
+     "project_id": "response_preference",
+     "batch_id": null,
+     "scope": "project",
+     "batch_relation": "project_wide"
+    },
+    "authority": {
+     "role": "TEAM_LEAD",
+     "actor": "U001",
+     "actor_relation": "RECORD_AUTHORITY",
+     "approval_status": "EXPLICIT_SOURCE_MARKER",
+     "provenance": "synthetic_manual_record"
+    },
+    "authorship": {
+     "author_id": null,
+     "verified": false,
+     "basis": "NO_AUTHOR_RECORDED"
+    },
+    "recorded_states": {
+     "status": "approved",
+     "decision_status": null,
+     "execution_status": null,
+     "outcome_status": null
+    },
+    "upstream_review": null,
+    "excerpt": "## Instruction adherence versus accuracy\nScore these dimensions separately. An explicit required output structure, such as JSON, is not optional.\n\nThis guidance does not define a universal preference ordering for a response that is stronger on accuracy but weaker on a required format. When the applicable rules and actual pair do not settle the comparison, provide the exact prompt, both responses and their separate defects for a TL decision. Do not assume facts about the other response."
+   },
+   "k:response-preference-instructions@1.1:3350bbc0": {
+    "evidence_id": "k:response-preference-instructions@1.1:3350bbc0",
+    "origin": "retrieved_source",
+    "use": "CURRENT_GUIDANCE",
+    "citation": {
+     "document_id": "knowledge_c49652bd3dfc0e71a42597bd9128f922ba1700cc4d7eb83a39cfbaad9a43ed6d",
+     "version_id": "version_497eb858ea77dcb88133f2ba1afd5eaf08d1a1d380c3a5cad663f8f55b7d3c65",
+     "chunk_id": "chunk_3350bbc0864a963b08fc08bb48e80bd1",
+     "authoring": "response-preference-instructions@1.1",
+     "title": "Response Preference — Instructions (v1.1)",
+     "sections": [
+      "Factual errors and citations"
+     ],
+     "source": {
+      "batch_id": null,
+      "channel_id": null,
+      "manual_key": "response-preference-instructions",
+      "message_id": null,
+      "permalink": null,
+      "project_id": "response_preference",
+      "reference": null,
+      "system": "manual",
+      "thread_id": null,
+      "workspace_id": null
+     }
+    },
+    "source_type": "guideline",
+    "record_kind": "guideline",
+    "applicability": {
+     "state": "CURRENT",
+     "revision_state": "CURRENT",
+     "version_mode": "current",
+     "replaced_by": [],
+     "unverified_supersession": [],
+     "supersedes": [],
+     "enactment": null,
+     "other_revisions": []
+    },
+    "dates": {
+     "source_date": "2026-08-30T13:00:00Z",
+     "basis": "effective_at",
+     "effective_at": "2026-08-30T13:00:00Z",
+     "created_at": null,
+     "valid_until": null,
+     "expired_as_of": false,
+     "reference_time": "2026-10-02T12:00:00Z"
+    },
+    "scope": {
+     "project_id": "response_preference",
+     "batch_id": null,
+     "scope": "project",
+     "batch_relation": "project_wide"
+    },
+    "authority": {
+     "role": "TEAM_LEAD",
+     "actor": "U001",
+     "actor_relation": "RECORD_AUTHORITY",
+     "approval_status": "EXPLICIT_SOURCE_MARKER",
+     "provenance": "synthetic_manual_record"
+    },
+    "authorship": {
+     "author_id": null,
+     "verified": false,
+     "basis": "NO_AUTHOR_RECORDED"
+    },
+    "recorded_states": {
+     "status": "approved",
+     "decision_status": null,
+     "execution_status": null,
+     "outcome_status": null
+    },
+    "upstream_review": null,
+    "excerpt": "## Factual errors and citations\n- A factual error is major when it changes the central conclusion or the answer a user would act on.\n- A nonessential background error with no effect on that conclusion is minor.\n- A broken link is an access/verification failure, not proof that the underlying factual claim is false.\n- Distinguish an existing source that does not support the claim from an invented reference."
+   },
+   "k:rp-submit-zoom-generalization-rejected@1.0:044e436d": {
+    "evidence_id": "k:rp-submit-zoom-generalization-rejected@1.0:044e436d",
+    "origin": "retrieved_source",
+    "use": "PRIOR_DECISION",
+    "citation": {
+     "document_id": "knowledge_5e842a7932069a24d3ca5c77ee1e84706ef27d773fdb83a5adc08426002568a9",
+     "version_id": "version_d2950637e292f3975943e033145785a26cc83043a350cfd83c14ca4a409b6868",
+     "chunk_id": "chunk_044e436db0bbfe80d6c7c4d1123084ad",
+     "authoring": "rp-submit-zoom-generalization-rejected@1.0",
+     "title": "Reject a universal browser-zoom remedy for Submit reports",
+     "sections": [
+      "Evidence available at review",
+      "Prior ThreadSense advice"
+     ],
+     "source": {
+      "batch_id": "rp_batch_14",
+      "channel_id": null,
+      "manual_key": "rp-submit-zoom-generalization-rejected",
+      "message_id": null,
+      "permalink": null,
+      "project_id": "response_preference",
+      "reference": null,
+      "system": "manual",
+      "thread_id": null,
+      "workspace_id": null
+     }
+    },
+    "source_type": "decision",
+    "record_kind": "advice_review",
+    "applicability": {
+     "state": "CURRENT",
+     "revision_state": "CURRENT",
+     "version_mode": "current",
+     "replaced_by": [],
+     "unverified_supersession": [],
+     "supersedes": [],
+     "enactment": {
+      "status": "NOT_ENACTED",
+      "basis": null,
+      "governing_sources": [],
+      "missing": [
+       "NO_TL_APPROVAL",
+       "OUT_OF_SCOPE",
+       "NOT_A_POLICY_CHANGE",
+       "NO_ENACTMENT_EVIDENCE"
+      ],
+      "recorded": {
+       "decision_status": "tl_rejected",
+       "execution_status": "not_executed",
+       "authority_role": "TEAM_LEAD",
+       "batch_id": "rp_batch_14",
+       "valid_until": null,
+       "effective_at": "2026-09-08T16:00:00Z"
+      }
+     },
+     "other_revisions": []
+    },
+    "dates": {
+     "source_date": "2026-09-08T16:00:00Z",
+     "basis": "effective_at",
+     "effective_at": "2026-09-08T16:00:00Z",
+     "created_at": null,
+     "valid_until": null,
+     "expired_as_of": false,
+     "reference_time": "2026-10-02T12:00:00Z"
+    },
+    "scope": {
+     "project_id": "response_preference",
+     "batch_id": "rp_batch_14",
+     "scope": "project",
+     "batch_relation": "other_batch"
+    },
+    "authority": {
+     "role": "TEAM_LEAD",
+     "actor": "U001",
+     "actor_relation": "RECORD_AUTHORITY",
+     "approval_status": "NO_APPROVAL_MARKER",
+     "provenance": "synthetic_manual_record"
+    },
+    "authorship": {
+     "author_id": null,
+     "verified": false,
+     "basis": "NO_AUTHOR_RECORDED"
+    },
+    "recorded_states": {
+     "status": "tl_rejected",
+     "decision_status": "tl_rejected",
+     "execution_status": "not_executed",
+     "outcome_status": "resolved_in_checked_tasks"
+    },
+    "upstream_review": null,
+    "excerpt": "[PRIOR RECORD (advice_review; decision_status: tl_rejected; execution_status: not_executed; outcome_status: resolved_in_checked_tasks) - history, not a standing rule.]\n## Evidence available at review\n\nThe September 7 support notes cover RP14-Z011 and RP14-Z012 on a training workstation. At 200% browser zoom, the bottom of the form, including Submit, lay below the visible area. The button was not observed to be disabled. Returning the browser to 100% exposed the button, and both tasks produced a submission receipt: SIM-SUB-RP14-Z011 and SIM-SUB-RP14-Z012.\n\nNo network error or server rejection was recorded. These two cases were already resolved before this advice review; no action in response to the rejected recommendation has been executed.\n\n## Prior ThreadSense advice\n\nAdd a standard FAQ answer telling every tutor with a Submit problem to reset browser zoom to 100% before reporting the issue."
+   }
+  },
+  "card": {
+   "contract_version": "agent3-advice-card-v5",
+   "record_type": "ADVICE_CARD",
+   "card_id": "card_2029f5bdf3f402b80d2d111756b18a8d",
+   "project_id": "response_preference",
+   "topic_name": "Response fetch failure in comparison view",
+   "card_line": "NEEDS_REVIEW",
+   "summary": "Two tutors report that responses fail to appear in comparisons, including spinning answer panes on RP-8073. The team lead instructed the thread to record the affected item as a response-fetch/tool incident without inventing a quality label; the thread does not report restored access.",
+   "severity": {
+    "level": "HIGH",
+    "assessment_status": "ASSESSED",
+    "rubric_version": "severity-rubric-v3-semantic-signals",
+    "rubric_content_sha256": "eccaa31a2ab84a0aa7c005216a92fc39681e1dd10107117344948235a76673f4",
+    "rubric_project_id": null,
+    "rubric_scope": "SHARED_DEFAULT",
+    "rationale": "Two distinct tutors report comparable failures to display responses, indicating disruption beyond one reporter; the team lead states that the affected item had no output to evaluate.",
+    "matched_signals": [
+     {
+      "level": "HIGH",
+      "signal_index": 3,
+      "signal_text": "Multiple distinct people or affected tasks reporting a comparable problem within the relevant project, batch, and time window, suggesting broader disruption or systemic labeling risk. Consider the number affected relative to the known active group when that information is available; do not require an explicit statement of widespread impact",
+      "support": "Two tutors report responses failing to appear in the same thread, including spinning panes on RP-8073 and a failure after trying a second item.",
+      "evidence": [
+       {
+        "kind": "slack_message",
+        "project_id": "response_preference",
+        "batch_id": "rp_batch_15",
+        "scope": "project",
+        "channel_id": "C_RP_GENERAL",
+        "thread_id": "1790908073.000029",
+        "message_id": "1790908073.000029",
+        "document_id": null,
+        "version_id": null,
+        "authoring_document_id": null,
+        "authoring_version": null,
+        "section": null,
+        "chunk_id": null,
+        "candidate_group_id": null,
+        "member_id": "member_bb78d680dd30a22ffa11cce1",
+        "artifact": null,
+        "artifact_sha256": null,
+        "quote": null,
+        "note": "m:C_RP_GENERAL:1790908073.000029"
+       },
+       {
+        "kind": "slack_message",
+        "project_id": "response_preference",
+        "batch_id": "rp_batch_15",
+        "scope": "project",
+        "channel_id": "C_RP_GENERAL",
+        "thread_id": "1790908073.000029",
+        "message_id": "1790908127.000113",
+        "document_id": null,
+        "version_id": null,
+        "authoring_document_id": null,
+        "authoring_version": null,
+        "section": null,
+        "chunk_id": null,
+        "candidate_group_id": null,
+        "member_id": "member_bb78d680dd30a22ffa11cce1",
+        "artifact": null,
+        "artifact_sha256": null,
+        "quote": null,
+        "note": "m:C_RP_GENERAL:1790908127.000113"
+       }
+      ]
+     }
+    ],
+    "evidence": [
+     {
+      "kind": "slack_message",
+      "project_id": "response_preference",
+      "batch_id": "rp_batch_15",
+      "scope": "project",
+      "channel_id": "C_RP_GENERAL",
+      "thread_id": "1790908073.000029",
+      "message_id": "1790908073.000029",
+      "document_id": null,
+      "version_id": null,
+      "authoring_document_id": null,
+      "authoring_version": null,
+      "section": null,
+      "chunk_id": null,
+      "candidate_group_id": null,
+      "member_id": "member_bb78d680dd30a22ffa11cce1",
+      "artifact": null,
+      "artifact_sha256": null,
+      "quote": null,
+      "note": "m:C_RP_GENERAL:1790908073.000029"
+     },
+     {
+      "kind": "slack_message",
+      "project_id": "response_preference",
+      "batch_id": "rp_batch_15",
+      "scope": "project",
+      "channel_id": "C_RP_GENERAL",
+      "thread_id": "1790908073.000029",
+      "message_id": "1790908127.000113",
+      "document_id": null,
+      "version_id": null,
+      "authoring_document_id": null,
+      "authoring_version": null,
+      "section": null,
+      "chunk_id": null,
+      "candidate_group_id": null,
+      "member_id": "member_bb78d680dd30a22ffa11cce1",
+      "artifact": null,
+      "artifact_sha256": null,
+      "quote": null,
+      "note": "m:C_RP_GENERAL:1790908127.000113"
+     }
+    ],
+    "occurrence": {
+     "affected_reporters": {
+      "status": "LOWER_BOUND",
+      "count": 2,
+      "ids": [
+       "U010",
+       "U015"
+      ],
+      "basis": "Distinct authors whose own cited message reports the problem; other participants are not counted.",
+      "evidence": [
+       {
+        "kind": "slack_message",
+        "project_id": "response_preference",
+        "batch_id": "rp_batch_15",
+        "scope": "project",
+        "channel_id": "C_RP_GENERAL",
+        "thread_id": "1790908073.000029",
+        "message_id": "1790908073.000029",
+        "document_id": null,
+        "version_id": null,
+        "authoring_document_id": null,
+        "authoring_version": null,
+        "section": null,
+        "chunk_id": null,
+        "candidate_group_id": null,
+        "member_id": "member_bb78d680dd30a22ffa11cce1",
+        "artifact": null,
+        "artifact_sha256": null,
+        "quote": null,
+        "note": "m:C_RP_GENERAL:1790908073.000029"
+       },
+       {
+        "kind": "slack_message",
+        "project_id": "response_preference",
+        "batch_id": "rp_batch_15",
+        "scope": "project",
+        "channel_id": "C_RP_GENERAL",
+        "thread_id": "1790908073.000029",
+        "message_id": "1790908127.000113",
+        "document_id": null,
+        "version_id": null,
+        "authoring_document_id": null,
+        "authoring_version": null,
+        "section": null,
+        "chunk_id": null,
+        "candidate_group_id": null,
+        "member_id": "member_bb78d680dd30a22ffa11cce1",
+        "artifact": null,
+        "artifact_sha256": null,
+        "quote": null,
+        "note": "m:C_RP_GENERAL:1790908127.000113"
+       }
+      ]
+     },
+     "affected_tasks": {
+      "status": "UNKNOWN",
+      "count": null,
+      "ids": [],
+      "basis": null,
+      "evidence": []
+     },
+     "relevant_threads": [
+      {
+       "project_id": "response_preference",
+       "batch_id": "rp_batch_15",
+       "channel_id": "C_RP_GENERAL",
+       "thread_id": "1790908073.000029",
+       "member_id": "member_bb78d680dd30a22ffa11cce1"
+      }
+     ],
+     "reporting_window": {
+      "start": "2026-10-02T02:27:53.000029+00:00",
+      "end": "2026-10-02T02:30:11.000339+00:00"
+     },
+     "historical_recurrence": {
+      "status": "NOT_CHECKED",
+      "sources": [],
+      "event_series_ids": []
+     },
+     "known_denominator": null,
+     "structural": {
+      "threads": 1,
+      "messages": 4,
+      "distinct_participants": 4,
+      "duplicate_threads_ignored": 0,
+      "duplicate_messages_ignored": 0,
+      "computed_from": "topic member threads (original Slack messages)",
+      "participants_are_not_affected_reporters": true
+     },
+     "semantic_identification": "ASSESSED"
+    },
+    "inherited_from": {
+     "level": "UNKNOWN",
+     "assessment_status": "UNASSESSED",
+     "assessment_deferred_to": "AGENT3",
+     "reason": "Agent 2 performs taxonomy only."
+    }
+   },
+   "severity_is_provisional": false,
+   "resolution_status": "PARTIALLY_RESOLVED",
+   "recommended_action": {
+    "action_type": "ESCALATE_ENGINEERING",
+    "draft_text": "Please investigate response-loading failures in this batch. Two tutors report responses failing to appear:\n- A tutor reports that both answer panes keep spinning when opening comparison task RP-8073.\n- A second tutor reports that a response still failed to appear after trying a second item.\nFor the affected item, no model output was available to evaluate. It is being handled as a response-fetch/tool incident, without an invented quality label. Please check the loading behavior and advise on restoring access.",
+    "scope_note": "This report concerns the reported loading failures; it does not establish a technical cause or extend the thread-specific instruction to unrelated incidents.",
+    "label": "Report a technical issue to engineering",
+    "instruction": "Report the response-loading failures to engineering, including RP-8073 and the second tutor's report, while retaining the existing fetch-incident handling.",
+    "rationale": "The labeling instruction addresses classification, not restored access. Engineering can investigate the reported loading behavior while current guidance keeps missing output separate from response quality.",
+    "targets": [],
+    "essential_premise_ids": [
+     "claim:c1",
+     "claim:c2",
+     "claim:c4",
+     "claim:c5",
+     "claim:c6",
+     "claim:c7"
+    ],
+    "source": "DRAFT"
+   },
+   "reasoning": "What the evidence shows: A tutor reports that both answer panes keep spinning when opening a comparison on RP-8073 and asks whether others see the same behavior. A second tutor reports trying a second item and finding that the response still failed to appear. A QA tutor asks whether the failure happens before model responses are displayed. The team lead states that no model output was available to evaluate for the affected item. The team lead instructs the thread to mark the affected item as a response-fetch/tool incident and not invent a quality label. Current project instructions require recording a fetch incident when response panes never load and prohibit inferring response quality. The thread provides handling instructions but contains no report that response access recovered for either tutor. Thread status, read from each thread's own messages: partially resolved ×1. Agent 1's earlier labels (an input, not evidence): resolved in thread ×1; 1 of 1 were not verified by Agent 1.",
+   "supporting_sources": [
+    {
+     "kind": "knowledge_source",
+     "project_id": "response_preference",
+     "batch_id": null,
+     "scope": "project",
+     "channel_id": null,
+     "thread_id": null,
+     "message_id": null,
+     "document_id": "knowledge_c49652bd3dfc0e71a42597bd9128f922ba1700cc4d7eb83a39cfbaad9a43ed6d",
+     "version_id": "version_497eb858ea77dcb88133f2ba1afd5eaf08d1a1d380c3a5cad663f8f55b7d3c65",
+     "authoring_document_id": "response-preference-instructions",
+     "authoring_version": "1.1",
+     "section": "Tool incidents and submission",
+     "chunk_id": "chunk_36683c5243b08e3c0a35f9659ac8a1e4",
+     "candidate_group_id": null,
+     "member_id": null,
+     "artifact": null,
+     "artifact_sha256": null,
+     "quote": null,
+     "note": "k:response-preference-instructions@1.1:36683c52 (CURRENT_GUIDANCE; CURRENT)"
+    },
+    {
+     "kind": "slack_message",
+     "project_id": "response_preference",
+     "batch_id": "rp_batch_15",
+     "scope": "project",
+     "channel_id": "C_RP_GENERAL",
+     "thread_id": "1790908073.000029",
+     "message_id": "1790908073.000029",
+     "document_id": null,
+     "version_id": null,
+     "authoring_document_id": null,
+     "authoring_version": null,
+     "section": null,
+     "chunk_id": null,
+     "candidate_group_id": null,
+     "member_id": "member_bb78d680dd30a22ffa11cce1",
+     "artifact": null,
+     "artifact_sha256": null,
+     "quote": null,
+     "note": "m:C_RP_GENERAL:1790908073.000029"
+    },
+    {
+     "kind": "slack_message",
+     "project_id": "response_preference",
+     "batch_id": "rp_batch_15",
+     "scope": "project",
+     "channel_id": "C_RP_GENERAL",
+     "thread_id": "1790908073.000029",
+     "message_id": "1790908127.000113",
+     "document_id": null,
+     "version_id": null,
+     "authoring_document_id": null,
+     "authoring_version": null,
+     "section": null,
+     "chunk_id": null,
+     "candidate_group_id": null,
+     "member_id": "member_bb78d680dd30a22ffa11cce1",
+     "artifact": null,
+     "artifact_sha256": null,
+     "quote": null,
+     "note": "m:C_RP_GENERAL:1790908127.000113"
+    },
+    {
+     "kind": "slack_message",
+     "project_id": "response_preference",
+     "batch_id": "rp_batch_15",
+     "scope": "project",
+     "channel_id": "C_RP_GENERAL",
+     "thread_id": "1790908073.000029",
+     "message_id": "1790908167.000226",
+     "document_id": null,
+     "version_id": null,
+     "authoring_document_id": null,
+     "authoring_version": null,
+     "section": null,
+     "chunk_id": null,
+     "candidate_group_id": null,
+     "member_id": "member_bb78d680dd30a22ffa11cce1",
+     "artifact": null,
+     "artifact_sha256": null,
+     "quote": null,
+     "note": "m:C_RP_GENERAL:1790908167.000226"
+    },
+    {
+     "kind": "slack_message",
+     "project_id": "response_preference",
+     "batch_id": "rp_batch_15",
+     "scope": "project",
+     "channel_id": "C_RP_GENERAL",
+     "thread_id": "1790908073.000029",
+     "message_id": "1790908211.000339",
+     "document_id": null,
+     "version_id": null,
+     "authoring_document_id": null,
+     "authoring_version": null,
+     "section": null,
+     "chunk_id": null,
+     "candidate_group_id": null,
+     "member_id": "member_bb78d680dd30a22ffa11cce1",
+     "artifact": null,
+     "artifact_sha256": null,
+     "quote": null,
+     "note": "m:C_RP_GENERAL:1790908211.000339"
+    }
+   ],
+   "related_threads": [
+    {
+     "project_id": "response_preference",
+     "batch_id": "rp_batch_15",
+     "channel_id": "C_RP_GENERAL",
+     "thread_id": "1790908073.000029",
+     "member_id": "member_bb78d680dd30a22ffa11cce1",
+     "permalink": null,
+     "display_reference": "1790908073.000029",
+     "label": "#response-preference-general, 2026-10-02, started by a tutor: \"Anyone else seeing this?\"",
+     "opening_text": "Anyone else seeing this? Both answer panes keep spinning when I open a comparison. (task ref RP-8073)"
+    }
+   ],
+   "confidence": 0.93,
+   "confidence_band": "HIGH",
+   "needs_review_reasons": [
+    {
+     "code": "HIGH_SEVERITY",
+     "detail": "Assessed HIGH under the shared default rubric.",
+     "obligation_ids": [],
+     "evidence": []
+    },
+    {
+     "code": "INHERITED_FLAG",
+     "detail": "Upstream obligations remain open: inherited_agent1_review x1",
+     "obligation_ids": [],
+     "evidence": []
+    }
+   ],
+   "inherited_flags": [
+    {
+     "origin": "agent1",
+     "kind": "inherited_agent1_review",
+     "candidate_group_id": "cluster_0c49381be0dffa50",
+     "obligation_id": null,
+     "member_ids": [
+      "member_bb78d680dd30a22ffa11cce1"
+     ],
+     "detail": "The single targeted revision failed: ValueError: The model cited authority evidence without an eligible author role or a qualifying TEAM_LEAD endorsement. Ineligible message IDs: ['1790908127.000113']"
+    }
+   ],
+   "checks": {
+    "grounding": "PASSED",
+    "temporal_conflict": "NONE_FOUND",
+    "open_confirmation": "NONE"
+   },
+   "lineage": {
+    "agent3_run_id": "agent3overnight_bdc099a76ee76bdc391050df2aded225",
+    "handoff_contract": "agent2-taxonomy-handoff-v2",
+    "agent2_export_sha256": "6f1f56bf5a5b1f02287d7ac958dc205c05cc9e0ea3e6d5f3fdd7279da0c9e1e7",
+    "agent2_schema_version": 8,
+    "candidate_group_id": "cluster_0c49381be0dffa50",
+    "topic_id": "cluster_0c49381be0dffa50/topic_1",
+    "member_ids": [
+     "member_bb78d680dd30a22ffa11cce1"
+    ],
+    "project_id": "response_preference",
+    "batch_id": "rp_batch_15"
+   },
+   "review_notes": [
+    "Severity is high under the team rubric.",
+    "1 earlier review flag is still open on these threads."
+   ],
+   "details": [
+    "A tutor reports that both answer panes keep spinning when opening RP-8073; a second tutor reports that a response still failed to appear after trying a second item.",
+    "A QA tutor asked whether the failure happens before model responses are displayed.",
+    "The team lead stated that no model output was available to evaluate for the affected item.",
+    "Current project instructions say to record a fetch incident when response panes never load and not infer response quality."
+   ],
+   "next_step": {
+    "status": "ACTION_RECOMMENDED",
+    "rationale": "The labeling instruction addresses classification, not restored access. Engineering can investigate the reported loading behavior while current guidance keeps missing output separate from response quality.",
+    "explanation": null
+   },
+   "briefing": {
+    "status": "IN_BRIEFING",
+    "relevance": "PROJECT",
+    "label_id": "rel_cluster_0c49381be0dffa50_topic_1",
+    "label_source": "DEVELOPER_AUDIT_2026-11-05 (prepared by the coding assistant from the saved source threads; not confirmed by a team lead)",
+    "kept_because": []
+   },
+   "outstanding_step": null,
+   "derivation": {
+    "policy_version": "briefing-routing-v1",
+    "provenance": "OFFLINE_POLICY_APPLICATION",
+    "text_provenance": "PARENT_RUN_JUDGMENTS",
+    "parent_run": "data/experiments/threadsense_full_v1/stages/agent3/overnight_run",
+    "parent_run_instance": "4a48d67e4d8322cf6912e26032663b41fd5f0447103ed8081e5581b3d3183ff8",
+    "parent_card_id": "card_8a1884714a861e1ab21c37f9a1ad7ada",
+    "parent_card_sha256": "496b20d29d43ccdf0af4f323498853c4577a02eb28856de3023cbd6ff88ff1b3",
+    "parent_contract_version": "agent3-advice-card-v4",
+    "changes": []
+   }
+  },
+  "review_items": [
+   {
+    "contract_version": "agent3-model-review-item-v1",
+    "record_type": "MODEL_REVIEW_ITEM",
+    "item_id": "review_3f07feb1ecbe6c739ae0dba53da80de3",
+    "origin": "agent1",
+    "kind": "inherited_agent1_review",
+    "project_id": "response_preference",
+    "batch_id": "rp_batch_15",
+    "candidate_group_id": "cluster_0c49381be0dffa50",
+    "topic_id": "cluster_0c49381be0dffa50/topic_1",
+    "member_ids": [
+     "member_bb78d680dd30a22ffa11cce1"
+    ],
+    "obligation_id": null,
+    "reason": "The single targeted revision failed: ValueError: The model cited authority evidence without an eligible author role or a qualifying TEAM_LEAD endorsement. Ineligible message IDs: ['1790908127.000113']",
+    "source_obligation": {
+     "origin": "agent1",
+     "member_id": "member_bb78d680dd30a22ffa11cce1",
+     "project_id": "response_preference",
+     "batch_id": "rp_batch_15",
+     "channel_id": "C_RP_GENERAL",
+     "thread_id": "1790908073.000029",
+     "candidate_group_id": "cluster_0c49381be0dffa50",
+     "candidate_sha256": "9efce494bfe70dc6f4412310f2c354685c325e78a86e49ca081ff9f84c3a5698",
+     "source_sha256": "e642fd31ce9dac4e7fa5eaec007ae5672125f370fae01fc22fb07be79abca0b5",
+     "agent1_record": {
+      "project_id": "response_preference",
+      "batch_id": "rp_batch_15",
+      "channel_id": "C_RP_GENERAL",
+      "thread_id": "1790908073.000029",
+      "language": null,
+      "model": "openai/gpt-4o-mini-2024-07-18",
+      "run_config_sha256": "870eedfaf3fa8cbd76fa560cac924fedefdab58ed91ff72ccac0a6e4ca14b251",
+      "handoff_version": 1,
+      "verification_origin": "bounded_verification",
+      "input_sha256": "e642fd31ce9dac4e7fa5eaec007ae5672125f370fae01fc22fb07be79abca0b5",
+      "candidate_sha256": "9efce494bfe70dc6f4412310f2c354685c325e78a86e49ca081ff9f84c3a5698",
+      "source_message_ids": [
+       "1790908073.000029",
+       "1790908127.000113",
+       "1790908167.000226",
+       "1790908211.000339"
+      ],
+      "interpretation": {
+       "thread_id": "1790908073.000029",
+       "summary": "Avery reports an issue where both answer panes keep spinning when attempting to open a comparison for task RP-8073. Carla confirms that the response fails to appear for a second item as well. Mina inquires whether the failure occurs before model responses are displayed. Alex, the team lead, concludes that for the affected item, no model output was available to evaluate and instructs to mark it as a response-fetch/tool incident without inventing a quality label.",
+       "central_question": "Is there a known issue causing both answer panes to spin when opening a comparison for task RP-8073, and how should it be labeled?",
+       "resolution_state": "RESOLVED_IN_THREAD",
+       "authoritative_response_present": true,
+       "authority_evidence_message_ids": [
+        "1790908211.000339"
+       ],
+       "resolution_rationale": "Alex provided a clear conclusion regarding the issue, stating that no model output was available for evaluation and instructed how to label the incident. This sufficiently addresses the original question about the issue and its labeling.",
+       "confidence": 1.0
+      },
+      "automated_verification_status": "NEEDS_REVIEW",
+      "verification_status": "NEEDS_REVIEW",
+      "review_required": true,
+      "revision_count": 1,
+      "provisional_fields": [
+       "summary",
+       "central_question",
+       "resolution_state",
+       "resolution_rationale",
+       "authoritative_response_present",
+       "authority_evidence_message_ids",
+       "confidence"
+      ],
+      "review_reason": "The single targeted revision failed: ValueError: The model cited authority evidence without an eligible author role or a qualifying TEAM_LEAD endorsement. Ineligible message IDs: ['1790908127.000113']",
+      "review_reasons": [
+       "The single targeted revision failed: ValueError: The model cited authority evidence without an eligible author role or a qualifying TEAM_LEAD endorsement. Ineligible message IDs: ['1790908127.000113']"
+      ],
+      "review_findings": [
+       {
+        "category": "RESOLUTION",
+        "explanation": "Independent decision coverage establishes PARTIALLY_RESOLVED; interpretation reports RESOLVED_IN_THREAD. Carla's reply confirms that at least one other person is experiencing a similar issue, partially answering the root request. However, no comprehensive confirmation from multiple users or a definitive statement that the issue is widespread is provided.",
+        "evidence_message_ids": [
+         "1790908127.000113",
+         "1790908167.000226",
+         "1790908211.000339"
+        ],
+        "evidence_quotes": [],
+        "disputed_fields": [
+         "resolution_state",
+         "resolution_rationale"
+        ],
+        "origin": "automated_verification"
+       },
+       {
+        "category": "AUTHORITY",
+        "explanation": "Cited messages ['1790908211.000339'] are not substantive answers with eligible authority and, for engineers, technical relevance.",
+        "evidence_message_ids": [
+         "1790908211.000339"
+        ],
+        "evidence_quotes": [],
+        "disputed_fields": [
+         "authoritative_response_present",
+         "authority_evidence_message_ids"
+        ],
+        "origin": "automated_verification"
+       },
+       {
+        "category": "EVIDENCE",
+        "explanation": "The single targeted revision failed: ValueError: The model cited authority evidence without an eligible author role or a qualifying TEAM_LEAD endorsement. Ineligible message IDs: ['1790908127.000113']",
+        "evidence_message_ids": [],
+        "evidence_quotes": [],
+        "disputed_fields": [
+         "summary",
+         "central_question",
+         "resolution_state",
+         "resolution_rationale",
+         "authoritative_response_present",
+         "authority_evidence_message_ids",
+         "confidence"
+        ],
+        "origin": "automated_verification"
+       }
+      ],
+      "content_reviews": [],
+      "review_applicability": [],
+      "lineage": {
+       "baseline_file": "data\\experiments\\threadsense_full_v1\\stages\\agent1_interpret\\agent1_interpretations_v1\\interpretations.json",
+       "baseline_record_sha256": "10879d6fe9f18dc9785bca1222775ec1080c70252e59d60e728fce5db0784248",
+       "baseline_run_config_sha256": "b4a7353aace8119bb25073b3dbab05388e6036aa312a1f74d38f4b0268fbb7b8",
+       "baseline_model": "openai/gpt-4o-mini-2024-07-18",
+       "baseline_created_at": "2026-11-05T16:39:31.658393+00:00",
+       "source_file": "sources/e642fd31ce9dac4e7fa5eaec007ae5672125f370fae01fc22fb07be79abca0b5.json",
+       "verification_file": "records/e9474fee7377070e3f710a2a01bf85bf3896215450b6401d47df27dc4a5260c7/result.json",
+       "effective_attempt": "original",
+       "original_candidate_sha256": "9efce494bfe70dc6f4412310f2c354685c325e78a86e49ca081ff9f84c3a5698",
+       "revised_candidate_sha256": null,
+       "effective_candidate_sha256": "9efce494bfe70dc6f4412310f2c354685c325e78a86e49ca081ff9f84c3a5698",
+       "original_candidate_reference": "records/e9474fee7377070e3f710a2a01bf85bf3896215450b6401d47df27dc4a5260c7/result.json#/result/original_interpretation",
+       "revised_candidate_reference": null,
+       "audit_history_reference": "records/e9474fee7377070e3f710a2a01bf85bf3896215450b6401d47df27dc4a5260c7/result.json#/result/passes"
+      }
+     },
+     "agent1_export_file": "D:\\Christie\\2026_AgenticAI\\threadsense\\data\\experiments\\threadsense_full_v1\\stages\\agent1_verify\\agent1_verified_v2\\interpretations.json",
+     "agent1_export_sha256": "0629a7346373addf833a86ba1caff676a537e543cc26954a9836fd6610485270",
+     "agent1_lineage_base": "D:\\Christie\\2026_AgenticAI\\threadsense\\data\\experiments\\threadsense_full_v1\\stages\\agent1_verify\\agent1_verified_v2"
+    },
+    "related_card_ids": [
+     "card_8a1884714a861e1ab21c37f9a1ad7ada"
+    ],
+    "actions": []
+   }
+  ],
+  "coverage": {
+   "group_members_outside_this_card": [],
+   "uncarried_obligations": []
+  },
+  "budget": {
+   "consumed": {
+    "retrieval_calls": 1,
+    "model_calls": 2
+   },
+   "limits": {
+    "model_calls_per_topic": 4,
+    "model_calls_total": 28,
+    "retrieval_calls_per_topic": 6,
+    "retrieval_calls_total": 42
+   }
+  },
+  "diagnostics": []
+ },
+ "derivation": {
+  "policy_version": "briefing-routing-v1",
+  "parent_topic_file": "data/experiments/threadsense_full_v1/stages/agent3/overnight_run/topics/topic__cluster_0c49381be0dffa50__topic_1.json",
+  "parent_topic_sha256": "9957cd2a2e272b470a59bea631a4fd41647fc9cb3fdb6c3dc15855636f95565d",
+  "replaced": [
+   "result.card",
+   "workflow.card_id",
+   "workflow.card_line"
+  ]
+ }
+}

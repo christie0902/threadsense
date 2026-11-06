@@ -516,10 +516,17 @@ def test_unflagged_grounded_paths_reach_recommended_action_or_observation(retrie
     recommended = run('korean_register', Fake(draft=draft_for, grounding=supported), retriever, unflagged)
     assert recommended['card']['card_line'] == 'RECOMMENDED_ACTION' and recommended['card']['needs_review_reasons'] == []
     assert recommended['card']['supporting_sources'] and recommended['card']['checks']['grounding'] == 'PASSED'
-    observe = run('korean_register', Fake(draft=lambda p: draft_for(p, proposed_action={'action_type': 'NO_ACTION',
-                                                                                          'support_claim_ids': []}),
+    reasoned = {'action_type': 'NO_ACTION', 'support_claim_ids': ['c1'],
+                'rationale': 'The member report needs no intervention now.'}
+    observe = run('korean_register', Fake(draft=lambda p: draft_for(p, proposed_action=reasoned),
                                           grounding=supported), retriever, unflagged)
-    assert observe['card']['card_line'] == 'OBSERVATION'
+    assert observe['card']['card_line'] == 'OBSERVATION' and observe['card']['next_step']['status'] == 'NO_ACTION_NEEDED'
+    # briefing-routing-v1: NO_ACTION without a judged reason is not an observation.
+    unreasoned = run('korean_register', Fake(draft=lambda p: draft_for(p, proposed_action={'action_type': 'NO_ACTION',
+                                                                                             'support_claim_ids': []}),
+                                             grounding=supported), retriever, unflagged)
+    assert unreasoned['card']['card_line'] == 'NEEDS_REVIEW'
+    assert unreasoned['card']['next_step']['status'] == 'NO_INTERVENTION_PROPOSED'
     unchecked = run('korean_register', Fake(draft=draft_for, grounding=RuntimeError('down')), retriever, unflagged)
     card = unchecked['card']
     assert card['card_line'] == 'NEEDS_REVIEW' and codes(unchecked) == ['GROUNDING_NOT_RUN', 'OTHER', 'OTHER']

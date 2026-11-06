@@ -1,0 +1,1791 @@
+{
+ "work_item": {
+  "candidate_group_id": "cluster_e657313566161acd",
+  "project_id": "audio_multimodal",
+  "batch_id": "audio_batch_06",
+  "work_id": "topic:cluster_e657313566161acd/topic_1",
+  "kind": "TOPIC",
+  "topic_id": "cluster_e657313566161acd/topic_1",
+  "topic_name": "Audio-transcript mismatch clarification",
+  "member_ids": [
+   "member_993748c662b631567942869d"
+  ],
+  "pilot_scenario": null,
+  "in_scope": true
+ },
+ "workflow": {
+  "outcome": "CARD",
+  "card_id": "card_223ae396c244f734aac83956904c23fd",
+  "card_line": "NEEDS_REVIEW",
+  "grounding": "PASSED",
+  "stage_failures": [],
+  "semantic_source": "LIVE_MODEL"
+ },
+ "result": {
+  "scenario": {
+   "id": "topic:cluster_e657313566161acd/topic_1",
+   "candidate_group_id": "cluster_e657313566161acd",
+   "focus": "Audio-transcript mismatch clarification",
+   "topic_id": "cluster_e657313566161acd/topic_1"
+  },
+  "status": "CARD",
+  "topic": {
+   "project_id": "audio_multimodal",
+   "batch_id": "audio_batch_06",
+   "candidate_group_id": "cluster_e657313566161acd",
+   "topic_id": "cluster_e657313566161acd/topic_1",
+   "topic_label": "Audio-transcript mismatch clarification",
+   "projection_gap": null,
+   "as_of": "2026-10-02T12:00:00Z",
+   "member_ids": [
+    "member_993748c662b631567942869d"
+   ],
+   "initial_query": "Audio-transcript mismatch clarification. Is the discrepancy between the voice saying 'thirteen' and the subtitle saying 'thirty' indicative of an issue with the audio player or the recording?"
+  },
+  "retrieval_trace": [
+   {
+    "step": 1,
+    "purpose": "initial_current_guidance",
+    "gap_id": null,
+    "query": "Audio-transcript mismatch clarification. Is the discrepancy between the voice saying 'thirteen' and the subtitle saying 'thirty' indicative of an issue with the audio player or the recording?",
+    "source_types": [
+     "guideline",
+     "faq",
+     "decision",
+     "announcement"
+    ],
+    "version_mode": "current",
+    "as_of": "2026-10-02T12:00:00Z",
+    "batch": "audio_batch_06",
+    "top_k": 5,
+    "status": "DONE",
+    "mode": "hybrid",
+    "use_mmr": true,
+    "mmr_lambda": 0.9,
+    "result_ids": [
+     "k:audio-multimodal-faq@1.1:e9bcf43a",
+     "k:audio-multimodal-faq@1.1:f72aa6db",
+     "k:audio-multimodal-instructions@1.3:7a5ab59d",
+     "k:audio-multimodal-instructions@1.3:eb85357a",
+     "k:audio-multimodal-instructions@1.3:1131a168"
+    ],
+    "new_evidence_ids": [
+     "k:audio-multimodal-faq@1.1:e9bcf43a",
+     "k:audio-multimodal-faq@1.1:f72aa6db",
+     "k:audio-multimodal-instructions@1.3:7a5ab59d",
+     "k:audio-multimodal-instructions@1.3:eb85357a",
+     "k:audio-multimodal-instructions@1.3:1131a168"
+    ],
+    "eligible_chunks": 27,
+    "added": []
+   }
+  ],
+  "retrieval_notes": {
+   "withheld_by_version": [],
+   "version_diagnostics": []
+  },
+  "follow_ups": [],
+  "unfilled_gaps": [],
+  "model_calls": [
+   {
+    "stage": "draft",
+    "schema": "AdvisorDraft",
+    "agent1_context": {
+     "sha256": "1c42aea350c2a0ddac4a0037897a51e1a8533bb0d069da753f67fd3321d27f20",
+     "boundary": "IN_HTTP_BODY"
+    },
+    "raw": "{\n  \"contract_version\": \"agent3-advisor-draft-v11\",\n  \"summary\": null,\n  \"summary_sentences\": [\n    {\n      \"text\": \"A QA tutor reports that the voice says thirteen while the subtitle says thirty; a tutor confirms the same discrepancy.\",\n      \"support_claim_ids\": [\"c1\", \"c2\"],\n      \"depends_on\": []\n    },\n    {\n      \"text\": \"The current FAQ covers this as a correspondence issue, not a playback failure, and requires distinguishing a recording error from a reference-transcript error.\",\n      \"support_claim_ids\": [\"c3\"],\n      \"depends_on\": [1]\n    }\n  ],\n  \"detail_sentences\": [\n    {\n      \"text\": \"A tutor cautions that the discrepancy does not necessarily mean the audio player is broken and that the recording may play correctly.\",\n      \"support_claim_ids\": [\"c2\"],\n      \"depends_on\": [],\n      \"summary_depends_on\": []\n    },\n    {\n      \"text\": \"The thread does not establish whether the recording or reference transcript is wrong, and neither message reports failed playback.\",\n      \"support_claim_ids\": [\"c4\"],\n      \"depends_on\": [],\n      \"summary_depends_on\": []\n    }\n  ],\n  \"reasoning\": \"The reported discrepancy fits the current FAQ's correspondence guidance. The tutor's explanation is an attributed observation, not an authoritative instruction or a verified diagnosis. The thread shows neither conflicting handling instructions nor a playback problem requiring engineering expertise. No additional intervention or historical research is needed to support the recommendation to observe rather than escalate.\",\n  \"claims\": [\n    {\n      \"claim_id\": \"c1\",\n      \"kind\": \"INCIDENT_FACT\",\n      \"text\": \"A QA tutor reports that the voice says thirteen but the subtitle says thirty.\",\n      \"evidence_ids\": [\"m:C_AUDIO_QA:1790875184.000139\"],\n      \"attributions\": [\n        {\n          \"user_id\": \"U007\",\n          \"relation\": \"AUTHOR\",\n          \"evidence_id\": \"m:C_AUDIO_QA:1790875184.000139\"\n        }\n      ],\n      \"quote\": \"Task check: Voice says thirteen but subtitle says thirty.\",\n      \"quote_kind\": \"VERBATIM\",\n      \"material\": true\n    },\n    {\n      \"claim_id\": \"c2\",\n      \"kind\": \"INCIDENT_FACT\",\n      \"text\": \"A tutor confirms that the voice says thirteen and the provided transcript says thirty, and cautions that this does not necessarily indicate a broken audio player because the recording may play correctly.\",\n      \"evidence_ids\": [\"m:C_AUDIO_QA:1790875234.000113\"],\n      \"attributions\": [\n        {\n          \"user_id\": \"U011\",\n          \"relation\": \"AUTHOR\",\n          \"evidence_id\": \"m:C_AUDIO_QA:1790875234.000113\"\n        }\n      ],\n      \"quote\": \"The voice says thirteen; the provided transcript says thirty. This is not necessarily a broken audio player; the recording itself may play correctly.\",\n      \"quote_kind\": \"VERBATIM\",\n      \"material\": true\n    },\n    {\n      \"claim_id\": \"c3\",\n      \"kind\": \"GUIDANCE\",\n      \"text\": \"The current FAQ instructs members to record the exact audio–transcript mismatch as a correspondence issue, distinguish a recording error from a reference-transcript error, and not classify the mismatch as a playback failure.\",\n      \"evidence_ids\": [\"k:audio-multimodal-faq@1.1:e9bcf43a\"],\n      \"attributions\": [],\n      \"quote\": \"Record the exact mismatch as a correspondence issue. Distinguish a recording error from a reference-transcript error; do not classify the mismatch as a playback failure.\",\n      \"quote_kind\": \"VERBATIM\",\n      \"material\": true\n    },\n    {\n      \"claim_id\": \"c4\",\n      \"kind\": \"INFERENCE\",\n      \"text\": \"The thread does not establish whether the recording or reference transcript is wrong, and neither message reports failed playback or conflicting handling instructions.\",\n      \"evidence_ids\": [\n        \"m:C_AUDIO_QA:1790875184.000139\",\n        \"m:C_AUDIO_QA:1790875234.000113\"\n      ],\n      \"attributions\": [],\n      \"quote\": null,\n      \"quote_kind\": \"PARAPHRASE\",\n      \"material\": true\n    }\n  ],\n  \"gaps\": [],\n  \"evidence_sufficiency\": \"SUFFICIENT\",\n  \"proposed_action\": {\n    \"action_type\": \"NO_ACTION\",\n    \"intervention_need\": null,\n    \"instruction\": \"Do not add an intervention now; the current FAQ already provides handling for the reported audio–transcript discrepancy.\",\n    \"rationale\": \"The current FAQ directly covers this mismatch, and the thread shows no conflicting handling instructions or reported playback failure warranting further intervention.\",\n    \"draft_text\": null,\n    \"scope_note\": \"This recommendation concerns the reported mismatch only; it does not establish whether the recording or reference transcript is wrong.\",\n    \"support_claim_ids\": [\"c1\", \"c2\", \"c3\", \"c4\"],\n    \"targets\": [],\n    \"context_claim_ids\": []\n  },\n  \"severity\": {\n    \"level\": \"LOW\",\n    \"rationale\": \"A QA tutor reports a localized word mismatch, which a tutor confirms in the same thread. The messages do not describe broader impact, inability to evaluate the task, or conflicting scoring interpretations.\",\n    \"signals\": [],\n    \"affected_reporters\": [\n      {\n        \"author_id\": \"U007\",\n        \"evidence_id\": \"m:C_AUDIO_QA:1790875184.000139\"\n      }\n    ],\n    \"recurrence\": \"NOT_CHECKED\",\n    \"recurrence_evidence_ids\": [],\n    \"reported_recurrence_evidence_ids\": []\n  },\n  \"confidence\": 0.88,\n  \"open_confirmation\": \"NONE\",\n  \"open_question\": null,\n  \"open_question_evidence_ids\": [],\n  \"source_conflicts\": [],\n  \"announcement_assessments\": [],\n  \"resolution\": [\n    {\n      \"member_id\": \"member_993748c662b631567942869d\",\n      \"state\": \"PARTIALLY_RESOLVED\",\n      \"evidence_ids\": [\n        \"m:C_AUDIO_QA:1790875184.000139\",\n        \"m:C_AUDIO_QA:1790875234.000113\"\n      ],\n      \"basis\": \"A tutor confirms the QA tutor's reported discrepancy and cautions against assuming a broken player. The thread does not establish whether the recording or reference transcript is wrong or show that the issue was recorded.\"\n    }\n  ],\n  \"coverage\": [\n    {\n      \"need\": \"CURRENT_GUIDANCE\",\n      \"status\": \"COVERED\",\n      \"evidence_ids\": [\n        \"k:audio-multimodal-faq@1.1:e9bcf43a\",\n        \"k:audio-multimodal-instructions@1.3:eb85357a\"\n      ],\n      \"note\": \"The current FAQ directly addresses audio–transcript disagreement, and the current instructions distinguish audio omissions from reference-transcript mistakes.\",\n      \"gap_id\": null\n    },\n    {\n      \"need\": \"ANNOUNCEMENTS\",\n      \"status\": \"NOT_APPLICABLE\",\n      \"evidence_ids\": [],\n      \"note\": \"No announcement is needed to support observing this isolated report under the directly applicable current FAQ.\",\n      \"gap_id\": null\n    },\n    {\n      \"need\": \"PRIOR_DECISIONS\",\n      \"status\": \"NOT_APPLICABLE\",\n      \"evidence_ids\": [],\n      \"note\": \"The recommendation does not depend on an earlier workaround, trial, outcome or recurrence claim; historical research is not needed for it.\",\n      \"gap_id\": null\n    },\n    {\n      \"need\": \"MEMBER_QUESTIONS\",\n      \"status\": \"COVERED\",\n      \"evidence_ids\": [\n        \"m:C_AUDIO_QA:1790875184.000139\",\n        \"m:C_AUDIO_QA:1790875234.000113\"\n      ],\n      \"note\": \"The task check and the tutor's reply are available. Neither message references an earlier workaround or discussion.\",\n      \"gap_id\": null\n    }\n  ],\n  \"review_note\": null,\n  \"action_choice\": null\n}",
+    "raw_sha256": "31646a43b850f7bbee3477d9083ede627222c7dcd4f5e81250257c81979a9ea2",
+    "http_requests": {
+     "sent": 1,
+     "blocked": 0,
+     "hosts": [
+      "api.openai.com"
+     ],
+     "responses": [
+      {
+       "status_code": 200,
+       "seconds": 34.716,
+       "model": "gpt-6.1-sol",
+       "usage": {
+        "prompt_tokens": 10926,
+        "completion_tokens": 2293,
+        "total_tokens": 13219,
+        "prompt_tokens_details": {
+         "cached_tokens": 0,
+         "cache_write_tokens": 10923,
+         "audio_tokens": 0
+        },
+        "completion_tokens_details": {
+         "reasoning_tokens": 512,
+         "audio_tokens": 0,
+         "accepted_prediction_tokens": 0,
+         "rejected_prediction_tokens": 0
+        }
+       },
+       "finish_reasons": [
+        "stop"
+       ]
+      }
+     ],
+     "input_tokens": 10932,
+     "refused": null,
+     "charged_usd": 0.044782
+    },
+    "input_tokens_estimate": 10932,
+    "status": "OK"
+   },
+   {
+    "stage": "grounding",
+    "schema": "GroundingJudgment",
+    "raw": "{\n  \"contract_version\": \"agent3-grounding-judgment-v5\",\n  \"verdicts\": [\n    {\n      \"statement_id\": \"claim:c1\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"U007 is the QA tutor who reported this discrepancy, and the verbatim quote exactly matches the cited message.\"\n    },\n    {\n      \"statement_id\": \"claim:c2\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"U011 is a tutor whose message confirms the reported discrepancy and explicitly cautions that it need not indicate a broken player. The quote matches exactly and does not establish a verified cause.\"\n    },\n    {\n      \"statement_id\": \"claim:c3\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The current, project-wide FAQ explicitly gives all three instructions, and the quoted passage matches the source.\"\n    },\n    {\n      \"statement_id\": \"claim:c4\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"Neither message identifies which component is wrong, reports failed playback, or presents conflicting handling instructions.\"\n    },\n    {\n      \"statement_id\": \"summary:s1\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The cited QA tutor reports the thirteen/thirty discrepancy, and the cited tutor confirms the same audio–text discrepancy.\"\n    },\n    {\n      \"statement_id\": \"summary:s2\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The current FAQ explicitly classifies audio–transcript mismatches as correspondence issues rather than playback failures and requires distinguishing recording errors from reference-transcript errors.\"\n    },\n    {\n      \"statement_id\": \"detail:d1\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The tutor explicitly states that the discrepancy does not necessarily indicate a broken audio player and that the recording may play correctly.\"\n    },\n    {\n      \"statement_id\": \"detail:d2\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The complete thread establishes neither whether the recording or reference transcript is wrong nor any failed playback.\"\n    },\n    {\n      \"statement_id\": \"action:no_action\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The FAQ directly supplies applicable handling, and the complete thread shows no unresolved handling question, guidance conflict, or operational problem requiring further coordination. The unestablished error location and lack of a recording confirmation do not themselves demonstrate a need for additional intervention.\"\n    },\n    {\n      \"statement_id\": \"resolution:member_993748c662b631567942869d\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The tutor confirms the discrepancy and cautions against assuming player failure, but the complete thread neither identifies which component is wrong nor shows that the correspondence issue was recorded. This supports the qualified partial-resolution description.\"\n    },\n    {\n      \"statement_id\": \"severity:rationale\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The messages describe one localized word discrepancy and its confirmation, without reporting broader operational impact, inability to evaluate, or competing scoring interpretations. LOW operational severity does not assert a minor task-quality defect.\"\n    },\n    {\n      \"statement_id\": \"reporter:U007\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"U007's own task-check message reports encountering the audio–subtitle mismatch.\"\n    }\n  ],\n  \"action_sufficiency\": null,\n  \"alternative_sufficiency\": [],\n  \"source_consistency\": {\n    \"assessed_evidence_ids\": [\n      \"k:audio-multimodal-faq@1.1:e9bcf43a\",\n      \"k:audio-multimodal-faq@1.1:f72aa6db\",\n      \"k:audio-multimodal-instructions@1.3:7a5ab59d\",\n      \"k:audio-multimodal-instructions@1.3:eb85357a\",\n      \"k:audio-multimodal-instructions@1.3:1131a168\"\n    ],\n    \"relations\": [\n      {\n        \"evidence_ids\": [\n          \"k:audio-multimodal-faq@1.1:e9bcf43a\",\n          \"k:audio-multimodal-instructions@1.3:eb85357a\"\n        ],\n        \"relation\": \"AGREE\",\n        \"point\": \"Distinguish errors in the audio from errors in the reference transcript.\",\n        \"disagreement_scope\": null,\n        \"rationale\": \"The FAQ requires distinguishing recording errors from reference-transcript errors; the instructions likewise distinguish words missing from the audio from reference-transcript mistakes. The rubric adds quality classifications without contradicting that handling. The language and repetition excerpts address different problems and supply no conflicting rule for this mismatch.\"\n      }\n    ],\n    \"declared_conflict_checks\": []\n  }\n}",
+    "raw_sha256": "1841955f2abc7b1170950189ed8d615bc1f8362462a052df16d95c83a6e8115f",
+    "http_requests": {
+     "sent": 1,
+     "blocked": 0,
+     "hosts": [
+      "api.openai.com"
+     ],
+     "responses": [
+      {
+       "status_code": 200,
+       "seconds": 18.731,
+       "model": "gpt-6.1-sol",
+       "usage": {
+        "prompt_tokens": 7006,
+        "completion_tokens": 1214,
+        "total_tokens": 8220,
+        "prompt_tokens_details": {
+         "cached_tokens": 0,
+         "cache_write_tokens": 7003,
+         "audio_tokens": 0
+        },
+        "completion_tokens_details": {
+         "reasoning_tokens": 181,
+         "audio_tokens": 0,
+         "accepted_prediction_tokens": 0,
+         "rejected_prediction_tokens": 0
+        }
+       },
+       "finish_reasons": [
+        "stop"
+       ]
+      }
+     ],
+     "input_tokens": 7012,
+     "refused": null,
+     "charged_usd": 0.026152
+    },
+    "input_tokens_estimate": 7012,
+    "status": "OK"
+   }
+  ],
+  "agent1_context": [
+   {
+    "sha256": "1c42aea350c2a0ddac4a0037897a51e1a8533bb0d069da753f67fd3321d27f20",
+    "content": [
+     {
+      "member_id": "member_993748c662b631567942869d",
+      "thread_id": "1790875184.000139",
+      "summary": "Leo raises a concern that the voice in the audio says 'thirteen' while the subtitle states 'thirty.' Rina clarifies that the voice indeed says 'thirteen' and the transcript states 'thirty,' but notes that this discrepancy does not necessarily indicate a malfunction of the audio player, suggesting that the recording itself may be correct.",
+      "central_question": "Is the discrepancy between the voice saying 'thirteen' and the subtitle saying 'thirty' indicative of an issue with the audio player or the recording?",
+      "attributed_agent1_resolution": {
+       "state": "PARTIALLY_RESOLVED",
+       "rationale": "Rina's response clarifies the nature of the discrepancy but does not fully resolve whether the issue lies with the audio player or the recording itself. The question of whether there is a problem remains open, as Rina suggests the recording may be correct without confirming the status of the audio player.",
+       "agent1_verification_status": "NEEDS_REVIEW",
+       "note": "Agent 1 label, not evidence; NEEDS_REVIEW means Agent 1 did not verify it. Assess resolution from the member messages."
+      },
+      "agent1_review_required": true,
+      "agent1_review_reason": "The single targeted revision failed: ValueError: The model cited authority evidence without an eligible author role or a qualifying TEAM_LEAD endorsement. Ineligible message IDs: ['1790875234.000113']",
+      "note": "Agent 1 interpretation, not source evidence; cite member messages for incident facts."
+     }
+    ]
+   }
+  ],
+  "drafts": {
+   "initial": {
+    "contract_version": "agent3-advisor-draft-v11",
+    "summary": "A QA tutor reports that the voice says thirteen while the subtitle says thirty; a tutor confirms the same discrepancy. The current FAQ covers this as a correspondence issue, not a playback failure, and requires distinguishing a recording error from a reference-transcript error.",
+    "summary_sentences": [
+     {
+      "text": "A QA tutor reports that the voice says thirteen while the subtitle says thirty; a tutor confirms the same discrepancy.",
+      "support_claim_ids": [
+       "c1",
+       "c2"
+      ],
+      "depends_on": []
+     },
+     {
+      "text": "The current FAQ covers this as a correspondence issue, not a playback failure, and requires distinguishing a recording error from a reference-transcript error.",
+      "support_claim_ids": [
+       "c3"
+      ],
+      "depends_on": [
+       1
+      ]
+     }
+    ],
+    "detail_sentences": [
+     {
+      "text": "A tutor cautions that the discrepancy does not necessarily mean the audio player is broken and that the recording may play correctly.",
+      "support_claim_ids": [
+       "c2"
+      ],
+      "depends_on": [],
+      "summary_depends_on": []
+     },
+     {
+      "text": "The thread does not establish whether the recording or reference transcript is wrong, and neither message reports failed playback.",
+      "support_claim_ids": [
+       "c4"
+      ],
+      "depends_on": [],
+      "summary_depends_on": []
+     }
+    ],
+    "reasoning": "The reported discrepancy fits the current FAQ's correspondence guidance. The tutor's explanation is an attributed observation, not an authoritative instruction or a verified diagnosis. The thread shows neither conflicting handling instructions nor a playback problem requiring engineering expertise. No additional intervention or historical research is needed to support the recommendation to observe rather than escalate.",
+    "claims": [
+     {
+      "claim_id": "c1",
+      "kind": "INCIDENT_FACT",
+      "text": "A QA tutor reports that the voice says thirteen but the subtitle says thirty.",
+      "evidence_ids": [
+       "m:C_AUDIO_QA:1790875184.000139"
+      ],
+      "attributions": [
+       {
+        "user_id": "U007",
+        "relation": "AUTHOR",
+        "evidence_id": "m:C_AUDIO_QA:1790875184.000139"
+       }
+      ],
+      "quote": "Task check: Voice says thirteen but subtitle says thirty.",
+      "quote_kind": "VERBATIM",
+      "material": true
+     },
+     {
+      "claim_id": "c2",
+      "kind": "INCIDENT_FACT",
+      "text": "A tutor confirms that the voice says thirteen and the provided transcript says thirty, and cautions that this does not necessarily indicate a broken audio player because the recording may play correctly.",
+      "evidence_ids": [
+       "m:C_AUDIO_QA:1790875234.000113"
+      ],
+      "attributions": [
+       {
+        "user_id": "U011",
+        "relation": "AUTHOR",
+        "evidence_id": "m:C_AUDIO_QA:1790875234.000113"
+       }
+      ],
+      "quote": "The voice says thirteen; the provided transcript says thirty. This is not necessarily a broken audio player; the recording itself may play correctly.",
+      "quote_kind": "VERBATIM",
+      "material": true
+     },
+     {
+      "claim_id": "c3",
+      "kind": "GUIDANCE",
+      "text": "The current FAQ instructs members to record the exact audio–transcript mismatch as a correspondence issue, distinguish a recording error from a reference-transcript error, and not classify the mismatch as a playback failure.",
+      "evidence_ids": [
+       "k:audio-multimodal-faq@1.1:e9bcf43a"
+      ],
+      "attributions": [],
+      "quote": "Record the exact mismatch as a correspondence issue. Distinguish a recording error from a reference-transcript error; do not classify the mismatch as a playback failure.",
+      "quote_kind": "VERBATIM",
+      "material": true
+     },
+     {
+      "claim_id": "c4",
+      "kind": "INFERENCE",
+      "text": "The thread does not establish whether the recording or reference transcript is wrong, and neither message reports failed playback or conflicting handling instructions.",
+      "evidence_ids": [
+       "m:C_AUDIO_QA:1790875184.000139",
+       "m:C_AUDIO_QA:1790875234.000113"
+      ],
+      "attributions": [],
+      "quote": null,
+      "quote_kind": "PARAPHRASE",
+      "material": true
+     }
+    ],
+    "gaps": [],
+    "evidence_sufficiency": "SUFFICIENT",
+    "proposed_action": {
+     "action_type": "NO_ACTION",
+     "intervention_need": null,
+     "instruction": "Do not add an intervention now; the current FAQ already provides handling for the reported audio–transcript discrepancy.",
+     "rationale": "The current FAQ directly covers this mismatch, and the thread shows no conflicting handling instructions or reported playback failure warranting further intervention.",
+     "draft_text": null,
+     "scope_note": "This recommendation concerns the reported mismatch only; it does not establish whether the recording or reference transcript is wrong.",
+     "support_claim_ids": [
+      "c1",
+      "c2",
+      "c3",
+      "c4"
+     ],
+     "targets": [],
+     "context_claim_ids": []
+    },
+    "severity": {
+     "level": "LOW",
+     "rationale": "A QA tutor reports a localized word mismatch, which a tutor confirms in the same thread. The messages do not describe broader impact, inability to evaluate the task, or conflicting scoring interpretations.",
+     "signals": [],
+     "affected_reporters": [
+      {
+       "author_id": "U007",
+       "evidence_id": "m:C_AUDIO_QA:1790875184.000139"
+      }
+     ],
+     "recurrence": "NOT_CHECKED",
+     "recurrence_evidence_ids": [],
+     "reported_recurrence_evidence_ids": []
+    },
+    "confidence": 0.88,
+    "open_confirmation": "NONE",
+    "open_question": null,
+    "open_question_evidence_ids": [],
+    "source_conflicts": [],
+    "announcement_assessments": [],
+    "resolution": [
+     {
+      "member_id": "member_993748c662b631567942869d",
+      "state": "PARTIALLY_RESOLVED",
+      "evidence_ids": [
+       "m:C_AUDIO_QA:1790875184.000139",
+       "m:C_AUDIO_QA:1790875234.000113"
+      ],
+      "basis": "A tutor confirms the QA tutor's reported discrepancy and cautions against assuming a broken player. The thread does not establish whether the recording or reference transcript is wrong or show that the issue was recorded."
+     }
+    ],
+    "coverage": [
+     {
+      "need": "CURRENT_GUIDANCE",
+      "status": "COVERED",
+      "evidence_ids": [
+       "k:audio-multimodal-faq@1.1:e9bcf43a",
+       "k:audio-multimodal-instructions@1.3:eb85357a"
+      ],
+      "note": "The current FAQ directly addresses audio–transcript disagreement, and the current instructions distinguish audio omissions from reference-transcript mistakes.",
+      "gap_id": null
+     },
+     {
+      "need": "ANNOUNCEMENTS",
+      "status": "NOT_APPLICABLE",
+      "evidence_ids": [],
+      "note": "No announcement is needed to support observing this isolated report under the directly applicable current FAQ.",
+      "gap_id": null
+     },
+     {
+      "need": "PRIOR_DECISIONS",
+      "status": "NOT_APPLICABLE",
+      "evidence_ids": [],
+      "note": "The recommendation does not depend on an earlier workaround, trial, outcome or recurrence claim; historical research is not needed for it.",
+      "gap_id": null
+     },
+     {
+      "need": "MEMBER_QUESTIONS",
+      "status": "COVERED",
+      "evidence_ids": [
+       "m:C_AUDIO_QA:1790875184.000139",
+       "m:C_AUDIO_QA:1790875234.000113"
+      ],
+      "note": "The task check and the tutor's reply are available. Neither message references an earlier workaround or discussion.",
+      "gap_id": null
+     }
+    ],
+    "review_note": null,
+    "action_choice": null
+   },
+   "final": {
+    "contract_version": "agent3-advisor-draft-v11",
+    "summary": "A QA tutor reports that the voice says thirteen while the subtitle says thirty; a tutor confirms the same discrepancy. The current FAQ covers this as a correspondence issue, not a playback failure, and requires distinguishing a recording error from a reference-transcript error.",
+    "summary_sentences": [
+     {
+      "text": "A QA tutor reports that the voice says thirteen while the subtitle says thirty; a tutor confirms the same discrepancy.",
+      "support_claim_ids": [
+       "c1",
+       "c2"
+      ],
+      "depends_on": []
+     },
+     {
+      "text": "The current FAQ covers this as a correspondence issue, not a playback failure, and requires distinguishing a recording error from a reference-transcript error.",
+      "support_claim_ids": [
+       "c3"
+      ],
+      "depends_on": [
+       1
+      ]
+     }
+    ],
+    "detail_sentences": [
+     {
+      "text": "A tutor cautions that the discrepancy does not necessarily mean the audio player is broken and that the recording may play correctly.",
+      "support_claim_ids": [
+       "c2"
+      ],
+      "depends_on": [],
+      "summary_depends_on": []
+     },
+     {
+      "text": "The thread does not establish whether the recording or reference transcript is wrong, and neither message reports failed playback.",
+      "support_claim_ids": [
+       "c4"
+      ],
+      "depends_on": [],
+      "summary_depends_on": []
+     }
+    ],
+    "reasoning": "The reported discrepancy fits the current FAQ's correspondence guidance. The tutor's explanation is an attributed observation, not an authoritative instruction or a verified diagnosis. The thread shows neither conflicting handling instructions nor a playback problem requiring engineering expertise. No additional intervention or historical research is needed to support the recommendation to observe rather than escalate.",
+    "claims": [
+     {
+      "claim_id": "c1",
+      "kind": "INCIDENT_FACT",
+      "text": "A QA tutor reports that the voice says thirteen but the subtitle says thirty.",
+      "evidence_ids": [
+       "m:C_AUDIO_QA:1790875184.000139"
+      ],
+      "attributions": [
+       {
+        "user_id": "U007",
+        "relation": "AUTHOR",
+        "evidence_id": "m:C_AUDIO_QA:1790875184.000139"
+       }
+      ],
+      "quote": "Task check: Voice says thirteen but subtitle says thirty.",
+      "quote_kind": "VERBATIM",
+      "material": true
+     },
+     {
+      "claim_id": "c2",
+      "kind": "INCIDENT_FACT",
+      "text": "A tutor confirms that the voice says thirteen and the provided transcript says thirty, and cautions that this does not necessarily indicate a broken audio player because the recording may play correctly.",
+      "evidence_ids": [
+       "m:C_AUDIO_QA:1790875234.000113"
+      ],
+      "attributions": [
+       {
+        "user_id": "U011",
+        "relation": "AUTHOR",
+        "evidence_id": "m:C_AUDIO_QA:1790875234.000113"
+       }
+      ],
+      "quote": "The voice says thirteen; the provided transcript says thirty. This is not necessarily a broken audio player; the recording itself may play correctly.",
+      "quote_kind": "VERBATIM",
+      "material": true
+     },
+     {
+      "claim_id": "c3",
+      "kind": "GUIDANCE",
+      "text": "The current FAQ instructs members to record the exact audio–transcript mismatch as a correspondence issue, distinguish a recording error from a reference-transcript error, and not classify the mismatch as a playback failure.",
+      "evidence_ids": [
+       "k:audio-multimodal-faq@1.1:e9bcf43a"
+      ],
+      "attributions": [],
+      "quote": "Record the exact mismatch as a correspondence issue. Distinguish a recording error from a reference-transcript error; do not classify the mismatch as a playback failure.",
+      "quote_kind": "VERBATIM",
+      "material": true
+     },
+     {
+      "claim_id": "c4",
+      "kind": "INFERENCE",
+      "text": "The thread does not establish whether the recording or reference transcript is wrong, and neither message reports failed playback or conflicting handling instructions.",
+      "evidence_ids": [
+       "m:C_AUDIO_QA:1790875184.000139",
+       "m:C_AUDIO_QA:1790875234.000113"
+      ],
+      "attributions": [],
+      "quote": null,
+      "quote_kind": "PARAPHRASE",
+      "material": true
+     }
+    ],
+    "gaps": [],
+    "evidence_sufficiency": "SUFFICIENT",
+    "proposed_action": {
+     "action_type": "NO_ACTION",
+     "intervention_need": null,
+     "instruction": "Do not add an intervention now; the current FAQ already provides handling for the reported audio–transcript discrepancy.",
+     "rationale": "The current FAQ directly covers this mismatch, and the thread shows no conflicting handling instructions or reported playback failure warranting further intervention.",
+     "draft_text": null,
+     "scope_note": "This recommendation concerns the reported mismatch only; it does not establish whether the recording or reference transcript is wrong.",
+     "support_claim_ids": [
+      "c1",
+      "c2",
+      "c3",
+      "c4"
+     ],
+     "targets": [],
+     "context_claim_ids": []
+    },
+    "severity": {
+     "level": "LOW",
+     "rationale": "A QA tutor reports a localized word mismatch, which a tutor confirms in the same thread. The messages do not describe broader impact, inability to evaluate the task, or conflicting scoring interpretations.",
+     "signals": [],
+     "affected_reporters": [
+      {
+       "author_id": "U007",
+       "evidence_id": "m:C_AUDIO_QA:1790875184.000139"
+      }
+     ],
+     "recurrence": "NOT_CHECKED",
+     "recurrence_evidence_ids": [],
+     "reported_recurrence_evidence_ids": []
+    },
+    "confidence": 0.88,
+    "open_confirmation": "NONE",
+    "open_question": null,
+    "open_question_evidence_ids": [],
+    "source_conflicts": [],
+    "announcement_assessments": [],
+    "resolution": [
+     {
+      "member_id": "member_993748c662b631567942869d",
+      "state": "PARTIALLY_RESOLVED",
+      "evidence_ids": [
+       "m:C_AUDIO_QA:1790875184.000139",
+       "m:C_AUDIO_QA:1790875234.000113"
+      ],
+      "basis": "A tutor confirms the QA tutor's reported discrepancy and cautions against assuming a broken player. The thread does not establish whether the recording or reference transcript is wrong or show that the issue was recorded."
+     }
+    ],
+    "coverage": [
+     {
+      "need": "CURRENT_GUIDANCE",
+      "status": "COVERED",
+      "evidence_ids": [
+       "k:audio-multimodal-faq@1.1:e9bcf43a",
+       "k:audio-multimodal-instructions@1.3:eb85357a"
+      ],
+      "note": "The current FAQ directly addresses audio–transcript disagreement, and the current instructions distinguish audio omissions from reference-transcript mistakes.",
+      "gap_id": null
+     },
+     {
+      "need": "ANNOUNCEMENTS",
+      "status": "NOT_APPLICABLE",
+      "evidence_ids": [],
+      "note": "No announcement is needed to support observing this isolated report under the directly applicable current FAQ.",
+      "gap_id": null
+     },
+     {
+      "need": "PRIOR_DECISIONS",
+      "status": "NOT_APPLICABLE",
+      "evidence_ids": [],
+      "note": "The recommendation does not depend on an earlier workaround, trial, outcome or recurrence claim; historical research is not needed for it.",
+      "gap_id": null
+     },
+     {
+      "need": "MEMBER_QUESTIONS",
+      "status": "COVERED",
+      "evidence_ids": [
+       "m:C_AUDIO_QA:1790875184.000139",
+       "m:C_AUDIO_QA:1790875234.000113"
+      ],
+      "note": "The task check and the tutor's reply are available. Neither message references an earlier workaround or discussion.",
+      "gap_id": null
+     }
+    ],
+    "review_note": null,
+    "action_choice": null
+   },
+   "revised": false
+  },
+  "grounding": {
+   "structural_issues": [],
+   "action_issues": [],
+   "unsupported": [],
+   "unjudged": [],
+   "extraneous_verdicts": [],
+   "rejected": {},
+   "pending": [],
+   "action_sufficiency": null,
+   "source_consistency": {
+    "assessed_evidence_ids": [
+     "k:audio-multimodal-faq@1.1:e9bcf43a",
+     "k:audio-multimodal-faq@1.1:f72aa6db",
+     "k:audio-multimodal-instructions@1.3:7a5ab59d",
+     "k:audio-multimodal-instructions@1.3:eb85357a",
+     "k:audio-multimodal-instructions@1.3:1131a168"
+    ],
+    "relations": [
+     {
+      "evidence_ids": [
+       "k:audio-multimodal-faq@1.1:e9bcf43a",
+       "k:audio-multimodal-instructions@1.3:eb85357a"
+      ],
+      "relation": "AGREE",
+      "point": "Distinguish errors in the audio from errors in the reference transcript.",
+      "disagreement_scope": null,
+      "rationale": "The FAQ requires distinguishing recording errors from reference-transcript errors; the instructions likewise distinguish words missing from the audio from reference-transcript mistakes. The rubric adds quality classifications without contradicting that handling. The language and repetition excerpts address different problems and supply no conflicting rule for this mismatch."
+     }
+    ],
+    "declared_conflict_checks": []
+   },
+   "alternative_sufficiency": {},
+   "status": "PASSED",
+   "basis": "SEMANTIC",
+   "statements": [
+    {
+     "statement_id": "claim:c1",
+     "kind": "CLAIM_INCIDENT_FACT",
+     "text": "A QA tutor reports that the voice says thirteen but the subtitle says thirty. Verbatim quote: \"Task check: Voice says thirteen but subtitle says thirty.\"",
+     "blocking": true,
+     "evidence_ids": [
+      "m:C_AUDIO_QA:1790875184.000139"
+     ],
+     "attributions": [
+      {
+       "user_id": "U007",
+       "relation": "AUTHOR",
+       "evidence_id": "m:C_AUDIO_QA:1790875184.000139",
+       "role": "QA_TUTOR"
+      }
+     ],
+     "verdict": "SUPPORTED",
+     "model_verdict": "SUPPORTED",
+     "rationale": "U007 is the QA tutor who reported this discrepancy, and the verbatim quote exactly matches the cited message."
+    },
+    {
+     "statement_id": "claim:c2",
+     "kind": "CLAIM_INCIDENT_FACT",
+     "text": "A tutor confirms that the voice says thirteen and the provided transcript says thirty, and cautions that this does not necessarily indicate a broken audio player because the recording may play correctly. Verbatim quote: \"The voice says thirteen; the provided transcript says thirty. This is not necessarily a broken audio player; the recording itself may play correctly.\"",
+     "blocking": true,
+     "evidence_ids": [
+      "m:C_AUDIO_QA:1790875234.000113"
+     ],
+     "attributions": [
+      {
+       "user_id": "U011",
+       "relation": "AUTHOR",
+       "evidence_id": "m:C_AUDIO_QA:1790875234.000113",
+       "role": "TUTOR"
+      }
+     ],
+     "verdict": "SUPPORTED",
+     "model_verdict": "SUPPORTED",
+     "rationale": "U011 is a tutor whose message confirms the reported discrepancy and explicitly cautions that it need not indicate a broken player. The quote matches exactly and does not establish a verified cause."
+    },
+    {
+     "statement_id": "claim:c3",
+     "kind": "CLAIM_GUIDANCE",
+     "text": "The current FAQ instructs members to record the exact audio–transcript mismatch as a correspondence issue, distinguish a recording error from a reference-transcript error, and not classify the mismatch as a playback failure. Verbatim quote: \"Record the exact mismatch as a correspondence issue. Distinguish a recording error from a reference-transcript error; do not classify the mismatch as a playback failure.\"",
+     "blocking": true,
+     "evidence_ids": [
+      "k:audio-multimodal-faq@1.1:e9bcf43a"
+     ],
+     "verdict": "SUPPORTED",
+     "model_verdict": "SUPPORTED",
+     "rationale": "The current, project-wide FAQ explicitly gives all three instructions, and the quoted passage matches the source."
+    },
+    {
+     "statement_id": "claim:c4",
+     "kind": "CLAIM_INFERENCE",
+     "text": "The thread does not establish whether the recording or reference transcript is wrong, and neither message reports failed playback or conflicting handling instructions.",
+     "blocking": true,
+     "evidence_ids": [
+      "m:C_AUDIO_QA:1790875184.000139",
+      "m:C_AUDIO_QA:1790875234.000113"
+     ],
+     "verdict": "SUPPORTED",
+     "model_verdict": "SUPPORTED",
+     "rationale": "Neither message identifies which component is wrong, reports failed playback, or presents conflicting handling instructions."
+    },
+    {
+     "statement_id": "summary:s1",
+     "kind": "SUMMARY",
+     "text": "A QA tutor reports that the voice says thirteen while the subtitle says thirty; a tutor confirms the same discrepancy.",
+     "blocking": true,
+     "evidence_ids": [
+      "m:C_AUDIO_QA:1790875184.000139",
+      "m:C_AUDIO_QA:1790875234.000113"
+     ],
+     "attributions": [
+      {
+       "user_id": "U007",
+       "relation": "AUTHOR",
+       "evidence_id": "m:C_AUDIO_QA:1790875184.000139",
+       "role": "QA_TUTOR"
+      },
+      {
+       "user_id": "U011",
+       "relation": "AUTHOR",
+       "evidence_id": "m:C_AUDIO_QA:1790875234.000113",
+       "role": "TUTOR"
+      }
+     ],
+     "verdict": "SUPPORTED",
+     "model_verdict": "SUPPORTED",
+     "rationale": "The cited QA tutor reports the thirteen/thirty discrepancy, and the cited tutor confirms the same audio–text discrepancy."
+    },
+    {
+     "statement_id": "summary:s2",
+     "kind": "SUMMARY",
+     "text": "The current FAQ covers this as a correspondence issue, not a playback failure, and requires distinguishing a recording error from a reference-transcript error.",
+     "blocking": true,
+     "evidence_ids": [
+      "k:audio-multimodal-faq@1.1:e9bcf43a"
+     ],
+     "depends_on": [
+      "summary:s1"
+     ],
+     "verdict": "SUPPORTED",
+     "model_verdict": "SUPPORTED",
+     "rationale": "The current FAQ explicitly classifies audio–transcript mismatches as correspondence issues rather than playback failures and requires distinguishing recording errors from reference-transcript errors."
+    },
+    {
+     "statement_id": "detail:d1",
+     "kind": "DETAIL",
+     "text": "A tutor cautions that the discrepancy does not necessarily mean the audio player is broken and that the recording may play correctly.",
+     "blocking": false,
+     "evidence_ids": [
+      "m:C_AUDIO_QA:1790875234.000113"
+     ],
+     "attributions": [
+      {
+       "user_id": "U011",
+       "relation": "AUTHOR",
+       "evidence_id": "m:C_AUDIO_QA:1790875234.000113",
+       "role": "TUTOR"
+      }
+     ],
+     "verdict": "SUPPORTED",
+     "model_verdict": "SUPPORTED",
+     "rationale": "The tutor explicitly states that the discrepancy does not necessarily indicate a broken audio player and that the recording may play correctly."
+    },
+    {
+     "statement_id": "detail:d2",
+     "kind": "DETAIL",
+     "text": "The thread does not establish whether the recording or reference transcript is wrong, and neither message reports failed playback.",
+     "blocking": false,
+     "evidence_ids": [
+      "m:C_AUDIO_QA:1790875184.000139",
+      "m:C_AUDIO_QA:1790875234.000113"
+     ],
+     "verdict": "SUPPORTED",
+     "model_verdict": "SUPPORTED",
+     "rationale": "The complete thread establishes neither whether the recording or reference transcript is wrong nor any failed playback."
+    },
+    {
+     "statement_id": "action:no_action",
+     "kind": "NO_ACTION_RATIONALE",
+     "text": "Why no further action is needed now: The current FAQ directly covers this mismatch, and the thread shows no conflicting handling instructions or reported playback failure warranting further intervention.",
+     "blocking": false,
+     "evidence_ids": [
+      "m:C_AUDIO_QA:1790875184.000139",
+      "m:C_AUDIO_QA:1790875234.000113",
+      "k:audio-multimodal-faq@1.1:e9bcf43a"
+     ],
+     "verdict": "SUPPORTED",
+     "model_verdict": "SUPPORTED",
+     "rationale": "The FAQ directly supplies applicable handling, and the complete thread shows no unresolved handling question, guidance conflict, or operational problem requiring further coordination. The unestablished error location and lack of a recording confirmation do not themselves demonstrate a need for additional intervention."
+    },
+    {
+     "statement_id": "resolution:member_993748c662b631567942869d",
+     "kind": "RESOLUTION",
+     "text": "Member thread member_993748c662b631567942869d is PARTIALLY_RESOLVED: A tutor confirms the QA tutor's reported discrepancy and cautions against assuming a broken player. The thread does not establish whether the recording or reference transcript is wrong or show that the issue was recorded.",
+     "blocking": true,
+     "evidence_ids": [
+      "m:C_AUDIO_QA:1790875184.000139",
+      "m:C_AUDIO_QA:1790875234.000113"
+     ],
+     "verdict": "SUPPORTED",
+     "model_verdict": "SUPPORTED",
+     "rationale": "The tutor confirms the discrepancy and cautions against assuming player failure, but the complete thread neither identifies which component is wrong nor shows that the correspondence issue was recorded. This supports the qualified partial-resolution description."
+    },
+    {
+     "statement_id": "severity:rationale",
+     "kind": "SEVERITY_RATIONALE",
+     "text": "Severity LOW: A QA tutor reports a localized word mismatch, which a tutor confirms in the same thread. The messages do not describe broader impact, inability to evaluate the task, or conflicting scoring interpretations.",
+     "blocking": true,
+     "evidence_ids": [
+      "m:C_AUDIO_QA:1790875184.000139",
+      "m:C_AUDIO_QA:1790875234.000113"
+     ],
+     "verdict": "SUPPORTED",
+     "model_verdict": "SUPPORTED",
+     "rationale": "The messages describe one localized word discrepancy and its confirmation, without reporting broader operational impact, inability to evaluate, or competing scoring interpretations. LOW operational severity does not assert a minor task-quality defect."
+    },
+    {
+     "statement_id": "reporter:U007",
+     "kind": "AFFECTED_REPORTER",
+     "text": "U007 reports, in their own cited message, being affected by this problem.",
+     "blocking": true,
+     "evidence_ids": [
+      "m:C_AUDIO_QA:1790875184.000139"
+     ],
+     "verdict": "SUPPORTED",
+     "model_verdict": "SUPPORTED",
+     "rationale": "U007's own task-check message reports encountering the audio–subtitle mismatch."
+    }
+   ]
+  },
+  "temporal": {
+   "status": "NONE_FOUND",
+   "findings": [],
+   "source_consistency": "ASSESSED",
+   "ignored_revision_states": "NOT_YET_EFFECTIVE and NOT_APPROVED revisions never compete with applicable guidance."
+  },
+  "temporal_before_grounding": {
+   "status": "NONE_FOUND",
+   "findings": [],
+   "source_consistency": "NOT_ASSESSED",
+   "ignored_revision_states": "NOT_YET_EFFECTIVE and NOT_APPROVED revisions never compete with applicable guidance."
+  },
+  "severity": {
+   "assessment": {
+    "level": "LOW",
+    "assessment_status": "ASSESSED",
+    "rubric_version": "severity-rubric-v3-semantic-signals",
+    "rubric_content_sha256": "eccaa31a2ab84a0aa7c005216a92fc39681e1dd10107117344948235a76673f4",
+    "rubric_project_id": null,
+    "rubric_scope": "SHARED_DEFAULT",
+    "rationale": "A QA tutor reports a localized word mismatch, which a tutor confirms in the same thread. The messages do not describe broader impact, inability to evaluate the task, or conflicting scoring interpretations.",
+    "matched_signals": [],
+    "evidence": [],
+    "occurrence": {
+     "affected_reporters": {
+      "status": "LOWER_BOUND",
+      "count": 1,
+      "ids": [
+       "U007"
+      ],
+      "basis": "Distinct authors whose own cited message reports the problem; other participants are not counted.",
+      "evidence": [
+       {
+        "kind": "slack_message",
+        "project_id": "audio_multimodal",
+        "batch_id": "audio_batch_06",
+        "scope": "project",
+        "channel_id": "C_AUDIO_QA",
+        "thread_id": "1790875184.000139",
+        "message_id": "1790875184.000139",
+        "document_id": null,
+        "version_id": null,
+        "authoring_document_id": null,
+        "authoring_version": null,
+        "section": null,
+        "chunk_id": null,
+        "candidate_group_id": null,
+        "member_id": "member_993748c662b631567942869d",
+        "artifact": null,
+        "artifact_sha256": null,
+        "quote": null,
+        "note": "m:C_AUDIO_QA:1790875184.000139"
+       }
+      ]
+     },
+     "affected_tasks": {
+      "status": "UNKNOWN",
+      "count": null,
+      "ids": [],
+      "basis": null,
+      "evidence": []
+     },
+     "relevant_threads": [
+      {
+       "project_id": "audio_multimodal",
+       "batch_id": "audio_batch_06",
+       "channel_id": "C_AUDIO_QA",
+       "thread_id": "1790875184.000139",
+       "member_id": "member_993748c662b631567942869d"
+      }
+     ],
+     "reporting_window": {
+      "start": "2026-10-01T17:19:44.000139+00:00",
+      "end": "2026-10-01T17:20:34.000113+00:00"
+     },
+     "historical_recurrence": {
+      "status": "NOT_CHECKED",
+      "sources": [],
+      "event_series_ids": []
+     },
+     "known_denominator": null,
+     "structural": {
+      "threads": 1,
+      "messages": 2,
+      "distinct_participants": 2,
+      "duplicate_threads_ignored": 0,
+      "duplicate_messages_ignored": 0,
+      "computed_from": "topic member threads (original Slack messages)",
+      "participants_are_not_affected_reporters": true
+     },
+     "semantic_identification": "ASSESSED"
+    },
+    "inherited_from": {
+     "level": "UNKNOWN",
+     "assessment_status": "UNASSESSED",
+     "assessment_deferred_to": "AGENT3",
+     "reason": "Agent 2 performs taxonomy only."
+    }
+   },
+   "issues": [],
+   "notes": [],
+   "proposal": {
+    "level": "LOW",
+    "rationale": "A QA tutor reports a localized word mismatch, which a tutor confirms in the same thread. The messages do not describe broader impact, inability to evaluate the task, or conflicting scoring interpretations.",
+    "signals": [],
+    "affected_reporters": [
+     {
+      "author_id": "U007",
+      "evidence_id": "m:C_AUDIO_QA:1790875184.000139"
+     }
+    ],
+    "recurrence": "NOT_CHECKED",
+    "recurrence_evidence_ids": [],
+    "reported_recurrence_evidence_ids": []
+   }
+  },
+  "resolution": {
+   "topic": "PARTIALLY_RESOLVED",
+   "members": {
+    "member_993748c662b631567942869d": "PARTIALLY_RESOLVED"
+   },
+   "agent1_attributed": [
+    {
+     "member_id": "member_993748c662b631567942869d",
+     "state": "PARTIALLY_RESOLVED",
+     "agent1_verification_status": "NEEDS_REVIEW",
+     "agent1_review_required": true
+    }
+   ]
+  },
+  "established_handling": [],
+  "coverage_issues": [],
+  "action_source": "DRAFT",
+  "action_notes": [],
+  "tot": {
+   "status": "NOT_TRIGGERED",
+   "triggers": [],
+   "choice_after_grounding": {
+    "status": "NOT_COMPARED",
+    "viable": []
+   }
+  },
+  "evidence_ledger": {
+   "m:C_AUDIO_QA:1790875184.000139": {
+    "evidence_id": "m:C_AUDIO_QA:1790875184.000139",
+    "origin": "member_message",
+    "use": "MEMBER_REPORT",
+    "member_id": "member_993748c662b631567942869d",
+    "channel_id": "C_AUDIO_QA",
+    "thread_id": "1790875184.000139",
+    "message_id": "1790875184.000139",
+    "author_id": "U007",
+    "author_name": "Leo",
+    "author_role": "QA_TUTOR",
+    "timestamp": "2026-10-01T17:19:44.000139Z",
+    "thread_starter_id": "U007",
+    "thread_starter_role": "QA_TUTOR",
+    "reactions": [],
+    "excerpt": "Task check: Voice says thirteen but subtitle says thirty."
+   },
+   "m:C_AUDIO_QA:1790875234.000113": {
+    "evidence_id": "m:C_AUDIO_QA:1790875234.000113",
+    "origin": "member_message",
+    "use": "MEMBER_REPORT",
+    "member_id": "member_993748c662b631567942869d",
+    "channel_id": "C_AUDIO_QA",
+    "thread_id": "1790875184.000139",
+    "message_id": "1790875234.000113",
+    "author_id": "U011",
+    "author_name": "Rina",
+    "author_role": "TUTOR",
+    "timestamp": "2026-10-01T17:20:34.000113Z",
+    "thread_starter_id": "U007",
+    "thread_starter_role": "QA_TUTOR",
+    "reactions": [],
+    "excerpt": "The voice says thirteen; the provided transcript says thirty. This is not necessarily a broken audio player; the recording itself may play correctly."
+   },
+   "k:audio-multimodal-faq@1.1:e9bcf43a": {
+    "evidence_id": "k:audio-multimodal-faq@1.1:e9bcf43a",
+    "origin": "retrieved_source",
+    "use": "CURRENT_GUIDANCE",
+    "citation": {
+     "document_id": "knowledge_1f550e377f9c310f57f03e5bf482f810999d822a9cf4b1db3be5f2557678f15e",
+     "version_id": "version_66a170bbd46011e80d06da6d0bf5ec8b73486a84c13e015f60222fa711e05727",
+     "chunk_id": "chunk_e9bcf43a020b06861273547bf398f71b",
+     "authoring": "audio-multimodal-faq@1.1",
+     "title": "Audio Multimodal — FAQ (v1.1)",
+     "sections": [
+      "Scoring"
+     ],
+     "source": {
+      "batch_id": null,
+      "channel_id": null,
+      "manual_key": "audio-multimodal-faq",
+      "message_id": null,
+      "permalink": null,
+      "project_id": "audio_multimodal",
+      "reference": null,
+      "system": "manual",
+      "thread_id": null,
+      "workspace_id": null
+     }
+    },
+    "source_type": "faq",
+    "record_kind": "faq",
+    "applicability": {
+     "state": "CURRENT",
+     "revision_state": "CURRENT",
+     "version_mode": "current",
+     "replaced_by": [],
+     "unverified_supersession": [],
+     "supersedes": [],
+     "enactment": null,
+     "other_revisions": []
+    },
+    "dates": {
+     "source_date": "2026-09-20T13:00:00Z",
+     "basis": "effective_at",
+     "effective_at": "2026-09-20T13:00:00Z",
+     "created_at": null,
+     "valid_until": null,
+     "expired_as_of": false,
+     "reference_time": "2026-10-02T12:00:00Z"
+    },
+    "scope": {
+     "project_id": "audio_multimodal",
+     "batch_id": null,
+     "scope": "project",
+     "batch_relation": "project_wide"
+    },
+    "authority": {
+     "role": "TEAM_LEAD",
+     "actor": "U006",
+     "actor_relation": "RECORD_AUTHORITY",
+     "approval_status": "EXPLICIT_SOURCE_MARKER",
+     "provenance": "synthetic_manual_record"
+    },
+    "authorship": {
+     "author_id": null,
+     "verified": false,
+     "basis": "NO_AUTHOR_RECORDED"
+    },
+    "recorded_states": {
+     "status": "approved",
+     "decision_status": null,
+     "execution_status": null,
+     "outcome_status": null
+    },
+    "upstream_review": null,
+    "excerpt": "## Scoring\n\n### Q: How should I score mild clipping?\nBrief, localized clipping with clear speech is a minor defect. Timestamp the affected span. For continuous artifacts or unclear impact, ask QA to review intelligibility and scope; do not decide from duration alone.\n\n### Q: The transcript and audio disagree. What do I do?\nRecord the exact mismatch as a correspondence issue. Distinguish a recording error from a reference-transcript error; do not classify the mismatch as a playback failure.\n\n### Q: How much speaker overlap is allowed before the transcription fails?\nMark the overlapping or unintelligible interval and preserve the usable remainder. Timestamp the span. Do not infer a whole-clip failure from a short affected interval."
+   },
+   "k:audio-multimodal-faq@1.1:f72aa6db": {
+    "evidence_id": "k:audio-multimodal-faq@1.1:f72aa6db",
+    "origin": "retrieved_source",
+    "use": "CURRENT_GUIDANCE",
+    "citation": {
+     "document_id": "knowledge_1f550e377f9c310f57f03e5bf482f810999d822a9cf4b1db3be5f2557678f15e",
+     "version_id": "version_66a170bbd46011e80d06da6d0bf5ec8b73486a84c13e015f60222fa711e05727",
+     "chunk_id": "chunk_f72aa6dbc3db35c9f2e9e216b1c8c18f",
+     "authoring": "audio-multimodal-faq@1.1",
+     "title": "Audio Multimodal — FAQ (v1.1)",
+     "sections": [
+      "Language and TTS"
+     ],
+     "source": {
+      "batch_id": null,
+      "channel_id": null,
+      "manual_key": "audio-multimodal-faq",
+      "message_id": null,
+      "permalink": null,
+      "project_id": "audio_multimodal",
+      "reference": null,
+      "system": "manual",
+      "thread_id": null,
+      "workspace_id": null
+     }
+    },
+    "source_type": "faq",
+    "record_kind": "faq",
+    "applicability": {
+     "state": "CURRENT",
+     "revision_state": "CURRENT",
+     "version_mode": "current",
+     "replaced_by": [],
+     "unverified_supersession": [],
+     "supersedes": [],
+     "enactment": null,
+     "other_revisions": []
+    },
+    "dates": {
+     "source_date": "2026-09-20T13:00:00Z",
+     "basis": "effective_at",
+     "effective_at": "2026-09-20T13:00:00Z",
+     "created_at": null,
+     "valid_until": null,
+     "expired_as_of": false,
+     "reference_time": "2026-10-02T12:00:00Z"
+    },
+    "scope": {
+     "project_id": "audio_multimodal",
+     "batch_id": null,
+     "scope": "project",
+     "batch_relation": "project_wide"
+    },
+    "authority": {
+     "role": "TEAM_LEAD",
+     "actor": "U006",
+     "actor_relation": "RECORD_AUTHORITY",
+     "approval_status": "EXPLICIT_SOURCE_MARKER",
+     "provenance": "synthetic_manual_record"
+    },
+    "authorship": {
+     "author_id": null,
+     "verified": false,
+     "basis": "NO_AUTHOR_RECORDED"
+    },
+    "recorded_states": {
+     "status": "approved",
+     "decision_status": null,
+     "execution_status": null,
+     "outcome_status": null
+    },
+    "upstream_review": null,
+    "excerpt": "## Language and TTS\n\n### Q: The generated speech is in the wrong language. Is that a playback failure?\nConfirm the requested language and permitted switching. If the recording itself contains an unrequested language mismatch, record it as a language-quality issue rather than a playback failure."
+   },
+   "k:audio-multimodal-instructions@1.3:7a5ab59d": {
+    "evidence_id": "k:audio-multimodal-instructions@1.3:7a5ab59d",
+    "origin": "retrieved_source",
+    "use": "CURRENT_GUIDANCE",
+    "citation": {
+     "document_id": "knowledge_3057c26d60654a68d0b76c025ba216366dd48f3e97b64f5aae68364a45170b8a",
+     "version_id": "version_03e4c185c65cbfbe35dccab040cc429ac6887e3cb0edc4f52cb5ea5a56970a24",
+     "chunk_id": "chunk_7a5ab59d9fc3e6054d7e7141693ea05f",
+     "authoring": "audio-multimodal-instructions@1.3",
+     "title": "Audio Multimodal — Instructions (v1.3)",
+     "sections": [
+      "Language and repeated audio"
+     ],
+     "source": {
+      "batch_id": null,
+      "channel_id": null,
+      "manual_key": "audio-multimodal-instructions",
+      "message_id": null,
+      "permalink": null,
+      "project_id": "audio_multimodal",
+      "reference": null,
+      "system": "manual",
+      "thread_id": null,
+      "workspace_id": null
+     }
+    },
+    "source_type": "guideline",
+    "record_kind": "guideline",
+    "applicability": {
+     "state": "CURRENT",
+     "revision_state": "CURRENT",
+     "version_mode": "current",
+     "replaced_by": [],
+     "unverified_supersession": [],
+     "supersedes": [],
+     "enactment": null,
+     "other_revisions": []
+    },
+    "dates": {
+     "source_date": "2026-09-15T13:00:00Z",
+     "basis": "effective_at",
+     "effective_at": "2026-09-15T13:00:00Z",
+     "created_at": null,
+     "valid_until": null,
+     "expired_as_of": false,
+     "reference_time": "2026-10-02T12:00:00Z"
+    },
+    "scope": {
+     "project_id": "audio_multimodal",
+     "batch_id": null,
+     "scope": "project",
+     "batch_relation": "project_wide"
+    },
+    "authority": {
+     "role": "TEAM_LEAD",
+     "actor": "U006",
+     "actor_relation": "RECORD_AUTHORITY",
+     "approval_status": "EXPLICIT_SOURCE_MARKER",
+     "provenance": "synthetic_manual_record"
+    },
+    "authorship": {
+     "author_id": null,
+     "verified": false,
+     "basis": "NO_AUTHOR_RECORDED"
+    },
+    "recorded_states": {
+     "status": "approved",
+     "decision_status": null,
+     "execution_status": null,
+     "outcome_status": null
+    },
+    "upstream_review": null,
+    "excerpt": "## Language and repeated audio\nConfirm the requested language and any permitted switching before recording a language mismatch. A familiar accent or an ordinary loanword is not automatically a defect.\n\nWhen a phrase repeats, record where it occurs. If feasible, compare the downloaded file with player output. Do not call it a confirmed generation defect until the available evidence distinguishes generation from playback."
+   },
+   "k:audio-multimodal-instructions@1.3:eb85357a": {
+    "evidence_id": "k:audio-multimodal-instructions@1.3:eb85357a",
+    "origin": "retrieved_source",
+    "use": "CURRENT_GUIDANCE",
+    "citation": {
+     "document_id": "knowledge_3057c26d60654a68d0b76c025ba216366dd48f3e97b64f5aae68364a45170b8a",
+     "version_id": "version_03e4c185c65cbfbe35dccab040cc429ac6887e3cb0edc4f52cb5ea5a56970a24",
+     "chunk_id": "chunk_eb85357a2c0b0e254c4f95c9d38a0bae",
+     "authoring": "audio-multimodal-instructions@1.3",
+     "title": "Audio Multimodal — Instructions (v1.3)",
+     "sections": [
+      "Overlap and transcript correspondence"
+     ],
+     "source": {
+      "batch_id": null,
+      "channel_id": null,
+      "manual_key": "audio-multimodal-instructions",
+      "message_id": null,
+      "permalink": null,
+      "project_id": "audio_multimodal",
+      "reference": null,
+      "system": "manual",
+      "thread_id": null,
+      "workspace_id": null
+     }
+    },
+    "source_type": "guideline",
+    "record_kind": "guideline",
+    "applicability": {
+     "state": "CURRENT",
+     "revision_state": "CURRENT",
+     "version_mode": "current",
+     "replaced_by": [],
+     "unverified_supersession": [],
+     "supersedes": [],
+     "enactment": null,
+     "other_revisions": []
+    },
+    "dates": {
+     "source_date": "2026-09-15T13:00:00Z",
+     "basis": "effective_at",
+     "effective_at": "2026-09-15T13:00:00Z",
+     "created_at": null,
+     "valid_until": null,
+     "expired_as_of": false,
+     "reference_time": "2026-10-02T12:00:00Z"
+    },
+    "scope": {
+     "project_id": "audio_multimodal",
+     "batch_id": null,
+     "scope": "project",
+     "batch_relation": "project_wide"
+    },
+    "authority": {
+     "role": "TEAM_LEAD",
+     "actor": "U006",
+     "actor_relation": "RECORD_AUTHORITY",
+     "approval_status": "EXPLICIT_SOURCE_MARKER",
+     "provenance": "synthetic_manual_record"
+    },
+    "authorship": {
+     "author_id": null,
+     "verified": false,
+     "basis": "NO_AUTHOR_RECORDED"
+    },
+    "recorded_states": {
+     "status": "approved",
+     "decision_status": null,
+     "execution_status": null,
+     "outcome_status": null
+    },
+    "upstream_review": null,
+    "excerpt": "## Overlap and transcript correspondence\nMark the overlapping or unintelligible interval. Keep usable portions of the clip and timestamp the affected span. Distinguish words missing from the audio from mistakes in the reference transcript."
+   },
+   "k:audio-multimodal-instructions@1.3:1131a168": {
+    "evidence_id": "k:audio-multimodal-instructions@1.3:1131a168",
+    "origin": "retrieved_source",
+    "use": "CURRENT_GUIDANCE",
+    "citation": {
+     "document_id": "knowledge_3057c26d60654a68d0b76c025ba216366dd48f3e97b64f5aae68364a45170b8a",
+     "version_id": "version_03e4c185c65cbfbe35dccab040cc429ac6887e3cb0edc4f52cb5ea5a56970a24",
+     "chunk_id": "chunk_1131a1688d210687b7164ad6561c637b",
+     "authoring": "audio-multimodal-instructions@1.3",
+     "title": "Audio Multimodal — Instructions (v1.3)",
+     "sections": [
+      "Content-quality rubric"
+     ],
+     "source": {
+      "batch_id": null,
+      "channel_id": null,
+      "manual_key": "audio-multimodal-instructions",
+      "message_id": null,
+      "permalink": null,
+      "project_id": "audio_multimodal",
+      "reference": null,
+      "system": "manual",
+      "thread_id": null,
+      "workspace_id": null
+     }
+    },
+    "source_type": "guideline",
+    "record_kind": "guideline",
+    "applicability": {
+     "state": "CURRENT",
+     "revision_state": "CURRENT",
+     "version_mode": "current",
+     "replaced_by": [],
+     "unverified_supersession": [],
+     "supersedes": [],
+     "enactment": null,
+     "other_revisions": []
+    },
+    "dates": {
+     "source_date": "2026-09-15T13:00:00Z",
+     "basis": "effective_at",
+     "effective_at": "2026-09-15T13:00:00Z",
+     "created_at": null,
+     "valid_until": null,
+     "expired_as_of": false,
+     "reference_time": "2026-10-02T12:00:00Z"
+    },
+    "scope": {
+     "project_id": "audio_multimodal",
+     "batch_id": null,
+     "scope": "project",
+     "batch_relation": "project_wide"
+    },
+    "authority": {
+     "role": "TEAM_LEAD",
+     "actor": "U006",
+     "actor_relation": "RECORD_AUTHORITY",
+     "approval_status": "EXPLICIT_SOURCE_MARKER",
+     "provenance": "synthetic_manual_record"
+    },
+    "authorship": {
+     "author_id": null,
+     "verified": false,
+     "basis": "NO_AUTHOR_RECORDED"
+    },
+    "recorded_states": {
+     "status": "approved",
+     "decision_status": null,
+     "execution_status": null,
+     "outcome_status": null
+    },
+    "upstream_review": null,
+    "excerpt": "## Content-quality rubric\nMajor/minor here describe task-quality defects, not operational incident severity.\n\n| Dimension | Major defect | Minor defect | Acceptable / no automatic penalty |\n| --- | --- | --- | --- |\n| Intelligibility | A material speech span is unusable | Brief clipping/static with words still clear | Background variation that does not impair the task |\n| Audio–transcript correspondence | Key content is missing or contradicted | A limited omission that does not change meaning | Equivalent wording where the task allows it |\n| Language match | A substantial unrequested mismatch with the required language | A limited genuine mismatch affecting adherence | Permitted switching, ordinary loanwords, or an acceptable accent |"
+   }
+  },
+  "card": {
+   "contract_version": "agent3-advice-card-v5",
+   "record_type": "ADVICE_CARD",
+   "card_id": "card_223ae396c244f734aac83956904c23fd",
+   "project_id": "audio_multimodal",
+   "topic_name": "Audio-transcript mismatch clarification",
+   "card_line": "NEEDS_REVIEW",
+   "summary": "A QA tutor reports that the voice says thirteen while the subtitle says thirty; a tutor confirms the same discrepancy. The current FAQ covers this as a correspondence issue, not a playback failure, and requires distinguishing a recording error from a reference-transcript error.",
+   "severity": {
+    "level": "LOW",
+    "assessment_status": "ASSESSED",
+    "rubric_version": "severity-rubric-v3-semantic-signals",
+    "rubric_content_sha256": "eccaa31a2ab84a0aa7c005216a92fc39681e1dd10107117344948235a76673f4",
+    "rubric_project_id": null,
+    "rubric_scope": "SHARED_DEFAULT",
+    "rationale": "A QA tutor reports a localized word mismatch, which a tutor confirms in the same thread. The messages do not describe broader impact, inability to evaluate the task, or conflicting scoring interpretations.",
+    "matched_signals": [],
+    "evidence": [],
+    "occurrence": {
+     "affected_reporters": {
+      "status": "LOWER_BOUND",
+      "count": 1,
+      "ids": [
+       "U007"
+      ],
+      "basis": "Distinct authors whose own cited message reports the problem; other participants are not counted.",
+      "evidence": [
+       {
+        "kind": "slack_message",
+        "project_id": "audio_multimodal",
+        "batch_id": "audio_batch_06",
+        "scope": "project",
+        "channel_id": "C_AUDIO_QA",
+        "thread_id": "1790875184.000139",
+        "message_id": "1790875184.000139",
+        "document_id": null,
+        "version_id": null,
+        "authoring_document_id": null,
+        "authoring_version": null,
+        "section": null,
+        "chunk_id": null,
+        "candidate_group_id": null,
+        "member_id": "member_993748c662b631567942869d",
+        "artifact": null,
+        "artifact_sha256": null,
+        "quote": null,
+        "note": "m:C_AUDIO_QA:1790875184.000139"
+       }
+      ]
+     },
+     "affected_tasks": {
+      "status": "UNKNOWN",
+      "count": null,
+      "ids": [],
+      "basis": null,
+      "evidence": []
+     },
+     "relevant_threads": [
+      {
+       "project_id": "audio_multimodal",
+       "batch_id": "audio_batch_06",
+       "channel_id": "C_AUDIO_QA",
+       "thread_id": "1790875184.000139",
+       "member_id": "member_993748c662b631567942869d"
+      }
+     ],
+     "reporting_window": {
+      "start": "2026-10-01T17:19:44.000139+00:00",
+      "end": "2026-10-01T17:20:34.000113+00:00"
+     },
+     "historical_recurrence": {
+      "status": "NOT_CHECKED",
+      "sources": [],
+      "event_series_ids": []
+     },
+     "known_denominator": null,
+     "structural": {
+      "threads": 1,
+      "messages": 2,
+      "distinct_participants": 2,
+      "duplicate_threads_ignored": 0,
+      "duplicate_messages_ignored": 0,
+      "computed_from": "topic member threads (original Slack messages)",
+      "participants_are_not_affected_reporters": true
+     },
+     "semantic_identification": "ASSESSED"
+    },
+    "inherited_from": {
+     "level": "UNKNOWN",
+     "assessment_status": "UNASSESSED",
+     "assessment_deferred_to": "AGENT3",
+     "reason": "Agent 2 performs taxonomy only."
+    }
+   },
+   "severity_is_provisional": false,
+   "resolution_status": "PARTIALLY_RESOLVED",
+   "recommended_action": null,
+   "reasoning": "What the evidence shows: A QA tutor reports that the voice says thirteen but the subtitle says thirty. A tutor confirms that the voice says thirteen and the provided transcript says thirty, and cautions that this does not necessarily indicate a broken audio player because the recording may play correctly. The current FAQ instructs members to record the exact audio–transcript mismatch as a correspondence issue, distinguish a recording error from a reference-transcript error, and not classify the mismatch as a playback failure. The thread does not establish whether the recording or reference transcript is wrong, and neither message reports failed playback or conflicting handling instructions. Thread status, read from each thread's own messages: partially resolved ×1. Agent 1's earlier labels (an input, not evidence): partially resolved ×1; 1 of 1 were not verified by Agent 1.",
+   "supporting_sources": [
+    {
+     "kind": "knowledge_source",
+     "project_id": "audio_multimodal",
+     "batch_id": null,
+     "scope": "project",
+     "channel_id": null,
+     "thread_id": null,
+     "message_id": null,
+     "document_id": "knowledge_1f550e377f9c310f57f03e5bf482f810999d822a9cf4b1db3be5f2557678f15e",
+     "version_id": "version_66a170bbd46011e80d06da6d0bf5ec8b73486a84c13e015f60222fa711e05727",
+     "authoring_document_id": "audio-multimodal-faq",
+     "authoring_version": "1.1",
+     "section": "Scoring",
+     "chunk_id": "chunk_e9bcf43a020b06861273547bf398f71b",
+     "candidate_group_id": null,
+     "member_id": null,
+     "artifact": null,
+     "artifact_sha256": null,
+     "quote": null,
+     "note": "k:audio-multimodal-faq@1.1:e9bcf43a (CURRENT_GUIDANCE; CURRENT)"
+    },
+    {
+     "kind": "slack_message",
+     "project_id": "audio_multimodal",
+     "batch_id": "audio_batch_06",
+     "scope": "project",
+     "channel_id": "C_AUDIO_QA",
+     "thread_id": "1790875184.000139",
+     "message_id": "1790875184.000139",
+     "document_id": null,
+     "version_id": null,
+     "authoring_document_id": null,
+     "authoring_version": null,
+     "section": null,
+     "chunk_id": null,
+     "candidate_group_id": null,
+     "member_id": "member_993748c662b631567942869d",
+     "artifact": null,
+     "artifact_sha256": null,
+     "quote": null,
+     "note": "m:C_AUDIO_QA:1790875184.000139"
+    },
+    {
+     "kind": "slack_message",
+     "project_id": "audio_multimodal",
+     "batch_id": "audio_batch_06",
+     "scope": "project",
+     "channel_id": "C_AUDIO_QA",
+     "thread_id": "1790875184.000139",
+     "message_id": "1790875234.000113",
+     "document_id": null,
+     "version_id": null,
+     "authoring_document_id": null,
+     "authoring_version": null,
+     "section": null,
+     "chunk_id": null,
+     "candidate_group_id": null,
+     "member_id": "member_993748c662b631567942869d",
+     "artifact": null,
+     "artifact_sha256": null,
+     "quote": null,
+     "note": "m:C_AUDIO_QA:1790875234.000113"
+    }
+   ],
+   "related_threads": [
+    {
+     "project_id": "audio_multimodal",
+     "batch_id": "audio_batch_06",
+     "channel_id": "C_AUDIO_QA",
+     "thread_id": "1790875184.000139",
+     "member_id": "member_993748c662b631567942869d",
+     "permalink": null,
+     "display_reference": "1790875184.000139",
+     "label": "#audio-multimodal-qa, 2026-10-01, started by a QA tutor: \"Task check: Voice says thirteen but subtitle says thirty.\"",
+     "opening_text": "Task check: Voice says thirteen but subtitle says thirty."
+    }
+   ],
+   "confidence": 0.88,
+   "confidence_band": "HIGH",
+   "needs_review_reasons": [
+    {
+     "code": "INHERITED_FLAG",
+     "detail": "Upstream obligations remain open: inherited_agent1_review x1",
+     "obligation_ids": [],
+     "evidence": []
+    }
+   ],
+   "inherited_flags": [
+    {
+     "origin": "agent1",
+     "kind": "inherited_agent1_review",
+     "candidate_group_id": "cluster_e657313566161acd",
+     "obligation_id": null,
+     "member_ids": [
+      "member_993748c662b631567942869d"
+     ],
+     "detail": "The single targeted revision failed: ValueError: The model cited authority evidence without an eligible author role or a qualifying TEAM_LEAD endorsement. Ineligible message IDs: ['1790875234.000113']"
+    }
+   ],
+   "checks": {
+    "grounding": "PASSED",
+    "temporal_conflict": "NONE_FOUND",
+    "open_confirmation": "NONE"
+   },
+   "lineage": {
+    "agent3_run_id": "agent3overnight_bdc099a76ee76bdc391050df2aded225",
+    "handoff_contract": "agent2-taxonomy-handoff-v2",
+    "agent2_export_sha256": "6f1f56bf5a5b1f02287d7ac958dc205c05cc9e0ea3e6d5f3fdd7279da0c9e1e7",
+    "agent2_schema_version": 8,
+    "candidate_group_id": "cluster_e657313566161acd",
+    "topic_id": "cluster_e657313566161acd/topic_1",
+    "member_ids": [
+     "member_993748c662b631567942869d"
+    ],
+    "project_id": "audio_multimodal",
+    "batch_id": "audio_batch_06"
+   },
+   "review_notes": [
+    "1 earlier review flag is still open on these threads."
+   ],
+   "details": [
+    "A tutor cautions that the discrepancy does not necessarily mean the audio player is broken and that the recording may play correctly.",
+    "The thread does not establish whether the recording or reference transcript is wrong, and neither message reports failed playback."
+   ],
+   "next_step": {
+    "status": "NO_ACTION_NEEDED",
+    "rationale": "The current FAQ directly covers this mismatch, and the thread shows no conflicting handling instructions or reported playback failure warranting further intervention.",
+    "explanation": null
+   },
+   "briefing": {
+    "status": "IN_BRIEFING",
+    "relevance": "PROJECT",
+    "label_id": "rel_cluster_e657313566161acd_topic_1",
+    "label_source": "DEVELOPER_AUDIT_2026-11-05 (prepared by the coding assistant from the saved source threads; not confirmed by a team lead)",
+    "kept_because": []
+   },
+   "outstanding_step": {
+    "kind": "MONITORING",
+    "label": "Open thread being monitored",
+    "details": [
+     "A tutor confirms the QA tutor's reported discrepancy and cautions against assuming a broken player. The thread does not establish whether the recording or reference transcript is wrong or show that the issue was recorded."
+    ],
+    "statement_ids": [
+     "resolution:member_993748c662b631567942869d"
+    ],
+    "text_source": "SUPPORTED_STATEMENTS"
+   },
+   "derivation": {
+    "policy_version": "briefing-routing-v1",
+    "provenance": "OFFLINE_POLICY_APPLICATION",
+    "text_provenance": "PARENT_RUN_JUDGMENTS",
+    "parent_run": "data/experiments/threadsense_full_v1/stages/agent3/overnight_run",
+    "parent_run_instance": "4a48d67e4d8322cf6912e26032663b41fd5f0447103ed8081e5581b3d3183ff8",
+    "parent_card_id": "card_64fd5714b6f79691fcf6b0836727e498",
+    "parent_card_sha256": "3194142cbd8b4fc703cb3d9432289c00537a0856a8ab481817f8fdae29676555",
+    "parent_contract_version": "agent3-advice-card-v4",
+    "changes": [
+     {
+      "field": "outstanding_step",
+      "before": null,
+      "after": "MONITORING",
+      "reason": "Outstanding step stated from supported statements."
+     }
+    ]
+   }
+  },
+  "review_items": [
+   {
+    "contract_version": "agent3-model-review-item-v1",
+    "record_type": "MODEL_REVIEW_ITEM",
+    "item_id": "review_e36d2893391602f061bacc7e9d6921d9",
+    "origin": "agent1",
+    "kind": "inherited_agent1_review",
+    "project_id": "audio_multimodal",
+    "batch_id": "audio_batch_06",
+    "candidate_group_id": "cluster_e657313566161acd",
+    "topic_id": "cluster_e657313566161acd/topic_1",
+    "member_ids": [
+     "member_993748c662b631567942869d"
+    ],
+    "obligation_id": null,
+    "reason": "The single targeted revision failed: ValueError: The model cited authority evidence without an eligible author role or a qualifying TEAM_LEAD endorsement. Ineligible message IDs: ['1790875234.000113']",
+    "source_obligation": {
+     "origin": "agent1",
+     "member_id": "member_993748c662b631567942869d",
+     "project_id": "audio_multimodal",
+     "batch_id": "audio_batch_06",
+     "channel_id": "C_AUDIO_QA",
+     "thread_id": "1790875184.000139",
+     "candidate_group_id": "cluster_e657313566161acd",
+     "candidate_sha256": "477b0795c21c911622f4f2d3c787b35fd2bda8d2f6a54a74915edffb1ae484a5",
+     "source_sha256": "7b33cb78f1496212931c313027a347797460b2f3fa5053ed3c6a5fc061e4c926",
+     "agent1_record": {
+      "project_id": "audio_multimodal",
+      "batch_id": "audio_batch_06",
+      "channel_id": "C_AUDIO_QA",
+      "thread_id": "1790875184.000139",
+      "language": null,
+      "model": "openai/gpt-4o-mini-2024-07-18",
+      "run_config_sha256": "870eedfaf3fa8cbd76fa560cac924fedefdab58ed91ff72ccac0a6e4ca14b251",
+      "handoff_version": 1,
+      "verification_origin": "bounded_verification",
+      "input_sha256": "7b33cb78f1496212931c313027a347797460b2f3fa5053ed3c6a5fc061e4c926",
+      "candidate_sha256": "477b0795c21c911622f4f2d3c787b35fd2bda8d2f6a54a74915edffb1ae484a5",
+      "source_message_ids": [
+       "1790875184.000139",
+       "1790875234.000113"
+      ],
+      "interpretation": {
+       "thread_id": "1790875184.000139",
+       "summary": "Leo raises a concern that the voice in the audio says 'thirteen' while the subtitle states 'thirty.' Rina clarifies that the voice indeed says 'thirteen' and the transcript states 'thirty,' but notes that this discrepancy does not necessarily indicate a malfunction of the audio player, suggesting that the recording itself may be correct.",
+       "central_question": "Is the discrepancy between the voice saying 'thirteen' and the subtitle saying 'thirty' indicative of an issue with the audio player or the recording?",
+       "resolution_state": "PARTIALLY_RESOLVED",
+       "authoritative_response_present": false,
+       "authority_evidence_message_ids": [],
+       "resolution_rationale": "Rina's response clarifies the nature of the discrepancy but does not fully resolve whether the issue lies with the audio player or the recording itself. The question of whether there is a problem remains open, as Rina suggests the recording may be correct without confirming the status of the audio player.",
+       "confidence": 0.8
+      },
+      "automated_verification_status": "NEEDS_REVIEW",
+      "verification_status": "NEEDS_REVIEW",
+      "review_required": true,
+      "revision_count": 1,
+      "provisional_fields": [
+       "summary",
+       "central_question",
+       "resolution_state",
+       "resolution_rationale",
+       "authoritative_response_present",
+       "authority_evidence_message_ids",
+       "confidence"
+      ],
+      "review_reason": "The single targeted revision failed: ValueError: The model cited authority evidence without an eligible author role or a qualifying TEAM_LEAD endorsement. Ineligible message IDs: ['1790875234.000113']",
+      "review_reasons": [
+       "The single targeted revision failed: ValueError: The model cited authority evidence without an eligible author role or a qualifying TEAM_LEAD endorsement. Ineligible message IDs: ['1790875234.000113']"
+      ],
+      "review_findings": [
+       {
+        "category": "RESOLUTION",
+        "explanation": "Independent decision coverage establishes RESOLVED_IN_THREAD; interpretation reports PARTIALLY_RESOLVED. Rina's reply explains that the mismatch is not necessarily due to a broken audio player and suggests the issue may be with the transcript or recording, fully addressing the root request.",
+        "evidence_message_ids": [
+         "1790875234.000113"
+        ],
+        "evidence_quotes": [],
+        "disputed_fields": [
+         "resolution_state",
+         "resolution_rationale"
+        ],
+        "origin": "automated_verification"
+       },
+       {
+        "category": "EVIDENCE",
+        "explanation": "The single targeted revision failed: ValueError: The model cited authority evidence without an eligible author role or a qualifying TEAM_LEAD endorsement. Ineligible message IDs: ['1790875234.000113']",
+        "evidence_message_ids": [],
+        "evidence_quotes": [],
+        "disputed_fields": [
+         "summary",
+         "central_question",
+         "resolution_state",
+         "resolution_rationale",
+         "authoritative_response_present",
+         "authority_evidence_message_ids",
+         "confidence"
+        ],
+        "origin": "automated_verification"
+       }
+      ],
+      "content_reviews": [],
+      "review_applicability": [],
+      "lineage": {
+       "baseline_file": "data\\experiments\\threadsense_full_v1\\stages\\agent1_interpret\\agent1_interpretations_v1\\interpretations.json",
+       "baseline_record_sha256": "853d3a28ae7d9407620eb0d5f94f66e0837b386ce0fe34b5b1d3d2d6c63bd087",
+       "baseline_run_config_sha256": "b4a7353aace8119bb25073b3dbab05388e6036aa312a1f74d38f4b0268fbb7b8",
+       "baseline_model": "openai/gpt-4o-mini-2024-07-18",
+       "baseline_created_at": "2026-11-05T16:34:01.836538+00:00",
+       "source_file": "sources/7b33cb78f1496212931c313027a347797460b2f3fa5053ed3c6a5fc061e4c926.json",
+       "verification_file": "records/1644ecf9f4957a40677d29da1572de1ca359c7a9be88256c43f7e280010f138c/result.json",
+       "effective_attempt": "original",
+       "original_candidate_sha256": "477b0795c21c911622f4f2d3c787b35fd2bda8d2f6a54a74915edffb1ae484a5",
+       "revised_candidate_sha256": null,
+       "effective_candidate_sha256": "477b0795c21c911622f4f2d3c787b35fd2bda8d2f6a54a74915edffb1ae484a5",
+       "original_candidate_reference": "records/1644ecf9f4957a40677d29da1572de1ca359c7a9be88256c43f7e280010f138c/result.json#/result/original_interpretation",
+       "revised_candidate_reference": null,
+       "audit_history_reference": "records/1644ecf9f4957a40677d29da1572de1ca359c7a9be88256c43f7e280010f138c/result.json#/result/passes"
+      }
+     },
+     "agent1_export_file": "D:\\Christie\\2026_AgenticAI\\threadsense\\data\\experiments\\threadsense_full_v1\\stages\\agent1_verify\\agent1_verified_v2\\interpretations.json",
+     "agent1_export_sha256": "0629a7346373addf833a86ba1caff676a537e543cc26954a9836fd6610485270",
+     "agent1_lineage_base": "D:\\Christie\\2026_AgenticAI\\threadsense\\data\\experiments\\threadsense_full_v1\\stages\\agent1_verify\\agent1_verified_v2"
+    },
+    "related_card_ids": [
+     "card_64fd5714b6f79691fcf6b0836727e498"
+    ],
+    "actions": []
+   }
+  ],
+  "coverage": {
+   "group_members_outside_this_card": [],
+   "uncarried_obligations": []
+  },
+  "budget": {
+   "consumed": {
+    "retrieval_calls": 1,
+    "model_calls": 2
+   },
+   "limits": {
+    "model_calls_per_topic": 4,
+    "model_calls_total": 28,
+    "retrieval_calls_per_topic": 6,
+    "retrieval_calls_total": 42
+   }
+  },
+  "diagnostics": []
+ },
+ "derivation": {
+  "policy_version": "briefing-routing-v1",
+  "parent_topic_file": "data/experiments/threadsense_full_v1/stages/agent3/overnight_run/topics/topic__cluster_e657313566161acd__topic_1.json",
+  "parent_topic_sha256": "1995acf4f08ea1e91ae3a71202f8ff6573f594a5dc49524bf90cabb6afec6d5a",
+  "replaced": [
+   "result.card",
+   "workflow.card_id",
+   "workflow.card_line"
+  ]
+ }
+}

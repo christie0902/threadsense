@@ -1,0 +1,2992 @@
+{
+ "work_item": {
+  "candidate_group_id": "cluster_e6a79dfad226e738",
+  "project_id": "audio_multimodal",
+  "batch_id": "audio_batch_06",
+  "work_id": "topic:cluster_e6a79dfad226e738/topic_1",
+  "kind": "TOPIC",
+  "topic_id": "cluster_e6a79dfad226e738/topic_1",
+  "topic_name": "Audio clip playback verification",
+  "member_ids": [
+   "member_97c81f2e6e5454c2f2a5ee4b",
+   "member_5a1a4e04becddf182c6e3ada"
+  ],
+  "pilot_scenario": null,
+  "in_scope": true
+ },
+ "workflow": {
+  "outcome": "CARD",
+  "card_id": "card_303736c0f5a70934c3c4dfefa3bd2333",
+  "card_line": "NEEDS_REVIEW",
+  "grounding": "PASSED",
+  "stage_failures": [],
+  "semantic_source": "LIVE_MODEL"
+ },
+ "result": {
+  "scenario": {
+   "id": "topic:cluster_e6a79dfad226e738/topic_1",
+   "candidate_group_id": "cluster_e6a79dfad226e738",
+   "focus": "Audio clip playback verification",
+   "topic_id": "cluster_e6a79dfad226e738/topic_1"
+  },
+  "status": "CARD",
+  "topic": {
+   "project_id": "audio_multimodal",
+   "batch_id": "audio_batch_06",
+   "candidate_group_id": "cluster_e6a79dfad226e738",
+   "topic_id": "cluster_e6a79dfad226e738/topic_1",
+   "topic_label": "Audio clip playback verification",
+   "projection_gap": null,
+   "as_of": "2026-10-02T12:00:00Z",
+   "member_ids": [
+    "member_97c81f2e6e5454c2f2a5ee4b",
+    "member_5a1a4e04becddf182c6e3ada"
+   ],
+   "initial_query": "Audio clip playback verification. What should be done about the clip getting stuck buffering at 00:00?"
+  },
+  "retrieval_trace": [
+   {
+    "step": 1,
+    "purpose": "initial_current_guidance",
+    "gap_id": null,
+    "query": "Audio clip playback verification. What should be done about the clip getting stuck buffering at 00:00?",
+    "source_types": [
+     "guideline",
+     "faq",
+     "decision",
+     "announcement"
+    ],
+    "version_mode": "current",
+    "as_of": "2026-10-02T12:00:00Z",
+    "batch": "audio_batch_06",
+    "top_k": 5,
+    "status": "DONE",
+    "mode": "hybrid",
+    "use_mmr": true,
+    "mmr_lambda": 0.9,
+    "result_ids": [
+     "k:audio-playback-trial-post@1.0:d674dbe6",
+     "k:audio-multimodal-faq@1.1:e9bcf43a",
+     "k:audio-playback-trial-approval@1.0:1779c36a",
+     "k:slack:C_AUDIO_ANNOUNCEMENTS:1790892000.000901:1c524924",
+     "k:audio-multimodal-instructions@1.3:1c6df70e"
+    ],
+    "new_evidence_ids": [
+     "k:audio-playback-trial-post@1.0:d674dbe6",
+     "k:audio-multimodal-faq@1.1:e9bcf43a",
+     "k:audio-playback-trial-approval@1.0:1779c36a",
+     "k:slack:C_AUDIO_ANNOUNCEMENTS:1790892000.000901:1c524924",
+     "k:audio-multimodal-instructions@1.3:1c6df70e"
+    ],
+    "eligible_chunks": 27,
+    "added": []
+   }
+  ],
+  "retrieval_notes": {
+   "withheld_by_version": [],
+   "version_diagnostics": []
+  },
+  "follow_ups": [],
+  "unfilled_gaps": [
+   {
+    "gap_id": "g1",
+    "need": "OTHER",
+    "description": "Obtain the buffering task IDs and reproduction attempt requested by the team lead, along with the browser/error state, audio-element loading state, and whether another clip plays. These diagnostic inputs require follow-up with the affected tutors rather than guideline retrieval.",
+    "follow_up": null
+   }
+  ],
+  "model_calls": [
+   {
+    "stage": "draft",
+    "schema": "AdvisorDraft",
+    "agent1_context": {
+     "sha256": "8353e56753987151eee8eb0d9594407611d31c2d0725012b6b78609d1e45b822",
+     "boundary": "IN_HTTP_BODY"
+    },
+    "raw": "{\n  \"contract_version\": \"agent3-advisor-draft-v11\",\n  \"summary\": null,\n  \"summary_sentences\": [\n    {\n      \"text\": \"Two tutors report playback stuck buffering at 00:00, including one whose reload did not help; two tutors also report silence or inaudible narration in a separate thread.\",\n      \"support_claim_ids\": [\"c1\", \"c2\", \"c3\"],\n      \"depends_on\": []\n    },\n    {\n      \"text\": \"The team lead requires task IDs and a reproduction attempt before deciding whether an old workaround applies to the buffering reports.\",\n      \"support_claim_ids\": [\"c5\"],\n      \"depends_on\": [1]\n    }\n  ],\n  \"detail_sentences\": [\n    {\n      \"text\": \"In the silence thread, a tutor says the clip is silent rather than a player error, while a tutor who cannot hear narration says the file's nonzero duration still needs verification.\",\n      \"support_claim_ids\": [\"c1\", \"c2\"],\n      \"depends_on\": [],\n      \"summary_depends_on\": [1]\n    },\n    {\n      \"text\": \"A QA tutor asks for the task reference, browser state, and whether the audio element loads in the buffering thread.\",\n      \"support_claim_ids\": [\"c4\"],\n      \"depends_on\": [],\n      \"summary_depends_on\": [1]\n    },\n    {\n      \"text\": \"The provided buffering thread contains no task IDs or reproduction result after the team lead's request.\",\n      \"support_claim_ids\": [\"c6\"],\n      \"depends_on\": [],\n      \"summary_depends_on\": [2]\n    },\n    {\n      \"text\": \"Earlier batch-05 records describe similar 00:00 playback failures and a limited reload trial that expired on August 28; the retrieved records do not show its outcome review.\",\n      \"support_claim_ids\": [\"c9\"],\n      \"depends_on\": [],\n      \"summary_depends_on\": []\n    }\n  ],\n  \"reasoning\": \"The buffering reports establish an operational problem suitable for engineering review, while current instructions already establish tool-incident handling. The silence thread does not establish a playback failure and should remain separate. The expired trial supports historical recurrence, not reuse of its workaround. Missing diagnostic inputs limit investigation and the team lead's workaround decision, but do not prevent reporting the current problem.\",\n  \"claims\": [\n    {\n      \"claim_id\": \"c1\",\n      \"kind\": \"INCIDENT_FACT\",\n      \"text\": \"A tutor reports that the clip is silent and says it is not a player error; this is the tutor's assessment, not a verified technical finding.\",\n      \"evidence_ids\": [\"m:C_AUDIO_GENERAL:1790911816.000129\"],\n      \"attributions\": [\n        {\n          \"user_id\": \"U010\",\n          \"relation\": \"AUTHOR\",\n          \"evidence_id\": \"m:C_AUDIO_GENERAL:1790911816.000129\"\n        }\n      ],\n      \"quote\": null,\n      \"quote_kind\": \"PARAPHRASE\",\n      \"material\": true\n    },\n    {\n      \"claim_id\": \"c2\",\n      \"kind\": \"INCIDENT_FACT\",\n      \"text\": \"A tutor reports being unable to hear narration in the silence thread and says verification of nonzero file duration is still needed.\",\n      \"evidence_ids\": [\"m:C_AUDIO_GENERAL:1790911868.000113\"],\n      \"attributions\": [\n        {\n          \"user_id\": \"U012\",\n          \"relation\": \"AUTHOR\",\n          \"evidence_id\": \"m:C_AUDIO_GENERAL:1790911868.000113\"\n        }\n      ],\n      \"quote\": null,\n      \"quote_kind\": \"PARAPHRASE\",\n      \"material\": true\n    },\n    {\n      \"claim_id\": \"c3\",\n      \"kind\": \"INCIDENT_FACT\",\n      \"text\": \"Two tutors report playback stuck buffering at 00:00; one reports that the player remains buffering after reloading the item.\",\n      \"evidence_ids\": [\n        \"m:C_AUDIO_GENERAL:1790924545.000108\",\n        \"m:C_AUDIO_GENERAL:1790924603.000113\"\n      ],\n      \"attributions\": [\n        {\n          \"user_id\": \"U012\",\n          \"relation\": \"AUTHOR\",\n          \"evidence_id\": \"m:C_AUDIO_GENERAL:1790924545.000108\"\n        },\n        {\n          \"user_id\": \"U020\",\n          \"relation\": \"AUTHOR\",\n          \"evidence_id\": \"m:C_AUDIO_GENERAL:1790924603.000113\"\n        }\n      ],\n      \"quote\": null,\n      \"quote_kind\": \"PARAPHRASE\",\n      \"material\": true\n    },\n    {\n      \"claim_id\": \"c4\",\n      \"kind\": \"INCIDENT_FACT\",\n      \"text\": \"A QA tutor asks for the task reference, browser state, and whether the audio element loads in the buffering thread.\",\n      \"evidence_ids\": [\"m:C_AUDIO_GENERAL:1790924639.000226\"],\n      \"attributions\": [\n        {\n          \"user_id\": \"U008\",\n          \"relation\": \"AUTHOR\",\n          \"evidence_id\": \"m:C_AUDIO_GENERAL:1790924639.000226\"\n        }\n      ],\n      \"quote\": null,\n      \"quote_kind\": \"PARAPHRASE\",\n      \"material\": true\n    },\n    {\n      \"claim_id\": \"c5\",\n      \"kind\": \"THREAD_INSTRUCTION\",\n      \"text\": \"The team lead requires task IDs and a reproduction attempt before deciding whether the old workaround applies in the buffering thread.\",\n      \"evidence_ids\": [\"m:C_AUDIO_GENERAL:1790924689.000339\"],\n      \"attributions\": [\n        {\n          \"user_id\": \"U006\",\n          \"relation\": \"AUTHOR\",\n          \"evidence_id\": \"m:C_AUDIO_GENERAL:1790924689.000339\"\n        }\n      ],\n      \"quote\": \"We need task IDs and a reproduction attempt before deciding whether the old workaround applies.\",\n      \"quote_kind\": \"VERBATIM\",\n      \"material\": true\n    },\n    {\n      \"claim_id\": \"c6\",\n      \"kind\": \"INFERENCE\",\n      \"text\": \"The provided buffering thread does not contain the requested task IDs or reproduction result, so the inputs the team lead requested for the workaround decision remain missing.\",\n      \"evidence_ids\": [\n        \"m:C_AUDIO_GENERAL:1790924545.000108\",\n        \"m:C_AUDIO_GENERAL:1790924603.000113\",\n        \"m:C_AUDIO_GENERAL:1790924639.000226\",\n        \"m:C_AUDIO_GENERAL:1790924689.000339\"\n      ],\n      \"attributions\": [\n        {\n          \"user_id\": \"U006\",\n          \"relation\": \"AUTHOR\",\n          \"evidence_id\": \"m:C_AUDIO_GENERAL:1790924689.000339\"\n        }\n      ],\n      \"quote\": null,\n      \"quote_kind\": \"PARAPHRASE\",\n      \"material\": true\n    },\n    {\n      \"claim_id\": \"c7\",\n      \"kind\": \"GUIDANCE\",\n      \"text\": \"Current playback instructions require reporting a tool incident with the task ID when the player fails to load or start, capturing browser/error state and whether another clip plays, and not assigning model-quality failure or content-based QN solely because playback is unavailable. Old workarounds must be checked against current symptoms; handling guidance does not establish repair or evaluability.\",\n      \"evidence_ids\": [\"k:audio-multimodal-instructions@1.3:1c6df70e\"],\n      \"attributions\": [],\n      \"quote\": null,\n      \"quote_kind\": \"PARAPHRASE\",\n      \"material\": true\n    },\n    {\n      \"claim_id\": \"c8\",\n      \"kind\": \"GUIDANCE\",\n      \"text\": \"The current batch-06 announcement directs reporting the task ID, browser/error state, and whether another clip plays when the player never starts, treating unavailable playback as a tool incident rather than grounds alone for model-quality failure or content QN, and retaining reproduction details without assuming repair.\",\n      \"evidence_ids\": [\"k:slack:C_AUDIO_ANNOUNCEMENTS:1790892000.000901:1c524924\"],\n      \"attributions\": [],\n      \"quote\": null,\n      \"quote_kind\": \"PARAPHRASE\",\n      \"material\": true\n    },\n    {\n      \"claim_id\": \"c9\",\n      \"kind\": \"HISTORY\",\n      \"text\": \"Earlier batch-05 records describe repeated player failures at 00:00 and a limited one-reload trial ending August 28. The earlier approval records one reported restoration of playback and two tasks not yet retested; neither retrieved trial record establishes an outcome review or an extension to batch 06.\",\n      \"evidence_ids\": [\n        \"k:audio-playback-trial-approval@1.0:1779c36a\",\n        \"k:audio-playback-trial-post@1.0:d674dbe6\"\n      ],\n      \"attributions\": [],\n      \"quote\": null,\n      \"quote_kind\": \"PARAPHRASE\",\n      \"material\": true\n    }\n  ],\n  \"gaps\": [\n    {\n      \"gap_id\": \"g1\",\n      \"need\": \"OTHER\",\n      \"description\": \"Obtain the buffering task IDs and reproduction attempt requested by the team lead, along with the browser/error state, audio-element loading state, and whether another clip plays. These diagnostic inputs require follow-up with the affected tutors rather than guideline retrieval.\",\n      \"follow_up\": null\n    }\n  ],\n  \"evidence_sufficiency\": \"SUFFICIENT\",\n  \"proposed_action\": {\n    \"action_type\": \"ESCALATE_ENGINEERING\",\n    \"intervention_need\": {\n      \"kind\": \"OPERATIONAL_PROBLEM\",\n      \"statement\": \"Two tutors report playback stuck at 00:00, including persistence after a reload, with no recovery reported in the provided thread.\",\n      \"evidence_ids\": [\n        \"m:C_AUDIO_GENERAL:1790924545.000108\",\n        \"m:C_AUDIO_GENERAL:1790924603.000113\",\n        \"m:C_AUDIO_GENERAL:1790924639.000226\",\n        \"m:C_AUDIO_GENERAL:1790924689.000339\"\n      ]\n    },\n    \"instruction\": \"Report the persistent 00:00 buffering to engineering as a tool incident, with the requested diagnostic details marked as pending.\",\n    \"rationale\": \"Current guidance calls for tool-incident reporting when playback never starts. Persistent buffering reported by two tutors warrants technical investigation rather than a content-quality judgment.\",\n    \"draft_text\": \"Please investigate playback stuck buffering at 00:00 in audio batch 06. Two tutors report this symptom; one says reloading the item did not help. Task IDs and a reproduction attempt are still pending, along with browser/error state, whether the audio element loads, and whether another clip plays. We are treating unavailable playback as a tool incident, not as grounds alone for model-quality failure or content QN. This report does not establish that the old workaround applies or that playback has recovered.\",\n    \"scope_note\": \"This referral covers the buffering thread only, not the separate silence report. Applying the old workaround remains conditional on the task IDs and reproduction attempt requested in that thread.\",\n    \"support_claim_ids\": [\"c3\", \"c4\", \"c5\", \"c6\", \"c7\", \"c8\"],\n    \"targets\": [],\n    \"context_claim_ids\": [\"c1\", \"c2\", \"c9\"]\n  },\n  \"severity\": {\n    \"level\": \"HIGH\",\n    \"rationale\": \"Two distinct tutors report the same inability to start playback in the current batch, including persistence after a reload. This suggests broader disruption to audio evaluation, without establishing a batch-wide outage.\",\n    \"signals\": [\n      {\n        \"level\": \"HIGH\",\n        \"signal_index\": 3,\n        \"signal_text\": \"Multiple distinct people or affected tasks reporting a comparable problem within the relevant project, batch, and time window, suggesting broader disruption or systemic labeling risk. Consider the number affected relative to the known active group when that information is available; do not require an explicit statement of widespread impact\",\n        \"support\": \"Two distinct tutors report buffering at 00:00 in the same thread within a minute; one reports that reloading does not restore playback.\",\n        \"evidence_ids\": [\n          \"m:C_AUDIO_GENERAL:1790924545.000108\",\n          \"m:C_AUDIO_GENERAL:1790924603.000113\"\n        ]\n      }\n    ],\n    \"affected_reporters\": [\n      {\n        \"author_id\": \"U010\",\n        \"evidence_id\": \"m:C_AUDIO_GENERAL:1790911816.000129\"\n      },\n      {\n        \"author_id\": \"U012\",\n        \"evidence_id\": \"m:C_AUDIO_GENERAL:1790924545.000108\"\n      },\n      {\n        \"author_id\": \"U020\",\n        \"evidence_id\": \"m:C_AUDIO_GENERAL:1790924603.000113\"\n      }\n    ],\n    \"recurrence\": \"FOUND\",\n    \"recurrence_evidence_ids\": [\n      \"k:audio-playback-trial-approval@1.0:1779c36a\"\n    ],\n    \"reported_recurrence_evidence_ids\": []\n  },\n  \"confidence\": 0.92,\n  \"open_confirmation\": \"NONE\",\n  \"open_question\": null,\n  \"open_question_evidence_ids\": [],\n  \"source_conflicts\": [],\n  \"announcement_assessments\": [\n    {\n      \"evidence_id\": \"k:slack:C_AUDIO_ANNOUNCEMENTS:1790892000.000901:1c524924\",\n      \"relevant\": true,\n      \"directive\": true,\n      \"directive_quote\": \"Audio batch 06 — playback handling reminder: if the LT player never starts, including a visible waveform with no playback, report the task ID, browser/error state, and whether another clip plays.\",\n      \"rationale\": \"This announcement covers the same project, batch, and failure to start playback, and explicitly directs reporting diagnostic information. It supports handling, not a confirmed repair or a concrete engineering intake route.\"\n    },\n    {\n      \"evidence_id\": \"k:audio-playback-trial-post@1.0:d674dbe6\",\n      \"relevant\": false,\n      \"directive\": true,\n      \"directive_quote\": \"Audio batch 05: through Friday, August 28, try at most one reload when the player is stuck at 00:00.\",\n      \"rationale\": \"This was a directive for a different batch and an expired trial. It provides historical context only and does not govern the current reports.\"\n    }\n  ],\n  \"resolution\": [\n    {\n      \"member_id\": \"member_97c81f2e6e5454c2f2a5ee4b\",\n      \"state\": \"UNRESOLVED\",\n      \"evidence_ids\": [\n        \"m:C_AUDIO_GENERAL:1790911816.000129\",\n        \"m:C_AUDIO_GENERAL:1790911868.000113\"\n      ],\n      \"basis\": \"A tutor describes silence as distinct from a player error, but a tutor still calls for verification of nonzero duration; the thread contains no verification result.\"\n    },\n    {\n      \"member_id\": \"member_5a1a4e04becddf182c6e3ada\",\n      \"state\": \"UNRESOLVED\",\n      \"evidence_ids\": [\n        \"m:C_AUDIO_GENERAL:1790924545.000108\",\n        \"m:C_AUDIO_GENERAL:1790924603.000113\",\n        \"m:C_AUDIO_GENERAL:1790924639.000226\",\n        \"m:C_AUDIO_GENERAL:1790924689.000339\"\n      ],\n      \"basis\": \"Two tutors report ongoing buffering, a QA tutor requests diagnostic information, and the team lead requires task IDs and a reproduction attempt before assessing the old workaround. No recovery or diagnostic result follows in the provided thread.\"\n    }\n  ],\n  \"coverage\": [\n    {\n      \"need\": \"CURRENT_GUIDANCE\",\n      \"status\": \"COVERED\",\n      \"evidence_ids\": [\n        \"k:audio-multimodal-instructions@1.3:1c6df70e\"\n      ],\n      \"note\": \"Current instructions directly cover failure to load or start playback, incident details, scoring limits, and checking old workarounds against current symptoms.\",\n      \"gap_id\": null\n    },\n    {\n      \"need\": \"ANNOUNCEMENTS\",\n      \"status\": \"COVERED\",\n      \"evidence_ids\": [\n        \"k:slack:C_AUDIO_ANNOUNCEMENTS:1790892000.000901:1c524924\",\n        \"k:audio-playback-trial-post@1.0:d674dbe6\"\n      ],\n      \"note\": \"The current batch reminder directly governs playback handling; the older announcement is an expired trial for another batch.\",\n      \"gap_id\": null\n    },\n    {\n      \"need\": \"PRIOR_DECISIONS\",\n      \"status\": \"COVERED\",\n      \"evidence_ids\": [\n        \"k:audio-playback-trial-approval@1.0:1779c36a\",\n        \"k:audio-playback-trial-post@1.0:d674dbe6\"\n      ],\n      \"note\": \"The retrieved records establish the earlier trial's limited scope and expiry, but not its outcome review. The proposed referral does not depend on extending or reusing that trial.\",\n      \"gap_id\": null\n    },\n    {\n      \"need\": \"MEMBER_QUESTIONS\",\n      \"status\": \"COVERED\",\n      \"evidence_ids\": [\n        \"m:C_AUDIO_GENERAL:1790911868.000113\",\n        \"m:C_AUDIO_GENERAL:1790924639.000226\",\n        \"m:C_AUDIO_GENERAL:1790924689.000339\"\n      ],\n      \"note\": \"The threads contain a tutor's call to verify file duration, a QA tutor's diagnostic request, and the team lead's required inputs before assessing the old workaround.\",\n      \"gap_id\": null\n    }\n  ],\n  \"review_note\": null,\n  \"action_choice\": null\n}",
+    "raw_sha256": "55c442021858531fa61a122b2f29969da33d79c6433f8cae9d93cccafa470882",
+    "http_requests": {
+     "sent": 1,
+     "blocked": 0,
+     "hosts": [
+      "api.openai.com"
+     ],
+     "responses": [
+      {
+       "status_code": 200,
+       "seconds": 56.797,
+       "model": "gpt-6.1-sol",
+       "usage": {
+        "prompt_tokens": 12342,
+        "completion_tokens": 4366,
+        "total_tokens": 16708,
+        "prompt_tokens_details": {
+         "cached_tokens": 0,
+         "cache_write_tokens": 12339,
+         "audio_tokens": 0
+        },
+        "completion_tokens_details": {
+         "reasoning_tokens": 501,
+         "audio_tokens": 0,
+         "accepted_prediction_tokens": 0,
+         "rejected_prediction_tokens": 0
+        }
+       },
+       "finish_reasons": [
+        "stop"
+       ]
+      }
+     ],
+     "input_tokens": 12348,
+     "refused": null,
+     "charged_usd": 0.068344
+    },
+    "input_tokens_estimate": 12348,
+    "status": "OK"
+   },
+   {
+    "stage": "grounding",
+    "schema": "GroundingJudgment",
+    "raw": "{\n  \"contract_version\": \"agent3-grounding-judgment-v5\",\n  \"verdicts\": [\n    {\n      \"statement_id\": \"claim:c1\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"U010, a tutor, describes the clip as silent rather than a player error. The statement correctly presents this as the tutor's assessment, not a verified diagnosis.\"\n    },\n    {\n      \"statement_id\": \"claim:c2\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"U012 explicitly reports inaudible narration and says nonzero file duration still needs verification.\"\n    },\n    {\n      \"statement_id\": \"claim:c3\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"Two distinct tutors, U012 and U020, report buffering at 00:00; U020 explicitly reports persistence after reloading.\"\n    },\n    {\n      \"statement_id\": \"claim:c4\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"U008 is a QA tutor and asks for precisely these diagnostic details.\"\n    },\n    {\n      \"statement_id\": \"claim:c5\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The quotation exactly matches the team lead's message, and the instruction is correctly limited to the buffering thread.\"\n    },\n    {\n      \"statement_id\": \"claim:c6\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The complete provided buffering thread contains no task IDs or result of the requested reproduction attempt. The earlier reload report does not supply the diagnostic follow-up requested by the team lead.\"\n    },\n    {\n      \"statement_id\": \"claim:c7\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The current instructions explicitly establish each stated reporting requirement, scoring limitation, workaround qualification, and limit on inferring repair or evaluability.\"\n    },\n    {\n      \"statement_id\": \"claim:c8\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The current batch-06 announcement directly gives these diagnostic-reporting and tool-incident handling directives and expressly disclaims confirmation of repair.\"\n    },\n    {\n      \"statement_id\": \"claim:c9\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The historical batch-05 records document repeated 00:00 failures, one reported reload success, two untested tasks, and a trial ending August 28. Neither record documents the requested outcome review or an extension to batch 06.\"\n    },\n    {\n      \"statement_id\": \"summary:s1\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The cited messages support both distinct tutors reporting buffering, one unsuccessful reload, and two tutors reporting silence or inaudible narration in the separate thread. All author-role attributions match.\"\n    },\n    {\n      \"statement_id\": \"summary:s2\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The team lead explicitly requires task IDs and a reproduction attempt before deciding whether the old workaround applies in the buffering thread.\"\n    },\n    {\n      \"statement_id\": \"detail:d1\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"Both descriptions accurately preserve the tutors' statements and retain the unresolved duration verification rather than asserting a technical diagnosis.\"\n    },\n    {\n      \"statement_id\": \"detail:d2\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The QA tutor's cited message asks for the task reference, browser state, and whether the audio element loads.\"\n    },\n    {\n      \"statement_id\": \"detail:d3\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"No task IDs or reproduction result appear after the team lead's request in the complete provided buffering thread.\"\n    },\n    {\n      \"statement_id\": \"detail:d4\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The retrieved historical records document similar failures and the limited trial's August 28 expiry, but do not document an outcome review.\"\n    },\n    {\n      \"statement_id\": \"action\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"Persistent playback failure supports an advisory referral to engineering, with no concrete intake route asserted. The draft accurately marks absent diagnostics as pending, follows current tool-incident and scoring guidance, limits the referral to buffering, and preserves the team lead's prerequisites for assessing the old workaround.\"\n    },\n    {\n      \"statement_id\": \"action:rationale\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"Current guidance calls for reporting playback failures as tool incidents rather than making content-quality judgments from unavailable playback. The two reports, including persistence after reload, justify technical investigation.\"\n    },\n    {\n      \"statement_id\": \"action:need\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The complete thread shows an unresolved playback problem reported by two tutors, an unsuccessful reload, and outstanding diagnostic requests, with no reported recovery.\"\n    },\n    {\n      \"statement_id\": \"announcement:k:slack:C_AUDIO_ANNOUNCEMENTS:1790892000.000901:1c524924\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The quotation matches the announcement. Its explicit batch-06 directive applies to the reported failure to start playback and governs diagnostic reporting, without establishing repair or an engineering intake route.\"\n    },\n    {\n      \"statement_id\": \"resolution:member_97c81f2e6e5454c2f2a5ee4b\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The complete silence thread contains the tutor's assessment and the outstanding duration-verification request, but no verification result.\"\n    },\n    {\n      \"statement_id\": \"resolution:member_5a1a4e04becddf182c6e3ada\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The complete buffering thread supports the reported symptoms, QA request, and team lead's prerequisites, with no subsequent diagnostic result or recovery.\"\n    },\n    {\n      \"statement_id\": \"severity:rationale\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"Two distinct tutors report the same current playback-blocking symptom, including persistence after reload. This supports the stated broader-disruption signal while the wording expressly avoids claiming a batch-wide outage.\"\n    },\n    {\n      \"statement_id\": \"severity:signal:HIGH[3]\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"U012 and U020 report comparable 00:00 buffering in the same thread 58 seconds apart, and U020 reports that reloading did not restore playback. This satisfies the stated multiple-reporter signal.\"\n    },\n    {\n      \"statement_id\": \"severity:recurrence\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The historical approval record documents earlier batch-05 incidents of the player being stuck at 00:00.\"\n    },\n    {\n      \"statement_id\": \"reporter:U010\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"U010's own message reports a silent clip, establishing them as a reporter affected by the topic's silence issue.\"\n    },\n    {\n      \"statement_id\": \"reporter:U012\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"U012's own cited message reports the clip getting stuck buffering at 00:00.\"\n    },\n    {\n      \"statement_id\": \"reporter:U020\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"U020's own cited message reports buffering at 00:00 persisting after reload.\"\n    }\n  ],\n  \"action_sufficiency\": {\n    \"verdict\": \"SUFFICIENT\",\n    \"essential_statement_ids\": [\n      \"claim:c3\",\n      \"claim:c4\",\n      \"claim:c5\",\n      \"claim:c6\",\n      \"claim:c7\"\n    ],\n    \"rationale\": \"The supported incident reports justify engineering expertise without requiring an established concrete intake route. The supported diagnostic requests and missing follow-up justify marking information pending, and current instructions justify tool-incident handling and the scoring restriction. The action does not claim repair, authorize the old workaround, or extend the referral to the separate silence thread. Claim c8 also supports current handling and its announcement dependency passes, but it is not essential because c7 independently supplies that guidance.\"\n  },\n  \"alternative_sufficiency\": [],\n  \"source_consistency\": {\n    \"assessed_evidence_ids\": [\n      \"k:audio-multimodal-faq@1.1:e9bcf43a\",\n      \"k:slack:C_AUDIO_ANNOUNCEMENTS:1790892000.000901:1c524924\",\n      \"k:audio-multimodal-instructions@1.3:1c6df70e\"\n    ],\n    \"relations\": [\n      {\n        \"evidence_ids\": [\n          \"k:slack:C_AUDIO_ANNOUNCEMENTS:1790892000.000901:1c524924\",\n          \"k:audio-multimodal-instructions@1.3:1c6df70e\"\n        ],\n        \"relation\": \"AGREE\",\n        \"point\": \"Handling unavailable playback in audio batch 06.\",\n        \"disagreement_scope\": null,\n        \"rationale\": \"Both direct tool-incident reporting with task ID, browser/error state, and whether another clip plays; both prohibit model-quality failure or content QN solely from unavailable playback and disclaim confirmation of repair. The FAQ addresses separate scoring issues and states no competing playback-handling rule. The expired batch-05 trial records are not current governing sources.\"\n      }\n    ],\n    \"declared_conflict_checks\": []\n  }\n}",
+    "raw_sha256": "4e5bf793383d44f19305c3d2840e7f83185b0436f1c5cab9c4eb0bf77ee3f5ec",
+    "http_requests": {
+     "sent": 1,
+     "blocked": 0,
+     "hosts": [
+      "api.openai.com"
+     ],
+     "responses": [
+      {
+       "status_code": 200,
+       "seconds": 27.633,
+       "model": "gpt-6.1-sol",
+       "usage": {
+        "prompt_tokens": 10715,
+        "completion_tokens": 2162,
+        "total_tokens": 12877,
+        "prompt_tokens_details": {
+         "cached_tokens": 0,
+         "cache_write_tokens": 10712,
+         "audio_tokens": 0
+        },
+        "completion_tokens_details": {
+         "reasoning_tokens": 116,
+         "audio_tokens": 0,
+         "accepted_prediction_tokens": 0,
+         "rejected_prediction_tokens": 0
+        }
+       },
+       "finish_reasons": [
+        "stop"
+       ]
+      }
+     ],
+     "input_tokens": 10721,
+     "refused": null,
+     "charged_usd": 0.04305
+    },
+    "input_tokens_estimate": 10721,
+    "status": "OK"
+   }
+  ],
+  "agent1_context": [
+   {
+    "sha256": "8353e56753987151eee8eb0d9594407611d31c2d0725012b6b78609d1e45b822",
+    "content": [
+     {
+      "member_id": "member_97c81f2e6e5454c2f2a5ee4b",
+      "thread_id": "1790911816.000129",
+      "summary": "Avery states that the clip is just silence and not a player error. Sam adds that he cannot hear narration and mentions the need to verify if the file has a nonzero duration.",
+      "central_question": null,
+      "attributed_agent1_resolution": {
+       "state": "UNRESOLVED",
+       "rationale": "Avery expresses certainty that the silence is not due to a player error, while Sam expresses uncertainty and the need for verification regarding the file's duration. The thread does not establish a clear answer regarding the cause of the silence.",
+       "agent1_verification_status": "CORRECTED",
+       "note": "Agent 1 label, not evidence; NEEDS_REVIEW means Agent 1 did not verify it. Assess resolution from the member messages."
+      },
+      "agent1_review_required": false,
+      "agent1_review_reason": "",
+      "note": "Agent 1 interpretation, not source evidence; cite member messages for incident facts."
+     },
+     {
+      "member_id": "member_5a1a4e04becddf182c6e3ada",
+      "thread_id": "1790924545.000108",
+      "summary": "Users report that a clip gets stuck buffering at 00:00, with one user confirming the issue persists even after reloading. A QA_TUTOR requests additional information about the task reference, browser state, and audio element loading. The TEAM_LEAD states that task IDs and a reproduction attempt are needed before determining if an old workaround is applicable.",
+      "central_question": "What should be done about the clip getting stuck buffering at 00:00?",
+      "attributed_agent1_resolution": {
+       "state": "UNRESOLVED",
+       "rationale": "The thread does not establish a substantive answer or conclusion regarding the requested decision. All replies either acknowledge the issue or request further diagnostic information before a decision can be made, leaving the original question unresolved.",
+       "agent1_verification_status": "CORRECTED",
+       "note": "Agent 1 label, not evidence; NEEDS_REVIEW means Agent 1 did not verify it. Assess resolution from the member messages."
+      },
+      "agent1_review_required": false,
+      "agent1_review_reason": "",
+      "note": "Agent 1 interpretation, not source evidence; cite member messages for incident facts."
+     }
+    ]
+   }
+  ],
+  "drafts": {
+   "initial": {
+    "contract_version": "agent3-advisor-draft-v11",
+    "summary": "Two tutors report playback stuck buffering at 00:00, including one whose reload did not help; two tutors also report silence or inaudible narration in a separate thread. The team lead requires task IDs and a reproduction attempt before deciding whether an old workaround applies to the buffering reports.",
+    "summary_sentences": [
+     {
+      "text": "Two tutors report playback stuck buffering at 00:00, including one whose reload did not help; two tutors also report silence or inaudible narration in a separate thread.",
+      "support_claim_ids": [
+       "c1",
+       "c2",
+       "c3"
+      ],
+      "depends_on": []
+     },
+     {
+      "text": "The team lead requires task IDs and a reproduction attempt before deciding whether an old workaround applies to the buffering reports.",
+      "support_claim_ids": [
+       "c5"
+      ],
+      "depends_on": [
+       1
+      ]
+     }
+    ],
+    "detail_sentences": [
+     {
+      "text": "In the silence thread, a tutor says the clip is silent rather than a player error, while a tutor who cannot hear narration says the file's nonzero duration still needs verification.",
+      "support_claim_ids": [
+       "c1",
+       "c2"
+      ],
+      "depends_on": [],
+      "summary_depends_on": [
+       1
+      ]
+     },
+     {
+      "text": "A QA tutor asks for the task reference, browser state, and whether the audio element loads in the buffering thread.",
+      "support_claim_ids": [
+       "c4"
+      ],
+      "depends_on": [],
+      "summary_depends_on": [
+       1
+      ]
+     },
+     {
+      "text": "The provided buffering thread contains no task IDs or reproduction result after the team lead's request.",
+      "support_claim_ids": [
+       "c6"
+      ],
+      "depends_on": [],
+      "summary_depends_on": [
+       2
+      ]
+     },
+     {
+      "text": "Earlier batch-05 records describe similar 00:00 playback failures and a limited reload trial that expired on August 28; the retrieved records do not show its outcome review.",
+      "support_claim_ids": [
+       "c9"
+      ],
+      "depends_on": [],
+      "summary_depends_on": []
+     }
+    ],
+    "reasoning": "The buffering reports establish an operational problem suitable for engineering review, while current instructions already establish tool-incident handling. The silence thread does not establish a playback failure and should remain separate. The expired trial supports historical recurrence, not reuse of its workaround. Missing diagnostic inputs limit investigation and the team lead's workaround decision, but do not prevent reporting the current problem.",
+    "claims": [
+     {
+      "claim_id": "c1",
+      "kind": "INCIDENT_FACT",
+      "text": "A tutor reports that the clip is silent and says it is not a player error; this is the tutor's assessment, not a verified technical finding.",
+      "evidence_ids": [
+       "m:C_AUDIO_GENERAL:1790911816.000129"
+      ],
+      "attributions": [
+       {
+        "user_id": "U010",
+        "relation": "AUTHOR",
+        "evidence_id": "m:C_AUDIO_GENERAL:1790911816.000129"
+       }
+      ],
+      "quote": null,
+      "quote_kind": "PARAPHRASE",
+      "material": true
+     },
+     {
+      "claim_id": "c2",
+      "kind": "INCIDENT_FACT",
+      "text": "A tutor reports being unable to hear narration in the silence thread and says verification of nonzero file duration is still needed.",
+      "evidence_ids": [
+       "m:C_AUDIO_GENERAL:1790911868.000113"
+      ],
+      "attributions": [
+       {
+        "user_id": "U012",
+        "relation": "AUTHOR",
+        "evidence_id": "m:C_AUDIO_GENERAL:1790911868.000113"
+       }
+      ],
+      "quote": null,
+      "quote_kind": "PARAPHRASE",
+      "material": true
+     },
+     {
+      "claim_id": "c3",
+      "kind": "INCIDENT_FACT",
+      "text": "Two tutors report playback stuck buffering at 00:00; one reports that the player remains buffering after reloading the item.",
+      "evidence_ids": [
+       "m:C_AUDIO_GENERAL:1790924545.000108",
+       "m:C_AUDIO_GENERAL:1790924603.000113"
+      ],
+      "attributions": [
+       {
+        "user_id": "U012",
+        "relation": "AUTHOR",
+        "evidence_id": "m:C_AUDIO_GENERAL:1790924545.000108"
+       },
+       {
+        "user_id": "U020",
+        "relation": "AUTHOR",
+        "evidence_id": "m:C_AUDIO_GENERAL:1790924603.000113"
+       }
+      ],
+      "quote": null,
+      "quote_kind": "PARAPHRASE",
+      "material": true
+     },
+     {
+      "claim_id": "c4",
+      "kind": "INCIDENT_FACT",
+      "text": "A QA tutor asks for the task reference, browser state, and whether the audio element loads in the buffering thread.",
+      "evidence_ids": [
+       "m:C_AUDIO_GENERAL:1790924639.000226"
+      ],
+      "attributions": [
+       {
+        "user_id": "U008",
+        "relation": "AUTHOR",
+        "evidence_id": "m:C_AUDIO_GENERAL:1790924639.000226"
+       }
+      ],
+      "quote": null,
+      "quote_kind": "PARAPHRASE",
+      "material": true
+     },
+     {
+      "claim_id": "c5",
+      "kind": "THREAD_INSTRUCTION",
+      "text": "The team lead requires task IDs and a reproduction attempt before deciding whether the old workaround applies in the buffering thread.",
+      "evidence_ids": [
+       "m:C_AUDIO_GENERAL:1790924689.000339"
+      ],
+      "attributions": [
+       {
+        "user_id": "U006",
+        "relation": "AUTHOR",
+        "evidence_id": "m:C_AUDIO_GENERAL:1790924689.000339"
+       }
+      ],
+      "quote": "We need task IDs and a reproduction attempt before deciding whether the old workaround applies.",
+      "quote_kind": "VERBATIM",
+      "material": true
+     },
+     {
+      "claim_id": "c6",
+      "kind": "INFERENCE",
+      "text": "The provided buffering thread does not contain the requested task IDs or reproduction result, so the inputs the team lead requested for the workaround decision remain missing.",
+      "evidence_ids": [
+       "m:C_AUDIO_GENERAL:1790924545.000108",
+       "m:C_AUDIO_GENERAL:1790924603.000113",
+       "m:C_AUDIO_GENERAL:1790924639.000226",
+       "m:C_AUDIO_GENERAL:1790924689.000339"
+      ],
+      "attributions": [
+       {
+        "user_id": "U006",
+        "relation": "AUTHOR",
+        "evidence_id": "m:C_AUDIO_GENERAL:1790924689.000339"
+       }
+      ],
+      "quote": null,
+      "quote_kind": "PARAPHRASE",
+      "material": true
+     },
+     {
+      "claim_id": "c7",
+      "kind": "GUIDANCE",
+      "text": "Current playback instructions require reporting a tool incident with the task ID when the player fails to load or start, capturing browser/error state and whether another clip plays, and not assigning model-quality failure or content-based QN solely because playback is unavailable. Old workarounds must be checked against current symptoms; handling guidance does not establish repair or evaluability.",
+      "evidence_ids": [
+       "k:audio-multimodal-instructions@1.3:1c6df70e"
+      ],
+      "attributions": [],
+      "quote": null,
+      "quote_kind": "PARAPHRASE",
+      "material": true
+     },
+     {
+      "claim_id": "c8",
+      "kind": "GUIDANCE",
+      "text": "The current batch-06 announcement directs reporting the task ID, browser/error state, and whether another clip plays when the player never starts, treating unavailable playback as a tool incident rather than grounds alone for model-quality failure or content QN, and retaining reproduction details without assuming repair.",
+      "evidence_ids": [
+       "k:slack:C_AUDIO_ANNOUNCEMENTS:1790892000.000901:1c524924"
+      ],
+      "attributions": [],
+      "quote": null,
+      "quote_kind": "PARAPHRASE",
+      "material": true
+     },
+     {
+      "claim_id": "c9",
+      "kind": "HISTORY",
+      "text": "Earlier batch-05 records describe repeated player failures at 00:00 and a limited one-reload trial ending August 28. The earlier approval records one reported restoration of playback and two tasks not yet retested; neither retrieved trial record establishes an outcome review or an extension to batch 06.",
+      "evidence_ids": [
+       "k:audio-playback-trial-approval@1.0:1779c36a",
+       "k:audio-playback-trial-post@1.0:d674dbe6"
+      ],
+      "attributions": [],
+      "quote": null,
+      "quote_kind": "PARAPHRASE",
+      "material": true
+     }
+    ],
+    "gaps": [
+     {
+      "gap_id": "g1",
+      "need": "OTHER",
+      "description": "Obtain the buffering task IDs and reproduction attempt requested by the team lead, along with the browser/error state, audio-element loading state, and whether another clip plays. These diagnostic inputs require follow-up with the affected tutors rather than guideline retrieval.",
+      "follow_up": null
+     }
+    ],
+    "evidence_sufficiency": "SUFFICIENT",
+    "proposed_action": {
+     "action_type": "ESCALATE_ENGINEERING",
+     "intervention_need": {
+      "kind": "OPERATIONAL_PROBLEM",
+      "statement": "Two tutors report playback stuck at 00:00, including persistence after a reload, with no recovery reported in the provided thread.",
+      "evidence_ids": [
+       "m:C_AUDIO_GENERAL:1790924545.000108",
+       "m:C_AUDIO_GENERAL:1790924603.000113",
+       "m:C_AUDIO_GENERAL:1790924639.000226",
+       "m:C_AUDIO_GENERAL:1790924689.000339"
+      ]
+     },
+     "instruction": "Report the persistent 00:00 buffering to engineering as a tool incident, with the requested diagnostic details marked as pending.",
+     "rationale": "Current guidance calls for tool-incident reporting when playback never starts. Persistent buffering reported by two tutors warrants technical investigation rather than a content-quality judgment.",
+     "draft_text": "Please investigate playback stuck buffering at 00:00 in audio batch 06. Two tutors report this symptom; one says reloading the item did not help. Task IDs and a reproduction attempt are still pending, along with browser/error state, whether the audio element loads, and whether another clip plays. We are treating unavailable playback as a tool incident, not as grounds alone for model-quality failure or content QN. This report does not establish that the old workaround applies or that playback has recovered.",
+     "scope_note": "This referral covers the buffering thread only, not the separate silence report. Applying the old workaround remains conditional on the task IDs and reproduction attempt requested in that thread.",
+     "support_claim_ids": [
+      "c3",
+      "c4",
+      "c5",
+      "c6",
+      "c7",
+      "c8"
+     ],
+     "targets": [],
+     "context_claim_ids": [
+      "c1",
+      "c2",
+      "c9"
+     ]
+    },
+    "severity": {
+     "level": "HIGH",
+     "rationale": "Two distinct tutors report the same inability to start playback in the current batch, including persistence after a reload. This suggests broader disruption to audio evaluation, without establishing a batch-wide outage.",
+     "signals": [
+      {
+       "level": "HIGH",
+       "signal_index": 3,
+       "signal_text": "Multiple distinct people or affected tasks reporting a comparable problem within the relevant project, batch, and time window, suggesting broader disruption or systemic labeling risk. Consider the number affected relative to the known active group when that information is available; do not require an explicit statement of widespread impact",
+       "support": "Two distinct tutors report buffering at 00:00 in the same thread within a minute; one reports that reloading does not restore playback.",
+       "evidence_ids": [
+        "m:C_AUDIO_GENERAL:1790924545.000108",
+        "m:C_AUDIO_GENERAL:1790924603.000113"
+       ]
+      }
+     ],
+     "affected_reporters": [
+      {
+       "author_id": "U010",
+       "evidence_id": "m:C_AUDIO_GENERAL:1790911816.000129"
+      },
+      {
+       "author_id": "U012",
+       "evidence_id": "m:C_AUDIO_GENERAL:1790924545.000108"
+      },
+      {
+       "author_id": "U020",
+       "evidence_id": "m:C_AUDIO_GENERAL:1790924603.000113"
+      }
+     ],
+     "recurrence": "FOUND",
+     "recurrence_evidence_ids": [
+      "k:audio-playback-trial-approval@1.0:1779c36a"
+     ],
+     "reported_recurrence_evidence_ids": []
+    },
+    "confidence": 0.92,
+    "open_confirmation": "NONE",
+    "open_question": null,
+    "open_question_evidence_ids": [],
+    "source_conflicts": [],
+    "announcement_assessments": [
+     {
+      "evidence_id": "k:slack:C_AUDIO_ANNOUNCEMENTS:1790892000.000901:1c524924",
+      "relevant": true,
+      "directive": true,
+      "directive_quote": "Audio batch 06 — playback handling reminder: if the LT player never starts, including a visible waveform with no playback, report the task ID, browser/error state, and whether another clip plays.",
+      "rationale": "This announcement covers the same project, batch, and failure to start playback, and explicitly directs reporting diagnostic information. It supports handling, not a confirmed repair or a concrete engineering intake route."
+     },
+     {
+      "evidence_id": "k:audio-playback-trial-post@1.0:d674dbe6",
+      "relevant": false,
+      "directive": true,
+      "directive_quote": "Audio batch 05: through Friday, August 28, try at most one reload when the player is stuck at 00:00.",
+      "rationale": "This was a directive for a different batch and an expired trial. It provides historical context only and does not govern the current reports."
+     }
+    ],
+    "resolution": [
+     {
+      "member_id": "member_97c81f2e6e5454c2f2a5ee4b",
+      "state": "UNRESOLVED",
+      "evidence_ids": [
+       "m:C_AUDIO_GENERAL:1790911816.000129",
+       "m:C_AUDIO_GENERAL:1790911868.000113"
+      ],
+      "basis": "A tutor describes silence as distinct from a player error, but a tutor still calls for verification of nonzero duration; the thread contains no verification result."
+     },
+     {
+      "member_id": "member_5a1a4e04becddf182c6e3ada",
+      "state": "UNRESOLVED",
+      "evidence_ids": [
+       "m:C_AUDIO_GENERAL:1790924545.000108",
+       "m:C_AUDIO_GENERAL:1790924603.000113",
+       "m:C_AUDIO_GENERAL:1790924639.000226",
+       "m:C_AUDIO_GENERAL:1790924689.000339"
+      ],
+      "basis": "Two tutors report ongoing buffering, a QA tutor requests diagnostic information, and the team lead requires task IDs and a reproduction attempt before assessing the old workaround. No recovery or diagnostic result follows in the provided thread."
+     }
+    ],
+    "coverage": [
+     {
+      "need": "CURRENT_GUIDANCE",
+      "status": "COVERED",
+      "evidence_ids": [
+       "k:audio-multimodal-instructions@1.3:1c6df70e"
+      ],
+      "note": "Current instructions directly cover failure to load or start playback, incident details, scoring limits, and checking old workarounds against current symptoms.",
+      "gap_id": null
+     },
+     {
+      "need": "ANNOUNCEMENTS",
+      "status": "COVERED",
+      "evidence_ids": [
+       "k:slack:C_AUDIO_ANNOUNCEMENTS:1790892000.000901:1c524924",
+       "k:audio-playback-trial-post@1.0:d674dbe6"
+      ],
+      "note": "The current batch reminder directly governs playback handling; the older announcement is an expired trial for another batch.",
+      "gap_id": null
+     },
+     {
+      "need": "PRIOR_DECISIONS",
+      "status": "COVERED",
+      "evidence_ids": [
+       "k:audio-playback-trial-approval@1.0:1779c36a",
+       "k:audio-playback-trial-post@1.0:d674dbe6"
+      ],
+      "note": "The retrieved records establish the earlier trial's limited scope and expiry, but not its outcome review. The proposed referral does not depend on extending or reusing that trial.",
+      "gap_id": null
+     },
+     {
+      "need": "MEMBER_QUESTIONS",
+      "status": "COVERED",
+      "evidence_ids": [
+       "m:C_AUDIO_GENERAL:1790911868.000113",
+       "m:C_AUDIO_GENERAL:1790924639.000226",
+       "m:C_AUDIO_GENERAL:1790924689.000339"
+      ],
+      "note": "The threads contain a tutor's call to verify file duration, a QA tutor's diagnostic request, and the team lead's required inputs before assessing the old workaround.",
+      "gap_id": null
+     }
+    ],
+    "review_note": null,
+    "action_choice": null
+   },
+   "final": {
+    "contract_version": "agent3-advisor-draft-v11",
+    "summary": "Two tutors report playback stuck buffering at 00:00, including one whose reload did not help; two tutors also report silence or inaudible narration in a separate thread. The team lead requires task IDs and a reproduction attempt before deciding whether an old workaround applies to the buffering reports.",
+    "summary_sentences": [
+     {
+      "text": "Two tutors report playback stuck buffering at 00:00, including one whose reload did not help; two tutors also report silence or inaudible narration in a separate thread.",
+      "support_claim_ids": [
+       "c1",
+       "c2",
+       "c3"
+      ],
+      "depends_on": []
+     },
+     {
+      "text": "The team lead requires task IDs and a reproduction attempt before deciding whether an old workaround applies to the buffering reports.",
+      "support_claim_ids": [
+       "c5"
+      ],
+      "depends_on": [
+       1
+      ]
+     }
+    ],
+    "detail_sentences": [
+     {
+      "text": "In the silence thread, a tutor says the clip is silent rather than a player error, while a tutor who cannot hear narration says the file's nonzero duration still needs verification.",
+      "support_claim_ids": [
+       "c1",
+       "c2"
+      ],
+      "depends_on": [],
+      "summary_depends_on": [
+       1
+      ]
+     },
+     {
+      "text": "A QA tutor asks for the task reference, browser state, and whether the audio element loads in the buffering thread.",
+      "support_claim_ids": [
+       "c4"
+      ],
+      "depends_on": [],
+      "summary_depends_on": [
+       1
+      ]
+     },
+     {
+      "text": "The provided buffering thread contains no task IDs or reproduction result after the team lead's request.",
+      "support_claim_ids": [
+       "c6"
+      ],
+      "depends_on": [],
+      "summary_depends_on": [
+       2
+      ]
+     },
+     {
+      "text": "Earlier batch-05 records describe similar 00:00 playback failures and a limited reload trial that expired on August 28; the retrieved records do not show its outcome review.",
+      "support_claim_ids": [
+       "c9"
+      ],
+      "depends_on": [],
+      "summary_depends_on": []
+     }
+    ],
+    "reasoning": "The buffering reports establish an operational problem suitable for engineering review, while current instructions already establish tool-incident handling. The silence thread does not establish a playback failure and should remain separate. The expired trial supports historical recurrence, not reuse of its workaround. Missing diagnostic inputs limit investigation and the team lead's workaround decision, but do not prevent reporting the current problem.",
+    "claims": [
+     {
+      "claim_id": "c1",
+      "kind": "INCIDENT_FACT",
+      "text": "A tutor reports that the clip is silent and says it is not a player error; this is the tutor's assessment, not a verified technical finding.",
+      "evidence_ids": [
+       "m:C_AUDIO_GENERAL:1790911816.000129"
+      ],
+      "attributions": [
+       {
+        "user_id": "U010",
+        "relation": "AUTHOR",
+        "evidence_id": "m:C_AUDIO_GENERAL:1790911816.000129"
+       }
+      ],
+      "quote": null,
+      "quote_kind": "PARAPHRASE",
+      "material": true
+     },
+     {
+      "claim_id": "c2",
+      "kind": "INCIDENT_FACT",
+      "text": "A tutor reports being unable to hear narration in the silence thread and says verification of nonzero file duration is still needed.",
+      "evidence_ids": [
+       "m:C_AUDIO_GENERAL:1790911868.000113"
+      ],
+      "attributions": [
+       {
+        "user_id": "U012",
+        "relation": "AUTHOR",
+        "evidence_id": "m:C_AUDIO_GENERAL:1790911868.000113"
+       }
+      ],
+      "quote": null,
+      "quote_kind": "PARAPHRASE",
+      "material": true
+     },
+     {
+      "claim_id": "c3",
+      "kind": "INCIDENT_FACT",
+      "text": "Two tutors report playback stuck buffering at 00:00; one reports that the player remains buffering after reloading the item.",
+      "evidence_ids": [
+       "m:C_AUDIO_GENERAL:1790924545.000108",
+       "m:C_AUDIO_GENERAL:1790924603.000113"
+      ],
+      "attributions": [
+       {
+        "user_id": "U012",
+        "relation": "AUTHOR",
+        "evidence_id": "m:C_AUDIO_GENERAL:1790924545.000108"
+       },
+       {
+        "user_id": "U020",
+        "relation": "AUTHOR",
+        "evidence_id": "m:C_AUDIO_GENERAL:1790924603.000113"
+       }
+      ],
+      "quote": null,
+      "quote_kind": "PARAPHRASE",
+      "material": true
+     },
+     {
+      "claim_id": "c4",
+      "kind": "INCIDENT_FACT",
+      "text": "A QA tutor asks for the task reference, browser state, and whether the audio element loads in the buffering thread.",
+      "evidence_ids": [
+       "m:C_AUDIO_GENERAL:1790924639.000226"
+      ],
+      "attributions": [
+       {
+        "user_id": "U008",
+        "relation": "AUTHOR",
+        "evidence_id": "m:C_AUDIO_GENERAL:1790924639.000226"
+       }
+      ],
+      "quote": null,
+      "quote_kind": "PARAPHRASE",
+      "material": true
+     },
+     {
+      "claim_id": "c5",
+      "kind": "THREAD_INSTRUCTION",
+      "text": "The team lead requires task IDs and a reproduction attempt before deciding whether the old workaround applies in the buffering thread.",
+      "evidence_ids": [
+       "m:C_AUDIO_GENERAL:1790924689.000339"
+      ],
+      "attributions": [
+       {
+        "user_id": "U006",
+        "relation": "AUTHOR",
+        "evidence_id": "m:C_AUDIO_GENERAL:1790924689.000339"
+       }
+      ],
+      "quote": "We need task IDs and a reproduction attempt before deciding whether the old workaround applies.",
+      "quote_kind": "VERBATIM",
+      "material": true
+     },
+     {
+      "claim_id": "c6",
+      "kind": "INFERENCE",
+      "text": "The provided buffering thread does not contain the requested task IDs or reproduction result, so the inputs the team lead requested for the workaround decision remain missing.",
+      "evidence_ids": [
+       "m:C_AUDIO_GENERAL:1790924545.000108",
+       "m:C_AUDIO_GENERAL:1790924603.000113",
+       "m:C_AUDIO_GENERAL:1790924639.000226",
+       "m:C_AUDIO_GENERAL:1790924689.000339"
+      ],
+      "attributions": [
+       {
+        "user_id": "U006",
+        "relation": "AUTHOR",
+        "evidence_id": "m:C_AUDIO_GENERAL:1790924689.000339"
+       }
+      ],
+      "quote": null,
+      "quote_kind": "PARAPHRASE",
+      "material": true
+     },
+     {
+      "claim_id": "c7",
+      "kind": "GUIDANCE",
+      "text": "Current playback instructions require reporting a tool incident with the task ID when the player fails to load or start, capturing browser/error state and whether another clip plays, and not assigning model-quality failure or content-based QN solely because playback is unavailable. Old workarounds must be checked against current symptoms; handling guidance does not establish repair or evaluability.",
+      "evidence_ids": [
+       "k:audio-multimodal-instructions@1.3:1c6df70e"
+      ],
+      "attributions": [],
+      "quote": null,
+      "quote_kind": "PARAPHRASE",
+      "material": true
+     },
+     {
+      "claim_id": "c8",
+      "kind": "GUIDANCE",
+      "text": "The current batch-06 announcement directs reporting the task ID, browser/error state, and whether another clip plays when the player never starts, treating unavailable playback as a tool incident rather than grounds alone for model-quality failure or content QN, and retaining reproduction details without assuming repair.",
+      "evidence_ids": [
+       "k:slack:C_AUDIO_ANNOUNCEMENTS:1790892000.000901:1c524924"
+      ],
+      "attributions": [],
+      "quote": null,
+      "quote_kind": "PARAPHRASE",
+      "material": true
+     },
+     {
+      "claim_id": "c9",
+      "kind": "HISTORY",
+      "text": "Earlier batch-05 records describe repeated player failures at 00:00 and a limited one-reload trial ending August 28. The earlier approval records one reported restoration of playback and two tasks not yet retested; neither retrieved trial record establishes an outcome review or an extension to batch 06.",
+      "evidence_ids": [
+       "k:audio-playback-trial-approval@1.0:1779c36a",
+       "k:audio-playback-trial-post@1.0:d674dbe6"
+      ],
+      "attributions": [],
+      "quote": null,
+      "quote_kind": "PARAPHRASE",
+      "material": true
+     }
+    ],
+    "gaps": [
+     {
+      "gap_id": "g1",
+      "need": "OTHER",
+      "description": "Obtain the buffering task IDs and reproduction attempt requested by the team lead, along with the browser/error state, audio-element loading state, and whether another clip plays. These diagnostic inputs require follow-up with the affected tutors rather than guideline retrieval.",
+      "follow_up": null
+     }
+    ],
+    "evidence_sufficiency": "SUFFICIENT",
+    "proposed_action": {
+     "action_type": "ESCALATE_ENGINEERING",
+     "intervention_need": {
+      "kind": "OPERATIONAL_PROBLEM",
+      "statement": "Two tutors report playback stuck at 00:00, including persistence after a reload, with no recovery reported in the provided thread.",
+      "evidence_ids": [
+       "m:C_AUDIO_GENERAL:1790924545.000108",
+       "m:C_AUDIO_GENERAL:1790924603.000113",
+       "m:C_AUDIO_GENERAL:1790924639.000226",
+       "m:C_AUDIO_GENERAL:1790924689.000339"
+      ]
+     },
+     "instruction": "Report the persistent 00:00 buffering to engineering as a tool incident, with the requested diagnostic details marked as pending.",
+     "rationale": "Current guidance calls for tool-incident reporting when playback never starts. Persistent buffering reported by two tutors warrants technical investigation rather than a content-quality judgment.",
+     "draft_text": "Please investigate playback stuck buffering at 00:00 in audio batch 06. Two tutors report this symptom; one says reloading the item did not help. Task IDs and a reproduction attempt are still pending, along with browser/error state, whether the audio element loads, and whether another clip plays. We are treating unavailable playback as a tool incident, not as grounds alone for model-quality failure or content QN. This report does not establish that the old workaround applies or that playback has recovered.",
+     "scope_note": "This referral covers the buffering thread only, not the separate silence report. Applying the old workaround remains conditional on the task IDs and reproduction attempt requested in that thread.",
+     "support_claim_ids": [
+      "c3",
+      "c4",
+      "c5",
+      "c6",
+      "c7",
+      "c8"
+     ],
+     "targets": [],
+     "context_claim_ids": [
+      "c1",
+      "c2",
+      "c9"
+     ]
+    },
+    "severity": {
+     "level": "HIGH",
+     "rationale": "Two distinct tutors report the same inability to start playback in the current batch, including persistence after a reload. This suggests broader disruption to audio evaluation, without establishing a batch-wide outage.",
+     "signals": [
+      {
+       "level": "HIGH",
+       "signal_index": 3,
+       "signal_text": "Multiple distinct people or affected tasks reporting a comparable problem within the relevant project, batch, and time window, suggesting broader disruption or systemic labeling risk. Consider the number affected relative to the known active group when that information is available; do not require an explicit statement of widespread impact",
+       "support": "Two distinct tutors report buffering at 00:00 in the same thread within a minute; one reports that reloading does not restore playback.",
+       "evidence_ids": [
+        "m:C_AUDIO_GENERAL:1790924545.000108",
+        "m:C_AUDIO_GENERAL:1790924603.000113"
+       ]
+      }
+     ],
+     "affected_reporters": [
+      {
+       "author_id": "U010",
+       "evidence_id": "m:C_AUDIO_GENERAL:1790911816.000129"
+      },
+      {
+       "author_id": "U012",
+       "evidence_id": "m:C_AUDIO_GENERAL:1790924545.000108"
+      },
+      {
+       "author_id": "U020",
+       "evidence_id": "m:C_AUDIO_GENERAL:1790924603.000113"
+      }
+     ],
+     "recurrence": "FOUND",
+     "recurrence_evidence_ids": [
+      "k:audio-playback-trial-approval@1.0:1779c36a"
+     ],
+     "reported_recurrence_evidence_ids": []
+    },
+    "confidence": 0.92,
+    "open_confirmation": "NONE",
+    "open_question": null,
+    "open_question_evidence_ids": [],
+    "source_conflicts": [],
+    "announcement_assessments": [
+     {
+      "evidence_id": "k:slack:C_AUDIO_ANNOUNCEMENTS:1790892000.000901:1c524924",
+      "relevant": true,
+      "directive": true,
+      "directive_quote": "Audio batch 06 — playback handling reminder: if the LT player never starts, including a visible waveform with no playback, report the task ID, browser/error state, and whether another clip plays.",
+      "rationale": "This announcement covers the same project, batch, and failure to start playback, and explicitly directs reporting diagnostic information. It supports handling, not a confirmed repair or a concrete engineering intake route."
+     },
+     {
+      "evidence_id": "k:audio-playback-trial-post@1.0:d674dbe6",
+      "relevant": false,
+      "directive": true,
+      "directive_quote": "Audio batch 05: through Friday, August 28, try at most one reload when the player is stuck at 00:00.",
+      "rationale": "This was a directive for a different batch and an expired trial. It provides historical context only and does not govern the current reports."
+     }
+    ],
+    "resolution": [
+     {
+      "member_id": "member_97c81f2e6e5454c2f2a5ee4b",
+      "state": "UNRESOLVED",
+      "evidence_ids": [
+       "m:C_AUDIO_GENERAL:1790911816.000129",
+       "m:C_AUDIO_GENERAL:1790911868.000113"
+      ],
+      "basis": "A tutor describes silence as distinct from a player error, but a tutor still calls for verification of nonzero duration; the thread contains no verification result."
+     },
+     {
+      "member_id": "member_5a1a4e04becddf182c6e3ada",
+      "state": "UNRESOLVED",
+      "evidence_ids": [
+       "m:C_AUDIO_GENERAL:1790924545.000108",
+       "m:C_AUDIO_GENERAL:1790924603.000113",
+       "m:C_AUDIO_GENERAL:1790924639.000226",
+       "m:C_AUDIO_GENERAL:1790924689.000339"
+      ],
+      "basis": "Two tutors report ongoing buffering, a QA tutor requests diagnostic information, and the team lead requires task IDs and a reproduction attempt before assessing the old workaround. No recovery or diagnostic result follows in the provided thread."
+     }
+    ],
+    "coverage": [
+     {
+      "need": "CURRENT_GUIDANCE",
+      "status": "COVERED",
+      "evidence_ids": [
+       "k:audio-multimodal-instructions@1.3:1c6df70e"
+      ],
+      "note": "Current instructions directly cover failure to load or start playback, incident details, scoring limits, and checking old workarounds against current symptoms.",
+      "gap_id": null
+     },
+     {
+      "need": "ANNOUNCEMENTS",
+      "status": "COVERED",
+      "evidence_ids": [
+       "k:slack:C_AUDIO_ANNOUNCEMENTS:1790892000.000901:1c524924",
+       "k:audio-playback-trial-post@1.0:d674dbe6"
+      ],
+      "note": "The current batch reminder directly governs playback handling; the older announcement is an expired trial for another batch.",
+      "gap_id": null
+     },
+     {
+      "need": "PRIOR_DECISIONS",
+      "status": "COVERED",
+      "evidence_ids": [
+       "k:audio-playback-trial-approval@1.0:1779c36a",
+       "k:audio-playback-trial-post@1.0:d674dbe6"
+      ],
+      "note": "The retrieved records establish the earlier trial's limited scope and expiry, but not its outcome review. The proposed referral does not depend on extending or reusing that trial.",
+      "gap_id": null
+     },
+     {
+      "need": "MEMBER_QUESTIONS",
+      "status": "COVERED",
+      "evidence_ids": [
+       "m:C_AUDIO_GENERAL:1790911868.000113",
+       "m:C_AUDIO_GENERAL:1790924639.000226",
+       "m:C_AUDIO_GENERAL:1790924689.000339"
+      ],
+      "note": "The threads contain a tutor's call to verify file duration, a QA tutor's diagnostic request, and the team lead's required inputs before assessing the old workaround.",
+      "gap_id": null
+     }
+    ],
+    "review_note": null,
+    "action_choice": null
+   },
+   "revised": false
+  },
+  "grounding": {
+   "structural_issues": [
+    {
+     "claim_id": "announcement:k:audio-playback-trial-post@1.0:d674dbe6",
+     "statement_id": "announcement:k:audio-playback-trial-post@1.0:d674dbe6",
+     "code": "NOT_A_CURRENT_ANNOUNCEMENT",
+     "detail": "Assessed item is HISTORY_ONLY, not a current announcement."
+    }
+   ],
+   "action_issues": [],
+   "unsupported": [],
+   "unjudged": [],
+   "extraneous_verdicts": [],
+   "rejected": {},
+   "pending": [],
+   "action_sufficiency": {
+    "verdict": "SUFFICIENT",
+    "essential_statement_ids": [
+     "claim:c3",
+     "claim:c4",
+     "claim:c5",
+     "claim:c6",
+     "claim:c7"
+    ],
+    "rationale": "The supported incident reports justify engineering expertise without requiring an established concrete intake route. The supported diagnostic requests and missing follow-up justify marking information pending, and current instructions justify tool-incident handling and the scoring restriction. The action does not claim repair, authorize the old workaround, or extend the referral to the separate silence thread. Claim c8 also supports current handling and its announcement dependency passes, but it is not essential because c7 independently supplies that guidance."
+   },
+   "source_consistency": {
+    "assessed_evidence_ids": [
+     "k:audio-multimodal-faq@1.1:e9bcf43a",
+     "k:slack:C_AUDIO_ANNOUNCEMENTS:1790892000.000901:1c524924",
+     "k:audio-multimodal-instructions@1.3:1c6df70e"
+    ],
+    "relations": [
+     {
+      "evidence_ids": [
+       "k:slack:C_AUDIO_ANNOUNCEMENTS:1790892000.000901:1c524924",
+       "k:audio-multimodal-instructions@1.3:1c6df70e"
+      ],
+      "relation": "AGREE",
+      "point": "Handling unavailable playback in audio batch 06.",
+      "disagreement_scope": null,
+      "rationale": "Both direct tool-incident reporting with task ID, browser/error state, and whether another clip plays; both prohibit model-quality failure or content QN solely from unavailable playback and disclaim confirmation of repair. The FAQ addresses separate scoring issues and states no competing playback-handling rule. The expired batch-05 trial records are not current governing sources."
+     }
+    ],
+    "declared_conflict_checks": []
+   },
+   "alternative_sufficiency": {},
+   "status": "PASSED",
+   "basis": "SEMANTIC",
+   "statements": [
+    {
+     "statement_id": "claim:c1",
+     "kind": "CLAIM_INCIDENT_FACT",
+     "text": "A tutor reports that the clip is silent and says it is not a player error; this is the tutor's assessment, not a verified technical finding.",
+     "blocking": true,
+     "evidence_ids": [
+      "m:C_AUDIO_GENERAL:1790911816.000129"
+     ],
+     "attributions": [
+      {
+       "user_id": "U010",
+       "relation": "AUTHOR",
+       "evidence_id": "m:C_AUDIO_GENERAL:1790911816.000129",
+       "role": "TUTOR"
+      }
+     ],
+     "verdict": "SUPPORTED",
+     "model_verdict": "SUPPORTED",
+     "rationale": "U010, a tutor, describes the clip as silent rather than a player error. The statement correctly presents this as the tutor's assessment, not a verified diagnosis."
+    },
+    {
+     "statement_id": "claim:c2",
+     "kind": "CLAIM_INCIDENT_FACT",
+     "text": "A tutor reports being unable to hear narration in the silence thread and says verification of nonzero file duration is still needed.",
+     "blocking": true,
+     "evidence_ids": [
+      "m:C_AUDIO_GENERAL:1790911868.000113"
+     ],
+     "attributions": [
+      {
+       "user_id": "U012",
+       "relation": "AUTHOR",
+       "evidence_id": "m:C_AUDIO_GENERAL:1790911868.000113",
+       "role": "TUTOR"
+      }
+     ],
+     "verdict": "SUPPORTED",
+     "model_verdict": "SUPPORTED",
+     "rationale": "U012 explicitly reports inaudible narration and says nonzero file duration still needs verification."
+    },
+    {
+     "statement_id": "claim:c3",
+     "kind": "CLAIM_INCIDENT_FACT",
+     "text": "Two tutors report playback stuck buffering at 00:00; one reports that the player remains buffering after reloading the item.",
+     "blocking": true,
+     "evidence_ids": [
+      "m:C_AUDIO_GENERAL:1790924545.000108",
+      "m:C_AUDIO_GENERAL:1790924603.000113"
+     ],
+     "attributions": [
+      {
+       "user_id": "U012",
+       "relation": "AUTHOR",
+       "evidence_id": "m:C_AUDIO_GENERAL:1790924545.000108",
+       "role": "TUTOR"
+      },
+      {
+       "user_id": "U020",
+       "relation": "AUTHOR",
+       "evidence_id": "m:C_AUDIO_GENERAL:1790924603.000113",
+       "role": "TUTOR"
+      }
+     ],
+     "verdict": "SUPPORTED",
+     "model_verdict": "SUPPORTED",
+     "rationale": "Two distinct tutors, U012 and U020, report buffering at 00:00; U020 explicitly reports persistence after reloading."
+    },
+    {
+     "statement_id": "claim:c4",
+     "kind": "CLAIM_INCIDENT_FACT",
+     "text": "A QA tutor asks for the task reference, browser state, and whether the audio element loads in the buffering thread.",
+     "blocking": true,
+     "evidence_ids": [
+      "m:C_AUDIO_GENERAL:1790924639.000226"
+     ],
+     "attributions": [
+      {
+       "user_id": "U008",
+       "relation": "AUTHOR",
+       "evidence_id": "m:C_AUDIO_GENERAL:1790924639.000226",
+       "role": "QA_TUTOR"
+      }
+     ],
+     "verdict": "SUPPORTED",
+     "model_verdict": "SUPPORTED",
+     "rationale": "U008 is a QA tutor and asks for precisely these diagnostic details."
+    },
+    {
+     "statement_id": "claim:c5",
+     "kind": "CLAIM_THREAD_INSTRUCTION",
+     "text": "The team lead requires task IDs and a reproduction attempt before deciding whether the old workaround applies in the buffering thread. Verbatim quote: \"We need task IDs and a reproduction attempt before deciding whether the old workaround applies.\"",
+     "blocking": true,
+     "evidence_ids": [
+      "m:C_AUDIO_GENERAL:1790924689.000339"
+     ],
+     "attributions": [
+      {
+       "user_id": "U006",
+       "relation": "AUTHOR",
+       "evidence_id": "m:C_AUDIO_GENERAL:1790924689.000339",
+       "role": "TEAM_LEAD"
+      }
+     ],
+     "verdict": "SUPPORTED",
+     "model_verdict": "SUPPORTED",
+     "rationale": "The quotation exactly matches the team lead's message, and the instruction is correctly limited to the buffering thread."
+    },
+    {
+     "statement_id": "claim:c6",
+     "kind": "CLAIM_INFERENCE",
+     "text": "The provided buffering thread does not contain the requested task IDs or reproduction result, so the inputs the team lead requested for the workaround decision remain missing.",
+     "blocking": true,
+     "evidence_ids": [
+      "m:C_AUDIO_GENERAL:1790924545.000108",
+      "m:C_AUDIO_GENERAL:1790924603.000113",
+      "m:C_AUDIO_GENERAL:1790924639.000226",
+      "m:C_AUDIO_GENERAL:1790924689.000339"
+     ],
+     "attributions": [
+      {
+       "user_id": "U006",
+       "relation": "AUTHOR",
+       "evidence_id": "m:C_AUDIO_GENERAL:1790924689.000339",
+       "role": "TEAM_LEAD"
+      }
+     ],
+     "verdict": "SUPPORTED",
+     "model_verdict": "SUPPORTED",
+     "rationale": "The complete provided buffering thread contains no task IDs or result of the requested reproduction attempt. The earlier reload report does not supply the diagnostic follow-up requested by the team lead."
+    },
+    {
+     "statement_id": "claim:c7",
+     "kind": "CLAIM_GUIDANCE",
+     "text": "Current playback instructions require reporting a tool incident with the task ID when the player fails to load or start, capturing browser/error state and whether another clip plays, and not assigning model-quality failure or content-based QN solely because playback is unavailable. Old workarounds must be checked against current symptoms; handling guidance does not establish repair or evaluability.",
+     "blocking": true,
+     "evidence_ids": [
+      "k:audio-multimodal-instructions@1.3:1c6df70e"
+     ],
+     "verdict": "SUPPORTED",
+     "model_verdict": "SUPPORTED",
+     "rationale": "The current instructions explicitly establish each stated reporting requirement, scoring limitation, workaround qualification, and limit on inferring repair or evaluability."
+    },
+    {
+     "statement_id": "claim:c8",
+     "kind": "CLAIM_GUIDANCE",
+     "text": "The current batch-06 announcement directs reporting the task ID, browser/error state, and whether another clip plays when the player never starts, treating unavailable playback as a tool incident rather than grounds alone for model-quality failure or content QN, and retaining reproduction details without assuming repair.",
+     "blocking": true,
+     "evidence_ids": [
+      "k:slack:C_AUDIO_ANNOUNCEMENTS:1790892000.000901:1c524924"
+     ],
+     "verdict": "SUPPORTED",
+     "model_verdict": "SUPPORTED",
+     "rationale": "The current batch-06 announcement directly gives these diagnostic-reporting and tool-incident handling directives and expressly disclaims confirmation of repair."
+    },
+    {
+     "statement_id": "claim:c9",
+     "kind": "CLAIM_HISTORY",
+     "text": "Earlier batch-05 records describe repeated player failures at 00:00 and a limited one-reload trial ending August 28. The earlier approval records one reported restoration of playback and two tasks not yet retested; neither retrieved trial record establishes an outcome review or an extension to batch 06.",
+     "blocking": true,
+     "evidence_ids": [
+      "k:audio-playback-trial-approval@1.0:1779c36a",
+      "k:audio-playback-trial-post@1.0:d674dbe6"
+     ],
+     "verdict": "SUPPORTED",
+     "model_verdict": "SUPPORTED",
+     "rationale": "The historical batch-05 records document repeated 00:00 failures, one reported reload success, two untested tasks, and a trial ending August 28. Neither record documents the requested outcome review or an extension to batch 06."
+    },
+    {
+     "statement_id": "summary:s1",
+     "kind": "SUMMARY",
+     "text": "Two tutors report playback stuck buffering at 00:00, including one whose reload did not help; two tutors also report silence or inaudible narration in a separate thread.",
+     "blocking": true,
+     "evidence_ids": [
+      "m:C_AUDIO_GENERAL:1790911816.000129",
+      "m:C_AUDIO_GENERAL:1790911868.000113",
+      "m:C_AUDIO_GENERAL:1790924545.000108",
+      "m:C_AUDIO_GENERAL:1790924603.000113"
+     ],
+     "attributions": [
+      {
+       "user_id": "U010",
+       "relation": "AUTHOR",
+       "evidence_id": "m:C_AUDIO_GENERAL:1790911816.000129",
+       "role": "TUTOR"
+      },
+      {
+       "user_id": "U012",
+       "relation": "AUTHOR",
+       "evidence_id": "m:C_AUDIO_GENERAL:1790911868.000113",
+       "role": "TUTOR"
+      },
+      {
+       "user_id": "U012",
+       "relation": "AUTHOR",
+       "evidence_id": "m:C_AUDIO_GENERAL:1790924545.000108",
+       "role": "TUTOR"
+      },
+      {
+       "user_id": "U020",
+       "relation": "AUTHOR",
+       "evidence_id": "m:C_AUDIO_GENERAL:1790924603.000113",
+       "role": "TUTOR"
+      }
+     ],
+     "verdict": "SUPPORTED",
+     "model_verdict": "SUPPORTED",
+     "rationale": "The cited messages support both distinct tutors reporting buffering, one unsuccessful reload, and two tutors reporting silence or inaudible narration in the separate thread. All author-role attributions match."
+    },
+    {
+     "statement_id": "summary:s2",
+     "kind": "SUMMARY",
+     "text": "The team lead requires task IDs and a reproduction attempt before deciding whether an old workaround applies to the buffering reports.",
+     "blocking": true,
+     "evidence_ids": [
+      "m:C_AUDIO_GENERAL:1790924689.000339"
+     ],
+     "attributions": [
+      {
+       "user_id": "U006",
+       "relation": "AUTHOR",
+       "evidence_id": "m:C_AUDIO_GENERAL:1790924689.000339",
+       "role": "TEAM_LEAD"
+      }
+     ],
+     "depends_on": [
+      "summary:s1"
+     ],
+     "verdict": "SUPPORTED",
+     "model_verdict": "SUPPORTED",
+     "rationale": "The team lead explicitly requires task IDs and a reproduction attempt before deciding whether the old workaround applies in the buffering thread."
+    },
+    {
+     "statement_id": "detail:d1",
+     "kind": "DETAIL",
+     "text": "In the silence thread, a tutor says the clip is silent rather than a player error, while a tutor who cannot hear narration says the file's nonzero duration still needs verification.",
+     "blocking": false,
+     "evidence_ids": [
+      "m:C_AUDIO_GENERAL:1790911816.000129",
+      "m:C_AUDIO_GENERAL:1790911868.000113"
+     ],
+     "attributions": [
+      {
+       "user_id": "U010",
+       "relation": "AUTHOR",
+       "evidence_id": "m:C_AUDIO_GENERAL:1790911816.000129",
+       "role": "TUTOR"
+      },
+      {
+       "user_id": "U012",
+       "relation": "AUTHOR",
+       "evidence_id": "m:C_AUDIO_GENERAL:1790911868.000113",
+       "role": "TUTOR"
+      }
+     ],
+     "depends_on": [
+      "summary:s1"
+     ],
+     "verdict": "SUPPORTED",
+     "model_verdict": "SUPPORTED",
+     "rationale": "Both descriptions accurately preserve the tutors' statements and retain the unresolved duration verification rather than asserting a technical diagnosis."
+    },
+    {
+     "statement_id": "detail:d2",
+     "kind": "DETAIL",
+     "text": "A QA tutor asks for the task reference, browser state, and whether the audio element loads in the buffering thread.",
+     "blocking": false,
+     "evidence_ids": [
+      "m:C_AUDIO_GENERAL:1790924639.000226"
+     ],
+     "attributions": [
+      {
+       "user_id": "U008",
+       "relation": "AUTHOR",
+       "evidence_id": "m:C_AUDIO_GENERAL:1790924639.000226",
+       "role": "QA_TUTOR"
+      }
+     ],
+     "depends_on": [
+      "summary:s1"
+     ],
+     "verdict": "SUPPORTED",
+     "model_verdict": "SUPPORTED",
+     "rationale": "The QA tutor's cited message asks for the task reference, browser state, and whether the audio element loads."
+    },
+    {
+     "statement_id": "detail:d3",
+     "kind": "DETAIL",
+     "text": "The provided buffering thread contains no task IDs or reproduction result after the team lead's request.",
+     "blocking": false,
+     "evidence_ids": [
+      "m:C_AUDIO_GENERAL:1790924545.000108",
+      "m:C_AUDIO_GENERAL:1790924603.000113",
+      "m:C_AUDIO_GENERAL:1790924639.000226",
+      "m:C_AUDIO_GENERAL:1790924689.000339"
+     ],
+     "attributions": [
+      {
+       "user_id": "U006",
+       "relation": "AUTHOR",
+       "evidence_id": "m:C_AUDIO_GENERAL:1790924689.000339",
+       "role": "TEAM_LEAD"
+      }
+     ],
+     "depends_on": [
+      "summary:s2"
+     ],
+     "verdict": "SUPPORTED",
+     "model_verdict": "SUPPORTED",
+     "rationale": "No task IDs or reproduction result appear after the team lead's request in the complete provided buffering thread."
+    },
+    {
+     "statement_id": "detail:d4",
+     "kind": "DETAIL",
+     "text": "Earlier batch-05 records describe similar 00:00 playback failures and a limited reload trial that expired on August 28; the retrieved records do not show its outcome review.",
+     "blocking": false,
+     "evidence_ids": [
+      "k:audio-playback-trial-approval@1.0:1779c36a",
+      "k:audio-playback-trial-post@1.0:d674dbe6"
+     ],
+     "verdict": "SUPPORTED",
+     "model_verdict": "SUPPORTED",
+     "rationale": "The retrieved historical records document similar failures and the limited trial's August 28 expiry, but do not document an outcome review."
+    },
+    {
+     "statement_id": "action",
+     "kind": "ACTION",
+     "text": "Report a technical issue to engineering. Instruction: Report the persistent 00:00 buffering to engineering as a tool incident, with the requested diagnostic details marked as pending. Draft to copy: Please investigate playback stuck buffering at 00:00 in audio batch 06. Two tutors report this symptom; one says reloading the item did not help. Task IDs and a reproduction attempt are still pending, along with browser/error state, whether the audio element loads, and whether another clip plays. We are treating unavailable playback as a tool incident, not as grounds alone for model-quality failure or content QN. This report does not establish that the old workaround applies or that playback has recovered. Scope: This referral covers the buffering thread only, not the separate silence report. Applying the old workaround remains conditional on the task IDs and reproduction attempt requested in that thread.",
+     "blocking": true,
+     "evidence_ids": [
+      "m:C_AUDIO_GENERAL:1790924545.000108",
+      "m:C_AUDIO_GENERAL:1790924603.000113",
+      "m:C_AUDIO_GENERAL:1790924639.000226",
+      "m:C_AUDIO_GENERAL:1790924689.000339",
+      "k:audio-multimodal-instructions@1.3:1c6df70e",
+      "k:slack:C_AUDIO_ANNOUNCEMENTS:1790892000.000901:1c524924"
+     ],
+     "premises": [
+      "claim:c3",
+      "claim:c4",
+      "claim:c5",
+      "claim:c6",
+      "claim:c7",
+      "claim:c8"
+     ],
+     "verdict": "SUPPORTED",
+     "model_verdict": "SUPPORTED",
+     "rationale": "Persistent playback failure supports an advisory referral to engineering, with no concrete intake route asserted. The draft accurately marks absent diagnostics as pending, follows current tool-incident and scoring guidance, limits the referral to buffering, and preserves the team lead's prerequisites for assessing the old workaround."
+    },
+    {
+     "statement_id": "action:rationale",
+     "kind": "ACTION_RATIONALE",
+     "text": "Why this helps: Current guidance calls for tool-incident reporting when playback never starts. Persistent buffering reported by two tutors warrants technical investigation rather than a content-quality judgment.",
+     "blocking": false,
+     "evidence_ids": [
+      "m:C_AUDIO_GENERAL:1790924545.000108",
+      "m:C_AUDIO_GENERAL:1790924603.000113",
+      "m:C_AUDIO_GENERAL:1790924639.000226",
+      "m:C_AUDIO_GENERAL:1790924689.000339",
+      "k:audio-multimodal-instructions@1.3:1c6df70e",
+      "k:slack:C_AUDIO_ANNOUNCEMENTS:1790892000.000901:1c524924",
+      "m:C_AUDIO_GENERAL:1790911816.000129",
+      "m:C_AUDIO_GENERAL:1790911868.000113",
+      "k:audio-playback-trial-approval@1.0:1779c36a",
+      "k:audio-playback-trial-post@1.0:d674dbe6"
+     ],
+     "verdict": "SUPPORTED",
+     "model_verdict": "SUPPORTED",
+     "rationale": "Current guidance calls for reporting playback failures as tool incidents rather than making content-quality judgments from unavailable playback. The two reports, including persistence after reload, justify technical investigation."
+    },
+    {
+     "statement_id": "action:need",
+     "kind": "INTERVENTION_NEED",
+     "text": "Why intervening now is needed (an operational problem that needs coordination): Two tutors report playback stuck at 00:00, including persistence after a reload, with no recovery reported in the provided thread.",
+     "blocking": false,
+     "evidence_ids": [
+      "m:C_AUDIO_GENERAL:1790924545.000108",
+      "m:C_AUDIO_GENERAL:1790924603.000113",
+      "m:C_AUDIO_GENERAL:1790924639.000226",
+      "m:C_AUDIO_GENERAL:1790924689.000339"
+     ],
+     "verdict": "SUPPORTED",
+     "model_verdict": "SUPPORTED",
+     "rationale": "The complete thread shows an unresolved playback problem reported by two tutors, an unsuccessful reload, and outstanding diagnostic requests, with no reported recovery."
+    },
+    {
+     "statement_id": "announcement:k:slack:C_AUDIO_ANNOUNCEMENTS:1790892000.000901:1c524924",
+     "kind": "ANNOUNCEMENT_HANDLING",
+     "text": "This announcement applies to this topic and directs current handling: \"Audio batch 06 — playback handling reminder: if the LT player never starts, including a visible waveform with no playback, report the task ID, browser/error state, and whether another clip plays.\". This announcement covers the same project, batch, and failure to start playback, and explicitly directs reporting diagnostic information. It supports handling, not a confirmed repair or a concrete engineering intake route.",
+     "blocking": true,
+     "evidence_ids": [
+      "k:slack:C_AUDIO_ANNOUNCEMENTS:1790892000.000901:1c524924"
+     ],
+     "verdict": "SUPPORTED",
+     "model_verdict": "SUPPORTED",
+     "rationale": "The quotation matches the announcement. Its explicit batch-06 directive applies to the reported failure to start playback and governs diagnostic reporting, without establishing repair or an engineering intake route."
+    },
+    {
+     "statement_id": "resolution:member_97c81f2e6e5454c2f2a5ee4b",
+     "kind": "RESOLUTION",
+     "text": "Member thread member_97c81f2e6e5454c2f2a5ee4b is UNRESOLVED: A tutor describes silence as distinct from a player error, but a tutor still calls for verification of nonzero duration; the thread contains no verification result.",
+     "blocking": true,
+     "evidence_ids": [
+      "m:C_AUDIO_GENERAL:1790911816.000129",
+      "m:C_AUDIO_GENERAL:1790911868.000113"
+     ],
+     "verdict": "SUPPORTED",
+     "model_verdict": "SUPPORTED",
+     "rationale": "The complete silence thread contains the tutor's assessment and the outstanding duration-verification request, but no verification result."
+    },
+    {
+     "statement_id": "resolution:member_5a1a4e04becddf182c6e3ada",
+     "kind": "RESOLUTION",
+     "text": "Member thread member_5a1a4e04becddf182c6e3ada is UNRESOLVED: Two tutors report ongoing buffering, a QA tutor requests diagnostic information, and the team lead requires task IDs and a reproduction attempt before assessing the old workaround. No recovery or diagnostic result follows in the provided thread.",
+     "blocking": true,
+     "evidence_ids": [
+      "m:C_AUDIO_GENERAL:1790924545.000108",
+      "m:C_AUDIO_GENERAL:1790924603.000113",
+      "m:C_AUDIO_GENERAL:1790924639.000226",
+      "m:C_AUDIO_GENERAL:1790924689.000339"
+     ],
+     "verdict": "SUPPORTED",
+     "model_verdict": "SUPPORTED",
+     "rationale": "The complete buffering thread supports the reported symptoms, QA request, and team lead's prerequisites, with no subsequent diagnostic result or recovery."
+    },
+    {
+     "statement_id": "severity:rationale",
+     "kind": "SEVERITY_RATIONALE",
+     "text": "Severity HIGH: Two distinct tutors report the same inability to start playback in the current batch, including persistence after a reload. This suggests broader disruption to audio evaluation, without establishing a batch-wide outage.",
+     "blocking": true,
+     "evidence_ids": [
+      "m:C_AUDIO_GENERAL:1790924545.000108",
+      "m:C_AUDIO_GENERAL:1790924603.000113",
+      "m:C_AUDIO_GENERAL:1790911816.000129",
+      "m:C_AUDIO_GENERAL:1790911868.000113",
+      "m:C_AUDIO_GENERAL:1790924639.000226"
+     ],
+     "verdict": "SUPPORTED",
+     "model_verdict": "SUPPORTED",
+     "rationale": "Two distinct tutors report the same current playback-blocking symptom, including persistence after reload. This supports the stated broader-disruption signal while the wording expressly avoids claiming a batch-wide outage."
+    },
+    {
+     "statement_id": "severity:signal:HIGH[3]",
+     "kind": "SEVERITY_SIGNAL",
+     "text": "Rubric signal met - \"Multiple distinct people or affected tasks reporting a comparable problem within the relevant project, batch, and time window, suggesting broader disruption or systemic labeling risk. Consider the number affected relative to the known active group when that information is available; do not require an explicit statement of widespread impact\": Two distinct tutors report buffering at 00:00 in the same thread within a minute; one reports that reloading does not restore playback.",
+     "blocking": true,
+     "evidence_ids": [
+      "m:C_AUDIO_GENERAL:1790924545.000108",
+      "m:C_AUDIO_GENERAL:1790924603.000113"
+     ],
+     "verdict": "SUPPORTED",
+     "model_verdict": "SUPPORTED",
+     "rationale": "U012 and U020 report comparable 00:00 buffering in the same thread 58 seconds apart, and U020 reports that reloading did not restore playback. This satisfies the stated multiple-reporter signal."
+    },
+    {
+     "statement_id": "severity:recurrence",
+     "kind": "HISTORICAL_RECURRENCE",
+     "text": "Retrieved records show this problem occurred before.",
+     "blocking": true,
+     "evidence_ids": [
+      "k:audio-playback-trial-approval@1.0:1779c36a"
+     ],
+     "verdict": "SUPPORTED",
+     "model_verdict": "SUPPORTED",
+     "rationale": "The historical approval record documents earlier batch-05 incidents of the player being stuck at 00:00."
+    },
+    {
+     "statement_id": "reporter:U010",
+     "kind": "AFFECTED_REPORTER",
+     "text": "U010 reports, in their own cited message, being affected by this problem.",
+     "blocking": true,
+     "evidence_ids": [
+      "m:C_AUDIO_GENERAL:1790911816.000129"
+     ],
+     "verdict": "SUPPORTED",
+     "model_verdict": "SUPPORTED",
+     "rationale": "U010's own message reports a silent clip, establishing them as a reporter affected by the topic's silence issue."
+    },
+    {
+     "statement_id": "reporter:U012",
+     "kind": "AFFECTED_REPORTER",
+     "text": "U012 reports, in their own cited message, being affected by this problem.",
+     "blocking": true,
+     "evidence_ids": [
+      "m:C_AUDIO_GENERAL:1790924545.000108"
+     ],
+     "verdict": "SUPPORTED",
+     "model_verdict": "SUPPORTED",
+     "rationale": "U012's own cited message reports the clip getting stuck buffering at 00:00."
+    },
+    {
+     "statement_id": "reporter:U020",
+     "kind": "AFFECTED_REPORTER",
+     "text": "U020 reports, in their own cited message, being affected by this problem.",
+     "blocking": true,
+     "evidence_ids": [
+      "m:C_AUDIO_GENERAL:1790924603.000113"
+     ],
+     "verdict": "SUPPORTED",
+     "model_verdict": "SUPPORTED",
+     "rationale": "U020's own cited message reports buffering at 00:00 persisting after reload."
+    }
+   ]
+  },
+  "temporal": {
+   "status": "NONE_FOUND",
+   "findings": [],
+   "source_consistency": "ASSESSED",
+   "ignored_revision_states": "NOT_YET_EFFECTIVE and NOT_APPROVED revisions never compete with applicable guidance."
+  },
+  "temporal_before_grounding": {
+   "status": "NONE_FOUND",
+   "findings": [],
+   "source_consistency": "NOT_ASSESSED",
+   "ignored_revision_states": "NOT_YET_EFFECTIVE and NOT_APPROVED revisions never compete with applicable guidance."
+  },
+  "severity": {
+   "assessment": {
+    "level": "HIGH",
+    "assessment_status": "ASSESSED",
+    "rubric_version": "severity-rubric-v3-semantic-signals",
+    "rubric_content_sha256": "eccaa31a2ab84a0aa7c005216a92fc39681e1dd10107117344948235a76673f4",
+    "rubric_project_id": null,
+    "rubric_scope": "SHARED_DEFAULT",
+    "rationale": "Two distinct tutors report the same inability to start playback in the current batch, including persistence after a reload. This suggests broader disruption to audio evaluation, without establishing a batch-wide outage.",
+    "matched_signals": [
+     {
+      "level": "HIGH",
+      "signal_index": 3,
+      "signal_text": "Multiple distinct people or affected tasks reporting a comparable problem within the relevant project, batch, and time window, suggesting broader disruption or systemic labeling risk. Consider the number affected relative to the known active group when that information is available; do not require an explicit statement of widespread impact",
+      "support": "Two distinct tutors report buffering at 00:00 in the same thread within a minute; one reports that reloading does not restore playback.",
+      "evidence": [
+       {
+        "kind": "slack_message",
+        "project_id": "audio_multimodal",
+        "batch_id": "audio_batch_06",
+        "scope": "project",
+        "channel_id": "C_AUDIO_GENERAL",
+        "thread_id": "1790924545.000108",
+        "message_id": "1790924545.000108",
+        "document_id": null,
+        "version_id": null,
+        "authoring_document_id": null,
+        "authoring_version": null,
+        "section": null,
+        "chunk_id": null,
+        "candidate_group_id": null,
+        "member_id": "member_5a1a4e04becddf182c6e3ada",
+        "artifact": null,
+        "artifact_sha256": null,
+        "quote": null,
+        "note": "m:C_AUDIO_GENERAL:1790924545.000108"
+       },
+       {
+        "kind": "slack_message",
+        "project_id": "audio_multimodal",
+        "batch_id": "audio_batch_06",
+        "scope": "project",
+        "channel_id": "C_AUDIO_GENERAL",
+        "thread_id": "1790924545.000108",
+        "message_id": "1790924603.000113",
+        "document_id": null,
+        "version_id": null,
+        "authoring_document_id": null,
+        "authoring_version": null,
+        "section": null,
+        "chunk_id": null,
+        "candidate_group_id": null,
+        "member_id": "member_5a1a4e04becddf182c6e3ada",
+        "artifact": null,
+        "artifact_sha256": null,
+        "quote": null,
+        "note": "m:C_AUDIO_GENERAL:1790924603.000113"
+       }
+      ]
+     }
+    ],
+    "evidence": [
+     {
+      "kind": "slack_message",
+      "project_id": "audio_multimodal",
+      "batch_id": "audio_batch_06",
+      "scope": "project",
+      "channel_id": "C_AUDIO_GENERAL",
+      "thread_id": "1790924545.000108",
+      "message_id": "1790924545.000108",
+      "document_id": null,
+      "version_id": null,
+      "authoring_document_id": null,
+      "authoring_version": null,
+      "section": null,
+      "chunk_id": null,
+      "candidate_group_id": null,
+      "member_id": "member_5a1a4e04becddf182c6e3ada",
+      "artifact": null,
+      "artifact_sha256": null,
+      "quote": null,
+      "note": "m:C_AUDIO_GENERAL:1790924545.000108"
+     },
+     {
+      "kind": "slack_message",
+      "project_id": "audio_multimodal",
+      "batch_id": "audio_batch_06",
+      "scope": "project",
+      "channel_id": "C_AUDIO_GENERAL",
+      "thread_id": "1790924545.000108",
+      "message_id": "1790924603.000113",
+      "document_id": null,
+      "version_id": null,
+      "authoring_document_id": null,
+      "authoring_version": null,
+      "section": null,
+      "chunk_id": null,
+      "candidate_group_id": null,
+      "member_id": "member_5a1a4e04becddf182c6e3ada",
+      "artifact": null,
+      "artifact_sha256": null,
+      "quote": null,
+      "note": "m:C_AUDIO_GENERAL:1790924603.000113"
+     }
+    ],
+    "occurrence": {
+     "affected_reporters": {
+      "status": "LOWER_BOUND",
+      "count": 3,
+      "ids": [
+       "U010",
+       "U012",
+       "U020"
+      ],
+      "basis": "Distinct authors whose own cited message reports the problem; other participants are not counted.",
+      "evidence": [
+       {
+        "kind": "slack_message",
+        "project_id": "audio_multimodal",
+        "batch_id": "audio_batch_06",
+        "scope": "project",
+        "channel_id": "C_AUDIO_GENERAL",
+        "thread_id": "1790911816.000129",
+        "message_id": "1790911816.000129",
+        "document_id": null,
+        "version_id": null,
+        "authoring_document_id": null,
+        "authoring_version": null,
+        "section": null,
+        "chunk_id": null,
+        "candidate_group_id": null,
+        "member_id": "member_97c81f2e6e5454c2f2a5ee4b",
+        "artifact": null,
+        "artifact_sha256": null,
+        "quote": null,
+        "note": "m:C_AUDIO_GENERAL:1790911816.000129"
+       },
+       {
+        "kind": "slack_message",
+        "project_id": "audio_multimodal",
+        "batch_id": "audio_batch_06",
+        "scope": "project",
+        "channel_id": "C_AUDIO_GENERAL",
+        "thread_id": "1790924545.000108",
+        "message_id": "1790924545.000108",
+        "document_id": null,
+        "version_id": null,
+        "authoring_document_id": null,
+        "authoring_version": null,
+        "section": null,
+        "chunk_id": null,
+        "candidate_group_id": null,
+        "member_id": "member_5a1a4e04becddf182c6e3ada",
+        "artifact": null,
+        "artifact_sha256": null,
+        "quote": null,
+        "note": "m:C_AUDIO_GENERAL:1790924545.000108"
+       },
+       {
+        "kind": "slack_message",
+        "project_id": "audio_multimodal",
+        "batch_id": "audio_batch_06",
+        "scope": "project",
+        "channel_id": "C_AUDIO_GENERAL",
+        "thread_id": "1790924545.000108",
+        "message_id": "1790924603.000113",
+        "document_id": null,
+        "version_id": null,
+        "authoring_document_id": null,
+        "authoring_version": null,
+        "section": null,
+        "chunk_id": null,
+        "candidate_group_id": null,
+        "member_id": "member_5a1a4e04becddf182c6e3ada",
+        "artifact": null,
+        "artifact_sha256": null,
+        "quote": null,
+        "note": "m:C_AUDIO_GENERAL:1790924603.000113"
+       }
+      ]
+     },
+     "affected_tasks": {
+      "status": "UNKNOWN",
+      "count": null,
+      "ids": [],
+      "basis": null,
+      "evidence": []
+     },
+     "relevant_threads": [
+      {
+       "project_id": "audio_multimodal",
+       "batch_id": "audio_batch_06",
+       "channel_id": "C_AUDIO_GENERAL",
+       "thread_id": "1790911816.000129",
+       "member_id": "member_97c81f2e6e5454c2f2a5ee4b"
+      },
+      {
+       "project_id": "audio_multimodal",
+       "batch_id": "audio_batch_06",
+       "channel_id": "C_AUDIO_GENERAL",
+       "thread_id": "1790924545.000108",
+       "member_id": "member_5a1a4e04becddf182c6e3ada"
+      }
+     ],
+     "reporting_window": {
+      "start": "2026-10-02T03:30:16.000129+00:00",
+      "end": "2026-10-02T07:04:49.000339+00:00"
+     },
+     "historical_recurrence": {
+      "status": "FOUND",
+      "sources": [
+       {
+        "kind": "knowledge_source",
+        "project_id": "audio_multimodal",
+        "batch_id": "audio_batch_05",
+        "scope": "project",
+        "channel_id": null,
+        "thread_id": null,
+        "message_id": null,
+        "document_id": "knowledge_9d0d30c7f163464d5c5c7814b5d008534f5be75756ac2ebc5b3ca7c33b76f978",
+        "version_id": "version_d9b063c2c27537819203ff0271b833092e188df5854a74b9323e160edf3bfa6b",
+        "authoring_document_id": "audio-playback-trial-approval",
+        "authoring_version": "1.0",
+        "section": "Evidence available at the review",
+        "chunk_id": "chunk_1779c36a5e5cf3bb5191d7cd6e6b435a",
+        "candidate_group_id": null,
+        "member_id": null,
+        "artifact": null,
+        "artifact_sha256": null,
+        "quote": null,
+        "note": "k:audio-playback-trial-approval@1.0:1779c36a (HISTORY_ONLY; CURRENT)"
+       }
+      ],
+      "event_series_ids": []
+     },
+     "known_denominator": null,
+     "structural": {
+      "threads": 2,
+      "messages": 6,
+      "distinct_participants": 5,
+      "duplicate_threads_ignored": 0,
+      "duplicate_messages_ignored": 0,
+      "computed_from": "topic member threads (original Slack messages)",
+      "participants_are_not_affected_reporters": true
+     },
+     "semantic_identification": "ASSESSED"
+    },
+    "inherited_from": {
+     "level": "UNKNOWN",
+     "assessment_status": "UNASSESSED",
+     "assessment_deferred_to": "AGENT3",
+     "reason": "Agent 2 performs taxonomy only."
+    }
+   },
+   "issues": [],
+   "notes": [],
+   "proposal": {
+    "level": "HIGH",
+    "rationale": "Two distinct tutors report the same inability to start playback in the current batch, including persistence after a reload. This suggests broader disruption to audio evaluation, without establishing a batch-wide outage.",
+    "signals": [
+     {
+      "level": "HIGH",
+      "signal_index": 3,
+      "signal_text": "Multiple distinct people or affected tasks reporting a comparable problem within the relevant project, batch, and time window, suggesting broader disruption or systemic labeling risk. Consider the number affected relative to the known active group when that information is available; do not require an explicit statement of widespread impact",
+      "support": "Two distinct tutors report buffering at 00:00 in the same thread within a minute; one reports that reloading does not restore playback.",
+      "evidence_ids": [
+       "m:C_AUDIO_GENERAL:1790924545.000108",
+       "m:C_AUDIO_GENERAL:1790924603.000113"
+      ]
+     }
+    ],
+    "affected_reporters": [
+     {
+      "author_id": "U010",
+      "evidence_id": "m:C_AUDIO_GENERAL:1790911816.000129"
+     },
+     {
+      "author_id": "U012",
+      "evidence_id": "m:C_AUDIO_GENERAL:1790924545.000108"
+     },
+     {
+      "author_id": "U020",
+      "evidence_id": "m:C_AUDIO_GENERAL:1790924603.000113"
+     }
+    ],
+    "recurrence": "FOUND",
+    "recurrence_evidence_ids": [
+     "k:audio-playback-trial-approval@1.0:1779c36a"
+    ],
+    "reported_recurrence_evidence_ids": []
+   }
+  },
+  "resolution": {
+   "topic": "UNRESOLVED",
+   "members": {
+    "member_97c81f2e6e5454c2f2a5ee4b": "UNRESOLVED",
+    "member_5a1a4e04becddf182c6e3ada": "UNRESOLVED"
+   },
+   "agent1_attributed": [
+    {
+     "member_id": "member_97c81f2e6e5454c2f2a5ee4b",
+     "state": "UNRESOLVED",
+     "agent1_verification_status": "CORRECTED",
+     "agent1_review_required": false
+    },
+    {
+     "member_id": "member_5a1a4e04becddf182c6e3ada",
+     "state": "UNRESOLVED",
+     "agent1_verification_status": "CORRECTED",
+     "agent1_review_required": false
+    }
+   ]
+  },
+  "established_handling": [
+   "k:slack:C_AUDIO_ANNOUNCEMENTS:1790892000.000901:1c524924"
+  ],
+  "coverage_issues": [],
+  "action_source": "DRAFT",
+  "action_notes": [],
+  "tot": {
+   "status": "NOT_TRIGGERED",
+   "triggers": [],
+   "choice_after_grounding": {
+    "status": "NOT_COMPARED",
+    "viable": []
+   }
+  },
+  "evidence_ledger": {
+   "m:C_AUDIO_GENERAL:1790911816.000129": {
+    "evidence_id": "m:C_AUDIO_GENERAL:1790911816.000129",
+    "origin": "member_message",
+    "use": "MEMBER_REPORT",
+    "member_id": "member_97c81f2e6e5454c2f2a5ee4b",
+    "channel_id": "C_AUDIO_GENERAL",
+    "thread_id": "1790911816.000129",
+    "message_id": "1790911816.000129",
+    "author_id": "U010",
+    "author_name": "Avery",
+    "author_role": "TUTOR",
+    "timestamp": "2026-10-02T03:30:16.000129Z",
+    "thread_starter_id": "U010",
+    "thread_starter_role": "TUTOR",
+    "reactions": [],
+    "excerpt": "Clip is just silence, not a player error."
+   },
+   "m:C_AUDIO_GENERAL:1790911868.000113": {
+    "evidence_id": "m:C_AUDIO_GENERAL:1790911868.000113",
+    "origin": "member_message",
+    "use": "MEMBER_REPORT",
+    "member_id": "member_97c81f2e6e5454c2f2a5ee4b",
+    "channel_id": "C_AUDIO_GENERAL",
+    "thread_id": "1790911816.000129",
+    "message_id": "1790911868.000113",
+    "author_id": "U012",
+    "author_name": "Sam",
+    "author_role": "TUTOR",
+    "timestamp": "2026-10-02T03:31:08.000113Z",
+    "thread_starter_id": "U010",
+    "thread_starter_role": "TUTOR",
+    "reactions": [],
+    "excerpt": "I cannot hear narration, though we still need to verify whether the file has nonzero duration."
+   },
+   "m:C_AUDIO_GENERAL:1790924545.000108": {
+    "evidence_id": "m:C_AUDIO_GENERAL:1790924545.000108",
+    "origin": "member_message",
+    "use": "MEMBER_REPORT",
+    "member_id": "member_5a1a4e04becddf182c6e3ada",
+    "channel_id": "C_AUDIO_GENERAL",
+    "thread_id": "1790924545.000108",
+    "message_id": "1790924545.000108",
+    "author_id": "U012",
+    "author_name": "Sam",
+    "author_role": "TUTOR",
+    "timestamp": "2026-10-02T07:02:25.000108Z",
+    "thread_starter_id": "U012",
+    "thread_starter_role": "TUTOR",
+    "reactions": [],
+    "excerpt": "Clip gets stuck buffering at 00:00."
+   },
+   "m:C_AUDIO_GENERAL:1790924603.000113": {
+    "evidence_id": "m:C_AUDIO_GENERAL:1790924603.000113",
+    "origin": "member_message",
+    "use": "MEMBER_REPORT",
+    "member_id": "member_5a1a4e04becddf182c6e3ada",
+    "channel_id": "C_AUDIO_GENERAL",
+    "thread_id": "1790924545.000108",
+    "message_id": "1790924603.000113",
+    "author_id": "U020",
+    "author_name": "Theo",
+    "author_role": "TUTOR",
+    "timestamp": "2026-10-02T07:03:23.000113Z",
+    "thread_starter_id": "U012",
+    "thread_starter_role": "TUTOR",
+    "reactions": [],
+    "excerpt": "The player stays buffering at 00:00 even after reloading the item."
+   },
+   "m:C_AUDIO_GENERAL:1790924639.000226": {
+    "evidence_id": "m:C_AUDIO_GENERAL:1790924639.000226",
+    "origin": "member_message",
+    "use": "MEMBER_REPORT",
+    "member_id": "member_5a1a4e04becddf182c6e3ada",
+    "channel_id": "C_AUDIO_GENERAL",
+    "thread_id": "1790924545.000108",
+    "message_id": "1790924639.000226",
+    "author_id": "U008",
+    "author_name": "Hana",
+    "author_role": "QA_TUTOR",
+    "timestamp": "2026-10-02T07:03:59.000226Z",
+    "thread_starter_id": "U012",
+    "thread_starter_role": "TUTOR",
+    "reactions": [],
+    "excerpt": "Can you record the task reference, browser state, and whether the audio element loads?"
+   },
+   "m:C_AUDIO_GENERAL:1790924689.000339": {
+    "evidence_id": "m:C_AUDIO_GENERAL:1790924689.000339",
+    "origin": "member_message",
+    "use": "MEMBER_REPORT",
+    "member_id": "member_5a1a4e04becddf182c6e3ada",
+    "channel_id": "C_AUDIO_GENERAL",
+    "thread_id": "1790924545.000108",
+    "message_id": "1790924689.000339",
+    "author_id": "U006",
+    "author_name": "Priya",
+    "author_role": "TEAM_LEAD",
+    "timestamp": "2026-10-02T07:04:49.000339Z",
+    "thread_starter_id": "U012",
+    "thread_starter_role": "TUTOR",
+    "reactions": [],
+    "excerpt": "We need task IDs and a reproduction attempt before deciding whether the old workaround applies."
+   },
+   "k:audio-playback-trial-post@1.0:d674dbe6": {
+    "evidence_id": "k:audio-playback-trial-post@1.0:d674dbe6",
+    "origin": "retrieved_source",
+    "use": "HISTORY_ONLY",
+    "citation": {
+     "document_id": "knowledge_383d84eb3fd9f9835f99f9273bac91bfc703c61f5c0b2dd96d470f5e3ef40c8a",
+     "version_id": "version_c3caae5cf3af990b06b54e1a2fc331fbeac8d6ead502026bb6b5978b1623714d",
+     "chunk_id": "chunk_d674dbe69aeaaef079b556a1a0334ad1",
+     "authoring": "audio-playback-trial-post@1.0",
+     "title": "Playback trial posted to audio announcements",
+     "sections": [],
+     "source": {
+      "batch_id": "audio_batch_05",
+      "channel_id": "C_AUDIO_ANNOUNCEMENTS",
+      "manual_key": null,
+      "message_id": "1787581200.700001",
+      "permalink": null,
+      "project_id": "audio_multimodal",
+      "reference": null,
+      "system": "slack",
+      "thread_id": "1787581200.700001",
+      "workspace_id": null
+     }
+    },
+    "source_type": "announcement",
+    "record_kind": "channel_announcement",
+    "applicability": {
+     "state": "CURRENT",
+     "revision_state": "CURRENT",
+     "version_mode": "current",
+     "replaced_by": [],
+     "unverified_supersession": [],
+     "supersedes": [],
+     "enactment": null,
+     "other_revisions": []
+    },
+    "dates": {
+     "source_date": "2026-08-24T14:20:00Z",
+     "basis": "effective_at",
+     "effective_at": "2026-08-24T14:20:00Z",
+     "created_at": "2026-08-24T14:20:00.700001+00:00",
+     "valid_until": "2026-08-28T21:00:00Z",
+     "expired_as_of": true,
+     "reference_time": "2026-10-02T12:00:00Z"
+    },
+    "scope": {
+     "project_id": "audio_multimodal",
+     "batch_id": "audio_batch_05",
+     "scope": "project",
+     "batch_relation": "other_batch"
+    },
+    "authority": {
+     "role": "TEAM_LEAD",
+     "actor": "U006",
+     "actor_relation": "MESSAGE_AUTHOR",
+     "approval_status": "EXPLICIT_SOURCE_MARKER",
+     "provenance": "synthetic_slack_archive"
+    },
+    "authorship": {
+     "author_id": "U006",
+     "verified": true,
+     "basis": "SLACK_MESSAGE_AUTHOR"
+    },
+    "recorded_states": {
+     "status": "tl_approved",
+     "decision_status": "tl_approved",
+     "execution_status": "posted",
+     "outcome_status": "not_observed"
+    },
+    "upstream_review": null,
+    "excerpt": "[HISTORICAL - NOT CURRENT GUIDANCE: valid_until 2026-08-28T21:00:00Z has passed. May explain an old rule; do not apply it as current.]\nAudio batch 05: through Friday, August 28, try at most one reload when the player is stuck at 00:00. Keep the task ID, browser state, whether the waveform appears, and whether another clip plays. If playback is still unavailable, report the tool incident; do not assign a content-quality failure or content QN solely from the player failure. A reload is a diagnostic trial, not a confirmed repair or submission receipt. We will review the results before extending this approach."
+   },
+   "k:audio-multimodal-faq@1.1:e9bcf43a": {
+    "evidence_id": "k:audio-multimodal-faq@1.1:e9bcf43a",
+    "origin": "retrieved_source",
+    "use": "CURRENT_GUIDANCE",
+    "citation": {
+     "document_id": "knowledge_1f550e377f9c310f57f03e5bf482f810999d822a9cf4b1db3be5f2557678f15e",
+     "version_id": "version_66a170bbd46011e80d06da6d0bf5ec8b73486a84c13e015f60222fa711e05727",
+     "chunk_id": "chunk_e9bcf43a020b06861273547bf398f71b",
+     "authoring": "audio-multimodal-faq@1.1",
+     "title": "Audio Multimodal — FAQ (v1.1)",
+     "sections": [
+      "Scoring"
+     ],
+     "source": {
+      "batch_id": null,
+      "channel_id": null,
+      "manual_key": "audio-multimodal-faq",
+      "message_id": null,
+      "permalink": null,
+      "project_id": "audio_multimodal",
+      "reference": null,
+      "system": "manual",
+      "thread_id": null,
+      "workspace_id": null
+     }
+    },
+    "source_type": "faq",
+    "record_kind": "faq",
+    "applicability": {
+     "state": "CURRENT",
+     "revision_state": "CURRENT",
+     "version_mode": "current",
+     "replaced_by": [],
+     "unverified_supersession": [],
+     "supersedes": [],
+     "enactment": null,
+     "other_revisions": []
+    },
+    "dates": {
+     "source_date": "2026-09-20T13:00:00Z",
+     "basis": "effective_at",
+     "effective_at": "2026-09-20T13:00:00Z",
+     "created_at": null,
+     "valid_until": null,
+     "expired_as_of": false,
+     "reference_time": "2026-10-02T12:00:00Z"
+    },
+    "scope": {
+     "project_id": "audio_multimodal",
+     "batch_id": null,
+     "scope": "project",
+     "batch_relation": "project_wide"
+    },
+    "authority": {
+     "role": "TEAM_LEAD",
+     "actor": "U006",
+     "actor_relation": "RECORD_AUTHORITY",
+     "approval_status": "EXPLICIT_SOURCE_MARKER",
+     "provenance": "synthetic_manual_record"
+    },
+    "authorship": {
+     "author_id": null,
+     "verified": false,
+     "basis": "NO_AUTHOR_RECORDED"
+    },
+    "recorded_states": {
+     "status": "approved",
+     "decision_status": null,
+     "execution_status": null,
+     "outcome_status": null
+    },
+    "upstream_review": null,
+    "excerpt": "## Scoring\n\n### Q: How should I score mild clipping?\nBrief, localized clipping with clear speech is a minor defect. Timestamp the affected span. For continuous artifacts or unclear impact, ask QA to review intelligibility and scope; do not decide from duration alone.\n\n### Q: The transcript and audio disagree. What do I do?\nRecord the exact mismatch as a correspondence issue. Distinguish a recording error from a reference-transcript error; do not classify the mismatch as a playback failure.\n\n### Q: How much speaker overlap is allowed before the transcription fails?\nMark the overlapping or unintelligible interval and preserve the usable remainder. Timestamp the span. Do not infer a whole-clip failure from a short affected interval."
+   },
+   "k:audio-playback-trial-approval@1.0:1779c36a": {
+    "evidence_id": "k:audio-playback-trial-approval@1.0:1779c36a",
+    "origin": "retrieved_source",
+    "use": "HISTORY_ONLY",
+    "citation": {
+     "document_id": "knowledge_9d0d30c7f163464d5c5c7814b5d008534f5be75756ac2ebc5b3ca7c33b76f978",
+     "version_id": "version_d9b063c2c27537819203ff0271b833092e188df5854a74b9323e160edf3bfa6b",
+     "chunk_id": "chunk_1779c36a5e5cf3bb5191d7cd6e6b435a",
+     "authoring": "audio-playback-trial-approval@1.0",
+     "title": "AUDIO-20260824-01 — Approve a limited playback trial",
+     "sections": [
+      "Evidence available at the review",
+      "Suggested advice",
+      "TL decision"
+     ],
+     "source": {
+      "batch_id": "audio_batch_05",
+      "channel_id": null,
+      "manual_key": "audio-playback-trial-approval",
+      "message_id": null,
+      "permalink": null,
+      "project_id": "audio_multimodal",
+      "reference": null,
+      "system": "manual",
+      "thread_id": null,
+      "workspace_id": null
+     }
+    },
+    "source_type": "decision",
+    "record_kind": "advice_review",
+    "applicability": {
+     "state": "CURRENT",
+     "revision_state": "CURRENT",
+     "version_mode": "current",
+     "replaced_by": [],
+     "unverified_supersession": [],
+     "supersedes": [],
+     "enactment": {
+      "status": "NOT_ENACTED",
+      "basis": null,
+      "governing_sources": [],
+      "missing": [
+       "OUT_OF_SCOPE",
+       "NOT_A_POLICY_CHANGE",
+       "NO_ENACTMENT_EVIDENCE",
+       "EXPIRED"
+      ],
+      "recorded": {
+       "decision_status": "tl_approved",
+       "execution_status": "not_yet_executed",
+       "authority_role": "TEAM_LEAD",
+       "batch_id": "audio_batch_05",
+       "valid_until": "2026-08-28T21:00:00Z",
+       "effective_at": "2026-08-24T14:00:00Z"
+      }
+     },
+     "other_revisions": []
+    },
+    "dates": {
+     "source_date": "2026-08-24T14:00:00Z",
+     "basis": "effective_at",
+     "effective_at": "2026-08-24T14:00:00Z",
+     "created_at": null,
+     "valid_until": "2026-08-28T21:00:00Z",
+     "expired_as_of": true,
+     "reference_time": "2026-10-02T12:00:00Z"
+    },
+    "scope": {
+     "project_id": "audio_multimodal",
+     "batch_id": "audio_batch_05",
+     "scope": "project",
+     "batch_relation": "other_batch"
+    },
+    "authority": {
+     "role": "TEAM_LEAD",
+     "actor": "U006",
+     "actor_relation": "RECORD_AUTHORITY",
+     "approval_status": "EXPLICIT_SOURCE_MARKER",
+     "provenance": "synthetic_manual_record"
+    },
+    "authorship": {
+     "author_id": null,
+     "verified": false,
+     "basis": "NO_AUTHOR_RECORDED"
+    },
+    "recorded_states": {
+     "status": "tl_approved",
+     "decision_status": "tl_approved",
+     "execution_status": "not_yet_executed",
+     "outcome_status": "not_observed"
+    },
+    "upstream_review": null,
+    "excerpt": "[HISTORICAL - NOT CURRENT GUIDANCE: valid_until 2026-08-28T21:00:00Z has passed. May explain an old rule; do not apply it as current.]\n## Evidence available at the review\nThree batch-05 incident notes describe a player stuck at 00:00 even though the waveform appears. One Trainer reported that a single reload restored playback on A05-P101; two other tasks had not been retested. These notes establish a recurring symptom, not a confirmed cause.\n\n## Suggested advice\nA simulated prior Agent 3 card proposed a short alignment note allowing one reload while capturing task IDs and browser state. It did not claim that reload was a repair.\n\n## TL decision\nPriya approved a monitored trial for audio_batch_05 only, ending August 28 at 17:00 New York time. Trainers may try one reload, report whether another clip plays, and retain the failed task reference. No content score or QN decision should be inferred from unavailable playback.\n\nDo not repeatedly reload an affected task or mark it submitted without confirmation. Priya requested a short outcome review before extending the trial."
+   },
+   "k:slack:C_AUDIO_ANNOUNCEMENTS:1790892000.000901:1c524924": {
+    "evidence_id": "k:slack:C_AUDIO_ANNOUNCEMENTS:1790892000.000901:1c524924",
+    "origin": "retrieved_source",
+    "use": "ANNOUNCEMENT",
+    "citation": {
+     "document_id": "knowledge_5ed9124870dd8eefcb7205ccae406532b720c5974c8e33d94d542f1be6fe1bbb",
+     "version_id": "version_c7bc2edadbceff5bc2c01006e29f074c0a8434cc5b94d61a6d1542d2a2b2aa38",
+     "chunk_id": "chunk_1c5249242466a37751b706dd99a73e9c",
+     "authoring": null,
+     "title": "Slack announcement in audio-multimodal-announcements at 2026-10-01T22:00:00.000901+00:00",
+     "sections": [],
+     "source": {
+      "batch_id": "audio_batch_06",
+      "channel_id": "C_AUDIO_ANNOUNCEMENTS",
+      "manual_key": null,
+      "message_id": "1790892000.000901",
+      "permalink": null,
+      "project_id": "audio_multimodal",
+      "reference": null,
+      "system": "slack",
+      "thread_id": "1790892000.000901",
+      "workspace_id": null
+     }
+    },
+    "source_type": "announcement",
+    "record_kind": "announcement",
+    "applicability": {
+     "state": "CURRENT",
+     "revision_state": "CURRENT",
+     "version_mode": "current",
+     "replaced_by": [],
+     "unverified_supersession": [],
+     "supersedes": [],
+     "enactment": null,
+     "other_revisions": []
+    },
+    "dates": {
+     "source_date": "2026-10-01T22:00:00.000901+00:00",
+     "basis": "created_at",
+     "effective_at": null,
+     "created_at": "2026-10-01T22:00:00.000901+00:00",
+     "valid_until": null,
+     "expired_as_of": false,
+     "reference_time": "2026-10-02T12:00:00Z"
+    },
+    "scope": {
+     "project_id": "audio_multimodal",
+     "batch_id": "audio_batch_06",
+     "scope": "project",
+     "batch_relation": "same_batch"
+    },
+    "authority": {
+     "role": "TEAM_LEAD",
+     "actor": "U006",
+     "actor_relation": "MESSAGE_AUTHOR",
+     "approval_status": "UNKNOWN",
+     "provenance": null
+    },
+    "authorship": {
+     "author_id": "U006",
+     "verified": true,
+     "basis": "SLACK_MESSAGE_AUTHOR"
+    },
+    "recorded_states": {
+     "status": null,
+     "decision_status": null,
+     "execution_status": null,
+     "outcome_status": null
+    },
+    "upstream_review": null,
+    "excerpt": "[ANNOUNCEMENT posted 2026-10-01T22:00:00.000901+00:00 by TEAM_LEAD (audio_batch_06): not established as handling for this topic until you show it is relevant and gives a directive.]\nAudio batch 06 — playback handling reminder: if the LT player never starts, including a visible waveform with no playback, report the task ID, browser/error state, and whether another clip plays. Treat this as a tool incident. Do not score unavailable audio as a model-quality failure or choose content QN solely because playback is unavailable. This is handling guidance, not confirmation that the player has been fixed; retain the details needed to reproduce the incident."
+   },
+   "k:audio-multimodal-instructions@1.3:1c6df70e": {
+    "evidence_id": "k:audio-multimodal-instructions@1.3:1c6df70e",
+    "origin": "retrieved_source",
+    "use": "CURRENT_GUIDANCE",
+    "citation": {
+     "document_id": "knowledge_3057c26d60654a68d0b76c025ba216366dd48f3e97b64f5aae68364a45170b8a",
+     "version_id": "version_03e4c185c65cbfbe35dccab040cc429ac6887e3cb0edc4f52cb5ea5a56970a24",
+     "chunk_id": "chunk_1c6df70e9f26fad116bae3d01bb66532",
+     "authoring": "audio-multimodal-instructions@1.3",
+     "title": "Audio Multimodal — Instructions (v1.3)",
+     "sections": [
+      "Playback and unavailable content"
+     ],
+     "source": {
+      "batch_id": null,
+      "channel_id": null,
+      "manual_key": "audio-multimodal-instructions",
+      "message_id": null,
+      "permalink": null,
+      "project_id": "audio_multimodal",
+      "reference": null,
+      "system": "manual",
+      "thread_id": null,
+      "workspace_id": null
+     }
+    },
+    "source_type": "guideline",
+    "record_kind": "guideline",
+    "applicability": {
+     "state": "CURRENT",
+     "revision_state": "CURRENT",
+     "version_mode": "current",
+     "replaced_by": [],
+     "unverified_supersession": [],
+     "supersedes": [],
+     "enactment": null,
+     "other_revisions": []
+    },
+    "dates": {
+     "source_date": "2026-09-15T13:00:00Z",
+     "basis": "effective_at",
+     "effective_at": "2026-09-15T13:00:00Z",
+     "created_at": null,
+     "valid_until": null,
+     "expired_as_of": false,
+     "reference_time": "2026-10-02T12:00:00Z"
+    },
+    "scope": {
+     "project_id": "audio_multimodal",
+     "batch_id": null,
+     "scope": "project",
+     "batch_relation": "project_wide"
+    },
+    "authority": {
+     "role": "TEAM_LEAD",
+     "actor": "U006",
+     "actor_relation": "RECORD_AUTHORITY",
+     "approval_status": "EXPLICIT_SOURCE_MARKER",
+     "provenance": "synthetic_manual_record"
+    },
+    "authorship": {
+     "author_id": null,
+     "verified": false,
+     "basis": "NO_AUTHOR_RECORDED"
+    },
+    "recorded_states": {
+     "status": "approved",
+     "decision_status": null,
+     "execution_status": null,
+     "outcome_status": null
+    },
+    "upstream_review": null,
+    "excerpt": "## Playback and unavailable content\n- If the player fails to load or start, report a tool incident with the task ID.\n- A visible waveform with no playback is still a playback/tool incident; the waveform alone does not establish that the recording is silent.\n- Do not score unavailable audio as a model-quality failure or make a content-based Quarantine (QN) decision solely because playback is unavailable.\n- Capture the browser/error state and whether another clip plays. An old workaround must be checked against the current symptoms; recurrence alone does not establish which fix was tried or why it failed.\n- Handling guidance does not confirm that playback has been repaired or that an affected task can be evaluated."
+   }
+  },
+  "card": {
+   "contract_version": "agent3-advice-card-v5",
+   "record_type": "ADVICE_CARD",
+   "card_id": "card_303736c0f5a70934c3c4dfefa3bd2333",
+   "project_id": "audio_multimodal",
+   "topic_name": "Audio clip playback verification",
+   "card_line": "NEEDS_REVIEW",
+   "summary": "Two tutors report playback stuck buffering at 00:00, including one whose reload did not help; two tutors also report silence or inaudible narration in a separate thread. The team lead requires task IDs and a reproduction attempt before deciding whether an old workaround applies to the buffering reports.",
+   "severity": {
+    "level": "HIGH",
+    "assessment_status": "ASSESSED",
+    "rubric_version": "severity-rubric-v3-semantic-signals",
+    "rubric_content_sha256": "eccaa31a2ab84a0aa7c005216a92fc39681e1dd10107117344948235a76673f4",
+    "rubric_project_id": null,
+    "rubric_scope": "SHARED_DEFAULT",
+    "rationale": "Two distinct tutors report the same inability to start playback in the current batch, including persistence after a reload. This suggests broader disruption to audio evaluation, without establishing a batch-wide outage.",
+    "matched_signals": [
+     {
+      "level": "HIGH",
+      "signal_index": 3,
+      "signal_text": "Multiple distinct people or affected tasks reporting a comparable problem within the relevant project, batch, and time window, suggesting broader disruption or systemic labeling risk. Consider the number affected relative to the known active group when that information is available; do not require an explicit statement of widespread impact",
+      "support": "Two distinct tutors report buffering at 00:00 in the same thread within a minute; one reports that reloading does not restore playback.",
+      "evidence": [
+       {
+        "kind": "slack_message",
+        "project_id": "audio_multimodal",
+        "batch_id": "audio_batch_06",
+        "scope": "project",
+        "channel_id": "C_AUDIO_GENERAL",
+        "thread_id": "1790924545.000108",
+        "message_id": "1790924545.000108",
+        "document_id": null,
+        "version_id": null,
+        "authoring_document_id": null,
+        "authoring_version": null,
+        "section": null,
+        "chunk_id": null,
+        "candidate_group_id": null,
+        "member_id": "member_5a1a4e04becddf182c6e3ada",
+        "artifact": null,
+        "artifact_sha256": null,
+        "quote": null,
+        "note": "m:C_AUDIO_GENERAL:1790924545.000108"
+       },
+       {
+        "kind": "slack_message",
+        "project_id": "audio_multimodal",
+        "batch_id": "audio_batch_06",
+        "scope": "project",
+        "channel_id": "C_AUDIO_GENERAL",
+        "thread_id": "1790924545.000108",
+        "message_id": "1790924603.000113",
+        "document_id": null,
+        "version_id": null,
+        "authoring_document_id": null,
+        "authoring_version": null,
+        "section": null,
+        "chunk_id": null,
+        "candidate_group_id": null,
+        "member_id": "member_5a1a4e04becddf182c6e3ada",
+        "artifact": null,
+        "artifact_sha256": null,
+        "quote": null,
+        "note": "m:C_AUDIO_GENERAL:1790924603.000113"
+       }
+      ]
+     }
+    ],
+    "evidence": [
+     {
+      "kind": "slack_message",
+      "project_id": "audio_multimodal",
+      "batch_id": "audio_batch_06",
+      "scope": "project",
+      "channel_id": "C_AUDIO_GENERAL",
+      "thread_id": "1790924545.000108",
+      "message_id": "1790924545.000108",
+      "document_id": null,
+      "version_id": null,
+      "authoring_document_id": null,
+      "authoring_version": null,
+      "section": null,
+      "chunk_id": null,
+      "candidate_group_id": null,
+      "member_id": "member_5a1a4e04becddf182c6e3ada",
+      "artifact": null,
+      "artifact_sha256": null,
+      "quote": null,
+      "note": "m:C_AUDIO_GENERAL:1790924545.000108"
+     },
+     {
+      "kind": "slack_message",
+      "project_id": "audio_multimodal",
+      "batch_id": "audio_batch_06",
+      "scope": "project",
+      "channel_id": "C_AUDIO_GENERAL",
+      "thread_id": "1790924545.000108",
+      "message_id": "1790924603.000113",
+      "document_id": null,
+      "version_id": null,
+      "authoring_document_id": null,
+      "authoring_version": null,
+      "section": null,
+      "chunk_id": null,
+      "candidate_group_id": null,
+      "member_id": "member_5a1a4e04becddf182c6e3ada",
+      "artifact": null,
+      "artifact_sha256": null,
+      "quote": null,
+      "note": "m:C_AUDIO_GENERAL:1790924603.000113"
+     }
+    ],
+    "occurrence": {
+     "affected_reporters": {
+      "status": "LOWER_BOUND",
+      "count": 3,
+      "ids": [
+       "U010",
+       "U012",
+       "U020"
+      ],
+      "basis": "Distinct authors whose own cited message reports the problem; other participants are not counted.",
+      "evidence": [
+       {
+        "kind": "slack_message",
+        "project_id": "audio_multimodal",
+        "batch_id": "audio_batch_06",
+        "scope": "project",
+        "channel_id": "C_AUDIO_GENERAL",
+        "thread_id": "1790911816.000129",
+        "message_id": "1790911816.000129",
+        "document_id": null,
+        "version_id": null,
+        "authoring_document_id": null,
+        "authoring_version": null,
+        "section": null,
+        "chunk_id": null,
+        "candidate_group_id": null,
+        "member_id": "member_97c81f2e6e5454c2f2a5ee4b",
+        "artifact": null,
+        "artifact_sha256": null,
+        "quote": null,
+        "note": "m:C_AUDIO_GENERAL:1790911816.000129"
+       },
+       {
+        "kind": "slack_message",
+        "project_id": "audio_multimodal",
+        "batch_id": "audio_batch_06",
+        "scope": "project",
+        "channel_id": "C_AUDIO_GENERAL",
+        "thread_id": "1790924545.000108",
+        "message_id": "1790924545.000108",
+        "document_id": null,
+        "version_id": null,
+        "authoring_document_id": null,
+        "authoring_version": null,
+        "section": null,
+        "chunk_id": null,
+        "candidate_group_id": null,
+        "member_id": "member_5a1a4e04becddf182c6e3ada",
+        "artifact": null,
+        "artifact_sha256": null,
+        "quote": null,
+        "note": "m:C_AUDIO_GENERAL:1790924545.000108"
+       },
+       {
+        "kind": "slack_message",
+        "project_id": "audio_multimodal",
+        "batch_id": "audio_batch_06",
+        "scope": "project",
+        "channel_id": "C_AUDIO_GENERAL",
+        "thread_id": "1790924545.000108",
+        "message_id": "1790924603.000113",
+        "document_id": null,
+        "version_id": null,
+        "authoring_document_id": null,
+        "authoring_version": null,
+        "section": null,
+        "chunk_id": null,
+        "candidate_group_id": null,
+        "member_id": "member_5a1a4e04becddf182c6e3ada",
+        "artifact": null,
+        "artifact_sha256": null,
+        "quote": null,
+        "note": "m:C_AUDIO_GENERAL:1790924603.000113"
+       }
+      ]
+     },
+     "affected_tasks": {
+      "status": "UNKNOWN",
+      "count": null,
+      "ids": [],
+      "basis": null,
+      "evidence": []
+     },
+     "relevant_threads": [
+      {
+       "project_id": "audio_multimodal",
+       "batch_id": "audio_batch_06",
+       "channel_id": "C_AUDIO_GENERAL",
+       "thread_id": "1790911816.000129",
+       "member_id": "member_97c81f2e6e5454c2f2a5ee4b"
+      },
+      {
+       "project_id": "audio_multimodal",
+       "batch_id": "audio_batch_06",
+       "channel_id": "C_AUDIO_GENERAL",
+       "thread_id": "1790924545.000108",
+       "member_id": "member_5a1a4e04becddf182c6e3ada"
+      }
+     ],
+     "reporting_window": {
+      "start": "2026-10-02T03:30:16.000129+00:00",
+      "end": "2026-10-02T07:04:49.000339+00:00"
+     },
+     "historical_recurrence": {
+      "status": "FOUND",
+      "sources": [
+       {
+        "kind": "knowledge_source",
+        "project_id": "audio_multimodal",
+        "batch_id": "audio_batch_05",
+        "scope": "project",
+        "channel_id": null,
+        "thread_id": null,
+        "message_id": null,
+        "document_id": "knowledge_9d0d30c7f163464d5c5c7814b5d008534f5be75756ac2ebc5b3ca7c33b76f978",
+        "version_id": "version_d9b063c2c27537819203ff0271b833092e188df5854a74b9323e160edf3bfa6b",
+        "authoring_document_id": "audio-playback-trial-approval",
+        "authoring_version": "1.0",
+        "section": "Evidence available at the review",
+        "chunk_id": "chunk_1779c36a5e5cf3bb5191d7cd6e6b435a",
+        "candidate_group_id": null,
+        "member_id": null,
+        "artifact": null,
+        "artifact_sha256": null,
+        "quote": null,
+        "note": "k:audio-playback-trial-approval@1.0:1779c36a (HISTORY_ONLY; CURRENT)"
+       }
+      ],
+      "event_series_ids": []
+     },
+     "known_denominator": null,
+     "structural": {
+      "threads": 2,
+      "messages": 6,
+      "distinct_participants": 5,
+      "duplicate_threads_ignored": 0,
+      "duplicate_messages_ignored": 0,
+      "computed_from": "topic member threads (original Slack messages)",
+      "participants_are_not_affected_reporters": true
+     },
+     "semantic_identification": "ASSESSED"
+    },
+    "inherited_from": {
+     "level": "UNKNOWN",
+     "assessment_status": "UNASSESSED",
+     "assessment_deferred_to": "AGENT3",
+     "reason": "Agent 2 performs taxonomy only."
+    }
+   },
+   "severity_is_provisional": false,
+   "resolution_status": "UNRESOLVED",
+   "recommended_action": {
+    "action_type": "ESCALATE_ENGINEERING",
+    "draft_text": "Please investigate playback stuck buffering at 00:00 in audio batch 06. Two tutors report this symptom; one says reloading the item did not help. Task IDs and a reproduction attempt are still pending, along with browser/error state, whether the audio element loads, and whether another clip plays. We are treating unavailable playback as a tool incident, not as grounds alone for model-quality failure or content QN. This report does not establish that the old workaround applies or that playback has recovered.",
+    "scope_note": "This referral covers the buffering thread only, not the separate silence report. Applying the old workaround remains conditional on the task IDs and reproduction attempt requested in that thread.",
+    "label": "Report a technical issue to engineering",
+    "instruction": "Report the persistent 00:00 buffering to engineering as a tool incident, with the requested diagnostic details marked as pending.",
+    "rationale": "Current guidance calls for tool-incident reporting when playback never starts. Persistent buffering reported by two tutors warrants technical investigation rather than a content-quality judgment.",
+    "targets": [],
+    "essential_premise_ids": [
+     "claim:c3",
+     "claim:c4",
+     "claim:c5",
+     "claim:c6",
+     "claim:c7"
+    ],
+    "source": "DRAFT"
+   },
+   "reasoning": "What the evidence shows: A tutor reports that the clip is silent and says it is not a player error; this is the tutor's assessment, not a verified technical finding. A tutor reports being unable to hear narration in the silence thread and says verification of nonzero file duration is still needed. Two tutors report playback stuck buffering at 00:00; one reports that the player remains buffering after reloading the item. A QA tutor asks for the task reference, browser state, and whether the audio element loads in the buffering thread. The team lead requires task IDs and a reproduction attempt before deciding whether the old workaround applies in the buffering thread. The provided buffering thread does not contain the requested task IDs or reproduction result, so the inputs the team lead requested for the workaround decision remain missing. Current playback instructions require reporting a tool incident with the task ID when the player fails to load or start, capturing browser/error state and whether another clip plays, and not assigning model-quality failure or content-based QN solely because playback is unavailable. Old workarounds must be checked against current symptoms; handling guidance does not establish repair or evaluability. The current batch-06 announcement directs reporting the task ID, browser/error state, and whether another clip plays when the player never starts, treating unavailable playback as a tool incident rather than grounds alone for model-quality failure or content QN, and retaining reproduction details without assuming repair. Earlier batch-05 records describe repeated player failures at 00:00 and a limited one-reload trial ending August 28. The earlier approval records one reported restoration of playback and two tasks not yet retested; neither retrieved trial record establishes an outcome review or an extension to batch 06. Thread status, read from each thread's own messages: unresolved ×2. Agent 1's earlier labels (an input, not evidence): unresolved ×2.",
+   "supporting_sources": [
+    {
+     "kind": "knowledge_source",
+     "project_id": "audio_multimodal",
+     "batch_id": null,
+     "scope": "project",
+     "channel_id": null,
+     "thread_id": null,
+     "message_id": null,
+     "document_id": "knowledge_3057c26d60654a68d0b76c025ba216366dd48f3e97b64f5aae68364a45170b8a",
+     "version_id": "version_03e4c185c65cbfbe35dccab040cc429ac6887e3cb0edc4f52cb5ea5a56970a24",
+     "authoring_document_id": "audio-multimodal-instructions",
+     "authoring_version": "1.3",
+     "section": "Playback and unavailable content",
+     "chunk_id": "chunk_1c6df70e9f26fad116bae3d01bb66532",
+     "candidate_group_id": null,
+     "member_id": null,
+     "artifact": null,
+     "artifact_sha256": null,
+     "quote": null,
+     "note": "k:audio-multimodal-instructions@1.3:1c6df70e (CURRENT_GUIDANCE; CURRENT)"
+    },
+    {
+     "kind": "knowledge_source",
+     "project_id": "audio_multimodal",
+     "batch_id": "audio_batch_06",
+     "scope": "project",
+     "channel_id": null,
+     "thread_id": null,
+     "message_id": null,
+     "document_id": "knowledge_5ed9124870dd8eefcb7205ccae406532b720c5974c8e33d94d542f1be6fe1bbb",
+     "version_id": "version_c7bc2edadbceff5bc2c01006e29f074c0a8434cc5b94d61a6d1542d2a2b2aa38",
+     "authoring_document_id": null,
+     "authoring_version": null,
+     "section": null,
+     "chunk_id": "chunk_1c5249242466a37751b706dd99a73e9c",
+     "candidate_group_id": null,
+     "member_id": null,
+     "artifact": null,
+     "artifact_sha256": null,
+     "quote": null,
+     "note": "k:slack:C_AUDIO_ANNOUNCEMENTS:1790892000.000901:1c524924 (CURRENT_HANDLING (announcement verified for this topic); CURRENT)"
+    },
+    {
+     "kind": "knowledge_source",
+     "project_id": "audio_multimodal",
+     "batch_id": "audio_batch_05",
+     "scope": "project",
+     "channel_id": null,
+     "thread_id": null,
+     "message_id": null,
+     "document_id": "knowledge_9d0d30c7f163464d5c5c7814b5d008534f5be75756ac2ebc5b3ca7c33b76f978",
+     "version_id": "version_d9b063c2c27537819203ff0271b833092e188df5854a74b9323e160edf3bfa6b",
+     "authoring_document_id": "audio-playback-trial-approval",
+     "authoring_version": "1.0",
+     "section": "Evidence available at the review",
+     "chunk_id": "chunk_1779c36a5e5cf3bb5191d7cd6e6b435a",
+     "candidate_group_id": null,
+     "member_id": null,
+     "artifact": null,
+     "artifact_sha256": null,
+     "quote": null,
+     "note": "k:audio-playback-trial-approval@1.0:1779c36a (HISTORY_ONLY; CURRENT)"
+    },
+    {
+     "kind": "knowledge_source",
+     "project_id": "audio_multimodal",
+     "batch_id": "audio_batch_05",
+     "scope": "project",
+     "channel_id": null,
+     "thread_id": null,
+     "message_id": null,
+     "document_id": "knowledge_383d84eb3fd9f9835f99f9273bac91bfc703c61f5c0b2dd96d470f5e3ef40c8a",
+     "version_id": "version_c3caae5cf3af990b06b54e1a2fc331fbeac8d6ead502026bb6b5978b1623714d",
+     "authoring_document_id": "audio-playback-trial-post",
+     "authoring_version": "1.0",
+     "section": null,
+     "chunk_id": "chunk_d674dbe69aeaaef079b556a1a0334ad1",
+     "candidate_group_id": null,
+     "member_id": null,
+     "artifact": null,
+     "artifact_sha256": null,
+     "quote": null,
+     "note": "k:audio-playback-trial-post@1.0:d674dbe6 (HISTORY_ONLY; CURRENT)"
+    },
+    {
+     "kind": "slack_message",
+     "project_id": "audio_multimodal",
+     "batch_id": "audio_batch_06",
+     "scope": "project",
+     "channel_id": "C_AUDIO_GENERAL",
+     "thread_id": "1790911816.000129",
+     "message_id": "1790911816.000129",
+     "document_id": null,
+     "version_id": null,
+     "authoring_document_id": null,
+     "authoring_version": null,
+     "section": null,
+     "chunk_id": null,
+     "candidate_group_id": null,
+     "member_id": "member_97c81f2e6e5454c2f2a5ee4b",
+     "artifact": null,
+     "artifact_sha256": null,
+     "quote": null,
+     "note": "m:C_AUDIO_GENERAL:1790911816.000129"
+    },
+    {
+     "kind": "slack_message",
+     "project_id": "audio_multimodal",
+     "batch_id": "audio_batch_06",
+     "scope": "project",
+     "channel_id": "C_AUDIO_GENERAL",
+     "thread_id": "1790911816.000129",
+     "message_id": "1790911868.000113",
+     "document_id": null,
+     "version_id": null,
+     "authoring_document_id": null,
+     "authoring_version": null,
+     "section": null,
+     "chunk_id": null,
+     "candidate_group_id": null,
+     "member_id": "member_97c81f2e6e5454c2f2a5ee4b",
+     "artifact": null,
+     "artifact_sha256": null,
+     "quote": null,
+     "note": "m:C_AUDIO_GENERAL:1790911868.000113"
+    },
+    {
+     "kind": "slack_message",
+     "project_id": "audio_multimodal",
+     "batch_id": "audio_batch_06",
+     "scope": "project",
+     "channel_id": "C_AUDIO_GENERAL",
+     "thread_id": "1790924545.000108",
+     "message_id": "1790924545.000108",
+     "document_id": null,
+     "version_id": null,
+     "authoring_document_id": null,
+     "authoring_version": null,
+     "section": null,
+     "chunk_id": null,
+     "candidate_group_id": null,
+     "member_id": "member_5a1a4e04becddf182c6e3ada",
+     "artifact": null,
+     "artifact_sha256": null,
+     "quote": null,
+     "note": "m:C_AUDIO_GENERAL:1790924545.000108"
+    },
+    {
+     "kind": "slack_message",
+     "project_id": "audio_multimodal",
+     "batch_id": "audio_batch_06",
+     "scope": "project",
+     "channel_id": "C_AUDIO_GENERAL",
+     "thread_id": "1790924545.000108",
+     "message_id": "1790924603.000113",
+     "document_id": null,
+     "version_id": null,
+     "authoring_document_id": null,
+     "authoring_version": null,
+     "section": null,
+     "chunk_id": null,
+     "candidate_group_id": null,
+     "member_id": "member_5a1a4e04becddf182c6e3ada",
+     "artifact": null,
+     "artifact_sha256": null,
+     "quote": null,
+     "note": "m:C_AUDIO_GENERAL:1790924603.000113"
+    },
+    {
+     "kind": "slack_message",
+     "project_id": "audio_multimodal",
+     "batch_id": "audio_batch_06",
+     "scope": "project",
+     "channel_id": "C_AUDIO_GENERAL",
+     "thread_id": "1790924545.000108",
+     "message_id": "1790924639.000226",
+     "document_id": null,
+     "version_id": null,
+     "authoring_document_id": null,
+     "authoring_version": null,
+     "section": null,
+     "chunk_id": null,
+     "candidate_group_id": null,
+     "member_id": "member_5a1a4e04becddf182c6e3ada",
+     "artifact": null,
+     "artifact_sha256": null,
+     "quote": null,
+     "note": "m:C_AUDIO_GENERAL:1790924639.000226"
+    },
+    {
+     "kind": "slack_message",
+     "project_id": "audio_multimodal",
+     "batch_id": "audio_batch_06",
+     "scope": "project",
+     "channel_id": "C_AUDIO_GENERAL",
+     "thread_id": "1790924545.000108",
+     "message_id": "1790924689.000339",
+     "document_id": null,
+     "version_id": null,
+     "authoring_document_id": null,
+     "authoring_version": null,
+     "section": null,
+     "chunk_id": null,
+     "candidate_group_id": null,
+     "member_id": "member_5a1a4e04becddf182c6e3ada",
+     "artifact": null,
+     "artifact_sha256": null,
+     "quote": null,
+     "note": "m:C_AUDIO_GENERAL:1790924689.000339"
+    }
+   ],
+   "related_threads": [
+    {
+     "project_id": "audio_multimodal",
+     "batch_id": "audio_batch_06",
+     "channel_id": "C_AUDIO_GENERAL",
+     "thread_id": "1790911816.000129",
+     "member_id": "member_97c81f2e6e5454c2f2a5ee4b",
+     "permalink": null,
+     "display_reference": "1790911816.000129",
+     "label": "#audio-multimodal-general, 2026-10-02, started by a tutor: \"Clip is just silence, not a player error.\"",
+     "opening_text": "Clip is just silence, not a player error."
+    },
+    {
+     "project_id": "audio_multimodal",
+     "batch_id": "audio_batch_06",
+     "channel_id": "C_AUDIO_GENERAL",
+     "thread_id": "1790924545.000108",
+     "member_id": "member_5a1a4e04becddf182c6e3ada",
+     "permalink": null,
+     "display_reference": "1790924545.000108",
+     "label": "#audio-multimodal-general, 2026-10-02, started by a tutor: \"Clip gets stuck buffering at 00:00.\"",
+     "opening_text": "Clip gets stuck buffering at 00:00."
+    }
+   ],
+   "confidence": 0.92,
+   "confidence_band": "HIGH",
+   "needs_review_reasons": [
+    {
+     "code": "HIGH_SEVERITY",
+     "detail": "Assessed HIGH under the shared default rubric.",
+     "obligation_ids": [],
+     "evidence": []
+    }
+   ],
+   "inherited_flags": [],
+   "checks": {
+    "grounding": "PASSED",
+    "temporal_conflict": "NONE_FOUND",
+    "open_confirmation": "NONE"
+   },
+   "lineage": {
+    "agent3_run_id": "agent3overnight_bdc099a76ee76bdc391050df2aded225",
+    "handoff_contract": "agent2-taxonomy-handoff-v2",
+    "agent2_export_sha256": "6f1f56bf5a5b1f02287d7ac958dc205c05cc9e0ea3e6d5f3fdd7279da0c9e1e7",
+    "agent2_schema_version": 8,
+    "candidate_group_id": "cluster_e6a79dfad226e738",
+    "topic_id": "cluster_e6a79dfad226e738/topic_1",
+    "member_ids": [
+     "member_97c81f2e6e5454c2f2a5ee4b",
+     "member_5a1a4e04becddf182c6e3ada"
+    ],
+    "project_id": "audio_multimodal",
+    "batch_id": "audio_batch_06"
+   },
+   "review_notes": [
+    "Severity is high under the team rubric."
+   ],
+   "details": [
+    "In the silence thread, a tutor says the clip is silent rather than a player error, while a tutor who cannot hear narration says the file's nonzero duration still needs verification.",
+    "A QA tutor asks for the task reference, browser state, and whether the audio element loads in the buffering thread.",
+    "The provided buffering thread contains no task IDs or reproduction result after the team lead's request.",
+    "Earlier batch-05 records describe similar 00:00 playback failures and a limited reload trial that expired on August 28; the retrieved records do not show its outcome review."
+   ],
+   "next_step": {
+    "status": "ACTION_RECOMMENDED",
+    "rationale": "Current guidance calls for tool-incident reporting when playback never starts. Persistent buffering reported by two tutors warrants technical investigation rather than a content-quality judgment.",
+    "explanation": null
+   },
+   "briefing": {
+    "status": "IN_BRIEFING",
+    "relevance": "PROJECT",
+    "label_id": "rel_cluster_e6a79dfad226e738_topic_1",
+    "label_source": "DEVELOPER_AUDIT_2026-11-05 (prepared by the coding assistant from the saved source threads; not confirmed by a team lead)",
+    "kept_because": []
+   },
+   "outstanding_step": null,
+   "derivation": {
+    "policy_version": "briefing-routing-v1",
+    "provenance": "OFFLINE_POLICY_APPLICATION",
+    "text_provenance": "PARENT_RUN_JUDGMENTS",
+    "parent_run": "data/experiments/threadsense_full_v1/stages/agent3/overnight_run",
+    "parent_run_instance": "4a48d67e4d8322cf6912e26032663b41fd5f0447103ed8081e5581b3d3183ff8",
+    "parent_card_id": "card_4a811e2eff00ccb0ab08609d99ce283d",
+    "parent_card_sha256": "c17f8d3a0071a66350c125b6e9ec867d016406d8682234382c2ef35ba7d912f8",
+    "parent_contract_version": "agent3-advice-card-v4",
+    "changes": []
+   }
+  },
+  "review_items": [],
+  "coverage": {
+   "group_members_outside_this_card": [],
+   "uncarried_obligations": []
+  },
+  "budget": {
+   "consumed": {
+    "retrieval_calls": 1,
+    "model_calls": 2
+   },
+   "limits": {
+    "model_calls_per_topic": 4,
+    "model_calls_total": 28,
+    "retrieval_calls_per_topic": 6,
+    "retrieval_calls_total": 42
+   }
+  },
+  "diagnostics": []
+ },
+ "derivation": {
+  "policy_version": "briefing-routing-v1",
+  "parent_topic_file": "data/experiments/threadsense_full_v1/stages/agent3/overnight_run/topics/topic__cluster_e6a79dfad226e738__topic_1.json",
+  "parent_topic_sha256": "cb65b16bb3ef85c348fc85f9184f8db7f05c2a98c2b757c0e8aae9830a64d232",
+  "replaced": [
+   "result.card",
+   "workflow.card_id",
+   "workflow.card_line"
+  ]
+ }
+}

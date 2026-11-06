@@ -19,7 +19,7 @@ uv run --locked --extra dev python -m pytest tests/test_x.py   # single file
 ```
 
 - Always pass a **fresh** `--basetemp .cache/pytest-<name>`: pytest wipes it at start.
-- Full suite: 1107 tests, ~13 min, all expected to pass. Intermittent `WinError 5` on `os.replace` is a Windows file lock (see Known issues), not a code failure.
+- Full suite: 1139 tests, ~15 min, all expected to pass. Intermittent `WinError 5` on `os.replace` is a Windows file lock (see Known issues), not a code failure.
 - No linter/formatter configured. No build step beyond the editable install.
 - UI tests: `npm --prefix web run build` then `npm --prefix web run test:ui` (Playwright, system Chrome; temp output
   in `TS_UI_TMP`, default `D:/tsb/ui-<time>`). Frontend deps are pinned in `web/package.json` + `package-lock.json`.
@@ -149,6 +149,16 @@ Full live run 2026-11-05 `data/experiments/threadsense_full_v1/` (fresh Agent 1 
 937 requests, $15.32 of a $39 ceiling): 177/178 accepted by Agent 1 (1 AUTHORITY_INELIGIBLE rejection recorded as
 unfinished), 76 groups, 81 cards (61/8/12), 37 queue items, accounting COMPLETE; network-disabled replay
 `threadsense_full_v1_replay/` (0 calls, 89/89 artifacts semantically identical). Report `ACCEPTANCE.md` in the run dir.
+Briefing repair 2026-11-05 (offline): briefing-routing-v1 (`agents/briefing_policy.py`, AdviceCard v5) separates
+briefing relevance from recommendation availability; OBSERVATION needs a supported no-action reason (root cause:
+`assemble_card` used Observation as the fallthrough, now fixed for new runs); derived run
+`data/experiments/threadsense_full_v1_briefing_v1/` (`scripts/derive_briefing_repair.py`; 5 Observation -> Needs Review,
+2 greetings out of the brief, 79 in the brief; relevance labels `data/evaluation/briefing_relevance_labels_v1.json`,
+developer audit, unconfirmed). The parent run is unchanged.
+Closeout 2026-11-06 (offline): briefing-routing-v2 (labels `briefing_relevance_labels_v2.json`: audited, input-bound,
+no automatic relevance classifier; ROUTINE_ADMIN keeps an open status in history, ROUTINE_NOTICE checked against the saved
+cutoff, audit evidence must be SUPPORTED); derived run `threadsense_full_v1_briefing_v2/` (77 in the brief 66/8/3, 4 in
+history: 2 greetings, avatar, tie threshold); "Pending follow-up" UI wording. v1 labels and run kept unchanged.
 Agent 1 verification of a new run receives a derived discussion view (`pipeline.discussion_view`) through the runner's
 module constants; Agent 2 `execute_batch` refuses existing dirs, so its resume uses a new attempt dir with cache hits.
 - Agent 3 input: `data/processed/agent2_handoff_v2_projection/` (schema 8 / handoff v2, a zero-call projection of the v7 release; load with `advice_inputs.load_effective_view`): 81 groups / 79 topics / 161 assigned + 17 unassigned / 41 + 8 announcement-route obligations / 3 carried cautions. The frozen v7 release (handoff v1: 90 / 97 / 49 / 3 / 41) is unchanged.

@@ -491,7 +491,109 @@ class AdviceCardV4(AdviceCardV3):
         return self
 
 
-CARD_CONTRACTS = {'agent3-advice-card-v3': AdviceCardV3, 'agent3-advice-card-v4': AdviceCardV4}
+# v5 review codes: a card without a supported next step stays in review under the reason that keeps it there.
+ReviewCodeV5 = Literal['LOW_CONFIDENCE', 'HIGH_SEVERITY', 'TEMPORAL_CONFLICT', 'GROUNDING_FAILURE', 'GROUNDING_NOT_RUN',
+                       'OPEN_CONFIRMATION', 'INHERITED_FLAG', 'OTHER', 'OPEN_FOLLOW_UP', 'NO_ACTION_NOT_SUPPORTED',
+                       'RECOMMENDATION_WITHHELD', 'NO_RECOMMENDATION']
+# The review code each unsupported next-step state requires on a v5 card.
+STEP_REVIEW_CODES = {'NO_INTERVENTION_PROPOSED': 'NO_ACTION_NOT_SUPPORTED', 'RECOMMENDATION_WITHHELD': 'RECOMMENDATION_WITHHELD',
+                     'NO_RECOMMENDATION_AVAILABLE': 'NO_RECOMMENDATION'}
+OutstandingKind = Literal['WAITING_ON_REQUESTED_STEP', 'THREAD_STILL_OPEN', 'OPEN_QUESTION', 'RECOMMENDATION_NEEDS_REVIEW',
+                          'NO_ACTION_CHOICE_NEEDS_REVIEW', 'NO_RECOMMENDATION', 'MONITORING']
+BriefingStatus = Literal['IN_BRIEFING', 'EXCLUDED_SOCIAL', 'HISTORY_ROUTINE']
+# ROUTINE_ADMIN and ROUTINE_NOTICE were added with briefing-routing-v2; v1 cards use the first four values only.
+Relevance = Literal['PROJECT', 'MIXED', 'SOCIAL_ONLY', 'ROUTINE_NO_FINDING', 'ROUTINE_ADMIN', 'ROUTINE_NOTICE', 'UNLABELLED']
+EXCLUDING_RELEVANCE = {'EXCLUDED_SOCIAL': ('SOCIAL_ONLY',),
+                       'HISTORY_ROUTINE': ('ROUTINE_NO_FINDING', 'ROUTINE_ADMIN', 'ROUTINE_NOTICE')}
+
+
+class ReviewReasonV5(ReviewReason):
+    code: ReviewCodeV5
+
+
+class BriefingEligibility(Frozen):
+    """Whether the card belongs in the morning brief (briefing_policy). Exclusion only moves a card to history: the card,
+    its sources, members and processing records stay, and an excluded card can carry no review reason or obligation."""
+    status: BriefingStatus
+    relevance: Relevance
+    label_id: str | None = None
+    label_source: str | None = None
+    kept_because: list[str] = Field(default_factory=list)  # Why an excluding relevance label did not apply.
+    basis: str | None = None  # The label's audit reason (v2 labels).
+    evidence_statement_ids: list[str] = Field(default_factory=list)  # SUPPORTED statements the audit relied on (v2).
+
+
+class OutstandingStep(Frozen):
+    """What still needs attention when the card shows no supported action. details are saved statements the final
+    grounding judged SUPPORTED (statement_ids), reused verbatim, or the card's fixed next-step explanation."""
+    kind: OutstandingKind
+    label: Text
+    details: list[str] = Field(default_factory=list)
+    statement_ids: list[str] = Field(default_factory=list)
+    text_source: Literal['SUPPORTED_STATEMENTS', 'FIXED_EXPLANATION']
+
+    @model_validator(mode='after')
+    def sourced(self):
+        if self.text_source == 'SUPPORTED_STATEMENTS' and not (self.statement_ids and self.details):
+            raise ValueError('An outstanding step built from statements names them and shows their text.')
+        return self
+
+
+class CardChange(Frozen):
+    field: Text
+    before: Any = None
+    after: Any = None
+    reason: Text
+
+
+class CardDerivation(Frozen):
+    """A card re-routed offline from a saved run. Model text and verdicts are the parent's live judgments; only routing
+    and presentation fields change (listed in changes). The card ID is new, so no decision on the parent card applies."""
+    policy_version: Text
+    provenance: Literal['OFFLINE_POLICY_APPLICATION'] = 'OFFLINE_POLICY_APPLICATION'
+    text_provenance: Literal['PARENT_RUN_JUDGMENTS'] = 'PARENT_RUN_JUDGMENTS'
+    parent_run: Text
+    parent_run_instance: Text
+    parent_card_id: Annotated[str, StringConstraints(pattern=r'^card_[0-9a-f]{32}$')]
+    parent_card_sha256: Text
+    parent_contract_version: Text
+    changes: list[CardChange] = Field(default_factory=list)
+
+
+class AdviceCardV5(AdviceCardV4):
+    """v5: briefing relevance is separate from recommendation availability. OBSERVATION needs a supported NO_ACTION
+    reason; a card whose next step is withheld, unproven or unavailable stays in NEEDS_REVIEW under the matching reason
+    and states its outstanding step. Social or routine cards can leave the briefing only with no review reason, flag or
+    outstanding step."""
+    contract_version: Literal['agent3-advice-card-v5'] = 'agent3-advice-card-v5'
+    needs_review_reasons: list[ReviewReasonV5] = Field(default_factory=list)
+    briefing: BriefingEligibility
+    outstanding_step: OutstandingStep | None = None
+    derivation: CardDerivation | None = None
+
+    @model_validator(mode='after')
+    def eligible(self):
+        status, codes = self.next_step.status, {r.code for r in self.needs_review_reasons}
+        if self.card_line == 'OBSERVATION' and status != 'NO_ACTION_NEEDED':
+            raise ValueError(f'OBSERVATION needs a supported no-action reason; the next step is {status}.')
+        required = STEP_REVIEW_CODES.get(status)
+        if required and required not in codes:
+            raise ValueError(f'A {status} card needs the {required} review reason.')
+        if required and self.outstanding_step is None:
+            raise ValueError('A card without a supported next step states its outstanding step.')
+        if self.briefing.status != 'IN_BRIEFING':
+            if self.briefing.relevance not in EXCLUDING_RELEVANCE[self.briefing.status]:
+                raise ValueError(f'{self.briefing.status} needs relevance {EXCLUDING_RELEVANCE[self.briefing.status]}.')
+            if self.card_line != 'OBSERVATION' or self.needs_review_reasons or self.inherited_flags:
+                raise ValueError('Only an observation with no review reason or flag leaves the briefing.')
+            # A routine administrative exchange keeps its open status in history; any other outstanding step stays.
+            if self.outstanding_step and not (self.briefing.relevance == 'ROUTINE_ADMIN' and self.outstanding_step.kind == 'MONITORING'):
+                raise ValueError('Only a routine administrative card can leave the briefing with an open thread.')
+        return self
+
+
+CARD_CONTRACTS = {'agent3-advice-card-v3': AdviceCardV3, 'agent3-advice-card-v4': AdviceCardV4,
+                  'agent3-advice-card-v5': AdviceCardV5}
 
 
 def validate_card(raw):

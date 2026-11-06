@@ -8,14 +8,15 @@ export const REPO = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '
 let port = 8800 + Math.floor(Math.random() * 100)
 
 /** A dashboard server on a fresh decision store outside the repository. restart() keeps the same store. */
-export async function startServer(name) {
+export async function startServer(name, extraArgs = []) {
   const dir = `${process.env.TS_UI_TMP}/${name}-${Date.now()}`
   mkdirSync(dir, { recursive: true })
   const server = { dir, db: `${dir}/store.sqlite3`, port: port++, proc: null }
   server.url = `http://127.0.0.1:${server.port}`
   server.start = async () => {
     server.proc = spawn('uv', ['run', '--locked', 'python', 'scripts/run_dashboard.py', '--port', String(server.port),
-      '--include-test-fixtures', '--decision-db', server.db, ...(process.env.TS_UI_ORIGIN ? ['--decision-origin', process.env.TS_UI_ORIGIN] : [])],
+      '--include-test-fixtures', '--decision-db', server.db, ...(process.env.TS_UI_ORIGIN ? ['--decision-origin', process.env.TS_UI_ORIGIN] : []),
+      ...extraArgs],
     { cwd: REPO, stdio: 'ignore', windowsHide: true })
     for (let i = 0; i < 120; i++) {
       try { if ((await fetch(`${server.url}/api/health`)).ok) return } catch { /* not up yet */ }

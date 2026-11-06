@@ -99,10 +99,17 @@ function textSources(card, alternatives, actionType) {
   return out
 }
 
-export default function DecisionPanel({ runKey, card, alternatives, allowed, actor, state, onChanged }) {
+/** Why a card offers no decision. "Observations need no decision" only for an observation with a supported no-action reason. */
+function noDecisionText(card, presentation) {
+  if (presentation?.briefing && presentation.briefing.status !== 'IN_BRIEFING') return 'Not in this brief: kept in history, no decision needed.'
+  if (card.card_line === 'OBSERVATION' && presentation?.next_step?.status === 'NO_ACTION_NEEDED') return 'Observations need no decision.'
+  return 'No decision options on this card. It has no supported no-action reason; treat it as needing review.'
+}
+
+export default function DecisionPanel({ runKey, card, alternatives, allowed, actor, state, onChanged, presentation }) {
   const head = state?.head || null
   const [revising, setRevising] = useState(false)
-  if (!allowed.length) return <div className="text-xs text-slate-500">Observations need no decision.</div>
+  if (!allowed.length) return <div className="text-xs text-slate-500" data-testid="no-decision">{noDecisionText(card, presentation)}</div>
   if (head && !revising) {
     const older = state.decisions.slice(0, -1).reverse()
     return (

@@ -1,0 +1,1996 @@
+{
+ "work_item": {
+  "candidate_group_id": "cluster_797c816fbcc6ccc1",
+  "project_id": "audio_multimodal",
+  "batch_id": "audio_batch_06",
+  "work_id": "topic:cluster_797c816fbcc6ccc1/topic_1",
+  "kind": "TOPIC",
+  "topic_id": "cluster_797c816fbcc6ccc1/topic_1",
+  "topic_name": "Timestamp alignment for inconsistent defect labels",
+  "member_ids": [
+   "member_2157ec41b491fc22d0831ccd"
+  ],
+  "pilot_scenario": null,
+  "in_scope": true
+ },
+ "workflow": {
+  "outcome": "CARD",
+  "card_id": "card_0a2bbf3bfda155ca37c14d174654f95f",
+  "card_line": "NEEDS_REVIEW",
+  "grounding": "FAILED",
+  "stage_failures": [],
+  "semantic_source": "LIVE_MODEL"
+ },
+ "result": {
+  "scenario": {
+   "id": "topic:cluster_797c816fbcc6ccc1/topic_1",
+   "candidate_group_id": "cluster_797c816fbcc6ccc1",
+   "focus": "Timestamp alignment for inconsistent defect labels",
+   "topic_id": "cluster_797c816fbcc6ccc1/topic_1"
+  },
+  "status": "CARD",
+  "topic": {
+   "project_id": "audio_multimodal",
+   "batch_id": "audio_batch_06",
+   "candidate_group_id": "cluster_797c816fbcc6ccc1",
+   "topic_id": "cluster_797c816fbcc6ccc1/topic_1",
+   "topic_label": "Timestamp alignment for inconsistent defect labels",
+   "projection_gap": null,
+   "as_of": "2026-10-02T12:00:00Z",
+   "member_ids": [
+    "member_2157ec41b491fc22d0831ccd"
+   ],
+   "initial_query": "Timestamp alignment for inconsistent defect labels. Can both reviewers mark the exact timestamp where the defect occurs?"
+  },
+  "retrieval_trace": [
+   {
+    "step": 1,
+    "purpose": "initial_current_guidance",
+    "gap_id": null,
+    "query": "Timestamp alignment for inconsistent defect labels. Can both reviewers mark the exact timestamp where the defect occurs?",
+    "source_types": [
+     "guideline",
+     "faq",
+     "decision",
+     "announcement"
+    ],
+    "version_mode": "current",
+    "as_of": "2026-10-02T12:00:00Z",
+    "batch": "audio_batch_06",
+    "top_k": 5,
+    "status": "DONE",
+    "mode": "hybrid",
+    "use_mmr": true,
+    "mmr_lambda": 0.9,
+    "result_ids": [
+     "k:audio-multimodal-faq@1.1:e9bcf43a",
+     "k:audio-repeat-observation-review@1.0:ae0550d0",
+     "k:audio-clipping-calibration-approval@1.0:d0b0c638",
+     "k:audio-multimodal-instructions@1.3:eb85357a",
+     "k:audio-multimodal-instructions@1.3:7a5ab59d"
+    ],
+    "new_evidence_ids": [
+     "k:audio-multimodal-faq@1.1:e9bcf43a",
+     "k:audio-repeat-observation-review@1.0:ae0550d0",
+     "k:audio-clipping-calibration-approval@1.0:d0b0c638",
+     "k:audio-multimodal-instructions@1.3:eb85357a",
+     "k:audio-multimodal-instructions@1.3:7a5ab59d"
+    ],
+    "eligible_chunks": 27,
+    "added": []
+   }
+  ],
+  "retrieval_notes": {
+   "withheld_by_version": [],
+   "version_diagnostics": []
+  },
+  "follow_ups": [],
+  "unfilled_gaps": [
+   {
+    "gap_id": "g1",
+    "need": "OTHER",
+    "description": "The two task identifiers and both reviewers' marked defect timestamps are still needed to compare the reported labels. These inputs must come from the reviewers or task records rather than a guidance search.",
+    "follow_up": null
+   }
+  ],
+  "model_calls": [
+   {
+    "stage": "draft",
+    "schema": "AdvisorDraft",
+    "agent1_context": {
+     "sha256": "6f49bd5f5297e4d7c449031255926b7a8c5b36849c01954494be1fd3073cd690",
+     "boundary": "IN_HTTP_BODY"
+    },
+    "raw": "{\n  \"contract_version\": \"agent3-advisor-draft-v11\",\n  \"summary\": null,\n  \"summary_sentences\": [\n    {\n      \"text\": \"A tutor reports that the same background pop received a minor label on one task and a major label on another.\",\n      \"support_claim_ids\": [\"c1\"],\n      \"depends_on\": []\n    },\n    {\n      \"text\": \"A QA tutor asks both reviewers to mark the exact defect timestamp; the thread contains no response with those timestamps.\",\n      \"support_claim_ids\": [\"c2\", \"c3\"],\n      \"depends_on\": []\n    }\n  ],\n  \"detail_sentences\": [\n    {\n      \"text\": \"The tutor's report does not identify the two tasks, so the examples still need to be identified for comparison.\",\n      \"support_claim_ids\": [\"c3\"],\n      \"depends_on\": [],\n      \"summary_depends_on\": [1]\n    },\n    {\n      \"text\": \"An earlier clipping review records approval for a focused comparison of affected spans and recoverable words, but records no session outcome and establishes no new severity threshold.\",\n      \"support_claim_ids\": [\"c5\"],\n      \"depends_on\": [],\n      \"summary_depends_on\": []\n    }\n  ],\n  \"reasoning\": \"The reported difference in labels warrants a focused comparison, not a conclusion that either label is wrong. The QA tutor's timestamp request remains unanswered in the supplied thread. Current clipping guidance and the earlier clipping review provide context, but neither establishes that this background pop must receive a particular label. The proposed step gathers the examples needed for comparison without changing policy or treating the QA tutor's request as an instruction with project-wide authority.\",\n  \"claims\": [\n    {\n      \"claim_id\": \"c1\",\n      \"kind\": \"INCIDENT_FACT\",\n      \"text\": \"A tutor reports that the same background pop received a minor label on one task and a major label on another.\",\n      \"evidence_ids\": [\"m:C_AUDIO_GENERAL:1790929125.000118\"],\n      \"attributions\": [\n        {\n          \"user_id\": \"U020\",\n          \"relation\": \"AUTHOR\",\n          \"evidence_id\": \"m:C_AUDIO_GENERAL:1790929125.000118\"\n        }\n      ],\n      \"quote\": \"Same background pop got minor on one task and major on another.\",\n      \"quote_kind\": \"VERBATIM\",\n      \"material\": true\n    },\n    {\n      \"claim_id\": \"c2\",\n      \"kind\": \"INCIDENT_FACT\",\n      \"text\": \"A QA tutor asks whether both reviewers can mark the exact timestamp where the defect occurs.\",\n      \"evidence_ids\": [\"m:C_AUDIO_GENERAL:1790929179.000113\"],\n      \"attributions\": [\n        {\n          \"user_id\": \"U008\",\n          \"relation\": \"AUTHOR\",\n          \"evidence_id\": \"m:C_AUDIO_GENERAL:1790929179.000113\"\n        }\n      ],\n      \"quote\": \"Can both reviewers mark the exact timestamp where the defect occurs?\",\n      \"quote_kind\": \"VERBATIM\",\n      \"material\": true\n    },\n    {\n      \"claim_id\": \"c3\",\n      \"kind\": \"INFERENCE\",\n      \"text\": \"The supplied thread contains neither task identifiers for the tutor's two examples nor a response providing the timestamps requested by a QA tutor.\",\n      \"evidence_ids\": [\n        \"m:C_AUDIO_GENERAL:1790929125.000118\",\n        \"m:C_AUDIO_GENERAL:1790929179.000113\"\n      ],\n      \"attributions\": [\n        {\n          \"user_id\": \"U020\",\n          \"relation\": \"AUTHOR\",\n          \"evidence_id\": \"m:C_AUDIO_GENERAL:1790929125.000118\"\n        },\n        {\n          \"user_id\": \"U008\",\n          \"relation\": \"AUTHOR\",\n          \"evidence_id\": \"m:C_AUDIO_GENERAL:1790929179.000113\"\n        }\n      ],\n      \"quote\": null,\n      \"quote_kind\": \"PARAPHRASE\",\n      \"material\": true\n    },\n    {\n      \"claim_id\": \"c4\",\n      \"kind\": \"SOURCE_FACT\",\n      \"text\": \"The current scoring FAQ describes brief, localized clipping with clear speech as minor and asks for QA review of intelligibility and scope when artifacts are continuous or their impact is unclear; it does not supply a blanket severity rule for background pops.\",\n      \"evidence_ids\": [\"k:audio-multimodal-faq@1.1:e9bcf43a\"],\n      \"attributions\": [],\n      \"quote\": null,\n      \"quote_kind\": \"PARAPHRASE\",\n      \"material\": true\n    },\n    {\n      \"claim_id\": \"c5\",\n      \"kind\": \"HISTORY\",\n      \"text\": \"The earlier clipping review records approval for a focused comparison using affected spans and recoverable words, with scheduling pending and no outcome observed; it explicitly establishes no new clipping threshold and does not resolve later examples.\",\n      \"evidence_ids\": [\"k:audio-clipping-calibration-approval@1.0:d0b0c638\"],\n      \"attributions\": [],\n      \"quote\": null,\n      \"quote_kind\": \"PARAPHRASE\",\n      \"material\": true\n    }\n  ],\n  \"gaps\": [\n    {\n      \"gap_id\": \"g1\",\n      \"need\": \"OTHER\",\n      \"description\": \"The two task identifiers and both reviewers' marked defect timestamps are still needed to compare the reported labels. These inputs must come from the reviewers or task records rather than a guidance search.\",\n      \"follow_up\": null\n    }\n  ],\n  \"evidence_sufficiency\": \"SUFFICIENT\",\n  \"proposed_action\": {\n    \"action_type\": \"POST_ALIGNMENT\",\n    \"intervention_need\": {\n      \"kind\": \"OPERATIONAL_PROBLEM\",\n      \"statement\": \"A tutor reports different severity labels for the same background pop, and the QA tutor's request for timestamps has not yet produced examples that can be compared.\",\n      \"evidence_ids\": [\n        \"m:C_AUDIO_GENERAL:1790929125.000118\",\n        \"m:C_AUDIO_GENERAL:1790929179.000113\"\n      ]\n    },\n    \"instruction\": \"Ask both reviewers to identify the two tasks and mark the exact defect timestamps so the reported severity labels can be compared.\",\n    \"rationale\": \"A focused request follows up on the QA tutor's unanswered question without assuming either label is wrong or introducing a new severity threshold.\",\n    \"draft_text\": \"For the background pop reported as minor on one task and major on another, please identify the two tasks and have both reviewers mark the exact timestamp where the defect occurs. A QA tutor has already asked for these timestamps. Please provide the marked examples so we can compare the labels before drawing a conclusion about severity.\",\n    \"scope_note\": \"Limit this request to the two reported examples; it does not set a general rule for background-pop severity.\",\n    \"support_claim_ids\": [\"c1\", \"c2\", \"c3\"],\n    \"targets\": [],\n    \"context_claim_ids\": [\"c4\", \"c5\"]\n  },\n  \"severity\": {\n    \"level\": \"MEDIUM\",\n    \"rationale\": \"A tutor reports a minor-versus-major scoring difference for the same background pop. That suggests a contained QA consistency problem, without establishing a batch-wide issue or which label is correct.\",\n    \"signals\": [\n      {\n        \"level\": \"MEDIUM\",\n        \"signal_index\": 1,\n        \"signal_text\": \"Conflicting interpretations that affect, or are reasonably likely to affect, how tasks are scored or handled\",\n        \"support\": \"A tutor reports that the same background pop received different severity labels on two tasks.\",\n        \"evidence_ids\": [\"m:C_AUDIO_GENERAL:1790929125.000118\"]\n      }\n    ],\n    \"affected_reporters\": [\n      {\n        \"author_id\": \"U020\",\n        \"evidence_id\": \"m:C_AUDIO_GENERAL:1790929125.000118\"\n      }\n    ],\n    \"recurrence\": \"NOT_CHECKED\",\n    \"recurrence_evidence_ids\": [],\n    \"reported_recurrence_evidence_ids\": []\n  },\n  \"confidence\": 0.9,\n  \"open_confirmation\": \"NONE\",\n  \"open_question\": null,\n  \"open_question_evidence_ids\": [],\n  \"source_conflicts\": [],\n  \"announcement_assessments\": [],\n  \"resolution\": [\n    {\n      \"member_id\": \"member_2157ec41b491fc22d0831ccd\",\n      \"state\": \"UNRESOLVED\",\n      \"evidence_ids\": [\n        \"m:C_AUDIO_GENERAL:1790929125.000118\",\n        \"m:C_AUDIO_GENERAL:1790929179.000113\"\n      ],\n      \"basis\": \"The tutor reports inconsistent labels, and the only reply is a QA tutor's request for timestamps. The supplied thread contains no comparison, severity conclusion or response supplying the requested timestamps.\"\n    }\n  ],\n  \"coverage\": [\n    {\n      \"need\": \"CURRENT_GUIDANCE\",\n      \"status\": \"COVERED\",\n      \"evidence_ids\": [\"k:audio-multimodal-faq@1.1:e9bcf43a\"],\n      \"note\": \"The current scoring FAQ provides clipping context but does not establish a blanket rule for background pops. The proposed request does not depend on assigning either severity label.\",\n      \"gap_id\": null\n    },\n    {\n      \"need\": \"ANNOUNCEMENTS\",\n      \"status\": \"NOT_APPLICABLE\",\n      \"evidence_ids\": [],\n      \"note\": \"No announcement is needed to support a focused follow-up on the QA tutor's request; the proposal does not assert an announcement-based procedure or designated route.\",\n      \"gap_id\": null\n    },\n    {\n      \"need\": \"PRIOR_DECISIONS\",\n      \"status\": \"COVERED\",\n      \"evidence_ids\": [\"k:audio-clipping-calibration-approval@1.0:d0b0c638\"],\n      \"note\": \"The earlier clipping review records an approved comparison session, pending scheduling, with no observed outcome or new threshold. Its completion is not needed before requesting the current examples.\",\n      \"gap_id\": null\n    },\n    {\n      \"need\": \"MEMBER_QUESTIONS\",\n      \"status\": \"COVERED\",\n      \"evidence_ids\": [\n        \"m:C_AUDIO_GENERAL:1790929125.000118\",\n        \"m:C_AUDIO_GENERAL:1790929179.000113\"\n      ],\n      \"note\": \"The supplied thread shows the tutor's scoring report and the QA tutor's unanswered timestamp request, with no reference to an earlier workaround.\",\n      \"gap_id\": null\n    }\n  ],\n  \"review_note\": null,\n  \"action_choice\": null\n}",
+    "raw_sha256": "4cfea12fce07f34094a610663696fd8f9b17bbe61aeff38694a90ff4c93140d5",
+    "http_requests": {
+     "sent": 1,
+     "blocked": 0,
+     "hosts": [
+      "api.openai.com"
+     ],
+     "responses": [
+      {
+       "status_code": 200,
+       "seconds": 40.902,
+       "model": "gpt-6.1-sol",
+       "usage": {
+        "prompt_tokens": 11230,
+        "completion_tokens": 2790,
+        "total_tokens": 14020,
+        "prompt_tokens_details": {
+         "cached_tokens": 0,
+         "cache_write_tokens": 11227,
+         "audio_tokens": 0
+        },
+        "completion_tokens_details": {
+         "reasoning_tokens": 512,
+         "audio_tokens": 0,
+         "accepted_prediction_tokens": 0,
+         "rejected_prediction_tokens": 0
+        }
+       },
+       "finish_reasons": [
+        "stop"
+       ]
+      }
+     ],
+     "input_tokens": 11236,
+     "refused": null,
+     "charged_usd": 0.05036
+    },
+    "input_tokens_estimate": 11236,
+    "status": "OK"
+   },
+   {
+    "stage": "grounding",
+    "schema": "GroundingJudgment",
+    "raw": "{\n  \"contract_version\": \"agent3-grounding-judgment-v5\",\n  \"verdicts\": [\n    {\n      \"statement_id\": \"claim:c1\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The tutor reports the two different severity labels, and the quoted text matches the message exactly.\"\n    },\n    {\n      \"statement_id\": \"claim:c2\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The cited author is a QA tutor and asks precisely this question. The quotation is exact.\"\n    },\n    {\n      \"statement_id\": \"claim:c3\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The complete supplied thread contains only the report and the timestamp request; neither task identifiers nor a response supplying timestamps appears.\"\n    },\n    {\n      \"statement_id\": \"claim:c4\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The current FAQ states both clipping provisions and contains no blanket background-pop severity rule.\"\n    },\n    {\n      \"statement_id\": \"claim:c5\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The prior review records approval for the focused comparison, pending scheduling, and no observed outcome. It explicitly disclaims a new threshold and resolution of later examples.\"\n    },\n    {\n      \"statement_id\": \"summary:s1\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"This accurately summarizes the tutor's report without treating either label as correct.\"\n    },\n    {\n      \"statement_id\": \"summary:s2\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The QA tutor requests timestamps from both reviewers, and the complete supplied thread contains no response providing them.\"\n    },\n    {\n      \"statement_id\": \"detail:d1\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The report does not identify either task. Identifying the reported examples is a justified prerequisite for comparing them.\"\n    },\n    {\n      \"statement_id\": \"detail:d2\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The historical review records the approved comparison of affected spans and recoverable words, no session outcome, and no new clipping threshold.\"\n    },\n    {\n      \"statement_id\": \"action\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The reported label discrepancy and unanswered timestamp request justify a focused follow-up for task identifiers and marked timestamps. The recommendation stays within the two examples and sets no general severity rule or unsupported concrete route.\"\n    },\n    {\n      \"statement_id\": \"action:rationale\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The proposed request follows up on the unanswered QA question while leaving the correctness of the labels and any severity threshold undecided.\"\n    },\n    {\n      \"statement_id\": \"action:need\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The reported scoring discrepancy remains unexamined in the supplied thread, with the requested timestamps still absent. Coordinating the example collection addresses that outstanding operational problem.\"\n    },\n    {\n      \"statement_id\": \"resolution:member_2157ec41b491fc22d0831ccd\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The complete thread contains only the inconsistent-label report and the QA tutor's request, with no supplied timestamps, comparison, or severity conclusion.\"\n    },\n    {\n      \"statement_id\": \"severity:rationale\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The reported minor-versus-major difference supports a bounded scoring-consistency concern. The statement appropriately avoids claiming batch-wide impact or a correct label.\"\n    },\n    {\n      \"statement_id\": \"severity:signal:MEDIUM[1]\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The tutor's report describes conflicting severity labels across two tasks, directly supporting the stated scoring-consistency signal.\"\n    },\n    {\n      \"statement_id\": \"reporter:U020\",\n      \"verdict\": \"UNSUPPORTED\",\n      \"rationale\": \"U020 reports a label discrepancy but does not state that either task was theirs or otherwise report personally being affected.\"\n    }\n  ],\n  \"action_sufficiency\": {\n    \"verdict\": \"SUFFICIENT\",\n    \"essential_statement_ids\": [\n      \"claim:c1\",\n      \"claim:c2\",\n      \"claim:c3\"\n    ],\n    \"rationale\": \"All three premises are supported. Together they justify requesting identifiers and exact timestamps for the two reported examples, following up on the QA request without deciding severity or extending the request into a general policy.\"\n  },\n  \"alternative_sufficiency\": [],\n  \"source_consistency\": {\n    \"assessed_evidence_ids\": [\n      \"k:audio-multimodal-faq@1.1:e9bcf43a\",\n      \"k:audio-multimodal-instructions@1.3:eb85357a\",\n      \"k:audio-multimodal-instructions@1.3:7a5ab59d\"\n    ],\n    \"relations\": [\n      {\n        \"evidence_ids\": [\n          \"k:audio-multimodal-faq@1.1:e9bcf43a\",\n          \"k:audio-multimodal-instructions@1.3:eb85357a\"\n        ],\n        \"relation\": \"AGREE\",\n        \"point\": \"Timestamp affected overlap or unintelligibility spans, preserve usable audio, and distinguish audio defects from reference-transcript errors.\",\n        \"disagreement_scope\": null,\n        \"rationale\": \"The FAQ and the overlap/correspondence instructions give consistent handling on these shared points. The language/repeated-audio section addresses different cases and supplies no conflicting background-pop severity rule.\"\n      }\n    ],\n    \"declared_conflict_checks\": []\n  }\n}",
+    "raw_sha256": "2d6b665dead2d4a9aa79e7afbeb8389ef1814926334043be5e5ecbf1bdfdfc6c",
+    "http_requests": {
+     "sent": 1,
+     "blocked": 0,
+     "hosts": [
+      "api.openai.com"
+     ],
+     "responses": [
+      {
+       "status_code": 200,
+       "seconds": 17.189,
+       "model": "gpt-6.1-sol",
+       "usage": {
+        "prompt_tokens": 7898,
+        "completion_tokens": 1323,
+        "total_tokens": 9221,
+        "prompt_tokens_details": {
+         "cached_tokens": 0,
+         "cache_write_tokens": 7895,
+         "audio_tokens": 0
+        },
+        "completion_tokens_details": {
+         "reasoning_tokens": 96,
+         "audio_tokens": 0,
+         "accepted_prediction_tokens": 0,
+         "rejected_prediction_tokens": 0
+        }
+       },
+       "finish_reasons": [
+        "stop"
+       ]
+      }
+     ],
+     "input_tokens": 7904,
+     "refused": null,
+     "charged_usd": 0.029026000000000003
+    },
+    "input_tokens_estimate": 7904,
+    "status": "OK"
+   }
+  ],
+  "agent1_context": [
+   {
+    "sha256": "6f49bd5f5297e4d7c449031255926b7a8c5b36849c01954494be1fd3073cd690",
+    "content": [
+     {
+      "member_id": "member_2157ec41b491fc22d0831ccd",
+      "thread_id": "1790929125.000118",
+      "summary": "Theo reports that the same background pop received a minor label on one task and a major label on another. Hana asks if both reviewers can mark the exact timestamp where the defect occurs.",
+      "central_question": "Can both reviewers mark the exact timestamp where the defect occurs?",
+      "attributed_agent1_resolution": {
+       "state": "UNRESOLVED",
+       "rationale": "The thread contains a question from Hana asking if both reviewers can mark the exact timestamp of the defect, but there is no substantive answer or conclusion provided in the replies. Theo's initial message does not address this question directly, leaving it unresolved.",
+       "agent1_verification_status": "VERIFIED",
+       "note": "Agent 1 label, not evidence; NEEDS_REVIEW means Agent 1 did not verify it. Assess resolution from the member messages."
+      },
+      "agent1_review_required": false,
+      "agent1_review_reason": "",
+      "note": "Agent 1 interpretation, not source evidence; cite member messages for incident facts."
+     }
+    ]
+   }
+  ],
+  "drafts": {
+   "initial": {
+    "contract_version": "agent3-advisor-draft-v11",
+    "summary": "A tutor reports that the same background pop received a minor label on one task and a major label on another. A QA tutor asks both reviewers to mark the exact defect timestamp; the thread contains no response with those timestamps.",
+    "summary_sentences": [
+     {
+      "text": "A tutor reports that the same background pop received a minor label on one task and a major label on another.",
+      "support_claim_ids": [
+       "c1"
+      ],
+      "depends_on": []
+     },
+     {
+      "text": "A QA tutor asks both reviewers to mark the exact defect timestamp; the thread contains no response with those timestamps.",
+      "support_claim_ids": [
+       "c2",
+       "c3"
+      ],
+      "depends_on": []
+     }
+    ],
+    "detail_sentences": [
+     {
+      "text": "The tutor's report does not identify the two tasks, so the examples still need to be identified for comparison.",
+      "support_claim_ids": [
+       "c3"
+      ],
+      "depends_on": [],
+      "summary_depends_on": [
+       1
+      ]
+     },
+     {
+      "text": "An earlier clipping review records approval for a focused comparison of affected spans and recoverable words, but records no session outcome and establishes no new severity threshold.",
+      "support_claim_ids": [
+       "c5"
+      ],
+      "depends_on": [],
+      "summary_depends_on": []
+     }
+    ],
+    "reasoning": "The reported difference in labels warrants a focused comparison, not a conclusion that either label is wrong. The QA tutor's timestamp request remains unanswered in the supplied thread. Current clipping guidance and the earlier clipping review provide context, but neither establishes that this background pop must receive a particular label. The proposed step gathers the examples needed for comparison without changing policy or treating the QA tutor's request as an instruction with project-wide authority.",
+    "claims": [
+     {
+      "claim_id": "c1",
+      "kind": "INCIDENT_FACT",
+      "text": "A tutor reports that the same background pop received a minor label on one task and a major label on another.",
+      "evidence_ids": [
+       "m:C_AUDIO_GENERAL:1790929125.000118"
+      ],
+      "attributions": [
+       {
+        "user_id": "U020",
+        "relation": "AUTHOR",
+        "evidence_id": "m:C_AUDIO_GENERAL:1790929125.000118"
+       }
+      ],
+      "quote": "Same background pop got minor on one task and major on another.",
+      "quote_kind": "VERBATIM",
+      "material": true
+     },
+     {
+      "claim_id": "c2",
+      "kind": "INCIDENT_FACT",
+      "text": "A QA tutor asks whether both reviewers can mark the exact timestamp where the defect occurs.",
+      "evidence_ids": [
+       "m:C_AUDIO_GENERAL:1790929179.000113"
+      ],
+      "attributions": [
+       {
+        "user_id": "U008",
+        "relation": "AUTHOR",
+        "evidence_id": "m:C_AUDIO_GENERAL:1790929179.000113"
+       }
+      ],
+      "quote": "Can both reviewers mark the exact timestamp where the defect occurs?",
+      "quote_kind": "VERBATIM",
+      "material": true
+     },
+     {
+      "claim_id": "c3",
+      "kind": "INFERENCE",
+      "text": "The supplied thread contains neither task identifiers for the tutor's two examples nor a response providing the timestamps requested by a QA tutor.",
+      "evidence_ids": [
+       "m:C_AUDIO_GENERAL:1790929125.000118",
+       "m:C_AUDIO_GENERAL:1790929179.000113"
+      ],
+      "attributions": [
+       {
+        "user_id": "U020",
+        "relation": "AUTHOR",
+        "evidence_id": "m:C_AUDIO_GENERAL:1790929125.000118"
+       },
+       {
+        "user_id": "U008",
+        "relation": "AUTHOR",
+        "evidence_id": "m:C_AUDIO_GENERAL:1790929179.000113"
+       }
+      ],
+      "quote": null,
+      "quote_kind": "PARAPHRASE",
+      "material": true
+     },
+     {
+      "claim_id": "c4",
+      "kind": "SOURCE_FACT",
+      "text": "The current scoring FAQ describes brief, localized clipping with clear speech as minor and asks for QA review of intelligibility and scope when artifacts are continuous or their impact is unclear; it does not supply a blanket severity rule for background pops.",
+      "evidence_ids": [
+       "k:audio-multimodal-faq@1.1:e9bcf43a"
+      ],
+      "attributions": [],
+      "quote": null,
+      "quote_kind": "PARAPHRASE",
+      "material": true
+     },
+     {
+      "claim_id": "c5",
+      "kind": "HISTORY",
+      "text": "The earlier clipping review records approval for a focused comparison using affected spans and recoverable words, with scheduling pending and no outcome observed; it explicitly establishes no new clipping threshold and does not resolve later examples.",
+      "evidence_ids": [
+       "k:audio-clipping-calibration-approval@1.0:d0b0c638"
+      ],
+      "attributions": [],
+      "quote": null,
+      "quote_kind": "PARAPHRASE",
+      "material": true
+     }
+    ],
+    "gaps": [
+     {
+      "gap_id": "g1",
+      "need": "OTHER",
+      "description": "The two task identifiers and both reviewers' marked defect timestamps are still needed to compare the reported labels. These inputs must come from the reviewers or task records rather than a guidance search.",
+      "follow_up": null
+     }
+    ],
+    "evidence_sufficiency": "SUFFICIENT",
+    "proposed_action": {
+     "action_type": "POST_ALIGNMENT",
+     "intervention_need": {
+      "kind": "OPERATIONAL_PROBLEM",
+      "statement": "A tutor reports different severity labels for the same background pop, and the QA tutor's request for timestamps has not yet produced examples that can be compared.",
+      "evidence_ids": [
+       "m:C_AUDIO_GENERAL:1790929125.000118",
+       "m:C_AUDIO_GENERAL:1790929179.000113"
+      ]
+     },
+     "instruction": "Ask both reviewers to identify the two tasks and mark the exact defect timestamps so the reported severity labels can be compared.",
+     "rationale": "A focused request follows up on the QA tutor's unanswered question without assuming either label is wrong or introducing a new severity threshold.",
+     "draft_text": "For the background pop reported as minor on one task and major on another, please identify the two tasks and have both reviewers mark the exact timestamp where the defect occurs. A QA tutor has already asked for these timestamps. Please provide the marked examples so we can compare the labels before drawing a conclusion about severity.",
+     "scope_note": "Limit this request to the two reported examples; it does not set a general rule for background-pop severity.",
+     "support_claim_ids": [
+      "c1",
+      "c2",
+      "c3"
+     ],
+     "targets": [],
+     "context_claim_ids": [
+      "c4",
+      "c5"
+     ]
+    },
+    "severity": {
+     "level": "MEDIUM",
+     "rationale": "A tutor reports a minor-versus-major scoring difference for the same background pop. That suggests a contained QA consistency problem, without establishing a batch-wide issue or which label is correct.",
+     "signals": [
+      {
+       "level": "MEDIUM",
+       "signal_index": 1,
+       "signal_text": "Conflicting interpretations that affect, or are reasonably likely to affect, how tasks are scored or handled",
+       "support": "A tutor reports that the same background pop received different severity labels on two tasks.",
+       "evidence_ids": [
+        "m:C_AUDIO_GENERAL:1790929125.000118"
+       ]
+      }
+     ],
+     "affected_reporters": [
+      {
+       "author_id": "U020",
+       "evidence_id": "m:C_AUDIO_GENERAL:1790929125.000118"
+      }
+     ],
+     "recurrence": "NOT_CHECKED",
+     "recurrence_evidence_ids": [],
+     "reported_recurrence_evidence_ids": []
+    },
+    "confidence": 0.9,
+    "open_confirmation": "NONE",
+    "open_question": null,
+    "open_question_evidence_ids": [],
+    "source_conflicts": [],
+    "announcement_assessments": [],
+    "resolution": [
+     {
+      "member_id": "member_2157ec41b491fc22d0831ccd",
+      "state": "UNRESOLVED",
+      "evidence_ids": [
+       "m:C_AUDIO_GENERAL:1790929125.000118",
+       "m:C_AUDIO_GENERAL:1790929179.000113"
+      ],
+      "basis": "The tutor reports inconsistent labels, and the only reply is a QA tutor's request for timestamps. The supplied thread contains no comparison, severity conclusion or response supplying the requested timestamps."
+     }
+    ],
+    "coverage": [
+     {
+      "need": "CURRENT_GUIDANCE",
+      "status": "COVERED",
+      "evidence_ids": [
+       "k:audio-multimodal-faq@1.1:e9bcf43a"
+      ],
+      "note": "The current scoring FAQ provides clipping context but does not establish a blanket rule for background pops. The proposed request does not depend on assigning either severity label.",
+      "gap_id": null
+     },
+     {
+      "need": "ANNOUNCEMENTS",
+      "status": "NOT_APPLICABLE",
+      "evidence_ids": [],
+      "note": "No announcement is needed to support a focused follow-up on the QA tutor's request; the proposal does not assert an announcement-based procedure or designated route.",
+      "gap_id": null
+     },
+     {
+      "need": "PRIOR_DECISIONS",
+      "status": "COVERED",
+      "evidence_ids": [
+       "k:audio-clipping-calibration-approval@1.0:d0b0c638"
+      ],
+      "note": "The earlier clipping review records an approved comparison session, pending scheduling, with no observed outcome or new threshold. Its completion is not needed before requesting the current examples.",
+      "gap_id": null
+     },
+     {
+      "need": "MEMBER_QUESTIONS",
+      "status": "COVERED",
+      "evidence_ids": [
+       "m:C_AUDIO_GENERAL:1790929125.000118",
+       "m:C_AUDIO_GENERAL:1790929179.000113"
+      ],
+      "note": "The supplied thread shows the tutor's scoring report and the QA tutor's unanswered timestamp request, with no reference to an earlier workaround.",
+      "gap_id": null
+     }
+    ],
+    "review_note": null,
+    "action_choice": null
+   },
+   "final": {
+    "contract_version": "agent3-advisor-draft-v11",
+    "summary": "A tutor reports that the same background pop received a minor label on one task and a major label on another. A QA tutor asks both reviewers to mark the exact defect timestamp; the thread contains no response with those timestamps.",
+    "summary_sentences": [
+     {
+      "text": "A tutor reports that the same background pop received a minor label on one task and a major label on another.",
+      "support_claim_ids": [
+       "c1"
+      ],
+      "depends_on": []
+     },
+     {
+      "text": "A QA tutor asks both reviewers to mark the exact defect timestamp; the thread contains no response with those timestamps.",
+      "support_claim_ids": [
+       "c2",
+       "c3"
+      ],
+      "depends_on": []
+     }
+    ],
+    "detail_sentences": [
+     {
+      "text": "The tutor's report does not identify the two tasks, so the examples still need to be identified for comparison.",
+      "support_claim_ids": [
+       "c3"
+      ],
+      "depends_on": [],
+      "summary_depends_on": [
+       1
+      ]
+     },
+     {
+      "text": "An earlier clipping review records approval for a focused comparison of affected spans and recoverable words, but records no session outcome and establishes no new severity threshold.",
+      "support_claim_ids": [
+       "c5"
+      ],
+      "depends_on": [],
+      "summary_depends_on": []
+     }
+    ],
+    "reasoning": "The reported difference in labels warrants a focused comparison, not a conclusion that either label is wrong. The QA tutor's timestamp request remains unanswered in the supplied thread. Current clipping guidance and the earlier clipping review provide context, but neither establishes that this background pop must receive a particular label. The proposed step gathers the examples needed for comparison without changing policy or treating the QA tutor's request as an instruction with project-wide authority.",
+    "claims": [
+     {
+      "claim_id": "c1",
+      "kind": "INCIDENT_FACT",
+      "text": "A tutor reports that the same background pop received a minor label on one task and a major label on another.",
+      "evidence_ids": [
+       "m:C_AUDIO_GENERAL:1790929125.000118"
+      ],
+      "attributions": [
+       {
+        "user_id": "U020",
+        "relation": "AUTHOR",
+        "evidence_id": "m:C_AUDIO_GENERAL:1790929125.000118"
+       }
+      ],
+      "quote": "Same background pop got minor on one task and major on another.",
+      "quote_kind": "VERBATIM",
+      "material": true
+     },
+     {
+      "claim_id": "c2",
+      "kind": "INCIDENT_FACT",
+      "text": "A QA tutor asks whether both reviewers can mark the exact timestamp where the defect occurs.",
+      "evidence_ids": [
+       "m:C_AUDIO_GENERAL:1790929179.000113"
+      ],
+      "attributions": [
+       {
+        "user_id": "U008",
+        "relation": "AUTHOR",
+        "evidence_id": "m:C_AUDIO_GENERAL:1790929179.000113"
+       }
+      ],
+      "quote": "Can both reviewers mark the exact timestamp where the defect occurs?",
+      "quote_kind": "VERBATIM",
+      "material": true
+     },
+     {
+      "claim_id": "c3",
+      "kind": "INFERENCE",
+      "text": "The supplied thread contains neither task identifiers for the tutor's two examples nor a response providing the timestamps requested by a QA tutor.",
+      "evidence_ids": [
+       "m:C_AUDIO_GENERAL:1790929125.000118",
+       "m:C_AUDIO_GENERAL:1790929179.000113"
+      ],
+      "attributions": [
+       {
+        "user_id": "U020",
+        "relation": "AUTHOR",
+        "evidence_id": "m:C_AUDIO_GENERAL:1790929125.000118"
+       },
+       {
+        "user_id": "U008",
+        "relation": "AUTHOR",
+        "evidence_id": "m:C_AUDIO_GENERAL:1790929179.000113"
+       }
+      ],
+      "quote": null,
+      "quote_kind": "PARAPHRASE",
+      "material": true
+     },
+     {
+      "claim_id": "c4",
+      "kind": "SOURCE_FACT",
+      "text": "The current scoring FAQ describes brief, localized clipping with clear speech as minor and asks for QA review of intelligibility and scope when artifacts are continuous or their impact is unclear; it does not supply a blanket severity rule for background pops.",
+      "evidence_ids": [
+       "k:audio-multimodal-faq@1.1:e9bcf43a"
+      ],
+      "attributions": [],
+      "quote": null,
+      "quote_kind": "PARAPHRASE",
+      "material": true
+     },
+     {
+      "claim_id": "c5",
+      "kind": "HISTORY",
+      "text": "The earlier clipping review records approval for a focused comparison using affected spans and recoverable words, with scheduling pending and no outcome observed; it explicitly establishes no new clipping threshold and does not resolve later examples.",
+      "evidence_ids": [
+       "k:audio-clipping-calibration-approval@1.0:d0b0c638"
+      ],
+      "attributions": [],
+      "quote": null,
+      "quote_kind": "PARAPHRASE",
+      "material": true
+     }
+    ],
+    "gaps": [
+     {
+      "gap_id": "g1",
+      "need": "OTHER",
+      "description": "The two task identifiers and both reviewers' marked defect timestamps are still needed to compare the reported labels. These inputs must come from the reviewers or task records rather than a guidance search.",
+      "follow_up": null
+     }
+    ],
+    "evidence_sufficiency": "SUFFICIENT",
+    "proposed_action": {
+     "action_type": "POST_ALIGNMENT",
+     "intervention_need": {
+      "kind": "OPERATIONAL_PROBLEM",
+      "statement": "A tutor reports different severity labels for the same background pop, and the QA tutor's request for timestamps has not yet produced examples that can be compared.",
+      "evidence_ids": [
+       "m:C_AUDIO_GENERAL:1790929125.000118",
+       "m:C_AUDIO_GENERAL:1790929179.000113"
+      ]
+     },
+     "instruction": "Ask both reviewers to identify the two tasks and mark the exact defect timestamps so the reported severity labels can be compared.",
+     "rationale": "A focused request follows up on the QA tutor's unanswered question without assuming either label is wrong or introducing a new severity threshold.",
+     "draft_text": "For the background pop reported as minor on one task and major on another, please identify the two tasks and have both reviewers mark the exact timestamp where the defect occurs. A QA tutor has already asked for these timestamps. Please provide the marked examples so we can compare the labels before drawing a conclusion about severity.",
+     "scope_note": "Limit this request to the two reported examples; it does not set a general rule for background-pop severity.",
+     "support_claim_ids": [
+      "c1",
+      "c2",
+      "c3"
+     ],
+     "targets": [],
+     "context_claim_ids": [
+      "c4",
+      "c5"
+     ]
+    },
+    "severity": {
+     "level": "MEDIUM",
+     "rationale": "A tutor reports a minor-versus-major scoring difference for the same background pop. That suggests a contained QA consistency problem, without establishing a batch-wide issue or which label is correct.",
+     "signals": [
+      {
+       "level": "MEDIUM",
+       "signal_index": 1,
+       "signal_text": "Conflicting interpretations that affect, or are reasonably likely to affect, how tasks are scored or handled",
+       "support": "A tutor reports that the same background pop received different severity labels on two tasks.",
+       "evidence_ids": [
+        "m:C_AUDIO_GENERAL:1790929125.000118"
+       ]
+      }
+     ],
+     "affected_reporters": [
+      {
+       "author_id": "U020",
+       "evidence_id": "m:C_AUDIO_GENERAL:1790929125.000118"
+      }
+     ],
+     "recurrence": "NOT_CHECKED",
+     "recurrence_evidence_ids": [],
+     "reported_recurrence_evidence_ids": []
+    },
+    "confidence": 0.9,
+    "open_confirmation": "NONE",
+    "open_question": null,
+    "open_question_evidence_ids": [],
+    "source_conflicts": [],
+    "announcement_assessments": [],
+    "resolution": [
+     {
+      "member_id": "member_2157ec41b491fc22d0831ccd",
+      "state": "UNRESOLVED",
+      "evidence_ids": [
+       "m:C_AUDIO_GENERAL:1790929125.000118",
+       "m:C_AUDIO_GENERAL:1790929179.000113"
+      ],
+      "basis": "The tutor reports inconsistent labels, and the only reply is a QA tutor's request for timestamps. The supplied thread contains no comparison, severity conclusion or response supplying the requested timestamps."
+     }
+    ],
+    "coverage": [
+     {
+      "need": "CURRENT_GUIDANCE",
+      "status": "COVERED",
+      "evidence_ids": [
+       "k:audio-multimodal-faq@1.1:e9bcf43a"
+      ],
+      "note": "The current scoring FAQ provides clipping context but does not establish a blanket rule for background pops. The proposed request does not depend on assigning either severity label.",
+      "gap_id": null
+     },
+     {
+      "need": "ANNOUNCEMENTS",
+      "status": "NOT_APPLICABLE",
+      "evidence_ids": [],
+      "note": "No announcement is needed to support a focused follow-up on the QA tutor's request; the proposal does not assert an announcement-based procedure or designated route.",
+      "gap_id": null
+     },
+     {
+      "need": "PRIOR_DECISIONS",
+      "status": "COVERED",
+      "evidence_ids": [
+       "k:audio-clipping-calibration-approval@1.0:d0b0c638"
+      ],
+      "note": "The earlier clipping review records an approved comparison session, pending scheduling, with no observed outcome or new threshold. Its completion is not needed before requesting the current examples.",
+      "gap_id": null
+     },
+     {
+      "need": "MEMBER_QUESTIONS",
+      "status": "COVERED",
+      "evidence_ids": [
+       "m:C_AUDIO_GENERAL:1790929125.000118",
+       "m:C_AUDIO_GENERAL:1790929179.000113"
+      ],
+      "note": "The supplied thread shows the tutor's scoring report and the QA tutor's unanswered timestamp request, with no reference to an earlier workaround.",
+      "gap_id": null
+     }
+    ],
+    "review_note": null,
+    "action_choice": null
+   },
+   "revised": false
+  },
+  "grounding": {
+   "structural_issues": [],
+   "action_issues": [],
+   "unsupported": [
+    "reporter:U020"
+   ],
+   "unjudged": [],
+   "extraneous_verdicts": [],
+   "rejected": {},
+   "pending": [],
+   "action_sufficiency": {
+    "verdict": "SUFFICIENT",
+    "essential_statement_ids": [
+     "claim:c1",
+     "claim:c2",
+     "claim:c3"
+    ],
+    "rationale": "All three premises are supported. Together they justify requesting identifiers and exact timestamps for the two reported examples, following up on the QA request without deciding severity or extending the request into a general policy."
+   },
+   "source_consistency": {
+    "assessed_evidence_ids": [
+     "k:audio-multimodal-faq@1.1:e9bcf43a",
+     "k:audio-multimodal-instructions@1.3:eb85357a",
+     "k:audio-multimodal-instructions@1.3:7a5ab59d"
+    ],
+    "relations": [
+     {
+      "evidence_ids": [
+       "k:audio-multimodal-faq@1.1:e9bcf43a",
+       "k:audio-multimodal-instructions@1.3:eb85357a"
+      ],
+      "relation": "AGREE",
+      "point": "Timestamp affected overlap or unintelligibility spans, preserve usable audio, and distinguish audio defects from reference-transcript errors.",
+      "disagreement_scope": null,
+      "rationale": "The FAQ and the overlap/correspondence instructions give consistent handling on these shared points. The language/repeated-audio section addresses different cases and supplies no conflicting background-pop severity rule."
+     }
+    ],
+    "declared_conflict_checks": []
+   },
+   "alternative_sufficiency": {},
+   "status": "FAILED",
+   "basis": "SEMANTIC",
+   "statements": [
+    {
+     "statement_id": "claim:c1",
+     "kind": "CLAIM_INCIDENT_FACT",
+     "text": "A tutor reports that the same background pop received a minor label on one task and a major label on another. Verbatim quote: \"Same background pop got minor on one task and major on another.\"",
+     "blocking": true,
+     "evidence_ids": [
+      "m:C_AUDIO_GENERAL:1790929125.000118"
+     ],
+     "attributions": [
+      {
+       "user_id": "U020",
+       "relation": "AUTHOR",
+       "evidence_id": "m:C_AUDIO_GENERAL:1790929125.000118",
+       "role": "TUTOR"
+      }
+     ],
+     "verdict": "SUPPORTED",
+     "model_verdict": "SUPPORTED",
+     "rationale": "The tutor reports the two different severity labels, and the quoted text matches the message exactly."
+    },
+    {
+     "statement_id": "claim:c2",
+     "kind": "CLAIM_INCIDENT_FACT",
+     "text": "A QA tutor asks whether both reviewers can mark the exact timestamp where the defect occurs. Verbatim quote: \"Can both reviewers mark the exact timestamp where the defect occurs?\"",
+     "blocking": true,
+     "evidence_ids": [
+      "m:C_AUDIO_GENERAL:1790929179.000113"
+     ],
+     "attributions": [
+      {
+       "user_id": "U008",
+       "relation": "AUTHOR",
+       "evidence_id": "m:C_AUDIO_GENERAL:1790929179.000113",
+       "role": "QA_TUTOR"
+      }
+     ],
+     "verdict": "SUPPORTED",
+     "model_verdict": "SUPPORTED",
+     "rationale": "The cited author is a QA tutor and asks precisely this question. The quotation is exact."
+    },
+    {
+     "statement_id": "claim:c3",
+     "kind": "CLAIM_INFERENCE",
+     "text": "The supplied thread contains neither task identifiers for the tutor's two examples nor a response providing the timestamps requested by a QA tutor.",
+     "blocking": true,
+     "evidence_ids": [
+      "m:C_AUDIO_GENERAL:1790929125.000118",
+      "m:C_AUDIO_GENERAL:1790929179.000113"
+     ],
+     "attributions": [
+      {
+       "user_id": "U020",
+       "relation": "AUTHOR",
+       "evidence_id": "m:C_AUDIO_GENERAL:1790929125.000118",
+       "role": "TUTOR"
+      },
+      {
+       "user_id": "U008",
+       "relation": "AUTHOR",
+       "evidence_id": "m:C_AUDIO_GENERAL:1790929179.000113",
+       "role": "QA_TUTOR"
+      }
+     ],
+     "verdict": "SUPPORTED",
+     "model_verdict": "SUPPORTED",
+     "rationale": "The complete supplied thread contains only the report and the timestamp request; neither task identifiers nor a response supplying timestamps appears."
+    },
+    {
+     "statement_id": "claim:c4",
+     "kind": "CLAIM_SOURCE_FACT",
+     "text": "The current scoring FAQ describes brief, localized clipping with clear speech as minor and asks for QA review of intelligibility and scope when artifacts are continuous or their impact is unclear; it does not supply a blanket severity rule for background pops.",
+     "blocking": true,
+     "evidence_ids": [
+      "k:audio-multimodal-faq@1.1:e9bcf43a"
+     ],
+     "verdict": "SUPPORTED",
+     "model_verdict": "SUPPORTED",
+     "rationale": "The current FAQ states both clipping provisions and contains no blanket background-pop severity rule."
+    },
+    {
+     "statement_id": "claim:c5",
+     "kind": "CLAIM_HISTORY",
+     "text": "The earlier clipping review records approval for a focused comparison using affected spans and recoverable words, with scheduling pending and no outcome observed; it explicitly establishes no new clipping threshold and does not resolve later examples.",
+     "blocking": true,
+     "evidence_ids": [
+      "k:audio-clipping-calibration-approval@1.0:d0b0c638"
+     ],
+     "verdict": "SUPPORTED",
+     "model_verdict": "SUPPORTED",
+     "rationale": "The prior review records approval for the focused comparison, pending scheduling, and no observed outcome. It explicitly disclaims a new threshold and resolution of later examples."
+    },
+    {
+     "statement_id": "summary:s1",
+     "kind": "SUMMARY",
+     "text": "A tutor reports that the same background pop received a minor label on one task and a major label on another.",
+     "blocking": true,
+     "evidence_ids": [
+      "m:C_AUDIO_GENERAL:1790929125.000118"
+     ],
+     "attributions": [
+      {
+       "user_id": "U020",
+       "relation": "AUTHOR",
+       "evidence_id": "m:C_AUDIO_GENERAL:1790929125.000118",
+       "role": "TUTOR"
+      }
+     ],
+     "verdict": "SUPPORTED",
+     "model_verdict": "SUPPORTED",
+     "rationale": "This accurately summarizes the tutor's report without treating either label as correct."
+    },
+    {
+     "statement_id": "summary:s2",
+     "kind": "SUMMARY",
+     "text": "A QA tutor asks both reviewers to mark the exact defect timestamp; the thread contains no response with those timestamps.",
+     "blocking": true,
+     "evidence_ids": [
+      "m:C_AUDIO_GENERAL:1790929179.000113",
+      "m:C_AUDIO_GENERAL:1790929125.000118"
+     ],
+     "attributions": [
+      {
+       "user_id": "U008",
+       "relation": "AUTHOR",
+       "evidence_id": "m:C_AUDIO_GENERAL:1790929179.000113",
+       "role": "QA_TUTOR"
+      },
+      {
+       "user_id": "U020",
+       "relation": "AUTHOR",
+       "evidence_id": "m:C_AUDIO_GENERAL:1790929125.000118",
+       "role": "TUTOR"
+      }
+     ],
+     "verdict": "SUPPORTED",
+     "model_verdict": "SUPPORTED",
+     "rationale": "The QA tutor requests timestamps from both reviewers, and the complete supplied thread contains no response providing them."
+    },
+    {
+     "statement_id": "detail:d1",
+     "kind": "DETAIL",
+     "text": "The tutor's report does not identify the two tasks, so the examples still need to be identified for comparison.",
+     "blocking": false,
+     "evidence_ids": [
+      "m:C_AUDIO_GENERAL:1790929125.000118",
+      "m:C_AUDIO_GENERAL:1790929179.000113"
+     ],
+     "attributions": [
+      {
+       "user_id": "U020",
+       "relation": "AUTHOR",
+       "evidence_id": "m:C_AUDIO_GENERAL:1790929125.000118",
+       "role": "TUTOR"
+      },
+      {
+       "user_id": "U008",
+       "relation": "AUTHOR",
+       "evidence_id": "m:C_AUDIO_GENERAL:1790929179.000113",
+       "role": "QA_TUTOR"
+      }
+     ],
+     "depends_on": [
+      "summary:s1"
+     ],
+     "verdict": "SUPPORTED",
+     "model_verdict": "SUPPORTED",
+     "rationale": "The report does not identify either task. Identifying the reported examples is a justified prerequisite for comparing them."
+    },
+    {
+     "statement_id": "detail:d2",
+     "kind": "DETAIL",
+     "text": "An earlier clipping review records approval for a focused comparison of affected spans and recoverable words, but records no session outcome and establishes no new severity threshold.",
+     "blocking": false,
+     "evidence_ids": [
+      "k:audio-clipping-calibration-approval@1.0:d0b0c638"
+     ],
+     "verdict": "SUPPORTED",
+     "model_verdict": "SUPPORTED",
+     "rationale": "The historical review records the approved comparison of affected spans and recoverable words, no session outcome, and no new clipping threshold."
+    },
+    {
+     "statement_id": "action",
+     "kind": "ACTION",
+     "text": "Post a reminder. Instruction: Ask both reviewers to identify the two tasks and mark the exact defect timestamps so the reported severity labels can be compared. Draft to copy: For the background pop reported as minor on one task and major on another, please identify the two tasks and have both reviewers mark the exact timestamp where the defect occurs. A QA tutor has already asked for these timestamps. Please provide the marked examples so we can compare the labels before drawing a conclusion about severity. Scope: Limit this request to the two reported examples; it does not set a general rule for background-pop severity.",
+     "blocking": true,
+     "evidence_ids": [
+      "m:C_AUDIO_GENERAL:1790929125.000118",
+      "m:C_AUDIO_GENERAL:1790929179.000113"
+     ],
+     "premises": [
+      "claim:c1",
+      "claim:c2",
+      "claim:c3"
+     ],
+     "verdict": "SUPPORTED",
+     "model_verdict": "SUPPORTED",
+     "rationale": "The reported label discrepancy and unanswered timestamp request justify a focused follow-up for task identifiers and marked timestamps. The recommendation stays within the two examples and sets no general severity rule or unsupported concrete route."
+    },
+    {
+     "statement_id": "action:rationale",
+     "kind": "ACTION_RATIONALE",
+     "text": "Why this helps: A focused request follows up on the QA tutor's unanswered question without assuming either label is wrong or introducing a new severity threshold.",
+     "blocking": false,
+     "evidence_ids": [
+      "m:C_AUDIO_GENERAL:1790929125.000118",
+      "m:C_AUDIO_GENERAL:1790929179.000113",
+      "k:audio-multimodal-faq@1.1:e9bcf43a",
+      "k:audio-clipping-calibration-approval@1.0:d0b0c638"
+     ],
+     "verdict": "SUPPORTED",
+     "model_verdict": "SUPPORTED",
+     "rationale": "The proposed request follows up on the unanswered QA question while leaving the correctness of the labels and any severity threshold undecided."
+    },
+    {
+     "statement_id": "action:need",
+     "kind": "INTERVENTION_NEED",
+     "text": "Why intervening now is needed (an operational problem that needs coordination): A tutor reports different severity labels for the same background pop, and the QA tutor's request for timestamps has not yet produced examples that can be compared.",
+     "blocking": false,
+     "evidence_ids": [
+      "m:C_AUDIO_GENERAL:1790929125.000118",
+      "m:C_AUDIO_GENERAL:1790929179.000113"
+     ],
+     "verdict": "SUPPORTED",
+     "model_verdict": "SUPPORTED",
+     "rationale": "The reported scoring discrepancy remains unexamined in the supplied thread, with the requested timestamps still absent. Coordinating the example collection addresses that outstanding operational problem."
+    },
+    {
+     "statement_id": "resolution:member_2157ec41b491fc22d0831ccd",
+     "kind": "RESOLUTION",
+     "text": "Member thread member_2157ec41b491fc22d0831ccd is UNRESOLVED: The tutor reports inconsistent labels, and the only reply is a QA tutor's request for timestamps. The supplied thread contains no comparison, severity conclusion or response supplying the requested timestamps.",
+     "blocking": true,
+     "evidence_ids": [
+      "m:C_AUDIO_GENERAL:1790929125.000118",
+      "m:C_AUDIO_GENERAL:1790929179.000113"
+     ],
+     "verdict": "SUPPORTED",
+     "model_verdict": "SUPPORTED",
+     "rationale": "The complete thread contains only the inconsistent-label report and the QA tutor's request, with no supplied timestamps, comparison, or severity conclusion."
+    },
+    {
+     "statement_id": "severity:rationale",
+     "kind": "SEVERITY_RATIONALE",
+     "text": "Severity MEDIUM: A tutor reports a minor-versus-major scoring difference for the same background pop. That suggests a contained QA consistency problem, without establishing a batch-wide issue or which label is correct.",
+     "blocking": true,
+     "evidence_ids": [
+      "m:C_AUDIO_GENERAL:1790929125.000118",
+      "m:C_AUDIO_GENERAL:1790929179.000113"
+     ],
+     "verdict": "SUPPORTED",
+     "model_verdict": "SUPPORTED",
+     "rationale": "The reported minor-versus-major difference supports a bounded scoring-consistency concern. The statement appropriately avoids claiming batch-wide impact or a correct label."
+    },
+    {
+     "statement_id": "severity:signal:MEDIUM[1]",
+     "kind": "SEVERITY_SIGNAL",
+     "text": "Rubric signal met - \"Conflicting interpretations that affect, or are reasonably likely to affect, how tasks are scored or handled\": A tutor reports that the same background pop received different severity labels on two tasks.",
+     "blocking": true,
+     "evidence_ids": [
+      "m:C_AUDIO_GENERAL:1790929125.000118"
+     ],
+     "verdict": "SUPPORTED",
+     "model_verdict": "SUPPORTED",
+     "rationale": "The tutor's report describes conflicting severity labels across two tasks, directly supporting the stated scoring-consistency signal."
+    },
+    {
+     "statement_id": "reporter:U020",
+     "kind": "AFFECTED_REPORTER",
+     "text": "U020 reports, in their own cited message, being affected by this problem.",
+     "blocking": true,
+     "evidence_ids": [
+      "m:C_AUDIO_GENERAL:1790929125.000118"
+     ],
+     "verdict": "UNSUPPORTED",
+     "model_verdict": "UNSUPPORTED",
+     "rationale": "U020 reports a label discrepancy but does not state that either task was theirs or otherwise report personally being affected."
+    }
+   ]
+  },
+  "temporal": {
+   "status": "NONE_FOUND",
+   "findings": [],
+   "source_consistency": "ASSESSED",
+   "ignored_revision_states": "NOT_YET_EFFECTIVE and NOT_APPROVED revisions never compete with applicable guidance."
+  },
+  "temporal_before_grounding": {
+   "status": "NONE_FOUND",
+   "findings": [],
+   "source_consistency": "NOT_ASSESSED",
+   "ignored_revision_states": "NOT_YET_EFFECTIVE and NOT_APPROVED revisions never compete with applicable guidance."
+  },
+  "severity": {
+   "assessment": {
+    "level": "MEDIUM",
+    "assessment_status": "ASSESSED",
+    "rubric_version": "severity-rubric-v3-semantic-signals",
+    "rubric_content_sha256": "eccaa31a2ab84a0aa7c005216a92fc39681e1dd10107117344948235a76673f4",
+    "rubric_project_id": null,
+    "rubric_scope": "SHARED_DEFAULT",
+    "rationale": "A tutor reports a minor-versus-major scoring difference for the same background pop. That suggests a contained QA consistency problem, without establishing a batch-wide issue or which label is correct.",
+    "matched_signals": [
+     {
+      "level": "MEDIUM",
+      "signal_index": 1,
+      "signal_text": "Conflicting interpretations that affect, or are reasonably likely to affect, how tasks are scored or handled",
+      "support": "A tutor reports that the same background pop received different severity labels on two tasks.",
+      "evidence": [
+       {
+        "kind": "slack_message",
+        "project_id": "audio_multimodal",
+        "batch_id": "audio_batch_06",
+        "scope": "project",
+        "channel_id": "C_AUDIO_GENERAL",
+        "thread_id": "1790929125.000118",
+        "message_id": "1790929125.000118",
+        "document_id": null,
+        "version_id": null,
+        "authoring_document_id": null,
+        "authoring_version": null,
+        "section": null,
+        "chunk_id": null,
+        "candidate_group_id": null,
+        "member_id": "member_2157ec41b491fc22d0831ccd",
+        "artifact": null,
+        "artifact_sha256": null,
+        "quote": null,
+        "note": "m:C_AUDIO_GENERAL:1790929125.000118"
+       }
+      ]
+     }
+    ],
+    "evidence": [
+     {
+      "kind": "slack_message",
+      "project_id": "audio_multimodal",
+      "batch_id": "audio_batch_06",
+      "scope": "project",
+      "channel_id": "C_AUDIO_GENERAL",
+      "thread_id": "1790929125.000118",
+      "message_id": "1790929125.000118",
+      "document_id": null,
+      "version_id": null,
+      "authoring_document_id": null,
+      "authoring_version": null,
+      "section": null,
+      "chunk_id": null,
+      "candidate_group_id": null,
+      "member_id": "member_2157ec41b491fc22d0831ccd",
+      "artifact": null,
+      "artifact_sha256": null,
+      "quote": null,
+      "note": "m:C_AUDIO_GENERAL:1790929125.000118"
+     }
+    ],
+    "occurrence": {
+     "affected_reporters": {
+      "status": "UNKNOWN",
+      "count": null,
+      "ids": [],
+      "basis": null,
+      "evidence": []
+     },
+     "affected_tasks": {
+      "status": "UNKNOWN",
+      "count": null,
+      "ids": [],
+      "basis": null,
+      "evidence": []
+     },
+     "relevant_threads": [
+      {
+       "project_id": "audio_multimodal",
+       "batch_id": "audio_batch_06",
+       "channel_id": "C_AUDIO_GENERAL",
+       "thread_id": "1790929125.000118",
+       "member_id": "member_2157ec41b491fc22d0831ccd"
+      }
+     ],
+     "reporting_window": {
+      "start": "2026-10-02T08:18:45.000118+00:00",
+      "end": "2026-10-02T08:19:39.000113+00:00"
+     },
+     "historical_recurrence": {
+      "status": "NOT_CHECKED",
+      "sources": [],
+      "event_series_ids": []
+     },
+     "known_denominator": null,
+     "structural": {
+      "threads": 1,
+      "messages": 2,
+      "distinct_participants": 2,
+      "duplicate_threads_ignored": 0,
+      "duplicate_messages_ignored": 0,
+      "computed_from": "topic member threads (original Slack messages)",
+      "participants_are_not_affected_reporters": true
+     },
+     "semantic_identification": "ASSESSED"
+    },
+    "inherited_from": {
+     "level": "UNKNOWN",
+     "assessment_status": "UNASSESSED",
+     "assessment_deferred_to": "AGENT3",
+     "reason": "Agent 2 performs taxonomy only."
+    }
+   },
+   "issues": [],
+   "notes": [
+    "Removed from severity after final grounding: reporters U020."
+   ],
+   "proposal": {
+    "level": "MEDIUM",
+    "rationale": "A tutor reports a minor-versus-major scoring difference for the same background pop. That suggests a contained QA consistency problem, without establishing a batch-wide issue or which label is correct.",
+    "signals": [
+     {
+      "level": "MEDIUM",
+      "signal_index": 1,
+      "signal_text": "Conflicting interpretations that affect, or are reasonably likely to affect, how tasks are scored or handled",
+      "support": "A tutor reports that the same background pop received different severity labels on two tasks.",
+      "evidence_ids": [
+       "m:C_AUDIO_GENERAL:1790929125.000118"
+      ]
+     }
+    ],
+    "affected_reporters": [
+     {
+      "author_id": "U020",
+      "evidence_id": "m:C_AUDIO_GENERAL:1790929125.000118"
+     }
+    ],
+    "recurrence": "NOT_CHECKED",
+    "recurrence_evidence_ids": [],
+    "reported_recurrence_evidence_ids": []
+   }
+  },
+  "resolution": {
+   "topic": "UNRESOLVED",
+   "members": {
+    "member_2157ec41b491fc22d0831ccd": "UNRESOLVED"
+   },
+   "agent1_attributed": [
+    {
+     "member_id": "member_2157ec41b491fc22d0831ccd",
+     "state": "UNRESOLVED",
+     "agent1_verification_status": "VERIFIED",
+     "agent1_review_required": false
+    }
+   ]
+  },
+  "established_handling": [],
+  "coverage_issues": [],
+  "action_source": "DRAFT",
+  "action_notes": [],
+  "tot": {
+   "status": "NOT_TRIGGERED",
+   "triggers": [],
+   "choice_after_grounding": {
+    "status": "NOT_COMPARED",
+    "viable": []
+   }
+  },
+  "evidence_ledger": {
+   "m:C_AUDIO_GENERAL:1790929125.000118": {
+    "evidence_id": "m:C_AUDIO_GENERAL:1790929125.000118",
+    "origin": "member_message",
+    "use": "MEMBER_REPORT",
+    "member_id": "member_2157ec41b491fc22d0831ccd",
+    "channel_id": "C_AUDIO_GENERAL",
+    "thread_id": "1790929125.000118",
+    "message_id": "1790929125.000118",
+    "author_id": "U020",
+    "author_name": "Theo",
+    "author_role": "TUTOR",
+    "timestamp": "2026-10-02T08:18:45.000118Z",
+    "thread_starter_id": "U020",
+    "thread_starter_role": "TUTOR",
+    "reactions": [
+     {
+      "name": "eyes",
+      "users": [
+       {
+        "id": "U006",
+        "name": "Priya"
+       }
+      ]
+     }
+    ],
+    "excerpt": "Same background pop got minor on one task and major on another."
+   },
+   "m:C_AUDIO_GENERAL:1790929179.000113": {
+    "evidence_id": "m:C_AUDIO_GENERAL:1790929179.000113",
+    "origin": "member_message",
+    "use": "MEMBER_REPORT",
+    "member_id": "member_2157ec41b491fc22d0831ccd",
+    "channel_id": "C_AUDIO_GENERAL",
+    "thread_id": "1790929125.000118",
+    "message_id": "1790929179.000113",
+    "author_id": "U008",
+    "author_name": "Hana",
+    "author_role": "QA_TUTOR",
+    "timestamp": "2026-10-02T08:19:39.000113Z",
+    "thread_starter_id": "U020",
+    "thread_starter_role": "TUTOR",
+    "reactions": [],
+    "excerpt": "Can both reviewers mark the exact timestamp where the defect occurs?"
+   },
+   "k:audio-multimodal-faq@1.1:e9bcf43a": {
+    "evidence_id": "k:audio-multimodal-faq@1.1:e9bcf43a",
+    "origin": "retrieved_source",
+    "use": "CURRENT_GUIDANCE",
+    "citation": {
+     "document_id": "knowledge_1f550e377f9c310f57f03e5bf482f810999d822a9cf4b1db3be5f2557678f15e",
+     "version_id": "version_66a170bbd46011e80d06da6d0bf5ec8b73486a84c13e015f60222fa711e05727",
+     "chunk_id": "chunk_e9bcf43a020b06861273547bf398f71b",
+     "authoring": "audio-multimodal-faq@1.1",
+     "title": "Audio Multimodal — FAQ (v1.1)",
+     "sections": [
+      "Scoring"
+     ],
+     "source": {
+      "batch_id": null,
+      "channel_id": null,
+      "manual_key": "audio-multimodal-faq",
+      "message_id": null,
+      "permalink": null,
+      "project_id": "audio_multimodal",
+      "reference": null,
+      "system": "manual",
+      "thread_id": null,
+      "workspace_id": null
+     }
+    },
+    "source_type": "faq",
+    "record_kind": "faq",
+    "applicability": {
+     "state": "CURRENT",
+     "revision_state": "CURRENT",
+     "version_mode": "current",
+     "replaced_by": [],
+     "unverified_supersession": [],
+     "supersedes": [],
+     "enactment": null,
+     "other_revisions": []
+    },
+    "dates": {
+     "source_date": "2026-09-20T13:00:00Z",
+     "basis": "effective_at",
+     "effective_at": "2026-09-20T13:00:00Z",
+     "created_at": null,
+     "valid_until": null,
+     "expired_as_of": false,
+     "reference_time": "2026-10-02T12:00:00Z"
+    },
+    "scope": {
+     "project_id": "audio_multimodal",
+     "batch_id": null,
+     "scope": "project",
+     "batch_relation": "project_wide"
+    },
+    "authority": {
+     "role": "TEAM_LEAD",
+     "actor": "U006",
+     "actor_relation": "RECORD_AUTHORITY",
+     "approval_status": "EXPLICIT_SOURCE_MARKER",
+     "provenance": "synthetic_manual_record"
+    },
+    "authorship": {
+     "author_id": null,
+     "verified": false,
+     "basis": "NO_AUTHOR_RECORDED"
+    },
+    "recorded_states": {
+     "status": "approved",
+     "decision_status": null,
+     "execution_status": null,
+     "outcome_status": null
+    },
+    "upstream_review": null,
+    "excerpt": "## Scoring\n\n### Q: How should I score mild clipping?\nBrief, localized clipping with clear speech is a minor defect. Timestamp the affected span. For continuous artifacts or unclear impact, ask QA to review intelligibility and scope; do not decide from duration alone.\n\n### Q: The transcript and audio disagree. What do I do?\nRecord the exact mismatch as a correspondence issue. Distinguish a recording error from a reference-transcript error; do not classify the mismatch as a playback failure.\n\n### Q: How much speaker overlap is allowed before the transcription fails?\nMark the overlapping or unintelligible interval and preserve the usable remainder. Timestamp the span. Do not infer a whole-clip failure from a short affected interval."
+   },
+   "k:audio-repeat-observation-review@1.0:ae0550d0": {
+    "evidence_id": "k:audio-repeat-observation-review@1.0:ae0550d0",
+    "origin": "retrieved_source",
+    "use": "PRIOR_DECISION",
+    "citation": {
+     "document_id": "knowledge_ab54b881b410b811d30b6755b3f03a93630cb02ff92bed49a00eebb6beba1631",
+     "version_id": "version_5a5f26377845f31ca6d86c95f37e4bd29cf834448ba7150c26bcff755640f4b6",
+     "chunk_id": "chunk_ae0550d0ca581c1d6e6ceced6f910af9",
+     "authoring": "audio-repeat-observation-review@1.0",
+     "title": "Repeated ending retained as an observation",
+     "sections": [
+      "Evidence",
+      "Suggested advice",
+      "TL decision",
+      "State"
+     ],
+     "source": {
+      "batch_id": "audio_batch_06",
+      "channel_id": null,
+      "manual_key": "audio-repeat-observation-review",
+      "message_id": null,
+      "permalink": null,
+      "project_id": "audio_multimodal",
+      "reference": null,
+      "system": "manual",
+      "thread_id": null,
+      "workspace_id": null
+     }
+    },
+    "source_type": "decision",
+    "record_kind": "advice_review",
+    "applicability": {
+     "state": "CURRENT",
+     "revision_state": "CURRENT",
+     "version_mode": "current",
+     "replaced_by": [],
+     "unverified_supersession": [],
+     "supersedes": [],
+     "enactment": {
+      "status": "NOT_ENACTED",
+      "basis": null,
+      "governing_sources": [],
+      "missing": [
+       "NO_TL_APPROVAL",
+       "NOT_A_POLICY_CHANGE",
+       "NO_ENACTMENT_EVIDENCE"
+      ],
+      "recorded": {
+       "decision_status": "tl_deferred",
+       "execution_status": "evidence_requested",
+       "authority_role": "TEAM_LEAD",
+       "batch_id": "audio_batch_06",
+       "valid_until": null,
+       "effective_at": "2026-09-29T14:00:00Z"
+      }
+     },
+     "other_revisions": []
+    },
+    "dates": {
+     "source_date": "2026-09-29T14:00:00Z",
+     "basis": "effective_at",
+     "effective_at": "2026-09-29T14:00:00Z",
+     "created_at": null,
+     "valid_until": null,
+     "expired_as_of": false,
+     "reference_time": "2026-10-02T12:00:00Z"
+    },
+    "scope": {
+     "project_id": "audio_multimodal",
+     "batch_id": "audio_batch_06",
+     "scope": "project",
+     "batch_relation": "same_batch"
+    },
+    "authority": {
+     "role": "TEAM_LEAD",
+     "actor": "U006",
+     "actor_relation": "RECORD_AUTHORITY",
+     "approval_status": "NO_APPROVAL_MARKER",
+     "provenance": "synthetic_manual_record"
+    },
+    "authorship": {
+     "author_id": null,
+     "verified": false,
+     "basis": "NO_AUTHOR_RECORDED"
+    },
+    "recorded_states": {
+     "status": "tl_deferred",
+     "decision_status": "tl_deferred",
+     "execution_status": "evidence_requested",
+     "outcome_status": "undetermined"
+    },
+    "upstream_review": null,
+    "excerpt": "[PRIOR RECORD (advice_review; decision_status: tl_deferred; execution_status: evidence_requested; outcome_status: undetermined) - history, not a standing rule.]\n# Repeated ending retained as an observation\n\n## Evidence\nA06-REP-14 was reported as speaking the last phrase twice although its transcript showed the phrase once. The review packet contained a player screenshot and the transcript, but no downloaded recording or comparison on a second player.\n\n## Suggested advice\nA simulated Advisor card proposed escalating a confirmed audio-generation loop.\n\n## TL decision\nPriya deferred that claim and retained the report as a model/process observation. Request a downloaded-file versus player comparison when available. A repeated phrase in the player does not yet locate the defect in the generated file.\n\nNo FAQ rule change or confirmed model-defect announcement was approved. If the additional evidence establishes a generation defect or material operational impact, reassess the intervention.\n\n## State\nThe observation is open. There is no completed diagnostic comparison or engineering escalation in this record."
+   },
+   "k:audio-clipping-calibration-approval@1.0:d0b0c638": {
+    "evidence_id": "k:audio-clipping-calibration-approval@1.0:d0b0c638",
+    "origin": "retrieved_source",
+    "use": "PRIOR_DECISION",
+    "citation": {
+     "document_id": "knowledge_6a152f1b9efc21986efbccb23be087331d132add2411314d0f7f8ebd16d77379",
+     "version_id": "version_03bfa2fed5ed378d60a9718b778417d5de2611cc80e21e97ae5f0742d9d95e07",
+     "chunk_id": "chunk_d0b0c638943fda54e86fecc7141d6de8",
+     "authoring": "audio-clipping-calibration-approval@1.0",
+     "title": "Approve a focused clipping calibration",
+     "sections": [
+      "Review context",
+      "Suggested advice",
+      "TL response",
+      "Execution and outcome"
+     ],
+     "source": {
+      "batch_id": "audio_batch_06",
+      "channel_id": null,
+      "manual_key": "audio-clipping-calibration-approval",
+      "message_id": null,
+      "permalink": null,
+      "project_id": "audio_multimodal",
+      "reference": null,
+      "system": "manual",
+      "thread_id": null,
+      "workspace_id": null
+     }
+    },
+    "source_type": "decision",
+    "record_kind": "advice_review",
+    "applicability": {
+     "state": "CURRENT",
+     "revision_state": "CURRENT",
+     "version_mode": "current",
+     "replaced_by": [],
+     "unverified_supersession": [],
+     "supersedes": [],
+     "enactment": {
+      "status": "NOT_ENACTED",
+      "basis": null,
+      "governing_sources": [],
+      "missing": [
+       "NOT_A_POLICY_CHANGE",
+       "NO_ENACTMENT_EVIDENCE"
+      ],
+      "recorded": {
+       "decision_status": "tl_approved",
+       "execution_status": "pending_scheduling",
+       "authority_role": "TEAM_LEAD",
+       "batch_id": "audio_batch_06",
+       "valid_until": null,
+       "effective_at": "2026-09-24T15:00:00Z"
+      }
+     },
+     "other_revisions": []
+    },
+    "dates": {
+     "source_date": "2026-09-24T15:00:00Z",
+     "basis": "effective_at",
+     "effective_at": "2026-09-24T15:00:00Z",
+     "created_at": null,
+     "valid_until": null,
+     "expired_as_of": false,
+     "reference_time": "2026-10-02T12:00:00Z"
+    },
+    "scope": {
+     "project_id": "audio_multimodal",
+     "batch_id": "audio_batch_06",
+     "scope": "project",
+     "batch_relation": "same_batch"
+    },
+    "authority": {
+     "role": "TEAM_LEAD",
+     "actor": "U006",
+     "actor_relation": "RECORD_AUTHORITY",
+     "approval_status": "EXPLICIT_SOURCE_MARKER",
+     "provenance": "synthetic_manual_record"
+    },
+    "authorship": {
+     "author_id": null,
+     "verified": false,
+     "basis": "NO_AUTHOR_RECORDED"
+    },
+    "recorded_states": {
+     "status": "tl_approved",
+     "decision_status": "tl_approved",
+     "execution_status": "pending_scheduling",
+     "outcome_status": "not_observed"
+    },
+    "upstream_review": null,
+    "excerpt": "[PRIOR RECORD (advice_review; decision_status: tl_approved; execution_status: pending_scheduling; outcome_status: not_observed) - history, not a standing rule.]\n# Approve a focused clipping calibration\n\n## Review context\nTwo calibration examples were submitted: A06-CAL-01 has a short audible pop with every word intelligible; A06-CAL-02 has repeated distortion across a phrase, with reviewers disagreeing about which words can be recovered.\n\n## Suggested advice\nThe prior simulated Advisor proposed rewriting the clipping FAQ to classify every continuous artifact as major.\n\n## TL response\nPriya approved a focused calibration session instead. The instruction requires impact on intelligibility, not duration alone. Use the two examples to compare the affected span and recoverable words. Preserve the current brief/intelligible minor example; hold any new threshold until the disputed recording is reviewed.\n\n## Execution and outcome\nThe session is approved but no booking, attendance or outcome is recorded here. This decision does not establish a new clipping threshold and does not resolve later examples."
+   },
+   "k:audio-multimodal-instructions@1.3:eb85357a": {
+    "evidence_id": "k:audio-multimodal-instructions@1.3:eb85357a",
+    "origin": "retrieved_source",
+    "use": "CURRENT_GUIDANCE",
+    "citation": {
+     "document_id": "knowledge_3057c26d60654a68d0b76c025ba216366dd48f3e97b64f5aae68364a45170b8a",
+     "version_id": "version_03e4c185c65cbfbe35dccab040cc429ac6887e3cb0edc4f52cb5ea5a56970a24",
+     "chunk_id": "chunk_eb85357a2c0b0e254c4f95c9d38a0bae",
+     "authoring": "audio-multimodal-instructions@1.3",
+     "title": "Audio Multimodal — Instructions (v1.3)",
+     "sections": [
+      "Overlap and transcript correspondence"
+     ],
+     "source": {
+      "batch_id": null,
+      "channel_id": null,
+      "manual_key": "audio-multimodal-instructions",
+      "message_id": null,
+      "permalink": null,
+      "project_id": "audio_multimodal",
+      "reference": null,
+      "system": "manual",
+      "thread_id": null,
+      "workspace_id": null
+     }
+    },
+    "source_type": "guideline",
+    "record_kind": "guideline",
+    "applicability": {
+     "state": "CURRENT",
+     "revision_state": "CURRENT",
+     "version_mode": "current",
+     "replaced_by": [],
+     "unverified_supersession": [],
+     "supersedes": [],
+     "enactment": null,
+     "other_revisions": []
+    },
+    "dates": {
+     "source_date": "2026-09-15T13:00:00Z",
+     "basis": "effective_at",
+     "effective_at": "2026-09-15T13:00:00Z",
+     "created_at": null,
+     "valid_until": null,
+     "expired_as_of": false,
+     "reference_time": "2026-10-02T12:00:00Z"
+    },
+    "scope": {
+     "project_id": "audio_multimodal",
+     "batch_id": null,
+     "scope": "project",
+     "batch_relation": "project_wide"
+    },
+    "authority": {
+     "role": "TEAM_LEAD",
+     "actor": "U006",
+     "actor_relation": "RECORD_AUTHORITY",
+     "approval_status": "EXPLICIT_SOURCE_MARKER",
+     "provenance": "synthetic_manual_record"
+    },
+    "authorship": {
+     "author_id": null,
+     "verified": false,
+     "basis": "NO_AUTHOR_RECORDED"
+    },
+    "recorded_states": {
+     "status": "approved",
+     "decision_status": null,
+     "execution_status": null,
+     "outcome_status": null
+    },
+    "upstream_review": null,
+    "excerpt": "## Overlap and transcript correspondence\nMark the overlapping or unintelligible interval. Keep usable portions of the clip and timestamp the affected span. Distinguish words missing from the audio from mistakes in the reference transcript."
+   },
+   "k:audio-multimodal-instructions@1.3:7a5ab59d": {
+    "evidence_id": "k:audio-multimodal-instructions@1.3:7a5ab59d",
+    "origin": "retrieved_source",
+    "use": "CURRENT_GUIDANCE",
+    "citation": {
+     "document_id": "knowledge_3057c26d60654a68d0b76c025ba216366dd48f3e97b64f5aae68364a45170b8a",
+     "version_id": "version_03e4c185c65cbfbe35dccab040cc429ac6887e3cb0edc4f52cb5ea5a56970a24",
+     "chunk_id": "chunk_7a5ab59d9fc3e6054d7e7141693ea05f",
+     "authoring": "audio-multimodal-instructions@1.3",
+     "title": "Audio Multimodal — Instructions (v1.3)",
+     "sections": [
+      "Language and repeated audio"
+     ],
+     "source": {
+      "batch_id": null,
+      "channel_id": null,
+      "manual_key": "audio-multimodal-instructions",
+      "message_id": null,
+      "permalink": null,
+      "project_id": "audio_multimodal",
+      "reference": null,
+      "system": "manual",
+      "thread_id": null,
+      "workspace_id": null
+     }
+    },
+    "source_type": "guideline",
+    "record_kind": "guideline",
+    "applicability": {
+     "state": "CURRENT",
+     "revision_state": "CURRENT",
+     "version_mode": "current",
+     "replaced_by": [],
+     "unverified_supersession": [],
+     "supersedes": [],
+     "enactment": null,
+     "other_revisions": []
+    },
+    "dates": {
+     "source_date": "2026-09-15T13:00:00Z",
+     "basis": "effective_at",
+     "effective_at": "2026-09-15T13:00:00Z",
+     "created_at": null,
+     "valid_until": null,
+     "expired_as_of": false,
+     "reference_time": "2026-10-02T12:00:00Z"
+    },
+    "scope": {
+     "project_id": "audio_multimodal",
+     "batch_id": null,
+     "scope": "project",
+     "batch_relation": "project_wide"
+    },
+    "authority": {
+     "role": "TEAM_LEAD",
+     "actor": "U006",
+     "actor_relation": "RECORD_AUTHORITY",
+     "approval_status": "EXPLICIT_SOURCE_MARKER",
+     "provenance": "synthetic_manual_record"
+    },
+    "authorship": {
+     "author_id": null,
+     "verified": false,
+     "basis": "NO_AUTHOR_RECORDED"
+    },
+    "recorded_states": {
+     "status": "approved",
+     "decision_status": null,
+     "execution_status": null,
+     "outcome_status": null
+    },
+    "upstream_review": null,
+    "excerpt": "## Language and repeated audio\nConfirm the requested language and any permitted switching before recording a language mismatch. A familiar accent or an ordinary loanword is not automatically a defect.\n\nWhen a phrase repeats, record where it occurs. If feasible, compare the downloaded file with player output. Do not call it a confirmed generation defect until the available evidence distinguishes generation from playback."
+   }
+  },
+  "card": {
+   "contract_version": "agent3-advice-card-v5",
+   "record_type": "ADVICE_CARD",
+   "card_id": "card_0a2bbf3bfda155ca37c14d174654f95f",
+   "project_id": "audio_multimodal",
+   "topic_name": "Timestamp alignment for inconsistent defect labels",
+   "card_line": "NEEDS_REVIEW",
+   "summary": "A tutor reports that the same background pop received a minor label on one task and a major label on another. A QA tutor asks both reviewers to mark the exact defect timestamp; the thread contains no response with those timestamps.",
+   "severity": {
+    "level": "MEDIUM",
+    "assessment_status": "ASSESSED",
+    "rubric_version": "severity-rubric-v3-semantic-signals",
+    "rubric_content_sha256": "eccaa31a2ab84a0aa7c005216a92fc39681e1dd10107117344948235a76673f4",
+    "rubric_project_id": null,
+    "rubric_scope": "SHARED_DEFAULT",
+    "rationale": "A tutor reports a minor-versus-major scoring difference for the same background pop. That suggests a contained QA consistency problem, without establishing a batch-wide issue or which label is correct.",
+    "matched_signals": [
+     {
+      "level": "MEDIUM",
+      "signal_index": 1,
+      "signal_text": "Conflicting interpretations that affect, or are reasonably likely to affect, how tasks are scored or handled",
+      "support": "A tutor reports that the same background pop received different severity labels on two tasks.",
+      "evidence": [
+       {
+        "kind": "slack_message",
+        "project_id": "audio_multimodal",
+        "batch_id": "audio_batch_06",
+        "scope": "project",
+        "channel_id": "C_AUDIO_GENERAL",
+        "thread_id": "1790929125.000118",
+        "message_id": "1790929125.000118",
+        "document_id": null,
+        "version_id": null,
+        "authoring_document_id": null,
+        "authoring_version": null,
+        "section": null,
+        "chunk_id": null,
+        "candidate_group_id": null,
+        "member_id": "member_2157ec41b491fc22d0831ccd",
+        "artifact": null,
+        "artifact_sha256": null,
+        "quote": null,
+        "note": "m:C_AUDIO_GENERAL:1790929125.000118"
+       }
+      ]
+     }
+    ],
+    "evidence": [
+     {
+      "kind": "slack_message",
+      "project_id": "audio_multimodal",
+      "batch_id": "audio_batch_06",
+      "scope": "project",
+      "channel_id": "C_AUDIO_GENERAL",
+      "thread_id": "1790929125.000118",
+      "message_id": "1790929125.000118",
+      "document_id": null,
+      "version_id": null,
+      "authoring_document_id": null,
+      "authoring_version": null,
+      "section": null,
+      "chunk_id": null,
+      "candidate_group_id": null,
+      "member_id": "member_2157ec41b491fc22d0831ccd",
+      "artifact": null,
+      "artifact_sha256": null,
+      "quote": null,
+      "note": "m:C_AUDIO_GENERAL:1790929125.000118"
+     }
+    ],
+    "occurrence": {
+     "affected_reporters": {
+      "status": "UNKNOWN",
+      "count": null,
+      "ids": [],
+      "basis": null,
+      "evidence": []
+     },
+     "affected_tasks": {
+      "status": "UNKNOWN",
+      "count": null,
+      "ids": [],
+      "basis": null,
+      "evidence": []
+     },
+     "relevant_threads": [
+      {
+       "project_id": "audio_multimodal",
+       "batch_id": "audio_batch_06",
+       "channel_id": "C_AUDIO_GENERAL",
+       "thread_id": "1790929125.000118",
+       "member_id": "member_2157ec41b491fc22d0831ccd"
+      }
+     ],
+     "reporting_window": {
+      "start": "2026-10-02T08:18:45.000118+00:00",
+      "end": "2026-10-02T08:19:39.000113+00:00"
+     },
+     "historical_recurrence": {
+      "status": "NOT_CHECKED",
+      "sources": [],
+      "event_series_ids": []
+     },
+     "known_denominator": null,
+     "structural": {
+      "threads": 1,
+      "messages": 2,
+      "distinct_participants": 2,
+      "duplicate_threads_ignored": 0,
+      "duplicate_messages_ignored": 0,
+      "computed_from": "topic member threads (original Slack messages)",
+      "participants_are_not_affected_reporters": true
+     },
+     "semantic_identification": "ASSESSED"
+    },
+    "inherited_from": {
+     "level": "UNKNOWN",
+     "assessment_status": "UNASSESSED",
+     "assessment_deferred_to": "AGENT3",
+     "reason": "Agent 2 performs taxonomy only."
+    }
+   },
+   "severity_is_provisional": false,
+   "resolution_status": "UNRESOLVED",
+   "recommended_action": {
+    "action_type": "POST_ALIGNMENT",
+    "draft_text": "For the background pop reported as minor on one task and major on another, please identify the two tasks and have both reviewers mark the exact timestamp where the defect occurs. A QA tutor has already asked for these timestamps. Please provide the marked examples so we can compare the labels before drawing a conclusion about severity.",
+    "scope_note": "Limit this request to the two reported examples; it does not set a general rule for background-pop severity.",
+    "label": "Post a reminder",
+    "instruction": "Ask both reviewers to identify the two tasks and mark the exact defect timestamps so the reported severity labels can be compared.",
+    "rationale": "A focused request follows up on the QA tutor's unanswered question without assuming either label is wrong or introducing a new severity threshold.",
+    "targets": [],
+    "essential_premise_ids": [
+     "claim:c1",
+     "claim:c2",
+     "claim:c3"
+    ],
+    "source": "DRAFT"
+   },
+   "reasoning": "What the evidence shows: A tutor reports that the same background pop received a minor label on one task and a major label on another. A QA tutor asks whether both reviewers can mark the exact timestamp where the defect occurs. The supplied thread contains neither task identifiers for the tutor's two examples nor a response providing the timestamps requested by a QA tutor. The current scoring FAQ describes brief, localized clipping with clear speech as minor and asks for QA review of intelligibility and scope when artifacts are continuous or their impact is unclear; it does not supply a blanket severity rule for background pops. The earlier clipping review records approval for a focused comparison using affected spans and recoverable words, with scheduling pending and no outcome observed; it explicitly establishes no new clipping threshold and does not resolve later examples. Thread status, read from each thread's own messages: unresolved ×1. Agent 1's earlier labels (an input, not evidence): unresolved ×1. Severity was recalculated from the supported evidence only. 1 advisor statement was not supported by the evidence and not shown.",
+   "supporting_sources": [
+    {
+     "kind": "knowledge_source",
+     "project_id": "audio_multimodal",
+     "batch_id": null,
+     "scope": "project",
+     "channel_id": null,
+     "thread_id": null,
+     "message_id": null,
+     "document_id": "knowledge_1f550e377f9c310f57f03e5bf482f810999d822a9cf4b1db3be5f2557678f15e",
+     "version_id": "version_66a170bbd46011e80d06da6d0bf5ec8b73486a84c13e015f60222fa711e05727",
+     "authoring_document_id": "audio-multimodal-faq",
+     "authoring_version": "1.1",
+     "section": "Scoring",
+     "chunk_id": "chunk_e9bcf43a020b06861273547bf398f71b",
+     "candidate_group_id": null,
+     "member_id": null,
+     "artifact": null,
+     "artifact_sha256": null,
+     "quote": null,
+     "note": "k:audio-multimodal-faq@1.1:e9bcf43a (CURRENT_GUIDANCE; CURRENT)"
+    },
+    {
+     "kind": "knowledge_source",
+     "project_id": "audio_multimodal",
+     "batch_id": "audio_batch_06",
+     "scope": "project",
+     "channel_id": null,
+     "thread_id": null,
+     "message_id": null,
+     "document_id": "knowledge_6a152f1b9efc21986efbccb23be087331d132add2411314d0f7f8ebd16d77379",
+     "version_id": "version_03bfa2fed5ed378d60a9718b778417d5de2611cc80e21e97ae5f0742d9d95e07",
+     "authoring_document_id": "audio-clipping-calibration-approval",
+     "authoring_version": "1.0",
+     "section": "Review context",
+     "chunk_id": "chunk_d0b0c638943fda54e86fecc7141d6de8",
+     "candidate_group_id": null,
+     "member_id": null,
+     "artifact": null,
+     "artifact_sha256": null,
+     "quote": null,
+     "note": "k:audio-clipping-calibration-approval@1.0:d0b0c638 (PRIOR_DECISION; CURRENT)"
+    },
+    {
+     "kind": "slack_message",
+     "project_id": "audio_multimodal",
+     "batch_id": "audio_batch_06",
+     "scope": "project",
+     "channel_id": "C_AUDIO_GENERAL",
+     "thread_id": "1790929125.000118",
+     "message_id": "1790929125.000118",
+     "document_id": null,
+     "version_id": null,
+     "authoring_document_id": null,
+     "authoring_version": null,
+     "section": null,
+     "chunk_id": null,
+     "candidate_group_id": null,
+     "member_id": "member_2157ec41b491fc22d0831ccd",
+     "artifact": null,
+     "artifact_sha256": null,
+     "quote": null,
+     "note": "m:C_AUDIO_GENERAL:1790929125.000118"
+    },
+    {
+     "kind": "slack_message",
+     "project_id": "audio_multimodal",
+     "batch_id": "audio_batch_06",
+     "scope": "project",
+     "channel_id": "C_AUDIO_GENERAL",
+     "thread_id": "1790929125.000118",
+     "message_id": "1790929179.000113",
+     "document_id": null,
+     "version_id": null,
+     "authoring_document_id": null,
+     "authoring_version": null,
+     "section": null,
+     "chunk_id": null,
+     "candidate_group_id": null,
+     "member_id": "member_2157ec41b491fc22d0831ccd",
+     "artifact": null,
+     "artifact_sha256": null,
+     "quote": null,
+     "note": "m:C_AUDIO_GENERAL:1790929179.000113"
+    }
+   ],
+   "related_threads": [
+    {
+     "project_id": "audio_multimodal",
+     "batch_id": "audio_batch_06",
+     "channel_id": "C_AUDIO_GENERAL",
+     "thread_id": "1790929125.000118",
+     "member_id": "member_2157ec41b491fc22d0831ccd",
+     "permalink": null,
+     "display_reference": "1790929125.000118",
+     "label": "#audio-multimodal-general, 2026-10-02, started by a tutor: \"Same background pop got minor on one task and major on another.\"",
+     "opening_text": "Same background pop got minor on one task and major on another."
+    }
+   ],
+   "confidence": 0.9,
+   "confidence_band": "HIGH",
+   "needs_review_reasons": [
+    {
+     "code": "GROUNDING_FAILURE",
+     "detail": "Withheld from this card: reporter:U020: UNSUPPORTED",
+     "obligation_ids": [],
+     "evidence": []
+    }
+   ],
+   "inherited_flags": [],
+   "checks": {
+    "grounding": "FAILED",
+    "temporal_conflict": "NONE_FOUND",
+    "open_confirmation": "NONE"
+   },
+   "lineage": {
+    "agent3_run_id": "agent3overnight_bdc099a76ee76bdc391050df2aded225",
+    "handoff_contract": "agent2-taxonomy-handoff-v2",
+    "agent2_export_sha256": "6f1f56bf5a5b1f02287d7ac958dc205c05cc9e0ea3e6d5f3fdd7279da0c9e1e7",
+    "agent2_schema_version": 8,
+    "candidate_group_id": "cluster_797c816fbcc6ccc1",
+    "topic_id": "cluster_797c816fbcc6ccc1/topic_1",
+    "member_ids": [
+     "member_2157ec41b491fc22d0831ccd"
+    ],
+    "project_id": "audio_multimodal",
+    "batch_id": "audio_batch_06"
+   },
+   "review_notes": [
+    "Some advisor statements were not supported by the evidence and are not shown."
+   ],
+   "details": [
+    "The tutor's report does not identify the two tasks, so the examples still need to be identified for comparison.",
+    "An earlier clipping review records approval for a focused comparison of affected spans and recoverable words, but records no session outcome and establishes no new severity threshold."
+   ],
+   "next_step": {
+    "status": "ACTION_RECOMMENDED",
+    "rationale": "A focused request follows up on the QA tutor's unanswered question without assuming either label is wrong or introducing a new severity threshold.",
+    "explanation": null
+   },
+   "briefing": {
+    "status": "IN_BRIEFING",
+    "relevance": "PROJECT",
+    "label_id": "rel_cluster_797c816fbcc6ccc1_topic_1",
+    "label_source": "DEVELOPER_AUDIT_2026-11-05 (prepared by the coding assistant from the saved source threads; not confirmed by a team lead)",
+    "kept_because": []
+   },
+   "outstanding_step": null,
+   "derivation": {
+    "policy_version": "briefing-routing-v1",
+    "provenance": "OFFLINE_POLICY_APPLICATION",
+    "text_provenance": "PARENT_RUN_JUDGMENTS",
+    "parent_run": "data/experiments/threadsense_full_v1/stages/agent3/overnight_run",
+    "parent_run_instance": "4a48d67e4d8322cf6912e26032663b41fd5f0447103ed8081e5581b3d3183ff8",
+    "parent_card_id": "card_83652420126a4f673f0ecb69980a5419",
+    "parent_card_sha256": "b301050a74ec1e795d461b7da21b7d302fcce61a619ac21429653efb0d3cbf78",
+    "parent_contract_version": "agent3-advice-card-v4",
+    "changes": []
+   }
+  },
+  "review_items": [],
+  "coverage": {
+   "group_members_outside_this_card": [],
+   "uncarried_obligations": []
+  },
+  "budget": {
+   "consumed": {
+    "retrieval_calls": 1,
+    "model_calls": 2
+   },
+   "limits": {
+    "model_calls_per_topic": 4,
+    "model_calls_total": 28,
+    "retrieval_calls_per_topic": 6,
+    "retrieval_calls_total": 42
+   }
+  },
+  "diagnostics": [
+   {
+    "code": "WITHHELD_STATEMENT",
+    "statement_id": "reporter:U020",
+    "kind": "AFFECTED_REPORTER",
+    "text": "U020 reports, in their own cited message, being affected by this problem.",
+    "verdict": "UNSUPPORTED",
+    "rationale": "U020 reports a label discrepancy but does not state that either task was theirs or otherwise report personally being affected.",
+    "blocking": true
+   }
+  ]
+ },
+ "derivation": {
+  "policy_version": "briefing-routing-v1",
+  "parent_topic_file": "data/experiments/threadsense_full_v1/stages/agent3/overnight_run/topics/topic__cluster_797c816fbcc6ccc1__topic_1.json",
+  "parent_topic_sha256": "1a191d8c48a0cbbbaa0350fd9f5c29931cb9eca07ee0031b8c5e3b0996096545",
+  "replaced": [
+   "result.card",
+   "workflow.card_id",
+   "workflow.card_line"
+  ]
+ }
+}

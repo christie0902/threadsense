@@ -17,6 +17,10 @@ from threadsense.agents.advice_contracts import GROUPING_LABEL
 from threadsense.dashboard.checks import build_checks
 
 REVIEW_VIEW_VERSION = 'dashboard-review-view-v3'
+STEP_ITEMS = {'OPEN_FOLLOW_UP': ('MISSING', 'A related thread is still open', 'Related threads'),
+              'NO_ACTION_NOT_SUPPORTED': ('DISPUTED', 'No-action choice needs review', 'Next step'),
+              'RECOMMENDATION_WITHHELD': ('DISPUTED', 'Recommendation needs review', 'Recommended action'),
+              'NO_RECOMMENDATION': ('MISSING', 'No recommendation available', 'Next step')}
 REVIEW_NOTE_PREFIX = 'Still needs review: '
 
 # Plain-language notes that assemble_card adds for each review reason (advisor_checks.assemble_card). They repeat the
@@ -28,6 +32,8 @@ REASON_NOTES = (
     r'Sources disagree on a point, and the records do not settle which applies', r'Some advisor statements were not supported',
     r"The advisor's statements could not be checked against the evidence", r'Open question: ',
     r'The evidence supports more than one option and none is clearly better', r'Research on ', r'The advisor did not fully check ',
+    r'No-action choice needs review: ', r'Recommendation needs review: ', r'No recommendation is available for this topic\.$',
+    r'A related thread is still open; see the (?:outstanding step|pending follow-up)\.$',
     r'The evidence is not enough to recommend an action\.$', r'Some evidence the advisor needed is missing\.$',
     r'Severity could not be established from the supported evidence\.$', r'The [a-z ]+ step did not complete',
     r'Some card text contains a name or internal identifier',
@@ -262,6 +268,9 @@ def _other_item(reason):
     if detail.startswith('Unresolved action choice'):
         return {'category': 'DECISION', 'title': 'Choose between closely matched options', 'field': 'Recommended action',
                 'check': 'The evidence supports more than one option and neither is preferred; the options are shown together.'}
+    if detail.startswith('Observation not established: '):
+        return {'category': 'DECISION', 'title': 'No supported next step', 'field': 'Next step',
+                'check': "The card cannot be an observation without a supported no-action reason; decide the next step."}
     if detail.startswith('Internal identifier or personal name'):
         return {'category': 'OTHER', 'title': 'Check the wording', 'field': 'Card text',
                 'check': 'Some card text contains a name or internal identifier.'}
@@ -296,6 +305,9 @@ def review_view(card, result=None, queue=(), provenance=None):
             item = _open_question_item(reason, result, links)
         elif code == 'LOW_CONFIDENCE':
             item = {'category': 'OTHER', 'title': "The advisor's confidence is low", 'field': 'Whole card', 'check': reason['detail']}
+        elif code in STEP_ITEMS:  # briefing_policy (AdviceCard v5): why a card without a supported next step stays here.
+            category, title, field = STEP_ITEMS[code]
+            item = {'category': category, 'title': title, 'field': field, 'check': reason['detail']}
         else:
             item = _other_item(reason)
         items.append({'code': code, 'links': [], 'unavailable': None, **item})

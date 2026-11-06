@@ -1,0 +1,2237 @@
+{
+ "work_item": {
+  "candidate_group_id": "cluster_0a235879f2d3cce1",
+  "project_id": "response_preference",
+  "batch_id": "rp_batch_15",
+  "work_id": "topic:cluster_0a235879f2d3cce1/topic_1",
+  "kind": "TOPIC",
+  "topic_id": "cluster_0a235879f2d3cce1/topic_1",
+  "topic_name": "Reviewer calibration consistency",
+  "member_ids": [
+   "member_7f5d04f71b0576b7ae8bd637"
+  ],
+  "pilot_scenario": null,
+  "in_scope": true
+ },
+ "workflow": {
+  "outcome": "CARD",
+  "card_id": "card_05113d580dd935f5b4b429701ae70113",
+  "card_line": "RECOMMENDED_ACTION",
+  "grounding": "PASSED",
+  "stage_failures": [],
+  "semantic_source": "LIVE_MODEL"
+ },
+ "result": {
+  "scenario": {
+   "id": "topic:cluster_0a235879f2d3cce1/topic_1",
+   "candidate_group_id": "cluster_0a235879f2d3cce1",
+   "focus": "Reviewer calibration consistency",
+   "topic_id": "cluster_0a235879f2d3cce1/topic_1"
+  },
+  "status": "CARD",
+  "topic": {
+   "project_id": "response_preference",
+   "batch_id": "rp_batch_15",
+   "candidate_group_id": "cluster_0a235879f2d3cce1",
+   "topic_id": "cluster_0a235879f2d3cce1/topic_1",
+   "topic_label": "Reviewer calibration consistency",
+   "projection_gap": null,
+   "as_of": "2026-10-02T12:00:00Z",
+   "member_ids": [
+    "member_7f5d04f71b0576b7ae8bd637"
+   ],
+   "initial_query": "Reviewer calibration consistency. What should be done about reviewers consistently picking A for nearly identical answers?"
+  },
+  "retrieval_trace": [
+   {
+    "step": 1,
+    "purpose": "initial_current_guidance",
+    "gap_id": null,
+    "query": "Reviewer calibration consistency. What should be done about reviewers consistently picking A for nearly identical answers?",
+    "source_types": [
+     "guideline",
+     "faq",
+     "decision",
+     "announcement"
+    ],
+    "version_mode": "current",
+    "as_of": "2026-10-02T12:00:00Z",
+    "batch": "rp_batch_15",
+    "top_k": 5,
+    "status": "DONE",
+    "mode": "hybrid",
+    "use_mmr": true,
+    "mmr_lambda": 0.9,
+    "result_ids": [
+     "k:rp-tie-calibration-outcome@1.0:f678161f",
+     "k:rp-tie-calibration-approval@1.0:99b5da48",
+     "k:response-preference-instructions@1.1:8a796eb0",
+     "k:rp-tie-calibration-post@1.0:4a3c786f",
+     "k:response-preference-faq@1.1:4683724f"
+    ],
+    "new_evidence_ids": [
+     "k:rp-tie-calibration-outcome@1.0:f678161f",
+     "k:rp-tie-calibration-approval@1.0:99b5da48",
+     "k:response-preference-instructions@1.1:8a796eb0",
+     "k:rp-tie-calibration-post@1.0:4a3c786f",
+     "k:response-preference-faq@1.1:4683724f"
+    ],
+    "eligible_chunks": 28,
+    "added": []
+   }
+  ],
+  "retrieval_notes": {
+   "withheld_by_version": [],
+   "version_diagnostics": []
+  },
+  "follow_ups": [],
+  "unfilled_gaps": [
+   {
+    "gap_id": "g1",
+    "need": "OTHER",
+    "description": "The disputed task references, response pairs, relevant prompt requirements and both rationales are not included in the thread excerpts. Collect these from the tutors for the proposed review; this is missing case material, not a need for additional policy research.",
+    "follow_up": null
+   }
+  ],
+  "model_calls": [
+   {
+    "stage": "draft",
+    "schema": "AdvisorDraft",
+    "agent1_context": {
+     "sha256": "c16902182599384ba11ff9834e208ee0ef604ed8b34bd2640dd3fcbd7b05d81c",
+     "boundary": "IN_HTTP_BODY"
+    },
+    "raw": "{\n  \"contract_version\": \"agent3-advisor-draft-v11\",\n  \"summary\": null,\n  \"summary_sentences\": [\n    {\n      \"text\": \"A tutor reports reviewers choosing A for nearly identical answers; another tutor reports a tie accepted one day and a similar pair marked wrong the next.\",\n      \"support_claim_ids\": [\"c1\", \"c2\"],\n      \"depends_on\": []\n    },\n    {\n      \"text\": \"The thread contains a suggestion to check calibration, but no completed review or resolution.\",\n      \"support_claim_ids\": [\"c2\", \"c3\"],\n      \"depends_on\": []\n    }\n  ],\n  \"detail_sentences\": [\n    {\n      \"text\": \"The current FAQ asks for disputed pairs, relevant prompt requirements and both rationales, followed by a check that the cases are comparable.\",\n      \"support_claim_ids\": [\"c4\"],\n      \"depends_on\": [],\n      \"summary_depends_on\": []\n    },\n    {\n      \"text\": \"An earlier approval covered a batch-14 calibration exercise, not a standing policy change.\",\n      \"support_claim_ids\": [\"c6\"],\n      \"depends_on\": [],\n      \"summary_depends_on\": []\n    },\n    {\n      \"text\": \"The earlier follow-up records improved agreement in the reviewed sample after calibration, with disagreement remaining on one sampled pair.\",\n      \"support_claim_ids\": [\"c7\"],\n      \"depends_on\": [],\n      \"summary_depends_on\": []\n    }\n  ],\n  \"reasoning\": \"The reported disagreement concerns how comparable answers are scored, so a scoped calibration review fits the current FAQ better than changing the preference rule. The earlier exercise provides relevant history, not authority for batch-15 handling. The available guidance supports requesting the comparison material now; no further source research is needed before proposing that step, although the actual pairs and rationales still need to be collected.\",\n  \"claims\": [\n    {\n      \"claim_id\": \"c1\",\n      \"kind\": \"INCIDENT_FACT\",\n      \"text\": \"A tutor reports that some reviewers keep picking A for nearly identical answers.\",\n      \"evidence_ids\": [\"m:C_RP_GENERAL:1790867752.000038\"],\n      \"attributions\": [\n        {\n          \"user_id\": \"U018\",\n          \"relation\": \"AUTHOR\",\n          \"evidence_id\": \"m:C_RP_GENERAL:1790867752.000038\"\n        }\n      ],\n      \"quote\": null,\n      \"quote_kind\": \"PARAPHRASE\",\n      \"material\": true\n    },\n    {\n      \"claim_id\": \"c2\",\n      \"kind\": \"INCIDENT_FACT\",\n      \"text\": \"A tutor reports that a QA reviewer accepted a tie yesterday while a similar pair was marked wrong today, and suggests checking calibration for two disputed tasks rather than rewriting policy on that basis.\",\n      \"evidence_ids\": [\"m:C_RP_GENERAL:1790867801.000113\"],\n      \"attributions\": [\n        {\n          \"user_id\": \"U010\",\n          \"relation\": \"AUTHOR\",\n          \"evidence_id\": \"m:C_RP_GENERAL:1790867801.000113\"\n        }\n      ],\n      \"quote\": null,\n      \"quote_kind\": \"PARAPHRASE\",\n      \"material\": true\n    },\n    {\n      \"claim_id\": \"c3\",\n      \"kind\": \"INFERENCE\",\n      \"text\": \"The tutor's report remains unresolved in the available thread: a tutor suggests a calibration check, but the messages do not record a completed review or resolution.\",\n      \"evidence_ids\": [\n        \"m:C_RP_GENERAL:1790867752.000038\",\n        \"m:C_RP_GENERAL:1790867801.000113\"\n      ],\n      \"attributions\": [\n        {\n          \"user_id\": \"U018\",\n          \"relation\": \"AUTHOR\",\n          \"evidence_id\": \"m:C_RP_GENERAL:1790867752.000038\"\n        },\n        {\n          \"user_id\": \"U010\",\n          \"relation\": \"AUTHOR\",\n          \"evidence_id\": \"m:C_RP_GENERAL:1790867801.000113\"\n        }\n      ],\n      \"quote\": null,\n      \"quote_kind\": \"PARAPHRASE\",\n      \"material\": true\n    },\n    {\n      \"claim_id\": \"c4\",\n      \"kind\": \"GUIDANCE\",\n      \"text\": \"The current FAQ says that avoiding a tie requires a meaningful user benefit; cosmetic phrasing alone usually does not provide one. For reversals on similar pairs, share the pairs, relevant prompt requirements and both rationales for calibration, check comparability, and do not generalize an answer beyond its matching scope.\",\n      \"evidence_ids\": [\"k:response-preference-faq@1.1:4683724f\"],\n      \"attributions\": [],\n      \"quote\": null,\n      \"quote_kind\": \"PARAPHRASE\",\n      \"material\": true\n    },\n    {\n      \"claim_id\": \"c5\",\n      \"kind\": \"GUIDANCE\",\n      \"text\": \"The current instructions require retaining both rationales and relevant evidence when comparable pairs receive different judgments; an answer about one pair does not automatically establish a universal preference rule.\",\n      \"evidence_ids\": [\"k:response-preference-instructions@1.1:8a796eb0\"],\n      \"attributions\": [],\n      \"quote\": null,\n      \"quote_kind\": \"PARAPHRASE\",\n      \"material\": true\n    },\n    {\n      \"claim_id\": \"c6\",\n      \"kind\": \"HISTORY\",\n      \"text\": \"The earlier approval records authorization for an announcement and an eight-pair calibration exercise in batch 14, using the existing meaningful-quality-difference criterion rather than a new numerical threshold; the approval itself did not record completion.\",\n      \"evidence_ids\": [\"k:rp-tie-calibration-approval@1.0:99b5da48\"],\n      \"attributions\": [],\n      \"quote\": null,\n      \"quote_kind\": \"PARAPHRASE\",\n      \"material\": true\n    },\n    {\n      \"claim_id\": \"c7\",\n      \"kind\": \"HISTORY\",\n      \"text\": \"The earlier batch-14 follow-up records completed calibration and improved agreement on the same sampled pairs, while one sampled pair still received Tie and A judgments; it is history, not a standing rule.\",\n      \"evidence_ids\": [\"k:rp-tie-calibration-outcome@1.0:f678161f\"],\n      \"attributions\": [],\n      \"quote\": null,\n      \"quote_kind\": \"PARAPHRASE\",\n      \"material\": true\n    }\n  ],\n  \"gaps\": [\n    {\n      \"gap_id\": \"g1\",\n      \"need\": \"OTHER\",\n      \"description\": \"The disputed task references, response pairs, relevant prompt requirements and both rationales are not included in the thread excerpts. Collect these from the tutors for the proposed review; this is missing case material, not a need for additional policy research.\",\n      \"follow_up\": null\n    }\n  ],\n  \"evidence_sufficiency\": \"SUFFICIENT\",\n  \"proposed_action\": {\n    \"action_type\": \"SCHEDULE_ALIGNMENT\",\n    \"intervention_need\": {\n      \"kind\": \"OPERATIONAL_PROBLEM\",\n      \"statement\": \"The tutors report inconsistent preference and tie judgments that warrant comparing the disputed cases before drawing a broader rule.\",\n      \"evidence_ids\": [\n        \"m:C_RP_GENERAL:1790867752.000038\",\n        \"m:C_RP_GENERAL:1790867801.000113\"\n      ]\n    },\n    \"instruction\": \"Arrange a scoped calibration review of the disputed pairs, asking the tutors to supply the comparison material required by the current FAQ.\",\n    \"rationale\": \"The current FAQ directly supports comparing disputed pairs and both rationales before generalizing. The earlier exercise offers a useful precedent, but its approval was limited to batch 14.\",\n    \"draft_text\": \"Please bring the disputed pairs to a scoped calibration review. A tutor reports A choices for nearly identical answers; a tutor also reports an accepted tie followed by a similar pair marked wrong.\\n\\nFor the review, provide the task references, both answers, relevant prompt requirements and both rationales. We will check whether the cases are comparable and whether any difference offers a meaningful benefit to the user. Cosmetic phrasing alone usually does not. Retain the supporting evidence, and do not generalize a conclusion about one pair beyond its matching scope.\",\n    \"scope_note\": \"Limit the review to the disputed pairs and the existing meaningful-benefit criterion; the reports alone do not establish that the cases are comparable or that either judgment is wrong.\",\n    \"support_claim_ids\": [\"c1\", \"c2\", \"c4\", \"c5\"],\n    \"targets\": [],\n    \"context_claim_ids\": [\"c3\", \"c6\", \"c7\"]\n  },\n  \"severity\": {\n    \"level\": \"MEDIUM\",\n    \"rationale\": \"A tutor describes different QA outcomes for similar pairs, indicating a contained scoring-consistency problem that warrants comparison rather than a demonstrated batch-wide failure.\",\n    \"signals\": [\n      {\n        \"level\": \"MEDIUM\",\n        \"signal_index\": 1,\n        \"signal_text\": \"Conflicting interpretations that affect, or are reasonably likely to affect, how tasks are scored or handled\",\n        \"support\": \"A tutor reports that a tie was accepted while a similar pair was later marked wrong, indicating potentially inconsistent scoring of comparable answers.\",\n        \"evidence_ids\": [\"m:C_RP_GENERAL:1790867801.000113\"]\n      }\n    ],\n    \"affected_reporters\": [],\n    \"recurrence\": \"FOUND\",\n    \"recurrence_evidence_ids\": [\n      \"k:rp-tie-calibration-approval@1.0:99b5da48\",\n      \"k:rp-tie-calibration-outcome@1.0:f678161f\"\n    ],\n    \"reported_recurrence_evidence_ids\": [\n      \"m:C_RP_GENERAL:1790867752.000038\",\n      \"m:C_RP_GENERAL:1790867801.000113\"\n    ]\n  },\n  \"confidence\": 0.9,\n  \"open_confirmation\": \"NONE\",\n  \"open_question\": null,\n  \"open_question_evidence_ids\": [],\n  \"source_conflicts\": [],\n  \"announcement_assessments\": [\n    {\n      \"evidence_id\": \"k:rp-tie-calibration-post@1.0:4a3c786f\",\n      \"relevant\": false,\n      \"directive\": true,\n      \"directive_quote\": \"Bring both rationales for disputed pairs to the eight-pair calibration review.\",\n      \"rationale\": \"The announcement directs a batch-14 exercise, not handling for batch 15. It is historical context and is not used as current guidance or as a destination for these reports.\"\n    }\n  ],\n  \"resolution\": [\n    {\n      \"member_id\": \"member_7f5d04f71b0576b7ae8bd637\",\n      \"state\": \"UNRESOLVED\",\n      \"evidence_ids\": [\n        \"m:C_RP_GENERAL:1790867752.000038\",\n        \"m:C_RP_GENERAL:1790867801.000113\"\n      ],\n      \"basis\": \"The tutor reports reviewer inconsistency, and a tutor suggests checking calibration. The available thread records no completed comparison or resolution.\"\n    }\n  ],\n  \"coverage\": [\n    {\n      \"need\": \"CURRENT_GUIDANCE\",\n      \"status\": \"COVERED\",\n      \"evidence_ids\": [\n        \"k:response-preference-instructions@1.1:8a796eb0\",\n        \"k:response-preference-faq@1.1:4683724f\"\n      ],\n      \"note\": \"The current instructions and FAQ cover disputed comparable pairs, required comparison material and limits on generalizing conclusions.\",\n      \"gap_id\": null\n    },\n    {\n      \"need\": \"ANNOUNCEMENTS\",\n      \"status\": \"COVERED\",\n      \"evidence_ids\": [\"k:rp-tie-calibration-post@1.0:4a3c786f\"],\n      \"note\": \"The retrieved announcement was assessed and is limited to the earlier batch-14 exercise; the recommendation does not depend on extending it.\",\n      \"gap_id\": null\n    },\n    {\n      \"need\": \"PRIOR_DECISIONS\",\n      \"status\": \"COVERED\",\n      \"evidence_ids\": [\n        \"k:rp-tie-calibration-approval@1.0:99b5da48\",\n        \"k:rp-tie-calibration-outcome@1.0:f678161f\"\n      ],\n      \"note\": \"The earlier approval and follow-up establish the exercise's limited scope and its recorded sample outcome, without making it current policy.\",\n      \"gap_id\": null\n    },\n    {\n      \"need\": \"MEMBER_QUESTIONS\",\n      \"status\": \"COVERED\",\n      \"evidence_ids\": [\n        \"m:C_RP_GENERAL:1790867752.000038\",\n        \"m:C_RP_GENERAL:1790867801.000113\"\n      ],\n      \"note\": \"The thread contains reports and a tutor's suggestion to check calibration, rather than an explicit handling question or a reference to an earlier workaround.\",\n      \"gap_id\": null\n    }\n  ],\n  \"review_note\": null,\n  \"action_choice\": null\n}",
+    "raw_sha256": "622a8b3afa67596436b56a5c6dcafb7501bb0f927dffbddd16b464aabf271619",
+    "http_requests": {
+     "sent": 1,
+     "blocked": 0,
+     "hosts": [
+      "api.openai.com"
+     ],
+     "responses": [
+      {
+       "status_code": 200,
+       "seconds": 46.889,
+       "model": "gpt-6.1-sol",
+       "usage": {
+        "prompt_tokens": 11336,
+        "completion_tokens": 3324,
+        "total_tokens": 14660,
+        "prompt_tokens_details": {
+         "cached_tokens": 0,
+         "cache_write_tokens": 11333,
+         "audio_tokens": 0
+        },
+        "completion_tokens_details": {
+         "reasoning_tokens": 487,
+         "audio_tokens": 0,
+         "accepted_prediction_tokens": 0,
+         "rejected_prediction_tokens": 0
+        }
+       },
+       "finish_reasons": [
+        "stop"
+       ]
+      }
+     ],
+     "input_tokens": 11342,
+     "refused": null,
+     "charged_usd": 0.055912
+    },
+    "input_tokens_estimate": 11342,
+    "status": "OK"
+   },
+   {
+    "stage": "grounding",
+    "schema": "GroundingJudgment",
+    "raw": "{\n  \"contract_version\": \"agent3-grounding-judgment-v5\",\n  \"verdicts\": [\n    {\n      \"statement_id\": \"claim:c1\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"U018 is a tutor and directly reports that some reviewers keep choosing A for nearly identical answers.\"\n    },\n    {\n      \"statement_id\": \"claim:c2\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"U010 reports the contrasting QA outcomes and explicitly suggests checking calibration for the two disputed tasks rather than rewriting policy.\"\n    },\n    {\n      \"statement_id\": \"claim:c3\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The complete available thread contains the report and calibration suggestion, with no completed comparison or resolution.\"\n    },\n    {\n      \"statement_id\": \"claim:c4\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The current FAQ states the meaningful-benefit criterion, qualifies cosmetic phrasing, and directs sharing pairs, prompt constraints and both rationales while checking comparability and scope.\"\n    },\n    {\n      \"statement_id\": \"claim:c5\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The current instructions explicitly require retaining both rationales and relevant evidence and warn against turning a scoped answer into a universal rule.\"\n    },\n    {\n      \"statement_id\": \"claim:c6\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The prior approval authorizes the announcement and eight-pair batch-14 exercise under the existing criterion, rejects a new numerical threshold, and does not record completion.\"\n    },\n    {\n      \"statement_id\": \"claim:c7\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The historical follow-up records completed calibration and improved agreement on the same sampled pairs, with RP14-C08 still receiving Tie and A judgments.\"\n    },\n    {\n      \"statement_id\": \"summary:s1\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The sentence accurately distinguishes the two tutors and preserves what each reported.\"\n    },\n    {\n      \"statement_id\": \"summary:s2\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The available thread includes a calibration suggestion but no completed review or resolution.\"\n    },\n    {\n      \"statement_id\": \"detail:d1\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The current FAQ requests the pairs, relevant prompt constraints and both rationales and calls for checking comparability.\"\n    },\n    {\n      \"statement_id\": \"detail:d2\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The approval expressly limits itself to the batch-14 exercise and describes calibration of an existing criterion rather than a policy change.\"\n    },\n    {\n      \"statement_id\": \"detail:d3\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The follow-up table shows improved agreement after calibration and remaining disagreement on one sampled pair.\"\n    },\n    {\n      \"statement_id\": \"action\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"A scoped calibration review is justified by the reported judgment discrepancy and the current FAQ. The requested comparison materials, evidence retention, meaningful-benefit test and scope limits follow from current guidance. No unsupported concrete intake route or batch-14 authority is asserted.\"\n    },\n    {\n      \"statement_id\": \"action:rationale\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The FAQ supports comparing disputed cases and rationales before generalizing, and the earlier exercise is accurately treated as a precedent whose approval covered only batch 14.\"\n    },\n    {\n      \"statement_id\": \"action:need\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The unresolved reports of potentially inconsistent judgments present a concrete calibration problem requiring comparison and coordination, not merely an opportunity for a reminder.\"\n    },\n    {\n      \"statement_id\": \"resolution:member_7f5d04f71b0576b7ae8bd637\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The complete supplied thread records the inconsistency report and calibration suggestion without a completed comparison or resolution.\"\n    },\n    {\n      \"statement_id\": \"severity:rationale\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The reported contrasting QA outcomes support a scoped scoring-consistency concern. The evidence does not demonstrate a batch-wide failure, and the statement calls for comparison rather than presuming which judgment is wrong.\"\n    },\n    {\n      \"statement_id\": \"severity:signal:MEDIUM[1]\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The reported acceptance of a tie and rejection of a similar pair directly concerns scoring consistency. The statement appropriately describes the inconsistency as potential.\"\n    },\n    {\n      \"statement_id\": \"severity:recurrence\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The earlier approval and follow-up document prior tie/preference calibration difficulties, including differing reviewer judgments on the same sampled pairs.\"\n    },\n    {\n      \"statement_id\": \"severity:reported_recurrence\",\n      \"verdict\": \"PARTIALLY_SUPPORTED\",\n      \"rationale\": \"U018's statement that reviewers 'keep picking A' supports reported repetition. U010 reports contrasting outcomes across two days but does not independently say that this inconsistency is happening again, so the plural recurrence attribution is not fully established.\"\n    }\n  ],\n  \"action_sufficiency\": {\n    \"verdict\": \"SUFFICIENT\",\n    \"essential_statement_ids\": [\n      \"claim:c1\",\n      \"claim:c2\",\n      \"claim:c4\",\n      \"claim:c5\"\n    ],\n    \"rationale\": \"The supported incident reports justify a limited calibration review. The supported current guidance justifies its comparison materials, meaningful-benefit criterion, evidence retention and limits on generalization. The action does not require historical approval to apply to batch 15 and does not presume that comparability or an erroneous judgment has already been established.\"\n  },\n  \"alternative_sufficiency\": [],\n  \"source_consistency\": {\n    \"assessed_evidence_ids\": [\n      \"k:response-preference-instructions@1.1:8a796eb0\",\n      \"k:response-preference-faq@1.1:4683724f\"\n    ],\n    \"relations\": [\n      {\n        \"evidence_ids\": [\n          \"k:response-preference-instructions@1.1:8a796eb0\",\n          \"k:response-preference-faq@1.1:4683724f\"\n        ],\n        \"relation\": \"AGREE\",\n        \"point\": \"Use both rationales and relevant evidence for scoped calibration, without treating a conclusion about one pair as a universal preference rule.\",\n        \"disagreement_scope\": null,\n        \"rationale\": \"The instructions require retaining rationales and evidence and preserving scope; the FAQ requires sharing the comparison materials, checking comparability and matching scope before generalizing. These requirements are consistent. The batch-14 announcement does not govern handling for this batch-15 topic and is excluded from the governing-source comparison.\"\n      }\n    ],\n    \"declared_conflict_checks\": []\n  }\n}",
+    "raw_sha256": "d3b4ffb5f07c2c3effb8565d5d2bebbc54a2369c4edceccb1bc57259d6de94aa",
+    "http_requests": {
+     "sent": 1,
+     "blocked": 0,
+     "hosts": [
+      "api.openai.com"
+     ],
+     "responses": [
+      {
+       "status_code": 200,
+       "seconds": 27.865,
+       "model": "gpt-6.1-sol",
+       "usage": {
+        "prompt_tokens": 8416,
+        "completion_tokens": 1765,
+        "total_tokens": 10181,
+        "prompt_tokens_details": {
+         "cached_tokens": 0,
+         "cache_write_tokens": 8413,
+         "audio_tokens": 0
+        },
+        "completion_tokens_details": {
+         "reasoning_tokens": 249,
+         "audio_tokens": 0,
+         "accepted_prediction_tokens": 0,
+         "rejected_prediction_tokens": 0
+        }
+       },
+       "finish_reasons": [
+        "stop"
+       ]
+      }
+     ],
+     "input_tokens": 8422,
+     "refused": null,
+     "charged_usd": 0.034482
+    },
+    "input_tokens_estimate": 8422,
+    "status": "OK"
+   }
+  ],
+  "agent1_context": [
+   {
+    "sha256": "c16902182599384ba11ff9834e208ee0ef604ed8b34bd2640dd3fcbd7b05d81c",
+    "content": [
+     {
+      "member_id": "member_7f5d04f71b0576b7ae8bd637",
+      "thread_id": "1790867752.000038",
+      "summary": "The thread discusses inconsistencies in reviewer decisions, specifically that some reviewers are consistently selecting option A for nearly identical answers. Omar raises the issue, while Avery suggests that the discrepancies warrant a calibration check rather than a broader policy change, indicating that two disputed tasks should not lead to a policy rewrite.",
+      "central_question": "What should be done about reviewers consistently picking A for nearly identical answers?",
+      "attributed_agent1_resolution": {
+       "state": "UNRESOLVED",
+       "rationale": "The thread highlights an issue with reviewer consistency but does not establish a clear decision or guidance on how to address it. Both Omar and Avery acknowledge the problem, but no substantive resolution or action is proposed.",
+       "agent1_verification_status": "CORRECTED",
+       "note": "Agent 1 label, not evidence; NEEDS_REVIEW means Agent 1 did not verify it. Assess resolution from the member messages."
+      },
+      "agent1_review_required": false,
+      "agent1_review_reason": "",
+      "note": "Agent 1 interpretation, not source evidence; cite member messages for incident facts."
+     }
+    ]
+   }
+  ],
+  "drafts": {
+   "initial": {
+    "contract_version": "agent3-advisor-draft-v11",
+    "summary": "A tutor reports reviewers choosing A for nearly identical answers; another tutor reports a tie accepted one day and a similar pair marked wrong the next. The thread contains a suggestion to check calibration, but no completed review or resolution.",
+    "summary_sentences": [
+     {
+      "text": "A tutor reports reviewers choosing A for nearly identical answers; another tutor reports a tie accepted one day and a similar pair marked wrong the next.",
+      "support_claim_ids": [
+       "c1",
+       "c2"
+      ],
+      "depends_on": []
+     },
+     {
+      "text": "The thread contains a suggestion to check calibration, but no completed review or resolution.",
+      "support_claim_ids": [
+       "c2",
+       "c3"
+      ],
+      "depends_on": []
+     }
+    ],
+    "detail_sentences": [
+     {
+      "text": "The current FAQ asks for disputed pairs, relevant prompt requirements and both rationales, followed by a check that the cases are comparable.",
+      "support_claim_ids": [
+       "c4"
+      ],
+      "depends_on": [],
+      "summary_depends_on": []
+     },
+     {
+      "text": "An earlier approval covered a batch-14 calibration exercise, not a standing policy change.",
+      "support_claim_ids": [
+       "c6"
+      ],
+      "depends_on": [],
+      "summary_depends_on": []
+     },
+     {
+      "text": "The earlier follow-up records improved agreement in the reviewed sample after calibration, with disagreement remaining on one sampled pair.",
+      "support_claim_ids": [
+       "c7"
+      ],
+      "depends_on": [],
+      "summary_depends_on": []
+     }
+    ],
+    "reasoning": "The reported disagreement concerns how comparable answers are scored, so a scoped calibration review fits the current FAQ better than changing the preference rule. The earlier exercise provides relevant history, not authority for batch-15 handling. The available guidance supports requesting the comparison material now; no further source research is needed before proposing that step, although the actual pairs and rationales still need to be collected.",
+    "claims": [
+     {
+      "claim_id": "c1",
+      "kind": "INCIDENT_FACT",
+      "text": "A tutor reports that some reviewers keep picking A for nearly identical answers.",
+      "evidence_ids": [
+       "m:C_RP_GENERAL:1790867752.000038"
+      ],
+      "attributions": [
+       {
+        "user_id": "U018",
+        "relation": "AUTHOR",
+        "evidence_id": "m:C_RP_GENERAL:1790867752.000038"
+       }
+      ],
+      "quote": null,
+      "quote_kind": "PARAPHRASE",
+      "material": true
+     },
+     {
+      "claim_id": "c2",
+      "kind": "INCIDENT_FACT",
+      "text": "A tutor reports that a QA reviewer accepted a tie yesterday while a similar pair was marked wrong today, and suggests checking calibration for two disputed tasks rather than rewriting policy on that basis.",
+      "evidence_ids": [
+       "m:C_RP_GENERAL:1790867801.000113"
+      ],
+      "attributions": [
+       {
+        "user_id": "U010",
+        "relation": "AUTHOR",
+        "evidence_id": "m:C_RP_GENERAL:1790867801.000113"
+       }
+      ],
+      "quote": null,
+      "quote_kind": "PARAPHRASE",
+      "material": true
+     },
+     {
+      "claim_id": "c3",
+      "kind": "INFERENCE",
+      "text": "The tutor's report remains unresolved in the available thread: a tutor suggests a calibration check, but the messages do not record a completed review or resolution.",
+      "evidence_ids": [
+       "m:C_RP_GENERAL:1790867752.000038",
+       "m:C_RP_GENERAL:1790867801.000113"
+      ],
+      "attributions": [
+       {
+        "user_id": "U018",
+        "relation": "AUTHOR",
+        "evidence_id": "m:C_RP_GENERAL:1790867752.000038"
+       },
+       {
+        "user_id": "U010",
+        "relation": "AUTHOR",
+        "evidence_id": "m:C_RP_GENERAL:1790867801.000113"
+       }
+      ],
+      "quote": null,
+      "quote_kind": "PARAPHRASE",
+      "material": true
+     },
+     {
+      "claim_id": "c4",
+      "kind": "GUIDANCE",
+      "text": "The current FAQ says that avoiding a tie requires a meaningful user benefit; cosmetic phrasing alone usually does not provide one. For reversals on similar pairs, share the pairs, relevant prompt requirements and both rationales for calibration, check comparability, and do not generalize an answer beyond its matching scope.",
+      "evidence_ids": [
+       "k:response-preference-faq@1.1:4683724f"
+      ],
+      "attributions": [],
+      "quote": null,
+      "quote_kind": "PARAPHRASE",
+      "material": true
+     },
+     {
+      "claim_id": "c5",
+      "kind": "GUIDANCE",
+      "text": "The current instructions require retaining both rationales and relevant evidence when comparable pairs receive different judgments; an answer about one pair does not automatically establish a universal preference rule.",
+      "evidence_ids": [
+       "k:response-preference-instructions@1.1:8a796eb0"
+      ],
+      "attributions": [],
+      "quote": null,
+      "quote_kind": "PARAPHRASE",
+      "material": true
+     },
+     {
+      "claim_id": "c6",
+      "kind": "HISTORY",
+      "text": "The earlier approval records authorization for an announcement and an eight-pair calibration exercise in batch 14, using the existing meaningful-quality-difference criterion rather than a new numerical threshold; the approval itself did not record completion.",
+      "evidence_ids": [
+       "k:rp-tie-calibration-approval@1.0:99b5da48"
+      ],
+      "attributions": [],
+      "quote": null,
+      "quote_kind": "PARAPHRASE",
+      "material": true
+     },
+     {
+      "claim_id": "c7",
+      "kind": "HISTORY",
+      "text": "The earlier batch-14 follow-up records completed calibration and improved agreement on the same sampled pairs, while one sampled pair still received Tie and A judgments; it is history, not a standing rule.",
+      "evidence_ids": [
+       "k:rp-tie-calibration-outcome@1.0:f678161f"
+      ],
+      "attributions": [],
+      "quote": null,
+      "quote_kind": "PARAPHRASE",
+      "material": true
+     }
+    ],
+    "gaps": [
+     {
+      "gap_id": "g1",
+      "need": "OTHER",
+      "description": "The disputed task references, response pairs, relevant prompt requirements and both rationales are not included in the thread excerpts. Collect these from the tutors for the proposed review; this is missing case material, not a need for additional policy research.",
+      "follow_up": null
+     }
+    ],
+    "evidence_sufficiency": "SUFFICIENT",
+    "proposed_action": {
+     "action_type": "SCHEDULE_ALIGNMENT",
+     "intervention_need": {
+      "kind": "OPERATIONAL_PROBLEM",
+      "statement": "The tutors report inconsistent preference and tie judgments that warrant comparing the disputed cases before drawing a broader rule.",
+      "evidence_ids": [
+       "m:C_RP_GENERAL:1790867752.000038",
+       "m:C_RP_GENERAL:1790867801.000113"
+      ]
+     },
+     "instruction": "Arrange a scoped calibration review of the disputed pairs, asking the tutors to supply the comparison material required by the current FAQ.",
+     "rationale": "The current FAQ directly supports comparing disputed pairs and both rationales before generalizing. The earlier exercise offers a useful precedent, but its approval was limited to batch 14.",
+     "draft_text": "Please bring the disputed pairs to a scoped calibration review. A tutor reports A choices for nearly identical answers; a tutor also reports an accepted tie followed by a similar pair marked wrong.\n\nFor the review, provide the task references, both answers, relevant prompt requirements and both rationales. We will check whether the cases are comparable and whether any difference offers a meaningful benefit to the user. Cosmetic phrasing alone usually does not. Retain the supporting evidence, and do not generalize a conclusion about one pair beyond its matching scope.",
+     "scope_note": "Limit the review to the disputed pairs and the existing meaningful-benefit criterion; the reports alone do not establish that the cases are comparable or that either judgment is wrong.",
+     "support_claim_ids": [
+      "c1",
+      "c2",
+      "c4",
+      "c5"
+     ],
+     "targets": [],
+     "context_claim_ids": [
+      "c3",
+      "c6",
+      "c7"
+     ]
+    },
+    "severity": {
+     "level": "MEDIUM",
+     "rationale": "A tutor describes different QA outcomes for similar pairs, indicating a contained scoring-consistency problem that warrants comparison rather than a demonstrated batch-wide failure.",
+     "signals": [
+      {
+       "level": "MEDIUM",
+       "signal_index": 1,
+       "signal_text": "Conflicting interpretations that affect, or are reasonably likely to affect, how tasks are scored or handled",
+       "support": "A tutor reports that a tie was accepted while a similar pair was later marked wrong, indicating potentially inconsistent scoring of comparable answers.",
+       "evidence_ids": [
+        "m:C_RP_GENERAL:1790867801.000113"
+       ]
+      }
+     ],
+     "affected_reporters": [],
+     "recurrence": "FOUND",
+     "recurrence_evidence_ids": [
+      "k:rp-tie-calibration-approval@1.0:99b5da48",
+      "k:rp-tie-calibration-outcome@1.0:f678161f"
+     ],
+     "reported_recurrence_evidence_ids": [
+      "m:C_RP_GENERAL:1790867752.000038",
+      "m:C_RP_GENERAL:1790867801.000113"
+     ]
+    },
+    "confidence": 0.9,
+    "open_confirmation": "NONE",
+    "open_question": null,
+    "open_question_evidence_ids": [],
+    "source_conflicts": [],
+    "announcement_assessments": [
+     {
+      "evidence_id": "k:rp-tie-calibration-post@1.0:4a3c786f",
+      "relevant": false,
+      "directive": true,
+      "directive_quote": "Bring both rationales for disputed pairs to the eight-pair calibration review.",
+      "rationale": "The announcement directs a batch-14 exercise, not handling for batch 15. It is historical context and is not used as current guidance or as a destination for these reports."
+     }
+    ],
+    "resolution": [
+     {
+      "member_id": "member_7f5d04f71b0576b7ae8bd637",
+      "state": "UNRESOLVED",
+      "evidence_ids": [
+       "m:C_RP_GENERAL:1790867752.000038",
+       "m:C_RP_GENERAL:1790867801.000113"
+      ],
+      "basis": "The tutor reports reviewer inconsistency, and a tutor suggests checking calibration. The available thread records no completed comparison or resolution."
+     }
+    ],
+    "coverage": [
+     {
+      "need": "CURRENT_GUIDANCE",
+      "status": "COVERED",
+      "evidence_ids": [
+       "k:response-preference-instructions@1.1:8a796eb0",
+       "k:response-preference-faq@1.1:4683724f"
+      ],
+      "note": "The current instructions and FAQ cover disputed comparable pairs, required comparison material and limits on generalizing conclusions.",
+      "gap_id": null
+     },
+     {
+      "need": "ANNOUNCEMENTS",
+      "status": "COVERED",
+      "evidence_ids": [
+       "k:rp-tie-calibration-post@1.0:4a3c786f"
+      ],
+      "note": "The retrieved announcement was assessed and is limited to the earlier batch-14 exercise; the recommendation does not depend on extending it.",
+      "gap_id": null
+     },
+     {
+      "need": "PRIOR_DECISIONS",
+      "status": "COVERED",
+      "evidence_ids": [
+       "k:rp-tie-calibration-approval@1.0:99b5da48",
+       "k:rp-tie-calibration-outcome@1.0:f678161f"
+      ],
+      "note": "The earlier approval and follow-up establish the exercise's limited scope and its recorded sample outcome, without making it current policy.",
+      "gap_id": null
+     },
+     {
+      "need": "MEMBER_QUESTIONS",
+      "status": "COVERED",
+      "evidence_ids": [
+       "m:C_RP_GENERAL:1790867752.000038",
+       "m:C_RP_GENERAL:1790867801.000113"
+      ],
+      "note": "The thread contains reports and a tutor's suggestion to check calibration, rather than an explicit handling question or a reference to an earlier workaround.",
+      "gap_id": null
+     }
+    ],
+    "review_note": null,
+    "action_choice": null
+   },
+   "final": {
+    "contract_version": "agent3-advisor-draft-v11",
+    "summary": "A tutor reports reviewers choosing A for nearly identical answers; another tutor reports a tie accepted one day and a similar pair marked wrong the next. The thread contains a suggestion to check calibration, but no completed review or resolution.",
+    "summary_sentences": [
+     {
+      "text": "A tutor reports reviewers choosing A for nearly identical answers; another tutor reports a tie accepted one day and a similar pair marked wrong the next.",
+      "support_claim_ids": [
+       "c1",
+       "c2"
+      ],
+      "depends_on": []
+     },
+     {
+      "text": "The thread contains a suggestion to check calibration, but no completed review or resolution.",
+      "support_claim_ids": [
+       "c2",
+       "c3"
+      ],
+      "depends_on": []
+     }
+    ],
+    "detail_sentences": [
+     {
+      "text": "The current FAQ asks for disputed pairs, relevant prompt requirements and both rationales, followed by a check that the cases are comparable.",
+      "support_claim_ids": [
+       "c4"
+      ],
+      "depends_on": [],
+      "summary_depends_on": []
+     },
+     {
+      "text": "An earlier approval covered a batch-14 calibration exercise, not a standing policy change.",
+      "support_claim_ids": [
+       "c6"
+      ],
+      "depends_on": [],
+      "summary_depends_on": []
+     },
+     {
+      "text": "The earlier follow-up records improved agreement in the reviewed sample after calibration, with disagreement remaining on one sampled pair.",
+      "support_claim_ids": [
+       "c7"
+      ],
+      "depends_on": [],
+      "summary_depends_on": []
+     }
+    ],
+    "reasoning": "The reported disagreement concerns how comparable answers are scored, so a scoped calibration review fits the current FAQ better than changing the preference rule. The earlier exercise provides relevant history, not authority for batch-15 handling. The available guidance supports requesting the comparison material now; no further source research is needed before proposing that step, although the actual pairs and rationales still need to be collected.",
+    "claims": [
+     {
+      "claim_id": "c1",
+      "kind": "INCIDENT_FACT",
+      "text": "A tutor reports that some reviewers keep picking A for nearly identical answers.",
+      "evidence_ids": [
+       "m:C_RP_GENERAL:1790867752.000038"
+      ],
+      "attributions": [
+       {
+        "user_id": "U018",
+        "relation": "AUTHOR",
+        "evidence_id": "m:C_RP_GENERAL:1790867752.000038"
+       }
+      ],
+      "quote": null,
+      "quote_kind": "PARAPHRASE",
+      "material": true
+     },
+     {
+      "claim_id": "c2",
+      "kind": "INCIDENT_FACT",
+      "text": "A tutor reports that a QA reviewer accepted a tie yesterday while a similar pair was marked wrong today, and suggests checking calibration for two disputed tasks rather than rewriting policy on that basis.",
+      "evidence_ids": [
+       "m:C_RP_GENERAL:1790867801.000113"
+      ],
+      "attributions": [
+       {
+        "user_id": "U010",
+        "relation": "AUTHOR",
+        "evidence_id": "m:C_RP_GENERAL:1790867801.000113"
+       }
+      ],
+      "quote": null,
+      "quote_kind": "PARAPHRASE",
+      "material": true
+     },
+     {
+      "claim_id": "c3",
+      "kind": "INFERENCE",
+      "text": "The tutor's report remains unresolved in the available thread: a tutor suggests a calibration check, but the messages do not record a completed review or resolution.",
+      "evidence_ids": [
+       "m:C_RP_GENERAL:1790867752.000038",
+       "m:C_RP_GENERAL:1790867801.000113"
+      ],
+      "attributions": [
+       {
+        "user_id": "U018",
+        "relation": "AUTHOR",
+        "evidence_id": "m:C_RP_GENERAL:1790867752.000038"
+       },
+       {
+        "user_id": "U010",
+        "relation": "AUTHOR",
+        "evidence_id": "m:C_RP_GENERAL:1790867801.000113"
+       }
+      ],
+      "quote": null,
+      "quote_kind": "PARAPHRASE",
+      "material": true
+     },
+     {
+      "claim_id": "c4",
+      "kind": "GUIDANCE",
+      "text": "The current FAQ says that avoiding a tie requires a meaningful user benefit; cosmetic phrasing alone usually does not provide one. For reversals on similar pairs, share the pairs, relevant prompt requirements and both rationales for calibration, check comparability, and do not generalize an answer beyond its matching scope.",
+      "evidence_ids": [
+       "k:response-preference-faq@1.1:4683724f"
+      ],
+      "attributions": [],
+      "quote": null,
+      "quote_kind": "PARAPHRASE",
+      "material": true
+     },
+     {
+      "claim_id": "c5",
+      "kind": "GUIDANCE",
+      "text": "The current instructions require retaining both rationales and relevant evidence when comparable pairs receive different judgments; an answer about one pair does not automatically establish a universal preference rule.",
+      "evidence_ids": [
+       "k:response-preference-instructions@1.1:8a796eb0"
+      ],
+      "attributions": [],
+      "quote": null,
+      "quote_kind": "PARAPHRASE",
+      "material": true
+     },
+     {
+      "claim_id": "c6",
+      "kind": "HISTORY",
+      "text": "The earlier approval records authorization for an announcement and an eight-pair calibration exercise in batch 14, using the existing meaningful-quality-difference criterion rather than a new numerical threshold; the approval itself did not record completion.",
+      "evidence_ids": [
+       "k:rp-tie-calibration-approval@1.0:99b5da48"
+      ],
+      "attributions": [],
+      "quote": null,
+      "quote_kind": "PARAPHRASE",
+      "material": true
+     },
+     {
+      "claim_id": "c7",
+      "kind": "HISTORY",
+      "text": "The earlier batch-14 follow-up records completed calibration and improved agreement on the same sampled pairs, while one sampled pair still received Tie and A judgments; it is history, not a standing rule.",
+      "evidence_ids": [
+       "k:rp-tie-calibration-outcome@1.0:f678161f"
+      ],
+      "attributions": [],
+      "quote": null,
+      "quote_kind": "PARAPHRASE",
+      "material": true
+     }
+    ],
+    "gaps": [
+     {
+      "gap_id": "g1",
+      "need": "OTHER",
+      "description": "The disputed task references, response pairs, relevant prompt requirements and both rationales are not included in the thread excerpts. Collect these from the tutors for the proposed review; this is missing case material, not a need for additional policy research.",
+      "follow_up": null
+     }
+    ],
+    "evidence_sufficiency": "SUFFICIENT",
+    "proposed_action": {
+     "action_type": "SCHEDULE_ALIGNMENT",
+     "intervention_need": {
+      "kind": "OPERATIONAL_PROBLEM",
+      "statement": "The tutors report inconsistent preference and tie judgments that warrant comparing the disputed cases before drawing a broader rule.",
+      "evidence_ids": [
+       "m:C_RP_GENERAL:1790867752.000038",
+       "m:C_RP_GENERAL:1790867801.000113"
+      ]
+     },
+     "instruction": "Arrange a scoped calibration review of the disputed pairs, asking the tutors to supply the comparison material required by the current FAQ.",
+     "rationale": "The current FAQ directly supports comparing disputed pairs and both rationales before generalizing. The earlier exercise offers a useful precedent, but its approval was limited to batch 14.",
+     "draft_text": "Please bring the disputed pairs to a scoped calibration review. A tutor reports A choices for nearly identical answers; a tutor also reports an accepted tie followed by a similar pair marked wrong.\n\nFor the review, provide the task references, both answers, relevant prompt requirements and both rationales. We will check whether the cases are comparable and whether any difference offers a meaningful benefit to the user. Cosmetic phrasing alone usually does not. Retain the supporting evidence, and do not generalize a conclusion about one pair beyond its matching scope.",
+     "scope_note": "Limit the review to the disputed pairs and the existing meaningful-benefit criterion; the reports alone do not establish that the cases are comparable or that either judgment is wrong.",
+     "support_claim_ids": [
+      "c1",
+      "c2",
+      "c4",
+      "c5"
+     ],
+     "targets": [],
+     "context_claim_ids": [
+      "c3",
+      "c6",
+      "c7"
+     ]
+    },
+    "severity": {
+     "level": "MEDIUM",
+     "rationale": "A tutor describes different QA outcomes for similar pairs, indicating a contained scoring-consistency problem that warrants comparison rather than a demonstrated batch-wide failure.",
+     "signals": [
+      {
+       "level": "MEDIUM",
+       "signal_index": 1,
+       "signal_text": "Conflicting interpretations that affect, or are reasonably likely to affect, how tasks are scored or handled",
+       "support": "A tutor reports that a tie was accepted while a similar pair was later marked wrong, indicating potentially inconsistent scoring of comparable answers.",
+       "evidence_ids": [
+        "m:C_RP_GENERAL:1790867801.000113"
+       ]
+      }
+     ],
+     "affected_reporters": [],
+     "recurrence": "FOUND",
+     "recurrence_evidence_ids": [
+      "k:rp-tie-calibration-approval@1.0:99b5da48",
+      "k:rp-tie-calibration-outcome@1.0:f678161f"
+     ],
+     "reported_recurrence_evidence_ids": [
+      "m:C_RP_GENERAL:1790867752.000038",
+      "m:C_RP_GENERAL:1790867801.000113"
+     ]
+    },
+    "confidence": 0.9,
+    "open_confirmation": "NONE",
+    "open_question": null,
+    "open_question_evidence_ids": [],
+    "source_conflicts": [],
+    "announcement_assessments": [
+     {
+      "evidence_id": "k:rp-tie-calibration-post@1.0:4a3c786f",
+      "relevant": false,
+      "directive": true,
+      "directive_quote": "Bring both rationales for disputed pairs to the eight-pair calibration review.",
+      "rationale": "The announcement directs a batch-14 exercise, not handling for batch 15. It is historical context and is not used as current guidance or as a destination for these reports."
+     }
+    ],
+    "resolution": [
+     {
+      "member_id": "member_7f5d04f71b0576b7ae8bd637",
+      "state": "UNRESOLVED",
+      "evidence_ids": [
+       "m:C_RP_GENERAL:1790867752.000038",
+       "m:C_RP_GENERAL:1790867801.000113"
+      ],
+      "basis": "The tutor reports reviewer inconsistency, and a tutor suggests checking calibration. The available thread records no completed comparison or resolution."
+     }
+    ],
+    "coverage": [
+     {
+      "need": "CURRENT_GUIDANCE",
+      "status": "COVERED",
+      "evidence_ids": [
+       "k:response-preference-instructions@1.1:8a796eb0",
+       "k:response-preference-faq@1.1:4683724f"
+      ],
+      "note": "The current instructions and FAQ cover disputed comparable pairs, required comparison material and limits on generalizing conclusions.",
+      "gap_id": null
+     },
+     {
+      "need": "ANNOUNCEMENTS",
+      "status": "COVERED",
+      "evidence_ids": [
+       "k:rp-tie-calibration-post@1.0:4a3c786f"
+      ],
+      "note": "The retrieved announcement was assessed and is limited to the earlier batch-14 exercise; the recommendation does not depend on extending it.",
+      "gap_id": null
+     },
+     {
+      "need": "PRIOR_DECISIONS",
+      "status": "COVERED",
+      "evidence_ids": [
+       "k:rp-tie-calibration-approval@1.0:99b5da48",
+       "k:rp-tie-calibration-outcome@1.0:f678161f"
+      ],
+      "note": "The earlier approval and follow-up establish the exercise's limited scope and its recorded sample outcome, without making it current policy.",
+      "gap_id": null
+     },
+     {
+      "need": "MEMBER_QUESTIONS",
+      "status": "COVERED",
+      "evidence_ids": [
+       "m:C_RP_GENERAL:1790867752.000038",
+       "m:C_RP_GENERAL:1790867801.000113"
+      ],
+      "note": "The thread contains reports and a tutor's suggestion to check calibration, rather than an explicit handling question or a reference to an earlier workaround.",
+      "gap_id": null
+     }
+    ],
+    "review_note": null,
+    "action_choice": null
+   },
+   "revised": false
+  },
+  "grounding": {
+   "structural_issues": [],
+   "action_issues": [],
+   "unsupported": [],
+   "unjudged": [],
+   "extraneous_verdicts": [],
+   "rejected": {},
+   "pending": [],
+   "action_sufficiency": {
+    "verdict": "SUFFICIENT",
+    "essential_statement_ids": [
+     "claim:c1",
+     "claim:c2",
+     "claim:c4",
+     "claim:c5"
+    ],
+    "rationale": "The supported incident reports justify a limited calibration review. The supported current guidance justifies its comparison materials, meaningful-benefit criterion, evidence retention and limits on generalization. The action does not require historical approval to apply to batch 15 and does not presume that comparability or an erroneous judgment has already been established."
+   },
+   "source_consistency": {
+    "assessed_evidence_ids": [
+     "k:response-preference-instructions@1.1:8a796eb0",
+     "k:response-preference-faq@1.1:4683724f"
+    ],
+    "relations": [
+     {
+      "evidence_ids": [
+       "k:response-preference-instructions@1.1:8a796eb0",
+       "k:response-preference-faq@1.1:4683724f"
+      ],
+      "relation": "AGREE",
+      "point": "Use both rationales and relevant evidence for scoped calibration, without treating a conclusion about one pair as a universal preference rule.",
+      "disagreement_scope": null,
+      "rationale": "The instructions require retaining rationales and evidence and preserving scope; the FAQ requires sharing the comparison materials, checking comparability and matching scope before generalizing. These requirements are consistent. The batch-14 announcement does not govern handling for this batch-15 topic and is excluded from the governing-source comparison."
+     }
+    ],
+    "declared_conflict_checks": []
+   },
+   "alternative_sufficiency": {},
+   "status": "PASSED",
+   "basis": "SEMANTIC",
+   "statements": [
+    {
+     "statement_id": "claim:c1",
+     "kind": "CLAIM_INCIDENT_FACT",
+     "text": "A tutor reports that some reviewers keep picking A for nearly identical answers.",
+     "blocking": true,
+     "evidence_ids": [
+      "m:C_RP_GENERAL:1790867752.000038"
+     ],
+     "attributions": [
+      {
+       "user_id": "U018",
+       "relation": "AUTHOR",
+       "evidence_id": "m:C_RP_GENERAL:1790867752.000038",
+       "role": "TUTOR"
+      }
+     ],
+     "verdict": "SUPPORTED",
+     "model_verdict": "SUPPORTED",
+     "rationale": "U018 is a tutor and directly reports that some reviewers keep choosing A for nearly identical answers."
+    },
+    {
+     "statement_id": "claim:c2",
+     "kind": "CLAIM_INCIDENT_FACT",
+     "text": "A tutor reports that a QA reviewer accepted a tie yesterday while a similar pair was marked wrong today, and suggests checking calibration for two disputed tasks rather than rewriting policy on that basis.",
+     "blocking": true,
+     "evidence_ids": [
+      "m:C_RP_GENERAL:1790867801.000113"
+     ],
+     "attributions": [
+      {
+       "user_id": "U010",
+       "relation": "AUTHOR",
+       "evidence_id": "m:C_RP_GENERAL:1790867801.000113",
+       "role": "TUTOR"
+      }
+     ],
+     "verdict": "SUPPORTED",
+     "model_verdict": "SUPPORTED",
+     "rationale": "U010 reports the contrasting QA outcomes and explicitly suggests checking calibration for the two disputed tasks rather than rewriting policy."
+    },
+    {
+     "statement_id": "claim:c3",
+     "kind": "CLAIM_INFERENCE",
+     "text": "The tutor's report remains unresolved in the available thread: a tutor suggests a calibration check, but the messages do not record a completed review or resolution.",
+     "blocking": true,
+     "evidence_ids": [
+      "m:C_RP_GENERAL:1790867752.000038",
+      "m:C_RP_GENERAL:1790867801.000113"
+     ],
+     "attributions": [
+      {
+       "user_id": "U018",
+       "relation": "AUTHOR",
+       "evidence_id": "m:C_RP_GENERAL:1790867752.000038",
+       "role": "TUTOR"
+      },
+      {
+       "user_id": "U010",
+       "relation": "AUTHOR",
+       "evidence_id": "m:C_RP_GENERAL:1790867801.000113",
+       "role": "TUTOR"
+      }
+     ],
+     "verdict": "SUPPORTED",
+     "model_verdict": "SUPPORTED",
+     "rationale": "The complete available thread contains the report and calibration suggestion, with no completed comparison or resolution."
+    },
+    {
+     "statement_id": "claim:c4",
+     "kind": "CLAIM_GUIDANCE",
+     "text": "The current FAQ says that avoiding a tie requires a meaningful user benefit; cosmetic phrasing alone usually does not provide one. For reversals on similar pairs, share the pairs, relevant prompt requirements and both rationales for calibration, check comparability, and do not generalize an answer beyond its matching scope.",
+     "blocking": true,
+     "evidence_ids": [
+      "k:response-preference-faq@1.1:4683724f"
+     ],
+     "verdict": "SUPPORTED",
+     "model_verdict": "SUPPORTED",
+     "rationale": "The current FAQ states the meaningful-benefit criterion, qualifies cosmetic phrasing, and directs sharing pairs, prompt constraints and both rationales while checking comparability and scope."
+    },
+    {
+     "statement_id": "claim:c5",
+     "kind": "CLAIM_GUIDANCE",
+     "text": "The current instructions require retaining both rationales and relevant evidence when comparable pairs receive different judgments; an answer about one pair does not automatically establish a universal preference rule.",
+     "blocking": true,
+     "evidence_ids": [
+      "k:response-preference-instructions@1.1:8a796eb0"
+     ],
+     "verdict": "SUPPORTED",
+     "model_verdict": "SUPPORTED",
+     "rationale": "The current instructions explicitly require retaining both rationales and relevant evidence and warn against turning a scoped answer into a universal rule."
+    },
+    {
+     "statement_id": "claim:c6",
+     "kind": "CLAIM_HISTORY",
+     "text": "The earlier approval records authorization for an announcement and an eight-pair calibration exercise in batch 14, using the existing meaningful-quality-difference criterion rather than a new numerical threshold; the approval itself did not record completion.",
+     "blocking": true,
+     "evidence_ids": [
+      "k:rp-tie-calibration-approval@1.0:99b5da48"
+     ],
+     "verdict": "SUPPORTED",
+     "model_verdict": "SUPPORTED",
+     "rationale": "The prior approval authorizes the announcement and eight-pair batch-14 exercise under the existing criterion, rejects a new numerical threshold, and does not record completion."
+    },
+    {
+     "statement_id": "claim:c7",
+     "kind": "CLAIM_HISTORY",
+     "text": "The earlier batch-14 follow-up records completed calibration and improved agreement on the same sampled pairs, while one sampled pair still received Tie and A judgments; it is history, not a standing rule.",
+     "blocking": true,
+     "evidence_ids": [
+      "k:rp-tie-calibration-outcome@1.0:f678161f"
+     ],
+     "verdict": "SUPPORTED",
+     "model_verdict": "SUPPORTED",
+     "rationale": "The historical follow-up records completed calibration and improved agreement on the same sampled pairs, with RP14-C08 still receiving Tie and A judgments."
+    },
+    {
+     "statement_id": "summary:s1",
+     "kind": "SUMMARY",
+     "text": "A tutor reports reviewers choosing A for nearly identical answers; another tutor reports a tie accepted one day and a similar pair marked wrong the next.",
+     "blocking": true,
+     "evidence_ids": [
+      "m:C_RP_GENERAL:1790867752.000038",
+      "m:C_RP_GENERAL:1790867801.000113"
+     ],
+     "attributions": [
+      {
+       "user_id": "U018",
+       "relation": "AUTHOR",
+       "evidence_id": "m:C_RP_GENERAL:1790867752.000038",
+       "role": "TUTOR"
+      },
+      {
+       "user_id": "U010",
+       "relation": "AUTHOR",
+       "evidence_id": "m:C_RP_GENERAL:1790867801.000113",
+       "role": "TUTOR"
+      }
+     ],
+     "verdict": "SUPPORTED",
+     "model_verdict": "SUPPORTED",
+     "rationale": "The sentence accurately distinguishes the two tutors and preserves what each reported."
+    },
+    {
+     "statement_id": "summary:s2",
+     "kind": "SUMMARY",
+     "text": "The thread contains a suggestion to check calibration, but no completed review or resolution.",
+     "blocking": true,
+     "evidence_ids": [
+      "m:C_RP_GENERAL:1790867801.000113",
+      "m:C_RP_GENERAL:1790867752.000038"
+     ],
+     "attributions": [
+      {
+       "user_id": "U010",
+       "relation": "AUTHOR",
+       "evidence_id": "m:C_RP_GENERAL:1790867801.000113",
+       "role": "TUTOR"
+      },
+      {
+       "user_id": "U018",
+       "relation": "AUTHOR",
+       "evidence_id": "m:C_RP_GENERAL:1790867752.000038",
+       "role": "TUTOR"
+      }
+     ],
+     "verdict": "SUPPORTED",
+     "model_verdict": "SUPPORTED",
+     "rationale": "The available thread includes a calibration suggestion but no completed review or resolution."
+    },
+    {
+     "statement_id": "detail:d1",
+     "kind": "DETAIL",
+     "text": "The current FAQ asks for disputed pairs, relevant prompt requirements and both rationales, followed by a check that the cases are comparable.",
+     "blocking": false,
+     "evidence_ids": [
+      "k:response-preference-faq@1.1:4683724f"
+     ],
+     "verdict": "SUPPORTED",
+     "model_verdict": "SUPPORTED",
+     "rationale": "The current FAQ requests the pairs, relevant prompt constraints and both rationales and calls for checking comparability."
+    },
+    {
+     "statement_id": "detail:d2",
+     "kind": "DETAIL",
+     "text": "An earlier approval covered a batch-14 calibration exercise, not a standing policy change.",
+     "blocking": false,
+     "evidence_ids": [
+      "k:rp-tie-calibration-approval@1.0:99b5da48"
+     ],
+     "verdict": "SUPPORTED",
+     "model_verdict": "SUPPORTED",
+     "rationale": "The approval expressly limits itself to the batch-14 exercise and describes calibration of an existing criterion rather than a policy change."
+    },
+    {
+     "statement_id": "detail:d3",
+     "kind": "DETAIL",
+     "text": "The earlier follow-up records improved agreement in the reviewed sample after calibration, with disagreement remaining on one sampled pair.",
+     "blocking": false,
+     "evidence_ids": [
+      "k:rp-tie-calibration-outcome@1.0:f678161f"
+     ],
+     "verdict": "SUPPORTED",
+     "model_verdict": "SUPPORTED",
+     "rationale": "The follow-up table shows improved agreement after calibration and remaining disagreement on one sampled pair."
+    },
+    {
+     "statement_id": "action",
+     "kind": "ACTION",
+     "text": "Schedule a short review session. Instruction: Arrange a scoped calibration review of the disputed pairs, asking the tutors to supply the comparison material required by the current FAQ. Draft to copy: Please bring the disputed pairs to a scoped calibration review. A tutor reports A choices for nearly identical answers; a tutor also reports an accepted tie followed by a similar pair marked wrong.\n\nFor the review, provide the task references, both answers, relevant prompt requirements and both rationales. We will check whether the cases are comparable and whether any difference offers a meaningful benefit to the user. Cosmetic phrasing alone usually does not. Retain the supporting evidence, and do not generalize a conclusion about one pair beyond its matching scope. Scope: Limit the review to the disputed pairs and the existing meaningful-benefit criterion; the reports alone do not establish that the cases are comparable or that either judgment is wrong.",
+     "blocking": true,
+     "evidence_ids": [
+      "m:C_RP_GENERAL:1790867752.000038",
+      "m:C_RP_GENERAL:1790867801.000113",
+      "k:response-preference-faq@1.1:4683724f",
+      "k:response-preference-instructions@1.1:8a796eb0"
+     ],
+     "premises": [
+      "claim:c1",
+      "claim:c2",
+      "claim:c4",
+      "claim:c5"
+     ],
+     "verdict": "SUPPORTED",
+     "model_verdict": "SUPPORTED",
+     "rationale": "A scoped calibration review is justified by the reported judgment discrepancy and the current FAQ. The requested comparison materials, evidence retention, meaningful-benefit test and scope limits follow from current guidance. No unsupported concrete intake route or batch-14 authority is asserted."
+    },
+    {
+     "statement_id": "action:rationale",
+     "kind": "ACTION_RATIONALE",
+     "text": "Why this helps: The current FAQ directly supports comparing disputed pairs and both rationales before generalizing. The earlier exercise offers a useful precedent, but its approval was limited to batch 14.",
+     "blocking": false,
+     "evidence_ids": [
+      "m:C_RP_GENERAL:1790867752.000038",
+      "m:C_RP_GENERAL:1790867801.000113",
+      "k:response-preference-faq@1.1:4683724f",
+      "k:response-preference-instructions@1.1:8a796eb0",
+      "k:rp-tie-calibration-approval@1.0:99b5da48",
+      "k:rp-tie-calibration-outcome@1.0:f678161f"
+     ],
+     "verdict": "SUPPORTED",
+     "model_verdict": "SUPPORTED",
+     "rationale": "The FAQ supports comparing disputed cases and rationales before generalizing, and the earlier exercise is accurately treated as a precedent whose approval covered only batch 14."
+    },
+    {
+     "statement_id": "action:need",
+     "kind": "INTERVENTION_NEED",
+     "text": "Why intervening now is needed (an operational problem that needs coordination): The tutors report inconsistent preference and tie judgments that warrant comparing the disputed cases before drawing a broader rule.",
+     "blocking": false,
+     "evidence_ids": [
+      "m:C_RP_GENERAL:1790867752.000038",
+      "m:C_RP_GENERAL:1790867801.000113"
+     ],
+     "verdict": "SUPPORTED",
+     "model_verdict": "SUPPORTED",
+     "rationale": "The unresolved reports of potentially inconsistent judgments present a concrete calibration problem requiring comparison and coordination, not merely an opportunity for a reminder."
+    },
+    {
+     "statement_id": "resolution:member_7f5d04f71b0576b7ae8bd637",
+     "kind": "RESOLUTION",
+     "text": "Member thread member_7f5d04f71b0576b7ae8bd637 is UNRESOLVED: The tutor reports reviewer inconsistency, and a tutor suggests checking calibration. The available thread records no completed comparison or resolution.",
+     "blocking": true,
+     "evidence_ids": [
+      "m:C_RP_GENERAL:1790867752.000038",
+      "m:C_RP_GENERAL:1790867801.000113"
+     ],
+     "verdict": "SUPPORTED",
+     "model_verdict": "SUPPORTED",
+     "rationale": "The complete supplied thread records the inconsistency report and calibration suggestion without a completed comparison or resolution."
+    },
+    {
+     "statement_id": "severity:rationale",
+     "kind": "SEVERITY_RATIONALE",
+     "text": "Severity MEDIUM: A tutor describes different QA outcomes for similar pairs, indicating a contained scoring-consistency problem that warrants comparison rather than a demonstrated batch-wide failure.",
+     "blocking": true,
+     "evidence_ids": [
+      "m:C_RP_GENERAL:1790867801.000113",
+      "m:C_RP_GENERAL:1790867752.000038"
+     ],
+     "verdict": "SUPPORTED",
+     "model_verdict": "SUPPORTED",
+     "rationale": "The reported contrasting QA outcomes support a scoped scoring-consistency concern. The evidence does not demonstrate a batch-wide failure, and the statement calls for comparison rather than presuming which judgment is wrong."
+    },
+    {
+     "statement_id": "severity:signal:MEDIUM[1]",
+     "kind": "SEVERITY_SIGNAL",
+     "text": "Rubric signal met - \"Conflicting interpretations that affect, or are reasonably likely to affect, how tasks are scored or handled\": A tutor reports that a tie was accepted while a similar pair was later marked wrong, indicating potentially inconsistent scoring of comparable answers.",
+     "blocking": true,
+     "evidence_ids": [
+      "m:C_RP_GENERAL:1790867801.000113"
+     ],
+     "verdict": "SUPPORTED",
+     "model_verdict": "SUPPORTED",
+     "rationale": "The reported acceptance of a tie and rejection of a similar pair directly concerns scoring consistency. The statement appropriately describes the inconsistency as potential."
+    },
+    {
+     "statement_id": "severity:recurrence",
+     "kind": "HISTORICAL_RECURRENCE",
+     "text": "Retrieved records show this problem occurred before.",
+     "blocking": true,
+     "evidence_ids": [
+      "k:rp-tie-calibration-approval@1.0:99b5da48",
+      "k:rp-tie-calibration-outcome@1.0:f678161f"
+     ],
+     "verdict": "SUPPORTED",
+     "model_verdict": "SUPPORTED",
+     "rationale": "The earlier approval and follow-up document prior tie/preference calibration difficulties, including differing reviewer judgments on the same sampled pairs."
+    },
+    {
+     "statement_id": "severity:reported_recurrence",
+     "kind": "REPORTED_RECURRENCE",
+     "text": "Members report that this is happening again (their report; not corroborated history).",
+     "blocking": false,
+     "evidence_ids": [
+      "m:C_RP_GENERAL:1790867752.000038",
+      "m:C_RP_GENERAL:1790867801.000113"
+     ],
+     "verdict": "PARTIALLY_SUPPORTED",
+     "model_verdict": "PARTIALLY_SUPPORTED",
+     "rationale": "U018's statement that reviewers 'keep picking A' supports reported repetition. U010 reports contrasting outcomes across two days but does not independently say that this inconsistency is happening again, so the plural recurrence attribution is not fully established."
+    }
+   ]
+  },
+  "temporal": {
+   "status": "NONE_FOUND",
+   "findings": [],
+   "source_consistency": "ASSESSED",
+   "ignored_revision_states": "NOT_YET_EFFECTIVE and NOT_APPROVED revisions never compete with applicable guidance."
+  },
+  "temporal_before_grounding": {
+   "status": "NONE_FOUND",
+   "findings": [],
+   "source_consistency": "NOT_ASSESSED",
+   "ignored_revision_states": "NOT_YET_EFFECTIVE and NOT_APPROVED revisions never compete with applicable guidance."
+  },
+  "severity": {
+   "assessment": {
+    "level": "MEDIUM",
+    "assessment_status": "ASSESSED",
+    "rubric_version": "severity-rubric-v3-semantic-signals",
+    "rubric_content_sha256": "eccaa31a2ab84a0aa7c005216a92fc39681e1dd10107117344948235a76673f4",
+    "rubric_project_id": null,
+    "rubric_scope": "SHARED_DEFAULT",
+    "rationale": "A tutor describes different QA outcomes for similar pairs, indicating a contained scoring-consistency problem that warrants comparison rather than a demonstrated batch-wide failure.",
+    "matched_signals": [
+     {
+      "level": "MEDIUM",
+      "signal_index": 1,
+      "signal_text": "Conflicting interpretations that affect, or are reasonably likely to affect, how tasks are scored or handled",
+      "support": "A tutor reports that a tie was accepted while a similar pair was later marked wrong, indicating potentially inconsistent scoring of comparable answers.",
+      "evidence": [
+       {
+        "kind": "slack_message",
+        "project_id": "response_preference",
+        "batch_id": "rp_batch_15",
+        "scope": "project",
+        "channel_id": "C_RP_GENERAL",
+        "thread_id": "1790867752.000038",
+        "message_id": "1790867801.000113",
+        "document_id": null,
+        "version_id": null,
+        "authoring_document_id": null,
+        "authoring_version": null,
+        "section": null,
+        "chunk_id": null,
+        "candidate_group_id": null,
+        "member_id": "member_7f5d04f71b0576b7ae8bd637",
+        "artifact": null,
+        "artifact_sha256": null,
+        "quote": null,
+        "note": "m:C_RP_GENERAL:1790867801.000113"
+       }
+      ]
+     }
+    ],
+    "evidence": [
+     {
+      "kind": "slack_message",
+      "project_id": "response_preference",
+      "batch_id": "rp_batch_15",
+      "scope": "project",
+      "channel_id": "C_RP_GENERAL",
+      "thread_id": "1790867752.000038",
+      "message_id": "1790867801.000113",
+      "document_id": null,
+      "version_id": null,
+      "authoring_document_id": null,
+      "authoring_version": null,
+      "section": null,
+      "chunk_id": null,
+      "candidate_group_id": null,
+      "member_id": "member_7f5d04f71b0576b7ae8bd637",
+      "artifact": null,
+      "artifact_sha256": null,
+      "quote": null,
+      "note": "m:C_RP_GENERAL:1790867801.000113"
+     }
+    ],
+    "occurrence": {
+     "affected_reporters": {
+      "status": "UNKNOWN",
+      "count": null,
+      "ids": [],
+      "basis": null,
+      "evidence": []
+     },
+     "affected_tasks": {
+      "status": "UNKNOWN",
+      "count": null,
+      "ids": [],
+      "basis": null,
+      "evidence": []
+     },
+     "relevant_threads": [
+      {
+       "project_id": "response_preference",
+       "batch_id": "rp_batch_15",
+       "channel_id": "C_RP_GENERAL",
+       "thread_id": "1790867752.000038",
+       "member_id": "member_7f5d04f71b0576b7ae8bd637"
+      }
+     ],
+     "reporting_window": {
+      "start": "2026-10-01T15:15:52.000038+00:00",
+      "end": "2026-10-01T15:16:41.000113+00:00"
+     },
+     "historical_recurrence": {
+      "status": "FOUND",
+      "sources": [
+       {
+        "kind": "knowledge_source",
+        "project_id": "response_preference",
+        "batch_id": "rp_batch_14",
+        "scope": "project",
+        "channel_id": null,
+        "thread_id": null,
+        "message_id": null,
+        "document_id": "knowledge_eaa88591b22f97c5f325f12ee24f0717a532797133b5afc0271b1cd7a2537978",
+        "version_id": "version_f0c37174a20ad2f3df91f07ba5e79998c1f09d9e2d6ce72b7ef8d5e77455faf8",
+        "authoring_document_id": "rp-tie-calibration-approval",
+        "authoring_version": "1.0",
+        "section": "Context",
+        "chunk_id": "chunk_99b5da48de39c5fbf66d1e8830084cd8",
+        "candidate_group_id": null,
+        "member_id": null,
+        "artifact": null,
+        "artifact_sha256": null,
+        "quote": null,
+        "note": "k:rp-tie-calibration-approval@1.0:99b5da48 (PRIOR_DECISION; CURRENT)"
+       },
+       {
+        "kind": "knowledge_source",
+        "project_id": "response_preference",
+        "batch_id": "rp_batch_14",
+        "scope": "project",
+        "channel_id": null,
+        "thread_id": null,
+        "message_id": null,
+        "document_id": "knowledge_2172da2a2ef0f5ad329ced2418a84472dbe7d939455cf84fcb1b9d27c943e47c",
+        "version_id": "version_cd04873e2b6866bd014b1f72e268367237289452d2dd33d91010fbb0709cf007",
+        "authoring_document_id": "rp-tie-calibration-outcome",
+        "authoring_version": "1.0",
+        "section": "Review receipt",
+        "chunk_id": "chunk_f678161fcf576de1d8e9bbd685496695",
+        "candidate_group_id": null,
+        "member_id": null,
+        "artifact": null,
+        "artifact_sha256": null,
+        "quote": null,
+        "note": "k:rp-tie-calibration-outcome@1.0:f678161f (PRIOR_DECISION; CURRENT)"
+       }
+      ],
+      "event_series_ids": []
+     },
+     "known_denominator": null,
+     "structural": {
+      "threads": 1,
+      "messages": 2,
+      "distinct_participants": 2,
+      "duplicate_threads_ignored": 0,
+      "duplicate_messages_ignored": 0,
+      "computed_from": "topic member threads (original Slack messages)",
+      "participants_are_not_affected_reporters": true
+     },
+     "semantic_identification": "ASSESSED"
+    },
+    "inherited_from": {
+     "level": "UNKNOWN",
+     "assessment_status": "UNASSESSED",
+     "assessment_deferred_to": "AGENT3",
+     "reason": "Agent 2 performs taxonomy only."
+    }
+   },
+   "issues": [],
+   "notes": [],
+   "proposal": {
+    "level": "MEDIUM",
+    "rationale": "A tutor describes different QA outcomes for similar pairs, indicating a contained scoring-consistency problem that warrants comparison rather than a demonstrated batch-wide failure.",
+    "signals": [
+     {
+      "level": "MEDIUM",
+      "signal_index": 1,
+      "signal_text": "Conflicting interpretations that affect, or are reasonably likely to affect, how tasks are scored or handled",
+      "support": "A tutor reports that a tie was accepted while a similar pair was later marked wrong, indicating potentially inconsistent scoring of comparable answers.",
+      "evidence_ids": [
+       "m:C_RP_GENERAL:1790867801.000113"
+      ]
+     }
+    ],
+    "affected_reporters": [],
+    "recurrence": "FOUND",
+    "recurrence_evidence_ids": [
+     "k:rp-tie-calibration-approval@1.0:99b5da48",
+     "k:rp-tie-calibration-outcome@1.0:f678161f"
+    ],
+    "reported_recurrence_evidence_ids": [
+     "m:C_RP_GENERAL:1790867752.000038",
+     "m:C_RP_GENERAL:1790867801.000113"
+    ]
+   }
+  },
+  "resolution": {
+   "topic": "UNRESOLVED",
+   "members": {
+    "member_7f5d04f71b0576b7ae8bd637": "UNRESOLVED"
+   },
+   "agent1_attributed": [
+    {
+     "member_id": "member_7f5d04f71b0576b7ae8bd637",
+     "state": "UNRESOLVED",
+     "agent1_verification_status": "CORRECTED",
+     "agent1_review_required": false
+    }
+   ]
+  },
+  "established_handling": [],
+  "coverage_issues": [],
+  "action_source": "DRAFT",
+  "action_notes": [],
+  "tot": {
+   "status": "NOT_TRIGGERED",
+   "triggers": [],
+   "choice_after_grounding": {
+    "status": "NOT_COMPARED",
+    "viable": []
+   }
+  },
+  "evidence_ledger": {
+   "m:C_RP_GENERAL:1790867752.000038": {
+    "evidence_id": "m:C_RP_GENERAL:1790867752.000038",
+    "origin": "member_message",
+    "use": "MEMBER_REPORT",
+    "member_id": "member_7f5d04f71b0576b7ae8bd637",
+    "channel_id": "C_RP_GENERAL",
+    "thread_id": "1790867752.000038",
+    "message_id": "1790867752.000038",
+    "author_id": "U018",
+    "author_name": "Omar",
+    "author_role": "TUTOR",
+    "timestamp": "2026-10-01T15:15:52.000038Z",
+    "thread_starter_id": "U018",
+    "thread_starter_role": "TUTOR",
+    "reactions": [],
+    "excerpt": "Some reviewers keep picking A for nearly identical answers."
+   },
+   "m:C_RP_GENERAL:1790867801.000113": {
+    "evidence_id": "m:C_RP_GENERAL:1790867801.000113",
+    "origin": "member_message",
+    "use": "MEMBER_REPORT",
+    "member_id": "member_7f5d04f71b0576b7ae8bd637",
+    "channel_id": "C_RP_GENERAL",
+    "thread_id": "1790867752.000038",
+    "message_id": "1790867801.000113",
+    "author_id": "U010",
+    "author_name": "Avery",
+    "author_role": "TUTOR",
+    "timestamp": "2026-10-01T15:16:41.000113Z",
+    "thread_starter_id": "U018",
+    "thread_starter_role": "TUTOR",
+    "reactions": [],
+    "excerpt": "A QA reviewer accepted this tie yesterday; today a similar pair was marked wrong. Two disputed tasks are worth a calibration check, not a policy rewrite by themselves."
+   },
+   "k:rp-tie-calibration-outcome@1.0:f678161f": {
+    "evidence_id": "k:rp-tie-calibration-outcome@1.0:f678161f",
+    "origin": "retrieved_source",
+    "use": "PRIOR_DECISION",
+    "citation": {
+     "document_id": "knowledge_2172da2a2ef0f5ad329ced2418a84472dbe7d939455cf84fcb1b9d27c943e47c",
+     "version_id": "version_cd04873e2b6866bd014b1f72e268367237289452d2dd33d91010fbb0709cf007",
+     "chunk_id": "chunk_f678161fcf576de1d8e9bbd685496695",
+     "authoring": "rp-tie-calibration-outcome@1.0",
+     "title": "Tie calibration follow-up — improvement in the reviewed sample",
+     "sections": [
+      "Review receipt"
+     ],
+     "source": {
+      "batch_id": "rp_batch_14",
+      "channel_id": null,
+      "manual_key": "rp-tie-calibration-outcome",
+      "message_id": null,
+      "permalink": null,
+      "project_id": "response_preference",
+      "reference": null,
+      "system": "manual",
+      "thread_id": null,
+      "workspace_id": null
+     }
+    },
+    "source_type": "decision",
+    "record_kind": "follow_up",
+    "applicability": {
+     "state": "CURRENT",
+     "revision_state": "CURRENT",
+     "version_mode": "current",
+     "replaced_by": [],
+     "unverified_supersession": [],
+     "supersedes": [],
+     "enactment": {
+      "status": "NOT_ENACTED",
+      "basis": null,
+      "governing_sources": [],
+      "missing": [
+       "NO_TL_APPROVAL",
+       "OUT_OF_SCOPE",
+       "NOT_A_POLICY_CHANGE",
+       "NO_ENACTMENT_EVIDENCE"
+      ],
+      "recorded": {
+       "decision_status": "reported",
+       "execution_status": "calibration_completed",
+       "authority_role": "TEAM_LEAD",
+       "batch_id": "rp_batch_14",
+       "valid_until": null,
+       "effective_at": "2026-09-20T15:00:00Z"
+      }
+     },
+     "other_revisions": []
+    },
+    "dates": {
+     "source_date": "2026-09-20T15:00:00Z",
+     "basis": "effective_at",
+     "effective_at": "2026-09-20T15:00:00Z",
+     "created_at": null,
+     "valid_until": null,
+     "expired_as_of": false,
+     "reference_time": "2026-10-02T12:00:00Z"
+    },
+    "scope": {
+     "project_id": "response_preference",
+     "batch_id": "rp_batch_14",
+     "scope": "project",
+     "batch_relation": "other_batch"
+    },
+    "authority": {
+     "role": "TEAM_LEAD",
+     "actor": "U001",
+     "actor_relation": "RECORD_AUTHORITY",
+     "approval_status": "NO_APPROVAL_MARKER",
+     "provenance": "synthetic_manual_record"
+    },
+    "authorship": {
+     "author_id": null,
+     "verified": false,
+     "basis": "NO_AUTHOR_RECORDED"
+    },
+    "recorded_states": {
+     "status": "reported",
+     "decision_status": "reported",
+     "execution_status": "calibration_completed",
+     "outcome_status": "improved_in_sample"
+    },
+    "upstream_review": null,
+    "excerpt": "[PRIOR RECORD (follow_up; decision_status: reported; execution_status: calibration_completed; outcome_status: improved_in_sample) - history, not a standing rule.]\n## Review receipt\nAlex recorded the two reviewers' decisions before and after the calibration discussion. The labels below describe the same sampled pairs, not new production judgments.\n\n| Pair | Before: reviewer 1 / reviewer 2 | After: reviewer 1 / reviewer 2 |\n| --- | --- | --- |\n| RP14-C01 | Tie / A | Tie / Tie |\n| RP14-C02 | A / Tie | Tie / Tie |\n| RP14-C03 | Tie / B | B / B |\n| RP14-C04 | A / A | A / A |\n| RP14-C05 | B / Tie | B / B |\n| RP14-C06 | Tie / Tie | Tie / Tie |\n| RP14-C07 | A / B | Tie / Tie |\n| RP14-C08 | Tie / A | Tie / A |"
+   },
+   "k:rp-tie-calibration-approval@1.0:99b5da48": {
+    "evidence_id": "k:rp-tie-calibration-approval@1.0:99b5da48",
+    "origin": "retrieved_source",
+    "use": "PRIOR_DECISION",
+    "citation": {
+     "document_id": "knowledge_eaa88591b22f97c5f325f12ee24f0717a532797133b5afc0271b1cd7a2537978",
+     "version_id": "version_f0c37174a20ad2f3df91f07ba5e79998c1f09d9e2d6ce72b7ef8d5e77455faf8",
+     "chunk_id": "chunk_99b5da48de39c5fbf66d1e8830084cd8",
+     "authoring": "rp-tie-calibration-approval@1.0",
+     "title": "RP-20260916-01 — Approve tie calibration advice",
+     "sections": [
+      "Context",
+      "Suggested advice",
+      "TL approval",
+      "State"
+     ],
+     "source": {
+      "batch_id": "rp_batch_14",
+      "channel_id": null,
+      "manual_key": "rp-tie-calibration-approval",
+      "message_id": null,
+      "permalink": null,
+      "project_id": "response_preference",
+      "reference": null,
+      "system": "manual",
+      "thread_id": null,
+      "workspace_id": null
+     }
+    },
+    "source_type": "decision",
+    "record_kind": "advice_review",
+    "applicability": {
+     "state": "CURRENT",
+     "revision_state": "CURRENT",
+     "version_mode": "current",
+     "replaced_by": [],
+     "unverified_supersession": [],
+     "supersedes": [],
+     "enactment": {
+      "status": "NOT_ENACTED",
+      "basis": null,
+      "governing_sources": [],
+      "missing": [
+       "OUT_OF_SCOPE",
+       "NOT_A_POLICY_CHANGE",
+       "NO_ENACTMENT_EVIDENCE"
+      ],
+      "recorded": {
+       "decision_status": "tl_approved",
+       "execution_status": "pending_post",
+       "authority_role": "TEAM_LEAD",
+       "batch_id": "rp_batch_14",
+       "valid_until": null,
+       "effective_at": "2026-09-16T13:30:00Z"
+      }
+     },
+     "other_revisions": []
+    },
+    "dates": {
+     "source_date": "2026-09-16T13:30:00Z",
+     "basis": "effective_at",
+     "effective_at": "2026-09-16T13:30:00Z",
+     "created_at": null,
+     "valid_until": null,
+     "expired_as_of": false,
+     "reference_time": "2026-10-02T12:00:00Z"
+    },
+    "scope": {
+     "project_id": "response_preference",
+     "batch_id": "rp_batch_14",
+     "scope": "project",
+     "batch_relation": "other_batch"
+    },
+    "authority": {
+     "role": "TEAM_LEAD",
+     "actor": "U001",
+     "actor_relation": "RECORD_AUTHORITY",
+     "approval_status": "EXPLICIT_SOURCE_MARKER",
+     "provenance": "synthetic_manual_record"
+    },
+    "authorship": {
+     "author_id": null,
+     "verified": false,
+     "basis": "NO_AUTHOR_RECORDED"
+    },
+    "recorded_states": {
+     "status": "tl_approved",
+     "decision_status": "tl_approved",
+     "execution_status": "pending_post",
+     "outcome_status": "not_observed"
+    },
+    "upstream_review": null,
+    "excerpt": "[PRIOR RECORD (advice_review; decision_status: tl_approved; execution_status: pending_post; outcome_status: not_observed) - history, not a standing rule.]\n# RP-20260916-01 — Approve tie calibration advice\n\n## Context\nThe prior batch's calibration packet contained one pair differing only in wording and another in which one response omitted a fact needed for the user's request. Reviewers were using “slightly clearer” without explaining whether it changed usefulness.\n\n## Suggested advice\nThe simulated Advisor proposed a brief alignment announcement and a review of eight sampled pairs, using the existing meaningful-quality-difference criterion.\n\n## TL approval\nAlex approved the proposal. Ask reviewers to identify the actual user-facing benefit; a cosmetic wording preference alone is not sufficient. Keep material accuracy or instruction defects visible rather than forcing ties.\n\nThis is a calibration of the existing criterion, not a new numerical preference threshold. The approval covers the batch-14 exercise.\n\n## State\nPosting and the review exercise are authorized but not recorded as completed in this approval."
+   },
+   "k:response-preference-instructions@1.1:8a796eb0": {
+    "evidence_id": "k:response-preference-instructions@1.1:8a796eb0",
+    "origin": "retrieved_source",
+    "use": "CURRENT_GUIDANCE",
+    "citation": {
+     "document_id": "knowledge_c49652bd3dfc0e71a42597bd9128f922ba1700cc4d7eb83a39cfbaad9a43ed6d",
+     "version_id": "version_497eb858ea77dcb88133f2ba1afd5eaf08d1a1d380c3a5cad663f8f55b7d3c65",
+     "chunk_id": "chunk_8a796eb0d8d66fe934c767aba720977f",
+     "authoring": "response-preference-instructions@1.1",
+     "title": "Response Preference — Instructions (v1.1)",
+     "sections": [
+      "Calibration"
+     ],
+     "source": {
+      "batch_id": null,
+      "channel_id": null,
+      "manual_key": "response-preference-instructions",
+      "message_id": null,
+      "permalink": null,
+      "project_id": "response_preference",
+      "reference": null,
+      "system": "manual",
+      "thread_id": null,
+      "workspace_id": null
+     }
+    },
+    "source_type": "guideline",
+    "record_kind": "guideline",
+    "applicability": {
+     "state": "CURRENT",
+     "revision_state": "CURRENT",
+     "version_mode": "current",
+     "replaced_by": [],
+     "unverified_supersession": [],
+     "supersedes": [],
+     "enactment": null,
+     "other_revisions": []
+    },
+    "dates": {
+     "source_date": "2026-08-30T13:00:00Z",
+     "basis": "effective_at",
+     "effective_at": "2026-08-30T13:00:00Z",
+     "created_at": null,
+     "valid_until": null,
+     "expired_as_of": false,
+     "reference_time": "2026-10-02T12:00:00Z"
+    },
+    "scope": {
+     "project_id": "response_preference",
+     "batch_id": null,
+     "scope": "project",
+     "batch_relation": "project_wide"
+    },
+    "authority": {
+     "role": "TEAM_LEAD",
+     "actor": "U001",
+     "actor_relation": "RECORD_AUTHORITY",
+     "approval_status": "EXPLICIT_SOURCE_MARKER",
+     "provenance": "synthetic_manual_record"
+    },
+    "authorship": {
+     "author_id": null,
+     "verified": false,
+     "basis": "NO_AUTHOR_RECORDED"
+    },
+    "recorded_states": {
+     "status": "approved",
+     "decision_status": null,
+     "execution_status": null,
+     "outcome_status": null
+    },
+    "upstream_review": null,
+    "excerpt": "## Calibration\nFor comparable pairs receiving different judgments, retain both rationales and the relevant evidence. A scoped answer about one pair does not automatically become a new universal preference rule."
+   },
+   "k:rp-tie-calibration-post@1.0:4a3c786f": {
+    "evidence_id": "k:rp-tie-calibration-post@1.0:4a3c786f",
+    "origin": "retrieved_source",
+    "use": "ANNOUNCEMENT",
+    "citation": {
+     "document_id": "knowledge_45310f4cdc303d3697b6589b86dfcc3def7cefd37cba2e56b4a20a01bc548841",
+     "version_id": "version_da07d09f6758e77c7a4524b72e54e3ce672614472c8509957745aa892a73961b",
+     "chunk_id": "chunk_4a3c786f92797e2e8738accda1893ab4",
+     "authoring": "rp-tie-calibration-post@1.0",
+     "title": "Tie calibration announcement",
+     "sections": [],
+     "source": {
+      "batch_id": "rp_batch_14",
+      "channel_id": "C_RP_ANNOUNCEMENTS",
+      "manual_key": null,
+      "message_id": "1789567200.700002",
+      "permalink": null,
+      "project_id": "response_preference",
+      "reference": null,
+      "system": "slack",
+      "thread_id": "1789567200.700002",
+      "workspace_id": null
+     }
+    },
+    "source_type": "announcement",
+    "record_kind": "channel_announcement",
+    "applicability": {
+     "state": "CURRENT",
+     "revision_state": "CURRENT",
+     "version_mode": "current",
+     "replaced_by": [],
+     "unverified_supersession": [],
+     "supersedes": [],
+     "enactment": null,
+     "other_revisions": []
+    },
+    "dates": {
+     "source_date": "2026-09-16T14:00:00Z",
+     "basis": "effective_at",
+     "effective_at": "2026-09-16T14:00:00Z",
+     "created_at": "2026-09-16T14:00:00.700002+00:00",
+     "valid_until": null,
+     "expired_as_of": false,
+     "reference_time": "2026-10-02T12:00:00Z"
+    },
+    "scope": {
+     "project_id": "response_preference",
+     "batch_id": "rp_batch_14",
+     "scope": "project",
+     "batch_relation": "other_batch"
+    },
+    "authority": {
+     "role": "TEAM_LEAD",
+     "actor": "U001",
+     "actor_relation": "MESSAGE_AUTHOR",
+     "approval_status": "EXPLICIT_SOURCE_MARKER",
+     "provenance": "synthetic_slack_archive"
+    },
+    "authorship": {
+     "author_id": "U001",
+     "verified": true,
+     "basis": "SLACK_MESSAGE_AUTHOR"
+    },
+    "recorded_states": {
+     "status": "tl_approved",
+     "decision_status": "tl_approved",
+     "execution_status": "posted",
+     "outcome_status": "not_observed"
+    },
+    "upstream_review": null,
+    "excerpt": "[ANNOUNCEMENT posted 2026-09-16T14:00:00Z by TEAM_LEAD (rp_batch_14): not established as handling for this topic until you show it is relevant and gives a directive.]\nPreference batch 14 calibration: choose a tie when neither answer offers a meaningful quality advantage. If choosing A or B, identify the user-facing benefit rather than saying only that it sounds nicer. Keep material factual or instruction-following defects separate. Bring both rationales for disputed pairs to the eight-pair calibration review. This message clarifies the existing criterion; it does not create a new numerical threshold."
+   },
+   "k:response-preference-faq@1.1:4683724f": {
+    "evidence_id": "k:response-preference-faq@1.1:4683724f",
+    "origin": "retrieved_source",
+    "use": "CURRENT_GUIDANCE",
+    "citation": {
+     "document_id": "knowledge_8267f474fe0a050bdbcaf6140c458ee11ad457fdc2afe9f79de12a23de8575e9",
+     "version_id": "version_6c9da15dd304e1be3d453ea1de9cbfd1e8cc54f0939ce516dd89cf0457f82a86",
+     "chunk_id": "chunk_4683724f24eb1ddb53c613284c5f330b",
+     "authoring": "response-preference-faq@1.1",
+     "title": "Response Preference — FAQ (v1.1)",
+     "sections": [
+      "Ties and preferences"
+     ],
+     "source": {
+      "batch_id": null,
+      "channel_id": null,
+      "manual_key": "response-preference-faq",
+      "message_id": null,
+      "permalink": null,
+      "project_id": "response_preference",
+      "reference": null,
+      "system": "manual",
+      "thread_id": null,
+      "workspace_id": null
+     }
+    },
+    "source_type": "faq",
+    "record_kind": "faq",
+    "applicability": {
+     "state": "CURRENT",
+     "revision_state": "CURRENT",
+     "version_mode": "current",
+     "replaced_by": [],
+     "unverified_supersession": [],
+     "supersedes": [],
+     "enactment": null,
+     "other_revisions": []
+    },
+    "dates": {
+     "source_date": "2026-09-05T13:00:00Z",
+     "basis": "effective_at",
+     "effective_at": "2026-09-05T13:00:00Z",
+     "created_at": null,
+     "valid_until": null,
+     "expired_as_of": false,
+     "reference_time": "2026-10-02T12:00:00Z"
+    },
+    "scope": {
+     "project_id": "response_preference",
+     "batch_id": null,
+     "scope": "project",
+     "batch_relation": "project_wide"
+    },
+    "authority": {
+     "role": "TEAM_LEAD",
+     "actor": "U001",
+     "actor_relation": "RECORD_AUTHORITY",
+     "approval_status": "EXPLICIT_SOURCE_MARKER",
+     "provenance": "synthetic_manual_record"
+    },
+    "authorship": {
+     "author_id": null,
+     "verified": false,
+     "basis": "NO_AUTHOR_RECORDED"
+    },
+    "recorded_states": {
+     "status": "approved",
+     "decision_status": null,
+     "execution_status": null,
+     "outcome_status": null
+    },
+    "upstream_review": null,
+    "excerpt": "## Ties and preferences\n\n### Q: How much improvement is needed to avoid a tie?\nThe difference must offer a meaningful benefit to the user. Cosmetic phrasing alone usually does not. Explain that benefit; otherwise a tie can be appropriate.\n\n### Q: QA is reversing ties on similar pairs. What should I do?\nShare the pairs, relevant prompt constraints and both rationales for calibration. Check whether the cases are actually comparable. An answer to one pair should not be generalized without matching its scope."
+   }
+  },
+  "card": {
+   "contract_version": "agent3-advice-card-v5",
+   "record_type": "ADVICE_CARD",
+   "card_id": "card_05113d580dd935f5b4b429701ae70113",
+   "project_id": "response_preference",
+   "topic_name": "Reviewer calibration consistency",
+   "card_line": "RECOMMENDED_ACTION",
+   "summary": "A tutor reports reviewers choosing A for nearly identical answers; another tutor reports a tie accepted one day and a similar pair marked wrong the next. The thread contains a suggestion to check calibration, but no completed review or resolution.",
+   "severity": {
+    "level": "MEDIUM",
+    "assessment_status": "ASSESSED",
+    "rubric_version": "severity-rubric-v3-semantic-signals",
+    "rubric_content_sha256": "eccaa31a2ab84a0aa7c005216a92fc39681e1dd10107117344948235a76673f4",
+    "rubric_project_id": null,
+    "rubric_scope": "SHARED_DEFAULT",
+    "rationale": "A tutor describes different QA outcomes for similar pairs, indicating a contained scoring-consistency problem that warrants comparison rather than a demonstrated batch-wide failure.",
+    "matched_signals": [
+     {
+      "level": "MEDIUM",
+      "signal_index": 1,
+      "signal_text": "Conflicting interpretations that affect, or are reasonably likely to affect, how tasks are scored or handled",
+      "support": "A tutor reports that a tie was accepted while a similar pair was later marked wrong, indicating potentially inconsistent scoring of comparable answers.",
+      "evidence": [
+       {
+        "kind": "slack_message",
+        "project_id": "response_preference",
+        "batch_id": "rp_batch_15",
+        "scope": "project",
+        "channel_id": "C_RP_GENERAL",
+        "thread_id": "1790867752.000038",
+        "message_id": "1790867801.000113",
+        "document_id": null,
+        "version_id": null,
+        "authoring_document_id": null,
+        "authoring_version": null,
+        "section": null,
+        "chunk_id": null,
+        "candidate_group_id": null,
+        "member_id": "member_7f5d04f71b0576b7ae8bd637",
+        "artifact": null,
+        "artifact_sha256": null,
+        "quote": null,
+        "note": "m:C_RP_GENERAL:1790867801.000113"
+       }
+      ]
+     }
+    ],
+    "evidence": [
+     {
+      "kind": "slack_message",
+      "project_id": "response_preference",
+      "batch_id": "rp_batch_15",
+      "scope": "project",
+      "channel_id": "C_RP_GENERAL",
+      "thread_id": "1790867752.000038",
+      "message_id": "1790867801.000113",
+      "document_id": null,
+      "version_id": null,
+      "authoring_document_id": null,
+      "authoring_version": null,
+      "section": null,
+      "chunk_id": null,
+      "candidate_group_id": null,
+      "member_id": "member_7f5d04f71b0576b7ae8bd637",
+      "artifact": null,
+      "artifact_sha256": null,
+      "quote": null,
+      "note": "m:C_RP_GENERAL:1790867801.000113"
+     }
+    ],
+    "occurrence": {
+     "affected_reporters": {
+      "status": "UNKNOWN",
+      "count": null,
+      "ids": [],
+      "basis": null,
+      "evidence": []
+     },
+     "affected_tasks": {
+      "status": "UNKNOWN",
+      "count": null,
+      "ids": [],
+      "basis": null,
+      "evidence": []
+     },
+     "relevant_threads": [
+      {
+       "project_id": "response_preference",
+       "batch_id": "rp_batch_15",
+       "channel_id": "C_RP_GENERAL",
+       "thread_id": "1790867752.000038",
+       "member_id": "member_7f5d04f71b0576b7ae8bd637"
+      }
+     ],
+     "reporting_window": {
+      "start": "2026-10-01T15:15:52.000038+00:00",
+      "end": "2026-10-01T15:16:41.000113+00:00"
+     },
+     "historical_recurrence": {
+      "status": "FOUND",
+      "sources": [
+       {
+        "kind": "knowledge_source",
+        "project_id": "response_preference",
+        "batch_id": "rp_batch_14",
+        "scope": "project",
+        "channel_id": null,
+        "thread_id": null,
+        "message_id": null,
+        "document_id": "knowledge_eaa88591b22f97c5f325f12ee24f0717a532797133b5afc0271b1cd7a2537978",
+        "version_id": "version_f0c37174a20ad2f3df91f07ba5e79998c1f09d9e2d6ce72b7ef8d5e77455faf8",
+        "authoring_document_id": "rp-tie-calibration-approval",
+        "authoring_version": "1.0",
+        "section": "Context",
+        "chunk_id": "chunk_99b5da48de39c5fbf66d1e8830084cd8",
+        "candidate_group_id": null,
+        "member_id": null,
+        "artifact": null,
+        "artifact_sha256": null,
+        "quote": null,
+        "note": "k:rp-tie-calibration-approval@1.0:99b5da48 (PRIOR_DECISION; CURRENT)"
+       },
+       {
+        "kind": "knowledge_source",
+        "project_id": "response_preference",
+        "batch_id": "rp_batch_14",
+        "scope": "project",
+        "channel_id": null,
+        "thread_id": null,
+        "message_id": null,
+        "document_id": "knowledge_2172da2a2ef0f5ad329ced2418a84472dbe7d939455cf84fcb1b9d27c943e47c",
+        "version_id": "version_cd04873e2b6866bd014b1f72e268367237289452d2dd33d91010fbb0709cf007",
+        "authoring_document_id": "rp-tie-calibration-outcome",
+        "authoring_version": "1.0",
+        "section": "Review receipt",
+        "chunk_id": "chunk_f678161fcf576de1d8e9bbd685496695",
+        "candidate_group_id": null,
+        "member_id": null,
+        "artifact": null,
+        "artifact_sha256": null,
+        "quote": null,
+        "note": "k:rp-tie-calibration-outcome@1.0:f678161f (PRIOR_DECISION; CURRENT)"
+       }
+      ],
+      "event_series_ids": []
+     },
+     "known_denominator": null,
+     "structural": {
+      "threads": 1,
+      "messages": 2,
+      "distinct_participants": 2,
+      "duplicate_threads_ignored": 0,
+      "duplicate_messages_ignored": 0,
+      "computed_from": "topic member threads (original Slack messages)",
+      "participants_are_not_affected_reporters": true
+     },
+     "semantic_identification": "ASSESSED"
+    },
+    "inherited_from": {
+     "level": "UNKNOWN",
+     "assessment_status": "UNASSESSED",
+     "assessment_deferred_to": "AGENT3",
+     "reason": "Agent 2 performs taxonomy only."
+    }
+   },
+   "severity_is_provisional": false,
+   "resolution_status": "UNRESOLVED",
+   "recommended_action": {
+    "action_type": "SCHEDULE_ALIGNMENT",
+    "draft_text": "Please bring the disputed pairs to a scoped calibration review. A tutor reports A choices for nearly identical answers; a tutor also reports an accepted tie followed by a similar pair marked wrong.\n\nFor the review, provide the task references, both answers, relevant prompt requirements and both rationales. We will check whether the cases are comparable and whether any difference offers a meaningful benefit to the user. Cosmetic phrasing alone usually does not. Retain the supporting evidence, and do not generalize a conclusion about one pair beyond its matching scope.",
+    "scope_note": "Limit the review to the disputed pairs and the existing meaningful-benefit criterion; the reports alone do not establish that the cases are comparable or that either judgment is wrong.",
+    "label": "Schedule a short review session",
+    "instruction": "Arrange a scoped calibration review of the disputed pairs, asking the tutors to supply the comparison material required by the current FAQ.",
+    "rationale": "The current FAQ directly supports comparing disputed pairs and both rationales before generalizing. The earlier exercise offers a useful precedent, but its approval was limited to batch 14.",
+    "targets": [],
+    "essential_premise_ids": [
+     "claim:c1",
+     "claim:c2",
+     "claim:c4",
+     "claim:c5"
+    ],
+    "source": "DRAFT"
+   },
+   "reasoning": "What the evidence shows: A tutor reports that some reviewers keep picking A for nearly identical answers. A tutor reports that a QA reviewer accepted a tie yesterday while a similar pair was marked wrong today, and suggests checking calibration for two disputed tasks rather than rewriting policy on that basis. The tutor's report remains unresolved in the available thread: a tutor suggests a calibration check, but the messages do not record a completed review or resolution. The current FAQ says that avoiding a tie requires a meaningful user benefit; cosmetic phrasing alone usually does not provide one. For reversals on similar pairs, share the pairs, relevant prompt requirements and both rationales for calibration, check comparability, and do not generalize an answer beyond its matching scope. The current instructions require retaining both rationales and relevant evidence when comparable pairs receive different judgments; an answer about one pair does not automatically establish a universal preference rule. The earlier approval records authorization for an announcement and an eight-pair calibration exercise in batch 14, using the existing meaningful-quality-difference criterion rather than a new numerical threshold; the approval itself did not record completion. The earlier batch-14 follow-up records completed calibration and improved agreement on the same sampled pairs, while one sampled pair still received Tie and A judgments; it is history, not a standing rule. Thread status, read from each thread's own messages: unresolved ×1. Agent 1's earlier labels (an input, not evidence): unresolved ×1. 1 advisor statement was not supported by the evidence and not shown.",
+   "supporting_sources": [
+    {
+     "kind": "knowledge_source",
+     "project_id": "response_preference",
+     "batch_id": null,
+     "scope": "project",
+     "channel_id": null,
+     "thread_id": null,
+     "message_id": null,
+     "document_id": "knowledge_8267f474fe0a050bdbcaf6140c458ee11ad457fdc2afe9f79de12a23de8575e9",
+     "version_id": "version_6c9da15dd304e1be3d453ea1de9cbfd1e8cc54f0939ce516dd89cf0457f82a86",
+     "authoring_document_id": "response-preference-faq",
+     "authoring_version": "1.1",
+     "section": "Ties and preferences",
+     "chunk_id": "chunk_4683724f24eb1ddb53c613284c5f330b",
+     "candidate_group_id": null,
+     "member_id": null,
+     "artifact": null,
+     "artifact_sha256": null,
+     "quote": null,
+     "note": "k:response-preference-faq@1.1:4683724f (CURRENT_GUIDANCE; CURRENT)"
+    },
+    {
+     "kind": "knowledge_source",
+     "project_id": "response_preference",
+     "batch_id": null,
+     "scope": "project",
+     "channel_id": null,
+     "thread_id": null,
+     "message_id": null,
+     "document_id": "knowledge_c49652bd3dfc0e71a42597bd9128f922ba1700cc4d7eb83a39cfbaad9a43ed6d",
+     "version_id": "version_497eb858ea77dcb88133f2ba1afd5eaf08d1a1d380c3a5cad663f8f55b7d3c65",
+     "authoring_document_id": "response-preference-instructions",
+     "authoring_version": "1.1",
+     "section": "Calibration",
+     "chunk_id": "chunk_8a796eb0d8d66fe934c767aba720977f",
+     "candidate_group_id": null,
+     "member_id": null,
+     "artifact": null,
+     "artifact_sha256": null,
+     "quote": null,
+     "note": "k:response-preference-instructions@1.1:8a796eb0 (CURRENT_GUIDANCE; CURRENT)"
+    },
+    {
+     "kind": "knowledge_source",
+     "project_id": "response_preference",
+     "batch_id": "rp_batch_14",
+     "scope": "project",
+     "channel_id": null,
+     "thread_id": null,
+     "message_id": null,
+     "document_id": "knowledge_eaa88591b22f97c5f325f12ee24f0717a532797133b5afc0271b1cd7a2537978",
+     "version_id": "version_f0c37174a20ad2f3df91f07ba5e79998c1f09d9e2d6ce72b7ef8d5e77455faf8",
+     "authoring_document_id": "rp-tie-calibration-approval",
+     "authoring_version": "1.0",
+     "section": "Context",
+     "chunk_id": "chunk_99b5da48de39c5fbf66d1e8830084cd8",
+     "candidate_group_id": null,
+     "member_id": null,
+     "artifact": null,
+     "artifact_sha256": null,
+     "quote": null,
+     "note": "k:rp-tie-calibration-approval@1.0:99b5da48 (PRIOR_DECISION; CURRENT)"
+    },
+    {
+     "kind": "knowledge_source",
+     "project_id": "response_preference",
+     "batch_id": "rp_batch_14",
+     "scope": "project",
+     "channel_id": null,
+     "thread_id": null,
+     "message_id": null,
+     "document_id": "knowledge_2172da2a2ef0f5ad329ced2418a84472dbe7d939455cf84fcb1b9d27c943e47c",
+     "version_id": "version_cd04873e2b6866bd014b1f72e268367237289452d2dd33d91010fbb0709cf007",
+     "authoring_document_id": "rp-tie-calibration-outcome",
+     "authoring_version": "1.0",
+     "section": "Review receipt",
+     "chunk_id": "chunk_f678161fcf576de1d8e9bbd685496695",
+     "candidate_group_id": null,
+     "member_id": null,
+     "artifact": null,
+     "artifact_sha256": null,
+     "quote": null,
+     "note": "k:rp-tie-calibration-outcome@1.0:f678161f (PRIOR_DECISION; CURRENT)"
+    },
+    {
+     "kind": "slack_message",
+     "project_id": "response_preference",
+     "batch_id": "rp_batch_15",
+     "scope": "project",
+     "channel_id": "C_RP_GENERAL",
+     "thread_id": "1790867752.000038",
+     "message_id": "1790867752.000038",
+     "document_id": null,
+     "version_id": null,
+     "authoring_document_id": null,
+     "authoring_version": null,
+     "section": null,
+     "chunk_id": null,
+     "candidate_group_id": null,
+     "member_id": "member_7f5d04f71b0576b7ae8bd637",
+     "artifact": null,
+     "artifact_sha256": null,
+     "quote": null,
+     "note": "m:C_RP_GENERAL:1790867752.000038"
+    },
+    {
+     "kind": "slack_message",
+     "project_id": "response_preference",
+     "batch_id": "rp_batch_15",
+     "scope": "project",
+     "channel_id": "C_RP_GENERAL",
+     "thread_id": "1790867752.000038",
+     "message_id": "1790867801.000113",
+     "document_id": null,
+     "version_id": null,
+     "authoring_document_id": null,
+     "authoring_version": null,
+     "section": null,
+     "chunk_id": null,
+     "candidate_group_id": null,
+     "member_id": "member_7f5d04f71b0576b7ae8bd637",
+     "artifact": null,
+     "artifact_sha256": null,
+     "quote": null,
+     "note": "m:C_RP_GENERAL:1790867801.000113"
+    }
+   ],
+   "related_threads": [
+    {
+     "project_id": "response_preference",
+     "batch_id": "rp_batch_15",
+     "channel_id": "C_RP_GENERAL",
+     "thread_id": "1790867752.000038",
+     "member_id": "member_7f5d04f71b0576b7ae8bd637",
+     "permalink": null,
+     "display_reference": "1790867752.000038",
+     "label": "#response-preference-general, 2026-10-01, started by a tutor: \"Some reviewers keep picking A for nearly identical answers.\"",
+     "opening_text": "Some reviewers keep picking A for nearly identical answers."
+    }
+   ],
+   "confidence": 0.9,
+   "confidence_band": "HIGH",
+   "needs_review_reasons": [],
+   "inherited_flags": [],
+   "checks": {
+    "grounding": "PASSED",
+    "temporal_conflict": "NONE_FOUND",
+    "open_confirmation": "NONE"
+   },
+   "lineage": {
+    "agent3_run_id": "agent3overnight_bdc099a76ee76bdc391050df2aded225",
+    "handoff_contract": "agent2-taxonomy-handoff-v2",
+    "agent2_export_sha256": "6f1f56bf5a5b1f02287d7ac958dc205c05cc9e0ea3e6d5f3fdd7279da0c9e1e7",
+    "agent2_schema_version": 8,
+    "candidate_group_id": "cluster_0a235879f2d3cce1",
+    "topic_id": "cluster_0a235879f2d3cce1/topic_1",
+    "member_ids": [
+     "member_7f5d04f71b0576b7ae8bd637"
+    ],
+    "project_id": "response_preference",
+    "batch_id": "rp_batch_15"
+   },
+   "review_notes": [],
+   "details": [
+    "The current FAQ asks for disputed pairs, relevant prompt requirements and both rationales, followed by a check that the cases are comparable.",
+    "An earlier approval covered a batch-14 calibration exercise, not a standing policy change.",
+    "The earlier follow-up records improved agreement in the reviewed sample after calibration, with disagreement remaining on one sampled pair."
+   ],
+   "next_step": {
+    "status": "ACTION_RECOMMENDED",
+    "rationale": "The current FAQ directly supports comparing disputed pairs and both rationales before generalizing. The earlier exercise offers a useful precedent, but its approval was limited to batch 14.",
+    "explanation": null
+   },
+   "briefing": {
+    "status": "IN_BRIEFING",
+    "relevance": "PROJECT",
+    "label_id": "rel_cluster_0a235879f2d3cce1_topic_1",
+    "label_source": "DEVELOPER_AUDIT_2026-11-05 (prepared by the coding assistant from the saved source threads; not confirmed by a team lead)",
+    "kept_because": []
+   },
+   "outstanding_step": null,
+   "derivation": {
+    "policy_version": "briefing-routing-v1",
+    "provenance": "OFFLINE_POLICY_APPLICATION",
+    "text_provenance": "PARENT_RUN_JUDGMENTS",
+    "parent_run": "data/experiments/threadsense_full_v1/stages/agent3/overnight_run",
+    "parent_run_instance": "4a48d67e4d8322cf6912e26032663b41fd5f0447103ed8081e5581b3d3183ff8",
+    "parent_card_id": "card_b8cf7bd89e5696ad155d5fb86c7267f4",
+    "parent_card_sha256": "970cc2c19bd2d57a5054cd8704c6f3d0ceb0e0a14f42c9e5d6aa39b903a73cc0",
+    "parent_contract_version": "agent3-advice-card-v4",
+    "changes": []
+   }
+  },
+  "review_items": [],
+  "coverage": {
+   "group_members_outside_this_card": [],
+   "uncarried_obligations": []
+  },
+  "budget": {
+   "consumed": {
+    "retrieval_calls": 1,
+    "model_calls": 2
+   },
+   "limits": {
+    "model_calls_per_topic": 4,
+    "model_calls_total": 28,
+    "retrieval_calls_per_topic": 6,
+    "retrieval_calls_total": 42
+   }
+  },
+  "diagnostics": [
+   {
+    "code": "WITHHELD_STATEMENT",
+    "statement_id": "severity:reported_recurrence",
+    "kind": "REPORTED_RECURRENCE",
+    "text": "Members report that this is happening again (their report; not corroborated history).",
+    "verdict": "PARTIALLY_SUPPORTED",
+    "rationale": "U018's statement that reviewers 'keep picking A' supports reported repetition. U010 reports contrasting outcomes across two days but does not independently say that this inconsistency is happening again, so the plural recurrence attribution is not fully established.",
+    "blocking": false
+   }
+  ]
+ },
+ "derivation": {
+  "policy_version": "briefing-routing-v1",
+  "parent_topic_file": "data/experiments/threadsense_full_v1/stages/agent3/overnight_run/topics/topic__cluster_0a235879f2d3cce1__topic_1.json",
+  "parent_topic_sha256": "462777012a4d2c34fcb3ff582d71f87ff42fb07b6721f732da0c53075803016a",
+  "replaced": [
+   "result.card",
+   "workflow.card_id",
+   "workflow.card_line"
+  ]
+ }
+}

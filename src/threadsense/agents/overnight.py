@@ -600,6 +600,7 @@ def brief_card(card, semantic_source):
                                                           'targets', 'source')} if action else None,
             'review_notes': card['review_notes'], 'reasoning': card['reasoning'],
             **({'details': card['details'], 'next_step': card['next_step']} if 'next_step' in card else {}),
+            **({'briefing': card['briefing'], 'outstanding_step': card['outstanding_step']} if 'briefing' in card else {}),
             'related_threads': [{k: t[k] for k in ('label', 'display_reference', 'permalink', 'channel_id', 'thread_id', 'member_id')}
                                 for t in card['related_threads']],
             'sources': [s for s in card['supporting_sources'] if s['kind'] == 'knowledge_source'],
@@ -658,6 +659,11 @@ def report(brief):
              f"{c['cards']} cards ({', '.join(f'{k} {v}' for k, v in sorted(c['cards_by_line'].items())) or 'none'}); "
              f"{c['review_queue_items']} Model Review Queue items; {c['discussion_members']} discussion members "
              f"({c['members_on_cards']} on cards); {c['announcement_route_members']} announcement-route members.", '']
+    scope_note = brief.get('briefing')
+    if scope_note:  # briefing_policy: social or routine cards are listed once at the end, not as briefing items.
+        lines += [f"Briefing ({scope_note['policy_version']}): {scope_note['in_briefing']} cards in this brief "
+                  f"({', '.join(f'{k} {v}' for k, v in sorted(scope_note['in_briefing_by_line'].items()))}); "
+                  f"{len(scope_note['not_in_briefing'])} kept in history.", '']
     snapshot, activity = brief.get('snapshot'), brief.get('handoff_activity')
     if snapshot:
         lines += [f"Retrieval snapshot `{snapshot.get('index_dir')}` (cutoff {snapshot['cutoff']}, build "
@@ -674,7 +680,8 @@ def report(brief):
         lines += [f"- {w['topic_name'] or w['work_id']} ({w['kind']}): **{w['outcome']}** - {w.get('detail') or w.get('error') or ''} "
                   f"({len(w['member_ids'])} members, {len(w['obligations'])} review items kept)" for w in brief['incomplete_work']]
         lines.append('')
-    for card in brief['cards']:
+    shown = [c for c in brief['cards'] if (c.get('briefing') or {}).get('status', 'IN_BRIEFING') == 'IN_BRIEFING']
+    for card in shown:
         action = card['recommended_action']
         lines += [f"## {card['topic_name']}", '',
                   f"{card['card_line'].replace('_', ' ').title()} - severity {card['severity']['level'].lower()} "
@@ -687,6 +694,10 @@ def report(brief):
                 lines += [f"**Why.** {action['rationale']}", '']
             if action['draft_text']:
                 lines += ['**Draft to copy:**', '', *[f'> {line}' for line in action['draft_text'].splitlines()], '']
+        step = card.get('outstanding_step')
+        if step:
+            lines += [f"**{step['label']}.**"
+                      + ''.join(f' {d}' for d in step['details']), '']
         if card['review_notes']:
             lines += ['**Still needs review:**', *[f'- {n}' for n in card['review_notes']], '']
         lines += ['Threads: ' + '; '.join(f"{t['label']} ({t['display_reference']})" for t in card['related_threads']), '']
@@ -694,6 +705,13 @@ def report(brief):
             lines += ['Sources: ' + '; '.join(f"{s['authoring_document_id'] or s['document_id']}"
                                               f"{'@' + s['authoring_version'] if s['authoring_version'] else ''}"
                                               f"{' (' + s['section'] + ')' if s['section'] else ''}" for s in card['sources']), '']
+    if scope_note and scope_note['not_in_briefing']:
+        lines += ['## Not in this brief', '', 'Kept in history; cards, threads and accounting unchanged:', '']
+        lines += [f"- {c['topic_name']}: {c['status'].replace('_', ' ').lower()} ({c['relevance'].replace('_', ' ').lower()})"
+                  + (f", still {c['resolution_status'].replace('_', ' ').lower()}" if c.get('open_step') else '')
+                  + (f". {c['basis']}" if c.get('basis') else '')
+                  for c in scope_note['not_in_briefing']]
+        lines.append('')
     lines += ['## Model Review Queue', '', f"{len(brief['model_review_queue'])} items (separate from the cards above):", '']
     kinds = Counter(f"{i['origin']} {i['kind']}" for i in brief['model_review_queue'])
     lines += [f'- {k}: {n}' for k, n in sorted(kinds.items())]

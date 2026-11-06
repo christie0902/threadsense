@@ -1,0 +1,1606 @@
+{
+ "work_item": {
+  "candidate_group_id": "cluster_aa0548b34bd2cbdc",
+  "project_id": "audio_multimodal",
+  "batch_id": "audio_batch_06",
+  "work_id": "topic:cluster_aa0548b34bd2cbdc/topic_1",
+  "kind": "TOPIC",
+  "topic_id": "cluster_aa0548b34bd2cbdc/topic_1",
+  "topic_name": "Work environment and background noise",
+  "member_ids": [
+   "member_1b1df511a1b31b6c48167cb7"
+  ],
+  "pilot_scenario": null,
+  "in_scope": true
+ },
+ "workflow": {
+  "outcome": "CARD",
+  "card_id": "card_44a93d53903cd538305d9b0599710fdf",
+  "card_line": "OBSERVATION",
+  "grounding": "PASSED",
+  "stage_failures": [],
+  "semantic_source": "LIVE_MODEL"
+ },
+ "result": {
+  "scenario": {
+   "id": "topic:cluster_aa0548b34bd2cbdc/topic_1",
+   "candidate_group_id": "cluster_aa0548b34bd2cbdc",
+   "focus": "Work environment and background noise",
+   "topic_id": "cluster_aa0548b34bd2cbdc/topic_1"
+  },
+  "status": "CARD",
+  "topic": {
+   "project_id": "audio_multimodal",
+   "batch_id": "audio_batch_06",
+   "candidate_group_id": "cluster_aa0548b34bd2cbdc",
+   "topic_id": "cluster_aa0548b34bd2cbdc/topic_1",
+   "topic_label": "Work environment and background noise",
+   "projection_gap": null,
+   "as_of": "2026-10-02T12:00:00Z",
+   "member_ids": [
+    "member_1b1df511a1b31b6c48167cb7"
+   ],
+   "initial_query": "Work environment and background noise. Hana shares that she has found a quieter room to work from, expressing that it makes a significant difference in her work environment. Jordan responds positively, noting that background noise complicates the process of reviewing clips."
+  },
+  "retrieval_trace": [
+   {
+    "step": 1,
+    "purpose": "initial_current_guidance",
+    "gap_id": null,
+    "query": "Work environment and background noise. Hana shares that she has found a quieter room to work from, expressing that it makes a significant difference in her work environment. Jordan responds positively, noting that background noise complicates the process of reviewing clips.",
+    "source_types": [
+     "guideline",
+     "faq",
+     "decision",
+     "announcement"
+    ],
+    "version_mode": "current",
+    "as_of": "2026-10-02T12:00:00Z",
+    "batch": "audio_batch_06",
+    "top_k": 5,
+    "status": "DONE",
+    "mode": "hybrid",
+    "use_mmr": true,
+    "mmr_lambda": 0.9,
+    "result_ids": [
+     "k:audio-multimodal-instructions@1.3:6eeb0c96",
+     "k:audio-multimodal-instructions@1.3:1131a168",
+     "k:audio-repeat-observation-review@1.0:ae0550d0",
+     "k:audio-headset-check-approval@1.0:3741e593",
+     "k:slack:C_AUDIO_ANNOUNCEMENTS:1790868080.000142:763a2b29"
+    ],
+    "new_evidence_ids": [
+     "k:audio-multimodal-instructions@1.3:6eeb0c96",
+     "k:audio-multimodal-instructions@1.3:1131a168",
+     "k:audio-repeat-observation-review@1.0:ae0550d0",
+     "k:audio-headset-check-approval@1.0:3741e593",
+     "k:slack:C_AUDIO_ANNOUNCEMENTS:1790868080.000142:763a2b29",
+     "k:audio-multimodal-faq@1.1:c724358c"
+    ],
+    "eligible_chunks": 27,
+    "added": [
+     {
+      "evidence_id": "k:audio-multimodal-faq@1.1:c724358c",
+      "role": "TYPE_COVERAGE",
+      "detail": "best-ranked faq for this query (rank 13), outside the top 5"
+     }
+    ]
+   }
+  ],
+  "retrieval_notes": {
+   "withheld_by_version": [],
+   "version_diagnostics": []
+  },
+  "follow_ups": [],
+  "unfilled_gaps": [],
+  "model_calls": [
+   {
+    "stage": "draft",
+    "schema": "AdvisorDraft",
+    "agent1_context": {
+     "sha256": "b4eaa615a4f3188b4c9d1b7ed7e9c010901e781c30129b7ef14b0f9b0e01a1a1",
+     "boundary": "IN_HTTP_BODY"
+    },
+    "raw": "{\n  \"contract_version\": \"agent3-advisor-draft-v11\",\n  \"summary\": null,\n  \"summary_sentences\": [\n    {\n      \"text\": \"A QA tutor reports that moving to a quieter room has made a noticeable difference; a tutor comments that background noise makes reviewing clips harder.\",\n      \"support_claim_ids\": [\"c1\", \"c2\"],\n      \"depends_on\": []\n    },\n    {\n      \"text\": \"The exchange contains no handling question or report of an ongoing operational problem.\",\n      \"support_claim_ids\": [\"c3\"],\n      \"depends_on\": []\n    }\n  ],\n  \"detail_sentences\": [],\n  \"reasoning\": \"The QA tutor describes an improvement in working conditions, and the tutor adds a general observation about background noise. Neither message requests help, identifies affected tasks, or describes an ongoing operational problem. No intervention or further research is needed for this advice. The retrieved scoring and playback guidance addresses different problems, and the earlier decisions do not establish handling for workplace noise. The unrelated queue announcement's upstream review flags remain open; this advice does not rely on that announcement.\",\n  \"claims\": [\n    {\n      \"claim_id\": \"c1\",\n      \"kind\": \"INCIDENT_FACT\",\n      \"text\": \"A QA tutor reports having obtained a quieter room to work from and describes a noticeable improvement.\",\n      \"evidence_ids\": [\"m:C_AUDIO_GENERAL:1790856028.000143\"],\n      \"attributions\": [\n        {\n          \"user_id\": \"U008\",\n          \"relation\": \"AUTHOR\",\n          \"evidence_id\": \"m:C_AUDIO_GENERAL:1790856028.000143\"\n        }\n      ],\n      \"quote\": \"Finally got a quieter room to work from — what a difference 😄\",\n      \"quote_kind\": \"VERBATIM\",\n      \"material\": true\n    },\n    {\n      \"claim_id\": \"c2\",\n      \"kind\": \"INCIDENT_FACT\",\n      \"text\": \"A tutor comments that background noise makes reviewing clips harder.\",\n      \"evidence_ids\": [\"m:C_AUDIO_GENERAL:1790856074.000113\"],\n      \"attributions\": [\n        {\n          \"user_id\": \"U003\",\n          \"relation\": \"AUTHOR\",\n          \"evidence_id\": \"m:C_AUDIO_GENERAL:1790856074.000113\"\n        }\n      ],\n      \"quote\": \"Nice! Background noise makes reviewing clips a lot harder.\",\n      \"quote_kind\": \"VERBATIM\",\n      \"material\": true\n    },\n    {\n      \"claim_id\": \"c3\",\n      \"kind\": \"INFERENCE\",\n      \"text\": \"The QA tutor's update and the tutor's reply contain no handling question or report of an ongoing operational problem.\",\n      \"evidence_ids\": [\n        \"m:C_AUDIO_GENERAL:1790856028.000143\",\n        \"m:C_AUDIO_GENERAL:1790856074.000113\"\n      ],\n      \"attributions\": [\n        {\n          \"user_id\": \"U008\",\n          \"relation\": \"AUTHOR\",\n          \"evidence_id\": \"m:C_AUDIO_GENERAL:1790856028.000143\"\n        },\n        {\n          \"user_id\": \"U003\",\n          \"relation\": \"AUTHOR\",\n          \"evidence_id\": \"m:C_AUDIO_GENERAL:1790856074.000113\"\n        }\n      ],\n      \"quote\": null,\n      \"quote_kind\": \"PARAPHRASE\",\n      \"material\": true\n    }\n  ],\n  \"gaps\": [],\n  \"evidence_sufficiency\": \"SUFFICIENT\",\n  \"proposed_action\": {\n    \"action_type\": \"NO_ACTION\",\n    \"intervention_need\": null,\n    \"instruction\": \"Take no operational action on this exchange about working conditions.\",\n    \"rationale\": \"The QA tutor reports an improvement, and neither message raises a handling question or an ongoing problem needing intervention.\",\n    \"draft_text\": null,\n    \"scope_note\": null,\n    \"support_claim_ids\": [\"c1\", \"c3\"],\n    \"targets\": [],\n    \"context_claim_ids\": [\"c2\"]\n  },\n  \"severity\": {\n    \"level\": \"N/A\",\n    \"rationale\": \"This is an informal exchange about improved working conditions and background noise, without an identifiable operational problem requiring intervention.\",\n    \"signals\": [],\n    \"affected_reporters\": [],\n    \"recurrence\": \"NOT_CHECKED\",\n    \"recurrence_evidence_ids\": [],\n    \"reported_recurrence_evidence_ids\": []\n  },\n  \"confidence\": 0.98,\n  \"open_confirmation\": \"NONE\",\n  \"open_question\": null,\n  \"open_question_evidence_ids\": [],\n  \"source_conflicts\": [],\n  \"announcement_assessments\": [\n    {\n      \"evidence_id\": \"k:slack:C_AUDIO_ANNOUNCEMENTS:1790868080.000142:763a2b29\",\n      \"relevant\": false,\n      \"directive\": false,\n      \"directive_quote\": null,\n      \"rationale\": \"The announcement states when the same batch's queue closes; it does not address workplace noise or direct handling of this exchange.\"\n    }\n  ],\n  \"resolution\": [\n    {\n      \"member_id\": \"member_1b1df511a1b31b6c48167cb7\",\n      \"state\": \"UNKNOWN\",\n      \"evidence_ids\": [\n        \"m:C_AUDIO_GENERAL:1790856028.000143\",\n        \"m:C_AUDIO_GENERAL:1790856074.000113\"\n      ],\n      \"basis\": \"The QA tutor reports an improved workspace, but the exchange presents no operational question or incident whose resolution can be assessed.\"\n    }\n  ],\n  \"coverage\": [\n    {\n      \"need\": \"CURRENT_GUIDANCE\",\n      \"status\": \"NOT_APPLICABLE\",\n      \"evidence_ids\": [\n        \"k:audio-multimodal-instructions@1.3:6eeb0c96\",\n        \"k:audio-multimodal-instructions@1.3:1131a168\",\n        \"k:audio-multimodal-faq@1.1:c724358c\"\n      ],\n      \"note\": \"The retrieved guidance concerns recording quality and playback failures, not workplace noise. No handling rule is needed to recommend no action on this informal exchange.\",\n      \"gap_id\": null\n    },\n    {\n      \"need\": \"ANNOUNCEMENTS\",\n      \"status\": \"NOT_APPLICABLE\",\n      \"evidence_ids\": [\n        \"k:slack:C_AUDIO_ANNOUNCEMENTS:1790868080.000142:763a2b29\"\n      ],\n      \"note\": \"The retrieved announcement concerns queue closing time and does not apply to this topic.\",\n      \"gap_id\": null\n    },\n    {\n      \"need\": \"PRIOR_DECISIONS\",\n      \"status\": \"NOT_APPLICABLE\",\n      \"evidence_ids\": [\n        \"k:audio-repeat-observation-review@1.0:ae0550d0\",\n        \"k:audio-headset-check-approval@1.0:3741e593\"\n      ],\n      \"note\": \"The earlier records concern repeated audio and silent listening, not workplace noise. Historical outcomes are not needed for the no-action recommendation.\",\n      \"gap_id\": null\n    },\n    {\n      \"need\": \"MEMBER_QUESTIONS\",\n      \"status\": \"COVERED\",\n      \"evidence_ids\": [\n        \"m:C_AUDIO_GENERAL:1790856028.000143\",\n        \"m:C_AUDIO_GENERAL:1790856074.000113\"\n      ],\n      \"note\": \"Both messages were reviewed; neither asks a question or refers to an earlier workaround or discussion.\",\n      \"gap_id\": null\n    }\n  ],\n  \"review_note\": null,\n  \"action_choice\": null\n}",
+    "raw_sha256": "8a333ecf22794dfca7eba782a3599cdc4df52e5c42ca760f5fa8bf2f8a4cb92f",
+    "http_requests": {
+     "sent": 1,
+     "blocked": 0,
+     "hosts": [
+      "api.openai.com"
+     ],
+     "responses": [
+      {
+       "status_code": 200,
+       "seconds": 21.843,
+       "model": "gpt-6.1-sol",
+       "usage": {
+        "prompt_tokens": 11931,
+        "completion_tokens": 1766,
+        "total_tokens": 13697,
+        "prompt_tokens_details": {
+         "cached_tokens": 0,
+         "cache_write_tokens": 11928,
+         "audio_tokens": 0
+        },
+        "completion_tokens_details": {
+         "reasoning_tokens": 121,
+         "audio_tokens": 0,
+         "accepted_prediction_tokens": 0,
+         "rejected_prediction_tokens": 0
+        }
+       },
+       "finish_reasons": [
+        "stop"
+       ]
+      }
+     ],
+     "input_tokens": 11937,
+     "refused": null,
+     "charged_usd": 0.041522
+    },
+    "input_tokens_estimate": 11937,
+    "status": "OK"
+   },
+   {
+    "stage": "grounding",
+    "schema": "GroundingJudgment",
+    "raw": "{\n  \"contract_version\": \"agent3-grounding-judgment-v5\",\n  \"verdicts\": [\n    {\n      \"statement_id\": \"claim:c1\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The cited QA tutor reports obtaining a quieter room and expresses improvement. The quotation matches the message exactly, and the author and role attribution are correct.\"\n    },\n    {\n      \"statement_id\": \"claim:c2\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The cited tutor explicitly comments that background noise makes reviewing clips harder. The quotation and attribution match the source.\"\n    },\n    {\n      \"statement_id\": \"claim:c3\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The complete exchange contains an improvement report and a general comment about background noise, not a handling question or a report of a continuing operational problem.\"\n    },\n    {\n      \"statement_id\": \"summary:s1\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"Both clauses accurately paraphrase the respective messages, with the correct author roles and no added causal diagnosis.\"\n    },\n    {\n      \"statement_id\": \"summary:s2\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"Neither message asks for handling guidance or reports an ongoing operational problem.\"\n    },\n    {\n      \"statement_id\": \"action:no_action\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The tutor reports improved working conditions, and the complete thread presents no unresolved handling question or operational issue needing coordination. The retrieved prior decisions concern different incidents, and the queue-closing announcement creates no handling obligation for this exchange.\"\n    },\n    {\n      \"statement_id\": \"severity:rationale\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The exchange is an informal improvement update and a general observation about background noise. It identifies no operational incident requiring intervention or severity classification.\"\n    }\n  ],\n  \"action_sufficiency\": null,\n  \"alternative_sufficiency\": [],\n  \"source_consistency\": {\n    \"assessed_evidence_ids\": [\n      \"k:audio-multimodal-instructions@1.3:6eeb0c96\",\n      \"k:audio-multimodal-instructions@1.3:1131a168\",\n      \"k:audio-multimodal-faq@1.1:c724358c\"\n    ],\n    \"relations\": [\n      {\n        \"evidence_ids\": [\n          \"k:audio-multimodal-instructions@1.3:6eeb0c96\",\n          \"k:audio-multimodal-instructions@1.3:1131a168\"\n        ],\n        \"relation\": \"AGREE\",\n        \"point\": \"Audio intelligibility defect classification\",\n        \"disagreement_scope\": null,\n        \"rationale\": \"Both sections classify brief clipping or static with clear speech as minor and an unusable material speech span as major. These are recording-quality rules, not grounds for treating this workplace-environment exchange as an operational incident. The FAQ addresses unavailable playback, a separate issue. The queue-closing announcement does not direct handling for this topic, and the prior records are not standing guidance.\"\n      }\n    ],\n    \"declared_conflict_checks\": []\n  }\n}",
+    "raw_sha256": "0e539aad2b5704e5fe1f6b2a62d08100e99792019e94f9f06116d5954de60a1c",
+    "http_requests": {
+     "sent": 1,
+     "blocked": 0,
+     "hosts": [
+      "api.openai.com"
+     ],
+     "responses": [
+      {
+       "status_code": 200,
+       "seconds": 10.848,
+       "model": "gpt-6.1-sol",
+       "usage": {
+        "prompt_tokens": 7581,
+        "completion_tokens": 737,
+        "total_tokens": 8318,
+        "prompt_tokens_details": {
+         "cached_tokens": 0,
+         "cache_write_tokens": 7578,
+         "audio_tokens": 0
+        },
+        "completion_tokens_details": {
+         "reasoning_tokens": 40,
+         "audio_tokens": 0,
+         "accepted_prediction_tokens": 0,
+         "rejected_prediction_tokens": 0
+        }
+       },
+       "finish_reasons": [
+        "stop"
+       ]
+      }
+     ],
+     "input_tokens": 7587,
+     "refused": null,
+     "charged_usd": 0.022532
+    },
+    "input_tokens_estimate": 7587,
+    "status": "OK"
+   }
+  ],
+  "agent1_context": [
+   {
+    "sha256": "b4eaa615a4f3188b4c9d1b7ed7e9c010901e781c30129b7ef14b0f9b0e01a1a1",
+    "content": [
+     {
+      "member_id": "member_1b1df511a1b31b6c48167cb7",
+      "thread_id": "1790856028.000143",
+      "summary": "Hana shares that she has found a quieter room to work from, expressing that it makes a significant difference in her work environment. Jordan responds positively, noting that background noise complicates the process of reviewing clips.",
+      "central_question": null,
+      "attributed_agent1_resolution": {
+       "state": "UNRESOLVED",
+       "rationale": "The thread consists of informal exchanges about working conditions but does not establish any substantive decision or guidance. There are no questions posed that require resolution, nor are there any authoritative responses to a specific inquiry.",
+       "agent1_verification_status": "VERIFIED",
+       "note": "Agent 1 label, not evidence; NEEDS_REVIEW means Agent 1 did not verify it. Assess resolution from the member messages."
+      },
+      "agent1_review_required": false,
+      "agent1_review_reason": "",
+      "note": "Agent 1 interpretation, not source evidence; cite member messages for incident facts."
+     }
+    ]
+   }
+  ],
+  "drafts": {
+   "initial": {
+    "contract_version": "agent3-advisor-draft-v11",
+    "summary": "A QA tutor reports that moving to a quieter room has made a noticeable difference; a tutor comments that background noise makes reviewing clips harder. The exchange contains no handling question or report of an ongoing operational problem.",
+    "summary_sentences": [
+     {
+      "text": "A QA tutor reports that moving to a quieter room has made a noticeable difference; a tutor comments that background noise makes reviewing clips harder.",
+      "support_claim_ids": [
+       "c1",
+       "c2"
+      ],
+      "depends_on": []
+     },
+     {
+      "text": "The exchange contains no handling question or report of an ongoing operational problem.",
+      "support_claim_ids": [
+       "c3"
+      ],
+      "depends_on": []
+     }
+    ],
+    "detail_sentences": [],
+    "reasoning": "The QA tutor describes an improvement in working conditions, and the tutor adds a general observation about background noise. Neither message requests help, identifies affected tasks, or describes an ongoing operational problem. No intervention or further research is needed for this advice. The retrieved scoring and playback guidance addresses different problems, and the earlier decisions do not establish handling for workplace noise. The unrelated queue announcement's upstream review flags remain open; this advice does not rely on that announcement.",
+    "claims": [
+     {
+      "claim_id": "c1",
+      "kind": "INCIDENT_FACT",
+      "text": "A QA tutor reports having obtained a quieter room to work from and describes a noticeable improvement.",
+      "evidence_ids": [
+       "m:C_AUDIO_GENERAL:1790856028.000143"
+      ],
+      "attributions": [
+       {
+        "user_id": "U008",
+        "relation": "AUTHOR",
+        "evidence_id": "m:C_AUDIO_GENERAL:1790856028.000143"
+       }
+      ],
+      "quote": "Finally got a quieter room to work from — what a difference 😄",
+      "quote_kind": "VERBATIM",
+      "material": true
+     },
+     {
+      "claim_id": "c2",
+      "kind": "INCIDENT_FACT",
+      "text": "A tutor comments that background noise makes reviewing clips harder.",
+      "evidence_ids": [
+       "m:C_AUDIO_GENERAL:1790856074.000113"
+      ],
+      "attributions": [
+       {
+        "user_id": "U003",
+        "relation": "AUTHOR",
+        "evidence_id": "m:C_AUDIO_GENERAL:1790856074.000113"
+       }
+      ],
+      "quote": "Nice! Background noise makes reviewing clips a lot harder.",
+      "quote_kind": "VERBATIM",
+      "material": true
+     },
+     {
+      "claim_id": "c3",
+      "kind": "INFERENCE",
+      "text": "The QA tutor's update and the tutor's reply contain no handling question or report of an ongoing operational problem.",
+      "evidence_ids": [
+       "m:C_AUDIO_GENERAL:1790856028.000143",
+       "m:C_AUDIO_GENERAL:1790856074.000113"
+      ],
+      "attributions": [
+       {
+        "user_id": "U008",
+        "relation": "AUTHOR",
+        "evidence_id": "m:C_AUDIO_GENERAL:1790856028.000143"
+       },
+       {
+        "user_id": "U003",
+        "relation": "AUTHOR",
+        "evidence_id": "m:C_AUDIO_GENERAL:1790856074.000113"
+       }
+      ],
+      "quote": null,
+      "quote_kind": "PARAPHRASE",
+      "material": true
+     }
+    ],
+    "gaps": [],
+    "evidence_sufficiency": "SUFFICIENT",
+    "proposed_action": {
+     "action_type": "NO_ACTION",
+     "intervention_need": null,
+     "instruction": "Take no operational action on this exchange about working conditions.",
+     "rationale": "The QA tutor reports an improvement, and neither message raises a handling question or an ongoing problem needing intervention.",
+     "draft_text": null,
+     "scope_note": null,
+     "support_claim_ids": [
+      "c1",
+      "c3"
+     ],
+     "targets": [],
+     "context_claim_ids": [
+      "c2"
+     ]
+    },
+    "severity": {
+     "level": "N/A",
+     "rationale": "This is an informal exchange about improved working conditions and background noise, without an identifiable operational problem requiring intervention.",
+     "signals": [],
+     "affected_reporters": [],
+     "recurrence": "NOT_CHECKED",
+     "recurrence_evidence_ids": [],
+     "reported_recurrence_evidence_ids": []
+    },
+    "confidence": 0.98,
+    "open_confirmation": "NONE",
+    "open_question": null,
+    "open_question_evidence_ids": [],
+    "source_conflicts": [],
+    "announcement_assessments": [
+     {
+      "evidence_id": "k:slack:C_AUDIO_ANNOUNCEMENTS:1790868080.000142:763a2b29",
+      "relevant": false,
+      "directive": false,
+      "directive_quote": null,
+      "rationale": "The announcement states when the same batch's queue closes; it does not address workplace noise or direct handling of this exchange."
+     }
+    ],
+    "resolution": [
+     {
+      "member_id": "member_1b1df511a1b31b6c48167cb7",
+      "state": "UNKNOWN",
+      "evidence_ids": [
+       "m:C_AUDIO_GENERAL:1790856028.000143",
+       "m:C_AUDIO_GENERAL:1790856074.000113"
+      ],
+      "basis": "The QA tutor reports an improved workspace, but the exchange presents no operational question or incident whose resolution can be assessed."
+     }
+    ],
+    "coverage": [
+     {
+      "need": "CURRENT_GUIDANCE",
+      "status": "NOT_APPLICABLE",
+      "evidence_ids": [
+       "k:audio-multimodal-instructions@1.3:6eeb0c96",
+       "k:audio-multimodal-instructions@1.3:1131a168",
+       "k:audio-multimodal-faq@1.1:c724358c"
+      ],
+      "note": "The retrieved guidance concerns recording quality and playback failures, not workplace noise. No handling rule is needed to recommend no action on this informal exchange.",
+      "gap_id": null
+     },
+     {
+      "need": "ANNOUNCEMENTS",
+      "status": "NOT_APPLICABLE",
+      "evidence_ids": [
+       "k:slack:C_AUDIO_ANNOUNCEMENTS:1790868080.000142:763a2b29"
+      ],
+      "note": "The retrieved announcement concerns queue closing time and does not apply to this topic.",
+      "gap_id": null
+     },
+     {
+      "need": "PRIOR_DECISIONS",
+      "status": "NOT_APPLICABLE",
+      "evidence_ids": [
+       "k:audio-repeat-observation-review@1.0:ae0550d0",
+       "k:audio-headset-check-approval@1.0:3741e593"
+      ],
+      "note": "The earlier records concern repeated audio and silent listening, not workplace noise. Historical outcomes are not needed for the no-action recommendation.",
+      "gap_id": null
+     },
+     {
+      "need": "MEMBER_QUESTIONS",
+      "status": "COVERED",
+      "evidence_ids": [
+       "m:C_AUDIO_GENERAL:1790856028.000143",
+       "m:C_AUDIO_GENERAL:1790856074.000113"
+      ],
+      "note": "Both messages were reviewed; neither asks a question or refers to an earlier workaround or discussion.",
+      "gap_id": null
+     }
+    ],
+    "review_note": null,
+    "action_choice": null
+   },
+   "final": {
+    "contract_version": "agent3-advisor-draft-v11",
+    "summary": "A QA tutor reports that moving to a quieter room has made a noticeable difference; a tutor comments that background noise makes reviewing clips harder. The exchange contains no handling question or report of an ongoing operational problem.",
+    "summary_sentences": [
+     {
+      "text": "A QA tutor reports that moving to a quieter room has made a noticeable difference; a tutor comments that background noise makes reviewing clips harder.",
+      "support_claim_ids": [
+       "c1",
+       "c2"
+      ],
+      "depends_on": []
+     },
+     {
+      "text": "The exchange contains no handling question or report of an ongoing operational problem.",
+      "support_claim_ids": [
+       "c3"
+      ],
+      "depends_on": []
+     }
+    ],
+    "detail_sentences": [],
+    "reasoning": "The QA tutor describes an improvement in working conditions, and the tutor adds a general observation about background noise. Neither message requests help, identifies affected tasks, or describes an ongoing operational problem. No intervention or further research is needed for this advice. The retrieved scoring and playback guidance addresses different problems, and the earlier decisions do not establish handling for workplace noise. The unrelated queue announcement's upstream review flags remain open; this advice does not rely on that announcement.",
+    "claims": [
+     {
+      "claim_id": "c1",
+      "kind": "INCIDENT_FACT",
+      "text": "A QA tutor reports having obtained a quieter room to work from and describes a noticeable improvement.",
+      "evidence_ids": [
+       "m:C_AUDIO_GENERAL:1790856028.000143"
+      ],
+      "attributions": [
+       {
+        "user_id": "U008",
+        "relation": "AUTHOR",
+        "evidence_id": "m:C_AUDIO_GENERAL:1790856028.000143"
+       }
+      ],
+      "quote": "Finally got a quieter room to work from — what a difference 😄",
+      "quote_kind": "VERBATIM",
+      "material": true
+     },
+     {
+      "claim_id": "c2",
+      "kind": "INCIDENT_FACT",
+      "text": "A tutor comments that background noise makes reviewing clips harder.",
+      "evidence_ids": [
+       "m:C_AUDIO_GENERAL:1790856074.000113"
+      ],
+      "attributions": [
+       {
+        "user_id": "U003",
+        "relation": "AUTHOR",
+        "evidence_id": "m:C_AUDIO_GENERAL:1790856074.000113"
+       }
+      ],
+      "quote": "Nice! Background noise makes reviewing clips a lot harder.",
+      "quote_kind": "VERBATIM",
+      "material": true
+     },
+     {
+      "claim_id": "c3",
+      "kind": "INFERENCE",
+      "text": "The QA tutor's update and the tutor's reply contain no handling question or report of an ongoing operational problem.",
+      "evidence_ids": [
+       "m:C_AUDIO_GENERAL:1790856028.000143",
+       "m:C_AUDIO_GENERAL:1790856074.000113"
+      ],
+      "attributions": [
+       {
+        "user_id": "U008",
+        "relation": "AUTHOR",
+        "evidence_id": "m:C_AUDIO_GENERAL:1790856028.000143"
+       },
+       {
+        "user_id": "U003",
+        "relation": "AUTHOR",
+        "evidence_id": "m:C_AUDIO_GENERAL:1790856074.000113"
+       }
+      ],
+      "quote": null,
+      "quote_kind": "PARAPHRASE",
+      "material": true
+     }
+    ],
+    "gaps": [],
+    "evidence_sufficiency": "SUFFICIENT",
+    "proposed_action": {
+     "action_type": "NO_ACTION",
+     "intervention_need": null,
+     "instruction": "Take no operational action on this exchange about working conditions.",
+     "rationale": "The QA tutor reports an improvement, and neither message raises a handling question or an ongoing problem needing intervention.",
+     "draft_text": null,
+     "scope_note": null,
+     "support_claim_ids": [
+      "c1",
+      "c3"
+     ],
+     "targets": [],
+     "context_claim_ids": [
+      "c2"
+     ]
+    },
+    "severity": {
+     "level": "N/A",
+     "rationale": "This is an informal exchange about improved working conditions and background noise, without an identifiable operational problem requiring intervention.",
+     "signals": [],
+     "affected_reporters": [],
+     "recurrence": "NOT_CHECKED",
+     "recurrence_evidence_ids": [],
+     "reported_recurrence_evidence_ids": []
+    },
+    "confidence": 0.98,
+    "open_confirmation": "NONE",
+    "open_question": null,
+    "open_question_evidence_ids": [],
+    "source_conflicts": [],
+    "announcement_assessments": [
+     {
+      "evidence_id": "k:slack:C_AUDIO_ANNOUNCEMENTS:1790868080.000142:763a2b29",
+      "relevant": false,
+      "directive": false,
+      "directive_quote": null,
+      "rationale": "The announcement states when the same batch's queue closes; it does not address workplace noise or direct handling of this exchange."
+     }
+    ],
+    "resolution": [
+     {
+      "member_id": "member_1b1df511a1b31b6c48167cb7",
+      "state": "UNKNOWN",
+      "evidence_ids": [
+       "m:C_AUDIO_GENERAL:1790856028.000143",
+       "m:C_AUDIO_GENERAL:1790856074.000113"
+      ],
+      "basis": "The QA tutor reports an improved workspace, but the exchange presents no operational question or incident whose resolution can be assessed."
+     }
+    ],
+    "coverage": [
+     {
+      "need": "CURRENT_GUIDANCE",
+      "status": "NOT_APPLICABLE",
+      "evidence_ids": [
+       "k:audio-multimodal-instructions@1.3:6eeb0c96",
+       "k:audio-multimodal-instructions@1.3:1131a168",
+       "k:audio-multimodal-faq@1.1:c724358c"
+      ],
+      "note": "The retrieved guidance concerns recording quality and playback failures, not workplace noise. No handling rule is needed to recommend no action on this informal exchange.",
+      "gap_id": null
+     },
+     {
+      "need": "ANNOUNCEMENTS",
+      "status": "NOT_APPLICABLE",
+      "evidence_ids": [
+       "k:slack:C_AUDIO_ANNOUNCEMENTS:1790868080.000142:763a2b29"
+      ],
+      "note": "The retrieved announcement concerns queue closing time and does not apply to this topic.",
+      "gap_id": null
+     },
+     {
+      "need": "PRIOR_DECISIONS",
+      "status": "NOT_APPLICABLE",
+      "evidence_ids": [
+       "k:audio-repeat-observation-review@1.0:ae0550d0",
+       "k:audio-headset-check-approval@1.0:3741e593"
+      ],
+      "note": "The earlier records concern repeated audio and silent listening, not workplace noise. Historical outcomes are not needed for the no-action recommendation.",
+      "gap_id": null
+     },
+     {
+      "need": "MEMBER_QUESTIONS",
+      "status": "COVERED",
+      "evidence_ids": [
+       "m:C_AUDIO_GENERAL:1790856028.000143",
+       "m:C_AUDIO_GENERAL:1790856074.000113"
+      ],
+      "note": "Both messages were reviewed; neither asks a question or refers to an earlier workaround or discussion.",
+      "gap_id": null
+     }
+    ],
+    "review_note": null,
+    "action_choice": null
+   },
+   "revised": false
+  },
+  "grounding": {
+   "structural_issues": [],
+   "action_issues": [],
+   "unsupported": [],
+   "unjudged": [],
+   "extraneous_verdicts": [],
+   "rejected": {},
+   "pending": [],
+   "action_sufficiency": null,
+   "source_consistency": {
+    "assessed_evidence_ids": [
+     "k:audio-multimodal-instructions@1.3:6eeb0c96",
+     "k:audio-multimodal-instructions@1.3:1131a168",
+     "k:audio-multimodal-faq@1.1:c724358c"
+    ],
+    "relations": [
+     {
+      "evidence_ids": [
+       "k:audio-multimodal-instructions@1.3:6eeb0c96",
+       "k:audio-multimodal-instructions@1.3:1131a168"
+      ],
+      "relation": "AGREE",
+      "point": "Audio intelligibility defect classification",
+      "disagreement_scope": null,
+      "rationale": "Both sections classify brief clipping or static with clear speech as minor and an unusable material speech span as major. These are recording-quality rules, not grounds for treating this workplace-environment exchange as an operational incident. The FAQ addresses unavailable playback, a separate issue. The queue-closing announcement does not direct handling for this topic, and the prior records are not standing guidance."
+     }
+    ],
+    "declared_conflict_checks": []
+   },
+   "alternative_sufficiency": {},
+   "status": "PASSED",
+   "basis": "SEMANTIC",
+   "statements": [
+    {
+     "statement_id": "claim:c1",
+     "kind": "CLAIM_INCIDENT_FACT",
+     "text": "A QA tutor reports having obtained a quieter room to work from and describes a noticeable improvement. Verbatim quote: \"Finally got a quieter room to work from — what a difference 😄\"",
+     "blocking": true,
+     "evidence_ids": [
+      "m:C_AUDIO_GENERAL:1790856028.000143"
+     ],
+     "attributions": [
+      {
+       "user_id": "U008",
+       "relation": "AUTHOR",
+       "evidence_id": "m:C_AUDIO_GENERAL:1790856028.000143",
+       "role": "QA_TUTOR"
+      }
+     ],
+     "verdict": "SUPPORTED",
+     "model_verdict": "SUPPORTED",
+     "rationale": "The cited QA tutor reports obtaining a quieter room and expresses improvement. The quotation matches the message exactly, and the author and role attribution are correct."
+    },
+    {
+     "statement_id": "claim:c2",
+     "kind": "CLAIM_INCIDENT_FACT",
+     "text": "A tutor comments that background noise makes reviewing clips harder. Verbatim quote: \"Nice! Background noise makes reviewing clips a lot harder.\"",
+     "blocking": true,
+     "evidence_ids": [
+      "m:C_AUDIO_GENERAL:1790856074.000113"
+     ],
+     "attributions": [
+      {
+       "user_id": "U003",
+       "relation": "AUTHOR",
+       "evidence_id": "m:C_AUDIO_GENERAL:1790856074.000113",
+       "role": "TUTOR"
+      }
+     ],
+     "verdict": "SUPPORTED",
+     "model_verdict": "SUPPORTED",
+     "rationale": "The cited tutor explicitly comments that background noise makes reviewing clips harder. The quotation and attribution match the source."
+    },
+    {
+     "statement_id": "claim:c3",
+     "kind": "CLAIM_INFERENCE",
+     "text": "The QA tutor's update and the tutor's reply contain no handling question or report of an ongoing operational problem.",
+     "blocking": true,
+     "evidence_ids": [
+      "m:C_AUDIO_GENERAL:1790856028.000143",
+      "m:C_AUDIO_GENERAL:1790856074.000113"
+     ],
+     "attributions": [
+      {
+       "user_id": "U008",
+       "relation": "AUTHOR",
+       "evidence_id": "m:C_AUDIO_GENERAL:1790856028.000143",
+       "role": "QA_TUTOR"
+      },
+      {
+       "user_id": "U003",
+       "relation": "AUTHOR",
+       "evidence_id": "m:C_AUDIO_GENERAL:1790856074.000113",
+       "role": "TUTOR"
+      }
+     ],
+     "verdict": "SUPPORTED",
+     "model_verdict": "SUPPORTED",
+     "rationale": "The complete exchange contains an improvement report and a general comment about background noise, not a handling question or a report of a continuing operational problem."
+    },
+    {
+     "statement_id": "summary:s1",
+     "kind": "SUMMARY",
+     "text": "A QA tutor reports that moving to a quieter room has made a noticeable difference; a tutor comments that background noise makes reviewing clips harder.",
+     "blocking": true,
+     "evidence_ids": [
+      "m:C_AUDIO_GENERAL:1790856028.000143",
+      "m:C_AUDIO_GENERAL:1790856074.000113"
+     ],
+     "attributions": [
+      {
+       "user_id": "U008",
+       "relation": "AUTHOR",
+       "evidence_id": "m:C_AUDIO_GENERAL:1790856028.000143",
+       "role": "QA_TUTOR"
+      },
+      {
+       "user_id": "U003",
+       "relation": "AUTHOR",
+       "evidence_id": "m:C_AUDIO_GENERAL:1790856074.000113",
+       "role": "TUTOR"
+      }
+     ],
+     "verdict": "SUPPORTED",
+     "model_verdict": "SUPPORTED",
+     "rationale": "Both clauses accurately paraphrase the respective messages, with the correct author roles and no added causal diagnosis."
+    },
+    {
+     "statement_id": "summary:s2",
+     "kind": "SUMMARY",
+     "text": "The exchange contains no handling question or report of an ongoing operational problem.",
+     "blocking": true,
+     "evidence_ids": [
+      "m:C_AUDIO_GENERAL:1790856028.000143",
+      "m:C_AUDIO_GENERAL:1790856074.000113"
+     ],
+     "attributions": [
+      {
+       "user_id": "U008",
+       "relation": "AUTHOR",
+       "evidence_id": "m:C_AUDIO_GENERAL:1790856028.000143",
+       "role": "QA_TUTOR"
+      },
+      {
+       "user_id": "U003",
+       "relation": "AUTHOR",
+       "evidence_id": "m:C_AUDIO_GENERAL:1790856074.000113",
+       "role": "TUTOR"
+      }
+     ],
+     "verdict": "SUPPORTED",
+     "model_verdict": "SUPPORTED",
+     "rationale": "Neither message asks for handling guidance or reports an ongoing operational problem."
+    },
+    {
+     "statement_id": "action:no_action",
+     "kind": "NO_ACTION_RATIONALE",
+     "text": "Why no further action is needed now: The QA tutor reports an improvement, and neither message raises a handling question or an ongoing problem needing intervention.",
+     "blocking": false,
+     "evidence_ids": [
+      "m:C_AUDIO_GENERAL:1790856028.000143",
+      "m:C_AUDIO_GENERAL:1790856074.000113"
+     ],
+     "verdict": "SUPPORTED",
+     "model_verdict": "SUPPORTED",
+     "rationale": "The tutor reports improved working conditions, and the complete thread presents no unresolved handling question or operational issue needing coordination. The retrieved prior decisions concern different incidents, and the queue-closing announcement creates no handling obligation for this exchange."
+    },
+    {
+     "statement_id": "severity:rationale",
+     "kind": "SEVERITY_RATIONALE",
+     "text": "Severity N/A: This is an informal exchange about improved working conditions and background noise, without an identifiable operational problem requiring intervention.",
+     "blocking": true,
+     "evidence_ids": [
+      "m:C_AUDIO_GENERAL:1790856028.000143",
+      "m:C_AUDIO_GENERAL:1790856074.000113"
+     ],
+     "verdict": "SUPPORTED",
+     "model_verdict": "SUPPORTED",
+     "rationale": "The exchange is an informal improvement update and a general observation about background noise. It identifies no operational incident requiring intervention or severity classification."
+    }
+   ]
+  },
+  "temporal": {
+   "status": "NONE_FOUND",
+   "findings": [],
+   "source_consistency": "ASSESSED",
+   "ignored_revision_states": "NOT_YET_EFFECTIVE and NOT_APPROVED revisions never compete with applicable guidance."
+  },
+  "temporal_before_grounding": {
+   "status": "NONE_FOUND",
+   "findings": [],
+   "source_consistency": "NOT_ASSESSED",
+   "ignored_revision_states": "NOT_YET_EFFECTIVE and NOT_APPROVED revisions never compete with applicable guidance."
+  },
+  "severity": {
+   "assessment": {
+    "level": "N/A",
+    "assessment_status": "ASSESSED",
+    "rubric_version": "severity-rubric-v3-semantic-signals",
+    "rubric_content_sha256": "eccaa31a2ab84a0aa7c005216a92fc39681e1dd10107117344948235a76673f4",
+    "rubric_project_id": null,
+    "rubric_scope": "SHARED_DEFAULT",
+    "rationale": "This is an informal exchange about improved working conditions and background noise, without an identifiable operational problem requiring intervention.",
+    "matched_signals": [],
+    "evidence": [],
+    "occurrence": {
+     "affected_reporters": {
+      "status": "UNKNOWN",
+      "count": null,
+      "ids": [],
+      "basis": null,
+      "evidence": []
+     },
+     "affected_tasks": {
+      "status": "UNKNOWN",
+      "count": null,
+      "ids": [],
+      "basis": null,
+      "evidence": []
+     },
+     "relevant_threads": [
+      {
+       "project_id": "audio_multimodal",
+       "batch_id": "audio_batch_06",
+       "channel_id": "C_AUDIO_GENERAL",
+       "thread_id": "1790856028.000143",
+       "member_id": "member_1b1df511a1b31b6c48167cb7"
+      }
+     ],
+     "reporting_window": {
+      "start": "2026-10-01T12:00:28.000143+00:00",
+      "end": "2026-10-01T12:01:14.000113+00:00"
+     },
+     "historical_recurrence": {
+      "status": "NOT_CHECKED",
+      "sources": [],
+      "event_series_ids": []
+     },
+     "known_denominator": null,
+     "structural": {
+      "threads": 1,
+      "messages": 2,
+      "distinct_participants": 2,
+      "duplicate_threads_ignored": 0,
+      "duplicate_messages_ignored": 0,
+      "computed_from": "topic member threads (original Slack messages)",
+      "participants_are_not_affected_reporters": true
+     },
+     "semantic_identification": "ASSESSED"
+    },
+    "inherited_from": {
+     "level": "UNKNOWN",
+     "assessment_status": "UNASSESSED",
+     "assessment_deferred_to": "AGENT3",
+     "reason": "Agent 2 performs taxonomy only."
+    }
+   },
+   "issues": [],
+   "notes": [],
+   "proposal": {
+    "level": "N/A",
+    "rationale": "This is an informal exchange about improved working conditions and background noise, without an identifiable operational problem requiring intervention.",
+    "signals": [],
+    "affected_reporters": [],
+    "recurrence": "NOT_CHECKED",
+    "recurrence_evidence_ids": [],
+    "reported_recurrence_evidence_ids": []
+   }
+  },
+  "resolution": {
+   "topic": "UNKNOWN",
+   "members": {
+    "member_1b1df511a1b31b6c48167cb7": "UNKNOWN"
+   },
+   "agent1_attributed": [
+    {
+     "member_id": "member_1b1df511a1b31b6c48167cb7",
+     "state": "UNRESOLVED",
+     "agent1_verification_status": "VERIFIED",
+     "agent1_review_required": false
+    }
+   ]
+  },
+  "established_handling": [],
+  "coverage_issues": [],
+  "action_source": "DRAFT",
+  "action_notes": [],
+  "tot": {
+   "status": "NOT_TRIGGERED",
+   "triggers": [],
+   "choice_after_grounding": {
+    "status": "NOT_COMPARED",
+    "viable": []
+   }
+  },
+  "evidence_ledger": {
+   "m:C_AUDIO_GENERAL:1790856028.000143": {
+    "evidence_id": "m:C_AUDIO_GENERAL:1790856028.000143",
+    "origin": "member_message",
+    "use": "MEMBER_REPORT",
+    "member_id": "member_1b1df511a1b31b6c48167cb7",
+    "channel_id": "C_AUDIO_GENERAL",
+    "thread_id": "1790856028.000143",
+    "message_id": "1790856028.000143",
+    "author_id": "U008",
+    "author_name": "Hana",
+    "author_role": "QA_TUTOR",
+    "timestamp": "2026-10-01T12:00:28.000143Z",
+    "thread_starter_id": "U008",
+    "thread_starter_role": "QA_TUTOR",
+    "reactions": [],
+    "excerpt": "Finally got a quieter room to work from — what a difference 😄"
+   },
+   "m:C_AUDIO_GENERAL:1790856074.000113": {
+    "evidence_id": "m:C_AUDIO_GENERAL:1790856074.000113",
+    "origin": "member_message",
+    "use": "MEMBER_REPORT",
+    "member_id": "member_1b1df511a1b31b6c48167cb7",
+    "channel_id": "C_AUDIO_GENERAL",
+    "thread_id": "1790856028.000143",
+    "message_id": "1790856074.000113",
+    "author_id": "U003",
+    "author_name": "Jordan",
+    "author_role": "TUTOR",
+    "timestamp": "2026-10-01T12:01:14.000113Z",
+    "thread_starter_id": "U008",
+    "thread_starter_role": "QA_TUTOR",
+    "reactions": [],
+    "excerpt": "Nice! Background noise makes reviewing clips a lot harder."
+   },
+   "k:audio-multimodal-instructions@1.3:6eeb0c96": {
+    "evidence_id": "k:audio-multimodal-instructions@1.3:6eeb0c96",
+    "origin": "retrieved_source",
+    "use": "CURRENT_GUIDANCE",
+    "citation": {
+     "document_id": "knowledge_3057c26d60654a68d0b76c025ba216366dd48f3e97b64f5aae68364a45170b8a",
+     "version_id": "version_03e4c185c65cbfbe35dccab040cc429ac6887e3cb0edc4f52cb5ea5a56970a24",
+     "chunk_id": "chunk_6eeb0c962f9826add3b44ed1dd034fdd",
+     "authoring": "audio-multimodal-instructions@1.3",
+     "title": "Audio Multimodal — Instructions (v1.3)",
+     "sections": [
+      "Scoring audio quality"
+     ],
+     "source": {
+      "batch_id": null,
+      "channel_id": null,
+      "manual_key": "audio-multimodal-instructions",
+      "message_id": null,
+      "permalink": null,
+      "project_id": "audio_multimodal",
+      "reference": null,
+      "system": "manual",
+      "thread_id": null,
+      "workspace_id": null
+     }
+    },
+    "source_type": "guideline",
+    "record_kind": "guideline",
+    "applicability": {
+     "state": "CURRENT",
+     "revision_state": "CURRENT",
+     "version_mode": "current",
+     "replaced_by": [],
+     "unverified_supersession": [],
+     "supersedes": [],
+     "enactment": null,
+     "other_revisions": []
+    },
+    "dates": {
+     "source_date": "2026-09-15T13:00:00Z",
+     "basis": "effective_at",
+     "effective_at": "2026-09-15T13:00:00Z",
+     "created_at": null,
+     "valid_until": null,
+     "expired_as_of": false,
+     "reference_time": "2026-10-02T12:00:00Z"
+    },
+    "scope": {
+     "project_id": "audio_multimodal",
+     "batch_id": null,
+     "scope": "project",
+     "batch_relation": "project_wide"
+    },
+    "authority": {
+     "role": "TEAM_LEAD",
+     "actor": "U006",
+     "actor_relation": "RECORD_AUTHORITY",
+     "approval_status": "EXPLICIT_SOURCE_MARKER",
+     "provenance": "synthetic_manual_record"
+    },
+    "authorship": {
+     "author_id": null,
+     "verified": false,
+     "basis": "NO_AUTHOR_RECORDED"
+    },
+    "recorded_states": {
+     "status": "approved",
+     "decision_status": null,
+     "execution_status": null,
+     "outcome_status": null
+    },
+    "upstream_review": null,
+    "excerpt": "## Scoring audio quality\n- Assess intelligibility and the affected span, not the word “clipping” alone.\n- Brief, localized clipping or static with speech remaining clear is a minor defect.\n- An artifact that makes a material speech span unusable is a major defect.\n- Continuous artifacts or borderline impact require QA review with timestamps and an intelligibility description. Duration alone does not establish a major defect.\n- Before treating silence as a content issue, verify playback, volume, and whether the audio file itself is silent. Preserve uncertainty when this cannot be checked."
+   },
+   "k:audio-multimodal-instructions@1.3:1131a168": {
+    "evidence_id": "k:audio-multimodal-instructions@1.3:1131a168",
+    "origin": "retrieved_source",
+    "use": "CURRENT_GUIDANCE",
+    "citation": {
+     "document_id": "knowledge_3057c26d60654a68d0b76c025ba216366dd48f3e97b64f5aae68364a45170b8a",
+     "version_id": "version_03e4c185c65cbfbe35dccab040cc429ac6887e3cb0edc4f52cb5ea5a56970a24",
+     "chunk_id": "chunk_1131a1688d210687b7164ad6561c637b",
+     "authoring": "audio-multimodal-instructions@1.3",
+     "title": "Audio Multimodal — Instructions (v1.3)",
+     "sections": [
+      "Content-quality rubric"
+     ],
+     "source": {
+      "batch_id": null,
+      "channel_id": null,
+      "manual_key": "audio-multimodal-instructions",
+      "message_id": null,
+      "permalink": null,
+      "project_id": "audio_multimodal",
+      "reference": null,
+      "system": "manual",
+      "thread_id": null,
+      "workspace_id": null
+     }
+    },
+    "source_type": "guideline",
+    "record_kind": "guideline",
+    "applicability": {
+     "state": "CURRENT",
+     "revision_state": "CURRENT",
+     "version_mode": "current",
+     "replaced_by": [],
+     "unverified_supersession": [],
+     "supersedes": [],
+     "enactment": null,
+     "other_revisions": []
+    },
+    "dates": {
+     "source_date": "2026-09-15T13:00:00Z",
+     "basis": "effective_at",
+     "effective_at": "2026-09-15T13:00:00Z",
+     "created_at": null,
+     "valid_until": null,
+     "expired_as_of": false,
+     "reference_time": "2026-10-02T12:00:00Z"
+    },
+    "scope": {
+     "project_id": "audio_multimodal",
+     "batch_id": null,
+     "scope": "project",
+     "batch_relation": "project_wide"
+    },
+    "authority": {
+     "role": "TEAM_LEAD",
+     "actor": "U006",
+     "actor_relation": "RECORD_AUTHORITY",
+     "approval_status": "EXPLICIT_SOURCE_MARKER",
+     "provenance": "synthetic_manual_record"
+    },
+    "authorship": {
+     "author_id": null,
+     "verified": false,
+     "basis": "NO_AUTHOR_RECORDED"
+    },
+    "recorded_states": {
+     "status": "approved",
+     "decision_status": null,
+     "execution_status": null,
+     "outcome_status": null
+    },
+    "upstream_review": null,
+    "excerpt": "## Content-quality rubric\nMajor/minor here describe task-quality defects, not operational incident severity.\n\n| Dimension | Major defect | Minor defect | Acceptable / no automatic penalty |\n| --- | --- | --- | --- |\n| Intelligibility | A material speech span is unusable | Brief clipping/static with words still clear | Background variation that does not impair the task |\n| Audio–transcript correspondence | Key content is missing or contradicted | A limited omission that does not change meaning | Equivalent wording where the task allows it |\n| Language match | A substantial unrequested mismatch with the required language | A limited genuine mismatch affecting adherence | Permitted switching, ordinary loanwords, or an acceptable accent |"
+   },
+   "k:audio-repeat-observation-review@1.0:ae0550d0": {
+    "evidence_id": "k:audio-repeat-observation-review@1.0:ae0550d0",
+    "origin": "retrieved_source",
+    "use": "PRIOR_DECISION",
+    "citation": {
+     "document_id": "knowledge_ab54b881b410b811d30b6755b3f03a93630cb02ff92bed49a00eebb6beba1631",
+     "version_id": "version_5a5f26377845f31ca6d86c95f37e4bd29cf834448ba7150c26bcff755640f4b6",
+     "chunk_id": "chunk_ae0550d0ca581c1d6e6ceced6f910af9",
+     "authoring": "audio-repeat-observation-review@1.0",
+     "title": "Repeated ending retained as an observation",
+     "sections": [
+      "Evidence",
+      "Suggested advice",
+      "TL decision",
+      "State"
+     ],
+     "source": {
+      "batch_id": "audio_batch_06",
+      "channel_id": null,
+      "manual_key": "audio-repeat-observation-review",
+      "message_id": null,
+      "permalink": null,
+      "project_id": "audio_multimodal",
+      "reference": null,
+      "system": "manual",
+      "thread_id": null,
+      "workspace_id": null
+     }
+    },
+    "source_type": "decision",
+    "record_kind": "advice_review",
+    "applicability": {
+     "state": "CURRENT",
+     "revision_state": "CURRENT",
+     "version_mode": "current",
+     "replaced_by": [],
+     "unverified_supersession": [],
+     "supersedes": [],
+     "enactment": {
+      "status": "NOT_ENACTED",
+      "basis": null,
+      "governing_sources": [],
+      "missing": [
+       "NO_TL_APPROVAL",
+       "NOT_A_POLICY_CHANGE",
+       "NO_ENACTMENT_EVIDENCE"
+      ],
+      "recorded": {
+       "decision_status": "tl_deferred",
+       "execution_status": "evidence_requested",
+       "authority_role": "TEAM_LEAD",
+       "batch_id": "audio_batch_06",
+       "valid_until": null,
+       "effective_at": "2026-09-29T14:00:00Z"
+      }
+     },
+     "other_revisions": []
+    },
+    "dates": {
+     "source_date": "2026-09-29T14:00:00Z",
+     "basis": "effective_at",
+     "effective_at": "2026-09-29T14:00:00Z",
+     "created_at": null,
+     "valid_until": null,
+     "expired_as_of": false,
+     "reference_time": "2026-10-02T12:00:00Z"
+    },
+    "scope": {
+     "project_id": "audio_multimodal",
+     "batch_id": "audio_batch_06",
+     "scope": "project",
+     "batch_relation": "same_batch"
+    },
+    "authority": {
+     "role": "TEAM_LEAD",
+     "actor": "U006",
+     "actor_relation": "RECORD_AUTHORITY",
+     "approval_status": "NO_APPROVAL_MARKER",
+     "provenance": "synthetic_manual_record"
+    },
+    "authorship": {
+     "author_id": null,
+     "verified": false,
+     "basis": "NO_AUTHOR_RECORDED"
+    },
+    "recorded_states": {
+     "status": "tl_deferred",
+     "decision_status": "tl_deferred",
+     "execution_status": "evidence_requested",
+     "outcome_status": "undetermined"
+    },
+    "upstream_review": null,
+    "excerpt": "[PRIOR RECORD (advice_review; decision_status: tl_deferred; execution_status: evidence_requested; outcome_status: undetermined) - history, not a standing rule.]\n# Repeated ending retained as an observation\n\n## Evidence\nA06-REP-14 was reported as speaking the last phrase twice although its transcript showed the phrase once. The review packet contained a player screenshot and the transcript, but no downloaded recording or comparison on a second player.\n\n## Suggested advice\nA simulated Advisor card proposed escalating a confirmed audio-generation loop.\n\n## TL decision\nPriya deferred that claim and retained the report as a model/process observation. Request a downloaded-file versus player comparison when available. A repeated phrase in the player does not yet locate the defect in the generated file.\n\nNo FAQ rule change or confirmed model-defect announcement was approved. If the additional evidence establishes a generation defect or material operational impact, reassess the intervention.\n\n## State\nThe observation is open. There is no completed diagnostic comparison or engineering escalation in this record."
+   },
+   "k:audio-headset-check-approval@1.0:3741e593": {
+    "evidence_id": "k:audio-headset-check-approval@1.0:3741e593",
+    "origin": "retrieved_source",
+    "use": "PRIOR_DECISION",
+    "citation": {
+     "document_id": "knowledge_96cde53eae44a1e872d8bf0e405e2e1cda6efaae1097091e808caef77c22d5d3",
+     "version_id": "version_b8ca885f07c81a4ccbf6f21fbbc64a85703f0436c5f1369da2fd74dc16d5a16b",
+     "chunk_id": "chunk_3741e593f5eca4ace4f1dbdd981364d6",
+     "authoring": "audio-headset-check-approval@1.0",
+     "title": "Approve a workstation output check for two silent-listening reports",
+     "sections": [
+      "Evidence available at review",
+      "Prior ThreadSense advice"
+     ],
+     "source": {
+      "batch_id": "audio_batch_06",
+      "channel_id": null,
+      "manual_key": "audio-headset-check-approval",
+      "message_id": null,
+      "permalink": null,
+      "project_id": "audio_multimodal",
+      "reference": null,
+      "system": "manual",
+      "thread_id": null,
+      "workspace_id": null
+     }
+    },
+    "source_type": "decision",
+    "record_kind": "advice_review",
+    "applicability": {
+     "state": "CURRENT",
+     "revision_state": "CURRENT",
+     "version_mode": "current",
+     "replaced_by": [],
+     "unverified_supersession": [],
+     "supersedes": [],
+     "enactment": {
+      "status": "NOT_ENACTED",
+      "basis": null,
+      "governing_sources": [],
+      "missing": [
+       "NOT_A_POLICY_CHANGE",
+       "NO_ENACTMENT_EVIDENCE"
+      ],
+      "recorded": {
+       "decision_status": "tl_approved",
+       "execution_status": "not_executed",
+       "authority_role": "TEAM_LEAD",
+       "batch_id": "audio_batch_06",
+       "valid_until": null,
+       "effective_at": "2026-09-21T14:00:00Z"
+      }
+     },
+     "other_revisions": []
+    },
+    "dates": {
+     "source_date": "2026-09-21T14:00:00Z",
+     "basis": "effective_at",
+     "effective_at": "2026-09-21T14:00:00Z",
+     "created_at": null,
+     "valid_until": null,
+     "expired_as_of": false,
+     "reference_time": "2026-10-02T12:00:00Z"
+    },
+    "scope": {
+     "project_id": "audio_multimodal",
+     "batch_id": "audio_batch_06",
+     "scope": "project",
+     "batch_relation": "same_batch"
+    },
+    "authority": {
+     "role": "TEAM_LEAD",
+     "actor": "U006",
+     "actor_relation": "RECORD_AUTHORITY",
+     "approval_status": "EXPLICIT_SOURCE_MARKER",
+     "provenance": "synthetic_manual_record"
+    },
+    "authorship": {
+     "author_id": null,
+     "verified": false,
+     "basis": "NO_AUTHOR_RECORDED"
+    },
+    "recorded_states": {
+     "status": "tl_approved",
+     "decision_status": "tl_approved",
+     "execution_status": "not_executed",
+     "outcome_status": "not_observed"
+    },
+    "upstream_review": null,
+    "excerpt": "[PRIOR RECORD (advice_review; decision_status: tl_approved; execution_status: not_executed; outcome_status: not_observed) - history, not a standing rule.]\n## Evidence available at review\n\nMina's intake notes identify two affected tasks, A06-H031 and A06-H032, on WS-A03. In both observations the player counter advanced from 00:00 to 00:12 while the tutor heard nothing. A known-good reference clip was also inaudible on that workstation. Mina heard the reference clip on WS-A04; neither affected task had yet been checked there.\n\nNo browser error, frozen counter, or unavailable waveform was recorded. The evidence supports checking the listening setup, but does not establish a silent source recording or a repaired task.\n\nAt the review cutoff, no output-device change or successful replay of the affected tasks had been recorded. The approved diagnostic is pending.\n\n## Prior ThreadSense advice\n\nAsk the two affected tutors to check the selected output device and headset connection, then replay a known-good reference and their original tasks. Keep content quality unassessed until audible playback is verified."
+   },
+   "k:slack:C_AUDIO_ANNOUNCEMENTS:1790868080.000142:763a2b29": {
+    "evidence_id": "k:slack:C_AUDIO_ANNOUNCEMENTS:1790868080.000142:763a2b29",
+    "origin": "retrieved_source",
+    "use": "ANNOUNCEMENT",
+    "citation": {
+     "document_id": "knowledge_3884adc834f4be9b4ac5cbc41ae5661778ed9218cbd2c856d2dd297b321756a6",
+     "version_id": "version_e5fedfa1f6a7f2d3c361e2764dae7a6545b1fb76d029c34cc4af28e825a9a6a3",
+     "chunk_id": "chunk_763a2b29a9f261e5697a9721dfcc9483",
+     "authoring": null,
+     "title": "Slack announcement in audio-multimodal-announcements at 2026-10-01T15:21:20.000142+00:00",
+     "sections": [],
+     "source": {
+      "batch_id": "audio_batch_06",
+      "channel_id": "C_AUDIO_ANNOUNCEMENTS",
+      "manual_key": null,
+      "message_id": "1790868080.000142",
+      "permalink": null,
+      "project_id": "audio_multimodal",
+      "reference": null,
+      "system": "slack",
+      "thread_id": "1790868080.000142",
+      "workspace_id": null
+     }
+    },
+    "source_type": "announcement",
+    "record_kind": "announcement",
+    "applicability": {
+     "state": "CURRENT",
+     "revision_state": "CURRENT",
+     "version_mode": "current",
+     "replaced_by": [],
+     "unverified_supersession": [],
+     "supersedes": [],
+     "enactment": null,
+     "other_revisions": []
+    },
+    "dates": {
+     "source_date": "2026-10-01T15:21:20.000142+00:00",
+     "basis": "created_at",
+     "effective_at": null,
+     "created_at": "2026-10-01T15:21:20.000142+00:00",
+     "valid_until": null,
+     "expired_as_of": false,
+     "reference_time": "2026-10-02T12:00:00Z"
+    },
+    "scope": {
+     "project_id": "audio_multimodal",
+     "batch_id": "audio_batch_06",
+     "scope": "project",
+     "batch_relation": "same_batch"
+    },
+    "authority": {
+     "role": "TEAM_LEAD",
+     "actor": "U006",
+     "actor_relation": "MESSAGE_AUTHOR",
+     "approval_status": "UNKNOWN",
+     "provenance": null
+    },
+    "authorship": {
+     "author_id": "U006",
+     "verified": true,
+     "basis": "SLACK_MESSAGE_AUTHOR"
+    },
+    "recorded_states": {
+     "status": null,
+     "decision_status": null,
+     "execution_status": null,
+     "outcome_status": null
+    },
+    "upstream_review": {
+     "review_required": true,
+     "review_reasons": [
+      "Still unverified after one targeted revision: Independent evidence audit unavailable or invalid: ValueError: summary:1: matching evidence IDs and quotations are required.",
+      "Priya states when the queue closes and Avery acknowledges it. Neither asks the candidate's yes/no question. The rationale's claim that this question is resolved therefore adds an inquiry absent from the conversation."
+     ]
+    },
+    "excerpt": "[ANNOUNCEMENT posted 2026-10-01T15:21:20.000142+00:00 by TEAM_LEAD (audio_batch_06): not established as handling for this topic until you show it is relevant and gives a directive.]\nToday's audio queue closes at the end of shift.\n\nContext reply [1790868130.000113] by U010 (TUTOR):\nGot it. I’ll finish the open tasks before the queue closes."
+   },
+   "k:audio-multimodal-faq@1.1:c724358c": {
+    "evidence_id": "k:audio-multimodal-faq@1.1:c724358c",
+    "origin": "retrieved_source",
+    "use": "CURRENT_GUIDANCE",
+    "citation": {
+     "document_id": "knowledge_1f550e377f9c310f57f03e5bf482f810999d822a9cf4b1db3be5f2557678f15e",
+     "version_id": "version_66a170bbd46011e80d06da6d0bf5ec8b73486a84c13e015f60222fa711e05727",
+     "chunk_id": "chunk_c724358ccd850dc7fb3812e8af1ac1bc",
+     "authoring": "audio-multimodal-faq@1.1",
+     "title": "Audio Multimodal — FAQ (v1.1)",
+     "sections": [
+      "Playback and tool issues"
+     ],
+     "source": {
+      "batch_id": null,
+      "channel_id": null,
+      "manual_key": "audio-multimodal-faq",
+      "message_id": null,
+      "permalink": null,
+      "project_id": "audio_multimodal",
+      "reference": null,
+      "system": "manual",
+      "thread_id": null,
+      "workspace_id": null
+     }
+    },
+    "source_type": "faq",
+    "record_kind": "faq",
+    "applicability": {
+     "state": "CURRENT",
+     "revision_state": "CURRENT",
+     "version_mode": "current",
+     "replaced_by": [],
+     "unverified_supersession": [],
+     "supersedes": [],
+     "enactment": null,
+     "other_revisions": []
+    },
+    "dates": {
+     "source_date": "2026-09-20T13:00:00Z",
+     "basis": "effective_at",
+     "effective_at": "2026-09-20T13:00:00Z",
+     "created_at": null,
+     "valid_until": null,
+     "expired_as_of": false,
+     "reference_time": "2026-10-02T12:00:00Z"
+    },
+    "scope": {
+     "project_id": "audio_multimodal",
+     "batch_id": null,
+     "scope": "project",
+     "batch_relation": "project_wide"
+    },
+    "authority": {
+     "role": "TEAM_LEAD",
+     "actor": "U006",
+     "actor_relation": "RECORD_AUTHORITY",
+     "approval_status": "EXPLICIT_SOURCE_MARKER",
+     "provenance": "synthetic_manual_record"
+    },
+    "authorship": {
+     "author_id": null,
+     "verified": false,
+     "basis": "NO_AUTHOR_RECORDED"
+    },
+    "recorded_states": {
+     "status": "approved",
+     "decision_status": null,
+     "execution_status": null,
+     "outcome_status": null
+    },
+    "upstream_review": null,
+    "excerpt": "[ADDED FOR TYPE COVERAGE: best-ranked faq for this query (rank 13), outside the top 5.]\n## Playback and tool issues\n\n### Q: What if the player spins forever or never loads?\nReport the task ID and available reproduction details as a tool incident. Do not score the recording as a model-quality failure while it cannot be evaluated.\n\n### Q: Can I use QN because playback is unavailable?\nPlayback failure alone does not establish a content-based QN reason. Report the tool incident. If other accessible evidence raises a separate content concern, retain it for review rather than assuming what the unavailable audio contains.",
+    "retrieved_as": {
+     "role": "TYPE_COVERAGE",
+     "detail": "best-ranked faq for this query (rank 13), outside the top 5"
+    }
+   }
+  },
+  "card": {
+   "contract_version": "agent3-advice-card-v5",
+   "record_type": "ADVICE_CARD",
+   "card_id": "card_44a93d53903cd538305d9b0599710fdf",
+   "project_id": "audio_multimodal",
+   "topic_name": "Work environment and background noise",
+   "card_line": "OBSERVATION",
+   "summary": "A QA tutor reports that moving to a quieter room has made a noticeable difference; a tutor comments that background noise makes reviewing clips harder. The exchange contains no handling question or report of an ongoing operational problem.",
+   "severity": {
+    "level": "N/A",
+    "assessment_status": "ASSESSED",
+    "rubric_version": "severity-rubric-v3-semantic-signals",
+    "rubric_content_sha256": "eccaa31a2ab84a0aa7c005216a92fc39681e1dd10107117344948235a76673f4",
+    "rubric_project_id": null,
+    "rubric_scope": "SHARED_DEFAULT",
+    "rationale": "This is an informal exchange about improved working conditions and background noise, without an identifiable operational problem requiring intervention.",
+    "matched_signals": [],
+    "evidence": [],
+    "occurrence": {
+     "affected_reporters": {
+      "status": "UNKNOWN",
+      "count": null,
+      "ids": [],
+      "basis": null,
+      "evidence": []
+     },
+     "affected_tasks": {
+      "status": "UNKNOWN",
+      "count": null,
+      "ids": [],
+      "basis": null,
+      "evidence": []
+     },
+     "relevant_threads": [
+      {
+       "project_id": "audio_multimodal",
+       "batch_id": "audio_batch_06",
+       "channel_id": "C_AUDIO_GENERAL",
+       "thread_id": "1790856028.000143",
+       "member_id": "member_1b1df511a1b31b6c48167cb7"
+      }
+     ],
+     "reporting_window": {
+      "start": "2026-10-01T12:00:28.000143+00:00",
+      "end": "2026-10-01T12:01:14.000113+00:00"
+     },
+     "historical_recurrence": {
+      "status": "NOT_CHECKED",
+      "sources": [],
+      "event_series_ids": []
+     },
+     "known_denominator": null,
+     "structural": {
+      "threads": 1,
+      "messages": 2,
+      "distinct_participants": 2,
+      "duplicate_threads_ignored": 0,
+      "duplicate_messages_ignored": 0,
+      "computed_from": "topic member threads (original Slack messages)",
+      "participants_are_not_affected_reporters": true
+     },
+     "semantic_identification": "ASSESSED"
+    },
+    "inherited_from": {
+     "level": "UNKNOWN",
+     "assessment_status": "UNASSESSED",
+     "assessment_deferred_to": "AGENT3",
+     "reason": "Agent 2 performs taxonomy only."
+    }
+   },
+   "severity_is_provisional": false,
+   "resolution_status": "UNKNOWN",
+   "recommended_action": null,
+   "reasoning": "What the evidence shows: A QA tutor reports having obtained a quieter room to work from and describes a noticeable improvement. A tutor comments that background noise makes reviewing clips harder. The QA tutor's update and the tutor's reply contain no handling question or report of an ongoing operational problem. Thread status, read from each thread's own messages: unknown ×1. Agent 1's earlier labels (an input, not evidence): unresolved ×1.",
+   "supporting_sources": [
+    {
+     "kind": "slack_message",
+     "project_id": "audio_multimodal",
+     "batch_id": "audio_batch_06",
+     "scope": "project",
+     "channel_id": "C_AUDIO_GENERAL",
+     "thread_id": "1790856028.000143",
+     "message_id": "1790856028.000143",
+     "document_id": null,
+     "version_id": null,
+     "authoring_document_id": null,
+     "authoring_version": null,
+     "section": null,
+     "chunk_id": null,
+     "candidate_group_id": null,
+     "member_id": "member_1b1df511a1b31b6c48167cb7",
+     "artifact": null,
+     "artifact_sha256": null,
+     "quote": null,
+     "note": "m:C_AUDIO_GENERAL:1790856028.000143"
+    },
+    {
+     "kind": "slack_message",
+     "project_id": "audio_multimodal",
+     "batch_id": "audio_batch_06",
+     "scope": "project",
+     "channel_id": "C_AUDIO_GENERAL",
+     "thread_id": "1790856028.000143",
+     "message_id": "1790856074.000113",
+     "document_id": null,
+     "version_id": null,
+     "authoring_document_id": null,
+     "authoring_version": null,
+     "section": null,
+     "chunk_id": null,
+     "candidate_group_id": null,
+     "member_id": "member_1b1df511a1b31b6c48167cb7",
+     "artifact": null,
+     "artifact_sha256": null,
+     "quote": null,
+     "note": "m:C_AUDIO_GENERAL:1790856074.000113"
+    }
+   ],
+   "related_threads": [
+    {
+     "project_id": "audio_multimodal",
+     "batch_id": "audio_batch_06",
+     "channel_id": "C_AUDIO_GENERAL",
+     "thread_id": "1790856028.000143",
+     "member_id": "member_1b1df511a1b31b6c48167cb7",
+     "permalink": null,
+     "display_reference": "1790856028.000143",
+     "label": "#audio-multimodal-general, 2026-10-01, started by a QA tutor: \"Finally got a quieter room to work from — what a difference 😄\"",
+     "opening_text": "Finally got a quieter room to work from — what a difference 😄"
+    }
+   ],
+   "confidence": 0.98,
+   "confidence_band": "HIGH",
+   "needs_review_reasons": [],
+   "inherited_flags": [],
+   "checks": {
+    "grounding": "PASSED",
+    "temporal_conflict": "NONE_FOUND",
+    "open_confirmation": "NONE"
+   },
+   "lineage": {
+    "agent3_run_id": "agent3overnight_bdc099a76ee76bdc391050df2aded225",
+    "handoff_contract": "agent2-taxonomy-handoff-v2",
+    "agent2_export_sha256": "6f1f56bf5a5b1f02287d7ac958dc205c05cc9e0ea3e6d5f3fdd7279da0c9e1e7",
+    "agent2_schema_version": 8,
+    "candidate_group_id": "cluster_aa0548b34bd2cbdc",
+    "topic_id": "cluster_aa0548b34bd2cbdc/topic_1",
+    "member_ids": [
+     "member_1b1df511a1b31b6c48167cb7"
+    ],
+    "project_id": "audio_multimodal",
+    "batch_id": "audio_batch_06"
+   },
+   "review_notes": [],
+   "details": [],
+   "next_step": {
+    "status": "NO_ACTION_NEEDED",
+    "rationale": "The QA tutor reports an improvement, and neither message raises a handling question or an ongoing problem needing intervention.",
+    "explanation": null
+   },
+   "briefing": {
+    "status": "IN_BRIEFING",
+    "relevance": "MIXED",
+    "label_id": "rel_cluster_aa0548b34bd2cbdc_topic_1",
+    "label_source": "DEVELOPER_AUDIT_2026-11-05 (prepared by the coding assistant from the saved source threads; not confirmed by a team lead)",
+    "kept_because": []
+   },
+   "outstanding_step": null,
+   "derivation": {
+    "policy_version": "briefing-routing-v1",
+    "provenance": "OFFLINE_POLICY_APPLICATION",
+    "text_provenance": "PARENT_RUN_JUDGMENTS",
+    "parent_run": "data/experiments/threadsense_full_v1/stages/agent3/overnight_run",
+    "parent_run_instance": "4a48d67e4d8322cf6912e26032663b41fd5f0447103ed8081e5581b3d3183ff8",
+    "parent_card_id": "card_12be96c35553fa166eef51c5269d2761",
+    "parent_card_sha256": "9f2c40a225c22dcaaab99bf87c5a943c5aa20c9dcaebe045b326ce03b5c22f32",
+    "parent_contract_version": "agent3-advice-card-v4",
+    "changes": []
+   }
+  },
+  "review_items": [],
+  "coverage": {
+   "group_members_outside_this_card": [],
+   "uncarried_obligations": []
+  },
+  "budget": {
+   "consumed": {
+    "retrieval_calls": 1,
+    "model_calls": 2
+   },
+   "limits": {
+    "model_calls_per_topic": 4,
+    "model_calls_total": 28,
+    "retrieval_calls_per_topic": 6,
+    "retrieval_calls_total": 42
+   }
+  },
+  "diagnostics": []
+ },
+ "derivation": {
+  "policy_version": "briefing-routing-v1",
+  "parent_topic_file": "data/experiments/threadsense_full_v1/stages/agent3/overnight_run/topics/topic__cluster_aa0548b34bd2cbdc__topic_1.json",
+  "parent_topic_sha256": "9c31a4ede9548d985db0d5089a1fdfeeafdc9f02c54a775deca4c02b52610b8c",
+  "replaced": [
+   "result.card",
+   "workflow.card_id",
+   "workflow.card_line"
+  ]
+ }
+}

@@ -132,6 +132,12 @@ function RunBanner({ run }) {
         <span className="text-xs text-slate-400"><Icon name="clock" className="mr-1 inline h-3.5 w-3.5 -translate-y-px" />Cutoff {when(run.cutoff)} · window {when(run.window.start)} to {when(run.window.cutoff)}</span>
       </div>
       <div className="mt-1.5 text-xs leading-relaxed text-slate-300">{text} {run.mode !== 'LIVE' && run.semantic_note}</div>
+      {run.derivation && (
+        <details className="mt-1 text-xs leading-relaxed text-cyan-100/90" data-testid="run-derivation">
+          <summary className="cursor-pointer">Derived offline from <code className="font-mono">{run.derivation.parent_run_key}</code> ({run.derivation.policy_version}); card text and verdicts unchanged.</summary>
+          <div className="mt-1 text-slate-300">No model call. Card lines, review reasons, briefing eligibility and pending follow-ups were recomputed from that run's saved judgments. Briefing relevance comes from audited labels bound to each thread's saved messages, not from an automatic classifier; a card without a matching label stays in the brief. Card IDs are new, so decisions on the original cards do not carry over.</div>
+        </details>
+      )}
       <div className="mt-1 text-[11px] text-slate-500">Run <code className="font-mono text-slate-400">{run.run_key}</code> ({run.run_id}){run.scope_only ? ` · scoped to ${run.scope_only.join(', ')}` : ''}
         <span data-testid="run-provenance"> · prompts {run.provenance?.prompt_version || 'not recorded'}{run.provenance?.model ? ` · model ${run.provenance.model}` : ''}</span>.
         {run.shares_run_id_with.length > 0 && <span className="text-amber-200/90"> Another directory ({run.shares_run_id_with.join(', ')}) has the same run ID; it is a separate run and is never combined with this one.</span>}</div>
@@ -178,7 +184,11 @@ export default function App() {
 
   const run = brief?.run
   const inProject = x => !project || x.project_id === project
-  const cards = (brief?.cards || []).filter(c => inProject(c.card))
+  const allCards = (brief?.cards || []).filter(c => inProject(c.card))
+  // briefing_policy: social or routine cards are kept in history, outside the brief's lists and counts.
+  const inBrief = c => (c.presentation?.briefing?.status || 'IN_BRIEFING') === 'IN_BRIEFING'
+  const cards = allCards.filter(inBrief)
+  const history = allCards.filter(c => !inBrief(c))
   const queueRows = queue.filter(r => inProject(r.item))
   const topics = (brief?.topics || []).filter(t => !project || t.project_id === project)
   const cardTopics = Object.fromEntries((brief?.cards || []).map(c => [c.card.card_id, c.display_title || c.card.topic_name]))
@@ -275,7 +285,8 @@ export default function App() {
                 </section>
 
                 <div className="flex flex-wrap items-center gap-x-5 gap-y-1 px-1 text-xs text-slate-500">
-                  <span data-testid="tile-cards">Cards <b className="tabular-nums text-slate-300">{counts.cards ?? 0}</b></span>
+                  <span data-testid="tile-cards">Cards <b className="tabular-nums text-slate-300">{counts.cards ?? 0}</b>
+                    {run.briefing && <span data-testid="tile-in-brief"> · {run.briefing.in_briefing} in this brief · {run.briefing.not_in_briefing.length} kept in history</span>}</span>
                   <span data-testid="tile-failed" className={run.failed ? 'text-red-300' : ''}>Failed topics <b className="tabular-nums">{run.failed}</b></span>
                   <span data-testid="tile-unprocessed" className={run.unprocessed ? 'text-amber-200' : ''}>Unprocessed <b className="tabular-nums">{run.unprocessed}</b></span>
                   <span data-testid="tile-out-of-scope">Out of scope <b className="tabular-nums text-slate-300">{run.out_of_scope}</b></span>
@@ -335,6 +346,16 @@ export default function App() {
                     </section>
                   )
                 })}
+
+                {history.length > 0 && (
+                  <details className="group panel-inset p-3" data-testid="not-in-brief">
+                    <summary className="cursor-pointer text-sm font-medium text-slate-300">Not in this brief ({history.length}): social or routine exchanges kept in history</summary>
+                    <div className="mt-3 grid gap-4 lg:grid-cols-2">
+                      {history.map(c => <CardView key={c.card.card_id} runKey={runKey} run={run} openQueueItem={openQueueItem} item={c} actor={actor} decisionState={byCard[c.card.card_id]} wide={history.length === 1}
+                        onDecisionChanged={loadDecisions} openPanel={setPanel} />)}
+                    </div>
+                  </details>
+                )}
 
                 <div className="space-y-2 pt-2">
                   <Details summary="Saved briefing (from the run's morning_brief.md)" testid="briefing-details"><Briefing markdown={brief.briefing_markdown} /></Details>

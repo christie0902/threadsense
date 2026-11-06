@@ -1423,6 +1423,12 @@ def next_step_state(card_action, proposed, verdicts, *, has_draft, evidence_suff
             f'The advisor proposed "{label}", but it is not shown because {why}.'}
 
 
+OBSERVATION_NOT_ESTABLISHED = 'Observation not established: next step '
+OBSERVATION_NOTES = {'RECOMMENDATION_WITHHELD': 'Recommendation needs review: the proposed action did not pass the checks.',
+                     'NO_INTERVENTION_PROPOSED': 'No-action choice needs review: its reason did not pass the evidence check.',
+                     'NO_RECOMMENDATION_AVAILABLE': 'No recommendation is available for this topic.'}
+
+
 def assemble_card(outcome, packet, *, run_id):
     """Route to a card line from final validated results. Each review reason (structured, internal codes) has a
     plain-language review note; an open question is a reason only if the final grounding supported it."""
@@ -1545,6 +1551,13 @@ def assemble_card(outcome, packet, *, run_id):
         data['recommended_action'], proposed.model_dump(mode='json') if proposed else None,
         {s['statement_id']: s['verdict'] for s in grounding['statements']}, has_draft=draft is not None,
         evidence_sufficiency=sufficiency, no_action_rationale=final.get('no_action_rationale'))
+    status = data['next_step']['status']
+    if line == 'OBSERVATION' and status != 'NO_ACTION_NEEDED':
+        # briefing-routing-v1: an observation needs a supported no-action reason; an absent, withheld or unproven next
+        # step stays in review (never "no action needed").
+        data['needs_review_reasons'].append(_reason('OTHER', f'{OBSERVATION_NOT_ESTABLISHED}{status}.').model_dump(mode='json'))
+        data['review_notes'].append(OBSERVATION_NOTES.get(status, 'No supported next step is available; review this card.'))
+        data['card_line'] = 'NEEDS_REVIEW'
     leaks = card_names(data) + card_ids(data)
     if leaks:  # Guard: display text uses roles and plain words; a leak is reported, never rewritten.
         data['needs_review_reasons'].append(_reason('OTHER', 'Internal identifier or personal name in card text: '

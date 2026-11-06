@@ -1,0 +1,1924 @@
+{
+ "work_item": {
+  "candidate_group_id": "cluster_15fc8dea47088788",
+  "project_id": "response_preference",
+  "batch_id": "rp_batch_15",
+  "work_id": "topic:cluster_15fc8dea47088788/topic_1",
+  "kind": "TOPIC",
+  "topic_id": "cluster_15fc8dea47088788/topic_1",
+  "topic_name": "Queue coverage and closure reminders",
+  "member_ids": [
+   "member_809df2faae873ed0419f1574",
+   "member_211e8a1284a7577600ae8ad4"
+  ],
+  "pilot_scenario": null,
+  "in_scope": true
+ },
+ "workflow": {
+  "outcome": "CARD",
+  "card_id": "card_755dfb6af8ffd0ac1dcbfc622d91c85e",
+  "card_line": "OBSERVATION",
+  "grounding": "PASSED",
+  "stage_failures": [],
+  "semantic_source": "LIVE_MODEL"
+ },
+ "result": {
+  "scenario": {
+   "id": "topic:cluster_15fc8dea47088788/topic_1",
+   "candidate_group_id": "cluster_15fc8dea47088788",
+   "focus": "Queue coverage and closure reminders",
+   "topic_id": "cluster_15fc8dea47088788/topic_1"
+  },
+  "status": "CARD",
+  "topic": {
+   "project_id": "response_preference",
+   "batch_id": "rp_batch_15",
+   "candidate_group_id": "cluster_15fc8dea47088788",
+   "topic_id": "cluster_15fc8dea47088788/topic_1",
+   "topic_label": "Queue coverage and closure reminders",
+   "projection_gap": null,
+   "as_of": "2026-10-02T12:00:00Z",
+   "member_ids": [
+    "member_809df2faae873ed0419f1574",
+    "member_211e8a1284a7577600ae8ad4"
+   ],
+   "initial_query": "Queue coverage and closure reminders. Yuki issued a reminder that the response preference queue closes at 6 PM today. Avery acknowledged the reminder and stated they would finish the open tasks before the queue closes."
+  },
+  "retrieval_trace": [
+   {
+    "step": 1,
+    "purpose": "initial_current_guidance",
+    "gap_id": null,
+    "query": "Queue coverage and closure reminders. Yuki issued a reminder that the response preference queue closes at 6 PM today. Avery acknowledged the reminder and stated they would finish the open tasks before the queue closes.",
+    "source_types": [
+     "guideline",
+     "faq",
+     "decision",
+     "announcement"
+    ],
+    "version_mode": "current",
+    "as_of": "2026-10-02T12:00:00Z",
+    "batch": "rp_batch_15",
+    "top_k": 5,
+    "status": "DONE",
+    "mode": "hybrid",
+    "use_mmr": true,
+    "mmr_lambda": 0.9,
+    "result_ids": [
+     "k:slack:C_RP_ANNOUNCEMENTS:1790916442.000051:a3b60595",
+     "k:rp-submit-engineering-handoff@1.0:6afb6e6d",
+     "k:rp-format-rule-rejected@1.0:59d718d7",
+     "k:slack:C_RP_ANNOUNCEMENTS:1790883558.000028:d0ddced2",
+     "k:slack:C_RP_ANNOUNCEMENTS:1790888971.000030:7db831c7"
+    ],
+    "new_evidence_ids": [
+     "k:slack:C_RP_ANNOUNCEMENTS:1790916442.000051:a3b60595",
+     "k:rp-submit-engineering-handoff@1.0:6afb6e6d",
+     "k:rp-format-rule-rejected@1.0:59d718d7",
+     "k:slack:C_RP_ANNOUNCEMENTS:1790883558.000028:d0ddced2",
+     "k:slack:C_RP_ANNOUNCEMENTS:1790888971.000030:7db831c7",
+     "k:response-preference-instructions@1.1:36683c52",
+     "k:response-preference-faq@1.1:fa9b6a3d"
+    ],
+    "eligible_chunks": 28,
+    "added": [
+     {
+      "evidence_id": "k:response-preference-instructions@1.1:36683c52",
+      "role": "TYPE_COVERAGE",
+      "detail": "best-ranked guideline for this query (rank 8), outside the top 5"
+     },
+     {
+      "evidence_id": "k:response-preference-faq@1.1:fa9b6a3d",
+      "role": "TYPE_COVERAGE",
+      "detail": "best-ranked faq for this query (rank 9), outside the top 5"
+     }
+    ]
+   }
+  ],
+  "retrieval_notes": {
+   "withheld_by_version": [],
+   "version_diagnostics": []
+  },
+  "follow_ups": [],
+  "unfilled_gaps": [],
+  "model_calls": [
+   {
+    "stage": "draft",
+    "schema": "AdvisorDraft",
+    "agent1_context": {
+     "sha256": "9d729ae032e1cd15025456e1f711515bcb52718c67c16c3b3bc255910de03aed",
+     "boundary": "IN_HTTP_BODY"
+    },
+    "raw": "{\n  \"contract_version\": \"agent3-advisor-draft-v11\",\n  \"summary\": null,\n  \"summary_sentences\": [\n    {\n      \"text\": \"A QA tutor reminds members of a same-day queue closure at 6 PM; a different QA tutor reports coverage for the next day's early preference queue shift.\",\n      \"support_claim_ids\": [\"c1\", \"c2\"],\n      \"depends_on\": []\n    },\n    {\n      \"text\": \"A tutor in each thread acknowledges the update and plans to finish open tasks before closure; neither thread raises a handling question or reports a problem.\",\n      \"support_claim_ids\": [\"c3\", \"c4\"],\n      \"depends_on\": []\n    }\n  ],\n  \"detail_sentences\": [],\n  \"reasoning\": \"These are routine scheduling updates with acknowledgments, not reports of disrupted work or requests for a handling decision. The tutors' stated plans do not establish that tasks were completed. The retrieved guidance and earlier decisions concern tool incidents or preference scoring, not queue coverage or closure. No further research is needed to support taking no action on these threads. The upstream review flags on the two technical-status announcements remain open; neither announcement is used as handling guidance here.\",\n  \"claims\": [\n    {\n      \"claim_id\": \"c1\",\n      \"kind\": \"INCIDENT_FACT\",\n      \"text\": \"A QA tutor posts a reminder that the response preference queue closes at 6 PM that day.\",\n      \"evidence_ids\": [\"m:C_RP_GENERAL:1790880012.001400\"],\n      \"attributions\": [\n        {\n          \"user_id\": \"U019\",\n          \"relation\": \"AUTHOR\",\n          \"evidence_id\": \"m:C_RP_GENERAL:1790880012.001400\"\n        }\n      ],\n      \"quote\": null,\n      \"quote_kind\": \"PARAPHRASE\",\n      \"material\": true\n    },\n    {\n      \"claim_id\": \"c2\",\n      \"kind\": \"INCIDENT_FACT\",\n      \"text\": \"A different QA tutor reports coverage for the following day's early preference queue shift.\",\n      \"evidence_ids\": [\"m:C_RP_GENERAL:1790903659.000050\"],\n      \"attributions\": [\n        {\n          \"user_id\": \"U014\",\n          \"relation\": \"AUTHOR\",\n          \"evidence_id\": \"m:C_RP_GENERAL:1790903659.000050\"\n        }\n      ],\n      \"quote\": null,\n      \"quote_kind\": \"PARAPHRASE\",\n      \"material\": true\n    },\n    {\n      \"claim_id\": \"c3\",\n      \"kind\": \"INCIDENT_FACT\",\n      \"text\": \"Two tutors, one in each thread, acknowledge the update and say they will finish open tasks before the queue closes.\",\n      \"evidence_ids\": [\n        \"m:C_RP_GENERAL:1790880064.000113\",\n        \"m:C_RP_GENERAL:1790903714.000113\"\n      ],\n      \"attributions\": [\n        {\n          \"user_id\": \"U010\",\n          \"relation\": \"AUTHOR\",\n          \"evidence_id\": \"m:C_RP_GENERAL:1790880064.000113\"\n        },\n        {\n          \"user_id\": \"U020\",\n          \"relation\": \"AUTHOR\",\n          \"evidence_id\": \"m:C_RP_GENERAL:1790903714.000113\"\n        }\n      ],\n      \"quote\": null,\n      \"quote_kind\": \"PARAPHRASE\",\n      \"material\": true\n    },\n    {\n      \"claim_id\": \"c4\",\n      \"kind\": \"INFERENCE\",\n      \"text\": \"The two threads contain routine updates and acknowledgments, with no handling question or reported operational problem.\",\n      \"evidence_ids\": [\n        \"m:C_RP_GENERAL:1790880012.001400\",\n        \"m:C_RP_GENERAL:1790880064.000113\",\n        \"m:C_RP_GENERAL:1790903659.000050\",\n        \"m:C_RP_GENERAL:1790903714.000113\"\n      ],\n      \"attributions\": [],\n      \"quote\": null,\n      \"quote_kind\": \"PARAPHRASE\",\n      \"material\": true\n    }\n  ],\n  \"gaps\": [],\n  \"evidence_sufficiency\": \"SUFFICIENT\",\n  \"proposed_action\": {\n    \"action_type\": \"NO_ACTION\",\n    \"intervention_need\": null,\n    \"instruction\": \"Take no further action on these routine queue updates.\",\n    \"rationale\": \"Both updates received acknowledgments, and neither thread shows a handling question or operational problem needing intervention.\",\n    \"draft_text\": null,\n    \"scope_note\": null,\n    \"support_claim_ids\": [\"c1\", \"c2\", \"c3\", \"c4\"],\n    \"targets\": [],\n    \"context_claim_ids\": []\n  },\n  \"severity\": {\n    \"level\": \"N/A\",\n    \"rationale\": \"The messages are routine scheduling updates and acknowledgments, with no identifiable operational problem or risk.\",\n    \"signals\": [],\n    \"affected_reporters\": [],\n    \"recurrence\": \"NOT_CHECKED\",\n    \"recurrence_evidence_ids\": [],\n    \"reported_recurrence_evidence_ids\": []\n  },\n  \"confidence\": 0.98,\n  \"open_confirmation\": \"NONE\",\n  \"open_question\": null,\n  \"open_question_evidence_ids\": [],\n  \"source_conflicts\": [],\n  \"announcement_assessments\": [\n    {\n      \"evidence_id\": \"k:slack:C_RP_ANNOUNCEMENTS:1790916442.000051:a3b60595\",\n      \"relevant\": false,\n      \"directive\": false,\n      \"directive_quote\": null,\n      \"rationale\": \"The announcement shares an onboarding resource; it does not address queue closure or shift coverage.\"\n    },\n    {\n      \"evidence_id\": \"k:slack:C_RP_ANNOUNCEMENTS:1790883558.000028:d0ddced2\",\n      \"relevant\": false,\n      \"directive\": true,\n      \"directive_quote\": \"Add affected task references here; no policy change has been announced.\",\n      \"rationale\": \"The announcement requests examples of connection drops, not action on queue coverage or closure. Its upstream review flags remain open.\"\n    },\n    {\n      \"evidence_id\": \"k:slack:C_RP_ANNOUNCEMENTS:1790888971.000030:7db831c7\",\n      \"relevant\": false,\n      \"directive\": true,\n      \"directive_quote\": \"Please keep examples in this thread while we check the scope.\",\n      \"rationale\": \"The announcement collects examples of Submit failures, which neither queue-update thread reports. Its upstream review flag remains open.\"\n    }\n  ],\n  \"resolution\": [\n    {\n      \"member_id\": \"member_809df2faae873ed0419f1574\",\n      \"state\": \"UNKNOWN\",\n      \"evidence_ids\": [\n        \"m:C_RP_GENERAL:1790880012.001400\",\n        \"m:C_RP_GENERAL:1790880064.000113\"\n      ],\n      \"basis\": \"A QA tutor posts a closure reminder and a tutor acknowledges it with a plan to finish open tasks. No handling question is raised, and actual task completion is not reported.\"\n    },\n    {\n      \"member_id\": \"member_211e8a1284a7577600ae8ad4\",\n      \"state\": \"UNKNOWN\",\n      \"evidence_ids\": [\n        \"m:C_RP_GENERAL:1790903659.000050\",\n        \"m:C_RP_GENERAL:1790903714.000113\"\n      ],\n      \"basis\": \"A QA tutor reports planned shift coverage and a tutor acknowledges the update with a plan to finish open tasks. No handling question is raised, and actual coverage or task completion is not confirmed.\"\n    }\n  ],\n  \"coverage\": [\n    {\n      \"need\": \"CURRENT_GUIDANCE\",\n      \"status\": \"NOT_APPLICABLE\",\n      \"evidence_ids\": [\n        \"k:response-preference-instructions@1.1:36683c52\",\n        \"k:response-preference-faq@1.1:fa9b6a3d\"\n      ],\n      \"note\": \"The retrieved guidance addresses tool incidents and preference scoring, not scheduling. No scheduling rule is needed to support taking no action on routine acknowledged updates.\",\n      \"gap_id\": null\n    },\n    {\n      \"need\": \"ANNOUNCEMENTS\",\n      \"status\": \"COVERED\",\n      \"evidence_ids\": [\n        \"k:slack:C_RP_ANNOUNCEMENTS:1790916442.000051:a3b60595\",\n        \"k:slack:C_RP_ANNOUNCEMENTS:1790883558.000028:d0ddced2\",\n        \"k:slack:C_RP_ANNOUNCEMENTS:1790888971.000030:7db831c7\"\n      ],\n      \"note\": \"The retrieved announcements were assessed; none addresses queue coverage or closure.\",\n      \"gap_id\": null\n    },\n    {\n      \"need\": \"PRIOR_DECISIONS\",\n      \"status\": \"NOT_APPLICABLE\",\n      \"evidence_ids\": [\n        \"k:rp-submit-engineering-handoff@1.0:6afb6e6d\",\n        \"k:rp-format-rule-rejected@1.0:59d718d7\"\n      ],\n      \"note\": \"The retrieved earlier records concern a submission incident and a rejected scoring rule. Neither bears on these scheduling updates, and no historical decision or outcome is needed for the proposed action.\",\n      \"gap_id\": null\n    },\n    {\n      \"need\": \"MEMBER_QUESTIONS\",\n      \"status\": \"COVERED\",\n      \"evidence_ids\": [\n        \"m:C_RP_GENERAL:1790880012.001400\",\n        \"m:C_RP_GENERAL:1790880064.000113\",\n        \"m:C_RP_GENERAL:1790903659.000050\",\n        \"m:C_RP_GENERAL:1790903714.000113\"\n      ],\n      \"note\": \"Both complete threads contain updates and acknowledgments, not questions or references to earlier workarounds.\",\n      \"gap_id\": null\n    }\n  ],\n  \"review_note\": null,\n  \"action_choice\": null\n}",
+    "raw_sha256": "3e74f63252621829ca15387013aa3abb22139bc905d827f8c7ab210a99e3ad5b",
+    "http_requests": {
+     "sent": 1,
+     "blocked": 0,
+     "hosts": [
+      "api.openai.com"
+     ],
+     "responses": [
+      {
+       "status_code": 200,
+       "seconds": 29.626,
+       "model": "gpt-6.1-sol",
+       "usage": {
+        "prompt_tokens": 12832,
+        "completion_tokens": 2446,
+        "total_tokens": 15278,
+        "prompt_tokens_details": {
+         "cached_tokens": 0,
+         "cache_write_tokens": 12829,
+         "audio_tokens": 0
+        },
+        "completion_tokens_details": {
+         "reasoning_tokens": 250,
+         "audio_tokens": 0,
+         "accepted_prediction_tokens": 0,
+         "rejected_prediction_tokens": 0
+        }
+       },
+       "finish_reasons": [
+        "stop"
+       ]
+      }
+     ],
+     "input_tokens": 12838,
+     "refused": null,
+     "charged_usd": 0.050124
+    },
+    "input_tokens_estimate": 12838,
+    "status": "OK"
+   },
+   {
+    "stage": "grounding",
+    "schema": "GroundingJudgment",
+    "raw": "{\n  \"contract_version\": \"agent3-grounding-judgment-v5\",\n  \"verdicts\": [\n    {\n      \"statement_id\": \"claim:c1\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"U019 is a QA tutor and explicitly posts a reminder that the response preference queue closes at 6 PM that day.\"\n    },\n    {\n      \"statement_id\": \"claim:c2\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"U014 is a different QA tutor and reports that Jordan is covering the early preference queue shift tomorrow.\"\n    },\n    {\n      \"statement_id\": \"claim:c3\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"Distinct tutors U010 and U020, one in each thread, both acknowledge the update and state that they will finish open tasks before the queue closes.\"\n    },\n    {\n      \"statement_id\": \"claim:c4\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The complete threads contain only a closure reminder, a coverage update and their acknowledgments. Neither raises a handling question or reports an operational problem.\"\n    },\n    {\n      \"statement_id\": \"summary:s1\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The sentence accurately summarizes the two QA tutors' messages, preserves their relative dates and correctly attributes each report.\"\n    },\n    {\n      \"statement_id\": \"summary:s2\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"Each cited tutor acknowledges the update and plans to finish open tasks before closure. Neither complete thread contains a handling question or problem report.\"\n    },\n    {\n      \"statement_id\": \"action:no_action\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"Both updates received acknowledgments, and the complete topic threads show no unresolved handling question, guidance gap, applicable pending decision or operational problem requiring intervention. The retrieved incident records and announcements concern other problems and do not establish an intervention need for these scheduling updates.\"\n    },\n    {\n      \"statement_id\": \"severity:rationale\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The messages are routine scheduling updates and acknowledgments, with no identifiable operational problem or risk reported in either thread.\"\n    }\n  ],\n  \"action_sufficiency\": null,\n  \"alternative_sufficiency\": [],\n  \"source_consistency\": {\n    \"assessed_evidence_ids\": [\n      \"k:response-preference-instructions@1.1:36683c52\",\n      \"k:response-preference-faq@1.1:fa9b6a3d\"\n    ],\n    \"relations\": [],\n    \"declared_conflict_checks\": []\n  }\n}",
+    "raw_sha256": "f8c20a79d64c15320b0ee44ad851c795903cf97adcb0218fcbcbcde02b51664f",
+    "http_requests": {
+     "sent": 1,
+     "blocked": 0,
+     "hosts": [
+      "api.openai.com"
+     ],
+     "responses": [
+      {
+       "status_code": 200,
+       "seconds": 10.227,
+       "model": "gpt-6.1-sol",
+       "usage": {
+        "prompt_tokens": 8502,
+        "completion_tokens": 673,
+        "total_tokens": 9175,
+        "prompt_tokens_details": {
+         "cached_tokens": 0,
+         "cache_write_tokens": 8499,
+         "audio_tokens": 0
+        },
+        "completion_tokens_details": {
+         "reasoning_tokens": 97,
+         "audio_tokens": 0,
+         "accepted_prediction_tokens": 0,
+         "rejected_prediction_tokens": 0
+        }
+       },
+       "finish_reasons": [
+        "stop"
+       ]
+      }
+     ],
+     "input_tokens": 8508,
+     "refused": null,
+     "charged_usd": 0.023733999999999998
+    },
+    "input_tokens_estimate": 8508,
+    "status": "OK"
+   }
+  ],
+  "agent1_context": [
+   {
+    "sha256": "9d729ae032e1cd15025456e1f711515bcb52718c67c16c3b3bc255910de03aed",
+    "content": [
+     {
+      "member_id": "member_809df2faae873ed0419f1574",
+      "thread_id": "1790880012.001400",
+      "summary": "Yuki issued a reminder that the response preference queue closes at 6 PM today. Avery acknowledged the reminder and stated they would finish the open tasks before the queue closes.",
+      "central_question": null,
+      "attributed_agent1_resolution": {
+       "state": "UNRESOLVED",
+       "rationale": "The thread contains a reminder about the deadline for the response preference queue and an acknowledgment from Avery that they will complete the tasks before the deadline. However, there is no specific decision requested or substantive guidance provided.",
+       "agent1_verification_status": "CORRECTED",
+       "note": "Agent 1 label, not evidence; NEEDS_REVIEW means Agent 1 did not verify it. Assess resolution from the member messages."
+      },
+      "agent1_review_required": false,
+      "agent1_review_reason": "",
+      "note": "Agent 1 interpretation, not source evidence; cite member messages for incident facts."
+     },
+     {
+      "member_id": "member_211e8a1284a7577600ae8ad4",
+      "thread_id": "1790903659.000050",
+      "summary": "Linh informs that Jordan will cover the early preference queue shift tomorrow. Theo acknowledges this and states he will finish the open tasks before the queue closes.",
+      "central_question": null,
+      "attributed_agent1_resolution": {
+       "state": "UNRESOLVED",
+       "rationale": "The thread establishes that Jordan will cover the early preference queue shift tomorrow, as stated by Linh, and Theo acknowledges this arrangement. However, there is no explicit decision requested or substantive guidance provided, leaving the central question unresolved.",
+       "agent1_verification_status": "CORRECTED",
+       "note": "Agent 1 label, not evidence; NEEDS_REVIEW means Agent 1 did not verify it. Assess resolution from the member messages."
+      },
+      "agent1_review_required": false,
+      "agent1_review_reason": "",
+      "note": "Agent 1 interpretation, not source evidence; cite member messages for incident facts."
+     }
+    ]
+   }
+  ],
+  "drafts": {
+   "initial": {
+    "contract_version": "agent3-advisor-draft-v11",
+    "summary": "A QA tutor reminds members of a same-day queue closure at 6 PM; a different QA tutor reports coverage for the next day's early preference queue shift. A tutor in each thread acknowledges the update and plans to finish open tasks before closure; neither thread raises a handling question or reports a problem.",
+    "summary_sentences": [
+     {
+      "text": "A QA tutor reminds members of a same-day queue closure at 6 PM; a different QA tutor reports coverage for the next day's early preference queue shift.",
+      "support_claim_ids": [
+       "c1",
+       "c2"
+      ],
+      "depends_on": []
+     },
+     {
+      "text": "A tutor in each thread acknowledges the update and plans to finish open tasks before closure; neither thread raises a handling question or reports a problem.",
+      "support_claim_ids": [
+       "c3",
+       "c4"
+      ],
+      "depends_on": []
+     }
+    ],
+    "detail_sentences": [],
+    "reasoning": "These are routine scheduling updates with acknowledgments, not reports of disrupted work or requests for a handling decision. The tutors' stated plans do not establish that tasks were completed. The retrieved guidance and earlier decisions concern tool incidents or preference scoring, not queue coverage or closure. No further research is needed to support taking no action on these threads. The upstream review flags on the two technical-status announcements remain open; neither announcement is used as handling guidance here.",
+    "claims": [
+     {
+      "claim_id": "c1",
+      "kind": "INCIDENT_FACT",
+      "text": "A QA tutor posts a reminder that the response preference queue closes at 6 PM that day.",
+      "evidence_ids": [
+       "m:C_RP_GENERAL:1790880012.001400"
+      ],
+      "attributions": [
+       {
+        "user_id": "U019",
+        "relation": "AUTHOR",
+        "evidence_id": "m:C_RP_GENERAL:1790880012.001400"
+       }
+      ],
+      "quote": null,
+      "quote_kind": "PARAPHRASE",
+      "material": true
+     },
+     {
+      "claim_id": "c2",
+      "kind": "INCIDENT_FACT",
+      "text": "A different QA tutor reports coverage for the following day's early preference queue shift.",
+      "evidence_ids": [
+       "m:C_RP_GENERAL:1790903659.000050"
+      ],
+      "attributions": [
+       {
+        "user_id": "U014",
+        "relation": "AUTHOR",
+        "evidence_id": "m:C_RP_GENERAL:1790903659.000050"
+       }
+      ],
+      "quote": null,
+      "quote_kind": "PARAPHRASE",
+      "material": true
+     },
+     {
+      "claim_id": "c3",
+      "kind": "INCIDENT_FACT",
+      "text": "Two tutors, one in each thread, acknowledge the update and say they will finish open tasks before the queue closes.",
+      "evidence_ids": [
+       "m:C_RP_GENERAL:1790880064.000113",
+       "m:C_RP_GENERAL:1790903714.000113"
+      ],
+      "attributions": [
+       {
+        "user_id": "U010",
+        "relation": "AUTHOR",
+        "evidence_id": "m:C_RP_GENERAL:1790880064.000113"
+       },
+       {
+        "user_id": "U020",
+        "relation": "AUTHOR",
+        "evidence_id": "m:C_RP_GENERAL:1790903714.000113"
+       }
+      ],
+      "quote": null,
+      "quote_kind": "PARAPHRASE",
+      "material": true
+     },
+     {
+      "claim_id": "c4",
+      "kind": "INFERENCE",
+      "text": "The two threads contain routine updates and acknowledgments, with no handling question or reported operational problem.",
+      "evidence_ids": [
+       "m:C_RP_GENERAL:1790880012.001400",
+       "m:C_RP_GENERAL:1790880064.000113",
+       "m:C_RP_GENERAL:1790903659.000050",
+       "m:C_RP_GENERAL:1790903714.000113"
+      ],
+      "attributions": [],
+      "quote": null,
+      "quote_kind": "PARAPHRASE",
+      "material": true
+     }
+    ],
+    "gaps": [],
+    "evidence_sufficiency": "SUFFICIENT",
+    "proposed_action": {
+     "action_type": "NO_ACTION",
+     "intervention_need": null,
+     "instruction": "Take no further action on these routine queue updates.",
+     "rationale": "Both updates received acknowledgments, and neither thread shows a handling question or operational problem needing intervention.",
+     "draft_text": null,
+     "scope_note": null,
+     "support_claim_ids": [
+      "c1",
+      "c2",
+      "c3",
+      "c4"
+     ],
+     "targets": [],
+     "context_claim_ids": []
+    },
+    "severity": {
+     "level": "N/A",
+     "rationale": "The messages are routine scheduling updates and acknowledgments, with no identifiable operational problem or risk.",
+     "signals": [],
+     "affected_reporters": [],
+     "recurrence": "NOT_CHECKED",
+     "recurrence_evidence_ids": [],
+     "reported_recurrence_evidence_ids": []
+    },
+    "confidence": 0.98,
+    "open_confirmation": "NONE",
+    "open_question": null,
+    "open_question_evidence_ids": [],
+    "source_conflicts": [],
+    "announcement_assessments": [
+     {
+      "evidence_id": "k:slack:C_RP_ANNOUNCEMENTS:1790916442.000051:a3b60595",
+      "relevant": false,
+      "directive": false,
+      "directive_quote": null,
+      "rationale": "The announcement shares an onboarding resource; it does not address queue closure or shift coverage."
+     },
+     {
+      "evidence_id": "k:slack:C_RP_ANNOUNCEMENTS:1790883558.000028:d0ddced2",
+      "relevant": false,
+      "directive": true,
+      "directive_quote": "Add affected task references here; no policy change has been announced.",
+      "rationale": "The announcement requests examples of connection drops, not action on queue coverage or closure. Its upstream review flags remain open."
+     },
+     {
+      "evidence_id": "k:slack:C_RP_ANNOUNCEMENTS:1790888971.000030:7db831c7",
+      "relevant": false,
+      "directive": true,
+      "directive_quote": "Please keep examples in this thread while we check the scope.",
+      "rationale": "The announcement collects examples of Submit failures, which neither queue-update thread reports. Its upstream review flag remains open."
+     }
+    ],
+    "resolution": [
+     {
+      "member_id": "member_809df2faae873ed0419f1574",
+      "state": "UNKNOWN",
+      "evidence_ids": [
+       "m:C_RP_GENERAL:1790880012.001400",
+       "m:C_RP_GENERAL:1790880064.000113"
+      ],
+      "basis": "A QA tutor posts a closure reminder and a tutor acknowledges it with a plan to finish open tasks. No handling question is raised, and actual task completion is not reported."
+     },
+     {
+      "member_id": "member_211e8a1284a7577600ae8ad4",
+      "state": "UNKNOWN",
+      "evidence_ids": [
+       "m:C_RP_GENERAL:1790903659.000050",
+       "m:C_RP_GENERAL:1790903714.000113"
+      ],
+      "basis": "A QA tutor reports planned shift coverage and a tutor acknowledges the update with a plan to finish open tasks. No handling question is raised, and actual coverage or task completion is not confirmed."
+     }
+    ],
+    "coverage": [
+     {
+      "need": "CURRENT_GUIDANCE",
+      "status": "NOT_APPLICABLE",
+      "evidence_ids": [
+       "k:response-preference-instructions@1.1:36683c52",
+       "k:response-preference-faq@1.1:fa9b6a3d"
+      ],
+      "note": "The retrieved guidance addresses tool incidents and preference scoring, not scheduling. No scheduling rule is needed to support taking no action on routine acknowledged updates.",
+      "gap_id": null
+     },
+     {
+      "need": "ANNOUNCEMENTS",
+      "status": "COVERED",
+      "evidence_ids": [
+       "k:slack:C_RP_ANNOUNCEMENTS:1790916442.000051:a3b60595",
+       "k:slack:C_RP_ANNOUNCEMENTS:1790883558.000028:d0ddced2",
+       "k:slack:C_RP_ANNOUNCEMENTS:1790888971.000030:7db831c7"
+      ],
+      "note": "The retrieved announcements were assessed; none addresses queue coverage or closure.",
+      "gap_id": null
+     },
+     {
+      "need": "PRIOR_DECISIONS",
+      "status": "NOT_APPLICABLE",
+      "evidence_ids": [
+       "k:rp-submit-engineering-handoff@1.0:6afb6e6d",
+       "k:rp-format-rule-rejected@1.0:59d718d7"
+      ],
+      "note": "The retrieved earlier records concern a submission incident and a rejected scoring rule. Neither bears on these scheduling updates, and no historical decision or outcome is needed for the proposed action.",
+      "gap_id": null
+     },
+     {
+      "need": "MEMBER_QUESTIONS",
+      "status": "COVERED",
+      "evidence_ids": [
+       "m:C_RP_GENERAL:1790880012.001400",
+       "m:C_RP_GENERAL:1790880064.000113",
+       "m:C_RP_GENERAL:1790903659.000050",
+       "m:C_RP_GENERAL:1790903714.000113"
+      ],
+      "note": "Both complete threads contain updates and acknowledgments, not questions or references to earlier workarounds.",
+      "gap_id": null
+     }
+    ],
+    "review_note": null,
+    "action_choice": null
+   },
+   "final": {
+    "contract_version": "agent3-advisor-draft-v11",
+    "summary": "A QA tutor reminds members of a same-day queue closure at 6 PM; a different QA tutor reports coverage for the next day's early preference queue shift. A tutor in each thread acknowledges the update and plans to finish open tasks before closure; neither thread raises a handling question or reports a problem.",
+    "summary_sentences": [
+     {
+      "text": "A QA tutor reminds members of a same-day queue closure at 6 PM; a different QA tutor reports coverage for the next day's early preference queue shift.",
+      "support_claim_ids": [
+       "c1",
+       "c2"
+      ],
+      "depends_on": []
+     },
+     {
+      "text": "A tutor in each thread acknowledges the update and plans to finish open tasks before closure; neither thread raises a handling question or reports a problem.",
+      "support_claim_ids": [
+       "c3",
+       "c4"
+      ],
+      "depends_on": []
+     }
+    ],
+    "detail_sentences": [],
+    "reasoning": "These are routine scheduling updates with acknowledgments, not reports of disrupted work or requests for a handling decision. The tutors' stated plans do not establish that tasks were completed. The retrieved guidance and earlier decisions concern tool incidents or preference scoring, not queue coverage or closure. No further research is needed to support taking no action on these threads. The upstream review flags on the two technical-status announcements remain open; neither announcement is used as handling guidance here.",
+    "claims": [
+     {
+      "claim_id": "c1",
+      "kind": "INCIDENT_FACT",
+      "text": "A QA tutor posts a reminder that the response preference queue closes at 6 PM that day.",
+      "evidence_ids": [
+       "m:C_RP_GENERAL:1790880012.001400"
+      ],
+      "attributions": [
+       {
+        "user_id": "U019",
+        "relation": "AUTHOR",
+        "evidence_id": "m:C_RP_GENERAL:1790880012.001400"
+       }
+      ],
+      "quote": null,
+      "quote_kind": "PARAPHRASE",
+      "material": true
+     },
+     {
+      "claim_id": "c2",
+      "kind": "INCIDENT_FACT",
+      "text": "A different QA tutor reports coverage for the following day's early preference queue shift.",
+      "evidence_ids": [
+       "m:C_RP_GENERAL:1790903659.000050"
+      ],
+      "attributions": [
+       {
+        "user_id": "U014",
+        "relation": "AUTHOR",
+        "evidence_id": "m:C_RP_GENERAL:1790903659.000050"
+       }
+      ],
+      "quote": null,
+      "quote_kind": "PARAPHRASE",
+      "material": true
+     },
+     {
+      "claim_id": "c3",
+      "kind": "INCIDENT_FACT",
+      "text": "Two tutors, one in each thread, acknowledge the update and say they will finish open tasks before the queue closes.",
+      "evidence_ids": [
+       "m:C_RP_GENERAL:1790880064.000113",
+       "m:C_RP_GENERAL:1790903714.000113"
+      ],
+      "attributions": [
+       {
+        "user_id": "U010",
+        "relation": "AUTHOR",
+        "evidence_id": "m:C_RP_GENERAL:1790880064.000113"
+       },
+       {
+        "user_id": "U020",
+        "relation": "AUTHOR",
+        "evidence_id": "m:C_RP_GENERAL:1790903714.000113"
+       }
+      ],
+      "quote": null,
+      "quote_kind": "PARAPHRASE",
+      "material": true
+     },
+     {
+      "claim_id": "c4",
+      "kind": "INFERENCE",
+      "text": "The two threads contain routine updates and acknowledgments, with no handling question or reported operational problem.",
+      "evidence_ids": [
+       "m:C_RP_GENERAL:1790880012.001400",
+       "m:C_RP_GENERAL:1790880064.000113",
+       "m:C_RP_GENERAL:1790903659.000050",
+       "m:C_RP_GENERAL:1790903714.000113"
+      ],
+      "attributions": [],
+      "quote": null,
+      "quote_kind": "PARAPHRASE",
+      "material": true
+     }
+    ],
+    "gaps": [],
+    "evidence_sufficiency": "SUFFICIENT",
+    "proposed_action": {
+     "action_type": "NO_ACTION",
+     "intervention_need": null,
+     "instruction": "Take no further action on these routine queue updates.",
+     "rationale": "Both updates received acknowledgments, and neither thread shows a handling question or operational problem needing intervention.",
+     "draft_text": null,
+     "scope_note": null,
+     "support_claim_ids": [
+      "c1",
+      "c2",
+      "c3",
+      "c4"
+     ],
+     "targets": [],
+     "context_claim_ids": []
+    },
+    "severity": {
+     "level": "N/A",
+     "rationale": "The messages are routine scheduling updates and acknowledgments, with no identifiable operational problem or risk.",
+     "signals": [],
+     "affected_reporters": [],
+     "recurrence": "NOT_CHECKED",
+     "recurrence_evidence_ids": [],
+     "reported_recurrence_evidence_ids": []
+    },
+    "confidence": 0.98,
+    "open_confirmation": "NONE",
+    "open_question": null,
+    "open_question_evidence_ids": [],
+    "source_conflicts": [],
+    "announcement_assessments": [
+     {
+      "evidence_id": "k:slack:C_RP_ANNOUNCEMENTS:1790916442.000051:a3b60595",
+      "relevant": false,
+      "directive": false,
+      "directive_quote": null,
+      "rationale": "The announcement shares an onboarding resource; it does not address queue closure or shift coverage."
+     },
+     {
+      "evidence_id": "k:slack:C_RP_ANNOUNCEMENTS:1790883558.000028:d0ddced2",
+      "relevant": false,
+      "directive": true,
+      "directive_quote": "Add affected task references here; no policy change has been announced.",
+      "rationale": "The announcement requests examples of connection drops, not action on queue coverage or closure. Its upstream review flags remain open."
+     },
+     {
+      "evidence_id": "k:slack:C_RP_ANNOUNCEMENTS:1790888971.000030:7db831c7",
+      "relevant": false,
+      "directive": true,
+      "directive_quote": "Please keep examples in this thread while we check the scope.",
+      "rationale": "The announcement collects examples of Submit failures, which neither queue-update thread reports. Its upstream review flag remains open."
+     }
+    ],
+    "resolution": [
+     {
+      "member_id": "member_809df2faae873ed0419f1574",
+      "state": "UNKNOWN",
+      "evidence_ids": [
+       "m:C_RP_GENERAL:1790880012.001400",
+       "m:C_RP_GENERAL:1790880064.000113"
+      ],
+      "basis": "A QA tutor posts a closure reminder and a tutor acknowledges it with a plan to finish open tasks. No handling question is raised, and actual task completion is not reported."
+     },
+     {
+      "member_id": "member_211e8a1284a7577600ae8ad4",
+      "state": "UNKNOWN",
+      "evidence_ids": [
+       "m:C_RP_GENERAL:1790903659.000050",
+       "m:C_RP_GENERAL:1790903714.000113"
+      ],
+      "basis": "A QA tutor reports planned shift coverage and a tutor acknowledges the update with a plan to finish open tasks. No handling question is raised, and actual coverage or task completion is not confirmed."
+     }
+    ],
+    "coverage": [
+     {
+      "need": "CURRENT_GUIDANCE",
+      "status": "NOT_APPLICABLE",
+      "evidence_ids": [
+       "k:response-preference-instructions@1.1:36683c52",
+       "k:response-preference-faq@1.1:fa9b6a3d"
+      ],
+      "note": "The retrieved guidance addresses tool incidents and preference scoring, not scheduling. No scheduling rule is needed to support taking no action on routine acknowledged updates.",
+      "gap_id": null
+     },
+     {
+      "need": "ANNOUNCEMENTS",
+      "status": "COVERED",
+      "evidence_ids": [
+       "k:slack:C_RP_ANNOUNCEMENTS:1790916442.000051:a3b60595",
+       "k:slack:C_RP_ANNOUNCEMENTS:1790883558.000028:d0ddced2",
+       "k:slack:C_RP_ANNOUNCEMENTS:1790888971.000030:7db831c7"
+      ],
+      "note": "The retrieved announcements were assessed; none addresses queue coverage or closure.",
+      "gap_id": null
+     },
+     {
+      "need": "PRIOR_DECISIONS",
+      "status": "NOT_APPLICABLE",
+      "evidence_ids": [
+       "k:rp-submit-engineering-handoff@1.0:6afb6e6d",
+       "k:rp-format-rule-rejected@1.0:59d718d7"
+      ],
+      "note": "The retrieved earlier records concern a submission incident and a rejected scoring rule. Neither bears on these scheduling updates, and no historical decision or outcome is needed for the proposed action.",
+      "gap_id": null
+     },
+     {
+      "need": "MEMBER_QUESTIONS",
+      "status": "COVERED",
+      "evidence_ids": [
+       "m:C_RP_GENERAL:1790880012.001400",
+       "m:C_RP_GENERAL:1790880064.000113",
+       "m:C_RP_GENERAL:1790903659.000050",
+       "m:C_RP_GENERAL:1790903714.000113"
+      ],
+      "note": "Both complete threads contain updates and acknowledgments, not questions or references to earlier workarounds.",
+      "gap_id": null
+     }
+    ],
+    "review_note": null,
+    "action_choice": null
+   },
+   "revised": false
+  },
+  "grounding": {
+   "structural_issues": [],
+   "action_issues": [],
+   "unsupported": [],
+   "unjudged": [],
+   "extraneous_verdicts": [],
+   "rejected": {},
+   "pending": [],
+   "action_sufficiency": null,
+   "source_consistency": {
+    "assessed_evidence_ids": [
+     "k:response-preference-instructions@1.1:36683c52",
+     "k:response-preference-faq@1.1:fa9b6a3d"
+    ],
+    "relations": [],
+    "declared_conflict_checks": []
+   },
+   "alternative_sufficiency": {},
+   "status": "PASSED",
+   "basis": "SEMANTIC",
+   "statements": [
+    {
+     "statement_id": "claim:c1",
+     "kind": "CLAIM_INCIDENT_FACT",
+     "text": "A QA tutor posts a reminder that the response preference queue closes at 6 PM that day.",
+     "blocking": true,
+     "evidence_ids": [
+      "m:C_RP_GENERAL:1790880012.001400"
+     ],
+     "attributions": [
+      {
+       "user_id": "U019",
+       "relation": "AUTHOR",
+       "evidence_id": "m:C_RP_GENERAL:1790880012.001400",
+       "role": "QA_TUTOR"
+      }
+     ],
+     "verdict": "SUPPORTED",
+     "model_verdict": "SUPPORTED",
+     "rationale": "U019 is a QA tutor and explicitly posts a reminder that the response preference queue closes at 6 PM that day."
+    },
+    {
+     "statement_id": "claim:c2",
+     "kind": "CLAIM_INCIDENT_FACT",
+     "text": "A different QA tutor reports coverage for the following day's early preference queue shift.",
+     "blocking": true,
+     "evidence_ids": [
+      "m:C_RP_GENERAL:1790903659.000050"
+     ],
+     "attributions": [
+      {
+       "user_id": "U014",
+       "relation": "AUTHOR",
+       "evidence_id": "m:C_RP_GENERAL:1790903659.000050",
+       "role": "QA_TUTOR"
+      }
+     ],
+     "verdict": "SUPPORTED",
+     "model_verdict": "SUPPORTED",
+     "rationale": "U014 is a different QA tutor and reports that Jordan is covering the early preference queue shift tomorrow."
+    },
+    {
+     "statement_id": "claim:c3",
+     "kind": "CLAIM_INCIDENT_FACT",
+     "text": "Two tutors, one in each thread, acknowledge the update and say they will finish open tasks before the queue closes.",
+     "blocking": true,
+     "evidence_ids": [
+      "m:C_RP_GENERAL:1790880064.000113",
+      "m:C_RP_GENERAL:1790903714.000113"
+     ],
+     "attributions": [
+      {
+       "user_id": "U010",
+       "relation": "AUTHOR",
+       "evidence_id": "m:C_RP_GENERAL:1790880064.000113",
+       "role": "TUTOR"
+      },
+      {
+       "user_id": "U020",
+       "relation": "AUTHOR",
+       "evidence_id": "m:C_RP_GENERAL:1790903714.000113",
+       "role": "TUTOR"
+      }
+     ],
+     "verdict": "SUPPORTED",
+     "model_verdict": "SUPPORTED",
+     "rationale": "Distinct tutors U010 and U020, one in each thread, both acknowledge the update and state that they will finish open tasks before the queue closes."
+    },
+    {
+     "statement_id": "claim:c4",
+     "kind": "CLAIM_INFERENCE",
+     "text": "The two threads contain routine updates and acknowledgments, with no handling question or reported operational problem.",
+     "blocking": true,
+     "evidence_ids": [
+      "m:C_RP_GENERAL:1790880012.001400",
+      "m:C_RP_GENERAL:1790880064.000113",
+      "m:C_RP_GENERAL:1790903659.000050",
+      "m:C_RP_GENERAL:1790903714.000113"
+     ],
+     "verdict": "SUPPORTED",
+     "model_verdict": "SUPPORTED",
+     "rationale": "The complete threads contain only a closure reminder, a coverage update and their acknowledgments. Neither raises a handling question or reports an operational problem."
+    },
+    {
+     "statement_id": "summary:s1",
+     "kind": "SUMMARY",
+     "text": "A QA tutor reminds members of a same-day queue closure at 6 PM; a different QA tutor reports coverage for the next day's early preference queue shift.",
+     "blocking": true,
+     "evidence_ids": [
+      "m:C_RP_GENERAL:1790880012.001400",
+      "m:C_RP_GENERAL:1790903659.000050"
+     ],
+     "attributions": [
+      {
+       "user_id": "U019",
+       "relation": "AUTHOR",
+       "evidence_id": "m:C_RP_GENERAL:1790880012.001400",
+       "role": "QA_TUTOR"
+      },
+      {
+       "user_id": "U014",
+       "relation": "AUTHOR",
+       "evidence_id": "m:C_RP_GENERAL:1790903659.000050",
+       "role": "QA_TUTOR"
+      }
+     ],
+     "verdict": "SUPPORTED",
+     "model_verdict": "SUPPORTED",
+     "rationale": "The sentence accurately summarizes the two QA tutors' messages, preserves their relative dates and correctly attributes each report."
+    },
+    {
+     "statement_id": "summary:s2",
+     "kind": "SUMMARY",
+     "text": "A tutor in each thread acknowledges the update and plans to finish open tasks before closure; neither thread raises a handling question or reports a problem.",
+     "blocking": true,
+     "evidence_ids": [
+      "m:C_RP_GENERAL:1790880064.000113",
+      "m:C_RP_GENERAL:1790903714.000113",
+      "m:C_RP_GENERAL:1790880012.001400",
+      "m:C_RP_GENERAL:1790903659.000050"
+     ],
+     "attributions": [
+      {
+       "user_id": "U010",
+       "relation": "AUTHOR",
+       "evidence_id": "m:C_RP_GENERAL:1790880064.000113",
+       "role": "TUTOR"
+      },
+      {
+       "user_id": "U020",
+       "relation": "AUTHOR",
+       "evidence_id": "m:C_RP_GENERAL:1790903714.000113",
+       "role": "TUTOR"
+      }
+     ],
+     "verdict": "SUPPORTED",
+     "model_verdict": "SUPPORTED",
+     "rationale": "Each cited tutor acknowledges the update and plans to finish open tasks before closure. Neither complete thread contains a handling question or problem report."
+    },
+    {
+     "statement_id": "action:no_action",
+     "kind": "NO_ACTION_RATIONALE",
+     "text": "Why no further action is needed now: Both updates received acknowledgments, and neither thread shows a handling question or operational problem needing intervention.",
+     "blocking": false,
+     "evidence_ids": [
+      "m:C_RP_GENERAL:1790880012.001400",
+      "m:C_RP_GENERAL:1790903659.000050",
+      "m:C_RP_GENERAL:1790880064.000113",
+      "m:C_RP_GENERAL:1790903714.000113"
+     ],
+     "verdict": "SUPPORTED",
+     "model_verdict": "SUPPORTED",
+     "rationale": "Both updates received acknowledgments, and the complete topic threads show no unresolved handling question, guidance gap, applicable pending decision or operational problem requiring intervention. The retrieved incident records and announcements concern other problems and do not establish an intervention need for these scheduling updates."
+    },
+    {
+     "statement_id": "severity:rationale",
+     "kind": "SEVERITY_RATIONALE",
+     "text": "Severity N/A: The messages are routine scheduling updates and acknowledgments, with no identifiable operational problem or risk.",
+     "blocking": true,
+     "evidence_ids": [
+      "m:C_RP_GENERAL:1790880012.001400",
+      "m:C_RP_GENERAL:1790903659.000050",
+      "m:C_RP_GENERAL:1790880064.000113",
+      "m:C_RP_GENERAL:1790903714.000113"
+     ],
+     "verdict": "SUPPORTED",
+     "model_verdict": "SUPPORTED",
+     "rationale": "The messages are routine scheduling updates and acknowledgments, with no identifiable operational problem or risk reported in either thread."
+    }
+   ]
+  },
+  "temporal": {
+   "status": "NONE_FOUND",
+   "findings": [],
+   "source_consistency": "ASSESSED",
+   "ignored_revision_states": "NOT_YET_EFFECTIVE and NOT_APPROVED revisions never compete with applicable guidance."
+  },
+  "temporal_before_grounding": {
+   "status": "NONE_FOUND",
+   "findings": [],
+   "source_consistency": "NOT_ASSESSED",
+   "ignored_revision_states": "NOT_YET_EFFECTIVE and NOT_APPROVED revisions never compete with applicable guidance."
+  },
+  "severity": {
+   "assessment": {
+    "level": "N/A",
+    "assessment_status": "ASSESSED",
+    "rubric_version": "severity-rubric-v3-semantic-signals",
+    "rubric_content_sha256": "eccaa31a2ab84a0aa7c005216a92fc39681e1dd10107117344948235a76673f4",
+    "rubric_project_id": null,
+    "rubric_scope": "SHARED_DEFAULT",
+    "rationale": "The messages are routine scheduling updates and acknowledgments, with no identifiable operational problem or risk.",
+    "matched_signals": [],
+    "evidence": [],
+    "occurrence": {
+     "affected_reporters": {
+      "status": "UNKNOWN",
+      "count": null,
+      "ids": [],
+      "basis": null,
+      "evidence": []
+     },
+     "affected_tasks": {
+      "status": "UNKNOWN",
+      "count": null,
+      "ids": [],
+      "basis": null,
+      "evidence": []
+     },
+     "relevant_threads": [
+      {
+       "project_id": "response_preference",
+       "batch_id": "rp_batch_15",
+       "channel_id": "C_RP_GENERAL",
+       "thread_id": "1790880012.001400",
+       "member_id": "member_809df2faae873ed0419f1574"
+      },
+      {
+       "project_id": "response_preference",
+       "batch_id": "rp_batch_15",
+       "channel_id": "C_RP_GENERAL",
+       "thread_id": "1790903659.000050",
+       "member_id": "member_211e8a1284a7577600ae8ad4"
+      }
+     ],
+     "reporting_window": {
+      "start": "2026-10-01T18:40:12.001400+00:00",
+      "end": "2026-10-02T01:15:14.000113+00:00"
+     },
+     "historical_recurrence": {
+      "status": "NOT_CHECKED",
+      "sources": [],
+      "event_series_ids": []
+     },
+     "known_denominator": null,
+     "structural": {
+      "threads": 2,
+      "messages": 4,
+      "distinct_participants": 4,
+      "duplicate_threads_ignored": 0,
+      "duplicate_messages_ignored": 0,
+      "computed_from": "topic member threads (original Slack messages)",
+      "participants_are_not_affected_reporters": true
+     },
+     "semantic_identification": "ASSESSED"
+    },
+    "inherited_from": {
+     "level": "UNKNOWN",
+     "assessment_status": "UNASSESSED",
+     "assessment_deferred_to": "AGENT3",
+     "reason": "Agent 2 performs taxonomy only."
+    }
+   },
+   "issues": [],
+   "notes": [],
+   "proposal": {
+    "level": "N/A",
+    "rationale": "The messages are routine scheduling updates and acknowledgments, with no identifiable operational problem or risk.",
+    "signals": [],
+    "affected_reporters": [],
+    "recurrence": "NOT_CHECKED",
+    "recurrence_evidence_ids": [],
+    "reported_recurrence_evidence_ids": []
+   }
+  },
+  "resolution": {
+   "topic": "UNKNOWN",
+   "members": {
+    "member_809df2faae873ed0419f1574": "UNKNOWN",
+    "member_211e8a1284a7577600ae8ad4": "UNKNOWN"
+   },
+   "agent1_attributed": [
+    {
+     "member_id": "member_809df2faae873ed0419f1574",
+     "state": "UNRESOLVED",
+     "agent1_verification_status": "CORRECTED",
+     "agent1_review_required": false
+    },
+    {
+     "member_id": "member_211e8a1284a7577600ae8ad4",
+     "state": "UNRESOLVED",
+     "agent1_verification_status": "CORRECTED",
+     "agent1_review_required": false
+    }
+   ]
+  },
+  "established_handling": [],
+  "coverage_issues": [],
+  "action_source": "DRAFT",
+  "action_notes": [],
+  "tot": {
+   "status": "NOT_TRIGGERED",
+   "triggers": [],
+   "choice_after_grounding": {
+    "status": "NOT_COMPARED",
+    "viable": []
+   }
+  },
+  "evidence_ledger": {
+   "m:C_RP_GENERAL:1790880012.001400": {
+    "evidence_id": "m:C_RP_GENERAL:1790880012.001400",
+    "origin": "member_message",
+    "use": "MEMBER_REPORT",
+    "member_id": "member_809df2faae873ed0419f1574",
+    "channel_id": "C_RP_GENERAL",
+    "thread_id": "1790880012.001400",
+    "message_id": "1790880012.001400",
+    "author_id": "U019",
+    "author_name": "Yuki",
+    "author_role": "QA_TUTOR",
+    "timestamp": "2026-10-01T18:40:12.001400Z",
+    "thread_starter_id": "U019",
+    "thread_starter_role": "QA_TUTOR",
+    "reactions": [],
+    "excerpt": "Reminder: the response preference queue closes at 6 PM today."
+   },
+   "m:C_RP_GENERAL:1790880064.000113": {
+    "evidence_id": "m:C_RP_GENERAL:1790880064.000113",
+    "origin": "member_message",
+    "use": "MEMBER_REPORT",
+    "member_id": "member_809df2faae873ed0419f1574",
+    "channel_id": "C_RP_GENERAL",
+    "thread_id": "1790880012.001400",
+    "message_id": "1790880064.000113",
+    "author_id": "U010",
+    "author_name": "Avery",
+    "author_role": "TUTOR",
+    "timestamp": "2026-10-01T18:41:04.000113Z",
+    "thread_starter_id": "U019",
+    "thread_starter_role": "QA_TUTOR",
+    "reactions": [],
+    "excerpt": "Got it. I’ll finish the open tasks before the queue closes."
+   },
+   "m:C_RP_GENERAL:1790903659.000050": {
+    "evidence_id": "m:C_RP_GENERAL:1790903659.000050",
+    "origin": "member_message",
+    "use": "MEMBER_REPORT",
+    "member_id": "member_211e8a1284a7577600ae8ad4",
+    "channel_id": "C_RP_GENERAL",
+    "thread_id": "1790903659.000050",
+    "message_id": "1790903659.000050",
+    "author_id": "U014",
+    "author_name": "Linh",
+    "author_role": "QA_TUTOR",
+    "timestamp": "2026-10-02T01:14:19.000050Z",
+    "thread_starter_id": "U014",
+    "thread_starter_role": "QA_TUTOR",
+    "reactions": [],
+    "excerpt": "Jordan is covering the early preference queue shift tomorrow."
+   },
+   "m:C_RP_GENERAL:1790903714.000113": {
+    "evidence_id": "m:C_RP_GENERAL:1790903714.000113",
+    "origin": "member_message",
+    "use": "MEMBER_REPORT",
+    "member_id": "member_211e8a1284a7577600ae8ad4",
+    "channel_id": "C_RP_GENERAL",
+    "thread_id": "1790903659.000050",
+    "message_id": "1790903714.000113",
+    "author_id": "U020",
+    "author_name": "Theo",
+    "author_role": "TUTOR",
+    "timestamp": "2026-10-02T01:15:14.000113Z",
+    "thread_starter_id": "U014",
+    "thread_starter_role": "QA_TUTOR",
+    "reactions": [],
+    "excerpt": "Got it. I’ll finish the open tasks before the queue closes."
+   },
+   "k:slack:C_RP_ANNOUNCEMENTS:1790916442.000051:a3b60595": {
+    "evidence_id": "k:slack:C_RP_ANNOUNCEMENTS:1790916442.000051:a3b60595",
+    "origin": "retrieved_source",
+    "use": "ANNOUNCEMENT",
+    "citation": {
+     "document_id": "knowledge_ccd188f235fa1da9e1f0079f64889a4ba5934c753e5e9c6492251743cc837815",
+     "version_id": "version_11ad2df0694e5ec7f09be8fc4f1fc0098731a6809a7bb2b9818af035cff5ece7",
+     "chunk_id": "chunk_a3b60595a3f9eb4352310f75cccfa0a5",
+     "authoring": null,
+     "title": "Slack announcement in response-preference-announcements at 2026-10-02T04:47:22.000051+00:00",
+     "sections": [],
+     "source": {
+      "batch_id": "rp_batch_15",
+      "channel_id": "C_RP_ANNOUNCEMENTS",
+      "manual_key": null,
+      "message_id": "1790916442.000051",
+      "permalink": null,
+      "project_id": "response_preference",
+      "reference": null,
+      "system": "slack",
+      "thread_id": "1790916442.000051",
+      "workspace_id": null
+     }
+    },
+    "source_type": "announcement",
+    "record_kind": "announcement",
+    "applicability": {
+     "state": "CURRENT",
+     "revision_state": "CURRENT",
+     "version_mode": "current",
+     "replaced_by": [],
+     "unverified_supersession": [],
+     "supersedes": [],
+     "enactment": null,
+     "other_revisions": []
+    },
+    "dates": {
+     "source_date": "2026-10-02T04:47:22.000051+00:00",
+     "basis": "created_at",
+     "effective_at": null,
+     "created_at": "2026-10-02T04:47:22.000051+00:00",
+     "valid_until": null,
+     "expired_as_of": false,
+     "reference_time": "2026-10-02T12:00:00Z"
+    },
+    "scope": {
+     "project_id": "response_preference",
+     "batch_id": "rp_batch_15",
+     "scope": "project",
+     "batch_relation": "same_batch"
+    },
+    "authority": {
+     "role": "TEAM_LEAD",
+     "actor": "U001",
+     "actor_relation": "MESSAGE_AUTHOR",
+     "approval_status": "UNKNOWN",
+     "provenance": null
+    },
+    "authorship": {
+     "author_id": "U001",
+     "verified": true,
+     "basis": "SLACK_MESSAGE_AUTHOR"
+    },
+    "recorded_states": {
+     "status": null,
+     "decision_status": null,
+     "execution_status": null,
+     "outcome_status": null
+    },
+    "upstream_review": null,
+    "excerpt": "[ANNOUNCEMENT posted 2026-10-02T04:47:22.000051+00:00 by TEAM_LEAD (rp_batch_15): not established as handling for this topic until you show it is relevant and gives a directive.]\nHere's the onboarding resource link for new preference reviewers: internal training hub.\n\nContext reply [1790916495.000113] by U011 (TUTOR):\nThanks for sharing. I’ll check the resource before the next queue."
+   },
+   "k:rp-submit-engineering-handoff@1.0:6afb6e6d": {
+    "evidence_id": "k:rp-submit-engineering-handoff@1.0:6afb6e6d",
+    "origin": "retrieved_source",
+    "use": "PRIOR_DECISION",
+    "citation": {
+     "document_id": "knowledge_3e7a1b72e2cf18094e8ebdb42ce485e4d466f60a4061b710fec446f6df78c702",
+     "version_id": "version_0015dc851ae270a7401d7b60cf8e52fb2005ad4327ed91edcdd848d41a1494f2",
+     "chunk_id": "chunk_6afb6e6dd1a6f6d896b5dee210f59dd8",
+     "authoring": "rp-submit-engineering-handoff@1.0",
+     "title": "Submission incident handed to engineering; diagnosis remains open",
+     "sections": [
+      "Current recorded state"
+     ],
+     "source": {
+      "batch_id": "rp_batch_15",
+      "channel_id": null,
+      "manual_key": "rp-submit-engineering-handoff",
+      "message_id": null,
+      "permalink": null,
+      "project_id": "response_preference",
+      "reference": null,
+      "system": "manual",
+      "thread_id": null,
+      "workspace_id": null
+     }
+    },
+    "source_type": "decision",
+    "record_kind": "escalation_receipt",
+    "applicability": {
+     "state": "CURRENT",
+     "revision_state": "CURRENT",
+     "version_mode": "current",
+     "replaced_by": [],
+     "unverified_supersession": [],
+     "supersedes": [],
+     "enactment": {
+      "status": "NOT_ENACTED",
+      "basis": null,
+      "governing_sources": [],
+      "missing": [
+       "NOT_A_POLICY_CHANGE",
+       "NO_ENACTMENT_EVIDENCE"
+      ],
+      "recorded": {
+       "decision_status": "tl_approved",
+       "execution_status": "handoff_recorded",
+       "authority_role": "TEAM_LEAD",
+       "batch_id": "rp_batch_15",
+       "valid_until": null,
+       "effective_at": "2026-09-28T17:00:00Z"
+      }
+     },
+     "other_revisions": []
+    },
+    "dates": {
+     "source_date": "2026-09-28T17:00:00Z",
+     "basis": "effective_at",
+     "effective_at": "2026-09-28T17:00:00Z",
+     "created_at": null,
+     "valid_until": null,
+     "expired_as_of": false,
+     "reference_time": "2026-10-02T12:00:00Z"
+    },
+    "scope": {
+     "project_id": "response_preference",
+     "batch_id": "rp_batch_15",
+     "scope": "project",
+     "batch_relation": "same_batch"
+    },
+    "authority": {
+     "role": "TEAM_LEAD",
+     "actor": "U001",
+     "actor_relation": "RECORD_AUTHORITY",
+     "approval_status": "EXPLICIT_SOURCE_MARKER",
+     "provenance": "synthetic_manual_record"
+    },
+    "authorship": {
+     "author_id": null,
+     "verified": false,
+     "basis": "NO_AUTHOR_RECORDED"
+    },
+    "recorded_states": {
+     "status": "tl_approved",
+     "decision_status": "tl_approved",
+     "execution_status": "handoff_recorded",
+     "outcome_status": "open"
+    },
+    "upstream_review": null,
+    "excerpt": "[PRIOR RECORD (escalation_receipt; decision_status: tl_approved; execution_status: handoff_recorded; outcome_status: open) - history, not a standing rule.]\n## Current recorded state\nThe handoff occurred and the incident remained open at 17:00 UTC. No fix or successful submission was recorded. New task reports must be matched to the symptoms before linking them to this incident; a similar button state does not establish the same cause."
+   },
+   "k:rp-format-rule-rejected@1.0:59d718d7": {
+    "evidence_id": "k:rp-format-rule-rejected@1.0:59d718d7",
+    "origin": "retrieved_source",
+    "use": "PRIOR_DECISION",
+    "citation": {
+     "document_id": "knowledge_95b4b0013cf8f27f91b2573de35b6d8435a929a14300c1dcc9e6c79a38057ba4",
+     "version_id": "version_bd2616d4f9e0be88601ccb09bbc4452a2128696c0c79eaf939d66cdc4abe2f9f",
+     "chunk_id": "chunk_59d718d76ad95734fb470db875454694",
+     "authoring": "rp-format-rule-rejected@1.0",
+     "title": "TL rejects a universal JSON-first preference rule",
+     "sections": [
+      "Suggested advice",
+      "TL response",
+      "Consequence"
+     ],
+     "source": {
+      "batch_id": "rp_batch_15",
+      "channel_id": null,
+      "manual_key": "rp-format-rule-rejected",
+      "message_id": null,
+      "permalink": null,
+      "project_id": "response_preference",
+      "reference": null,
+      "system": "manual",
+      "thread_id": null,
+      "workspace_id": null
+     }
+    },
+    "source_type": "decision",
+    "record_kind": "advice_review",
+    "applicability": {
+     "state": "CURRENT",
+     "revision_state": "CURRENT",
+     "version_mode": "current",
+     "replaced_by": [],
+     "unverified_supersession": [],
+     "supersedes": [],
+     "enactment": {
+      "status": "NOT_ENACTED",
+      "basis": null,
+      "governing_sources": [],
+      "missing": [
+       "NO_TL_APPROVAL",
+       "NOT_A_POLICY_CHANGE",
+       "NO_ENACTMENT_EVIDENCE"
+      ],
+      "recorded": {
+       "decision_status": "tl_rejected",
+       "execution_status": "not_executed",
+       "authority_role": "TEAM_LEAD",
+       "batch_id": "rp_batch_15",
+       "valid_until": null,
+       "effective_at": "2026-09-23T16:00:00Z"
+      }
+     },
+     "other_revisions": []
+    },
+    "dates": {
+     "source_date": "2026-09-23T16:00:00Z",
+     "basis": "effective_at",
+     "effective_at": "2026-09-23T16:00:00Z",
+     "created_at": null,
+     "valid_until": null,
+     "expired_as_of": false,
+     "reference_time": "2026-10-02T12:00:00Z"
+    },
+    "scope": {
+     "project_id": "response_preference",
+     "batch_id": "rp_batch_15",
+     "scope": "project",
+     "batch_relation": "same_batch"
+    },
+    "authority": {
+     "role": "TEAM_LEAD",
+     "actor": "U001",
+     "actor_relation": "RECORD_AUTHORITY",
+     "approval_status": "NO_APPROVAL_MARKER",
+     "provenance": "synthetic_manual_record"
+    },
+    "authorship": {
+     "author_id": null,
+     "verified": false,
+     "basis": "NO_AUTHOR_RECORDED"
+    },
+    "recorded_states": {
+     "status": "tl_rejected",
+     "decision_status": "tl_rejected",
+     "execution_status": "not_executed",
+     "outcome_status": "no_policy_change"
+    },
+    "upstream_review": null,
+    "excerpt": "[PRIOR RECORD (advice_review; decision_status: tl_rejected; execution_status: not_executed; outcome_status: no_policy_change) - history, not a standing rule.]\n# TL rejects a universal JSON-first preference rule\n\n## Suggested advice\nA simulated prior Advisor card proposed: “Whenever the prompt requires JSON, prefer the JSON-formatted response over prose.”\n\n## TL response\nAlex rejected this as a universal rule. A required format violation is a real instruction-adherence defect, but format compliance alone does not establish the better response when the other candidate has a different factual defect.\n\nThe review packet lacked the complete prompt and both responses. Request those materials and score the dimensions separately. A case-specific decision may be possible once they are available; this review makes no such decision.\n\n## Consequence\nNo general JSON-first rule was approved, posted or added to the FAQ. Rejection also does not create a prose-first rule. Keep genuinely unresolved trade-offs open for TL confirmation."
+   },
+   "k:slack:C_RP_ANNOUNCEMENTS:1790883558.000028:d0ddced2": {
+    "evidence_id": "k:slack:C_RP_ANNOUNCEMENTS:1790883558.000028:d0ddced2",
+    "origin": "retrieved_source",
+    "use": "ANNOUNCEMENT",
+    "citation": {
+     "document_id": "knowledge_7fc19a0d63fa4064c72475fc9f7a177f7d220630686ec558071baa2902726fcc",
+     "version_id": "version_60b3e89e8c9519c74cff2483967904df14f58243724f59f5aae4eae24bb31cec",
+     "chunk_id": "chunk_d0ddced26213c2ad458fc35bf4f7c16c",
+     "authoring": null,
+     "title": "Slack announcement in response-preference-announcements at 2026-10-01T19:39:18.000028+00:00",
+     "sections": [],
+     "source": {
+      "batch_id": "rp_batch_15",
+      "channel_id": "C_RP_ANNOUNCEMENTS",
+      "manual_key": null,
+      "message_id": "1790883558.000028",
+      "permalink": null,
+      "project_id": "response_preference",
+      "reference": null,
+      "system": "slack",
+      "thread_id": "1790883558.000028",
+      "workspace_id": null
+     }
+    },
+    "source_type": "announcement",
+    "record_kind": "announcement",
+    "applicability": {
+     "state": "CURRENT",
+     "revision_state": "CURRENT",
+     "version_mode": "current",
+     "replaced_by": [],
+     "unverified_supersession": [],
+     "supersedes": [],
+     "enactment": null,
+     "other_revisions": []
+    },
+    "dates": {
+     "source_date": "2026-10-01T19:39:18.000028+00:00",
+     "basis": "created_at",
+     "effective_at": null,
+     "created_at": "2026-10-01T19:39:18.000028+00:00",
+     "valid_until": null,
+     "expired_as_of": false,
+     "reference_time": "2026-10-02T12:00:00Z"
+    },
+    "scope": {
+     "project_id": "response_preference",
+     "batch_id": "rp_batch_15",
+     "scope": "project",
+     "batch_relation": "same_batch"
+    },
+    "authority": {
+     "role": "TEAM_LEAD",
+     "actor": "U001",
+     "actor_relation": "MESSAGE_AUTHOR",
+     "approval_status": "UNKNOWN",
+     "provenance": null
+    },
+    "authorship": {
+     "author_id": "U001",
+     "verified": true,
+     "basis": "SLACK_MESSAGE_AUTHOR"
+    },
+    "recorded_states": {
+     "status": null,
+     "decision_status": null,
+     "execution_status": null,
+     "outcome_status": null
+    },
+    "upstream_review": {
+     "review_required": true,
+     "review_reasons": [
+      "Still unverified after one targeted revision: Independent evidence audit unavailable or invalid: ValueError: summary:3: quotation is not verbatim source evidence.",
+      "The only message instructs participants to add affected task references while tracking an issue. The candidate calls this a requested decision about which references should be added. An information-collection request and a request for a selection rule are different; the one-message source does not resolve that framing ambiguity. Keep these fields provisional rather than claiming a definite contradiction or an answered policy question."
+     ]
+    },
+    "excerpt": "[ANNOUNCEMENT posted 2026-10-01T19:39:18.000028+00:00 by TEAM_LEAD (rp_batch_15): not established as handling for this topic until you show it is relevant and gives a directive.]\nQA tracking (RP-3558): Model/task connection drops during preference evaluation. Add affected task references here; no policy change has been announced."
+   },
+   "k:slack:C_RP_ANNOUNCEMENTS:1790888971.000030:7db831c7": {
+    "evidence_id": "k:slack:C_RP_ANNOUNCEMENTS:1790888971.000030:7db831c7",
+    "origin": "retrieved_source",
+    "use": "ANNOUNCEMENT",
+    "citation": {
+     "document_id": "knowledge_853068d0c5a7a6a9f5fd31d75f3fed75e15b411a16904ca4a407cc48a310f417",
+     "version_id": "version_b0925cb3899fcae5d03617e656e6d212168fd00a5e962701e0d0c52c0584feb1",
+     "chunk_id": "chunk_7db831c7fe67ac03503d4f2b9aca0af4",
+     "authoring": null,
+     "title": "Slack announcement in response-preference-announcements at 2026-10-01T21:09:31.000030+00:00",
+     "sections": [],
+     "source": {
+      "batch_id": "rp_batch_15",
+      "channel_id": "C_RP_ANNOUNCEMENTS",
+      "manual_key": null,
+      "message_id": "1790888971.000030",
+      "permalink": null,
+      "project_id": "response_preference",
+      "reference": null,
+      "system": "slack",
+      "thread_id": "1790888971.000030",
+      "workspace_id": null
+     }
+    },
+    "source_type": "announcement",
+    "record_kind": "announcement",
+    "applicability": {
+     "state": "CURRENT",
+     "revision_state": "CURRENT",
+     "version_mode": "current",
+     "replaced_by": [],
+     "unverified_supersession": [],
+     "supersedes": [],
+     "enactment": null,
+     "other_revisions": []
+    },
+    "dates": {
+     "source_date": "2026-10-01T21:09:31.000030+00:00",
+     "basis": "created_at",
+     "effective_at": null,
+     "created_at": "2026-10-01T21:09:31.000030+00:00",
+     "valid_until": null,
+     "expired_as_of": false,
+     "reference_time": "2026-10-02T12:00:00Z"
+    },
+    "scope": {
+     "project_id": "response_preference",
+     "batch_id": "rp_batch_15",
+     "scope": "project",
+     "batch_relation": "same_batch"
+    },
+    "authority": {
+     "role": "TEAM_LEAD",
+     "actor": "U001",
+     "actor_relation": "MESSAGE_AUTHOR",
+     "approval_status": "UNKNOWN",
+     "provenance": null
+    },
+    "authorship": {
+     "author_id": "U001",
+     "verified": true,
+     "basis": "SLACK_MESSAGE_AUTHOR"
+    },
+    "recorded_states": {
+     "status": null,
+     "decision_status": null,
+     "execution_status": null,
+     "outcome_status": null
+    },
+    "upstream_review": {
+     "review_required": true,
+     "review_reasons": [
+      "The single targeted revision failed: ValueError: The model cited authority evidence without an eligible author role or a qualifying TEAM_LEAD endorsement. Ineligible message IDs: ['1790889029.000113']"
+     ]
+    },
+    "excerpt": "[ANNOUNCEMENT posted 2026-10-01T21:09:31.000030+00:00 by TEAM_LEAD (rp_batch_15): not established as handling for this topic until you show it is relevant and gives a directive.]\nBatch status note — Submit control cannot complete labeled tasks; seen across projects. Please keep examples in this thread while we check the scope.\n\nContext reply [1790889029.000113] by U009 (TUTOR):\nI finished every rubric field but the Submit button remains disabled. A successful reload is not proof that the original task was submitted."
+   },
+   "k:response-preference-instructions@1.1:36683c52": {
+    "evidence_id": "k:response-preference-instructions@1.1:36683c52",
+    "origin": "retrieved_source",
+    "use": "CURRENT_GUIDANCE",
+    "citation": {
+     "document_id": "knowledge_c49652bd3dfc0e71a42597bd9128f922ba1700cc4d7eb83a39cfbaad9a43ed6d",
+     "version_id": "version_497eb858ea77dcb88133f2ba1afd5eaf08d1a1d380c3a5cad663f8f55b7d3c65",
+     "chunk_id": "chunk_36683c5243b08e3c0a35f9659ac8a1e4",
+     "authoring": "response-preference-instructions@1.1",
+     "title": "Response Preference — Instructions (v1.1)",
+     "sections": [
+      "Tool incidents and submission"
+     ],
+     "source": {
+      "batch_id": null,
+      "channel_id": null,
+      "manual_key": "response-preference-instructions",
+      "message_id": null,
+      "permalink": null,
+      "project_id": "response_preference",
+      "reference": null,
+      "system": "manual",
+      "thread_id": null,
+      "workspace_id": null
+     }
+    },
+    "source_type": "guideline",
+    "record_kind": "guideline",
+    "applicability": {
+     "state": "CURRENT",
+     "revision_state": "CURRENT",
+     "version_mode": "current",
+     "replaced_by": [],
+     "unverified_supersession": [],
+     "supersedes": [],
+     "enactment": null,
+     "other_revisions": []
+    },
+    "dates": {
+     "source_date": "2026-08-30T13:00:00Z",
+     "basis": "effective_at",
+     "effective_at": "2026-08-30T13:00:00Z",
+     "created_at": null,
+     "valid_until": null,
+     "expired_as_of": false,
+     "reference_time": "2026-10-02T12:00:00Z"
+    },
+    "scope": {
+     "project_id": "response_preference",
+     "batch_id": null,
+     "scope": "project",
+     "batch_relation": "project_wide"
+    },
+    "authority": {
+     "role": "TEAM_LEAD",
+     "actor": "U001",
+     "actor_relation": "RECORD_AUTHORITY",
+     "approval_status": "EXPLICIT_SOURCE_MARKER",
+     "provenance": "synthetic_manual_record"
+    },
+    "authorship": {
+     "author_id": null,
+     "verified": false,
+     "basis": "NO_AUTHOR_RECORDED"
+    },
+    "recorded_states": {
+     "status": "approved",
+     "decision_status": null,
+     "execution_status": null,
+     "outcome_status": null
+    },
+    "upstream_review": null,
+    "excerpt": "[ADDED FOR TYPE COVERAGE: best-ranked guideline for this query (rank 8), outside the top 5.]\n## Tool incidents and submission\nIf response panes never load, record a fetch incident and do not infer response quality. If Submit fails, capture the task ID, required-field state, error and exact button behavior. A selected label is not a completed submission until LT confirms it. Assess tool impact separately from the content rubric.",
+    "retrieved_as": {
+     "role": "TYPE_COVERAGE",
+     "detail": "best-ranked guideline for this query (rank 8), outside the top 5"
+    }
+   },
+   "k:response-preference-faq@1.1:fa9b6a3d": {
+    "evidence_id": "k:response-preference-faq@1.1:fa9b6a3d",
+    "origin": "retrieved_source",
+    "use": "CURRENT_GUIDANCE",
+    "citation": {
+     "document_id": "knowledge_8267f474fe0a050bdbcaf6140c458ee11ad457fdc2afe9f79de12a23de8575e9",
+     "version_id": "version_6c9da15dd304e1be3d453ea1de9cbfd1e8cc54f0939ce516dd89cf0457f82a86",
+     "chunk_id": "chunk_fa9b6a3dd66908c89de9f8cf42d99e0e",
+     "authoring": "response-preference-faq@1.1",
+     "title": "Response Preference — FAQ (v1.1)",
+     "sections": [
+      "Instruction following"
+     ],
+     "source": {
+      "batch_id": null,
+      "channel_id": null,
+      "manual_key": "response-preference-faq",
+      "message_id": null,
+      "permalink": null,
+      "project_id": "response_preference",
+      "reference": null,
+      "system": "manual",
+      "thread_id": null,
+      "workspace_id": null
+     }
+    },
+    "source_type": "faq",
+    "record_kind": "faq",
+    "applicability": {
+     "state": "CURRENT",
+     "revision_state": "CURRENT",
+     "version_mode": "current",
+     "replaced_by": [],
+     "unverified_supersession": [],
+     "supersedes": [],
+     "enactment": null,
+     "other_revisions": []
+    },
+    "dates": {
+     "source_date": "2026-09-05T13:00:00Z",
+     "basis": "effective_at",
+     "effective_at": "2026-09-05T13:00:00Z",
+     "created_at": null,
+     "valid_until": null,
+     "expired_as_of": false,
+     "reference_time": "2026-10-02T12:00:00Z"
+    },
+    "scope": {
+     "project_id": "response_preference",
+     "batch_id": null,
+     "scope": "project",
+     "batch_relation": "project_wide"
+    },
+    "authority": {
+     "role": "TEAM_LEAD",
+     "actor": "U001",
+     "actor_relation": "RECORD_AUTHORITY",
+     "approval_status": "EXPLICIT_SOURCE_MARKER",
+     "provenance": "synthetic_manual_record"
+    },
+    "authorship": {
+     "author_id": null,
+     "verified": false,
+     "basis": "NO_AUTHOR_RECORDED"
+    },
+    "recorded_states": {
+     "status": "approved",
+     "decision_status": null,
+     "execution_status": null,
+     "outcome_status": null
+    },
+    "upstream_review": null,
+    "excerpt": "[ADDED FOR TYPE COVERAGE: best-ranked faq for this query (rank 9), outside the top 5.]\n## Instruction following\n\n### Q: The prompt required JSON, but one response is well-written prose. Which response wins?\nThe required format is not optional: record its violation separately from factual accuracy. No universal tie-break rule is established for competing accuracy and instruction-following defects. If the actual pair and applicable guidance do not settle the preference, provide the prompt and both responses for TL confirmation.\n\n### Q: Can accuracy outweigh ignoring a requested output structure?\nScore the dimensions separately and identify whether the requested structure was mandatory. Do not infer a general priority rule from one example or decide without the other response's evidence.",
+    "retrieved_as": {
+     "role": "TYPE_COVERAGE",
+     "detail": "best-ranked faq for this query (rank 9), outside the top 5"
+    }
+   }
+  },
+  "card": {
+   "contract_version": "agent3-advice-card-v5",
+   "record_type": "ADVICE_CARD",
+   "card_id": "card_755dfb6af8ffd0ac1dcbfc622d91c85e",
+   "project_id": "response_preference",
+   "topic_name": "Queue coverage and closure reminders",
+   "card_line": "OBSERVATION",
+   "summary": "A QA tutor reminds members of a same-day queue closure at 6 PM; a different QA tutor reports coverage for the next day's early preference queue shift. A tutor in each thread acknowledges the update and plans to finish open tasks before closure; neither thread raises a handling question or reports a problem.",
+   "severity": {
+    "level": "N/A",
+    "assessment_status": "ASSESSED",
+    "rubric_version": "severity-rubric-v3-semantic-signals",
+    "rubric_content_sha256": "eccaa31a2ab84a0aa7c005216a92fc39681e1dd10107117344948235a76673f4",
+    "rubric_project_id": null,
+    "rubric_scope": "SHARED_DEFAULT",
+    "rationale": "The messages are routine scheduling updates and acknowledgments, with no identifiable operational problem or risk.",
+    "matched_signals": [],
+    "evidence": [],
+    "occurrence": {
+     "affected_reporters": {
+      "status": "UNKNOWN",
+      "count": null,
+      "ids": [],
+      "basis": null,
+      "evidence": []
+     },
+     "affected_tasks": {
+      "status": "UNKNOWN",
+      "count": null,
+      "ids": [],
+      "basis": null,
+      "evidence": []
+     },
+     "relevant_threads": [
+      {
+       "project_id": "response_preference",
+       "batch_id": "rp_batch_15",
+       "channel_id": "C_RP_GENERAL",
+       "thread_id": "1790880012.001400",
+       "member_id": "member_809df2faae873ed0419f1574"
+      },
+      {
+       "project_id": "response_preference",
+       "batch_id": "rp_batch_15",
+       "channel_id": "C_RP_GENERAL",
+       "thread_id": "1790903659.000050",
+       "member_id": "member_211e8a1284a7577600ae8ad4"
+      }
+     ],
+     "reporting_window": {
+      "start": "2026-10-01T18:40:12.001400+00:00",
+      "end": "2026-10-02T01:15:14.000113+00:00"
+     },
+     "historical_recurrence": {
+      "status": "NOT_CHECKED",
+      "sources": [],
+      "event_series_ids": []
+     },
+     "known_denominator": null,
+     "structural": {
+      "threads": 2,
+      "messages": 4,
+      "distinct_participants": 4,
+      "duplicate_threads_ignored": 0,
+      "duplicate_messages_ignored": 0,
+      "computed_from": "topic member threads (original Slack messages)",
+      "participants_are_not_affected_reporters": true
+     },
+     "semantic_identification": "ASSESSED"
+    },
+    "inherited_from": {
+     "level": "UNKNOWN",
+     "assessment_status": "UNASSESSED",
+     "assessment_deferred_to": "AGENT3",
+     "reason": "Agent 2 performs taxonomy only."
+    }
+   },
+   "severity_is_provisional": false,
+   "resolution_status": "UNKNOWN",
+   "recommended_action": null,
+   "reasoning": "What the evidence shows: A QA tutor posts a reminder that the response preference queue closes at 6 PM that day. A different QA tutor reports coverage for the following day's early preference queue shift. Two tutors, one in each thread, acknowledge the update and say they will finish open tasks before the queue closes. The two threads contain routine updates and acknowledgments, with no handling question or reported operational problem. Thread status, read from each thread's own messages: unknown ×2. Agent 1's earlier labels (an input, not evidence): unresolved ×2.",
+   "supporting_sources": [
+    {
+     "kind": "slack_message",
+     "project_id": "response_preference",
+     "batch_id": "rp_batch_15",
+     "scope": "project",
+     "channel_id": "C_RP_GENERAL",
+     "thread_id": "1790880012.001400",
+     "message_id": "1790880012.001400",
+     "document_id": null,
+     "version_id": null,
+     "authoring_document_id": null,
+     "authoring_version": null,
+     "section": null,
+     "chunk_id": null,
+     "candidate_group_id": null,
+     "member_id": "member_809df2faae873ed0419f1574",
+     "artifact": null,
+     "artifact_sha256": null,
+     "quote": null,
+     "note": "m:C_RP_GENERAL:1790880012.001400"
+    },
+    {
+     "kind": "slack_message",
+     "project_id": "response_preference",
+     "batch_id": "rp_batch_15",
+     "scope": "project",
+     "channel_id": "C_RP_GENERAL",
+     "thread_id": "1790903659.000050",
+     "message_id": "1790903659.000050",
+     "document_id": null,
+     "version_id": null,
+     "authoring_document_id": null,
+     "authoring_version": null,
+     "section": null,
+     "chunk_id": null,
+     "candidate_group_id": null,
+     "member_id": "member_211e8a1284a7577600ae8ad4",
+     "artifact": null,
+     "artifact_sha256": null,
+     "quote": null,
+     "note": "m:C_RP_GENERAL:1790903659.000050"
+    },
+    {
+     "kind": "slack_message",
+     "project_id": "response_preference",
+     "batch_id": "rp_batch_15",
+     "scope": "project",
+     "channel_id": "C_RP_GENERAL",
+     "thread_id": "1790880012.001400",
+     "message_id": "1790880064.000113",
+     "document_id": null,
+     "version_id": null,
+     "authoring_document_id": null,
+     "authoring_version": null,
+     "section": null,
+     "chunk_id": null,
+     "candidate_group_id": null,
+     "member_id": "member_809df2faae873ed0419f1574",
+     "artifact": null,
+     "artifact_sha256": null,
+     "quote": null,
+     "note": "m:C_RP_GENERAL:1790880064.000113"
+    },
+    {
+     "kind": "slack_message",
+     "project_id": "response_preference",
+     "batch_id": "rp_batch_15",
+     "scope": "project",
+     "channel_id": "C_RP_GENERAL",
+     "thread_id": "1790903659.000050",
+     "message_id": "1790903714.000113",
+     "document_id": null,
+     "version_id": null,
+     "authoring_document_id": null,
+     "authoring_version": null,
+     "section": null,
+     "chunk_id": null,
+     "candidate_group_id": null,
+     "member_id": "member_211e8a1284a7577600ae8ad4",
+     "artifact": null,
+     "artifact_sha256": null,
+     "quote": null,
+     "note": "m:C_RP_GENERAL:1790903714.000113"
+    }
+   ],
+   "related_threads": [
+    {
+     "project_id": "response_preference",
+     "batch_id": "rp_batch_15",
+     "channel_id": "C_RP_GENERAL",
+     "thread_id": "1790880012.001400",
+     "member_id": "member_809df2faae873ed0419f1574",
+     "permalink": null,
+     "display_reference": "1790880012.001400",
+     "label": "#response-preference-general, 2026-10-01, started by a QA tutor: \"Reminder: the response preference queue closes at 6 PM today.\"",
+     "opening_text": "Reminder: the response preference queue closes at 6 PM today."
+    },
+    {
+     "project_id": "response_preference",
+     "batch_id": "rp_batch_15",
+     "channel_id": "C_RP_GENERAL",
+     "thread_id": "1790903659.000050",
+     "member_id": "member_211e8a1284a7577600ae8ad4",
+     "permalink": null,
+     "display_reference": "1790903659.000050",
+     "label": "#response-preference-general, 2026-10-02, started by a QA tutor: \"Jordan is covering the early preference queue shift tomorrow.\"",
+     "opening_text": "Jordan is covering the early preference queue shift tomorrow."
+    }
+   ],
+   "confidence": 0.98,
+   "confidence_band": "HIGH",
+   "needs_review_reasons": [],
+   "inherited_flags": [],
+   "checks": {
+    "grounding": "PASSED",
+    "temporal_conflict": "NONE_FOUND",
+    "open_confirmation": "NONE"
+   },
+   "lineage": {
+    "agent3_run_id": "agent3overnight_bdc099a76ee76bdc391050df2aded225",
+    "handoff_contract": "agent2-taxonomy-handoff-v2",
+    "agent2_export_sha256": "6f1f56bf5a5b1f02287d7ac958dc205c05cc9e0ea3e6d5f3fdd7279da0c9e1e7",
+    "agent2_schema_version": 8,
+    "candidate_group_id": "cluster_15fc8dea47088788",
+    "topic_id": "cluster_15fc8dea47088788/topic_1",
+    "member_ids": [
+     "member_809df2faae873ed0419f1574",
+     "member_211e8a1284a7577600ae8ad4"
+    ],
+    "project_id": "response_preference",
+    "batch_id": "rp_batch_15"
+   },
+   "review_notes": [],
+   "details": [],
+   "next_step": {
+    "status": "NO_ACTION_NEEDED",
+    "rationale": "Both updates received acknowledgments, and neither thread shows a handling question or operational problem needing intervention.",
+    "explanation": null
+   },
+   "briefing": {
+    "status": "IN_BRIEFING",
+    "relevance": "ROUTINE_NOTICE",
+    "label_id": "rel_cluster_15fc8dea47088788_topic_1",
+    "label_source": "DEVELOPER_AUDIT_2026-11-05/06 (prepared by the coding assistant from the saved source threads; not confirmed by a team lead)",
+    "kept_because": [
+     "a notice is still current at the briefing cutoff (member_809df2faae873ed0419f1574: latest end 2026-10-02T12:30:00Z)",
+     "a notice is still current at the briefing cutoff (member_211e8a1284a7577600ae8ad4: latest end 2026-10-04T01:00:00Z)"
+    ],
+    "basis": "Two time-bound notices: a same-day queue closure reminder and next-day shift coverage. Each is checked against the briefing cutoff; a notice still current at the cutoff keeps the card in the brief.",
+    "evidence_statement_ids": [
+     "claim:c1",
+     "claim:c2",
+     "claim:c4"
+    ]
+   },
+   "outstanding_step": null,
+   "derivation": {
+    "policy_version": "briefing-routing-v2",
+    "provenance": "OFFLINE_POLICY_APPLICATION",
+    "text_provenance": "PARENT_RUN_JUDGMENTS",
+    "parent_run": "data/experiments/threadsense_full_v1/stages/agent3/overnight_run",
+    "parent_run_instance": "4a48d67e4d8322cf6912e26032663b41fd5f0447103ed8081e5581b3d3183ff8",
+    "parent_card_id": "card_60f14a03a17c98d5419cf358853a176e",
+    "parent_card_sha256": "1f59086138aee68ee953d41a6da1a8f98a8e8eeea39a29efd892eb9216c9453e",
+    "parent_contract_version": "agent3-advice-card-v4",
+    "changes": [
+     {
+      "field": "briefing.status",
+      "before": "IN_BRIEFING",
+      "after": "IN_BRIEFING",
+      "reason": "Relevance label rel_cluster_15fc8dea47088788_topic_1 (ROUTINE_NOTICE) not applied: a notice is still current at the briefing cutoff (member_809df2faae873ed0419f1574: latest end 2026-10-02T12:30:00Z); a notice is still current at the briefing cutoff (member_211e8a1284a7577600ae8ad4: latest end 2026-10-04T01:00:00Z)."
+     }
+    ]
+   }
+  },
+  "review_items": [],
+  "coverage": {
+   "group_members_outside_this_card": [],
+   "uncarried_obligations": []
+  },
+  "budget": {
+   "consumed": {
+    "retrieval_calls": 1,
+    "model_calls": 2
+   },
+   "limits": {
+    "model_calls_per_topic": 4,
+    "model_calls_total": 28,
+    "retrieval_calls_per_topic": 6,
+    "retrieval_calls_total": 42
+   }
+  },
+  "diagnostics": []
+ },
+ "derivation": {
+  "policy_version": "briefing-routing-v2",
+  "parent_topic_file": "data/experiments/threadsense_full_v1/stages/agent3/overnight_run/topics/topic__cluster_15fc8dea47088788__topic_1.json",
+  "parent_topic_sha256": "64ca0ec983509fb783ef9f08fbde857775a76fad7898fd1ba7b139179460e587",
+  "replaced": [
+   "result.card",
+   "workflow.card_id",
+   "workflow.card_line"
+  ]
+ }
+}

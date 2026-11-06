@@ -90,7 +90,7 @@ class Run:
 
     @cached_property
     def cards(self):
-        """Every saved card, validated under its own contract (AdviceCard v3 or v4) and returned unchanged."""
+        """Every saved card, validated under its own contract (AdviceCard v3, v4 or v5) and returned unchanged."""
         cards = {}
         for raw in read_json(self.path/'cards.json'):
             validate_card(raw)
@@ -142,7 +142,7 @@ class Run:
             'unprocessed': sum(w['outcome'] in INCOMPLETE[1:] for w in incomplete),
             'out_of_scope': len((b.get('scope') or {}).get('out_of_scope_work') or []),
             'review_queue_items': counts.get('review_queue_items', 0), 'cards_sha256': self.cards_sha256,
-            'provenance': self.provenance(),
+            'provenance': self.provenance(), 'briefing': b.get('briefing'), 'derivation': b.get('derivation'),
         }
 
     def provenance(self):
@@ -238,8 +238,15 @@ class Run:
                                    has_draft=draft is not None, evidence_sufficiency=(draft or {}).get('evidence_sufficiency'),
                                    saved=result is not None)
             details = {'source': 'SAVED_REASONING', 'sentences': [], 'findings': card['reasoning']}
+        # briefing_policy: a v5 card states its briefing eligibility and outstanding step. An earlier card filed as an
+        # observation without a supported no-action reason is flagged, never shown as needing no decision.
+        unsupported_observation = card['card_line'] == 'OBSERVATION' and step['status'] != 'NO_ACTION_NEEDED'
         return {'next_step': {**step, 'label': NEXT_STEP_LABELS[step['status']],
-                              'derived': 'next_step' not in card}, 'details': details}
+                              'derived': 'next_step' not in card}, 'details': details,
+                'briefing': card.get('briefing') or {'status': 'IN_BRIEFING', 'relevance': 'UNLABELLED', 'label_id': None,
+                                                     'label_source': None, 'kept_because': []},
+                'outstanding_step': card.get('outstanding_step'), 'derivation': card.get('derivation'),
+                'unsupported_observation': unsupported_observation}
 
     @cached_property
     def flag_source(self):
