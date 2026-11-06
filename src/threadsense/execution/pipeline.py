@@ -1,6 +1,11 @@
 """Full ThreadSense run: snapshot -> Agent 1 interpretation -> Agent 1 verification -> grouping -> Agent 2 -> Agent 3
 -> finalize, each through its existing runner or public function, all under one Execution (ledger, store, guard).
 
+threadsense-full-run-v2 (new runs) adds two responsibilities: Agent 1 judges relevance in its interpretation request and
+the zero-call agent1_relevance stage verifies it and keeps social/routine threads out of clustering (processing history,
+identities and obligations kept); agent2_consolidate merges topics that are the same issue across candidate groups.
+A run's pipeline is recorded in its manifest, so v1 runs keep their stages, configuration and replay exactly.
+
 Every stage writes stages/<stage>/stage_manifest.json: its output (an attempt directory), dependencies (the manifests it
 consumed, by hash), output tree hash, versions and the requests it made by origin. A completed stage whose dependencies
 are unchanged is kept on resume; anything else runs again in a new attempt directory, where requests this run already
@@ -23,7 +28,13 @@ CUTOFF = '2026-10-02T12:00:00Z'
 FIXTURE = ROOT/'data/fixtures/slack_generated_demo'
 INDEX_DIR = ROOT/'.index/retrieval'
 STAGES = ('snapshot', 'agent1_interpret', 'agent1_verify', 'grouping', 'agent2', 'agent3', 'finalize')
-AGENTS = {'agent1_interpret': 'agent1', 'agent1_verify': 'agent1', 'agent2': 'agent2', 'agent3': 'agent3'}
+STAGES_V2 = ('snapshot', 'agent1_interpret', 'agent1_verify', 'agent1_relevance', 'grouping', 'agent2', 'agent2_consolidate',
+             'agent3', 'finalize')
+PIPELINE_V1, PIPELINE_V2 = 'threadsense-full-run-v1', 'threadsense-full-run-v2'
+PIPELINES = {PIPELINE_V1: STAGES, PIPELINE_V2: STAGES_V2}
+AGENTS = {'agent1_interpret': 'agent1', 'agent1_verify': 'agent1', 'agent1_relevance': 'agent1', 'agent2': 'agent2',
+          'agent2_consolidate': 'agent2',
+          'agent3': 'agent3'}
 # Each agent's validated model settings (Agent 1 v3, Agent 2 v7, Agent 3 Sol acceptance).
 ENV = {'THREADSENSE_MODEL': 'openai/gpt-4o-mini-2024-07-18', 'THREADSENSE_VERIFIER_MODEL': 'openai/gpt-4.1',
        'THREADSENSE_AGENT2_REASONING_EFFORT': 'low', 'HF_HUB_OFFLINE': '1', 'TRANSFORMERS_OFFLINE': '1'}
@@ -110,13 +121,27 @@ def checkout():
             'combined_sha256': sha256(json.dumps([head, dirty], sort_keys=True).encode()).hexdigest()}
 
 
-def configuration():
-    """Frozen semantic configuration: models, prompts and schemas, inputs and code versions."""
+def configuration(pipeline=PIPELINE_V1):
+    """Frozen semantic configuration: models, prompts and schemas, inputs and code versions. The v1 dictionary is
+    unchanged; v2 adds the relevance and consolidation versions."""
     from threadsense.agents import advisor_pilot as pilot
     runner = load_script('run_agent3_overnight')
     settings = runner.live_settings()
+    extra = {}
+    if pipeline == PIPELINE_V2:
+        from threadsense.agents import thread_relevance, topic_merge
+        extra = {'agent1_relevance': {'version': thread_relevance.RELEVANCE_VERSION, 'sha256': thread_relevance.fingerprint(),
+                                      'stage_version': thread_relevance.STAGE_VERSION,
+                                      'semantic_verification': {'version': thread_relevance.SEMANTIC_VERSION,
+                                                                'sha256': thread_relevance.semantic_fingerprint(),
+                                                                'model': ENV['THREADSENSE_VERIFIER_MODEL']}},
+                 'agent2_consolidation': {'version': topic_merge.CONSOLIDATION_VERSION, 'prompt_version': topic_merge.PROMPT_VERSION,
+                                          'limits': topic_merge.LIMITS, 'rules_sha256': sha256(topic_merge.RULES.encode()).hexdigest(),
+                                          'model': AGENT2_MODEL}}
+    elif pipeline != PIPELINE_V1:
+        raise ValueError(f'Unknown pipeline {pipeline!r}.')
     return {
-        'pipeline': 'threadsense-full-run-v1', 'cutoff': CUTOFF,
+        'pipeline': pipeline, 'cutoff': CUTOFF, **extra,
         'fixture': {'path': FIXTURE.relative_to(ROOT).as_posix(), 'tree_sha256': tree_hash(FIXTURE)},
         'knowledge_tree_sha256': tree_hash(ROOT/'data/knowledge'),
         'rubric_sha256': file_hash(ROOT/'data/knowledge/severity_rubric.py'),
@@ -136,6 +161,10 @@ def configuration():
 class Run:
     def __init__(self, run_dir, execution):
         self.dir, self.ex = Path(run_dir), execution
+        path = self.dir/'run_manifest.json'
+        saved = read_json(path).get('configuration', {}) if path.is_file() else {}
+        self.pipeline = saved.get('pipeline', PIPELINE_V1)
+        self.stages = PIPELINES[self.pipeline]
 
     def manifest_path(self, stage):
         return self.dir/'stages'/stage/'stage_manifest.json'
@@ -151,7 +180,7 @@ class Run:
         return self.dir/m['output']
 
     def deps(self, stage):
-        order = STAGES[:STAGES.index(stage)]
+        order = self.stages[:self.stages.index(stage)]
         return {s: file_hash(self.manifest_path(s)) for s in order if self.manifest_path(s).is_file()}
 
     def attempt_dir(self, stage, pattern):
@@ -205,7 +234,8 @@ def stage_agent1_interpret(run):
     module = load_script('run_agent1_batch')
     with environment(ENV), run.ex.stage('agent1_interpret', 'agent1'):
         code = module.main(['--limit', '0', '--cutoff', CUTOFF, '--output-dir', str(out), '--fixture-root', str(run.dir/'snapshot'/'slack'),
-                            '--source-destination', str(out/'announcement_sources')])
+                            '--source-destination', str(out/'announcement_sources')]
+                           + (['--relevance'] if run.pipeline == PIPELINE_V2 else []))
     status = read_json(out/'batch_status.json')
     ok = status['state'] in ('complete', 'complete_with_review')
     return run.finish('agent1_interpret', out, 'COMPLETE' if ok else 'STOPPED',
@@ -285,9 +315,31 @@ def stage_agent1_verify(run):
                       {'runner': file_hash(ROOT/'scripts/run_agent1_verification.py')})
 
 
+def stage_agent1_relevance(run):
+    """Verify Agent 1's relevance judgments and split the verified export into the clustering input and processing
+    history (agent1-relevance-v2): structural checks for every thread, then one semantic verifier request per proposed
+    model exclusion (zero retries; an unconfirmed exclusion stays eligible)."""
+    from threadsense.agents import thread_relevance
+    out = run.attempt_dir('agent1_relevance', 'relevance_v{n}')
+    with environment(ENV), run.ex.stage('agent1_relevance', 'agent1'):
+        summary = thread_relevance.build_stage(run.output('agent1_verify'), out, cutoff=CUTOFF,
+                                               interpretations=read_json(run.output('agent1_interpret')/'interpretations.json'),
+                                               assessor=thread_relevance.assess_exclusion)
+    return run.finish('agent1_relevance', out, 'COMPLETE', {'relevance': summary},
+                      {'relevance': thread_relevance.RELEVANCE_VERSION, 'stage': thread_relevance.STAGE_VERSION,
+                       'semantic_verification': thread_relevance.semantic_fingerprint()})
+
+
+def clustering_canonical(run):
+    """The Agent 1 export that grouping and Agent 2 read: all verified threads (v1) or the relevance-eligible subset (v2)."""
+    if run.pipeline == PIPELINE_V2:
+        return run.output('agent1_relevance')/'clustering_input'/'interpretations.json'
+    return run.output('agent1_verify')/'interpretations.json'
+
+
 def stage_grouping(run):
     from threadsense.topic_grouping import refresh_grouping
-    canonical = run.output('agent1_verify')/'interpretations.json'
+    canonical = clustering_canonical(run)
     out = run.attempt_dir('grouping', 'grouping_v{n}')
     with environment(ENV):
         report = refresh_grouping(out, input_path=canonical)
@@ -298,7 +350,7 @@ def stage_grouping(run):
 def stage_agent2(run):
     from threadsense.topic_inputs import load_candidate_payloads
     from threadsense.agents.topic_pipeline import execute_batch
-    canonical = run.output('agent1_verify')/'interpretations.json'
+    canonical = clustering_canonical(run)
     payloads = load_candidate_payloads(grouping_path=run.output('grouping')/'clusters.json', canonical_path=canonical)
     out = run.attempt_dir('agent2', 'agent2_v{n}')
     with environment(ENV), run.ex.stage('agent2', 'agent2'):
@@ -310,6 +362,21 @@ def stage_agent2(run):
                                                                 'unprocessed_groups', 'inherited_review_obligations', 'review_group_count',
                                                                 'new_request_attempts', 'unknown_completion_requests')},
                        'groups_sent': len(payloads)})
+
+
+def stage_agent2_consolidate(run):
+    """Bounded Agent 2 consolidation across candidate groups (one request per candidate set, zero retries)."""
+    from threadsense.agents import topic_merge
+    from threadsense.agents.advice_inputs import load_effective_view
+    out = run.attempt_dir('agent2_consolidate', 'consolidation_v{n}')
+    out.mkdir(parents=True)
+    vectors = topic_merge.member_vectors(clustering_canonical(run), run.output('grouping'))
+    topics = topic_merge.topics_of(load_effective_view(run.output('agent2')), vectors)
+    with environment(ENV), run.ex.stage('agent2_consolidate', 'agent2'):
+        record = topic_merge.consolidate(topics, topic_merge.LiveJudge(AGENT2_MODEL))
+    write_json(out/'consolidation.json', record)
+    return run.finish('agent2_consolidate', out, 'COMPLETE', {'consolidation': record['counts']},
+                      {'consolidation': topic_merge.CONSOLIDATION_VERSION, 'prompt': topic_merge.PROMPT_VERSION})
 
 
 def agent3_reservation():
@@ -344,7 +411,10 @@ def stage_agent3(run):
     with run.ex.stage('agent3', 'agent3'):
         rt = runner.build_runtime(out, 'LIVE', cutoff=CUTOFF, only=None, max_requests=None,
                                   max_cost=budget, handoff=run.output('agent2'), fixture_root=run.dir/'snapshot'/'slack',
-                                  per_request=per_request, index_dir=INDEX_DIR)
+                                  per_request=per_request, index_dir=INDEX_DIR,
+                                  **({'consolidation': run.output('agent2_consolidate')/'consolidation.json',
+                                      'processing_history': run.output('agent1_relevance')/'processing_history.json'}
+                                     if run.pipeline == PIPELINE_V2 else {}))
         state = overnight.run(rt)
     brief = read_json(out/'morning_brief.json')
     ok = brief['accounting']['status'] == 'COMPLETE' and not brief.get('incomplete_work')
@@ -359,21 +429,22 @@ def stage_finalize(run):
     out = run.dir/'final'
     out.mkdir(exist_ok=True)
     verify = run.manifest('agent1_verify') or {}
-    summary = {'generated_at': now(), 'stages': {s: run.manifest(s) for s in STAGES[:-1]}, 'ledger': run.ex.ledger.summary(),
+    summary = {'generated_at': now(), 'stages': {s: run.manifest(s) for s in run.stages[:-1]}, 'ledger': run.ex.ledger.summary(),
                'unfinished_work': {'agent1_rejected_threads': verify.get('agent1_rejected', [])}}
     write_json(out/'run_summary.json', summary)
     return run.finish('finalize', out, 'COMPLETE')
 
 
 STAGE_FUNCS = {'snapshot': stage_snapshot, 'agent1_interpret': stage_agent1_interpret, 'agent1_verify': stage_agent1_verify,
-               'grouping': stage_grouping, 'agent2': stage_agent2, 'agent3': stage_agent3, 'finalize': stage_finalize}
+               'agent1_relevance': stage_agent1_relevance, 'grouping': stage_grouping, 'agent2': stage_agent2,
+               'agent2_consolidate': stage_agent2_consolidate, 'agent3': stage_agent3, 'finalize': stage_finalize}
 
 
 def execute(run, *, stop_after=None):
     """Run every stage that is not already complete with unchanged dependencies. Stops at the first stage that does not
     complete (its output and accounting are kept)."""
     done = []
-    for stage in STAGES:
+    for stage in run.stages:
         if run.current(stage):
             done.append({'stage': stage, 'kept': True})
         else:

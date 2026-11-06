@@ -10,7 +10,7 @@ import json
 import re
 from typing import Annotated, Any, Literal
 
-from pydantic import BaseModel, ConfigDict, Field, StringConstraints, model_validator
+from pydantic import BaseModel, ConfigDict, Field, StringConstraints, model_serializer, model_validator
 
 from threadsense.knowledge_sources import SourceRecord
 from threadsense.routing import aware
@@ -275,20 +275,32 @@ class CardChecks(Frozen):
 
 class CardLineage(Frozen):
     agent3_run_id: Text
-    handoff_contract: Literal['agent2-taxonomy-handoff-v1', 'agent2-taxonomy-handoff-v2']
+    # v3 (agent2-consolidation-v1): a consolidated topic spanning candidate groups; earlier cards are unchanged.
+    handoff_contract: Literal['agent2-taxonomy-handoff-v1', 'agent2-taxonomy-handoff-v2', 'agent2-taxonomy-handoff-v3']
     agent2_export_sha256: Text
     agent2_schema_version: int
-    candidate_group_id: Text
+    candidate_group_id: Text  # A consolidated topic records its first group here and all of them in candidate_group_ids.
     topic_id: str | None = None  # Null for group-level rejected/unassigned members.
     member_ids: list[str] = Field(min_length=1)
     project_id: Text
     batch_id: str | None = None
+    source_topic_ids: list[str] = Field(default_factory=list)  # v3 only: the Agent 2 topics merged into this one.
+    candidate_group_ids: list[str] = Field(default_factory=list)
 
     @model_validator(mode='after')
     def distinct(self):
         if len(self.member_ids) != len(set(self.member_ids)):
             raise ValueError('Lineage member IDs must be distinct.')
         return self
+
+    @model_serializer(mode='wrap')
+    def unchanged_before_v3(self, handler):
+        """Earlier cards dump exactly as saved: the v3 fields appear only when set."""
+        data = handler(self)
+        for key in ('source_topic_ids', 'candidate_group_ids'):
+            if not data.get(key):
+                data.pop(key, None)
+        return data
 
 
 def required_review_codes(card):

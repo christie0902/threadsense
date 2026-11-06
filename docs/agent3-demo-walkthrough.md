@@ -22,7 +22,7 @@ DEMO_SCRIPT`: it puts rehearsal decisions in the `demo` namespace, so default op
 ```sh
 uv run --locked python scripts/run_dashboard.py --include-test-fixtures \
   --runs data/experiments --runs data/experiments/agent3_feedback_loop_offline_v2 \
-  --decision-db D:/tsb/demo-<YYYYMMDD>-r<N>.sqlite3 --decision-origin DEMO_SCRIPT
+  --decision-db D:/tsb/demo-20261106-r1.sqlite3 --decision-origin DEMO_SCRIPT
 # open http://127.0.0.1:8000 ; the session is locked to Priya (U006, team lead); --team-lead picks another TL at startup
 ```
 
@@ -32,6 +32,34 @@ The runner refuses hosts other than localhost. Checked on 2026-11-01 through the
 - 12 runs were listed, and every run below loaded.
 - Saving one decision twice with the same key gave 201 and then a replayed 200, leaving one row.
 - The run files were byte-identical afterwards.
+
+## 0. Demo baseline: the combined briefing (2026-11-06)
+
+**Run:** `threadsense_full_v1_combined_v2` (LIVE model judgments, combined offline; `REVIEW.md` in the run directory).
+Launch (zero calls). Use a new store file name for each rehearsal (r1, r2, ...); the folder is created if missing.
+PowerShell, one line:
+
+```powershell
+uv run --locked python scripts/run_dashboard.py --include-test-fixtures --runs data/experiments --runs tests/fixtures/observation_demo_runs --decision-db D:/tsb/demo-20261106-r1.sqlite3 --decision-origin DEMO_SCRIPT
+```
+
+Then open http://127.0.0.1:8000/#run=threadsense_full_v1_combined_v2.
+
+Show:
+- **Overview:** 63 in this brief (14 combined issues), 3 kept in history; 52 Needs Review, 8 Recommended Action,
+  3 Observation. Agent 3 advice is live model output; relevance labels and merge decisions are developer audits.
+- **Observations:** the three live cards ("Suggestive vs explicit content boundary", "Queue coverage and closure
+  reminders", "Work environment and background noise"), each with its supported no-action reason.
+- **Combined issue:** "QN handling for fictional contact details": open "Earlier cards this issue replaces (2)" (the
+  replaced cards are history, not briefed). What to check: "A documentation question is unresolved" with the October
+  status note, the instructions and the follow-up record.
+- **Targeted re-grounding ($0.094 for both cards, run separately; this build made no calls):** "Overlapping speech in
+  transcription" shows its reminder and stays in review only for its open inherited flag. "Format compliance versus
+  accuracy" is a Recommended Action: point out "Human edits, verified by the live model (3)", the unchanged model draft,
+  and the TL suggestion marked "not judged".
+
+Synthetic Observation examples (model behavior, tool performance) are only in `observation_demo_fixture_v1`
+(TEST_FIXTURE, hand-written); switch runs and say so if you show them.
 
 ## 1. Current Submit card and its evidence
 
@@ -130,7 +158,7 @@ a new snapshot built at a later cutoff. Optional, zero calls, needs the local em
 directory:
 
 ```sh
-uv run --locked python scripts/build_decision_snapshot.py --decision-db D:/tsb/demo-<YYYYMMDD>-r<N>.sqlite3 \
+uv run --locked python scripts/build_decision_snapshot.py --decision-db D:/tsb/demo-20261106-r1.sqlite3 \
   --namespace demo --cutoff <ISO time after the save, not in the future> --index-dir .index/retrieval_demo_20261101          # plan only
 #   add --build to export and build
 ```
@@ -145,3 +173,6 @@ uv run --locked python scripts/build_decision_snapshot.py --decision-db D:/tsb/d
 - That any approval was executed or produced an outcome.
 - That Recommended Action or Observation cards came from a live evaluation (they are shown on the labelled fixture).
 - That the dashboard authenticates users.
+- That the format card's three edited statements are model-written (they are human edits the live model judged SUPPORTED).
+- That Agent 1's semantic exclusion check has run live (it has been exercised with prepared verifier responses only).
+- That the synthetic Observation examples are live results.

@@ -2112,3 +2112,71 @@ Same parent run, no model call, no prompt change. v1 files (`briefing_relevance_
   History: 4 (2 social, avatar, tie). Accounting: 177 members and 37 queue items unchanged.
 - Isolation regression `test_original_and_derived_runs_stay_isolated_across_loading_evidence_and_writes` covers card
   loading, evidence lookup, card decisions and review actions across the two runs that share a run ID.
+
+## Relevance and consolidation responsibilities (2026-11-06, offline)
+
+Traced root causes (full live run): Agent 1 had no relevance field, grouping took every discussion thread and Agent 2's
+rules allow honestly named social topics, so greetings became cards. Agent 2 sees one candidate group per request
+("names alone never merge separate groups"), so the same issue split by the initial complete-linkage clustering (fictional
+phone numbers versus fictional email addresses; two response-fetch failures) stayed split, and both fictional-contact
+cards proposed the same Contact details edit.
+
+Normal pipeline (`threadsense-full-run-v2`; recorded in the run manifest, v1 runs keep their stages):
+- Agent 1 relevance (`agents/thread_relevance.py`): judged in the same interpretation request (extended prompt and
+  schema; fingerprinted modules unchanged), verified deterministically (references, cite-every-message for exclusions,
+  consistency with the verified central question), never changes resolution, severity or the need to intervene.
+  SOCIAL_ONLY and ROUTINE_ADMIN go to processing history; a TIME_BOUND_NOTICE only once its latest possible end (over every
+  UTC offset) is at or before the cutoff; MIXED is clustered on its substance; missing or unverified is UNCERTAIN and
+  eligible. Processing history keeps identities and obligations (Agent 3 queues them).
+- Agent 2 consolidation (`agents/topic_merge.py`): candidate sets from the grouping embeddings (cross-group, same project
+  and batch, centroid >= 0.55 and least-similar member pair >= 0.35, maximal cliques up to 4, at most 48 sets), one
+  judgment per set (zero retries), whole-group validation (overlapping accepted sets merge only by a judgment over the
+  whole component that passes the 0.50/0.30 floor). Handoff v3 keeps every source topic, member, flag and subquestion.
+- Agent 3 advises a consolidated topic as one work item across its records (CardLineage `source_topic_ids`,
+  `candidate_group_ids`).
+- Shared actions (`agents/action_coordination.py`): coordinated only when shown actions match in action type, document
+  version, section and change; each card keeps its reasons; never a shared cause.
+
+Cached rebuild `data/experiments/threadsense_full_v1_consolidated_v1/` (zero calls): grouping recomputed on the eligible
+threads is unchanged (3 removed singletons); 14 prepared merges over 29 topics (81 -> 63 briefing items: 49 reused cards
++ 14 consolidated issues pending fresh grounding); 3 threads in processing history; 1 shared action (QN help page Contact
+details; Conflicting QN guidance sources related but withheld). Relevance labels and merge decisions are developer audits
+(provenance recorded), not live judgments. Targeted refresh: `REVIEW.md` in that run (56 requests max, --max-cost 4.00).
+
+## Combined briefing and check repairs (2026-11-06, offline)
+
+Targeted refresh (paid, approved): `threadsense_full_v1_consolidated_refresh_v1`, 14 consolidated issues, 32 requests,
+$2.23 of a $4.00 cap, accounting COMPLETE. Combined offline in `threadsense_full_v1_combined_v1` (63 items: 53 Needs
+Review, 7 Recommended Action, 3 Observation; 49 reused + 14 refreshed; 29 replaced cards only as lineage; 177 threads and
+37 review items exactly once). Agent 3 advice is live output; relevance labels and merge decisions remain developer audits.
+
+Repairs (pilot v8), each revalidated on the recorded verdicts with zero calls:
+- Author counts: a plural is counted against message authors only when it is about authors or reporters (team roles;
+  generic people/users as subject or agent of a reporting verb). "Speech by two people" no longer rejects a claim. The
+  rejected claim never reached the judge, so it is now withheld as not yet checked.
+- Temporal eligibility: several current sources that the final grounding recorded as agreeing, with every other item out
+  of the running by recorded state (a superseded section, an unapproved decision), resolve a declared conflict; the
+  superseded section stays a documentation target. An UNDETERMINED declared conflict whose rule-stating current sources
+  agree is a documentation-status finding (reviewable), shown with its disputed point and sources.
+- Partially pending grounding: with some verdicts recorded, only the unjudged statements are withheld.
+- Replay: same-rules replay (current grounding contract and inputs) reuses premises, sufficiency and source consistency
+  as recorded; the 14 refreshed cards reproduce byte for byte before the repairs.
+
+Format card: three PARTIALLY_SUPPORTED statements share one grouped description (accuracy attributed to all three
+starters; the RP-3824 starter asks about required JSON versus well-written prose). Membership kept; candidate wording
+pending grounding (`data/evaluation/agent3_format_card_wording_v1.json`). Remaining targeted judgments: two grounding
+requests (`scripts/reground_topic.py`), $0.21 hard cost each, about $0.05 expected each.
+
+Relevance stage v2: a proposed model exclusion is judged by the Agent 1 verifier as one prose-comparison unit (its own
+rules, schema, model and evidence validation); only SUPPORTED excludes. Audited labels remain explicit exclusions.
+
+## Demo baseline: combined briefing v2 (2026-11-06)
+
+Two targeted live grounding requests (`data/experiments/agent3_reground_v1/`, $0.094): overlapping speech (35/35
+SUPPORTED, the withheld sentence restored) and format compliance (26/26 SUPPORTED with three developer-written statements;
+the card becomes a Recommended Action). Applied offline in `threadsense_full_v1_combined_v2` (zero calls) only after each
+card was rebuilt byte for byte from the recorded generations and the saved response; 93 other cards byte-identical to v1.
+Counts 52 Needs Review / 8 Recommended Action / 3 Observation; 177 threads, 37 review items. The three human edits are
+labelled as verified by the live model; the reminder draft is the model's judged draft; an optional JSON-versus-prose line
+is a TL suggestion (not judged). This run is the demo baseline. Future Agent 1 exclusion checks use one verifier request per
+proposed exclusion; exercised with prepared responses only.

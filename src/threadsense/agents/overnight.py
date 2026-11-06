@@ -31,7 +31,8 @@ from typing import TypedDict
 from threadsense.agents import advisor_pilot as pilot
 from threadsense.agents.advice_contracts import ModelReviewItem, stable_id, validate_card
 from threadsense.agents.advice_inputs import (
-    accounting_issues, load_effective_view, obligation_keys, review_items_from_announcement_route, review_items_from_view,
+    accounting_issues, apply_consolidation, load_effective_view, obligation_keys, review_items_from_announcement_route,
+    review_items_from_processing_history, review_items_from_view,
 )
 from threadsense.agents.advisor_evidence import Budget, open_retriever
 from threadsense.agents.topic_pipeline import write_json
@@ -214,7 +215,8 @@ def open_snapshot(index_dir):
 class Runtime:
     def __init__(self, out_dir, *, client, cutoff, handoff=pilot.HANDOFF, fixture_root=FIXTURE_ROOT, only=None,
                  max_requests=None, ledger=None, mode='SCRIPTED', retriever_factory=None, advise=None,
-                 release=(), settings=None, index_dir=INDEX_DIR, flag_impact=False):
+                 release=(), settings=None, index_dir=INDEX_DIR, flag_impact=False, consolidation=None,
+                 processing_history=None):
         self.out, self.client, self.cutoff, self.handoff, self.fixture_root = Path(out_dir), client, cutoff, Path(handoff), Path(fixture_root)
         self.only, self.max_requests, self.ledger, self.mode = (list(only) if only else None), max_requests, ledger, mode
         self.index_dir, self.owns_retriever = Path(index_dir), retriever_factory is None
@@ -222,6 +224,10 @@ class Runtime:
         self.advise, self.release = advise or pilot.advise, set(release)
         self.settings = settings
         self.flag_impact = flag_impact  # opt-in shadow flag-impact assessment (advise(flag_impact=True))
+        # threadsense-full-run-v2: Agent 2 consolidation record and Agent 1 processing history (None for earlier runs).
+        self.consolidation = Path(consolidation) if consolidation else None
+        self.processing_history = Path(processing_history) if processing_history else None
+        self.history = []
         self.view = self.retriever = self.rubric = self.state = None
         self.routing = self.extraction = None
         self.work, self.results, self.outcomes = [], {}, {}
@@ -245,8 +251,18 @@ def load_handoff(rt):
         raise OvernightError(f'Agent 2 handoff fails accounting: {issues[:5]}')
     routing_path = rt.handoff/'routing_manifest.json'
     rt.routing = read_json(routing_path) if routing_path.is_file() else {'announcement_sources': []}
+    rt.history = read_json(rt.processing_history) if rt.processing_history else []
+    if rt.history:  # Groups made only of processing-history threads (present in a handoff built before relevance) are left out.
+        history = {h['member_id'] for h in rt.history}
+        partial = [r['candidate_group_id'] for r in view['records'] if {m['member_id'] for m in r['members']} & history
+                   and not {m['member_id'] for m in r['members']} <= history]
+        if partial:
+            raise OvernightError(f'Processing-history threads share Agent 2 groups with clustered threads: {partial[:5]}')
+        view = {**view, 'records': [r for r in view['records'] if not {m['member_id'] for m in r['members']} <= history]}
+    if rt.consolidation:
+        view = apply_consolidation(view, read_json(rt.consolidation))
     rt.view = view
-    return {'counts': {'handoff_members': members}}
+    return {'counts': {'handoff_members': members, 'processing_history_members': len(rt.history)}}
 
 
 def extract_announcements(rt):
@@ -304,10 +320,19 @@ def plan(view, only=None):
     by work ID, topic ID or pilot scenario ID; the rest are OUT_OF_SCOPE for this run (recorded, not dropped)."""
     pilots = {(s['candidate_group_id'], s.get('topic_name')): s['id'] for s in read_json(pilot.SCENARIOS)['scenarios']
               if not s.get('control')}
-    work = []
+    work, merged = [], {}
+    for m in (view.get('consolidation') or {}).get('merges', []):  # One work item per consolidated issue (agent2-consolidation-v1).
+        merged.update({tid: m for tid in m['source_topic_ids']})
+        work.append({'candidate_group_id': m['candidate_group_ids'][0], 'project_id': m['project_id'], 'batch_id': m['batch_id'],
+                     'work_id': f"consolidated:{m['consolidated_topic_id']}", 'kind': 'CONSOLIDATED_TOPIC',
+                     'topic_id': m['consolidated_topic_id'], 'topic_name': m['topic_name'], 'member_ids': list(m['member_ids']),
+                     'source_topic_ids': list(m['source_topic_ids']), 'candidate_group_ids': list(m['candidate_group_ids']),
+                     'pilot_scenario': None})
     for row in view['records']:
         base = {'candidate_group_id': row['candidate_group_id'], 'project_id': row['project_id'], 'batch_id': row.get('batch_id')}
         for t in row['topics']:
+            if t['topic_id'] in merged:
+                continue
             work.append({**base, 'work_id': f"topic:{t['topic_id']}", 'kind': 'TOPIC', 'topic_id': t['topic_id'],
                          'topic_name': t['topic_name'], 'member_ids': list(t['member_ids']),
                          'pilot_scenario': pilots.get((row['candidate_group_id'], t['topic_name']))})
@@ -360,7 +385,11 @@ def fingerprints(rt, limits):
             'mode': rt.mode, 'only': rt.only, 'budget_limits': limits,
             'cost_limit_usd': rt.ledger.limit_usd if rt.ledger is not None else None,
             'work_plan_sha256': _digest([{k: w[k] for k in ('work_id', 'member_ids', 'in_scope')} for w in rt.work]),
-            **({'flag_impact': True} if rt.flag_impact else {})}
+            **({'flag_impact': True} if rt.flag_impact else {}),
+            # Present only on threadsense-full-run-v2 runs, so earlier run manifests resume unchanged.
+            **({'consolidation': {'path': _rel(rt.consolidation), 'sha256': file_hash(rt.consolidation)}} if rt.consolidation else {}),
+            **({'processing_history': {'path': _rel(rt.processing_history), 'sha256': file_hash(rt.processing_history)}}
+               if rt.processing_history else {})}
 
 
 def _rel(path):
@@ -420,7 +449,8 @@ def process_topic(rt, state):
         return {**update, 'stop_reason': reason, 'stop_outcome': 'UNPROCESSED_BUDGET'}
     write_json(flight, {'work_id': wid, 'budget_used_before': dict(rt.state.budget.used)})
     scenario = {'id': wid, 'candidate_group_id': item['candidate_group_id'], 'focus': item['topic_name'] or 'projection gap',
-                **({'topic_id': item['topic_id']} if item['topic_id'] else {})}
+                **({'topic_id': item['topic_id']} if item['topic_id'] else {}),
+                **({'consolidated_topic_id': item['topic_id']} if item['kind'] == 'CONSOLIDATED_TOPIC' else {})}
     try:
         result = rt.advise(scenario, view=rt.view, retriever=rt.retriever, client=rt.client, budget=rt.state.budget,
                            rubric=rt.rubric, run_id=run_id(rt), as_of=rt.retriever.manifest['cutoff'],
@@ -471,12 +501,16 @@ def validate_accounting(rt):
                      'thread_id': m['thread_id'], 'outcome': 'ANNOUNCEMENT_ROUTE (knowledge source; not interpreted)',
                      'inherited_agent1_obligation': m['agent1_record']['review_required']}
                     for m in rt.routing['announcement_sources']]
+    history = [{'member_id': h['member_id'], 'project_id': h['project_id'], 'channel_id': h['channel_id'], 'thread_id': h['thread_id'],
+                'outcome': f"PROCESSING_HISTORY ({h['relevance']}; not clustered)", 'basis': h['basis'],
+                'inherited_agent1_obligation': h['agent1_record']['review_required']} for h in rt.history]
     queue = review_queue(rt, card_of)
     carried = Counter()
     for item in queue:
         carried[(item['origin'], item['kind'])] += 1
     expected = {'members': sum(len(r['members']) for r in view['records']), 'announcement_route_members': len(announcement)}
-    seen = Counter(m['member_id'] for m in members) + Counter(m['member_id'] for m in announcement)
+    seen = Counter(m['member_id'] for m in members) + Counter(m['member_id'] for m in announcement) + Counter(
+        h['member_id'] for h in history)
     issues += [f'Member {mid} recorded {n} times.' for mid, n in seen.items() if n != 1]
     if len(members) != expected['members']:
         issues.append(f"{len(members)} discussion members recorded, {expected['members']} in the handoff.")
@@ -485,6 +519,8 @@ def validate_accounting(rt):
     route_obligations = sum(m['inherited_agent1_obligation'] for m in announcement)
     if carried[('agent1', 'inherited_agent1_review_announcement_route')] != route_obligations:
         issues.append('Announcement-route obligations are not all in the review queue.')
+    if carried[('agent1', 'inherited_agent1_review_processing_history')] != sum(h['inherited_agent1_obligation'] for h in history):
+        issues.append('Processing-history obligations are not all in the review queue.')
     unprocessed = [w for w in rt.work if rt.outcomes.get(w['work_id'], {}).get('outcome') not in (
         'CARD', 'CARD_WITH_STAGE_FAILURES', 'OUT_OF_SCOPE')]
     out_of_scope = [w for w in rt.work if rt.outcomes[w['work_id']]['outcome'] == 'OUT_OF_SCOPE']
@@ -493,11 +529,14 @@ def validate_accounting(rt):
         'members_by_outcome': dict(Counter(m['outcome'] for m in members)),
         'members_on_cards': sum(1 for m in members if m['card_id']),
         'announcement_route_members': len(announcement), 'announcement_route_obligations': route_obligations,
+        'processing_history_members': len(history),
+        'processing_history_obligations': sum(h['inherited_agent1_obligation'] for h in history),
+        'consolidated_topics': sum(1 for w in rt.work if w['kind'] == 'CONSOLIDATED_TOPIC'),
         'inherited_agent1_obligations': sum(m['inherited_agent1_obligation'] for m in members),
         'naming_cautions': sum(len(r.get('content_review_obligations', [])) for r in view['records']),
         'agent2_obligations': sum(len(r.get('agent2_review_obligations', [])) for r in view['records']),
         'projection_gap_groups': sum(1 for w in rt.work if w['kind'] == 'PROJECTION_GAP'),
-        'topics': sum(1 for w in rt.work if w['kind'] == 'TOPIC'), 'work_items': len(rt.work),
+        'topics': sum(1 for w in rt.work if w['kind'] in ('TOPIC', 'CONSOLIDATED_TOPIC')), 'work_items': len(rt.work),
         'work_by_outcome': dict(Counter(rt.outcomes[w['work_id']]['outcome'] for w in rt.work)),
         'cards': len(card_of), 'cards_by_line': dict(Counter(c['card_line'] for c in card_of.values())),
         'review_queue_items': len(queue), 'review_queue_by_kind': {f'{o}:{k}': n for (o, k), n in sorted(carried.items())},
@@ -508,7 +547,7 @@ def validate_accounting(rt):
         s['verdict'] == 'PENDING' for s in rt.results[_work_of_card(rt, c)]['result']['grounding']['statements'])]
     issues += [f'Card {c} shows grounding PASSED with pending judgments.' for c in pending_passed]
     rt.accounting = {'status': 'COMPLETE' if not issues else 'FAILED', 'issues': issues, 'counts': counts,
-                     'members': members, 'announcement_route': announcement,
+                     'members': members, 'announcement_route': announcement, 'processing_history': history,
                      'incomplete_work': [{**{k: w[k] for k in ('work_id', 'kind', 'candidate_group_id', 'topic_id', 'topic_name',
                                                                'member_ids')},
                                           'obligations': [i['item_id'] for i in queue if set(i['member_ids']) & set(w['member_ids'])],
@@ -541,7 +580,8 @@ def review_queue(rt, card_of):
     for card in card_of.values():
         for mid in card['lineage']['member_ids']:
             cards_by_member.setdefault(mid, []).append(card['card_id'])
-    items = review_items_from_view(rt.view) + review_items_from_announcement_route(rt.routing['announcement_sources'])
+    items = (review_items_from_view(rt.view) + review_items_from_announcement_route(rt.routing['announcement_sources'])
+             + review_items_from_processing_history(rt.history))
     out = []
     for item in items:
         related = sorted({c for mid in item.member_ids for c in cards_by_member.get(mid, [])} | (
@@ -581,6 +621,17 @@ def aggregate(rt):
         'announcement_extraction': {k: rt.extraction[k] for k in ('state', 'validated_records', 'extraction_failures',
                                                                   'agent1_interpretation_calls', 'model_calls')},
         'usage': usage, 'accounting': {k: rt.accounting[k] for k in ('status', 'issues')}}
+    if rt.history:
+        rt.brief['processing_history'] = rt.accounting['processing_history']
+    if rt.view.get('consolidation'):
+        c = rt.view['consolidation']
+        rt.brief['consolidation'] = {'version': c['version'], 'judge_provenance': c['judge_provenance'], 'counts': c['counts'],
+                                     'merges': [{k: m[k] for k in ('consolidated_topic_id', 'topic_name', 'source_topic_ids')}
+                                                for m in c['merges']]}
+    from threadsense.agents.action_coordination import coordinate, entries_from_results
+    shared = coordinate(entries_from_results([r['result'] for r in rt.results.values() if r.get('result')]))
+    if shared['coordinated_actions'] or shared['related_unverified_proposals']:
+        rt.brief['coordinated_actions'] = shared
     return {'status': status}
 
 
@@ -680,7 +731,8 @@ def report(brief):
         lines += [f"- {w['topic_name'] or w['work_id']} ({w['kind']}): **{w['outcome']}** - {w.get('detail') or w.get('error') or ''} "
                   f"({len(w['member_ids'])} members, {len(w['obligations'])} review items kept)" for w in brief['incomplete_work']]
         lines.append('')
-    shown = [c for c in brief['cards'] if (c.get('briefing') or {}).get('status', 'IN_BRIEFING') == 'IN_BRIEFING']
+    shown = [c for c in brief['cards'] if (c.get('briefing') or {}).get('status', 'IN_BRIEFING') == 'IN_BRIEFING'
+             and c.get('inventory', 'BRIEF') == 'BRIEF']  # consolidated-pending and processing-history cards are listed below
     for card in shown:
         action = card['recommended_action']
         lines += [f"## {card['topic_name']}", '',
@@ -694,6 +746,10 @@ def report(brief):
                 lines += [f"**Why.** {action['rationale']}", '']
             if action['draft_text']:
                 lines += ['**Draft to copy:**', '', *[f'> {line}' for line in action['draft_text'].splitlines()], '']
+        if card.get('human_edits'):  # combined-briefing-v2: wording written by a person, judged SUPPORTED by the live model
+            lines += ['**Human edits verified by the live model:**', *[f"- {e['field']}: {e['text']}" for e in card['human_edits']], '']
+        for s in card.get('tl_suggestions') or []:
+            lines += [f"**Suggestion for the team lead (not judged).** {s['text']}", '']
         step = card.get('outstanding_step')
         if step:
             lines += [f"**{step['label']}.**"
@@ -711,6 +767,36 @@ def report(brief):
                   + (f", still {c['resolution_status'].replace('_', ' ').lower()}" if c.get('open_step') else '')
                   + (f". {c['basis']}" if c.get('basis') else '')
                   for c in scope_note['not_in_briefing']]
+        lines.append('')
+    shared = (brief.get('coordinated_actions') or {}).get('coordinated_actions') or []
+    if shared:
+        lines += ['## Shared actions', '', 'Distinct topics support the same edit; a shared action does not mean a shared cause.', '']
+        for a in shared:
+            target = '; '.join(f"{t['document']} - {t['section']} ({t['change'].lower()})" for t in a['targets'])
+            lines += [f"- **{a['label']}** ({target}), supported by: " + '; '.join(
+                f"{c['topic_name']} ({c['card_line'].replace('_', ' ').lower()}"
+                + (f", review: {', '.join(c['review_codes'])}" if c['review_codes'] else '') + ')' for c in a['cards'])]
+            lines += [f"  Related proposal not coordinated: {w['topic_name']} ({w['next_step'].replace('_', ' ').lower()})"
+                      for w in a['related_withheld']]
+        lines.append('')
+    if brief.get('consolidation'):
+        c = brief['consolidation']
+        lines += ['## Consolidated topics', '', f"{c['counts']['merges']} consolidated issues from {c['counts']['topics_merged']} "
+                  f"Agent 2 topics ({c['judge_provenance']}).", '']
+        pending = {x['consolidated_topic_id']: x for x in c.get('pending') or []}
+        for m in c['merges']:
+            p = pending.get(m['consolidated_topic_id'])
+            lines.append(f"- **{m['topic_name']}** ({len(m['source_topic_ids'])} topics"
+                         + (f"; {p['status'].replace('_', ' ').lower()})" if p else ')'))
+            for card in (p or {}).get('source_cards', []):
+                lines.append(f"  - Original topic: {card['topic_name']} - {card['card_line'].replace('_', ' ').lower()}, next step "
+                             f"{card['next_step'].replace('_', ' ').lower()}" + (f"; review: {', '.join(card['review_codes'])}"
+                                                                                 if card['review_codes'] else ''))
+        lines.append('')
+    if brief.get('processing_history'):
+        lines += ['## Processing history', '', 'Kept out of issue clustering by Agent 1 relevance; identities and review '
+                  'obligations kept:', '']
+        lines += [f"- {h['channel_id']} {h['thread_id']}: {h['outcome']}. {h['basis']}" for h in brief['processing_history']]
         lines.append('')
     lines += ['## Model Review Queue', '', f"{len(brief['model_review_queue'])} items (separate from the cards above):", '']
     kinds = Counter(f"{i['origin']} {i['kind']}" for i in brief['model_review_queue'])

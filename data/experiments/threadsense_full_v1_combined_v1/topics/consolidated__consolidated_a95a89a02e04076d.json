@@ -1,0 +1,4194 @@
+{
+ "work_item": {
+  "candidate_group_id": "cluster_4460290131b816bb",
+  "project_id": "audio_multimodal",
+  "batch_id": "audio_batch_06",
+  "work_id": "consolidated:consolidated_a95a89a02e04076d",
+  "kind": "CONSOLIDATED_TOPIC",
+  "topic_id": "consolidated_a95a89a02e04076d",
+  "topic_name": "Overlapping speech in transcription",
+  "member_ids": [
+   "member_49e4e0ef557959173d770df5",
+   "member_b224f8f278e4849b8a75936b",
+   "member_e48bf44fa3dd5692a771cf22",
+   "member_e6be3632ce8e4a4b4f77bca7"
+  ],
+  "source_topic_ids": [
+   "cluster_4460290131b816bb/topic_2",
+   "cluster_bc1ccc03c19a64cf/topic_1"
+  ],
+  "candidate_group_ids": [
+   "cluster_4460290131b816bb",
+   "cluster_bc1ccc03c19a64cf"
+  ],
+  "pilot_scenario": null,
+  "in_scope": true
+ },
+ "workflow": {
+  "outcome": "CARD",
+  "card_id": "card_a342d58f26ef48f521c0a73bc3d78956",
+  "card_line": "NEEDS_REVIEW",
+  "grounding": "FAILED",
+  "stage_failures": [],
+  "semantic_source": "LIVE_MODEL"
+ },
+ "result": {
+  "scenario": {
+   "id": "consolidated:consolidated_a95a89a02e04076d",
+   "candidate_group_id": "cluster_4460290131b816bb",
+   "focus": "Overlapping speech in transcription",
+   "topic_id": "consolidated_a95a89a02e04076d",
+   "consolidated_topic_id": "consolidated_a95a89a02e04076d"
+  },
+  "status": "CARD",
+  "topic": {
+   "project_id": "audio_multimodal",
+   "batch_id": "audio_batch_06",
+   "candidate_group_id": "cluster_4460290131b816bb",
+   "topic_id": "consolidated_a95a89a02e04076d",
+   "topic_label": "Overlapping speech in transcription",
+   "projection_gap": null,
+   "as_of": "2026-10-02T12:00:00Z",
+   "member_ids": [
+    "member_49e4e0ef557959173d770df5",
+    "member_b224f8f278e4849b8a75936b",
+    "member_e6be3632ce8e4a4b4f77bca7",
+    "member_e48bf44fa3dd5692a771cf22"
+   ],
+   "initial_query": "Overlapping speech in transcription. Should segments where two people talk at once be marked as unintelligible?"
+  },
+  "retrieval_trace": [
+   {
+    "step": 1,
+    "purpose": "initial_current_guidance",
+    "gap_id": null,
+    "query": "Overlapping speech in transcription. Should segments where two people talk at once be marked as unintelligible?",
+    "source_types": [
+     "guideline",
+     "faq",
+     "decision",
+     "announcement"
+    ],
+    "version_mode": "current",
+    "as_of": "2026-10-02T12:00:00Z",
+    "batch": "audio_batch_06",
+    "top_k": 5,
+    "status": "DONE",
+    "mode": "hybrid",
+    "use_mmr": true,
+    "mmr_lambda": 0.9,
+    "result_ids": [
+     "k:audio-multimodal-faq@1.1:e9bcf43a",
+     "k:audio-multimodal-instructions@1.3:eb85357a",
+     "k:audio-multimodal-instructions@1.3:1131a168",
+     "k:audio-multimodal-instructions@1.3:6eeb0c96",
+     "k:audio-multimodal-faq@1.1:f72aa6db"
+    ],
+    "new_evidence_ids": [
+     "k:audio-multimodal-faq@1.1:e9bcf43a",
+     "k:audio-multimodal-instructions@1.3:eb85357a",
+     "k:audio-multimodal-instructions@1.3:1131a168",
+     "k:audio-multimodal-instructions@1.3:6eeb0c96",
+     "k:audio-multimodal-faq@1.1:f72aa6db"
+    ],
+    "eligible_chunks": 27,
+    "added": []
+   }
+  ],
+  "retrieval_notes": {
+   "withheld_by_version": [],
+   "version_diagnostics": []
+  },
+  "follow_ups": [],
+  "unfilled_gaps": [],
+  "model_calls": [
+   {
+    "stage": "draft",
+    "schema": "AdvisorDraft",
+    "agent1_context": {
+     "sha256": "0dda5e7f6d9a538d9b0ecc9bc89baa2d475b61a62867f7fd74f55f26e470afd9",
+     "boundary": "NO_HTTP_REQUEST"
+    },
+    "raw": "{\"contract_version\": \"agent3-advisor-draft-v11\", \"summary\": null, \"summary_sentences\": [{\"text\": \"A QA tutor and two tutors ask how to handle overlapping speech, including whether to mark it unintelligible or fail a transcription.\", \"support_claim_ids\": [\"c1\", \"c5\", \"c8\"], \"depends_on\": []}, {\"text\": \"Current guidance says to mark and timestamp the affected interval and preserve usable audio, rather than infer whole-clip failure from a short interval.\", \"support_claim_ids\": [\"c12\"], \"depends_on\": []}], \"detail_sentences\": [{\"text\": \"In the background-speaker thread, a tutor reports that a background speaker is transcribed as the main speaker; a second tutor reports two seconds of overlap with the rest clear.\", \"support_claim_ids\": [\"c2\", \"c3\"], \"depends_on\": [], \"summary_depends_on\": []}, {\"text\": \"For AUDIO-1338, a tutor reports two seconds of overlap, and a QA tutor answers that the unintelligible interval should be marked while the clear portions are retained.\", \"support_claim_ids\": [\"c5\", \"c7\"], \"depends_on\": [], \"summary_depends_on\": []}, {\"text\": \"In the thread asking about the failure threshold, a tutor reports hearing both voices but losing individual words during the overlap.\", \"support_claim_ids\": [\"c9\"], \"depends_on\": [], \"summary_depends_on\": [1]}, {\"text\": \"The team lead requested overlap timestamps in both the background-speaker and failure-threshold threads so QA could assess the affected scope; neither thread contains the requested timestamps.\", \"support_claim_ids\": [\"c4\", \"c11\", \"c14\"], \"depends_on\": [1, 3], \"summary_depends_on\": []}, {\"text\": \"In the AUDIO-1338 thread, a tutor requested a timestamp for the overlap and a QA tutor requested the start and end of the unintelligible span.\", \"support_claim_ids\": [\"c6\"], \"depends_on\": [2], \"summary_depends_on\": []}, {\"text\": \"A QA tutor in each of the background-speaker and failure-threshold threads asked whether the rest of the recording was intelligible enough to continue.\", \"support_claim_ids\": [\"c10\"], \"depends_on\": [1, 3], \"summary_depends_on\": []}], \"reasoning\": \"A reminder is supported by repeated questions about interval marking and whole-clip failure, including a QA tutor's unanswered question. The current instructions and FAQ directly address those questions, so no new overlap rule or documentation change is needed. The AUDIO-1338 question was answered in its own thread; that answer is not project guidance. The other two case assessments still lack the timestamps requested by the team lead, which is missing diagnostic information rather than an open policy decision. No additional retrieval is needed for the proposed reminder. The upstream review flag on the background-speaker thread remains open: the tutor reported a symptom, not an explicit handling question.\", \"claims\": [{\"claim_id\": \"c1\", \"kind\": \"INCIDENT_FACT\", \"text\": \"A QA tutor asks whether simultaneous speech by two people should be marked unintelligible.\", \"evidence_ids\": [\"m:C_AUDIO_QA:1790864427.000131\"], \"attributions\": [{\"user_id\": \"U019\", \"relation\": \"AUTHOR\", \"evidence_id\": \"m:C_AUDIO_QA:1790864427.000131\"}], \"quote\": null, \"quote_kind\": \"PARAPHRASE\", \"material\": true}, {\"claim_id\": \"c2\", \"kind\": \"INCIDENT_FACT\", \"text\": \"A tutor reports that a background speaker is transcribed as the main speaker.\", \"evidence_ids\": [\"m:C_AUDIO_GENERAL:1790890932.000133\"], \"attributions\": [{\"user_id\": \"U020\", \"relation\": \"AUTHOR\", \"evidence_id\": \"m:C_AUDIO_GENERAL:1790890932.000133\"}], \"quote\": null, \"quote_kind\": \"PARAPHRASE\", \"material\": true}, {\"claim_id\": \"c3\", \"kind\": \"INCIDENT_FACT\", \"text\": \"A second tutor in the background-speaker thread reports two seconds of speaker overlap with the rest clear.\", \"evidence_ids\": [\"m:C_AUDIO_GENERAL:1790890987.000113\"], \"attributions\": [{\"user_id\": \"U018\", \"relation\": \"AUTHOR\", \"evidence_id\": \"m:C_AUDIO_GENERAL:1790890987.000113\"}], \"quote\": null, \"quote_kind\": \"PARAPHRASE\", \"material\": true}, {\"claim_id\": \"c4\", \"kind\": \"THREAD_INSTRUCTION\", \"text\": \"In the background-speaker thread, the team lead requests overlap timestamps so QA can determine whether the full sample or only a short segment is affected, and notes that the remainder may still be usable.\", \"evidence_ids\": [\"m:C_AUDIO_GENERAL:1790891074.000339\"], \"attributions\": [{\"user_id\": \"U006\", \"relation\": \"AUTHOR\", \"evidence_id\": \"m:C_AUDIO_GENERAL:1790891074.000339\"}], \"quote\": null, \"quote_kind\": \"PARAPHRASE\", \"material\": true}, {\"claim_id\": \"c5\", \"kind\": \"INCIDENT_FACT\", \"text\": \"A tutor reports two seconds of overlapping speech on AUDIO-1338 and asks whether to mark it unintelligible.\", \"evidence_ids\": [\"m:C_AUDIO_GENERAL:1790921338.000134\"], \"attributions\": [{\"user_id\": \"U003\", \"relation\": \"AUTHOR\", \"evidence_id\": \"m:C_AUDIO_GENERAL:1790921338.000134\"}], \"quote\": null, \"quote_kind\": \"PARAPHRASE\", \"material\": true}, {\"claim_id\": \"c6\", \"kind\": \"INCIDENT_FACT\", \"text\": \"In the AUDIO-1338 thread, a tutor reports hearing both voices but losing individual words and requests an overlap timestamp; a QA tutor asks for the start and end of the unintelligible span.\", \"evidence_ids\": [\"m:C_AUDIO_GENERAL:1790921388.000113\", \"m:C_AUDIO_GENERAL:1790921430.000226\"], \"attributions\": [{\"user_id\": \"U012\", \"relation\": \"AUTHOR\", \"evidence_id\": \"m:C_AUDIO_GENERAL:1790921388.000113\"}, {\"user_id\": \"U008\", \"relation\": \"AUTHOR\", \"evidence_id\": \"m:C_AUDIO_GENERAL:1790921430.000226\"}], \"quote\": null, \"quote_kind\": \"PARAPHRASE\", \"material\": true}, {\"claim_id\": \"c7\", \"kind\": \"INCIDENT_FACT\", \"text\": \"A QA tutor answers the AUDIO-1338 question by saying to mark the unintelligible overlapping interval, retain the clear portions and not discard the whole recording.\", \"evidence_ids\": [\"m:C_AUDIO_GENERAL:1790921481.000339\"], \"attributions\": [{\"user_id\": \"U007\", \"relation\": \"AUTHOR\", \"evidence_id\": \"m:C_AUDIO_GENERAL:1790921481.000339\"}], \"quote\": null, \"quote_kind\": \"PARAPHRASE\", \"material\": true}, {\"claim_id\": \"c8\", \"kind\": \"INCIDENT_FACT\", \"text\": \"A tutor asks QA how much overlap is allowed before a transcription fails the rubric.\", \"evidence_ids\": [\"m:C_AUDIO_GENERAL:1790941015.000132\"], \"attributions\": [{\"user_id\": \"U015\", \"relation\": \"AUTHOR\", \"evidence_id\": \"m:C_AUDIO_GENERAL:1790941015.000132\"}], \"quote\": null, \"quote_kind\": \"PARAPHRASE\", \"material\": true}, {\"claim_id\": \"c9\", \"kind\": \"INCIDENT_FACT\", \"text\": \"In the failure-threshold thread, a tutor reports hearing both voices but losing individual words during the overlap.\", \"evidence_ids\": [\"m:C_AUDIO_GENERAL:1790941070.000113\"], \"attributions\": [{\"user_id\": \"U018\", \"relation\": \"AUTHOR\", \"evidence_id\": \"m:C_AUDIO_GENERAL:1790941070.000113\"}], \"quote\": null, \"quote_kind\": \"PARAPHRASE\", \"material\": true}, {\"claim_id\": \"c10\", \"kind\": \"INCIDENT_FACT\", \"text\": \"A QA tutor in the background-speaker thread and a different QA tutor in the failure-threshold thread ask whether the rest of the recording is intelligible enough to continue.\", \"evidence_ids\": [\"m:C_AUDIO_GENERAL:1790891025.000226\", \"m:C_AUDIO_GENERAL:1790941105.000226\"], \"attributions\": [{\"user_id\": \"U008\", \"relation\": \"AUTHOR\", \"evidence_id\": \"m:C_AUDIO_GENERAL:1790891025.000226\"}, {\"user_id\": \"U002\", \"relation\": \"AUTHOR\", \"evidence_id\": \"m:C_AUDIO_GENERAL:1790941105.000226\"}], \"quote\": null, \"quote_kind\": \"PARAPHRASE\", \"material\": true}, {\"claim_id\": \"c11\", \"kind\": \"THREAD_INSTRUCTION\", \"text\": \"In the failure-threshold thread, the team lead requests overlap timestamps so QA can determine whether the full sample or only a short segment is affected.\", \"evidence_ids\": [\"m:C_AUDIO_GENERAL:1790941162.000339\"], \"attributions\": [{\"user_id\": \"U006\", \"relation\": \"AUTHOR\", \"evidence_id\": \"m:C_AUDIO_GENERAL:1790941162.000339\"}], \"quote\": null, \"quote_kind\": \"PARAPHRASE\", \"material\": true}, {\"claim_id\": \"c12\", \"kind\": \"GUIDANCE\", \"text\": \"The current project instructions and FAQ require marking the overlapping or unintelligible interval, timestamping the affected span and preserving usable portions; the FAQ says not to infer whole-clip failure from a short affected interval.\", \"evidence_ids\": [\"k:audio-multimodal-instructions@1.3:eb85357a\", \"k:audio-multimodal-faq@1.1:e9bcf43a\"], \"attributions\": [], \"quote\": null, \"quote_kind\": \"PARAPHRASE\", \"material\": true}, {\"claim_id\": \"c13\", \"kind\": \"GUIDANCE\", \"text\": \"The current overlap instructions require distinguishing words missing from the audio from mistakes in the reference transcript.\", \"evidence_ids\": [\"k:audio-multimodal-instructions@1.3:eb85357a\"], \"attributions\": [], \"quote\": null, \"quote_kind\": \"PARAPHRASE\", \"material\": true}, {\"claim_id\": \"c14\", \"kind\": \"INFERENCE\", \"text\": \"The provided background-speaker and failure-threshold threads contain no timestamps responding to the team lead's requests, so the requested inputs for those case assessments are still missing.\", \"evidence_ids\": [\"m:C_AUDIO_GENERAL:1790890932.000133\", \"m:C_AUDIO_GENERAL:1790890987.000113\", \"m:C_AUDIO_GENERAL:1790891025.000226\", \"m:C_AUDIO_GENERAL:1790891074.000339\", \"m:C_AUDIO_GENERAL:1790941015.000132\", \"m:C_AUDIO_GENERAL:1790941070.000113\", \"m:C_AUDIO_GENERAL:1790941105.000226\", \"m:C_AUDIO_GENERAL:1790941162.000339\"], \"attributions\": [{\"user_id\": \"U006\", \"relation\": \"AUTHOR\", \"evidence_id\": \"m:C_AUDIO_GENERAL:1790891074.000339\"}, {\"user_id\": \"U006\", \"relation\": \"AUTHOR\", \"evidence_id\": \"m:C_AUDIO_GENERAL:1790941162.000339\"}], \"quote\": null, \"quote_kind\": \"PARAPHRASE\", \"material\": true}], \"gaps\": [], \"evidence_sufficiency\": \"SUFFICIENT\", \"proposed_action\": {\"action_type\": \"POST_ALIGNMENT\", \"intervention_need\": {\"kind\": \"UNRESOLVED_HANDLING_QUESTION\", \"statement\": \"A QA tutor's overlap-marking question remains unanswered, while tutors also ask about interval marking and transcription failure, showing a repeated handling uncertainty that current guidance can address.\", \"evidence_ids\": [\"m:C_AUDIO_QA:1790864427.000131\", \"m:C_AUDIO_GENERAL:1790921338.000134\", \"m:C_AUDIO_GENERAL:1790941015.000132\"]}, \"instruction\": \"Post a reminder explaining how to mark and timestamp overlapping speech while keeping usable audio and avoiding automatic whole-clip failure.\", \"rationale\": \"Repeated questions concern interval marking and whole-clip failure, which the current instructions and FAQ address. A reminder can answer the remaining general handling question without replacing the team lead's case-specific timestamp requests.\", \"draft_text\": \"Overlap reminder for this batch:\\n- Mark the overlapping or unintelligible interval and timestamp the affected span.\\n- Keep the usable portions of the clip; do not infer a whole-clip failure from a short affected interval.\\n- Distinguish words missing from the audio from mistakes in the reference transcript.\\nThese are the current instructions and FAQ: a short affected interval is not, by itself, a reason to discard the whole recording.\", \"scope_note\": \"Clarifies current overlap handling; it does not decide the pending QA assessments of individual clips.\", \"support_claim_ids\": [\"c1\", \"c5\", \"c8\", \"c12\", \"c13\", \"c4\", \"c11\", \"c14\"], \"targets\": [], \"context_claim_ids\": [\"c7\"]}, \"severity\": {\"level\": \"MEDIUM\", \"rationale\": \"Repeated questions concern whether overlap should be marked locally or cause transcription failure, which can change how usable audio is retained and scored. The reports describe contained spans rather than demonstrated batch-wide disruption.\", \"signals\": [{\"level\": \"MEDIUM\", \"signal_index\": 0, \"signal_text\": \"Recurring confusion about the same rule, tool behavior, or scoring criterion that suggests meaningful workflow or labeling impact\", \"support\": \"A QA tutor asks whether simultaneous speech should be marked unintelligible; a tutor asks the same for a two-second overlap, and another tutor asks when overlap causes transcription failure.\", \"evidence_ids\": [\"m:C_AUDIO_QA:1790864427.000131\", \"m:C_AUDIO_GENERAL:1790921338.000134\", \"m:C_AUDIO_GENERAL:1790941015.000132\"]}], \"affected_reporters\": [{\"author_id\": \"U020\", \"evidence_id\": \"m:C_AUDIO_GENERAL:1790890932.000133\"}, {\"author_id\": \"U018\", \"evidence_id\": \"m:C_AUDIO_GENERAL:1790941070.000113\"}, {\"author_id\": \"U003\", \"evidence_id\": \"m:C_AUDIO_GENERAL:1790921338.000134\"}, {\"author_id\": \"U012\", \"evidence_id\": \"m:C_AUDIO_GENERAL:1790921388.000113\"}], \"recurrence\": \"NOT_CHECKED\", \"recurrence_evidence_ids\": [], \"reported_recurrence_evidence_ids\": []}, \"confidence\": 0.92, \"open_confirmation\": \"NONE\", \"open_question\": null, \"open_question_evidence_ids\": [], \"source_conflicts\": [], \"announcement_assessments\": [], \"resolution\": [{\"member_id\": \"member_49e4e0ef557959173d770df5\", \"state\": \"UNRESOLVED\", \"evidence_ids\": [\"m:C_AUDIO_QA:1790864427.000131\"], \"basis\": \"The QA tutor's question has no answer in the provided thread.\"}, {\"member_id\": \"member_b224f8f278e4849b8a75936b\", \"state\": \"UNRESOLVED\", \"evidence_ids\": [\"m:C_AUDIO_GENERAL:1790890932.000133\", \"m:C_AUDIO_GENERAL:1790890987.000113\", \"m:C_AUDIO_GENERAL:1790891025.000226\", \"m:C_AUDIO_GENERAL:1790891074.000339\"], \"basis\": \"The tutor's background-speaker report receives questions and a timestamp request from the team lead, but no final assessment or reported correction.\"}, {\"member_id\": \"member_e6be3632ce8e4a4b4f77bca7\", \"state\": \"RESOLVED_IN_THREAD\", \"evidence_ids\": [\"m:C_AUDIO_GENERAL:1790921338.000134\", \"m:C_AUDIO_GENERAL:1790921388.000113\", \"m:C_AUDIO_GENERAL:1790921430.000226\", \"m:C_AUDIO_GENERAL:1790921481.000339\"], \"basis\": \"A QA tutor directly answers the tutor's marking question for AUDIO-1338: mark the unintelligible interval and retain the clear portions. This resolves the handling question, not a confirmed correction of the task.\"}, {\"member_id\": \"member_e48bf44fa3dd5692a771cf22\", \"state\": \"UNRESOLVED\", \"evidence_ids\": [\"m:C_AUDIO_GENERAL:1790941015.000132\", \"m:C_AUDIO_GENERAL:1790941070.000113\", \"m:C_AUDIO_GENERAL:1790941105.000226\", \"m:C_AUDIO_GENERAL:1790941162.000339\"], \"basis\": \"The tutor's failure-threshold question receives an intelligibility question and a timestamp request from the team lead, but no substantive answer or case assessment in the thread.\"}], \"coverage\": [{\"need\": \"CURRENT_GUIDANCE\", \"status\": \"COVERED\", \"evidence_ids\": [\"k:audio-multimodal-instructions@1.3:eb85357a\", \"k:audio-multimodal-faq@1.1:e9bcf43a\"], \"note\": \"Current project-wide instructions and FAQ directly cover overlap marking, timestamps, usable portions and the limit on inferring whole-clip failure.\", \"gap_id\": null}, {\"need\": \"ANNOUNCEMENTS\", \"status\": \"NOT_APPLICABLE\", \"evidence_ids\": [], \"note\": \"No announcement was provided. The proposed reminder relies on current instructions and FAQ, not an announcement, delivery route or batch-specific directive.\", \"gap_id\": null}, {\"need\": \"PRIOR_DECISIONS\", \"status\": \"NOT_APPLICABLE\", \"evidence_ids\": [], \"note\": \"The member messages do not refer to an earlier workaround or trial. Restating the explicit current rule does not require a claim about earlier decisions, outcomes or supersession.\", \"gap_id\": null}, {\"need\": \"MEMBER_QUESTIONS\", \"status\": \"COVERED\", \"evidence_ids\": [\"m:C_AUDIO_QA:1790864427.000131\", \"m:C_AUDIO_GENERAL:1790891025.000226\", \"m:C_AUDIO_GENERAL:1790921338.000134\", \"m:C_AUDIO_GENERAL:1790921388.000113\", \"m:C_AUDIO_GENERAL:1790921430.000226\", \"m:C_AUDIO_GENERAL:1790921481.000339\", \"m:C_AUDIO_GENERAL:1790941015.000132\", \"m:C_AUDIO_GENERAL:1790941105.000226\"], \"note\": \"The evidence includes marking and failure-threshold questions, requests for timestamps and intelligibility information, and the QA tutor's item-specific answer for AUDIO-1338.\", \"gap_id\": null}], \"review_note\": null, \"action_choice\": null}",
+    "raw_sha256": "fe4ebc4eec4c8a345177e913fcbf7638b9faefdba32b90e8c3cd077e85a54fd3",
+    "status": "OK"
+   },
+   {
+    "stage": "grounding",
+    "schema": "GroundingJudgment",
+    "raw": "{\"contract_version\": \"agent3-grounding-judgment-v5\", \"verdicts\": [{\"statement_id\": \"claim:c2\", \"verdict\": \"SUPPORTED\", \"rationale\": \"The cited tutor reports exactly this background-speaker transcription problem.\"}, {\"statement_id\": \"claim:c3\", \"verdict\": \"SUPPORTED\", \"rationale\": \"The distinct second tutor reports two seconds of overlap and says the rest is clear.\"}, {\"statement_id\": \"claim:c4\", \"verdict\": \"SUPPORTED\", \"rationale\": \"The team lead explicitly requests timestamps for QA's scope assessment and notes that the remainder may remain usable.\"}, {\"statement_id\": \"claim:c5\", \"verdict\": \"SUPPORTED\", \"rationale\": \"The tutor explicitly reports two seconds of overlapping speech on AUDIO-1338 and asks whether to mark it unintelligible.\"}, {\"statement_id\": \"claim:c6\", \"verdict\": \"SUPPORTED\", \"rationale\": \"Both reports and requests match the cited messages and their authors' roles.\"}, {\"statement_id\": \"claim:c7\", \"verdict\": \"SUPPORTED\", \"rationale\": \"The QA tutor directly gives this item-specific answer, including retaining clear portions and not discarding the recording.\"}, {\"statement_id\": \"claim:c8\", \"verdict\": \"SUPPORTED\", \"rationale\": \"The tutor explicitly asks QA how much overlap is allowed before transcription fails the rubric.\"}, {\"statement_id\": \"claim:c9\", \"verdict\": \"SUPPORTED\", \"rationale\": \"The cited tutor says both voices are audible but individual words in the overlap are lost.\"}, {\"statement_id\": \"claim:c10\", \"verdict\": \"SUPPORTED\", \"rationale\": \"Two distinct QA tutors ask the stated intelligibility question in the respective threads.\"}, {\"statement_id\": \"claim:c11\", \"verdict\": \"SUPPORTED\", \"rationale\": \"The team lead explicitly requests overlap timestamps for QA to assess whether the full sample or only a short segment is affected.\"}, {\"statement_id\": \"claim:c12\", \"verdict\": \"SUPPORTED\", \"rationale\": \"Both current sources prescribe interval marking, timestamps and preservation of usable portions; the FAQ explicitly rejects inferring whole-clip failure from a short interval.\"}, {\"statement_id\": \"claim:c13\", \"verdict\": \"SUPPORTED\", \"rationale\": \"The current overlap instructions explicitly require this distinction.\"}, {\"statement_id\": \"claim:c14\", \"verdict\": \"SUPPORTED\", \"rationale\": \"Neither complete provided thread contains timestamps responding to the team lead's requests, so the requested assessment inputs remain absent from the record.\"}, {\"statement_id\": \"summary:s1\", \"verdict\": \"SUPPORTED\", \"rationale\": \"The three distinct attributed authors each ask about overlap handling, including unintelligibility marking and rubric failure.\"}, {\"statement_id\": \"summary:s2\", \"verdict\": \"SUPPORTED\", \"rationale\": \"This accurately summarizes the current instructions and FAQ without adding a failure threshold.\"}, {\"statement_id\": \"detail:d1\", \"verdict\": \"SUPPORTED\", \"rationale\": \"Both reports match the cited messages, with correct roles and distinct authors.\"}, {\"statement_id\": \"detail:d2\", \"verdict\": \"SUPPORTED\", \"rationale\": \"The tutor reports two seconds of overlap and the QA tutor gives the stated marking and retention answer.\"}, {\"statement_id\": \"detail:d3\", \"verdict\": \"SUPPORTED\", \"rationale\": \"The cited message reports hearing both voices while losing individual words during overlap.\"}, {\"statement_id\": \"detail:d4\", \"verdict\": \"SUPPORTED\", \"rationale\": \"Both team-lead requests explicitly concern QA's affected-scope assessment, and neither provided thread supplies the requested timestamps.\"}, {\"statement_id\": \"detail:d5\", \"verdict\": \"SUPPORTED\", \"rationale\": \"The cited tutor requests an overlap timestamp and the QA tutor requests the unintelligible span's start and end.\"}, {\"statement_id\": \"detail:d6\", \"verdict\": \"SUPPORTED\", \"rationale\": \"A QA tutor in each named thread asks whether the remaining recording is intelligible enough to continue.\"}, {\"statement_id\": \"action\", \"verdict\": \"SUPPORTED\", \"rationale\": \"The reminder accurately restates applicable current guidance and addresses documented handling questions. Its scope preserves rather than replaces the pending case-specific QA assessments, and it specifies no unsupported concrete route.\"}, {\"statement_id\": \"action:rationale\", \"verdict\": \"SUPPORTED\", \"rationale\": \"Multiple authors ask about marking or failure, current guidance addresses those issues, and the unanswered general question can be clarified without deciding the timestamp-dependent cases.\"}, {\"statement_id\": \"action:need\", \"verdict\": \"SUPPORTED\", \"rationale\": \"The QA tutor's marking question has no thread answer, and the separate tutor questions demonstrate repeated handling uncertainty. The AUDIO-1338 answer resolves that case but not the other threads.\"}, {\"statement_id\": \"resolution:member_49e4e0ef557959173d770df5\", \"verdict\": \"SUPPORTED\", \"rationale\": \"The complete provided thread contains only the QA tutor's question and no answer.\"}, {\"statement_id\": \"resolution:member_b224f8f278e4849b8a75936b\", \"verdict\": \"SUPPORTED\", \"rationale\": \"The thread ends with a timestamp request, without the requested timestamps, final assessment or reported correction.\"}, {\"statement_id\": \"resolution:member_e6be3632ce8e4a4b4f77bca7\", \"verdict\": \"SUPPORTED\", \"rationale\": \"The QA tutor directly answers the marking question, with a team-lead check reaction. The statement correctly distinguishes handling resolution from a confirmed task correction.\"}, {\"statement_id\": \"resolution:member_e48bf44fa3dd5692a771cf22\", \"verdict\": \"SUPPORTED\", \"rationale\": \"The thread contains clarifying questions and a timestamp request but no substantive threshold answer or completed case assessment.\"}, {\"statement_id\": \"severity:rationale\", \"verdict\": \"SUPPORTED\", \"rationale\": \"Repeated marking and failure questions support meaningful labeling and scoring uncertainty. The reports concern localized overlap and do not demonstrate batch-wide disruption.\"}, {\"statement_id\": \"severity:signal:MEDIUM[0]\", \"verdict\": \"SUPPORTED\", \"rationale\": \"Three distinct authors ask the described related handling questions, supporting recurring confusion with potential workflow or labeling impact.\"}, {\"statement_id\": \"reporter:U020\", \"verdict\": \"SUPPORTED\", \"rationale\": \"U020's own message reports the background-speaker transcription problem.\"}, {\"statement_id\": \"reporter:U018\", \"verdict\": \"SUPPORTED\", \"rationale\": \"U018 personally reports hearing both voices while losing individual words.\"}, {\"statement_id\": \"reporter:U003\", \"verdict\": \"SUPPORTED\", \"rationale\": \"U003 personally reports overlap on their referenced task and asks how to mark it.\"}, {\"statement_id\": \"reporter:U012\", \"verdict\": \"SUPPORTED\", \"rationale\": \"U012 personally reports hearing both voices but losing words in the overlapping interval.\"}], \"action_sufficiency\": {\"verdict\": \"SUFFICIENT\", \"essential_statement_ids\": [\"claim:c8\", \"claim:c12\", \"claim:c13\", \"claim:c14\"], \"rationale\": \"Supported premises establish a handling question warranting clarification, every substantive rule in the reminder, and missing inputs for pending case assessments. The rejected plural premise is unnecessary: supported questions independently justify the reminder. The action does not invent a threshold, decide individual cases or specify an unsupported route.\"}, \"alternative_sufficiency\": [], \"source_consistency\": {\"assessed_evidence_ids\": [\"k:audio-multimodal-faq@1.1:e9bcf43a\", \"k:audio-multimodal-instructions@1.3:eb85357a\", \"k:audio-multimodal-instructions@1.3:1131a168\", \"k:audio-multimodal-instructions@1.3:6eeb0c96\", \"k:audio-multimodal-faq@1.1:f72aa6db\"], \"relations\": [{\"evidence_ids\": [\"k:audio-multimodal-faq@1.1:e9bcf43a\", \"k:audio-multimodal-instructions@1.3:eb85357a\"], \"relation\": \"AGREE\", \"point\": \"Mark and timestamp overlapping or unintelligible intervals while preserving usable portions.\", \"disagreement_scope\": null, \"rationale\": \"Both current sources state the same overlap-handling rule. The FAQ's explicit warning against inferring whole-clip failure adds compatible detail.\"}, {\"evidence_ids\": [\"k:audio-multimodal-faq@1.1:e9bcf43a\", \"k:audio-multimodal-instructions@1.3:eb85357a\"], \"relation\": \"AGREE\", \"point\": \"Distinguish audio defects or missing audio content from reference-transcript errors.\", \"disagreement_scope\": null, \"rationale\": \"The FAQ requires distinguishing recording errors from reference-transcript errors, consistent with the overlap instructions' distinction between missing audio words and transcript mistakes.\"}, {\"evidence_ids\": [\"k:audio-multimodal-faq@1.1:e9bcf43a\", \"k:audio-multimodal-instructions@1.3:1131a168\", \"k:audio-multimodal-instructions@1.3:6eeb0c96\"], \"relation\": \"AGREE\", \"point\": \"Audio-quality scoring depends on intelligibility and affected scope rather than duration alone.\", \"disagreement_scope\": null, \"rationale\": \"The sources consistently distinguish brief artifacts with clear speech from materially unusable speech. The scoring instructions and FAQ require review for unclear impact; none makes short overlap alone a whole-clip failure.\"}], \"declared_conflict_checks\": []}}",
+    "raw_sha256": "a114ab51a23daec3cdda0364508b334b1a2d868f419651b1626c15b4e6f32c6e",
+    "status": "OK"
+   }
+  ],
+  "agent1_context": [
+   {
+    "sha256": "0dda5e7f6d9a538d9b0ecc9bc89baa2d475b61a62867f7fd74f55f26e470afd9",
+    "content": [
+     {
+      "member_id": "member_49e4e0ef557959173d770df5",
+      "thread_id": "1790864427.000131",
+      "summary": "Yuki, a QA_TUTOR, asks whether to mark a segment as unintelligible when two people talk at once.",
+      "central_question": "Should segments where two people talk at once be marked as unintelligible?",
+      "attributed_agent1_resolution": {
+       "state": "UNRESOLVED",
+       "rationale": "The thread contains a single question from Yuki regarding the marking of unintelligible segments, but there are no replies or substantive answers provided to address this question.",
+       "agent1_verification_status": "VERIFIED",
+       "note": "Agent 1 label, not evidence; NEEDS_REVIEW means Agent 1 did not verify it. Assess resolution from the member messages."
+      },
+      "agent1_review_required": false,
+      "agent1_review_reason": "",
+      "note": "Agent 1 interpretation, not source evidence; cite member messages for incident facts."
+     },
+     {
+      "member_id": "member_b224f8f278e4849b8a75936b",
+      "thread_id": "1790890932.000133",
+      "summary": "The thread discusses an issue where a background speaker is being transcribed as the main speaker. Omar notes that the speakers overlap for two seconds but the rest of the recording is clear. Hana questions whether the intelligibility of the rest of the recording is sufficient to continue the task, emphasizing that overlap duration and word intelligibility are separate observations. Priya, the team lead, requests that the overlap be timestamped so that QA can assess its impact on the overall sample, suggesting that the remainder may still be usable even if a short segment is unclear.",
+      "central_question": "What should be done when a background speaker is transcribed as the main speaker?",
+      "attributed_agent1_resolution": {
+       "state": "UNRESOLVED",
+       "rationale": "All replies focus on clarifying the situation or requesting further diagnostic information. None provide a substantive answer or guidance on what action should be taken when a background speaker is transcribed as the main speaker.",
+       "agent1_verification_status": "NEEDS_REVIEW",
+       "note": "Agent 1 label, not evidence; NEEDS_REVIEW means Agent 1 did not verify it. Assess resolution from the member messages."
+      },
+      "agent1_review_required": true,
+      "agent1_review_reason": "Still unverified after one targeted revision: Prose unit central_question:1: UNSUPPORTED.\nCandidate: What should be done when a background speaker is transcribed as the main speaker?\nSource establishes: Theo raises the issue of a background speaker being transcribed as the main speaker, but no one directly asks what should be done about it.\nReason: While the issue is reported, no participant explicitly frames the central question as 'What should be done...?' The thread focuses on clarifying the situation and requesting more information, not directly on what action to take.",
+      "note": "Agent 1 interpretation, not source evidence; cite member messages for incident facts."
+     },
+     {
+      "member_id": "member_e6be3632ce8e4a4b4f77bca7",
+      "thread_id": "1790921338.000134",
+      "summary": "Jordan asks whether to mark a two-second segment where two speakers talk over each other as unintelligible. Sam notes that while both voices are audible, individual words are lost during the overlap and requests a timestamp for that portion. Hana asks for the start and end of the unintelligible span. Leo provides guidance to mark the unintelligible overlapping interval while retaining the clear parts of the clip and not discarding the whole recording.",
+      "central_question": "Should the two-second segment where two speakers talk over each other be marked as unintelligible?",
+      "attributed_agent1_resolution": {
+       "state": "RESOLVED_IN_THREAD",
+       "rationale": "Leo's response provides clear guidance on how to handle the unintelligible segment, specifying that the overlapping interval should be marked while retaining the clear parts of the recording. This fully addresses the original question posed by Jordan.",
+       "agent1_verification_status": "VERIFIED",
+       "note": "Agent 1 label, not evidence; NEEDS_REVIEW means Agent 1 did not verify it. Assess resolution from the member messages."
+      },
+      "agent1_review_required": false,
+      "agent1_review_reason": "",
+      "note": "Agent 1 interpretation, not source evidence; cite member messages for incident facts."
+     },
+     {
+      "member_id": "member_e48bf44fa3dd5692a771cf22",
+      "thread_id": "1790941015.000132",
+      "summary": "Carla asks how much overlap is allowed before a transcription fails the rubric. Omar notes that he can hear both voices but some individual words are lost in the overlap. Mina questions if the rest of the recording is intelligible enough to continue the task. Priya, the team lead, advises to timestamp the overlap for QA to assess its impact on the full sample or if it's just a short segment.",
+      "central_question": "How much overlap is allowed before the transcription fails the rubric?",
+      "attributed_agent1_resolution": {
+       "state": "UNRESOLVED",
+       "rationale": "No reply provides a substantive answer to the question of how much overlap is allowed before failing the rubric. Replies only offer observations or request further diagnostic information.",
+       "agent1_verification_status": "CORRECTED",
+       "note": "Agent 1 label, not evidence; NEEDS_REVIEW means Agent 1 did not verify it. Assess resolution from the member messages."
+      },
+      "agent1_review_required": false,
+      "agent1_review_reason": "",
+      "note": "Agent 1 interpretation, not source evidence; cite member messages for incident facts."
+     }
+    ]
+   }
+  ],
+  "drafts": {
+   "initial": {
+    "contract_version": "agent3-advisor-draft-v11",
+    "summary": "A QA tutor and two tutors ask how to handle overlapping speech, including whether to mark it unintelligible or fail a transcription. Current guidance says to mark and timestamp the affected interval and preserve usable audio, rather than infer whole-clip failure from a short interval.",
+    "summary_sentences": [
+     {
+      "text": "A QA tutor and two tutors ask how to handle overlapping speech, including whether to mark it unintelligible or fail a transcription.",
+      "support_claim_ids": [
+       "c1",
+       "c5",
+       "c8"
+      ],
+      "depends_on": []
+     },
+     {
+      "text": "Current guidance says to mark and timestamp the affected interval and preserve usable audio, rather than infer whole-clip failure from a short interval.",
+      "support_claim_ids": [
+       "c12"
+      ],
+      "depends_on": []
+     }
+    ],
+    "detail_sentences": [
+     {
+      "text": "In the background-speaker thread, a tutor reports that a background speaker is transcribed as the main speaker; a second tutor reports two seconds of overlap with the rest clear.",
+      "support_claim_ids": [
+       "c2",
+       "c3"
+      ],
+      "depends_on": [],
+      "summary_depends_on": []
+     },
+     {
+      "text": "For AUDIO-1338, a tutor reports two seconds of overlap, and a QA tutor answers that the unintelligible interval should be marked while the clear portions are retained.",
+      "support_claim_ids": [
+       "c5",
+       "c7"
+      ],
+      "depends_on": [],
+      "summary_depends_on": []
+     },
+     {
+      "text": "In the thread asking about the failure threshold, a tutor reports hearing both voices but losing individual words during the overlap.",
+      "support_claim_ids": [
+       "c9"
+      ],
+      "depends_on": [],
+      "summary_depends_on": [
+       1
+      ]
+     },
+     {
+      "text": "The team lead requested overlap timestamps in both the background-speaker and failure-threshold threads so QA could assess the affected scope; neither thread contains the requested timestamps.",
+      "support_claim_ids": [
+       "c4",
+       "c11",
+       "c14"
+      ],
+      "depends_on": [
+       1,
+       3
+      ],
+      "summary_depends_on": []
+     },
+     {
+      "text": "In the AUDIO-1338 thread, a tutor requested a timestamp for the overlap and a QA tutor requested the start and end of the unintelligible span.",
+      "support_claim_ids": [
+       "c6"
+      ],
+      "depends_on": [
+       2
+      ],
+      "summary_depends_on": []
+     },
+     {
+      "text": "A QA tutor in each of the background-speaker and failure-threshold threads asked whether the rest of the recording was intelligible enough to continue.",
+      "support_claim_ids": [
+       "c10"
+      ],
+      "depends_on": [
+       1,
+       3
+      ],
+      "summary_depends_on": []
+     }
+    ],
+    "reasoning": "A reminder is supported by repeated questions about interval marking and whole-clip failure, including a QA tutor's unanswered question. The current instructions and FAQ directly address those questions, so no new overlap rule or documentation change is needed. The AUDIO-1338 question was answered in its own thread; that answer is not project guidance. The other two case assessments still lack the timestamps requested by the team lead, which is missing diagnostic information rather than an open policy decision. No additional retrieval is needed for the proposed reminder. The upstream review flag on the background-speaker thread remains open: the tutor reported a symptom, not an explicit handling question.",
+    "claims": [
+     {
+      "claim_id": "c1",
+      "kind": "INCIDENT_FACT",
+      "text": "A QA tutor asks whether simultaneous speech by two people should be marked unintelligible.",
+      "evidence_ids": [
+       "m:C_AUDIO_QA:1790864427.000131"
+      ],
+      "attributions": [
+       {
+        "user_id": "U019",
+        "relation": "AUTHOR",
+        "evidence_id": "m:C_AUDIO_QA:1790864427.000131"
+       }
+      ],
+      "quote": null,
+      "quote_kind": "PARAPHRASE",
+      "material": true
+     },
+     {
+      "claim_id": "c2",
+      "kind": "INCIDENT_FACT",
+      "text": "A tutor reports that a background speaker is transcribed as the main speaker.",
+      "evidence_ids": [
+       "m:C_AUDIO_GENERAL:1790890932.000133"
+      ],
+      "attributions": [
+       {
+        "user_id": "U020",
+        "relation": "AUTHOR",
+        "evidence_id": "m:C_AUDIO_GENERAL:1790890932.000133"
+       }
+      ],
+      "quote": null,
+      "quote_kind": "PARAPHRASE",
+      "material": true
+     },
+     {
+      "claim_id": "c3",
+      "kind": "INCIDENT_FACT",
+      "text": "A second tutor in the background-speaker thread reports two seconds of speaker overlap with the rest clear.",
+      "evidence_ids": [
+       "m:C_AUDIO_GENERAL:1790890987.000113"
+      ],
+      "attributions": [
+       {
+        "user_id": "U018",
+        "relation": "AUTHOR",
+        "evidence_id": "m:C_AUDIO_GENERAL:1790890987.000113"
+       }
+      ],
+      "quote": null,
+      "quote_kind": "PARAPHRASE",
+      "material": true
+     },
+     {
+      "claim_id": "c4",
+      "kind": "THREAD_INSTRUCTION",
+      "text": "In the background-speaker thread, the team lead requests overlap timestamps so QA can determine whether the full sample or only a short segment is affected, and notes that the remainder may still be usable.",
+      "evidence_ids": [
+       "m:C_AUDIO_GENERAL:1790891074.000339"
+      ],
+      "attributions": [
+       {
+        "user_id": "U006",
+        "relation": "AUTHOR",
+        "evidence_id": "m:C_AUDIO_GENERAL:1790891074.000339"
+       }
+      ],
+      "quote": null,
+      "quote_kind": "PARAPHRASE",
+      "material": true
+     },
+     {
+      "claim_id": "c5",
+      "kind": "INCIDENT_FACT",
+      "text": "A tutor reports two seconds of overlapping speech on AUDIO-1338 and asks whether to mark it unintelligible.",
+      "evidence_ids": [
+       "m:C_AUDIO_GENERAL:1790921338.000134"
+      ],
+      "attributions": [
+       {
+        "user_id": "U003",
+        "relation": "AUTHOR",
+        "evidence_id": "m:C_AUDIO_GENERAL:1790921338.000134"
+       }
+      ],
+      "quote": null,
+      "quote_kind": "PARAPHRASE",
+      "material": true
+     },
+     {
+      "claim_id": "c6",
+      "kind": "INCIDENT_FACT",
+      "text": "In the AUDIO-1338 thread, a tutor reports hearing both voices but losing individual words and requests an overlap timestamp; a QA tutor asks for the start and end of the unintelligible span.",
+      "evidence_ids": [
+       "m:C_AUDIO_GENERAL:1790921388.000113",
+       "m:C_AUDIO_GENERAL:1790921430.000226"
+      ],
+      "attributions": [
+       {
+        "user_id": "U012",
+        "relation": "AUTHOR",
+        "evidence_id": "m:C_AUDIO_GENERAL:1790921388.000113"
+       },
+       {
+        "user_id": "U008",
+        "relation": "AUTHOR",
+        "evidence_id": "m:C_AUDIO_GENERAL:1790921430.000226"
+       }
+      ],
+      "quote": null,
+      "quote_kind": "PARAPHRASE",
+      "material": true
+     },
+     {
+      "claim_id": "c7",
+      "kind": "INCIDENT_FACT",
+      "text": "A QA tutor answers the AUDIO-1338 question by saying to mark the unintelligible overlapping interval, retain the clear portions and not discard the whole recording.",
+      "evidence_ids": [
+       "m:C_AUDIO_GENERAL:1790921481.000339"
+      ],
+      "attributions": [
+       {
+        "user_id": "U007",
+        "relation": "AUTHOR",
+        "evidence_id": "m:C_AUDIO_GENERAL:1790921481.000339"
+       }
+      ],
+      "quote": null,
+      "quote_kind": "PARAPHRASE",
+      "material": true
+     },
+     {
+      "claim_id": "c8",
+      "kind": "INCIDENT_FACT",
+      "text": "A tutor asks QA how much overlap is allowed before a transcription fails the rubric.",
+      "evidence_ids": [
+       "m:C_AUDIO_GENERAL:1790941015.000132"
+      ],
+      "attributions": [
+       {
+        "user_id": "U015",
+        "relation": "AUTHOR",
+        "evidence_id": "m:C_AUDIO_GENERAL:1790941015.000132"
+       }
+      ],
+      "quote": null,
+      "quote_kind": "PARAPHRASE",
+      "material": true
+     },
+     {
+      "claim_id": "c9",
+      "kind": "INCIDENT_FACT",
+      "text": "In the failure-threshold thread, a tutor reports hearing both voices but losing individual words during the overlap.",
+      "evidence_ids": [
+       "m:C_AUDIO_GENERAL:1790941070.000113"
+      ],
+      "attributions": [
+       {
+        "user_id": "U018",
+        "relation": "AUTHOR",
+        "evidence_id": "m:C_AUDIO_GENERAL:1790941070.000113"
+       }
+      ],
+      "quote": null,
+      "quote_kind": "PARAPHRASE",
+      "material": true
+     },
+     {
+      "claim_id": "c10",
+      "kind": "INCIDENT_FACT",
+      "text": "A QA tutor in the background-speaker thread and a different QA tutor in the failure-threshold thread ask whether the rest of the recording is intelligible enough to continue.",
+      "evidence_ids": [
+       "m:C_AUDIO_GENERAL:1790891025.000226",
+       "m:C_AUDIO_GENERAL:1790941105.000226"
+      ],
+      "attributions": [
+       {
+        "user_id": "U008",
+        "relation": "AUTHOR",
+        "evidence_id": "m:C_AUDIO_GENERAL:1790891025.000226"
+       },
+       {
+        "user_id": "U002",
+        "relation": "AUTHOR",
+        "evidence_id": "m:C_AUDIO_GENERAL:1790941105.000226"
+       }
+      ],
+      "quote": null,
+      "quote_kind": "PARAPHRASE",
+      "material": true
+     },
+     {
+      "claim_id": "c11",
+      "kind": "THREAD_INSTRUCTION",
+      "text": "In the failure-threshold thread, the team lead requests overlap timestamps so QA can determine whether the full sample or only a short segment is affected.",
+      "evidence_ids": [
+       "m:C_AUDIO_GENERAL:1790941162.000339"
+      ],
+      "attributions": [
+       {
+        "user_id": "U006",
+        "relation": "AUTHOR",
+        "evidence_id": "m:C_AUDIO_GENERAL:1790941162.000339"
+       }
+      ],
+      "quote": null,
+      "quote_kind": "PARAPHRASE",
+      "material": true
+     },
+     {
+      "claim_id": "c12",
+      "kind": "GUIDANCE",
+      "text": "The current project instructions and FAQ require marking the overlapping or unintelligible interval, timestamping the affected span and preserving usable portions; the FAQ says not to infer whole-clip failure from a short affected interval.",
+      "evidence_ids": [
+       "k:audio-multimodal-instructions@1.3:eb85357a",
+       "k:audio-multimodal-faq@1.1:e9bcf43a"
+      ],
+      "attributions": [],
+      "quote": null,
+      "quote_kind": "PARAPHRASE",
+      "material": true
+     },
+     {
+      "claim_id": "c13",
+      "kind": "GUIDANCE",
+      "text": "The current overlap instructions require distinguishing words missing from the audio from mistakes in the reference transcript.",
+      "evidence_ids": [
+       "k:audio-multimodal-instructions@1.3:eb85357a"
+      ],
+      "attributions": [],
+      "quote": null,
+      "quote_kind": "PARAPHRASE",
+      "material": true
+     },
+     {
+      "claim_id": "c14",
+      "kind": "INFERENCE",
+      "text": "The provided background-speaker and failure-threshold threads contain no timestamps responding to the team lead's requests, so the requested inputs for those case assessments are still missing.",
+      "evidence_ids": [
+       "m:C_AUDIO_GENERAL:1790890932.000133",
+       "m:C_AUDIO_GENERAL:1790890987.000113",
+       "m:C_AUDIO_GENERAL:1790891025.000226",
+       "m:C_AUDIO_GENERAL:1790891074.000339",
+       "m:C_AUDIO_GENERAL:1790941015.000132",
+       "m:C_AUDIO_GENERAL:1790941070.000113",
+       "m:C_AUDIO_GENERAL:1790941105.000226",
+       "m:C_AUDIO_GENERAL:1790941162.000339"
+      ],
+      "attributions": [
+       {
+        "user_id": "U006",
+        "relation": "AUTHOR",
+        "evidence_id": "m:C_AUDIO_GENERAL:1790891074.000339"
+       },
+       {
+        "user_id": "U006",
+        "relation": "AUTHOR",
+        "evidence_id": "m:C_AUDIO_GENERAL:1790941162.000339"
+       }
+      ],
+      "quote": null,
+      "quote_kind": "PARAPHRASE",
+      "material": true
+     }
+    ],
+    "gaps": [],
+    "evidence_sufficiency": "SUFFICIENT",
+    "proposed_action": {
+     "action_type": "POST_ALIGNMENT",
+     "intervention_need": {
+      "kind": "UNRESOLVED_HANDLING_QUESTION",
+      "statement": "A QA tutor's overlap-marking question remains unanswered, while tutors also ask about interval marking and transcription failure, showing a repeated handling uncertainty that current guidance can address.",
+      "evidence_ids": [
+       "m:C_AUDIO_QA:1790864427.000131",
+       "m:C_AUDIO_GENERAL:1790921338.000134",
+       "m:C_AUDIO_GENERAL:1790941015.000132"
+      ]
+     },
+     "instruction": "Post a reminder explaining how to mark and timestamp overlapping speech while keeping usable audio and avoiding automatic whole-clip failure.",
+     "rationale": "Repeated questions concern interval marking and whole-clip failure, which the current instructions and FAQ address. A reminder can answer the remaining general handling question without replacing the team lead's case-specific timestamp requests.",
+     "draft_text": "Overlap reminder for this batch:\n- Mark the overlapping or unintelligible interval and timestamp the affected span.\n- Keep the usable portions of the clip; do not infer a whole-clip failure from a short affected interval.\n- Distinguish words missing from the audio from mistakes in the reference transcript.\nThese are the current instructions and FAQ: a short affected interval is not, by itself, a reason to discard the whole recording.",
+     "scope_note": "Clarifies current overlap handling; it does not decide the pending QA assessments of individual clips.",
+     "support_claim_ids": [
+      "c1",
+      "c5",
+      "c8",
+      "c12",
+      "c13",
+      "c4",
+      "c11",
+      "c14"
+     ],
+     "targets": [],
+     "context_claim_ids": [
+      "c7"
+     ]
+    },
+    "severity": {
+     "level": "MEDIUM",
+     "rationale": "Repeated questions concern whether overlap should be marked locally or cause transcription failure, which can change how usable audio is retained and scored. The reports describe contained spans rather than demonstrated batch-wide disruption.",
+     "signals": [
+      {
+       "level": "MEDIUM",
+       "signal_index": 0,
+       "signal_text": "Recurring confusion about the same rule, tool behavior, or scoring criterion that suggests meaningful workflow or labeling impact",
+       "support": "A QA tutor asks whether simultaneous speech should be marked unintelligible; a tutor asks the same for a two-second overlap, and another tutor asks when overlap causes transcription failure.",
+       "evidence_ids": [
+        "m:C_AUDIO_QA:1790864427.000131",
+        "m:C_AUDIO_GENERAL:1790921338.000134",
+        "m:C_AUDIO_GENERAL:1790941015.000132"
+       ]
+      }
+     ],
+     "affected_reporters": [
+      {
+       "author_id": "U020",
+       "evidence_id": "m:C_AUDIO_GENERAL:1790890932.000133"
+      },
+      {
+       "author_id": "U018",
+       "evidence_id": "m:C_AUDIO_GENERAL:1790941070.000113"
+      },
+      {
+       "author_id": "U003",
+       "evidence_id": "m:C_AUDIO_GENERAL:1790921338.000134"
+      },
+      {
+       "author_id": "U012",
+       "evidence_id": "m:C_AUDIO_GENERAL:1790921388.000113"
+      }
+     ],
+     "recurrence": "NOT_CHECKED",
+     "recurrence_evidence_ids": [],
+     "reported_recurrence_evidence_ids": []
+    },
+    "confidence": 0.92,
+    "open_confirmation": "NONE",
+    "open_question": null,
+    "open_question_evidence_ids": [],
+    "source_conflicts": [],
+    "announcement_assessments": [],
+    "resolution": [
+     {
+      "member_id": "member_49e4e0ef557959173d770df5",
+      "state": "UNRESOLVED",
+      "evidence_ids": [
+       "m:C_AUDIO_QA:1790864427.000131"
+      ],
+      "basis": "The QA tutor's question has no answer in the provided thread."
+     },
+     {
+      "member_id": "member_b224f8f278e4849b8a75936b",
+      "state": "UNRESOLVED",
+      "evidence_ids": [
+       "m:C_AUDIO_GENERAL:1790890932.000133",
+       "m:C_AUDIO_GENERAL:1790890987.000113",
+       "m:C_AUDIO_GENERAL:1790891025.000226",
+       "m:C_AUDIO_GENERAL:1790891074.000339"
+      ],
+      "basis": "The tutor's background-speaker report receives questions and a timestamp request from the team lead, but no final assessment or reported correction."
+     },
+     {
+      "member_id": "member_e6be3632ce8e4a4b4f77bca7",
+      "state": "RESOLVED_IN_THREAD",
+      "evidence_ids": [
+       "m:C_AUDIO_GENERAL:1790921338.000134",
+       "m:C_AUDIO_GENERAL:1790921388.000113",
+       "m:C_AUDIO_GENERAL:1790921430.000226",
+       "m:C_AUDIO_GENERAL:1790921481.000339"
+      ],
+      "basis": "A QA tutor directly answers the tutor's marking question for AUDIO-1338: mark the unintelligible interval and retain the clear portions. This resolves the handling question, not a confirmed correction of the task."
+     },
+     {
+      "member_id": "member_e48bf44fa3dd5692a771cf22",
+      "state": "UNRESOLVED",
+      "evidence_ids": [
+       "m:C_AUDIO_GENERAL:1790941015.000132",
+       "m:C_AUDIO_GENERAL:1790941070.000113",
+       "m:C_AUDIO_GENERAL:1790941105.000226",
+       "m:C_AUDIO_GENERAL:1790941162.000339"
+      ],
+      "basis": "The tutor's failure-threshold question receives an intelligibility question and a timestamp request from the team lead, but no substantive answer or case assessment in the thread."
+     }
+    ],
+    "coverage": [
+     {
+      "need": "CURRENT_GUIDANCE",
+      "status": "COVERED",
+      "evidence_ids": [
+       "k:audio-multimodal-instructions@1.3:eb85357a",
+       "k:audio-multimodal-faq@1.1:e9bcf43a"
+      ],
+      "note": "Current project-wide instructions and FAQ directly cover overlap marking, timestamps, usable portions and the limit on inferring whole-clip failure.",
+      "gap_id": null
+     },
+     {
+      "need": "ANNOUNCEMENTS",
+      "status": "NOT_APPLICABLE",
+      "evidence_ids": [],
+      "note": "No announcement was provided. The proposed reminder relies on current instructions and FAQ, not an announcement, delivery route or batch-specific directive.",
+      "gap_id": null
+     },
+     {
+      "need": "PRIOR_DECISIONS",
+      "status": "NOT_APPLICABLE",
+      "evidence_ids": [],
+      "note": "The member messages do not refer to an earlier workaround or trial. Restating the explicit current rule does not require a claim about earlier decisions, outcomes or supersession.",
+      "gap_id": null
+     },
+     {
+      "need": "MEMBER_QUESTIONS",
+      "status": "COVERED",
+      "evidence_ids": [
+       "m:C_AUDIO_QA:1790864427.000131",
+       "m:C_AUDIO_GENERAL:1790891025.000226",
+       "m:C_AUDIO_GENERAL:1790921338.000134",
+       "m:C_AUDIO_GENERAL:1790921388.000113",
+       "m:C_AUDIO_GENERAL:1790921430.000226",
+       "m:C_AUDIO_GENERAL:1790921481.000339",
+       "m:C_AUDIO_GENERAL:1790941015.000132",
+       "m:C_AUDIO_GENERAL:1790941105.000226"
+      ],
+      "note": "The evidence includes marking and failure-threshold questions, requests for timestamps and intelligibility information, and the QA tutor's item-specific answer for AUDIO-1338.",
+      "gap_id": null
+     }
+    ],
+    "review_note": null,
+    "action_choice": null
+   },
+   "final": {
+    "contract_version": "agent3-advisor-draft-v11",
+    "summary": "A QA tutor and two tutors ask how to handle overlapping speech, including whether to mark it unintelligible or fail a transcription. Current guidance says to mark and timestamp the affected interval and preserve usable audio, rather than infer whole-clip failure from a short interval.",
+    "summary_sentences": [
+     {
+      "text": "A QA tutor and two tutors ask how to handle overlapping speech, including whether to mark it unintelligible or fail a transcription.",
+      "support_claim_ids": [
+       "c1",
+       "c5",
+       "c8"
+      ],
+      "depends_on": []
+     },
+     {
+      "text": "Current guidance says to mark and timestamp the affected interval and preserve usable audio, rather than infer whole-clip failure from a short interval.",
+      "support_claim_ids": [
+       "c12"
+      ],
+      "depends_on": []
+     }
+    ],
+    "detail_sentences": [
+     {
+      "text": "In the background-speaker thread, a tutor reports that a background speaker is transcribed as the main speaker; a second tutor reports two seconds of overlap with the rest clear.",
+      "support_claim_ids": [
+       "c2",
+       "c3"
+      ],
+      "depends_on": [],
+      "summary_depends_on": []
+     },
+     {
+      "text": "For AUDIO-1338, a tutor reports two seconds of overlap, and a QA tutor answers that the unintelligible interval should be marked while the clear portions are retained.",
+      "support_claim_ids": [
+       "c5",
+       "c7"
+      ],
+      "depends_on": [],
+      "summary_depends_on": []
+     },
+     {
+      "text": "In the thread asking about the failure threshold, a tutor reports hearing both voices but losing individual words during the overlap.",
+      "support_claim_ids": [
+       "c9"
+      ],
+      "depends_on": [],
+      "summary_depends_on": [
+       1
+      ]
+     },
+     {
+      "text": "The team lead requested overlap timestamps in both the background-speaker and failure-threshold threads so QA could assess the affected scope; neither thread contains the requested timestamps.",
+      "support_claim_ids": [
+       "c4",
+       "c11",
+       "c14"
+      ],
+      "depends_on": [
+       1,
+       3
+      ],
+      "summary_depends_on": []
+     },
+     {
+      "text": "In the AUDIO-1338 thread, a tutor requested a timestamp for the overlap and a QA tutor requested the start and end of the unintelligible span.",
+      "support_claim_ids": [
+       "c6"
+      ],
+      "depends_on": [
+       2
+      ],
+      "summary_depends_on": []
+     },
+     {
+      "text": "A QA tutor in each of the background-speaker and failure-threshold threads asked whether the rest of the recording was intelligible enough to continue.",
+      "support_claim_ids": [
+       "c10"
+      ],
+      "depends_on": [
+       1,
+       3
+      ],
+      "summary_depends_on": []
+     }
+    ],
+    "reasoning": "A reminder is supported by repeated questions about interval marking and whole-clip failure, including a QA tutor's unanswered question. The current instructions and FAQ directly address those questions, so no new overlap rule or documentation change is needed. The AUDIO-1338 question was answered in its own thread; that answer is not project guidance. The other two case assessments still lack the timestamps requested by the team lead, which is missing diagnostic information rather than an open policy decision. No additional retrieval is needed for the proposed reminder. The upstream review flag on the background-speaker thread remains open: the tutor reported a symptom, not an explicit handling question.",
+    "claims": [
+     {
+      "claim_id": "c1",
+      "kind": "INCIDENT_FACT",
+      "text": "A QA tutor asks whether simultaneous speech by two people should be marked unintelligible.",
+      "evidence_ids": [
+       "m:C_AUDIO_QA:1790864427.000131"
+      ],
+      "attributions": [
+       {
+        "user_id": "U019",
+        "relation": "AUTHOR",
+        "evidence_id": "m:C_AUDIO_QA:1790864427.000131"
+       }
+      ],
+      "quote": null,
+      "quote_kind": "PARAPHRASE",
+      "material": true
+     },
+     {
+      "claim_id": "c2",
+      "kind": "INCIDENT_FACT",
+      "text": "A tutor reports that a background speaker is transcribed as the main speaker.",
+      "evidence_ids": [
+       "m:C_AUDIO_GENERAL:1790890932.000133"
+      ],
+      "attributions": [
+       {
+        "user_id": "U020",
+        "relation": "AUTHOR",
+        "evidence_id": "m:C_AUDIO_GENERAL:1790890932.000133"
+       }
+      ],
+      "quote": null,
+      "quote_kind": "PARAPHRASE",
+      "material": true
+     },
+     {
+      "claim_id": "c3",
+      "kind": "INCIDENT_FACT",
+      "text": "A second tutor in the background-speaker thread reports two seconds of speaker overlap with the rest clear.",
+      "evidence_ids": [
+       "m:C_AUDIO_GENERAL:1790890987.000113"
+      ],
+      "attributions": [
+       {
+        "user_id": "U018",
+        "relation": "AUTHOR",
+        "evidence_id": "m:C_AUDIO_GENERAL:1790890987.000113"
+       }
+      ],
+      "quote": null,
+      "quote_kind": "PARAPHRASE",
+      "material": true
+     },
+     {
+      "claim_id": "c4",
+      "kind": "THREAD_INSTRUCTION",
+      "text": "In the background-speaker thread, the team lead requests overlap timestamps so QA can determine whether the full sample or only a short segment is affected, and notes that the remainder may still be usable.",
+      "evidence_ids": [
+       "m:C_AUDIO_GENERAL:1790891074.000339"
+      ],
+      "attributions": [
+       {
+        "user_id": "U006",
+        "relation": "AUTHOR",
+        "evidence_id": "m:C_AUDIO_GENERAL:1790891074.000339"
+       }
+      ],
+      "quote": null,
+      "quote_kind": "PARAPHRASE",
+      "material": true
+     },
+     {
+      "claim_id": "c5",
+      "kind": "INCIDENT_FACT",
+      "text": "A tutor reports two seconds of overlapping speech on AUDIO-1338 and asks whether to mark it unintelligible.",
+      "evidence_ids": [
+       "m:C_AUDIO_GENERAL:1790921338.000134"
+      ],
+      "attributions": [
+       {
+        "user_id": "U003",
+        "relation": "AUTHOR",
+        "evidence_id": "m:C_AUDIO_GENERAL:1790921338.000134"
+       }
+      ],
+      "quote": null,
+      "quote_kind": "PARAPHRASE",
+      "material": true
+     },
+     {
+      "claim_id": "c6",
+      "kind": "INCIDENT_FACT",
+      "text": "In the AUDIO-1338 thread, a tutor reports hearing both voices but losing individual words and requests an overlap timestamp; a QA tutor asks for the start and end of the unintelligible span.",
+      "evidence_ids": [
+       "m:C_AUDIO_GENERAL:1790921388.000113",
+       "m:C_AUDIO_GENERAL:1790921430.000226"
+      ],
+      "attributions": [
+       {
+        "user_id": "U012",
+        "relation": "AUTHOR",
+        "evidence_id": "m:C_AUDIO_GENERAL:1790921388.000113"
+       },
+       {
+        "user_id": "U008",
+        "relation": "AUTHOR",
+        "evidence_id": "m:C_AUDIO_GENERAL:1790921430.000226"
+       }
+      ],
+      "quote": null,
+      "quote_kind": "PARAPHRASE",
+      "material": true
+     },
+     {
+      "claim_id": "c7",
+      "kind": "INCIDENT_FACT",
+      "text": "A QA tutor answers the AUDIO-1338 question by saying to mark the unintelligible overlapping interval, retain the clear portions and not discard the whole recording.",
+      "evidence_ids": [
+       "m:C_AUDIO_GENERAL:1790921481.000339"
+      ],
+      "attributions": [
+       {
+        "user_id": "U007",
+        "relation": "AUTHOR",
+        "evidence_id": "m:C_AUDIO_GENERAL:1790921481.000339"
+       }
+      ],
+      "quote": null,
+      "quote_kind": "PARAPHRASE",
+      "material": true
+     },
+     {
+      "claim_id": "c8",
+      "kind": "INCIDENT_FACT",
+      "text": "A tutor asks QA how much overlap is allowed before a transcription fails the rubric.",
+      "evidence_ids": [
+       "m:C_AUDIO_GENERAL:1790941015.000132"
+      ],
+      "attributions": [
+       {
+        "user_id": "U015",
+        "relation": "AUTHOR",
+        "evidence_id": "m:C_AUDIO_GENERAL:1790941015.000132"
+       }
+      ],
+      "quote": null,
+      "quote_kind": "PARAPHRASE",
+      "material": true
+     },
+     {
+      "claim_id": "c9",
+      "kind": "INCIDENT_FACT",
+      "text": "In the failure-threshold thread, a tutor reports hearing both voices but losing individual words during the overlap.",
+      "evidence_ids": [
+       "m:C_AUDIO_GENERAL:1790941070.000113"
+      ],
+      "attributions": [
+       {
+        "user_id": "U018",
+        "relation": "AUTHOR",
+        "evidence_id": "m:C_AUDIO_GENERAL:1790941070.000113"
+       }
+      ],
+      "quote": null,
+      "quote_kind": "PARAPHRASE",
+      "material": true
+     },
+     {
+      "claim_id": "c10",
+      "kind": "INCIDENT_FACT",
+      "text": "A QA tutor in the background-speaker thread and a different QA tutor in the failure-threshold thread ask whether the rest of the recording is intelligible enough to continue.",
+      "evidence_ids": [
+       "m:C_AUDIO_GENERAL:1790891025.000226",
+       "m:C_AUDIO_GENERAL:1790941105.000226"
+      ],
+      "attributions": [
+       {
+        "user_id": "U008",
+        "relation": "AUTHOR",
+        "evidence_id": "m:C_AUDIO_GENERAL:1790891025.000226"
+       },
+       {
+        "user_id": "U002",
+        "relation": "AUTHOR",
+        "evidence_id": "m:C_AUDIO_GENERAL:1790941105.000226"
+       }
+      ],
+      "quote": null,
+      "quote_kind": "PARAPHRASE",
+      "material": true
+     },
+     {
+      "claim_id": "c11",
+      "kind": "THREAD_INSTRUCTION",
+      "text": "In the failure-threshold thread, the team lead requests overlap timestamps so QA can determine whether the full sample or only a short segment is affected.",
+      "evidence_ids": [
+       "m:C_AUDIO_GENERAL:1790941162.000339"
+      ],
+      "attributions": [
+       {
+        "user_id": "U006",
+        "relation": "AUTHOR",
+        "evidence_id": "m:C_AUDIO_GENERAL:1790941162.000339"
+       }
+      ],
+      "quote": null,
+      "quote_kind": "PARAPHRASE",
+      "material": true
+     },
+     {
+      "claim_id": "c12",
+      "kind": "GUIDANCE",
+      "text": "The current project instructions and FAQ require marking the overlapping or unintelligible interval, timestamping the affected span and preserving usable portions; the FAQ says not to infer whole-clip failure from a short affected interval.",
+      "evidence_ids": [
+       "k:audio-multimodal-instructions@1.3:eb85357a",
+       "k:audio-multimodal-faq@1.1:e9bcf43a"
+      ],
+      "attributions": [],
+      "quote": null,
+      "quote_kind": "PARAPHRASE",
+      "material": true
+     },
+     {
+      "claim_id": "c13",
+      "kind": "GUIDANCE",
+      "text": "The current overlap instructions require distinguishing words missing from the audio from mistakes in the reference transcript.",
+      "evidence_ids": [
+       "k:audio-multimodal-instructions@1.3:eb85357a"
+      ],
+      "attributions": [],
+      "quote": null,
+      "quote_kind": "PARAPHRASE",
+      "material": true
+     },
+     {
+      "claim_id": "c14",
+      "kind": "INFERENCE",
+      "text": "The provided background-speaker and failure-threshold threads contain no timestamps responding to the team lead's requests, so the requested inputs for those case assessments are still missing.",
+      "evidence_ids": [
+       "m:C_AUDIO_GENERAL:1790890932.000133",
+       "m:C_AUDIO_GENERAL:1790890987.000113",
+       "m:C_AUDIO_GENERAL:1790891025.000226",
+       "m:C_AUDIO_GENERAL:1790891074.000339",
+       "m:C_AUDIO_GENERAL:1790941015.000132",
+       "m:C_AUDIO_GENERAL:1790941070.000113",
+       "m:C_AUDIO_GENERAL:1790941105.000226",
+       "m:C_AUDIO_GENERAL:1790941162.000339"
+      ],
+      "attributions": [
+       {
+        "user_id": "U006",
+        "relation": "AUTHOR",
+        "evidence_id": "m:C_AUDIO_GENERAL:1790891074.000339"
+       },
+       {
+        "user_id": "U006",
+        "relation": "AUTHOR",
+        "evidence_id": "m:C_AUDIO_GENERAL:1790941162.000339"
+       }
+      ],
+      "quote": null,
+      "quote_kind": "PARAPHRASE",
+      "material": true
+     }
+    ],
+    "gaps": [],
+    "evidence_sufficiency": "SUFFICIENT",
+    "proposed_action": {
+     "action_type": "POST_ALIGNMENT",
+     "intervention_need": {
+      "kind": "UNRESOLVED_HANDLING_QUESTION",
+      "statement": "A QA tutor's overlap-marking question remains unanswered, while tutors also ask about interval marking and transcription failure, showing a repeated handling uncertainty that current guidance can address.",
+      "evidence_ids": [
+       "m:C_AUDIO_QA:1790864427.000131",
+       "m:C_AUDIO_GENERAL:1790921338.000134",
+       "m:C_AUDIO_GENERAL:1790941015.000132"
+      ]
+     },
+     "instruction": "Post a reminder explaining how to mark and timestamp overlapping speech while keeping usable audio and avoiding automatic whole-clip failure.",
+     "rationale": "Repeated questions concern interval marking and whole-clip failure, which the current instructions and FAQ address. A reminder can answer the remaining general handling question without replacing the team lead's case-specific timestamp requests.",
+     "draft_text": "Overlap reminder for this batch:\n- Mark the overlapping or unintelligible interval and timestamp the affected span.\n- Keep the usable portions of the clip; do not infer a whole-clip failure from a short affected interval.\n- Distinguish words missing from the audio from mistakes in the reference transcript.\nThese are the current instructions and FAQ: a short affected interval is not, by itself, a reason to discard the whole recording.",
+     "scope_note": "Clarifies current overlap handling; it does not decide the pending QA assessments of individual clips.",
+     "support_claim_ids": [
+      "c1",
+      "c5",
+      "c8",
+      "c12",
+      "c13",
+      "c4",
+      "c11",
+      "c14"
+     ],
+     "targets": [],
+     "context_claim_ids": [
+      "c7"
+     ]
+    },
+    "severity": {
+     "level": "MEDIUM",
+     "rationale": "Repeated questions concern whether overlap should be marked locally or cause transcription failure, which can change how usable audio is retained and scored. The reports describe contained spans rather than demonstrated batch-wide disruption.",
+     "signals": [
+      {
+       "level": "MEDIUM",
+       "signal_index": 0,
+       "signal_text": "Recurring confusion about the same rule, tool behavior, or scoring criterion that suggests meaningful workflow or labeling impact",
+       "support": "A QA tutor asks whether simultaneous speech should be marked unintelligible; a tutor asks the same for a two-second overlap, and another tutor asks when overlap causes transcription failure.",
+       "evidence_ids": [
+        "m:C_AUDIO_QA:1790864427.000131",
+        "m:C_AUDIO_GENERAL:1790921338.000134",
+        "m:C_AUDIO_GENERAL:1790941015.000132"
+       ]
+      }
+     ],
+     "affected_reporters": [
+      {
+       "author_id": "U020",
+       "evidence_id": "m:C_AUDIO_GENERAL:1790890932.000133"
+      },
+      {
+       "author_id": "U018",
+       "evidence_id": "m:C_AUDIO_GENERAL:1790941070.000113"
+      },
+      {
+       "author_id": "U003",
+       "evidence_id": "m:C_AUDIO_GENERAL:1790921338.000134"
+      },
+      {
+       "author_id": "U012",
+       "evidence_id": "m:C_AUDIO_GENERAL:1790921388.000113"
+      }
+     ],
+     "recurrence": "NOT_CHECKED",
+     "recurrence_evidence_ids": [],
+     "reported_recurrence_evidence_ids": []
+    },
+    "confidence": 0.92,
+    "open_confirmation": "NONE",
+    "open_question": null,
+    "open_question_evidence_ids": [],
+    "source_conflicts": [],
+    "announcement_assessments": [],
+    "resolution": [
+     {
+      "member_id": "member_49e4e0ef557959173d770df5",
+      "state": "UNRESOLVED",
+      "evidence_ids": [
+       "m:C_AUDIO_QA:1790864427.000131"
+      ],
+      "basis": "The QA tutor's question has no answer in the provided thread."
+     },
+     {
+      "member_id": "member_b224f8f278e4849b8a75936b",
+      "state": "UNRESOLVED",
+      "evidence_ids": [
+       "m:C_AUDIO_GENERAL:1790890932.000133",
+       "m:C_AUDIO_GENERAL:1790890987.000113",
+       "m:C_AUDIO_GENERAL:1790891025.000226",
+       "m:C_AUDIO_GENERAL:1790891074.000339"
+      ],
+      "basis": "The tutor's background-speaker report receives questions and a timestamp request from the team lead, but no final assessment or reported correction."
+     },
+     {
+      "member_id": "member_e6be3632ce8e4a4b4f77bca7",
+      "state": "RESOLVED_IN_THREAD",
+      "evidence_ids": [
+       "m:C_AUDIO_GENERAL:1790921338.000134",
+       "m:C_AUDIO_GENERAL:1790921388.000113",
+       "m:C_AUDIO_GENERAL:1790921430.000226",
+       "m:C_AUDIO_GENERAL:1790921481.000339"
+      ],
+      "basis": "A QA tutor directly answers the tutor's marking question for AUDIO-1338: mark the unintelligible interval and retain the clear portions. This resolves the handling question, not a confirmed correction of the task."
+     },
+     {
+      "member_id": "member_e48bf44fa3dd5692a771cf22",
+      "state": "UNRESOLVED",
+      "evidence_ids": [
+       "m:C_AUDIO_GENERAL:1790941015.000132",
+       "m:C_AUDIO_GENERAL:1790941070.000113",
+       "m:C_AUDIO_GENERAL:1790941105.000226",
+       "m:C_AUDIO_GENERAL:1790941162.000339"
+      ],
+      "basis": "The tutor's failure-threshold question receives an intelligibility question and a timestamp request from the team lead, but no substantive answer or case assessment in the thread."
+     }
+    ],
+    "coverage": [
+     {
+      "need": "CURRENT_GUIDANCE",
+      "status": "COVERED",
+      "evidence_ids": [
+       "k:audio-multimodal-instructions@1.3:eb85357a",
+       "k:audio-multimodal-faq@1.1:e9bcf43a"
+      ],
+      "note": "Current project-wide instructions and FAQ directly cover overlap marking, timestamps, usable portions and the limit on inferring whole-clip failure.",
+      "gap_id": null
+     },
+     {
+      "need": "ANNOUNCEMENTS",
+      "status": "NOT_APPLICABLE",
+      "evidence_ids": [],
+      "note": "No announcement was provided. The proposed reminder relies on current instructions and FAQ, not an announcement, delivery route or batch-specific directive.",
+      "gap_id": null
+     },
+     {
+      "need": "PRIOR_DECISIONS",
+      "status": "NOT_APPLICABLE",
+      "evidence_ids": [],
+      "note": "The member messages do not refer to an earlier workaround or trial. Restating the explicit current rule does not require a claim about earlier decisions, outcomes or supersession.",
+      "gap_id": null
+     },
+     {
+      "need": "MEMBER_QUESTIONS",
+      "status": "COVERED",
+      "evidence_ids": [
+       "m:C_AUDIO_QA:1790864427.000131",
+       "m:C_AUDIO_GENERAL:1790891025.000226",
+       "m:C_AUDIO_GENERAL:1790921338.000134",
+       "m:C_AUDIO_GENERAL:1790921388.000113",
+       "m:C_AUDIO_GENERAL:1790921430.000226",
+       "m:C_AUDIO_GENERAL:1790921481.000339",
+       "m:C_AUDIO_GENERAL:1790941015.000132",
+       "m:C_AUDIO_GENERAL:1790941105.000226"
+      ],
+      "note": "The evidence includes marking and failure-threshold questions, requests for timestamps and intelligibility information, and the QA tutor's item-specific answer for AUDIO-1338.",
+      "gap_id": null
+     }
+    ],
+    "review_note": null,
+    "action_choice": null
+   },
+   "revised": false
+  },
+  "grounding": {
+   "structural_issues": [],
+   "action_issues": [],
+   "unsupported": [],
+   "unjudged": [
+    "claim:c1"
+   ],
+   "extraneous_verdicts": [],
+   "rejected": {},
+   "pending": [
+    "claim:c1"
+   ],
+   "action_sufficiency": {
+    "verdict": "SUFFICIENT",
+    "essential_statement_ids": [
+     "claim:c8",
+     "claim:c12",
+     "claim:c13",
+     "claim:c14"
+    ],
+    "rationale": "Supported premises establish a handling question warranting clarification, every substantive rule in the reminder, and missing inputs for pending case assessments. The rejected plural premise is unnecessary: supported questions independently justify the reminder. The action does not invent a threshold, decide individual cases or specify an unsupported route."
+   },
+   "source_consistency": {
+    "assessed_evidence_ids": [
+     "k:audio-multimodal-faq@1.1:e9bcf43a",
+     "k:audio-multimodal-instructions@1.3:eb85357a",
+     "k:audio-multimodal-instructions@1.3:1131a168",
+     "k:audio-multimodal-instructions@1.3:6eeb0c96",
+     "k:audio-multimodal-faq@1.1:f72aa6db"
+    ],
+    "relations": [
+     {
+      "evidence_ids": [
+       "k:audio-multimodal-faq@1.1:e9bcf43a",
+       "k:audio-multimodal-instructions@1.3:eb85357a"
+      ],
+      "relation": "AGREE",
+      "point": "Mark and timestamp overlapping or unintelligible intervals while preserving usable portions.",
+      "disagreement_scope": null,
+      "rationale": "Both current sources state the same overlap-handling rule. The FAQ's explicit warning against inferring whole-clip failure adds compatible detail."
+     },
+     {
+      "evidence_ids": [
+       "k:audio-multimodal-faq@1.1:e9bcf43a",
+       "k:audio-multimodal-instructions@1.3:eb85357a"
+      ],
+      "relation": "AGREE",
+      "point": "Distinguish audio defects or missing audio content from reference-transcript errors.",
+      "disagreement_scope": null,
+      "rationale": "The FAQ requires distinguishing recording errors from reference-transcript errors, consistent with the overlap instructions' distinction between missing audio words and transcript mistakes."
+     },
+     {
+      "evidence_ids": [
+       "k:audio-multimodal-faq@1.1:e9bcf43a",
+       "k:audio-multimodal-instructions@1.3:1131a168",
+       "k:audio-multimodal-instructions@1.3:6eeb0c96"
+      ],
+      "relation": "AGREE",
+      "point": "Audio-quality scoring depends on intelligibility and affected scope rather than duration alone.",
+      "disagreement_scope": null,
+      "rationale": "The sources consistently distinguish brief artifacts with clear speech from materially unusable speech. The scoring instructions and FAQ require review for unclear impact; none makes short overlap alone a whole-clip failure."
+     }
+    ],
+    "declared_conflict_checks": []
+   },
+   "alternative_sufficiency": {},
+   "status": "FAILED",
+   "basis": "SEMANTIC+PENDING",
+   "statements": [
+    {
+     "statement_id": "claim:c1",
+     "kind": "CLAIM_INCIDENT_FACT",
+     "text": "A QA tutor asks whether simultaneous speech by two people should be marked unintelligible.",
+     "blocking": true,
+     "evidence_ids": [
+      "m:C_AUDIO_QA:1790864427.000131"
+     ],
+     "attributions": [
+      {
+       "user_id": "U019",
+       "relation": "AUTHOR",
+       "evidence_id": "m:C_AUDIO_QA:1790864427.000131",
+       "role": "QA_TUTOR"
+      }
+     ],
+     "verdict": "PENDING",
+     "model_verdict": "PENDING",
+     "rationale": null
+    },
+    {
+     "statement_id": "claim:c2",
+     "kind": "CLAIM_INCIDENT_FACT",
+     "text": "A tutor reports that a background speaker is transcribed as the main speaker.",
+     "blocking": true,
+     "evidence_ids": [
+      "m:C_AUDIO_GENERAL:1790890932.000133"
+     ],
+     "attributions": [
+      {
+       "user_id": "U020",
+       "relation": "AUTHOR",
+       "evidence_id": "m:C_AUDIO_GENERAL:1790890932.000133",
+       "role": "TUTOR"
+      }
+     ],
+     "verdict": "SUPPORTED",
+     "model_verdict": "SUPPORTED",
+     "rationale": "The cited tutor reports exactly this background-speaker transcription problem."
+    },
+    {
+     "statement_id": "claim:c3",
+     "kind": "CLAIM_INCIDENT_FACT",
+     "text": "A second tutor in the background-speaker thread reports two seconds of speaker overlap with the rest clear.",
+     "blocking": true,
+     "evidence_ids": [
+      "m:C_AUDIO_GENERAL:1790890987.000113"
+     ],
+     "attributions": [
+      {
+       "user_id": "U018",
+       "relation": "AUTHOR",
+       "evidence_id": "m:C_AUDIO_GENERAL:1790890987.000113",
+       "role": "TUTOR"
+      }
+     ],
+     "verdict": "SUPPORTED",
+     "model_verdict": "SUPPORTED",
+     "rationale": "The distinct second tutor reports two seconds of overlap and says the rest is clear."
+    },
+    {
+     "statement_id": "claim:c4",
+     "kind": "CLAIM_THREAD_INSTRUCTION",
+     "text": "In the background-speaker thread, the team lead requests overlap timestamps so QA can determine whether the full sample or only a short segment is affected, and notes that the remainder may still be usable.",
+     "blocking": true,
+     "evidence_ids": [
+      "m:C_AUDIO_GENERAL:1790891074.000339"
+     ],
+     "attributions": [
+      {
+       "user_id": "U006",
+       "relation": "AUTHOR",
+       "evidence_id": "m:C_AUDIO_GENERAL:1790891074.000339",
+       "role": "TEAM_LEAD"
+      }
+     ],
+     "verdict": "SUPPORTED",
+     "model_verdict": "SUPPORTED",
+     "rationale": "The team lead explicitly requests timestamps for QA's scope assessment and notes that the remainder may remain usable."
+    },
+    {
+     "statement_id": "claim:c5",
+     "kind": "CLAIM_INCIDENT_FACT",
+     "text": "A tutor reports two seconds of overlapping speech on AUDIO-1338 and asks whether to mark it unintelligible.",
+     "blocking": true,
+     "evidence_ids": [
+      "m:C_AUDIO_GENERAL:1790921338.000134"
+     ],
+     "attributions": [
+      {
+       "user_id": "U003",
+       "relation": "AUTHOR",
+       "evidence_id": "m:C_AUDIO_GENERAL:1790921338.000134",
+       "role": "TUTOR"
+      }
+     ],
+     "verdict": "SUPPORTED",
+     "model_verdict": "SUPPORTED",
+     "rationale": "The tutor explicitly reports two seconds of overlapping speech on AUDIO-1338 and asks whether to mark it unintelligible."
+    },
+    {
+     "statement_id": "claim:c6",
+     "kind": "CLAIM_INCIDENT_FACT",
+     "text": "In the AUDIO-1338 thread, a tutor reports hearing both voices but losing individual words and requests an overlap timestamp; a QA tutor asks for the start and end of the unintelligible span.",
+     "blocking": true,
+     "evidence_ids": [
+      "m:C_AUDIO_GENERAL:1790921388.000113",
+      "m:C_AUDIO_GENERAL:1790921430.000226"
+     ],
+     "attributions": [
+      {
+       "user_id": "U012",
+       "relation": "AUTHOR",
+       "evidence_id": "m:C_AUDIO_GENERAL:1790921388.000113",
+       "role": "TUTOR"
+      },
+      {
+       "user_id": "U008",
+       "relation": "AUTHOR",
+       "evidence_id": "m:C_AUDIO_GENERAL:1790921430.000226",
+       "role": "QA_TUTOR"
+      }
+     ],
+     "verdict": "SUPPORTED",
+     "model_verdict": "SUPPORTED",
+     "rationale": "Both reports and requests match the cited messages and their authors' roles."
+    },
+    {
+     "statement_id": "claim:c7",
+     "kind": "CLAIM_INCIDENT_FACT",
+     "text": "A QA tutor answers the AUDIO-1338 question by saying to mark the unintelligible overlapping interval, retain the clear portions and not discard the whole recording.",
+     "blocking": true,
+     "evidence_ids": [
+      "m:C_AUDIO_GENERAL:1790921481.000339"
+     ],
+     "attributions": [
+      {
+       "user_id": "U007",
+       "relation": "AUTHOR",
+       "evidence_id": "m:C_AUDIO_GENERAL:1790921481.000339",
+       "role": "QA_TUTOR"
+      }
+     ],
+     "verdict": "SUPPORTED",
+     "model_verdict": "SUPPORTED",
+     "rationale": "The QA tutor directly gives this item-specific answer, including retaining clear portions and not discarding the recording."
+    },
+    {
+     "statement_id": "claim:c8",
+     "kind": "CLAIM_INCIDENT_FACT",
+     "text": "A tutor asks QA how much overlap is allowed before a transcription fails the rubric.",
+     "blocking": true,
+     "evidence_ids": [
+      "m:C_AUDIO_GENERAL:1790941015.000132"
+     ],
+     "attributions": [
+      {
+       "user_id": "U015",
+       "relation": "AUTHOR",
+       "evidence_id": "m:C_AUDIO_GENERAL:1790941015.000132",
+       "role": "TUTOR"
+      }
+     ],
+     "verdict": "SUPPORTED",
+     "model_verdict": "SUPPORTED",
+     "rationale": "The tutor explicitly asks QA how much overlap is allowed before transcription fails the rubric."
+    },
+    {
+     "statement_id": "claim:c9",
+     "kind": "CLAIM_INCIDENT_FACT",
+     "text": "In the failure-threshold thread, a tutor reports hearing both voices but losing individual words during the overlap.",
+     "blocking": true,
+     "evidence_ids": [
+      "m:C_AUDIO_GENERAL:1790941070.000113"
+     ],
+     "attributions": [
+      {
+       "user_id": "U018",
+       "relation": "AUTHOR",
+       "evidence_id": "m:C_AUDIO_GENERAL:1790941070.000113",
+       "role": "TUTOR"
+      }
+     ],
+     "verdict": "SUPPORTED",
+     "model_verdict": "SUPPORTED",
+     "rationale": "The cited tutor says both voices are audible but individual words in the overlap are lost."
+    },
+    {
+     "statement_id": "claim:c10",
+     "kind": "CLAIM_INCIDENT_FACT",
+     "text": "A QA tutor in the background-speaker thread and a different QA tutor in the failure-threshold thread ask whether the rest of the recording is intelligible enough to continue.",
+     "blocking": true,
+     "evidence_ids": [
+      "m:C_AUDIO_GENERAL:1790891025.000226",
+      "m:C_AUDIO_GENERAL:1790941105.000226"
+     ],
+     "attributions": [
+      {
+       "user_id": "U008",
+       "relation": "AUTHOR",
+       "evidence_id": "m:C_AUDIO_GENERAL:1790891025.000226",
+       "role": "QA_TUTOR"
+      },
+      {
+       "user_id": "U002",
+       "relation": "AUTHOR",
+       "evidence_id": "m:C_AUDIO_GENERAL:1790941105.000226",
+       "role": "QA_TUTOR"
+      }
+     ],
+     "verdict": "SUPPORTED",
+     "model_verdict": "SUPPORTED",
+     "rationale": "Two distinct QA tutors ask the stated intelligibility question in the respective threads."
+    },
+    {
+     "statement_id": "claim:c11",
+     "kind": "CLAIM_THREAD_INSTRUCTION",
+     "text": "In the failure-threshold thread, the team lead requests overlap timestamps so QA can determine whether the full sample or only a short segment is affected.",
+     "blocking": true,
+     "evidence_ids": [
+      "m:C_AUDIO_GENERAL:1790941162.000339"
+     ],
+     "attributions": [
+      {
+       "user_id": "U006",
+       "relation": "AUTHOR",
+       "evidence_id": "m:C_AUDIO_GENERAL:1790941162.000339",
+       "role": "TEAM_LEAD"
+      }
+     ],
+     "verdict": "SUPPORTED",
+     "model_verdict": "SUPPORTED",
+     "rationale": "The team lead explicitly requests overlap timestamps for QA to assess whether the full sample or only a short segment is affected."
+    },
+    {
+     "statement_id": "claim:c12",
+     "kind": "CLAIM_GUIDANCE",
+     "text": "The current project instructions and FAQ require marking the overlapping or unintelligible interval, timestamping the affected span and preserving usable portions; the FAQ says not to infer whole-clip failure from a short affected interval.",
+     "blocking": true,
+     "evidence_ids": [
+      "k:audio-multimodal-instructions@1.3:eb85357a",
+      "k:audio-multimodal-faq@1.1:e9bcf43a"
+     ],
+     "verdict": "SUPPORTED",
+     "model_verdict": "SUPPORTED",
+     "rationale": "Both current sources prescribe interval marking, timestamps and preservation of usable portions; the FAQ explicitly rejects inferring whole-clip failure from a short interval."
+    },
+    {
+     "statement_id": "claim:c13",
+     "kind": "CLAIM_GUIDANCE",
+     "text": "The current overlap instructions require distinguishing words missing from the audio from mistakes in the reference transcript.",
+     "blocking": true,
+     "evidence_ids": [
+      "k:audio-multimodal-instructions@1.3:eb85357a"
+     ],
+     "verdict": "SUPPORTED",
+     "model_verdict": "SUPPORTED",
+     "rationale": "The current overlap instructions explicitly require this distinction."
+    },
+    {
+     "statement_id": "claim:c14",
+     "kind": "CLAIM_INFERENCE",
+     "text": "The provided background-speaker and failure-threshold threads contain no timestamps responding to the team lead's requests, so the requested inputs for those case assessments are still missing.",
+     "blocking": true,
+     "evidence_ids": [
+      "m:C_AUDIO_GENERAL:1790890932.000133",
+      "m:C_AUDIO_GENERAL:1790890987.000113",
+      "m:C_AUDIO_GENERAL:1790891025.000226",
+      "m:C_AUDIO_GENERAL:1790891074.000339",
+      "m:C_AUDIO_GENERAL:1790941015.000132",
+      "m:C_AUDIO_GENERAL:1790941070.000113",
+      "m:C_AUDIO_GENERAL:1790941105.000226",
+      "m:C_AUDIO_GENERAL:1790941162.000339"
+     ],
+     "attributions": [
+      {
+       "user_id": "U006",
+       "relation": "AUTHOR",
+       "evidence_id": "m:C_AUDIO_GENERAL:1790891074.000339",
+       "role": "TEAM_LEAD"
+      },
+      {
+       "user_id": "U006",
+       "relation": "AUTHOR",
+       "evidence_id": "m:C_AUDIO_GENERAL:1790941162.000339",
+       "role": "TEAM_LEAD"
+      }
+     ],
+     "verdict": "SUPPORTED",
+     "model_verdict": "SUPPORTED",
+     "rationale": "Neither complete provided thread contains timestamps responding to the team lead's requests, so the requested assessment inputs remain absent from the record."
+    },
+    {
+     "statement_id": "summary:s1",
+     "kind": "SUMMARY",
+     "text": "A QA tutor and two tutors ask how to handle overlapping speech, including whether to mark it unintelligible or fail a transcription.",
+     "blocking": true,
+     "evidence_ids": [
+      "m:C_AUDIO_QA:1790864427.000131",
+      "m:C_AUDIO_GENERAL:1790921338.000134",
+      "m:C_AUDIO_GENERAL:1790941015.000132"
+     ],
+     "attributions": [
+      {
+       "user_id": "U019",
+       "relation": "AUTHOR",
+       "evidence_id": "m:C_AUDIO_QA:1790864427.000131",
+       "role": "QA_TUTOR"
+      },
+      {
+       "user_id": "U003",
+       "relation": "AUTHOR",
+       "evidence_id": "m:C_AUDIO_GENERAL:1790921338.000134",
+       "role": "TUTOR"
+      },
+      {
+       "user_id": "U015",
+       "relation": "AUTHOR",
+       "evidence_id": "m:C_AUDIO_GENERAL:1790941015.000132",
+       "role": "TUTOR"
+      }
+     ],
+     "verdict": "SUPPORTED",
+     "model_verdict": "SUPPORTED",
+     "rationale": "The three distinct attributed authors each ask about overlap handling, including unintelligibility marking and rubric failure."
+    },
+    {
+     "statement_id": "summary:s2",
+     "kind": "SUMMARY",
+     "text": "Current guidance says to mark and timestamp the affected interval and preserve usable audio, rather than infer whole-clip failure from a short interval.",
+     "blocking": true,
+     "evidence_ids": [
+      "k:audio-multimodal-instructions@1.3:eb85357a",
+      "k:audio-multimodal-faq@1.1:e9bcf43a"
+     ],
+     "verdict": "SUPPORTED",
+     "model_verdict": "SUPPORTED",
+     "rationale": "This accurately summarizes the current instructions and FAQ without adding a failure threshold."
+    },
+    {
+     "statement_id": "detail:d1",
+     "kind": "DETAIL",
+     "text": "In the background-speaker thread, a tutor reports that a background speaker is transcribed as the main speaker; a second tutor reports two seconds of overlap with the rest clear.",
+     "blocking": false,
+     "evidence_ids": [
+      "m:C_AUDIO_GENERAL:1790890932.000133",
+      "m:C_AUDIO_GENERAL:1790890987.000113"
+     ],
+     "attributions": [
+      {
+       "user_id": "U020",
+       "relation": "AUTHOR",
+       "evidence_id": "m:C_AUDIO_GENERAL:1790890932.000133",
+       "role": "TUTOR"
+      },
+      {
+       "user_id": "U018",
+       "relation": "AUTHOR",
+       "evidence_id": "m:C_AUDIO_GENERAL:1790890987.000113",
+       "role": "TUTOR"
+      }
+     ],
+     "verdict": "SUPPORTED",
+     "model_verdict": "SUPPORTED",
+     "rationale": "Both reports match the cited messages, with correct roles and distinct authors."
+    },
+    {
+     "statement_id": "detail:d2",
+     "kind": "DETAIL",
+     "text": "For AUDIO-1338, a tutor reports two seconds of overlap, and a QA tutor answers that the unintelligible interval should be marked while the clear portions are retained.",
+     "blocking": false,
+     "evidence_ids": [
+      "m:C_AUDIO_GENERAL:1790921338.000134",
+      "m:C_AUDIO_GENERAL:1790921481.000339"
+     ],
+     "attributions": [
+      {
+       "user_id": "U003",
+       "relation": "AUTHOR",
+       "evidence_id": "m:C_AUDIO_GENERAL:1790921338.000134",
+       "role": "TUTOR"
+      },
+      {
+       "user_id": "U007",
+       "relation": "AUTHOR",
+       "evidence_id": "m:C_AUDIO_GENERAL:1790921481.000339",
+       "role": "QA_TUTOR"
+      }
+     ],
+     "verdict": "SUPPORTED",
+     "model_verdict": "SUPPORTED",
+     "rationale": "The tutor reports two seconds of overlap and the QA tutor gives the stated marking and retention answer."
+    },
+    {
+     "statement_id": "detail:d3",
+     "kind": "DETAIL",
+     "text": "In the thread asking about the failure threshold, a tutor reports hearing both voices but losing individual words during the overlap.",
+     "blocking": false,
+     "evidence_ids": [
+      "m:C_AUDIO_GENERAL:1790941070.000113"
+     ],
+     "attributions": [
+      {
+       "user_id": "U018",
+       "relation": "AUTHOR",
+       "evidence_id": "m:C_AUDIO_GENERAL:1790941070.000113",
+       "role": "TUTOR"
+      }
+     ],
+     "depends_on": [
+      "summary:s1"
+     ],
+     "verdict": "SUPPORTED",
+     "model_verdict": "SUPPORTED",
+     "rationale": "The cited message reports hearing both voices while losing individual words during overlap."
+    },
+    {
+     "statement_id": "detail:d4",
+     "kind": "DETAIL",
+     "text": "The team lead requested overlap timestamps in both the background-speaker and failure-threshold threads so QA could assess the affected scope; neither thread contains the requested timestamps.",
+     "blocking": false,
+     "evidence_ids": [
+      "m:C_AUDIO_GENERAL:1790891074.000339",
+      "m:C_AUDIO_GENERAL:1790941162.000339",
+      "m:C_AUDIO_GENERAL:1790890932.000133",
+      "m:C_AUDIO_GENERAL:1790890987.000113",
+      "m:C_AUDIO_GENERAL:1790891025.000226",
+      "m:C_AUDIO_GENERAL:1790941015.000132",
+      "m:C_AUDIO_GENERAL:1790941070.000113",
+      "m:C_AUDIO_GENERAL:1790941105.000226"
+     ],
+     "attributions": [
+      {
+       "user_id": "U006",
+       "relation": "AUTHOR",
+       "evidence_id": "m:C_AUDIO_GENERAL:1790891074.000339",
+       "role": "TEAM_LEAD"
+      },
+      {
+       "user_id": "U006",
+       "relation": "AUTHOR",
+       "evidence_id": "m:C_AUDIO_GENERAL:1790941162.000339",
+       "role": "TEAM_LEAD"
+      }
+     ],
+     "depends_on": [
+      "detail:d1",
+      "detail:d3"
+     ],
+     "verdict": "SUPPORTED",
+     "model_verdict": "SUPPORTED",
+     "rationale": "Both team-lead requests explicitly concern QA's affected-scope assessment, and neither provided thread supplies the requested timestamps."
+    },
+    {
+     "statement_id": "detail:d5",
+     "kind": "DETAIL",
+     "text": "In the AUDIO-1338 thread, a tutor requested a timestamp for the overlap and a QA tutor requested the start and end of the unintelligible span.",
+     "blocking": false,
+     "evidence_ids": [
+      "m:C_AUDIO_GENERAL:1790921388.000113",
+      "m:C_AUDIO_GENERAL:1790921430.000226"
+     ],
+     "attributions": [
+      {
+       "user_id": "U012",
+       "relation": "AUTHOR",
+       "evidence_id": "m:C_AUDIO_GENERAL:1790921388.000113",
+       "role": "TUTOR"
+      },
+      {
+       "user_id": "U008",
+       "relation": "AUTHOR",
+       "evidence_id": "m:C_AUDIO_GENERAL:1790921430.000226",
+       "role": "QA_TUTOR"
+      }
+     ],
+     "depends_on": [
+      "detail:d2"
+     ],
+     "verdict": "SUPPORTED",
+     "model_verdict": "SUPPORTED",
+     "rationale": "The cited tutor requests an overlap timestamp and the QA tutor requests the unintelligible span's start and end."
+    },
+    {
+     "statement_id": "detail:d6",
+     "kind": "DETAIL",
+     "text": "A QA tutor in each of the background-speaker and failure-threshold threads asked whether the rest of the recording was intelligible enough to continue.",
+     "blocking": false,
+     "evidence_ids": [
+      "m:C_AUDIO_GENERAL:1790891025.000226",
+      "m:C_AUDIO_GENERAL:1790941105.000226"
+     ],
+     "attributions": [
+      {
+       "user_id": "U008",
+       "relation": "AUTHOR",
+       "evidence_id": "m:C_AUDIO_GENERAL:1790891025.000226",
+       "role": "QA_TUTOR"
+      },
+      {
+       "user_id": "U002",
+       "relation": "AUTHOR",
+       "evidence_id": "m:C_AUDIO_GENERAL:1790941105.000226",
+       "role": "QA_TUTOR"
+      }
+     ],
+     "depends_on": [
+      "detail:d1",
+      "detail:d3"
+     ],
+     "verdict": "SUPPORTED",
+     "model_verdict": "SUPPORTED",
+     "rationale": "A QA tutor in each named thread asks whether the remaining recording is intelligible enough to continue."
+    },
+    {
+     "statement_id": "action",
+     "kind": "ACTION",
+     "text": "Post a reminder. Instruction: Post a reminder explaining how to mark and timestamp overlapping speech while keeping usable audio and avoiding automatic whole-clip failure. Draft to copy: Overlap reminder for this batch:\n- Mark the overlapping or unintelligible interval and timestamp the affected span.\n- Keep the usable portions of the clip; do not infer a whole-clip failure from a short affected interval.\n- Distinguish words missing from the audio from mistakes in the reference transcript.\nThese are the current instructions and FAQ: a short affected interval is not, by itself, a reason to discard the whole recording. Scope: Clarifies current overlap handling; it does not decide the pending QA assessments of individual clips.",
+     "blocking": true,
+     "evidence_ids": [
+      "m:C_AUDIO_QA:1790864427.000131",
+      "m:C_AUDIO_GENERAL:1790891074.000339",
+      "m:C_AUDIO_GENERAL:1790921338.000134",
+      "m:C_AUDIO_GENERAL:1790941015.000132",
+      "m:C_AUDIO_GENERAL:1790941162.000339",
+      "k:audio-multimodal-instructions@1.3:eb85357a",
+      "k:audio-multimodal-faq@1.1:e9bcf43a",
+      "m:C_AUDIO_GENERAL:1790890932.000133",
+      "m:C_AUDIO_GENERAL:1790890987.000113",
+      "m:C_AUDIO_GENERAL:1790891025.000226",
+      "m:C_AUDIO_GENERAL:1790941070.000113",
+      "m:C_AUDIO_GENERAL:1790941105.000226"
+     ],
+     "premises": [
+      "claim:c1",
+      "claim:c5",
+      "claim:c8",
+      "claim:c12",
+      "claim:c13",
+      "claim:c4",
+      "claim:c11",
+      "claim:c14"
+     ],
+     "verdict": "SUPPORTED",
+     "model_verdict": "SUPPORTED",
+     "rationale": "The reminder accurately restates applicable current guidance and addresses documented handling questions. Its scope preserves rather than replaces the pending case-specific QA assessments, and it specifies no unsupported concrete route."
+    },
+    {
+     "statement_id": "action:rationale",
+     "kind": "ACTION_RATIONALE",
+     "text": "Why this helps: Repeated questions concern interval marking and whole-clip failure, which the current instructions and FAQ address. A reminder can answer the remaining general handling question without replacing the team lead's case-specific timestamp requests.",
+     "blocking": false,
+     "evidence_ids": [
+      "m:C_AUDIO_QA:1790864427.000131",
+      "m:C_AUDIO_GENERAL:1790891074.000339",
+      "m:C_AUDIO_GENERAL:1790921338.000134",
+      "m:C_AUDIO_GENERAL:1790941015.000132",
+      "m:C_AUDIO_GENERAL:1790941162.000339",
+      "k:audio-multimodal-instructions@1.3:eb85357a",
+      "k:audio-multimodal-faq@1.1:e9bcf43a",
+      "m:C_AUDIO_GENERAL:1790890932.000133",
+      "m:C_AUDIO_GENERAL:1790890987.000113",
+      "m:C_AUDIO_GENERAL:1790891025.000226",
+      "m:C_AUDIO_GENERAL:1790941070.000113",
+      "m:C_AUDIO_GENERAL:1790941105.000226",
+      "m:C_AUDIO_GENERAL:1790921481.000339"
+     ],
+     "verdict": "SUPPORTED",
+     "model_verdict": "SUPPORTED",
+     "rationale": "Multiple authors ask about marking or failure, current guidance addresses those issues, and the unanswered general question can be clarified without deciding the timestamp-dependent cases."
+    },
+    {
+     "statement_id": "action:need",
+     "kind": "INTERVENTION_NEED",
+     "text": "Why intervening now is needed (an unresolved handling question): A QA tutor's overlap-marking question remains unanswered, while tutors also ask about interval marking and transcription failure, showing a repeated handling uncertainty that current guidance can address.",
+     "blocking": false,
+     "evidence_ids": [
+      "m:C_AUDIO_QA:1790864427.000131",
+      "m:C_AUDIO_GENERAL:1790921338.000134",
+      "m:C_AUDIO_GENERAL:1790941015.000132"
+     ],
+     "verdict": "SUPPORTED",
+     "model_verdict": "SUPPORTED",
+     "rationale": "The QA tutor's marking question has no thread answer, and the separate tutor questions demonstrate repeated handling uncertainty. The AUDIO-1338 answer resolves that case but not the other threads."
+    },
+    {
+     "statement_id": "resolution:member_49e4e0ef557959173d770df5",
+     "kind": "RESOLUTION",
+     "text": "Member thread member_49e4e0ef557959173d770df5 is UNRESOLVED: The QA tutor's question has no answer in the provided thread.",
+     "blocking": true,
+     "evidence_ids": [
+      "m:C_AUDIO_QA:1790864427.000131"
+     ],
+     "verdict": "SUPPORTED",
+     "model_verdict": "SUPPORTED",
+     "rationale": "The complete provided thread contains only the QA tutor's question and no answer."
+    },
+    {
+     "statement_id": "resolution:member_b224f8f278e4849b8a75936b",
+     "kind": "RESOLUTION",
+     "text": "Member thread member_b224f8f278e4849b8a75936b is UNRESOLVED: The tutor's background-speaker report receives questions and a timestamp request from the team lead, but no final assessment or reported correction.",
+     "blocking": true,
+     "evidence_ids": [
+      "m:C_AUDIO_GENERAL:1790890932.000133",
+      "m:C_AUDIO_GENERAL:1790890987.000113",
+      "m:C_AUDIO_GENERAL:1790891025.000226",
+      "m:C_AUDIO_GENERAL:1790891074.000339"
+     ],
+     "verdict": "SUPPORTED",
+     "model_verdict": "SUPPORTED",
+     "rationale": "The thread ends with a timestamp request, without the requested timestamps, final assessment or reported correction."
+    },
+    {
+     "statement_id": "resolution:member_e6be3632ce8e4a4b4f77bca7",
+     "kind": "RESOLUTION",
+     "text": "Member thread member_e6be3632ce8e4a4b4f77bca7 is RESOLVED_IN_THREAD: A QA tutor directly answers the tutor's marking question for AUDIO-1338: mark the unintelligible interval and retain the clear portions. This resolves the handling question, not a confirmed correction of the task.",
+     "blocking": true,
+     "evidence_ids": [
+      "m:C_AUDIO_GENERAL:1790921338.000134",
+      "m:C_AUDIO_GENERAL:1790921388.000113",
+      "m:C_AUDIO_GENERAL:1790921430.000226",
+      "m:C_AUDIO_GENERAL:1790921481.000339"
+     ],
+     "verdict": "SUPPORTED",
+     "model_verdict": "SUPPORTED",
+     "rationale": "The QA tutor directly answers the marking question, with a team-lead check reaction. The statement correctly distinguishes handling resolution from a confirmed task correction."
+    },
+    {
+     "statement_id": "resolution:member_e48bf44fa3dd5692a771cf22",
+     "kind": "RESOLUTION",
+     "text": "Member thread member_e48bf44fa3dd5692a771cf22 is UNRESOLVED: The tutor's failure-threshold question receives an intelligibility question and a timestamp request from the team lead, but no substantive answer or case assessment in the thread.",
+     "blocking": true,
+     "evidence_ids": [
+      "m:C_AUDIO_GENERAL:1790941015.000132",
+      "m:C_AUDIO_GENERAL:1790941070.000113",
+      "m:C_AUDIO_GENERAL:1790941105.000226",
+      "m:C_AUDIO_GENERAL:1790941162.000339"
+     ],
+     "verdict": "SUPPORTED",
+     "model_verdict": "SUPPORTED",
+     "rationale": "The thread contains clarifying questions and a timestamp request but no substantive threshold answer or completed case assessment."
+    },
+    {
+     "statement_id": "severity:rationale",
+     "kind": "SEVERITY_RATIONALE",
+     "text": "Severity MEDIUM: Repeated questions concern whether overlap should be marked locally or cause transcription failure, which can change how usable audio is retained and scored. The reports describe contained spans rather than demonstrated batch-wide disruption.",
+     "blocking": true,
+     "evidence_ids": [
+      "m:C_AUDIO_QA:1790864427.000131",
+      "m:C_AUDIO_GENERAL:1790921338.000134",
+      "m:C_AUDIO_GENERAL:1790941015.000132",
+      "m:C_AUDIO_GENERAL:1790890932.000133",
+      "m:C_AUDIO_GENERAL:1790941070.000113",
+      "m:C_AUDIO_GENERAL:1790921388.000113",
+      "m:C_AUDIO_GENERAL:1790890987.000113",
+      "m:C_AUDIO_GENERAL:1790921430.000226",
+      "m:C_AUDIO_GENERAL:1790921481.000339",
+      "m:C_AUDIO_GENERAL:1790891025.000226",
+      "m:C_AUDIO_GENERAL:1790941105.000226"
+     ],
+     "verdict": "SUPPORTED",
+     "model_verdict": "SUPPORTED",
+     "rationale": "Repeated marking and failure questions support meaningful labeling and scoring uncertainty. The reports concern localized overlap and do not demonstrate batch-wide disruption."
+    },
+    {
+     "statement_id": "severity:signal:MEDIUM[0]",
+     "kind": "SEVERITY_SIGNAL",
+     "text": "Rubric signal met - \"Recurring confusion about the same rule, tool behavior, or scoring criterion that suggests meaningful workflow or labeling impact\": A QA tutor asks whether simultaneous speech should be marked unintelligible; a tutor asks the same for a two-second overlap, and another tutor asks when overlap causes transcription failure.",
+     "blocking": true,
+     "evidence_ids": [
+      "m:C_AUDIO_QA:1790864427.000131",
+      "m:C_AUDIO_GENERAL:1790921338.000134",
+      "m:C_AUDIO_GENERAL:1790941015.000132"
+     ],
+     "verdict": "SUPPORTED",
+     "model_verdict": "SUPPORTED",
+     "rationale": "Three distinct authors ask the described related handling questions, supporting recurring confusion with potential workflow or labeling impact."
+    },
+    {
+     "statement_id": "reporter:U020",
+     "kind": "AFFECTED_REPORTER",
+     "text": "U020 reports, in their own cited message, being affected by this problem.",
+     "blocking": true,
+     "evidence_ids": [
+      "m:C_AUDIO_GENERAL:1790890932.000133"
+     ],
+     "verdict": "SUPPORTED",
+     "model_verdict": "SUPPORTED",
+     "rationale": "U020's own message reports the background-speaker transcription problem."
+    },
+    {
+     "statement_id": "reporter:U018",
+     "kind": "AFFECTED_REPORTER",
+     "text": "U018 reports, in their own cited message, being affected by this problem.",
+     "blocking": true,
+     "evidence_ids": [
+      "m:C_AUDIO_GENERAL:1790941070.000113"
+     ],
+     "verdict": "SUPPORTED",
+     "model_verdict": "SUPPORTED",
+     "rationale": "U018 personally reports hearing both voices while losing individual words."
+    },
+    {
+     "statement_id": "reporter:U003",
+     "kind": "AFFECTED_REPORTER",
+     "text": "U003 reports, in their own cited message, being affected by this problem.",
+     "blocking": true,
+     "evidence_ids": [
+      "m:C_AUDIO_GENERAL:1790921338.000134"
+     ],
+     "verdict": "SUPPORTED",
+     "model_verdict": "SUPPORTED",
+     "rationale": "U003 personally reports overlap on their referenced task and asks how to mark it."
+    },
+    {
+     "statement_id": "reporter:U012",
+     "kind": "AFFECTED_REPORTER",
+     "text": "U012 reports, in their own cited message, being affected by this problem.",
+     "blocking": true,
+     "evidence_ids": [
+      "m:C_AUDIO_GENERAL:1790921388.000113"
+     ],
+     "verdict": "SUPPORTED",
+     "model_verdict": "SUPPORTED",
+     "rationale": "U012 personally reports hearing both voices but losing words in the overlapping interval."
+    }
+   ]
+  },
+  "temporal": {
+   "status": "NONE_FOUND",
+   "findings": [],
+   "source_consistency": "ASSESSED",
+   "ignored_revision_states": "NOT_YET_EFFECTIVE and NOT_APPROVED revisions never compete with applicable guidance."
+  },
+  "temporal_before_grounding": {
+   "status": "NONE_FOUND",
+   "findings": [],
+   "source_consistency": "NOT_ASSESSED",
+   "ignored_revision_states": "NOT_YET_EFFECTIVE and NOT_APPROVED revisions never compete with applicable guidance."
+  },
+  "severity": {
+   "assessment": {
+    "level": "MEDIUM",
+    "assessment_status": "ASSESSED",
+    "rubric_version": "severity-rubric-v3-semantic-signals",
+    "rubric_content_sha256": "eccaa31a2ab84a0aa7c005216a92fc39681e1dd10107117344948235a76673f4",
+    "rubric_project_id": null,
+    "rubric_scope": "SHARED_DEFAULT",
+    "rationale": "Repeated questions concern whether overlap should be marked locally or cause transcription failure, which can change how usable audio is retained and scored. The reports describe contained spans rather than demonstrated batch-wide disruption.",
+    "matched_signals": [
+     {
+      "level": "MEDIUM",
+      "signal_index": 0,
+      "signal_text": "Recurring confusion about the same rule, tool behavior, or scoring criterion that suggests meaningful workflow or labeling impact",
+      "support": "A QA tutor asks whether simultaneous speech should be marked unintelligible; a tutor asks the same for a two-second overlap, and another tutor asks when overlap causes transcription failure.",
+      "evidence": [
+       {
+        "kind": "slack_message",
+        "project_id": "audio_multimodal",
+        "batch_id": "audio_batch_06",
+        "scope": "project",
+        "channel_id": "C_AUDIO_QA",
+        "thread_id": "1790864427.000131",
+        "message_id": "1790864427.000131",
+        "document_id": null,
+        "version_id": null,
+        "authoring_document_id": null,
+        "authoring_version": null,
+        "section": null,
+        "chunk_id": null,
+        "candidate_group_id": null,
+        "member_id": "member_49e4e0ef557959173d770df5",
+        "artifact": null,
+        "artifact_sha256": null,
+        "quote": null,
+        "note": "m:C_AUDIO_QA:1790864427.000131"
+       },
+       {
+        "kind": "slack_message",
+        "project_id": "audio_multimodal",
+        "batch_id": "audio_batch_06",
+        "scope": "project",
+        "channel_id": "C_AUDIO_GENERAL",
+        "thread_id": "1790921338.000134",
+        "message_id": "1790921338.000134",
+        "document_id": null,
+        "version_id": null,
+        "authoring_document_id": null,
+        "authoring_version": null,
+        "section": null,
+        "chunk_id": null,
+        "candidate_group_id": null,
+        "member_id": "member_e6be3632ce8e4a4b4f77bca7",
+        "artifact": null,
+        "artifact_sha256": null,
+        "quote": null,
+        "note": "m:C_AUDIO_GENERAL:1790921338.000134"
+       },
+       {
+        "kind": "slack_message",
+        "project_id": "audio_multimodal",
+        "batch_id": "audio_batch_06",
+        "scope": "project",
+        "channel_id": "C_AUDIO_GENERAL",
+        "thread_id": "1790941015.000132",
+        "message_id": "1790941015.000132",
+        "document_id": null,
+        "version_id": null,
+        "authoring_document_id": null,
+        "authoring_version": null,
+        "section": null,
+        "chunk_id": null,
+        "candidate_group_id": null,
+        "member_id": "member_e48bf44fa3dd5692a771cf22",
+        "artifact": null,
+        "artifact_sha256": null,
+        "quote": null,
+        "note": "m:C_AUDIO_GENERAL:1790941015.000132"
+       }
+      ]
+     }
+    ],
+    "evidence": [
+     {
+      "kind": "slack_message",
+      "project_id": "audio_multimodal",
+      "batch_id": "audio_batch_06",
+      "scope": "project",
+      "channel_id": "C_AUDIO_QA",
+      "thread_id": "1790864427.000131",
+      "message_id": "1790864427.000131",
+      "document_id": null,
+      "version_id": null,
+      "authoring_document_id": null,
+      "authoring_version": null,
+      "section": null,
+      "chunk_id": null,
+      "candidate_group_id": null,
+      "member_id": "member_49e4e0ef557959173d770df5",
+      "artifact": null,
+      "artifact_sha256": null,
+      "quote": null,
+      "note": "m:C_AUDIO_QA:1790864427.000131"
+     },
+     {
+      "kind": "slack_message",
+      "project_id": "audio_multimodal",
+      "batch_id": "audio_batch_06",
+      "scope": "project",
+      "channel_id": "C_AUDIO_GENERAL",
+      "thread_id": "1790921338.000134",
+      "message_id": "1790921338.000134",
+      "document_id": null,
+      "version_id": null,
+      "authoring_document_id": null,
+      "authoring_version": null,
+      "section": null,
+      "chunk_id": null,
+      "candidate_group_id": null,
+      "member_id": "member_e6be3632ce8e4a4b4f77bca7",
+      "artifact": null,
+      "artifact_sha256": null,
+      "quote": null,
+      "note": "m:C_AUDIO_GENERAL:1790921338.000134"
+     },
+     {
+      "kind": "slack_message",
+      "project_id": "audio_multimodal",
+      "batch_id": "audio_batch_06",
+      "scope": "project",
+      "channel_id": "C_AUDIO_GENERAL",
+      "thread_id": "1790941015.000132",
+      "message_id": "1790941015.000132",
+      "document_id": null,
+      "version_id": null,
+      "authoring_document_id": null,
+      "authoring_version": null,
+      "section": null,
+      "chunk_id": null,
+      "candidate_group_id": null,
+      "member_id": "member_e48bf44fa3dd5692a771cf22",
+      "artifact": null,
+      "artifact_sha256": null,
+      "quote": null,
+      "note": "m:C_AUDIO_GENERAL:1790941015.000132"
+     }
+    ],
+    "occurrence": {
+     "affected_reporters": {
+      "status": "LOWER_BOUND",
+      "count": 4,
+      "ids": [
+       "U020",
+       "U018",
+       "U003",
+       "U012"
+      ],
+      "basis": "Distinct authors whose own cited message reports the problem; other participants are not counted.",
+      "evidence": [
+       {
+        "kind": "slack_message",
+        "project_id": "audio_multimodal",
+        "batch_id": "audio_batch_06",
+        "scope": "project",
+        "channel_id": "C_AUDIO_GENERAL",
+        "thread_id": "1790890932.000133",
+        "message_id": "1790890932.000133",
+        "document_id": null,
+        "version_id": null,
+        "authoring_document_id": null,
+        "authoring_version": null,
+        "section": null,
+        "chunk_id": null,
+        "candidate_group_id": null,
+        "member_id": "member_b224f8f278e4849b8a75936b",
+        "artifact": null,
+        "artifact_sha256": null,
+        "quote": null,
+        "note": "m:C_AUDIO_GENERAL:1790890932.000133"
+       },
+       {
+        "kind": "slack_message",
+        "project_id": "audio_multimodal",
+        "batch_id": "audio_batch_06",
+        "scope": "project",
+        "channel_id": "C_AUDIO_GENERAL",
+        "thread_id": "1790941015.000132",
+        "message_id": "1790941070.000113",
+        "document_id": null,
+        "version_id": null,
+        "authoring_document_id": null,
+        "authoring_version": null,
+        "section": null,
+        "chunk_id": null,
+        "candidate_group_id": null,
+        "member_id": "member_e48bf44fa3dd5692a771cf22",
+        "artifact": null,
+        "artifact_sha256": null,
+        "quote": null,
+        "note": "m:C_AUDIO_GENERAL:1790941070.000113"
+       },
+       {
+        "kind": "slack_message",
+        "project_id": "audio_multimodal",
+        "batch_id": "audio_batch_06",
+        "scope": "project",
+        "channel_id": "C_AUDIO_GENERAL",
+        "thread_id": "1790921338.000134",
+        "message_id": "1790921338.000134",
+        "document_id": null,
+        "version_id": null,
+        "authoring_document_id": null,
+        "authoring_version": null,
+        "section": null,
+        "chunk_id": null,
+        "candidate_group_id": null,
+        "member_id": "member_e6be3632ce8e4a4b4f77bca7",
+        "artifact": null,
+        "artifact_sha256": null,
+        "quote": null,
+        "note": "m:C_AUDIO_GENERAL:1790921338.000134"
+       },
+       {
+        "kind": "slack_message",
+        "project_id": "audio_multimodal",
+        "batch_id": "audio_batch_06",
+        "scope": "project",
+        "channel_id": "C_AUDIO_GENERAL",
+        "thread_id": "1790921338.000134",
+        "message_id": "1790921388.000113",
+        "document_id": null,
+        "version_id": null,
+        "authoring_document_id": null,
+        "authoring_version": null,
+        "section": null,
+        "chunk_id": null,
+        "candidate_group_id": null,
+        "member_id": "member_e6be3632ce8e4a4b4f77bca7",
+        "artifact": null,
+        "artifact_sha256": null,
+        "quote": null,
+        "note": "m:C_AUDIO_GENERAL:1790921388.000113"
+       }
+      ]
+     },
+     "affected_tasks": {
+      "status": "UNKNOWN",
+      "count": null,
+      "ids": [],
+      "basis": null,
+      "evidence": []
+     },
+     "relevant_threads": [
+      {
+       "project_id": "audio_multimodal",
+       "batch_id": "audio_batch_06",
+       "channel_id": "C_AUDIO_QA",
+       "thread_id": "1790864427.000131",
+       "member_id": "member_49e4e0ef557959173d770df5"
+      },
+      {
+       "project_id": "audio_multimodal",
+       "batch_id": "audio_batch_06",
+       "channel_id": "C_AUDIO_GENERAL",
+       "thread_id": "1790890932.000133",
+       "member_id": "member_b224f8f278e4849b8a75936b"
+      },
+      {
+       "project_id": "audio_multimodal",
+       "batch_id": "audio_batch_06",
+       "channel_id": "C_AUDIO_GENERAL",
+       "thread_id": "1790921338.000134",
+       "member_id": "member_e6be3632ce8e4a4b4f77bca7"
+      },
+      {
+       "project_id": "audio_multimodal",
+       "batch_id": "audio_batch_06",
+       "channel_id": "C_AUDIO_GENERAL",
+       "thread_id": "1790941015.000132",
+       "member_id": "member_e48bf44fa3dd5692a771cf22"
+      }
+     ],
+     "reporting_window": {
+      "start": "2026-10-01T14:20:27.000131+00:00",
+      "end": "2026-10-02T11:39:22.000339+00:00"
+     },
+     "historical_recurrence": {
+      "status": "NOT_CHECKED",
+      "sources": [],
+      "event_series_ids": []
+     },
+     "known_denominator": null,
+     "structural": {
+      "threads": 4,
+      "messages": 13,
+      "distinct_participants": 10,
+      "duplicate_threads_ignored": 0,
+      "duplicate_messages_ignored": 0,
+      "computed_from": "topic member threads (original Slack messages)",
+      "participants_are_not_affected_reporters": true
+     },
+     "semantic_identification": "ASSESSED"
+    },
+    "inherited_from": {
+     "level": "UNKNOWN",
+     "assessment_status": "UNASSESSED",
+     "assessment_deferred_to": "AGENT3",
+     "reason": "Agent 2 performs taxonomy only."
+    }
+   },
+   "issues": [],
+   "notes": [],
+   "proposal": {
+    "level": "MEDIUM",
+    "rationale": "Repeated questions concern whether overlap should be marked locally or cause transcription failure, which can change how usable audio is retained and scored. The reports describe contained spans rather than demonstrated batch-wide disruption.",
+    "signals": [
+     {
+      "level": "MEDIUM",
+      "signal_index": 0,
+      "signal_text": "Recurring confusion about the same rule, tool behavior, or scoring criterion that suggests meaningful workflow or labeling impact",
+      "support": "A QA tutor asks whether simultaneous speech should be marked unintelligible; a tutor asks the same for a two-second overlap, and another tutor asks when overlap causes transcription failure.",
+      "evidence_ids": [
+       "m:C_AUDIO_QA:1790864427.000131",
+       "m:C_AUDIO_GENERAL:1790921338.000134",
+       "m:C_AUDIO_GENERAL:1790941015.000132"
+      ]
+     }
+    ],
+    "affected_reporters": [
+     {
+      "author_id": "U020",
+      "evidence_id": "m:C_AUDIO_GENERAL:1790890932.000133"
+     },
+     {
+      "author_id": "U018",
+      "evidence_id": "m:C_AUDIO_GENERAL:1790941070.000113"
+     },
+     {
+      "author_id": "U003",
+      "evidence_id": "m:C_AUDIO_GENERAL:1790921338.000134"
+     },
+     {
+      "author_id": "U012",
+      "evidence_id": "m:C_AUDIO_GENERAL:1790921388.000113"
+     }
+    ],
+    "recurrence": "NOT_CHECKED",
+    "recurrence_evidence_ids": [],
+    "reported_recurrence_evidence_ids": []
+   }
+  },
+  "resolution": {
+   "topic": "MIXED",
+   "members": {
+    "member_49e4e0ef557959173d770df5": "UNRESOLVED",
+    "member_b224f8f278e4849b8a75936b": "UNRESOLVED",
+    "member_e6be3632ce8e4a4b4f77bca7": "RESOLVED_IN_THREAD",
+    "member_e48bf44fa3dd5692a771cf22": "UNRESOLVED"
+   },
+   "agent1_attributed": [
+    {
+     "member_id": "member_49e4e0ef557959173d770df5",
+     "state": "UNRESOLVED",
+     "agent1_verification_status": "VERIFIED",
+     "agent1_review_required": false
+    },
+    {
+     "member_id": "member_b224f8f278e4849b8a75936b",
+     "state": "UNRESOLVED",
+     "agent1_verification_status": "NEEDS_REVIEW",
+     "agent1_review_required": true
+    },
+    {
+     "member_id": "member_e6be3632ce8e4a4b4f77bca7",
+     "state": "RESOLVED_IN_THREAD",
+     "agent1_verification_status": "VERIFIED",
+     "agent1_review_required": false
+    },
+    {
+     "member_id": "member_e48bf44fa3dd5692a771cf22",
+     "state": "UNRESOLVED",
+     "agent1_verification_status": "CORRECTED",
+     "agent1_review_required": false
+    }
+   ]
+  },
+  "established_handling": [],
+  "coverage_issues": [],
+  "action_source": "DRAFT",
+  "action_notes": [],
+  "tot": {
+   "status": "NOT_TRIGGERED",
+   "triggers": [],
+   "choice_after_grounding": {
+    "status": "NOT_COMPARED",
+    "viable": []
+   }
+  },
+  "evidence_ledger": {
+   "m:C_AUDIO_QA:1790864427.000131": {
+    "evidence_id": "m:C_AUDIO_QA:1790864427.000131",
+    "origin": "member_message",
+    "use": "MEMBER_REPORT",
+    "member_id": "member_49e4e0ef557959173d770df5",
+    "channel_id": "C_AUDIO_QA",
+    "thread_id": "1790864427.000131",
+    "message_id": "1790864427.000131",
+    "author_id": "U019",
+    "author_name": "Yuki",
+    "author_role": "QA_TUTOR",
+    "timestamp": "2026-10-01T14:20:27.000131Z",
+    "thread_starter_id": "U019",
+    "thread_starter_role": "QA_TUTOR",
+    "reactions": [],
+    "excerpt": "Two people talk at once — mark unintelligible?"
+   },
+   "m:C_AUDIO_GENERAL:1790890932.000133": {
+    "evidence_id": "m:C_AUDIO_GENERAL:1790890932.000133",
+    "origin": "member_message",
+    "use": "MEMBER_REPORT",
+    "member_id": "member_b224f8f278e4849b8a75936b",
+    "channel_id": "C_AUDIO_GENERAL",
+    "thread_id": "1790890932.000133",
+    "message_id": "1790890932.000133",
+    "author_id": "U020",
+    "author_name": "Theo",
+    "author_role": "TUTOR",
+    "timestamp": "2026-10-01T21:42:12.000133Z",
+    "thread_starter_id": "U020",
+    "thread_starter_role": "TUTOR",
+    "reactions": [],
+    "excerpt": "Background speaker gets transcribed as main speaker."
+   },
+   "m:C_AUDIO_GENERAL:1790890987.000113": {
+    "evidence_id": "m:C_AUDIO_GENERAL:1790890987.000113",
+    "origin": "member_message",
+    "use": "MEMBER_REPORT",
+    "member_id": "member_b224f8f278e4849b8a75936b",
+    "channel_id": "C_AUDIO_GENERAL",
+    "thread_id": "1790890932.000133",
+    "message_id": "1790890987.000113",
+    "author_id": "U018",
+    "author_name": "Omar",
+    "author_role": "TUTOR",
+    "timestamp": "2026-10-01T21:43:07.000113Z",
+    "thread_starter_id": "U020",
+    "thread_starter_role": "TUTOR",
+    "reactions": [],
+    "excerpt": "The speakers overlap for two seconds, but the rest is clear."
+   },
+   "m:C_AUDIO_GENERAL:1790891025.000226": {
+    "evidence_id": "m:C_AUDIO_GENERAL:1790891025.000226",
+    "origin": "member_message",
+    "use": "MEMBER_REPORT",
+    "member_id": "member_b224f8f278e4849b8a75936b",
+    "channel_id": "C_AUDIO_GENERAL",
+    "thread_id": "1790890932.000133",
+    "message_id": "1790891025.000226",
+    "author_id": "U008",
+    "author_name": "Hana",
+    "author_role": "QA_TUTOR",
+    "timestamp": "2026-10-01T21:43:45.000226Z",
+    "thread_starter_id": "U020",
+    "thread_starter_role": "TUTOR",
+    "reactions": [],
+    "excerpt": "Is the rest of the recording intelligible enough to continue the task? Overlap duration and word intelligibility are separate observations."
+   },
+   "m:C_AUDIO_GENERAL:1790891074.000339": {
+    "evidence_id": "m:C_AUDIO_GENERAL:1790891074.000339",
+    "origin": "member_message",
+    "use": "MEMBER_REPORT",
+    "member_id": "member_b224f8f278e4849b8a75936b",
+    "channel_id": "C_AUDIO_GENERAL",
+    "thread_id": "1790890932.000133",
+    "message_id": "1790891074.000339",
+    "author_id": "U006",
+    "author_name": "Priya",
+    "author_role": "TEAM_LEAD",
+    "timestamp": "2026-10-01T21:44:34.000339Z",
+    "thread_starter_id": "U020",
+    "thread_starter_role": "TUTOR",
+    "reactions": [],
+    "excerpt": "Please timestamp the overlap so QA can determine whether it affects the full sample or only a short segment. The remainder may still be usable even if a short segment is unclear."
+   },
+   "m:C_AUDIO_GENERAL:1790921338.000134": {
+    "evidence_id": "m:C_AUDIO_GENERAL:1790921338.000134",
+    "origin": "member_message",
+    "use": "MEMBER_REPORT",
+    "member_id": "member_e6be3632ce8e4a4b4f77bca7",
+    "channel_id": "C_AUDIO_GENERAL",
+    "thread_id": "1790921338.000134",
+    "message_id": "1790921338.000134",
+    "author_id": "U003",
+    "author_name": "Jordan",
+    "author_role": "TUTOR",
+    "timestamp": "2026-10-02T06:08:58.000134Z",
+    "thread_starter_id": "U003",
+    "thread_starter_role": "TUTOR",
+    "reactions": [],
+    "excerpt": "Two speakers talk over each other for two seconds. Mark unintelligible? (task ref AUDIO-1338)"
+   },
+   "m:C_AUDIO_GENERAL:1790921388.000113": {
+    "evidence_id": "m:C_AUDIO_GENERAL:1790921388.000113",
+    "origin": "member_message",
+    "use": "MEMBER_REPORT",
+    "member_id": "member_e6be3632ce8e4a4b4f77bca7",
+    "channel_id": "C_AUDIO_GENERAL",
+    "thread_id": "1790921338.000134",
+    "message_id": "1790921388.000113",
+    "author_id": "U012",
+    "author_name": "Sam",
+    "author_role": "TUTOR",
+    "timestamp": "2026-10-02T06:09:48.000113Z",
+    "thread_starter_id": "U003",
+    "thread_starter_role": "TUTOR",
+    "reactions": [],
+    "excerpt": "I can hear both voices, though individual words in the overlap are lost. Can you timestamp the portion where both speakers talk?"
+   },
+   "m:C_AUDIO_GENERAL:1790921430.000226": {
+    "evidence_id": "m:C_AUDIO_GENERAL:1790921430.000226",
+    "origin": "member_message",
+    "use": "MEMBER_REPORT",
+    "member_id": "member_e6be3632ce8e4a4b4f77bca7",
+    "channel_id": "C_AUDIO_GENERAL",
+    "thread_id": "1790921338.000134",
+    "message_id": "1790921430.000226",
+    "author_id": "U008",
+    "author_name": "Hana",
+    "author_role": "QA_TUTOR",
+    "timestamp": "2026-10-02T06:10:30.000226Z",
+    "thread_starter_id": "U003",
+    "thread_starter_role": "TUTOR",
+    "reactions": [],
+    "excerpt": "Can you mark the start and end of the unintelligible span?"
+   },
+   "m:C_AUDIO_GENERAL:1790921481.000339": {
+    "evidence_id": "m:C_AUDIO_GENERAL:1790921481.000339",
+    "origin": "member_message",
+    "use": "MEMBER_REPORT",
+    "member_id": "member_e6be3632ce8e4a4b4f77bca7",
+    "channel_id": "C_AUDIO_GENERAL",
+    "thread_id": "1790921338.000134",
+    "message_id": "1790921481.000339",
+    "author_id": "U007",
+    "author_name": "Leo",
+    "author_role": "QA_TUTOR",
+    "timestamp": "2026-10-02T06:11:21.000339Z",
+    "thread_starter_id": "U003",
+    "thread_starter_role": "TUTOR",
+    "reactions": [
+     {
+      "name": "white_check_mark",
+      "users": [
+       {
+        "id": "U006",
+        "name": "Priya"
+       }
+      ]
+     }
+    ],
+    "excerpt": "For this item, mark the unintelligible overlapping interval while retaining the clear parts of the clip; do not discard the whole recording."
+   },
+   "m:C_AUDIO_GENERAL:1790941015.000132": {
+    "evidence_id": "m:C_AUDIO_GENERAL:1790941015.000132",
+    "origin": "member_message",
+    "use": "MEMBER_REPORT",
+    "member_id": "member_e48bf44fa3dd5692a771cf22",
+    "channel_id": "C_AUDIO_GENERAL",
+    "thread_id": "1790941015.000132",
+    "message_id": "1790941015.000132",
+    "author_id": "U015",
+    "author_name": "Carla",
+    "author_role": "TUTOR",
+    "timestamp": "2026-10-02T11:36:55.000132Z",
+    "thread_starter_id": "U015",
+    "thread_starter_role": "TUTOR",
+    "reactions": [],
+    "excerpt": "Could QA clarify this case: How much overlap is allowed before the transcription fails the rubric?"
+   },
+   "m:C_AUDIO_GENERAL:1790941070.000113": {
+    "evidence_id": "m:C_AUDIO_GENERAL:1790941070.000113",
+    "origin": "member_message",
+    "use": "MEMBER_REPORT",
+    "member_id": "member_e48bf44fa3dd5692a771cf22",
+    "channel_id": "C_AUDIO_GENERAL",
+    "thread_id": "1790941015.000132",
+    "message_id": "1790941070.000113",
+    "author_id": "U018",
+    "author_name": "Omar",
+    "author_role": "TUTOR",
+    "timestamp": "2026-10-02T11:37:50.000113Z",
+    "thread_starter_id": "U015",
+    "thread_starter_role": "TUTOR",
+    "reactions": [
+     {
+      "name": "thumbsup",
+      "users": [
+       {
+        "id": "U012",
+        "name": "Sam"
+       }
+      ]
+     }
+    ],
+    "excerpt": "I can hear both voices, though individual words in the overlap are lost."
+   },
+   "m:C_AUDIO_GENERAL:1790941105.000226": {
+    "evidence_id": "m:C_AUDIO_GENERAL:1790941105.000226",
+    "origin": "member_message",
+    "use": "MEMBER_REPORT",
+    "member_id": "member_e48bf44fa3dd5692a771cf22",
+    "channel_id": "C_AUDIO_GENERAL",
+    "thread_id": "1790941015.000132",
+    "message_id": "1790941105.000226",
+    "author_id": "U002",
+    "author_name": "Mina",
+    "author_role": "QA_TUTOR",
+    "timestamp": "2026-10-02T11:38:25.000226Z",
+    "thread_starter_id": "U015",
+    "thread_starter_role": "TUTOR",
+    "reactions": [],
+    "excerpt": "Is the rest of the recording intelligible enough to continue the task?"
+   },
+   "m:C_AUDIO_GENERAL:1790941162.000339": {
+    "evidence_id": "m:C_AUDIO_GENERAL:1790941162.000339",
+    "origin": "member_message",
+    "use": "MEMBER_REPORT",
+    "member_id": "member_e48bf44fa3dd5692a771cf22",
+    "channel_id": "C_AUDIO_GENERAL",
+    "thread_id": "1790941015.000132",
+    "message_id": "1790941162.000339",
+    "author_id": "U006",
+    "author_name": "Priya",
+    "author_role": "TEAM_LEAD",
+    "timestamp": "2026-10-02T11:39:22.000339Z",
+    "thread_starter_id": "U015",
+    "thread_starter_role": "TUTOR",
+    "reactions": [],
+    "excerpt": "Please timestamp the overlap so QA can determine whether it affects the full sample or only a short segment."
+   },
+   "k:audio-multimodal-faq@1.1:e9bcf43a": {
+    "evidence_id": "k:audio-multimodal-faq@1.1:e9bcf43a",
+    "origin": "retrieved_source",
+    "use": "CURRENT_GUIDANCE",
+    "citation": {
+     "document_id": "knowledge_1f550e377f9c310f57f03e5bf482f810999d822a9cf4b1db3be5f2557678f15e",
+     "version_id": "version_66a170bbd46011e80d06da6d0bf5ec8b73486a84c13e015f60222fa711e05727",
+     "chunk_id": "chunk_e9bcf43a020b06861273547bf398f71b",
+     "authoring": "audio-multimodal-faq@1.1",
+     "title": "Audio Multimodal — FAQ (v1.1)",
+     "sections": [
+      "Scoring"
+     ],
+     "source": {
+      "batch_id": null,
+      "channel_id": null,
+      "manual_key": "audio-multimodal-faq",
+      "message_id": null,
+      "permalink": null,
+      "project_id": "audio_multimodal",
+      "reference": null,
+      "system": "manual",
+      "thread_id": null,
+      "workspace_id": null
+     }
+    },
+    "source_type": "faq",
+    "record_kind": "faq",
+    "applicability": {
+     "state": "CURRENT",
+     "revision_state": "CURRENT",
+     "version_mode": "current",
+     "replaced_by": [],
+     "unverified_supersession": [],
+     "supersedes": [],
+     "enactment": null,
+     "other_revisions": []
+    },
+    "dates": {
+     "source_date": "2026-09-20T13:00:00Z",
+     "basis": "effective_at",
+     "effective_at": "2026-09-20T13:00:00Z",
+     "created_at": null,
+     "valid_until": null,
+     "expired_as_of": false,
+     "reference_time": "2026-10-02T12:00:00Z"
+    },
+    "scope": {
+     "project_id": "audio_multimodal",
+     "batch_id": null,
+     "scope": "project",
+     "batch_relation": "project_wide"
+    },
+    "authority": {
+     "role": "TEAM_LEAD",
+     "actor": "U006",
+     "actor_relation": "RECORD_AUTHORITY",
+     "approval_status": "EXPLICIT_SOURCE_MARKER",
+     "provenance": "synthetic_manual_record"
+    },
+    "authorship": {
+     "author_id": null,
+     "verified": false,
+     "basis": "NO_AUTHOR_RECORDED"
+    },
+    "recorded_states": {
+     "status": "approved",
+     "decision_status": null,
+     "execution_status": null,
+     "outcome_status": null
+    },
+    "upstream_review": null,
+    "excerpt": "## Scoring\n\n### Q: How should I score mild clipping?\nBrief, localized clipping with clear speech is a minor defect. Timestamp the affected span. For continuous artifacts or unclear impact, ask QA to review intelligibility and scope; do not decide from duration alone.\n\n### Q: The transcript and audio disagree. What do I do?\nRecord the exact mismatch as a correspondence issue. Distinguish a recording error from a reference-transcript error; do not classify the mismatch as a playback failure.\n\n### Q: How much speaker overlap is allowed before the transcription fails?\nMark the overlapping or unintelligible interval and preserve the usable remainder. Timestamp the span. Do not infer a whole-clip failure from a short affected interval."
+   },
+   "k:audio-multimodal-instructions@1.3:eb85357a": {
+    "evidence_id": "k:audio-multimodal-instructions@1.3:eb85357a",
+    "origin": "retrieved_source",
+    "use": "CURRENT_GUIDANCE",
+    "citation": {
+     "document_id": "knowledge_3057c26d60654a68d0b76c025ba216366dd48f3e97b64f5aae68364a45170b8a",
+     "version_id": "version_03e4c185c65cbfbe35dccab040cc429ac6887e3cb0edc4f52cb5ea5a56970a24",
+     "chunk_id": "chunk_eb85357a2c0b0e254c4f95c9d38a0bae",
+     "authoring": "audio-multimodal-instructions@1.3",
+     "title": "Audio Multimodal — Instructions (v1.3)",
+     "sections": [
+      "Overlap and transcript correspondence"
+     ],
+     "source": {
+      "batch_id": null,
+      "channel_id": null,
+      "manual_key": "audio-multimodal-instructions",
+      "message_id": null,
+      "permalink": null,
+      "project_id": "audio_multimodal",
+      "reference": null,
+      "system": "manual",
+      "thread_id": null,
+      "workspace_id": null
+     }
+    },
+    "source_type": "guideline",
+    "record_kind": "guideline",
+    "applicability": {
+     "state": "CURRENT",
+     "revision_state": "CURRENT",
+     "version_mode": "current",
+     "replaced_by": [],
+     "unverified_supersession": [],
+     "supersedes": [],
+     "enactment": null,
+     "other_revisions": []
+    },
+    "dates": {
+     "source_date": "2026-09-15T13:00:00Z",
+     "basis": "effective_at",
+     "effective_at": "2026-09-15T13:00:00Z",
+     "created_at": null,
+     "valid_until": null,
+     "expired_as_of": false,
+     "reference_time": "2026-10-02T12:00:00Z"
+    },
+    "scope": {
+     "project_id": "audio_multimodal",
+     "batch_id": null,
+     "scope": "project",
+     "batch_relation": "project_wide"
+    },
+    "authority": {
+     "role": "TEAM_LEAD",
+     "actor": "U006",
+     "actor_relation": "RECORD_AUTHORITY",
+     "approval_status": "EXPLICIT_SOURCE_MARKER",
+     "provenance": "synthetic_manual_record"
+    },
+    "authorship": {
+     "author_id": null,
+     "verified": false,
+     "basis": "NO_AUTHOR_RECORDED"
+    },
+    "recorded_states": {
+     "status": "approved",
+     "decision_status": null,
+     "execution_status": null,
+     "outcome_status": null
+    },
+    "upstream_review": null,
+    "excerpt": "## Overlap and transcript correspondence\nMark the overlapping or unintelligible interval. Keep usable portions of the clip and timestamp the affected span. Distinguish words missing from the audio from mistakes in the reference transcript."
+   },
+   "k:audio-multimodal-instructions@1.3:1131a168": {
+    "evidence_id": "k:audio-multimodal-instructions@1.3:1131a168",
+    "origin": "retrieved_source",
+    "use": "CURRENT_GUIDANCE",
+    "citation": {
+     "document_id": "knowledge_3057c26d60654a68d0b76c025ba216366dd48f3e97b64f5aae68364a45170b8a",
+     "version_id": "version_03e4c185c65cbfbe35dccab040cc429ac6887e3cb0edc4f52cb5ea5a56970a24",
+     "chunk_id": "chunk_1131a1688d210687b7164ad6561c637b",
+     "authoring": "audio-multimodal-instructions@1.3",
+     "title": "Audio Multimodal — Instructions (v1.3)",
+     "sections": [
+      "Content-quality rubric"
+     ],
+     "source": {
+      "batch_id": null,
+      "channel_id": null,
+      "manual_key": "audio-multimodal-instructions",
+      "message_id": null,
+      "permalink": null,
+      "project_id": "audio_multimodal",
+      "reference": null,
+      "system": "manual",
+      "thread_id": null,
+      "workspace_id": null
+     }
+    },
+    "source_type": "guideline",
+    "record_kind": "guideline",
+    "applicability": {
+     "state": "CURRENT",
+     "revision_state": "CURRENT",
+     "version_mode": "current",
+     "replaced_by": [],
+     "unverified_supersession": [],
+     "supersedes": [],
+     "enactment": null,
+     "other_revisions": []
+    },
+    "dates": {
+     "source_date": "2026-09-15T13:00:00Z",
+     "basis": "effective_at",
+     "effective_at": "2026-09-15T13:00:00Z",
+     "created_at": null,
+     "valid_until": null,
+     "expired_as_of": false,
+     "reference_time": "2026-10-02T12:00:00Z"
+    },
+    "scope": {
+     "project_id": "audio_multimodal",
+     "batch_id": null,
+     "scope": "project",
+     "batch_relation": "project_wide"
+    },
+    "authority": {
+     "role": "TEAM_LEAD",
+     "actor": "U006",
+     "actor_relation": "RECORD_AUTHORITY",
+     "approval_status": "EXPLICIT_SOURCE_MARKER",
+     "provenance": "synthetic_manual_record"
+    },
+    "authorship": {
+     "author_id": null,
+     "verified": false,
+     "basis": "NO_AUTHOR_RECORDED"
+    },
+    "recorded_states": {
+     "status": "approved",
+     "decision_status": null,
+     "execution_status": null,
+     "outcome_status": null
+    },
+    "upstream_review": null,
+    "excerpt": "## Content-quality rubric\nMajor/minor here describe task-quality defects, not operational incident severity.\n\n| Dimension | Major defect | Minor defect | Acceptable / no automatic penalty |\n| --- | --- | --- | --- |\n| Intelligibility | A material speech span is unusable | Brief clipping/static with words still clear | Background variation that does not impair the task |\n| Audio–transcript correspondence | Key content is missing or contradicted | A limited omission that does not change meaning | Equivalent wording where the task allows it |\n| Language match | A substantial unrequested mismatch with the required language | A limited genuine mismatch affecting adherence | Permitted switching, ordinary loanwords, or an acceptable accent |"
+   },
+   "k:audio-multimodal-instructions@1.3:6eeb0c96": {
+    "evidence_id": "k:audio-multimodal-instructions@1.3:6eeb0c96",
+    "origin": "retrieved_source",
+    "use": "CURRENT_GUIDANCE",
+    "citation": {
+     "document_id": "knowledge_3057c26d60654a68d0b76c025ba216366dd48f3e97b64f5aae68364a45170b8a",
+     "version_id": "version_03e4c185c65cbfbe35dccab040cc429ac6887e3cb0edc4f52cb5ea5a56970a24",
+     "chunk_id": "chunk_6eeb0c962f9826add3b44ed1dd034fdd",
+     "authoring": "audio-multimodal-instructions@1.3",
+     "title": "Audio Multimodal — Instructions (v1.3)",
+     "sections": [
+      "Scoring audio quality"
+     ],
+     "source": {
+      "batch_id": null,
+      "channel_id": null,
+      "manual_key": "audio-multimodal-instructions",
+      "message_id": null,
+      "permalink": null,
+      "project_id": "audio_multimodal",
+      "reference": null,
+      "system": "manual",
+      "thread_id": null,
+      "workspace_id": null
+     }
+    },
+    "source_type": "guideline",
+    "record_kind": "guideline",
+    "applicability": {
+     "state": "CURRENT",
+     "revision_state": "CURRENT",
+     "version_mode": "current",
+     "replaced_by": [],
+     "unverified_supersession": [],
+     "supersedes": [],
+     "enactment": null,
+     "other_revisions": []
+    },
+    "dates": {
+     "source_date": "2026-09-15T13:00:00Z",
+     "basis": "effective_at",
+     "effective_at": "2026-09-15T13:00:00Z",
+     "created_at": null,
+     "valid_until": null,
+     "expired_as_of": false,
+     "reference_time": "2026-10-02T12:00:00Z"
+    },
+    "scope": {
+     "project_id": "audio_multimodal",
+     "batch_id": null,
+     "scope": "project",
+     "batch_relation": "project_wide"
+    },
+    "authority": {
+     "role": "TEAM_LEAD",
+     "actor": "U006",
+     "actor_relation": "RECORD_AUTHORITY",
+     "approval_status": "EXPLICIT_SOURCE_MARKER",
+     "provenance": "synthetic_manual_record"
+    },
+    "authorship": {
+     "author_id": null,
+     "verified": false,
+     "basis": "NO_AUTHOR_RECORDED"
+    },
+    "recorded_states": {
+     "status": "approved",
+     "decision_status": null,
+     "execution_status": null,
+     "outcome_status": null
+    },
+    "upstream_review": null,
+    "excerpt": "## Scoring audio quality\n- Assess intelligibility and the affected span, not the word “clipping” alone.\n- Brief, localized clipping or static with speech remaining clear is a minor defect.\n- An artifact that makes a material speech span unusable is a major defect.\n- Continuous artifacts or borderline impact require QA review with timestamps and an intelligibility description. Duration alone does not establish a major defect.\n- Before treating silence as a content issue, verify playback, volume, and whether the audio file itself is silent. Preserve uncertainty when this cannot be checked."
+   },
+   "k:audio-multimodal-faq@1.1:f72aa6db": {
+    "evidence_id": "k:audio-multimodal-faq@1.1:f72aa6db",
+    "origin": "retrieved_source",
+    "use": "CURRENT_GUIDANCE",
+    "citation": {
+     "document_id": "knowledge_1f550e377f9c310f57f03e5bf482f810999d822a9cf4b1db3be5f2557678f15e",
+     "version_id": "version_66a170bbd46011e80d06da6d0bf5ec8b73486a84c13e015f60222fa711e05727",
+     "chunk_id": "chunk_f72aa6dbc3db35c9f2e9e216b1c8c18f",
+     "authoring": "audio-multimodal-faq@1.1",
+     "title": "Audio Multimodal — FAQ (v1.1)",
+     "sections": [
+      "Language and TTS"
+     ],
+     "source": {
+      "batch_id": null,
+      "channel_id": null,
+      "manual_key": "audio-multimodal-faq",
+      "message_id": null,
+      "permalink": null,
+      "project_id": "audio_multimodal",
+      "reference": null,
+      "system": "manual",
+      "thread_id": null,
+      "workspace_id": null
+     }
+    },
+    "source_type": "faq",
+    "record_kind": "faq",
+    "applicability": {
+     "state": "CURRENT",
+     "revision_state": "CURRENT",
+     "version_mode": "current",
+     "replaced_by": [],
+     "unverified_supersession": [],
+     "supersedes": [],
+     "enactment": null,
+     "other_revisions": []
+    },
+    "dates": {
+     "source_date": "2026-09-20T13:00:00Z",
+     "basis": "effective_at",
+     "effective_at": "2026-09-20T13:00:00Z",
+     "created_at": null,
+     "valid_until": null,
+     "expired_as_of": false,
+     "reference_time": "2026-10-02T12:00:00Z"
+    },
+    "scope": {
+     "project_id": "audio_multimodal",
+     "batch_id": null,
+     "scope": "project",
+     "batch_relation": "project_wide"
+    },
+    "authority": {
+     "role": "TEAM_LEAD",
+     "actor": "U006",
+     "actor_relation": "RECORD_AUTHORITY",
+     "approval_status": "EXPLICIT_SOURCE_MARKER",
+     "provenance": "synthetic_manual_record"
+    },
+    "authorship": {
+     "author_id": null,
+     "verified": false,
+     "basis": "NO_AUTHOR_RECORDED"
+    },
+    "recorded_states": {
+     "status": "approved",
+     "decision_status": null,
+     "execution_status": null,
+     "outcome_status": null
+    },
+    "upstream_review": null,
+    "excerpt": "## Language and TTS\n\n### Q: The generated speech is in the wrong language. Is that a playback failure?\nConfirm the requested language and permitted switching. If the recording itself contains an unrequested language mismatch, record it as a language-quality issue rather than a playback failure."
+   }
+  },
+  "card": {
+   "contract_version": "agent3-advice-card-v5",
+   "record_type": "ADVICE_CARD",
+   "card_id": "card_a342d58f26ef48f521c0a73bc3d78956",
+   "project_id": "audio_multimodal",
+   "topic_name": "Overlapping speech in transcription",
+   "card_line": "NEEDS_REVIEW",
+   "summary": "Current guidance says to mark and timestamp the affected interval and preserve usable audio, rather than infer whole-clip failure from a short interval.",
+   "severity": {
+    "level": "MEDIUM",
+    "assessment_status": "ASSESSED",
+    "rubric_version": "severity-rubric-v3-semantic-signals",
+    "rubric_content_sha256": "eccaa31a2ab84a0aa7c005216a92fc39681e1dd10107117344948235a76673f4",
+    "rubric_project_id": null,
+    "rubric_scope": "SHARED_DEFAULT",
+    "rationale": "Repeated questions concern whether overlap should be marked locally or cause transcription failure, which can change how usable audio is retained and scored. The reports describe contained spans rather than demonstrated batch-wide disruption.",
+    "matched_signals": [
+     {
+      "level": "MEDIUM",
+      "signal_index": 0,
+      "signal_text": "Recurring confusion about the same rule, tool behavior, or scoring criterion that suggests meaningful workflow or labeling impact",
+      "support": "A QA tutor asks whether simultaneous speech should be marked unintelligible; a tutor asks the same for a two-second overlap, and another tutor asks when overlap causes transcription failure.",
+      "evidence": [
+       {
+        "kind": "slack_message",
+        "project_id": "audio_multimodal",
+        "batch_id": "audio_batch_06",
+        "scope": "project",
+        "channel_id": "C_AUDIO_QA",
+        "thread_id": "1790864427.000131",
+        "message_id": "1790864427.000131",
+        "document_id": null,
+        "version_id": null,
+        "authoring_document_id": null,
+        "authoring_version": null,
+        "section": null,
+        "chunk_id": null,
+        "candidate_group_id": null,
+        "member_id": "member_49e4e0ef557959173d770df5",
+        "artifact": null,
+        "artifact_sha256": null,
+        "quote": null,
+        "note": "m:C_AUDIO_QA:1790864427.000131"
+       },
+       {
+        "kind": "slack_message",
+        "project_id": "audio_multimodal",
+        "batch_id": "audio_batch_06",
+        "scope": "project",
+        "channel_id": "C_AUDIO_GENERAL",
+        "thread_id": "1790921338.000134",
+        "message_id": "1790921338.000134",
+        "document_id": null,
+        "version_id": null,
+        "authoring_document_id": null,
+        "authoring_version": null,
+        "section": null,
+        "chunk_id": null,
+        "candidate_group_id": null,
+        "member_id": "member_e6be3632ce8e4a4b4f77bca7",
+        "artifact": null,
+        "artifact_sha256": null,
+        "quote": null,
+        "note": "m:C_AUDIO_GENERAL:1790921338.000134"
+       },
+       {
+        "kind": "slack_message",
+        "project_id": "audio_multimodal",
+        "batch_id": "audio_batch_06",
+        "scope": "project",
+        "channel_id": "C_AUDIO_GENERAL",
+        "thread_id": "1790941015.000132",
+        "message_id": "1790941015.000132",
+        "document_id": null,
+        "version_id": null,
+        "authoring_document_id": null,
+        "authoring_version": null,
+        "section": null,
+        "chunk_id": null,
+        "candidate_group_id": null,
+        "member_id": "member_e48bf44fa3dd5692a771cf22",
+        "artifact": null,
+        "artifact_sha256": null,
+        "quote": null,
+        "note": "m:C_AUDIO_GENERAL:1790941015.000132"
+       }
+      ]
+     }
+    ],
+    "evidence": [
+     {
+      "kind": "slack_message",
+      "project_id": "audio_multimodal",
+      "batch_id": "audio_batch_06",
+      "scope": "project",
+      "channel_id": "C_AUDIO_QA",
+      "thread_id": "1790864427.000131",
+      "message_id": "1790864427.000131",
+      "document_id": null,
+      "version_id": null,
+      "authoring_document_id": null,
+      "authoring_version": null,
+      "section": null,
+      "chunk_id": null,
+      "candidate_group_id": null,
+      "member_id": "member_49e4e0ef557959173d770df5",
+      "artifact": null,
+      "artifact_sha256": null,
+      "quote": null,
+      "note": "m:C_AUDIO_QA:1790864427.000131"
+     },
+     {
+      "kind": "slack_message",
+      "project_id": "audio_multimodal",
+      "batch_id": "audio_batch_06",
+      "scope": "project",
+      "channel_id": "C_AUDIO_GENERAL",
+      "thread_id": "1790921338.000134",
+      "message_id": "1790921338.000134",
+      "document_id": null,
+      "version_id": null,
+      "authoring_document_id": null,
+      "authoring_version": null,
+      "section": null,
+      "chunk_id": null,
+      "candidate_group_id": null,
+      "member_id": "member_e6be3632ce8e4a4b4f77bca7",
+      "artifact": null,
+      "artifact_sha256": null,
+      "quote": null,
+      "note": "m:C_AUDIO_GENERAL:1790921338.000134"
+     },
+     {
+      "kind": "slack_message",
+      "project_id": "audio_multimodal",
+      "batch_id": "audio_batch_06",
+      "scope": "project",
+      "channel_id": "C_AUDIO_GENERAL",
+      "thread_id": "1790941015.000132",
+      "message_id": "1790941015.000132",
+      "document_id": null,
+      "version_id": null,
+      "authoring_document_id": null,
+      "authoring_version": null,
+      "section": null,
+      "chunk_id": null,
+      "candidate_group_id": null,
+      "member_id": "member_e48bf44fa3dd5692a771cf22",
+      "artifact": null,
+      "artifact_sha256": null,
+      "quote": null,
+      "note": "m:C_AUDIO_GENERAL:1790941015.000132"
+     }
+    ],
+    "occurrence": {
+     "affected_reporters": {
+      "status": "LOWER_BOUND",
+      "count": 4,
+      "ids": [
+       "U020",
+       "U018",
+       "U003",
+       "U012"
+      ],
+      "basis": "Distinct authors whose own cited message reports the problem; other participants are not counted.",
+      "evidence": [
+       {
+        "kind": "slack_message",
+        "project_id": "audio_multimodal",
+        "batch_id": "audio_batch_06",
+        "scope": "project",
+        "channel_id": "C_AUDIO_GENERAL",
+        "thread_id": "1790890932.000133",
+        "message_id": "1790890932.000133",
+        "document_id": null,
+        "version_id": null,
+        "authoring_document_id": null,
+        "authoring_version": null,
+        "section": null,
+        "chunk_id": null,
+        "candidate_group_id": null,
+        "member_id": "member_b224f8f278e4849b8a75936b",
+        "artifact": null,
+        "artifact_sha256": null,
+        "quote": null,
+        "note": "m:C_AUDIO_GENERAL:1790890932.000133"
+       },
+       {
+        "kind": "slack_message",
+        "project_id": "audio_multimodal",
+        "batch_id": "audio_batch_06",
+        "scope": "project",
+        "channel_id": "C_AUDIO_GENERAL",
+        "thread_id": "1790941015.000132",
+        "message_id": "1790941070.000113",
+        "document_id": null,
+        "version_id": null,
+        "authoring_document_id": null,
+        "authoring_version": null,
+        "section": null,
+        "chunk_id": null,
+        "candidate_group_id": null,
+        "member_id": "member_e48bf44fa3dd5692a771cf22",
+        "artifact": null,
+        "artifact_sha256": null,
+        "quote": null,
+        "note": "m:C_AUDIO_GENERAL:1790941070.000113"
+       },
+       {
+        "kind": "slack_message",
+        "project_id": "audio_multimodal",
+        "batch_id": "audio_batch_06",
+        "scope": "project",
+        "channel_id": "C_AUDIO_GENERAL",
+        "thread_id": "1790921338.000134",
+        "message_id": "1790921338.000134",
+        "document_id": null,
+        "version_id": null,
+        "authoring_document_id": null,
+        "authoring_version": null,
+        "section": null,
+        "chunk_id": null,
+        "candidate_group_id": null,
+        "member_id": "member_e6be3632ce8e4a4b4f77bca7",
+        "artifact": null,
+        "artifact_sha256": null,
+        "quote": null,
+        "note": "m:C_AUDIO_GENERAL:1790921338.000134"
+       },
+       {
+        "kind": "slack_message",
+        "project_id": "audio_multimodal",
+        "batch_id": "audio_batch_06",
+        "scope": "project",
+        "channel_id": "C_AUDIO_GENERAL",
+        "thread_id": "1790921338.000134",
+        "message_id": "1790921388.000113",
+        "document_id": null,
+        "version_id": null,
+        "authoring_document_id": null,
+        "authoring_version": null,
+        "section": null,
+        "chunk_id": null,
+        "candidate_group_id": null,
+        "member_id": "member_e6be3632ce8e4a4b4f77bca7",
+        "artifact": null,
+        "artifact_sha256": null,
+        "quote": null,
+        "note": "m:C_AUDIO_GENERAL:1790921388.000113"
+       }
+      ]
+     },
+     "affected_tasks": {
+      "status": "UNKNOWN",
+      "count": null,
+      "ids": [],
+      "basis": null,
+      "evidence": []
+     },
+     "relevant_threads": [
+      {
+       "project_id": "audio_multimodal",
+       "batch_id": "audio_batch_06",
+       "channel_id": "C_AUDIO_QA",
+       "thread_id": "1790864427.000131",
+       "member_id": "member_49e4e0ef557959173d770df5"
+      },
+      {
+       "project_id": "audio_multimodal",
+       "batch_id": "audio_batch_06",
+       "channel_id": "C_AUDIO_GENERAL",
+       "thread_id": "1790890932.000133",
+       "member_id": "member_b224f8f278e4849b8a75936b"
+      },
+      {
+       "project_id": "audio_multimodal",
+       "batch_id": "audio_batch_06",
+       "channel_id": "C_AUDIO_GENERAL",
+       "thread_id": "1790921338.000134",
+       "member_id": "member_e6be3632ce8e4a4b4f77bca7"
+      },
+      {
+       "project_id": "audio_multimodal",
+       "batch_id": "audio_batch_06",
+       "channel_id": "C_AUDIO_GENERAL",
+       "thread_id": "1790941015.000132",
+       "member_id": "member_e48bf44fa3dd5692a771cf22"
+      }
+     ],
+     "reporting_window": {
+      "start": "2026-10-01T14:20:27.000131+00:00",
+      "end": "2026-10-02T11:39:22.000339+00:00"
+     },
+     "historical_recurrence": {
+      "status": "NOT_CHECKED",
+      "sources": [],
+      "event_series_ids": []
+     },
+     "known_denominator": null,
+     "structural": {
+      "threads": 4,
+      "messages": 13,
+      "distinct_participants": 10,
+      "duplicate_threads_ignored": 0,
+      "duplicate_messages_ignored": 0,
+      "computed_from": "topic member threads (original Slack messages)",
+      "participants_are_not_affected_reporters": true
+     },
+     "semantic_identification": "ASSESSED"
+    },
+    "inherited_from": {
+     "level": "UNKNOWN",
+     "assessment_status": "UNASSESSED",
+     "assessment_deferred_to": "AGENT3",
+     "reason": "Agent 2 performs taxonomy only."
+    }
+   },
+   "severity_is_provisional": false,
+   "resolution_status": "MIXED",
+   "recommended_action": {
+    "action_type": "POST_ALIGNMENT",
+    "draft_text": "Overlap reminder for this batch:\n- Mark the overlapping or unintelligible interval and timestamp the affected span.\n- Keep the usable portions of the clip; do not infer a whole-clip failure from a short affected interval.\n- Distinguish words missing from the audio from mistakes in the reference transcript.\nThese are the current instructions and FAQ: a short affected interval is not, by itself, a reason to discard the whole recording.",
+    "scope_note": "Clarifies current overlap handling; it does not decide the pending QA assessments of individual clips.",
+    "label": "Post a reminder",
+    "instruction": "Post a reminder explaining how to mark and timestamp overlapping speech while keeping usable audio and avoiding automatic whole-clip failure.",
+    "rationale": "Repeated questions concern interval marking and whole-clip failure, which the current instructions and FAQ address. A reminder can answer the remaining general handling question without replacing the team lead's case-specific timestamp requests.",
+    "targets": [],
+    "essential_premise_ids": [
+     "claim:c8",
+     "claim:c12",
+     "claim:c13",
+     "claim:c14"
+    ],
+    "source": "DRAFT"
+   },
+   "reasoning": "What the evidence shows: A tutor reports that a background speaker is transcribed as the main speaker. A second tutor in the background-speaker thread reports two seconds of speaker overlap with the rest clear. In the background-speaker thread, the team lead requests overlap timestamps so QA can determine whether the full sample or only a short segment is affected, and notes that the remainder may still be usable. A tutor reports two seconds of overlapping speech on AUDIO-1338 and asks whether to mark it unintelligible. In the AUDIO-1338 thread, a tutor reports hearing both voices but losing individual words and requests an overlap timestamp; a QA tutor asks for the start and end of the unintelligible span. A QA tutor answers the AUDIO-1338 question by saying to mark the unintelligible overlapping interval, retain the clear portions and not discard the whole recording. A tutor asks QA how much overlap is allowed before a transcription fails the rubric. In the failure-threshold thread, a tutor reports hearing both voices but losing individual words during the overlap. A QA tutor in the background-speaker thread and a different QA tutor in the failure-threshold thread ask whether the rest of the recording is intelligible enough to continue. In the failure-threshold thread, the team lead requests overlap timestamps so QA can determine whether the full sample or only a short segment is affected. The current project instructions and FAQ require marking the overlapping or unintelligible interval, timestamping the affected span and preserving usable portions; the FAQ says not to infer whole-clip failure from a short affected interval. The current overlap instructions require distinguishing words missing from the audio from mistakes in the reference transcript. The provided background-speaker and failure-threshold threads contain no timestamps responding to the team lead's requests, so the requested inputs for those case assessments are still missing. Thread status, read from each thread's own messages: resolved in thread ×1, unresolved ×3. Agent 1's earlier labels (an input, not evidence): resolved in thread ×1, unresolved ×3; 1 of 4 were not verified by Agent 1. 1 advisor statement was not supported by the evidence and not shown. 4 summary or detail sentences were not shown because they depend on text that was not shown.",
+   "supporting_sources": [
+    {
+     "kind": "knowledge_source",
+     "project_id": "audio_multimodal",
+     "batch_id": null,
+     "scope": "project",
+     "channel_id": null,
+     "thread_id": null,
+     "message_id": null,
+     "document_id": "knowledge_3057c26d60654a68d0b76c025ba216366dd48f3e97b64f5aae68364a45170b8a",
+     "version_id": "version_03e4c185c65cbfbe35dccab040cc429ac6887e3cb0edc4f52cb5ea5a56970a24",
+     "authoring_document_id": "audio-multimodal-instructions",
+     "authoring_version": "1.3",
+     "section": "Overlap and transcript correspondence",
+     "chunk_id": "chunk_eb85357a2c0b0e254c4f95c9d38a0bae",
+     "candidate_group_id": null,
+     "member_id": null,
+     "artifact": null,
+     "artifact_sha256": null,
+     "quote": null,
+     "note": "k:audio-multimodal-instructions@1.3:eb85357a (CURRENT_GUIDANCE; CURRENT)"
+    },
+    {
+     "kind": "knowledge_source",
+     "project_id": "audio_multimodal",
+     "batch_id": null,
+     "scope": "project",
+     "channel_id": null,
+     "thread_id": null,
+     "message_id": null,
+     "document_id": "knowledge_1f550e377f9c310f57f03e5bf482f810999d822a9cf4b1db3be5f2557678f15e",
+     "version_id": "version_66a170bbd46011e80d06da6d0bf5ec8b73486a84c13e015f60222fa711e05727",
+     "authoring_document_id": "audio-multimodal-faq",
+     "authoring_version": "1.1",
+     "section": "Scoring",
+     "chunk_id": "chunk_e9bcf43a020b06861273547bf398f71b",
+     "candidate_group_id": null,
+     "member_id": null,
+     "artifact": null,
+     "artifact_sha256": null,
+     "quote": null,
+     "note": "k:audio-multimodal-faq@1.1:e9bcf43a (CURRENT_GUIDANCE; CURRENT)"
+    },
+    {
+     "kind": "slack_message",
+     "project_id": "audio_multimodal",
+     "batch_id": "audio_batch_06",
+     "scope": "project",
+     "channel_id": "C_AUDIO_GENERAL",
+     "thread_id": "1790890932.000133",
+     "message_id": "1790890932.000133",
+     "document_id": null,
+     "version_id": null,
+     "authoring_document_id": null,
+     "authoring_version": null,
+     "section": null,
+     "chunk_id": null,
+     "candidate_group_id": null,
+     "member_id": "member_b224f8f278e4849b8a75936b",
+     "artifact": null,
+     "artifact_sha256": null,
+     "quote": null,
+     "note": "m:C_AUDIO_GENERAL:1790890932.000133"
+    },
+    {
+     "kind": "slack_message",
+     "project_id": "audio_multimodal",
+     "batch_id": "audio_batch_06",
+     "scope": "project",
+     "channel_id": "C_AUDIO_GENERAL",
+     "thread_id": "1790890932.000133",
+     "message_id": "1790890987.000113",
+     "document_id": null,
+     "version_id": null,
+     "authoring_document_id": null,
+     "authoring_version": null,
+     "section": null,
+     "chunk_id": null,
+     "candidate_group_id": null,
+     "member_id": "member_b224f8f278e4849b8a75936b",
+     "artifact": null,
+     "artifact_sha256": null,
+     "quote": null,
+     "note": "m:C_AUDIO_GENERAL:1790890987.000113"
+    },
+    {
+     "kind": "slack_message",
+     "project_id": "audio_multimodal",
+     "batch_id": "audio_batch_06",
+     "scope": "project",
+     "channel_id": "C_AUDIO_GENERAL",
+     "thread_id": "1790890932.000133",
+     "message_id": "1790891074.000339",
+     "document_id": null,
+     "version_id": null,
+     "authoring_document_id": null,
+     "authoring_version": null,
+     "section": null,
+     "chunk_id": null,
+     "candidate_group_id": null,
+     "member_id": "member_b224f8f278e4849b8a75936b",
+     "artifact": null,
+     "artifact_sha256": null,
+     "quote": null,
+     "note": "m:C_AUDIO_GENERAL:1790891074.000339"
+    },
+    {
+     "kind": "slack_message",
+     "project_id": "audio_multimodal",
+     "batch_id": "audio_batch_06",
+     "scope": "project",
+     "channel_id": "C_AUDIO_GENERAL",
+     "thread_id": "1790921338.000134",
+     "message_id": "1790921338.000134",
+     "document_id": null,
+     "version_id": null,
+     "authoring_document_id": null,
+     "authoring_version": null,
+     "section": null,
+     "chunk_id": null,
+     "candidate_group_id": null,
+     "member_id": "member_e6be3632ce8e4a4b4f77bca7",
+     "artifact": null,
+     "artifact_sha256": null,
+     "quote": null,
+     "note": "m:C_AUDIO_GENERAL:1790921338.000134"
+    },
+    {
+     "kind": "slack_message",
+     "project_id": "audio_multimodal",
+     "batch_id": "audio_batch_06",
+     "scope": "project",
+     "channel_id": "C_AUDIO_GENERAL",
+     "thread_id": "1790921338.000134",
+     "message_id": "1790921388.000113",
+     "document_id": null,
+     "version_id": null,
+     "authoring_document_id": null,
+     "authoring_version": null,
+     "section": null,
+     "chunk_id": null,
+     "candidate_group_id": null,
+     "member_id": "member_e6be3632ce8e4a4b4f77bca7",
+     "artifact": null,
+     "artifact_sha256": null,
+     "quote": null,
+     "note": "m:C_AUDIO_GENERAL:1790921388.000113"
+    },
+    {
+     "kind": "slack_message",
+     "project_id": "audio_multimodal",
+     "batch_id": "audio_batch_06",
+     "scope": "project",
+     "channel_id": "C_AUDIO_GENERAL",
+     "thread_id": "1790921338.000134",
+     "message_id": "1790921430.000226",
+     "document_id": null,
+     "version_id": null,
+     "authoring_document_id": null,
+     "authoring_version": null,
+     "section": null,
+     "chunk_id": null,
+     "candidate_group_id": null,
+     "member_id": "member_e6be3632ce8e4a4b4f77bca7",
+     "artifact": null,
+     "artifact_sha256": null,
+     "quote": null,
+     "note": "m:C_AUDIO_GENERAL:1790921430.000226"
+    },
+    {
+     "kind": "slack_message",
+     "project_id": "audio_multimodal",
+     "batch_id": "audio_batch_06",
+     "scope": "project",
+     "channel_id": "C_AUDIO_GENERAL",
+     "thread_id": "1790921338.000134",
+     "message_id": "1790921481.000339",
+     "document_id": null,
+     "version_id": null,
+     "authoring_document_id": null,
+     "authoring_version": null,
+     "section": null,
+     "chunk_id": null,
+     "candidate_group_id": null,
+     "member_id": "member_e6be3632ce8e4a4b4f77bca7",
+     "artifact": null,
+     "artifact_sha256": null,
+     "quote": null,
+     "note": "m:C_AUDIO_GENERAL:1790921481.000339"
+    },
+    {
+     "kind": "slack_message",
+     "project_id": "audio_multimodal",
+     "batch_id": "audio_batch_06",
+     "scope": "project",
+     "channel_id": "C_AUDIO_GENERAL",
+     "thread_id": "1790941015.000132",
+     "message_id": "1790941015.000132",
+     "document_id": null,
+     "version_id": null,
+     "authoring_document_id": null,
+     "authoring_version": null,
+     "section": null,
+     "chunk_id": null,
+     "candidate_group_id": null,
+     "member_id": "member_e48bf44fa3dd5692a771cf22",
+     "artifact": null,
+     "artifact_sha256": null,
+     "quote": null,
+     "note": "m:C_AUDIO_GENERAL:1790941015.000132"
+    },
+    {
+     "kind": "slack_message",
+     "project_id": "audio_multimodal",
+     "batch_id": "audio_batch_06",
+     "scope": "project",
+     "channel_id": "C_AUDIO_GENERAL",
+     "thread_id": "1790941015.000132",
+     "message_id": "1790941070.000113",
+     "document_id": null,
+     "version_id": null,
+     "authoring_document_id": null,
+     "authoring_version": null,
+     "section": null,
+     "chunk_id": null,
+     "candidate_group_id": null,
+     "member_id": "member_e48bf44fa3dd5692a771cf22",
+     "artifact": null,
+     "artifact_sha256": null,
+     "quote": null,
+     "note": "m:C_AUDIO_GENERAL:1790941070.000113"
+    },
+    {
+     "kind": "slack_message",
+     "project_id": "audio_multimodal",
+     "batch_id": "audio_batch_06",
+     "scope": "project",
+     "channel_id": "C_AUDIO_GENERAL",
+     "thread_id": "1790890932.000133",
+     "message_id": "1790891025.000226",
+     "document_id": null,
+     "version_id": null,
+     "authoring_document_id": null,
+     "authoring_version": null,
+     "section": null,
+     "chunk_id": null,
+     "candidate_group_id": null,
+     "member_id": "member_b224f8f278e4849b8a75936b",
+     "artifact": null,
+     "artifact_sha256": null,
+     "quote": null,
+     "note": "m:C_AUDIO_GENERAL:1790891025.000226"
+    },
+    {
+     "kind": "slack_message",
+     "project_id": "audio_multimodal",
+     "batch_id": "audio_batch_06",
+     "scope": "project",
+     "channel_id": "C_AUDIO_GENERAL",
+     "thread_id": "1790941015.000132",
+     "message_id": "1790941105.000226",
+     "document_id": null,
+     "version_id": null,
+     "authoring_document_id": null,
+     "authoring_version": null,
+     "section": null,
+     "chunk_id": null,
+     "candidate_group_id": null,
+     "member_id": "member_e48bf44fa3dd5692a771cf22",
+     "artifact": null,
+     "artifact_sha256": null,
+     "quote": null,
+     "note": "m:C_AUDIO_GENERAL:1790941105.000226"
+    },
+    {
+     "kind": "slack_message",
+     "project_id": "audio_multimodal",
+     "batch_id": "audio_batch_06",
+     "scope": "project",
+     "channel_id": "C_AUDIO_GENERAL",
+     "thread_id": "1790941015.000132",
+     "message_id": "1790941162.000339",
+     "document_id": null,
+     "version_id": null,
+     "authoring_document_id": null,
+     "authoring_version": null,
+     "section": null,
+     "chunk_id": null,
+     "candidate_group_id": null,
+     "member_id": "member_e48bf44fa3dd5692a771cf22",
+     "artifact": null,
+     "artifact_sha256": null,
+     "quote": null,
+     "note": "m:C_AUDIO_GENERAL:1790941162.000339"
+    }
+   ],
+   "related_threads": [
+    {
+     "project_id": "audio_multimodal",
+     "batch_id": "audio_batch_06",
+     "channel_id": "C_AUDIO_QA",
+     "thread_id": "1790864427.000131",
+     "member_id": "member_49e4e0ef557959173d770df5",
+     "permalink": null,
+     "display_reference": "1790864427.000131",
+     "label": "#audio-multimodal-qa, 2026-10-01, started by a QA tutor: \"Two people talk at once — mark unintelligible?\"",
+     "opening_text": "Two people talk at once — mark unintelligible?"
+    },
+    {
+     "project_id": "audio_multimodal",
+     "batch_id": "audio_batch_06",
+     "channel_id": "C_AUDIO_GENERAL",
+     "thread_id": "1790890932.000133",
+     "member_id": "member_b224f8f278e4849b8a75936b",
+     "permalink": null,
+     "display_reference": "1790890932.000133",
+     "label": "#audio-multimodal-general, 2026-10-01, started by a tutor: \"Background speaker gets transcribed as main speaker.\"",
+     "opening_text": "Background speaker gets transcribed as main speaker."
+    },
+    {
+     "project_id": "audio_multimodal",
+     "batch_id": "audio_batch_06",
+     "channel_id": "C_AUDIO_GENERAL",
+     "thread_id": "1790921338.000134",
+     "member_id": "member_e6be3632ce8e4a4b4f77bca7",
+     "permalink": null,
+     "display_reference": "1790921338.000134",
+     "label": "#audio-multimodal-general, 2026-10-02, started by a tutor: \"Two speakers talk over each other for two seconds.\"",
+     "opening_text": "Two speakers talk over each other for two seconds. Mark unintelligible? (task ref AUDIO-1338)"
+    },
+    {
+     "project_id": "audio_multimodal",
+     "batch_id": "audio_batch_06",
+     "channel_id": "C_AUDIO_GENERAL",
+     "thread_id": "1790941015.000132",
+     "member_id": "member_e48bf44fa3dd5692a771cf22",
+     "permalink": null,
+     "display_reference": "1790941015.000132",
+     "label": "#audio-multimodal-general, 2026-10-02, started by a tutor: \"Could QA clarify this case: How much overlap is allowed before the transcription fails the rubric?\"",
+     "opening_text": "Could QA clarify this case: How much overlap is allowed before the transcription fails the rubric?"
+    }
+   ],
+   "confidence": 0.92,
+   "confidence_band": "HIGH",
+   "needs_review_reasons": [
+    {
+     "code": "INHERITED_FLAG",
+     "detail": "Upstream obligations remain open: inherited_agent1_review x1",
+     "obligation_ids": [],
+     "evidence": []
+    },
+    {
+     "code": "GROUNDING_FAILURE",
+     "detail": "Withheld from this card: claim:c1: PENDING",
+     "obligation_ids": [],
+     "evidence": []
+    }
+   ],
+   "inherited_flags": [
+    {
+     "origin": "agent1",
+     "kind": "inherited_agent1_review",
+     "candidate_group_id": "cluster_4460290131b816bb",
+     "obligation_id": null,
+     "member_ids": [
+      "member_b224f8f278e4849b8a75936b"
+     ],
+     "detail": "Still unverified after one targeted revision: Prose unit central_question:1: UNSUPPORTED.\nCandidate: What should be done when a background speaker is transcribed as the main speaker?\nSource establishes: Theo raises the issue of a background speaker being transcribed as the main speaker, but no one directly asks what should be done about it.\nReason: While the issue is reported, no participant explicitly frames the central question as 'What should be done...?' The thread focuses on clarifying the situation and requesting more information, not directly on what action to take."
+    }
+   ],
+   "checks": {
+    "grounding": "FAILED",
+    "temporal_conflict": "NONE_FOUND",
+    "open_confirmation": "NONE"
+   },
+   "lineage": {
+    "agent3_run_id": "agent3overnight_2a0d79cdc986108a521e287ba7ee85cc",
+    "handoff_contract": "agent2-taxonomy-handoff-v3",
+    "agent2_export_sha256": "6f1f56bf5a5b1f02287d7ac958dc205c05cc9e0ea3e6d5f3fdd7279da0c9e1e7",
+    "agent2_schema_version": 8,
+    "candidate_group_id": "cluster_4460290131b816bb",
+    "topic_id": "consolidated_a95a89a02e04076d",
+    "member_ids": [
+     "member_49e4e0ef557959173d770df5",
+     "member_b224f8f278e4849b8a75936b",
+     "member_e6be3632ce8e4a4b4f77bca7",
+     "member_e48bf44fa3dd5692a771cf22"
+    ],
+    "project_id": "audio_multimodal",
+    "batch_id": "audio_batch_06",
+    "source_topic_ids": [
+     "cluster_4460290131b816bb/topic_2",
+     "cluster_bc1ccc03c19a64cf/topic_1"
+    ],
+    "candidate_group_ids": [
+     "cluster_4460290131b816bb",
+     "cluster_bc1ccc03c19a64cf"
+    ]
+   },
+   "review_notes": [
+    "1 earlier review flag is still open on these threads.",
+    "Some advisor statements have not been checked against the evidence yet and are not shown."
+   ],
+   "details": [
+    "In the background-speaker thread, a tutor reports that a background speaker is transcribed as the main speaker; a second tutor reports two seconds of overlap with the rest clear.",
+    "For AUDIO-1338, a tutor reports two seconds of overlap, and a QA tutor answers that the unintelligible interval should be marked while the clear portions are retained.",
+    "In the AUDIO-1338 thread, a tutor requested a timestamp for the overlap and a QA tutor requested the start and end of the unintelligible span."
+   ],
+   "next_step": {
+    "status": "ACTION_RECOMMENDED",
+    "rationale": "Repeated questions concern interval marking and whole-clip failure, which the current instructions and FAQ address. A reminder can answer the remaining general handling question without replacing the team lead's case-specific timestamp requests.",
+    "explanation": null
+   },
+   "briefing": {
+    "status": "IN_BRIEFING",
+    "relevance": "UNLABELLED",
+    "label_id": null,
+    "label_source": null,
+    "kept_because": [],
+    "basis": null,
+    "evidence_statement_ids": []
+   },
+   "outstanding_step": null,
+   "derivation": {
+    "policy_version": "combined-briefing-v1+briefing-routing-v2",
+    "provenance": "OFFLINE_POLICY_APPLICATION",
+    "text_provenance": "PARENT_RUN_JUDGMENTS",
+    "parent_run": "data/experiments/threadsense_full_v1_consolidated_refresh_v1",
+    "parent_run_instance": "a8748a207b67e14031a9699f2106d0a89e6d77821292d2baf7deb64c8566ebc0",
+    "parent_card_id": "card_bcbf3ab8968ffcd93b36b0f7c7c034a5",
+    "parent_card_sha256": "db2f1ddae5ea6f4f37922a2723ca2eeb468029f8b294ad1371d63243685a3196",
+    "parent_contract_version": "agent3-advice-card-v4",
+    "changes": [
+     {
+      "field": "needs_review_reasons",
+      "before": [
+       "GROUNDING_FAILURE",
+       "INHERITED_FLAG"
+      ],
+      "after": [
+       "GROUNDING_FAILURE",
+       "INHERITED_FLAG"
+      ],
+      "reason": "Revalidated under agent3-advisor-pilot-v8 checks with the recorded verdicts (zero calls)."
+     },
+     {
+      "field": "review_notes",
+      "before": [
+       "1 earlier review flag is still open on these threads.",
+       "Some advisor statements were not supported by the evidence and are not shown."
+      ],
+      "after": [
+       "1 earlier review flag is still open on these threads.",
+       "Some advisor statements have not been checked against the evidence yet and are not shown."
+      ],
+      "reason": "Revalidated under agent3-advisor-pilot-v8 checks with the recorded verdicts (zero calls)."
+     }
+    ]
+   }
+  },
+  "review_items": [
+   {
+    "contract_version": "agent3-model-review-item-v1",
+    "record_type": "MODEL_REVIEW_ITEM",
+    "item_id": "review_96f1c98d3ab9767b21a0494f946393a9",
+    "origin": "agent1",
+    "kind": "inherited_agent1_review",
+    "project_id": "audio_multimodal",
+    "batch_id": "audio_batch_06",
+    "candidate_group_id": "cluster_4460290131b816bb",
+    "topic_id": "cluster_4460290131b816bb/topic_2",
+    "member_ids": [
+     "member_b224f8f278e4849b8a75936b"
+    ],
+    "obligation_id": null,
+    "reason": "Still unverified after one targeted revision: Prose unit central_question:1: UNSUPPORTED.\nCandidate: What should be done when a background speaker is transcribed as the main speaker?\nSource establishes: Theo raises the issue of a background speaker being transcribed as the main speaker, but no one directly asks what should be done about it.\nReason: While the issue is reported, no participant explicitly frames the central question as 'What should be done...?' The thread focuses on clarifying the situation and requesting more information, not directly on what action to take.",
+    "source_obligation": {
+     "origin": "agent1",
+     "member_id": "member_b224f8f278e4849b8a75936b",
+     "project_id": "audio_multimodal",
+     "batch_id": "audio_batch_06",
+     "channel_id": "C_AUDIO_GENERAL",
+     "thread_id": "1790890932.000133",
+     "candidate_group_id": "cluster_4460290131b816bb",
+     "candidate_sha256": "d56083520b27bcf74c17ffa08553118704ecfe91ef07995380c20ae936e0a1e0",
+     "source_sha256": "e12faec51d1bff8e180e0f8a478beb2e16975ee0f45f6ebc343de79a4ad5bc5e",
+     "agent1_record": {
+      "project_id": "audio_multimodal",
+      "batch_id": "audio_batch_06",
+      "channel_id": "C_AUDIO_GENERAL",
+      "thread_id": "1790890932.000133",
+      "language": null,
+      "model": "openai/gpt-4o-mini-2024-07-18",
+      "run_config_sha256": "870eedfaf3fa8cbd76fa560cac924fedefdab58ed91ff72ccac0a6e4ca14b251",
+      "handoff_version": 1,
+      "verification_origin": "bounded_verification",
+      "input_sha256": "e12faec51d1bff8e180e0f8a478beb2e16975ee0f45f6ebc343de79a4ad5bc5e",
+      "candidate_sha256": "d56083520b27bcf74c17ffa08553118704ecfe91ef07995380c20ae936e0a1e0",
+      "source_message_ids": [
+       "1790890932.000133",
+       "1790890987.000113",
+       "1790891025.000226",
+       "1790891074.000339"
+      ],
+      "interpretation": {
+       "thread_id": "1790890932.000133",
+       "summary": "The thread discusses an issue where a background speaker is being transcribed as the main speaker. Omar notes that the speakers overlap for two seconds but the rest of the recording is clear. Hana questions whether the intelligibility of the rest of the recording is sufficient to continue the task, emphasizing that overlap duration and word intelligibility are separate observations. Priya, the team lead, requests that the overlap be timestamped so that QA can assess its impact on the overall sample, suggesting that the remainder may still be usable even if a short segment is unclear.",
+       "central_question": "What should be done when a background speaker is transcribed as the main speaker?",
+       "resolution_state": "UNRESOLVED",
+       "authoritative_response_present": false,
+       "authority_evidence_message_ids": [],
+       "resolution_rationale": "All replies focus on clarifying the situation or requesting further diagnostic information. None provide a substantive answer or guidance on what action should be taken when a background speaker is transcribed as the main speaker.",
+       "confidence": 0.7
+      },
+      "automated_verification_status": "NEEDS_REVIEW",
+      "verification_status": "NEEDS_REVIEW",
+      "review_required": true,
+      "revision_count": 1,
+      "provisional_fields": [
+       "central_question"
+      ],
+      "review_reason": "Still unverified after one targeted revision: Prose unit central_question:1: UNSUPPORTED.\nCandidate: What should be done when a background speaker is transcribed as the main speaker?\nSource establishes: Theo raises the issue of a background speaker being transcribed as the main speaker, but no one directly asks what should be done about it.\nReason: While the issue is reported, no participant explicitly frames the central question as 'What should be done...?' The thread focuses on clarifying the situation and requesting more information, not directly on what action to take.",
+      "review_reasons": [
+       "Still unverified after one targeted revision: Prose unit central_question:1: UNSUPPORTED.\nCandidate: What should be done when a background speaker is transcribed as the main speaker?\nSource establishes: Theo raises the issue of a background speaker being transcribed as the main speaker, but no one directly asks what should be done about it.\nReason: While the issue is reported, no participant explicitly frames the central question as 'What should be done...?' The thread focuses on clarifying the situation and requesting more information, not directly on what action to take."
+      ],
+      "review_findings": [
+       {
+        "category": "CENTRAL_QUESTION",
+        "explanation": "Prose unit central_question:1: UNSUPPORTED.\nCandidate: What should be done when a background speaker is transcribed as the main speaker?\nSource establishes: Theo raises the issue of a background speaker being transcribed as the main speaker, but no one directly asks what should be done about it.\nReason: While the issue is reported, no participant explicitly frames the central question as 'What should be done...?' The thread focuses on clarifying the situation and requesting more information, not directly on what action to take.",
+        "evidence_message_ids": [
+         "1790890932.000133"
+        ],
+        "evidence_quotes": [
+         "Background speaker gets transcribed as main speaker."
+        ],
+        "disputed_fields": [
+         "central_question"
+        ],
+        "origin": "automated_verification"
+       }
+      ],
+      "content_reviews": [],
+      "review_applicability": [],
+      "lineage": {
+       "baseline_file": "data\\experiments\\threadsense_full_v1\\stages\\agent1_interpret\\agent1_interpretations_v1\\interpretations.json",
+       "baseline_record_sha256": "7d7892268aeceafc7ea32e376966a42046300a645e43e3a4a2b78a34c6704f92",
+       "baseline_run_config_sha256": "b4a7353aace8119bb25073b3dbab05388e6036aa312a1f74d38f4b0268fbb7b8",
+       "baseline_model": "openai/gpt-4o-mini-2024-07-18",
+       "baseline_created_at": "2026-11-05T16:36:19.545776+00:00",
+       "source_file": "sources/e12faec51d1bff8e180e0f8a478beb2e16975ee0f45f6ebc343de79a4ad5bc5e.json",
+       "verification_file": "records/e6ce3a8ce0d3b318ce5cebab72cc2f6d6180db18a9cb907c67494177df16b772/result.json",
+       "effective_attempt": "revision",
+       "original_candidate_sha256": "408b0cc99ac71cc2ea5d82c7cdebdaf432c5360427b8e6523a9d33e0d8409f7d",
+       "revised_candidate_sha256": "d56083520b27bcf74c17ffa08553118704ecfe91ef07995380c20ae936e0a1e0",
+       "effective_candidate_sha256": "d56083520b27bcf74c17ffa08553118704ecfe91ef07995380c20ae936e0a1e0",
+       "original_candidate_reference": "records/e6ce3a8ce0d3b318ce5cebab72cc2f6d6180db18a9cb907c67494177df16b772/result.json#/result/original_interpretation",
+       "revised_candidate_reference": "records/e6ce3a8ce0d3b318ce5cebab72cc2f6d6180db18a9cb907c67494177df16b772/result.json#/result/revised_interpretation",
+       "audit_history_reference": "records/e6ce3a8ce0d3b318ce5cebab72cc2f6d6180db18a9cb907c67494177df16b772/result.json#/result/passes"
+      }
+     },
+     "agent1_export_file": "D:\\Christie\\2026_AgenticAI\\threadsense\\data\\experiments\\threadsense_full_v1\\stages\\agent1_verify\\agent1_verified_v2\\interpretations.json",
+     "agent1_export_sha256": "0629a7346373addf833a86ba1caff676a537e543cc26954a9836fd6610485270",
+     "agent1_lineage_base": "D:\\Christie\\2026_AgenticAI\\threadsense\\data\\experiments\\threadsense_full_v1\\stages\\agent1_verify\\agent1_verified_v2"
+    },
+    "related_card_ids": [
+     "card_bcbf3ab8968ffcd93b36b0f7c7c034a5"
+    ],
+    "actions": []
+   },
+   {
+    "contract_version": "agent3-model-review-item-v1",
+    "record_type": "MODEL_REVIEW_ITEM",
+    "item_id": "review_cf97d991816a70b69a6d8d06011027d7",
+    "origin": "agent1",
+    "kind": "inherited_agent1_review",
+    "project_id": "audio_multimodal",
+    "batch_id": "audio_batch_06",
+    "candidate_group_id": "cluster_4460290131b816bb",
+    "topic_id": "cluster_4460290131b816bb/topic_1",
+    "member_ids": [
+     "member_910ca7406d49ea9acb02c27e"
+    ],
+    "obligation_id": null,
+    "reason": "The single targeted revision failed: ValueError: The model cited authority evidence without an eligible author role or a qualifying TEAM_LEAD endorsement. Ineligible message IDs: ['1790904580.000113']",
+    "source_obligation": {
+     "origin": "agent1",
+     "member_id": "member_910ca7406d49ea9acb02c27e",
+     "project_id": "audio_multimodal",
+     "batch_id": "audio_batch_06",
+     "channel_id": "C_AUDIO_GENERAL",
+     "thread_id": "1790904522.000135",
+     "candidate_group_id": "cluster_4460290131b816bb",
+     "candidate_sha256": "2f8643c8dde35669ec289a3bd848a8d4723aa9333d94d12c0f3d8f8a628e7272",
+     "source_sha256": "b21d6f73e5d7fdc820e338bd29a5e1106265962116383b201b18bc666951c13a",
+     "agent1_record": {
+      "project_id": "audio_multimodal",
+      "batch_id": "audio_batch_06",
+      "channel_id": "C_AUDIO_GENERAL",
+      "thread_id": "1790904522.000135",
+      "language": null,
+      "model": "openai/gpt-4o-mini-2024-07-18",
+      "run_config_sha256": "870eedfaf3fa8cbd76fa560cac924fedefdab58ed91ff72ccac0a6e4ca14b251",
+      "handoff_version": 1,
+      "verification_origin": "bounded_verification",
+      "input_sha256": "b21d6f73e5d7fdc820e338bd29a5e1106265962116383b201b18bc666951c13a",
+      "candidate_sha256": "2f8643c8dde35669ec289a3bd848a8d4723aa9333d94d12c0f3d8f8a628e7272",
+      "source_message_ids": [
+       "1790904522.000135",
+       "1790904580.000113",
+       "1790904619.000226",
+       "1790904664.000339"
+      ],
+      "interpretation": {
+       "thread_id": "1790904522.000135",
+       "summary": "Avery raises a concern about a discrepancy between a spoken number and its written form in the reference text. Carla confirms that the spoken numeral differs from the written numeral. Hana requests a specific quote of the differing phrase along with a timestamp. Priya, the team lead, states that the exact transcript span and audible content are needed before determining the severity of the mismatch.",
+       "central_question": "What is the exact transcript span and audible content regarding the spoken number that differs from the written numeral?",
+       "resolution_state": "PARTIALLY_RESOLVED",
+       "authoritative_response_present": true,
+       "authority_evidence_message_ids": [
+        "1790904664.000339"
+       ],
+       "resolution_rationale": "The thread discusses the issue of a spoken numeral differing from a written numeral, with requests for specific details to assess the severity of the mismatch. However, the exact details needed to resolve the issue have not yet been provided, leaving the decision incomplete.",
+       "confidence": 0.9
+      },
+      "automated_verification_status": "NEEDS_REVIEW",
+      "verification_status": "NEEDS_REVIEW",
+      "review_required": true,
+      "revision_count": 1,
+      "provisional_fields": [
+       "summary",
+       "central_question",
+       "resolution_state",
+       "resolution_rationale",
+       "authoritative_response_present",
+       "authority_evidence_message_ids",
+       "confidence"
+      ],
+      "review_reason": "The single targeted revision failed: ValueError: The model cited authority evidence without an eligible author role or a qualifying TEAM_LEAD endorsement. Ineligible message IDs: ['1790904580.000113']",
+      "review_reasons": [
+       "The single targeted revision failed: ValueError: The model cited authority evidence without an eligible author role or a qualifying TEAM_LEAD endorsement. Ineligible message IDs: ['1790904580.000113']"
+      ],
+      "review_findings": [
+       {
+        "category": "AUTHORITY",
+        "explanation": "Cited messages ['1790904664.000339'] are not substantive answers with eligible authority and, for engineers, technical relevance.",
+        "evidence_message_ids": [
+         "1790904664.000339"
+        ],
+        "evidence_quotes": [],
+        "disputed_fields": [
+         "authoritative_response_present",
+         "authority_evidence_message_ids"
+        ],
+        "origin": "automated_verification"
+       },
+       {
+        "category": "EVIDENCE",
+        "explanation": "The single targeted revision failed: ValueError: The model cited authority evidence without an eligible author role or a qualifying TEAM_LEAD endorsement. Ineligible message IDs: ['1790904580.000113']",
+        "evidence_message_ids": [],
+        "evidence_quotes": [],
+        "disputed_fields": [
+         "summary",
+         "central_question",
+         "resolution_state",
+         "resolution_rationale",
+         "authoritative_response_present",
+         "authority_evidence_message_ids",
+         "confidence"
+        ],
+        "origin": "automated_verification"
+       }
+      ],
+      "content_reviews": [],
+      "review_applicability": [],
+      "lineage": {
+       "baseline_file": "data\\experiments\\threadsense_full_v1\\stages\\agent1_interpret\\agent1_interpretations_v1\\interpretations.json",
+       "baseline_record_sha256": "3629dae6eeec5ef0de94c7ee561749a6d8ec6a829876e4714cba75751c459374",
+       "baseline_run_config_sha256": "b4a7353aace8119bb25073b3dbab05388e6036aa312a1f74d38f4b0268fbb7b8",
+       "baseline_model": "openai/gpt-4o-mini-2024-07-18",
+       "baseline_created_at": "2026-11-05T16:37:53.789829+00:00",
+       "source_file": "sources/b21d6f73e5d7fdc820e338bd29a5e1106265962116383b201b18bc666951c13a.json",
+       "verification_file": "records/9bc2f3311761938175c3d45b41d7594ea1a07224170416faff7f950abca75a2b/result.json",
+       "effective_attempt": "original",
+       "original_candidate_sha256": "2f8643c8dde35669ec289a3bd848a8d4723aa9333d94d12c0f3d8f8a628e7272",
+       "revised_candidate_sha256": null,
+       "effective_candidate_sha256": "2f8643c8dde35669ec289a3bd848a8d4723aa9333d94d12c0f3d8f8a628e7272",
+       "original_candidate_reference": "records/9bc2f3311761938175c3d45b41d7594ea1a07224170416faff7f950abca75a2b/result.json#/result/original_interpretation",
+       "revised_candidate_reference": null,
+       "audit_history_reference": "records/9bc2f3311761938175c3d45b41d7594ea1a07224170416faff7f950abca75a2b/result.json#/result/passes"
+      }
+     },
+     "agent1_export_file": "D:\\Christie\\2026_AgenticAI\\threadsense\\data\\experiments\\threadsense_full_v1\\stages\\agent1_verify\\agent1_verified_v2\\interpretations.json",
+     "agent1_export_sha256": "0629a7346373addf833a86ba1caff676a537e543cc26954a9836fd6610485270",
+     "agent1_lineage_base": "D:\\Christie\\2026_AgenticAI\\threadsense\\data\\experiments\\threadsense_full_v1\\stages\\agent1_verify\\agent1_verified_v2"
+    },
+    "related_card_ids": [],
+    "actions": []
+   }
+  ],
+  "coverage": {
+   "group_members_outside_this_card": [
+    "member_32274372042260e5a26c1466",
+    "member_955fe180d0d74ec7dfe0310c",
+    "member_c43a2b77b3b033180f00376e"
+   ],
+   "uncarried_obligations": []
+  },
+  "budget": {
+   "consumed": {
+    "retrieval_calls": 1,
+    "model_calls": 2
+   },
+   "limits": {
+    "model_calls_per_topic": 4,
+    "model_calls_total": 28,
+    "retrieval_calls_per_topic": 6,
+    "retrieval_calls_total": 42
+   }
+  },
+  "diagnostics": [
+   {
+    "code": "WITHHELD_STATEMENT",
+    "statement_id": "claim:c1",
+    "kind": "CLAIM_INCIDENT_FACT",
+    "text": "A QA tutor asks whether simultaneous speech by two people should be marked unintelligible.",
+    "verdict": "PENDING",
+    "rationale": null,
+    "blocking": true
+   },
+   {
+    "code": "WITHHELD_STATEMENT",
+    "statement_id": "summary:s1",
+    "kind": "SUMMARY",
+    "text": "A QA tutor and two tutors ask how to handle overlapping speech, including whether to mark it unintelligible or fail a transcription.",
+    "verdict": "SUPPORTED",
+    "rationale": "The three distinct attributed authors each ask about overlap handling, including unintelligibility marking and rubric failure.",
+    "blocking": true,
+    "withheld_because": "depends on withheld claim:c1"
+   },
+   {
+    "code": "WITHHELD_STATEMENT",
+    "statement_id": "detail:d3",
+    "kind": "DETAIL",
+    "text": "In the thread asking about the failure threshold, a tutor reports hearing both voices but losing individual words during the overlap.",
+    "verdict": "SUPPORTED",
+    "rationale": "The cited message reports hearing both voices while losing individual words during overlap.",
+    "blocking": false,
+    "withheld_because": "depends on withheld summary:s1"
+   },
+   {
+    "code": "WITHHELD_STATEMENT",
+    "statement_id": "detail:d4",
+    "kind": "DETAIL",
+    "text": "The team lead requested overlap timestamps in both the background-speaker and failure-threshold threads so QA could assess the affected scope; neither thread contains the requested timestamps.",
+    "verdict": "SUPPORTED",
+    "rationale": "Both team-lead requests explicitly concern QA's affected-scope assessment, and neither provided thread supplies the requested timestamps.",
+    "blocking": false,
+    "withheld_because": "depends on withheld detail:d3"
+   },
+   {
+    "code": "WITHHELD_STATEMENT",
+    "statement_id": "detail:d6",
+    "kind": "DETAIL",
+    "text": "A QA tutor in each of the background-speaker and failure-threshold threads asked whether the rest of the recording was intelligible enough to continue.",
+    "verdict": "SUPPORTED",
+    "rationale": "A QA tutor in each named thread asks whether the remaining recording is intelligible enough to continue.",
+    "blocking": false,
+    "withheld_because": "depends on withheld detail:d3"
+   }
+  ]
+ },
+ "derivation": {
+  "version": "combined-briefing-v1",
+  "parent_topic_file": "data/experiments/threadsense_full_v1_consolidated_refresh_v1/topics/consolidated__consolidated_a95a89a02e04076d.json",
+  "parent_topic_sha256": "f880a765d596dc26b92bf79f3d0e369d70f50a1382565c43cf1009a640507cfc",
+  "replaced": [
+   "result (revalidated replay)",
+   "workflow.card_id",
+   "workflow.card_line"
+  ],
+  "advice_provenance": "LIVE_ADVICE_REVALIDATED_OFFLINE",
+  "revalidation": {
+   "checks": {
+    "pilot_version": "agent3-advisor-pilot-v8",
+    "author_count_scope": "Plural counts are checked against message authors only when they are about authors or reporters (team roles; generic people/users as the subject or agent of a reporting verb).",
+    "temporal_eligibility": "Several current sources that the final grounding recorded as agreeing, with every other cited item out of the running by recorded state, resolve a declared conflict; an UNDETERMINED declared conflict whose rule-stating current sources agree is a documentation-status finding.",
+    "partial_pending": "With some verdicts recorded, a statement never judged is withheld as unjudged; the judged ones stand."
+   },
+   "changed_verdicts": {
+    "claim:c1": [
+     "REJECTED_PLURAL_NOT_SUPPORTED_BY_DISTINCT_AUTHORS",
+     "PENDING"
+    ]
+   },
+   "pending": [
+    "claim:c1"
+   ],
+   "verdicts_reused": 34,
+   "not_reused": [
+    {
+     "statement_id": "claim:c1",
+     "reason": "recorded verdict REJECTED_PLURAL_NOT_SUPPORTED_BY_DISTINCT_AUTHORS"
+    }
+   ],
+   "card_fields_changed": [
+    "needs_review_reasons",
+    "review_notes"
+   ]
+  }
+ }
+}

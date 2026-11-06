@@ -35,7 +35,7 @@ def live_settings():
 
 
 def build_runtime(out, mode, *, cutoff, only, max_requests, max_cost, release=(), index_dir=None, flag_impact=False,
-                  handoff=None, fixture_root=None, per_request=None):
+                  handoff=None, fixture_root=None, per_request=None, consolidation=None, processing_history=None):
     from threadsense.agents import advisor_pilot as pilot
     from threadsense.agents import overnight
     if mode == 'LIVE':
@@ -48,10 +48,12 @@ def build_runtime(out, mode, *, cutoff, only, max_requests, max_cost, release=()
         return overnight.Runtime(out, client=client, cutoff=cutoff, only=only, max_requests=max_requests, ledger=ledger,
                                  mode=mode, release=release, settings=settings, index_dir=index_dir or overnight.INDEX_DIR,
                                  flag_impact=flag_impact, handoff=handoff or pilot.HANDOFF,
-                                 fixture_root=fixture_root or overnight.FIXTURE_ROOT)
+                                 fixture_root=fixture_root or overnight.FIXTURE_ROOT,
+                                 consolidation=consolidation, processing_history=processing_history)
     return overnight.Runtime(out, client=overnight.HandoffScriptedClient(), cutoff=cutoff, only=only,
                              max_requests=max_requests, mode=mode, release=release, index_dir=index_dir or overnight.INDEX_DIR,
-                             flag_impact=flag_impact)
+                             flag_impact=flag_impact, consolidation=consolidation, processing_history=processing_history,
+                             **({'handoff': handoff} if handoff else {}), **({'fixture_root': fixture_root} if fixture_root else {}))
 
 
 def main(argv=None):
@@ -67,6 +69,11 @@ def main(argv=None):
     parser.add_argument('--flag-impact', action='store_true', help='Shadow flag-impact assessment in the grounding request.')
     parser.add_argument('--max-cost', type=float, help='Run-wide dollar budget (live).')
     parser.add_argument('--release', action='append', default=[], help='With --resume: reprocess this interrupted work ID.')
+    parser.add_argument('--handoff', type=Path, help='Agent 2 output directory (default: the projected v7 handoff).')
+    parser.add_argument('--fixture-root', type=Path, help='Slack snapshot the handoff was built from.')
+    parser.add_argument('--consolidation', type=Path, help='agent2-consolidation-v1 record: consolidated topics become one work item.')
+    parser.add_argument('--processing-history', type=Path, help='Agent 1 processing history (agent1-relevance-v1); its threads '
+                        'are accounted separately and their obligations queued.')
     parser.add_argument('--index-dir', type=Path, help='Retrieval snapshot (default .index/retrieval); its cutoff must equal '
                         '--cutoff. A resume always uses the snapshot recorded in the run manifest.')
     args = parser.parse_args(argv)
@@ -78,7 +85,7 @@ def main(argv=None):
     from threadsense.handoff_inputs import read_json
     if args.resume:
         if args.write or args.scripted or args.run or args.only or args.max_requests or args.max_cost or args.cutoff or args.index_dir \
-                or args.flag_impact:
+                or args.flag_impact or args.handoff or args.fixture_root or args.consolidation or args.processing_history:
             parser.error('--resume takes its options from the run manifest; pass only --release.')
         saved = read_json(args.resume/'run_manifest.json')['fingerprints']
         if not saved['index'].get('index_dir'):
@@ -86,6 +93,8 @@ def main(argv=None):
         rt = build_runtime(args.resume, saved['mode'], cutoff=saved['cutoff'], only=saved['only'],
                            max_requests=saved['budget_limits']['model_calls_total'], max_cost=saved['cost_limit_usd'],
                            release=args.release, flag_impact=saved.get('flag_impact', False),
+                           handoff=overnight.ROOT/saved['handoff']['run'],
+                           **{k: overnight.ROOT/saved[k]['path'] for k in ('consolidation', 'processing_history') if k in saved},
                            index_dir=overnight.ROOT/saved['index']['index_dir']
                            if not Path(saved['index']['index_dir']).is_absolute() else Path(saved['index']['index_dir']))
     else:
@@ -109,7 +118,9 @@ def main(argv=None):
             if per_request * overnight.REQUESTS_TO_START > args.max_cost:
                 parser.error(f'--max-cost ${args.max_cost} cannot cover one topic (two reservations of ${per_request:.4f}).')
         rt = build_runtime(args.write, mode, cutoff=args.cutoff, only=args.only, max_requests=args.max_requests,
-                           max_cost=args.max_cost, index_dir=args.index_dir, flag_impact=args.flag_impact)
+                           max_cost=args.max_cost, index_dir=args.index_dir, flag_impact=args.flag_impact, handoff=args.handoff,
+                           fixture_root=args.fixture_root, consolidation=args.consolidation,
+                           processing_history=args.processing_history)
     try:
         state = overnight.run(rt)
     except overnight.OvernightError as error:
@@ -126,7 +137,10 @@ def main(argv=None):
 
 def plan_only(args, overnight, pilot):
     rt = overnight.Runtime(Path('.'), client=overnight.HandoffScriptedClient(), cutoff=args.cutoff, only=args.only,
-                           index_dir=args.index_dir or overnight.INDEX_DIR)
+                           index_dir=args.index_dir or overnight.INDEX_DIR, consolidation=args.consolidation,
+                           processing_history=args.processing_history,
+                           **({'handoff': args.handoff} if args.handoff else {}),
+                           **({'fixture_root': args.fixture_root} if args.fixture_root else {}))
     try:
         overnight.load_handoff(rt)
         overnight.extract_announcements(rt)
@@ -150,7 +164,7 @@ def plan_only(args, overnight, pilot):
         'handoff_activity': rt.handoff_activity,
         'handoff_members': sum(len(r['members']) for r in rt.view['records']),
         'work_items': len(rt.work), 'in_scope': len(in_scope),
-        'by_kind': {k: sum(1 for w in in_scope if w['kind'] == k) for k in ('TOPIC', 'PROJECTION_GAP')},
+        'by_kind': {k: sum(1 for w in in_scope if w['kind'] == k) for k in ('TOPIC', 'CONSOLIDATED_TOPIC', 'PROJECTION_GAP')},
         'window_announcements': rt.extraction['announcement_threads_in_window'],
         'window_announcements_in_snapshot': sum(o['in_retrieval_snapshot'] for o in rt.extraction['record_outcomes']),
         'live_arm': {k: settings[k] for k in ('model', 'reasoning_effort', 'service_tier', 'max_completion_tokens_per_call',

@@ -274,7 +274,10 @@ export default function CardView({ runKey, run, item, actor, decisionState, onDe
               <Badge>{card.project_id}</Badge>
               <SourceBadge source={source} />
               <Badge>{words(card.resolution_status)}</Badge>
-              {briefing && briefing.status !== 'IN_BRIEFING' && <Badge data-testid="history-badge">Not in this brief · {words(briefing.relevance)}</Badge>}
+              {briefing && briefing.status !== 'IN_BRIEFING' && presentation?.inventory !== 'CONSOLIDATED_PENDING' && <Badge data-testid="history-badge">Not in this brief · {words(briefing.relevance)}</Badge>}
+              {presentation?.consolidated && <Badge data-testid="consolidated-badge">Original topic · combined issue pending</Badge>}
+              {presentation?.inventory === 'PROCESSING_HISTORY' && <Badge data-testid="processing-badge">Processing history</Badge>}
+              {presentation?.combined && <Badge data-testid="combined-badge">Combined issue · replaces {presentation.combined.replaced_cards.length} earlier cards</Badge>}
             </div>
             <h3 className="mt-2.5 font-display text-lg font-semibold leading-snug text-white" data-testid="card-topic">{displayTitle}</h3>
           </div>
@@ -321,6 +324,33 @@ export default function CardView({ runKey, run, item, actor, decisionState, onDe
               : <div className="prose-pre mt-0.5 line-clamp-2 text-xs leading-relaxed text-slate-300" data-testid="outstanding-text">{outstanding.details[0]}</div>)}
           </div>
         )}
+        {presentation?.human_edits?.length > 0 && (
+          <div className="mt-2 rounded-lg border border-violet-300/20 bg-violet-300/[0.05] px-3 py-2 text-xs text-slate-300" data-testid="human-edits">
+            <div className="font-medium text-violet-100">Human edits, verified by the live model ({presentation.human_edits.length})</div>
+            <ul className="mt-1 list-disc pl-4">
+              {presentation.human_edits.map(e => <li key={e.field + e.text} data-testid="human-edit"><span className="text-slate-400">{e.field}:</span> {e.text}</li>)}
+            </ul>
+          </div>
+        )}
+        {presentation?.tl_suggestions?.map(s => (
+          <div key={s.text} className="mt-2 rounded-lg border border-white/10 bg-white/[0.02] px-3 py-2 text-xs text-slate-300" data-testid="tl-suggestion">
+            <span className="font-medium text-slate-100">Suggestion for you (not judged):</span> {s.text}
+          </div>
+        ))}
+        {presentation?.combined && (
+          <details className="mt-2 rounded-lg border border-white/10 bg-white/[0.02] px-3 py-2 text-xs text-slate-400" data-testid="combined-lineage">
+            <summary className="cursor-pointer text-slate-300">Earlier cards this issue replaces ({presentation.combined.replaced_cards.length})</summary>
+            <p className="mt-1">Same issue ({words(presentation.combined.judgment_provenance)}): {presentation.combined.rationale} This card's advice is {words(presentation.combined.advice_provenance)}; the earlier cards are history and are not briefed.</p>
+            <ul className="mt-1 list-disc pl-4">
+              {presentation.combined.replaced_cards.map(c => <li key={c.card_id} data-testid="replaced-card">{c.topic_name} ({LINE_LABELS[c.card_line] || words(c.card_line)})</li>)}
+            </ul>
+          </details>
+        )}
+        {presentation?.shared_actions?.map(a => (
+          <div key={a.action_id} className="mt-2 rounded-lg border border-cyan-400/15 bg-cyan-400/[0.04] px-3 py-2 text-xs text-cyan-100" data-testid="shared-action-note">
+            Same edit also proposed by {a.other_cards.map(c => c.topic_name).join('; ')}. Shown once under Shared actions; not a shared cause.
+          </div>
+        ))}
         {presentation?.unsupported_observation && (
           <div className="mt-2 rounded-lg border border-amber-300/20 bg-amber-300/[0.05] px-3 py-2 text-xs text-amber-100" data-testid="unsupported-observation">
             Filed as an observation without a supported no-action reason: treat it as needing review.

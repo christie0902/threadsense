@@ -176,6 +176,34 @@ def review_items_from_announcement_route(sources):
         for m in sources if m['agent1_record']['review_required']]
 
 
+def review_items_from_processing_history(history):
+    """Agent 1 obligations on threads Agent 1 kept out of clustering (agent1-relevance-v1): never resolved by exclusion."""
+    return [ModelReviewItem(
+        item_id=stable_id('review', {'origin': 'agent1', 'route': 'processing_history', 'member_id': h['member_id']}),
+        origin='agent1', kind='inherited_agent1_review_processing_history', project_id=h['project_id'],
+        batch_id=h.get('batch_id'), candidate_group_id='processing_history', member_ids=[h['member_id']],
+        reason=h['agent1_record'].get('review_reason') or 'Inherited Agent 1 review obligation.', source_obligation=h)
+        for h in history if h['agent1_record']['review_required']]
+
+
+def apply_consolidation(view, record):
+    """The view with a validated agent2-consolidation-v1 record attached: every merged source topic must exist in the
+    view with exactly the recorded members, and every view topic must be merged or passed through once."""
+    from threadsense.agents.topic_merge import CONSOLIDATION_VERSION
+    if record.get('version') != CONSOLIDATION_VERSION:
+        raise ValueError(f"Unsupported consolidation {record.get('version')!r}.")
+    topics = {t['topic_id']: sorted(t['member_ids']) for row in view['records'] for t in row['topics']}
+    seen = []
+    for merge in record['merges']:
+        for source in merge['source_topics']:
+            if topics.get(source['topic_id']) != sorted(source['member_ids']):
+                raise ValueError(f"Consolidation names {source['topic_id']} with members the handoff does not have.")
+            seen.append(source['topic_id'])
+    if sorted(seen + record['pass_through_topic_ids']) != sorted(topics):
+        raise ValueError('Consolidation does not account for every handoff topic exactly once.')
+    return {**view, 'consolidation': record}
+
+
 def obligation_keys(view):
     keys = set()
     for row in view['records']:

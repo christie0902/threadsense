@@ -185,10 +185,16 @@ export default function App() {
   const run = brief?.run
   const inProject = x => !project || x.project_id === project
   const allCards = (brief?.cards || []).filter(c => inProject(c.card))
-  // briefing_policy: social or routine cards are kept in history, outside the brief's lists and counts.
-  const inBrief = c => (c.presentation?.briefing?.status || 'IN_BRIEFING') === 'IN_BRIEFING'
+  // briefing_policy: social or routine cards are kept in history, outside the brief's lists and counts. A v2 run also
+  // lists consolidated issues (original cards attached) and Agent 1 processing history separately.
+  const inventory = c => c.presentation?.inventory || 'BRIEF'
+  const inBrief = c => (c.presentation?.briefing?.status || 'IN_BRIEFING') === 'IN_BRIEFING' && inventory(c) === 'BRIEF'
   const cards = allCards.filter(inBrief)
-  const history = allCards.filter(c => !inBrief(c))
+  const history = allCards.filter(c => inventory(c) === 'BRIEF' && !inBrief(c))
+  const processed = allCards.filter(c => inventory(c) === 'PROCESSING_HISTORY')
+  const consolidated = (run?.consolidation?.pending || []).map(m => ({ ...m, cards: allCards.filter(c => c.presentation?.consolidated?.consolidated_topic_id === m.consolidated_topic_id) }))
+    .filter(m => m.cards.length)
+  const shared = run?.coordinated_actions || []
   const queueRows = queue.filter(r => inProject(r.item))
   const topics = (brief?.topics || []).filter(t => !project || t.project_id === project)
   const cardTopics = Object.fromEntries((brief?.cards || []).map(c => [c.card.card_id, c.display_title || c.card.topic_name]))
@@ -286,7 +292,7 @@ export default function App() {
 
                 <div className="flex flex-wrap items-center gap-x-5 gap-y-1 px-1 text-xs text-slate-500">
                   <span data-testid="tile-cards">Cards <b className="tabular-nums text-slate-300">{counts.cards ?? 0}</b>
-                    {run.briefing && <span data-testid="tile-in-brief"> · {run.briefing.in_briefing} in this brief · {run.briefing.not_in_briefing.length} kept in history</span>}</span>
+                    {run.briefing && <span data-testid="tile-in-brief"> · {run.briefing.in_briefing} in this brief{run.consolidation?.refreshed?.length ? ` (${run.consolidation.refreshed.length} combined issues)` : run.consolidation ? ` (${run.consolidation.pending.length} consolidated issues)` : ''} · {run.briefing.not_in_briefing.length + (run.processing_history?.length || 0)} kept in history</span>}</span>
                   <span data-testid="tile-failed" className={run.failed ? 'text-red-300' : ''}>Failed topics <b className="tabular-nums">{run.failed}</b></span>
                   <span data-testid="tile-unprocessed" className={run.unprocessed ? 'text-amber-200' : ''}>Unprocessed <b className="tabular-nums">{run.unprocessed}</b></span>
                   <span data-testid="tile-out-of-scope">Out of scope <b className="tabular-nums text-slate-300">{run.out_of_scope}</b></span>
@@ -315,6 +321,40 @@ export default function App() {
                     ))}
                   </div>
                 </div>
+
+                {shared.length > 0 && (
+                  <section className="panel p-4" data-testid="shared-actions">
+                    <h3 className="text-sm font-semibold text-slate-100">Shared actions ({shared.length})</h3>
+                    <p className="mt-1 text-xs text-slate-400">Distinct topics support the same edit. A shared action does not mean the topics share a cause.</p>
+                    {shared.map(a => (
+                      <div key={a.action_id} className="mt-3 rounded-lg border border-cyan-400/15 bg-cyan-400/[0.04] px-3 py-2 text-sm" data-testid="shared-action">
+                        <div className="font-medium text-white">{a.label}: {a.targets.map(t => `${t.document} · ${t.section}`).join('; ')}</div>
+                        <ul className="mt-1 list-disc pl-5 text-xs text-slate-300">
+                          {a.cards.map(c => <li key={c.card_id} data-testid="shared-action-card">{c.topic_name}{c.review_codes.length ? ` (still needs review: ${c.review_codes.map(words).join(', ')})` : ''}</li>)}
+                        </ul>
+                        {a.related_withheld.length > 0 && <div className="mt-1 text-[11px] text-slate-500">Not coordinated (proposal withheld): {a.related_withheld.map(w => w.topic_name).join('; ')}</div>}
+                      </div>
+                    ))}
+                  </section>
+                )}
+
+                {consolidated.length > 0 && (
+                  <section className="space-y-3" data-testid="consolidated-issues">
+                    <h3 className="flex items-center gap-2 text-sm font-semibold text-slate-100"><span className="h-2 w-2 rounded-full bg-violet-300" />Consolidated issues
+                      <span className="font-normal text-slate-500">({consolidated.length}, fresh advice pending)</span></h3>
+                    {consolidated.map(m => (
+                      <details key={m.consolidated_topic_id} className="group panel-inset p-3" data-testid="consolidated-issue" data-consolidated-id={m.consolidated_topic_id}>
+                        <summary className="cursor-pointer text-sm font-medium text-slate-200">{m.topic_name}
+                          <span className="ml-2 text-xs font-normal text-slate-500">{m.cards.length} original topics · fresh advice pending{m.review_codes_carried.length ? ' · review reasons kept' : ''}</span></summary>
+                        <div className="mt-2 text-xs leading-relaxed text-slate-400" data-testid="consolidated-basis">Same issue ({words(m.judgment_provenance)}): {m.rationale} The advice below belongs to each original topic.</div>
+                        <div className="mt-3 grid gap-4 lg:grid-cols-2">
+                          {m.cards.map(c => <CardView key={c.card.card_id} runKey={runKey} run={run} openQueueItem={openQueueItem} item={c} actor={actor} decisionState={byCard[c.card.card_id]} wide={m.cards.length === 1}
+                            onDecisionChanged={loadDecisions} openPanel={setPanel} />)}
+                        </div>
+                      </details>
+                    ))}
+                  </section>
+                )}
 
                 {GROUPS.filter(([line]) => lineFilter === 'ALL' || lineFilter === line).map(([line, label, dot]) => {
                   const group = cards.filter(c => c.card.card_line === line)
@@ -352,6 +392,16 @@ export default function App() {
                     <summary className="cursor-pointer text-sm font-medium text-slate-300">Not in this brief ({history.length}): social or routine exchanges kept in history</summary>
                     <div className="mt-3 grid gap-4 lg:grid-cols-2">
                       {history.map(c => <CardView key={c.card.card_id} runKey={runKey} run={run} openQueueItem={openQueueItem} item={c} actor={actor} decisionState={byCard[c.card.card_id]} wide={history.length === 1}
+                        onDecisionChanged={loadDecisions} openPanel={setPanel} />)}
+                    </div>
+                  </details>
+                )}
+
+                {processed.length > 0 && (
+                  <details className="group panel-inset p-3" data-testid="processing-history">
+                    <summary className="cursor-pointer text-sm font-medium text-slate-300">Processing history ({processed.length}): kept out of issue clustering by Agent 1 relevance</summary>
+                    <div className="mt-3 grid gap-4 lg:grid-cols-2">
+                      {processed.map(c => <CardView key={c.card.card_id} runKey={runKey} run={run} openQueueItem={openQueueItem} item={c} actor={actor} decisionState={byCard[c.card.card_id]} wide={processed.length === 1}
                         onDecisionChanged={loadDecisions} openPanel={setPanel} />)}
                     </div>
                   </details>

@@ -30,6 +30,9 @@ def main(argv=None):
     args = parser.parse_args(argv)
     if args.host not in ('127.0.0.1', 'localhost', '::1'):
         parser.error('The dashboard has no authentication; serve it on localhost only.')
+    if any(ch in args.decision_db.name for ch in '<>:"|?*'):
+        parser.error(f'--decision-db {args.decision_db.name!r} is not a valid file name; replace the placeholder with a real '
+                     'name, for example D:/tsb/demo-20261106-r1.sqlite3.')
     import uvicorn
     from threadsense.dashboard.app import create_app
     from threadsense.dashboard.decisions import DecisionStore

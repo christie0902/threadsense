@@ -30,6 +30,8 @@ REASON_NOTES = (
     r'Severity is high under the team rubric\.$', r'\d+ earlier review flags? (are|is) still open on these threads\.',
     r'Topic grouping needs review: these threads have no assigned topic\.$',
     r'Sources disagree on a point, and the records do not settle which applies', r'Some advisor statements were not supported',
+    r'Some advisor statements have not been checked against the evidence yet',
+    r'The current sources agree on the handling rule, but the records do not settle which document',
     r"The advisor's statements could not be checked against the evidence", r'Open question: ',
     r'The evidence supports more than one option and none is clearly better', r'Research on ', r'The advisor did not fully check ',
     r'No-action choice needs review: ', r'Recommendation needs review: ', r'No recommendation is available for this topic\.$',
@@ -47,7 +49,7 @@ VERDICTS = {
     'PARTIALLY_SUPPORTED': 'the evidence check found it only partly supported',
     'CONTRADICTED': 'the evidence check found it contradicted by the evidence',
     'NO_INTERVENTION_NEED': 'the evidence did not show a need to intervene now',
-    'NOT_JUDGED': 'the evidence check did not judge it', 'PENDING': 'not judged (replay)',
+    'NOT_JUDGED': 'the evidence check did not judge it', 'PENDING': 'it has not been checked against the evidence yet',
     'NOT_SENT': 'it was not sent to the evidence check', 'REJECTED': 'it failed a deterministic check before the evidence check',
 }
 FLAG_CHECKS = {
@@ -63,7 +65,9 @@ FLAG_LABELS = {'inherited_agent1_review': 'Agent 1 interpretation not verified',
                'inherited_agent1_review_announcement_route': 'Agent 1 interpretation not verified (announcement route)',
                'projection_gap': GROUPING_LABEL, 'assisted_content_review': 'Assisted content review finding'}
 TEMPORAL_CODES = {'SUPERSEDED_GUIDANCE': 'A cited source has been replaced', 'SOURCE_CONFLICT': 'Current sources disagree',
-                  'UNRESOLVED_VERSION': 'Competing revisions could not be ordered'}
+                  'UNRESOLVED_VERSION': 'Competing revisions could not be ordered',
+                  'DOCUMENTATION_STATUS_UNRESOLVED': 'Which document still needs updating is unclear',
+                  'UNEXPLAINED_SOURCE_CONFLICT': 'Sources disagree'}
 
 
 def _words(s):
@@ -227,6 +231,11 @@ def _grounding_item(reason, withheld_entries, links):
     else:
         entries = [w for w in blocked if not ids or w['statement_id'] in ids] or blocked
         unavailable = None if entries else 'The saved result does not say which statements were withheld.'
+    if ids and all(v in ('PENDING', 'NOT_JUDGED') for v in re.findall(r'\S+: ([A-Z_]+)(?:;|$)', reason['detail'])):
+        return {'category': 'MISSING', 'title': 'Some content has not been checked against the evidence yet',
+                'field': ', '.join(dict.fromkeys(w['field'] for w in entries)) or 'Card statements',
+                'check': 'These statements still need a semantic check; their wording is not shown and is not established.',
+                'withheld': entries, 'unavailable': unavailable}
     return {'category': 'DISPUTED', 'title': 'Some content was withheld because the evidence did not support it',
             'field': ', '.join(dict.fromkeys(w['field'] for w in entries)) or 'Card statements',
             'check': 'Check the withheld fields against their sources before acting. Their wording is not shown and is not '
@@ -235,11 +244,15 @@ def _grounding_item(reason, withheld_entries, links):
 
 def _temporal_item(reason, result, links):
     findings = [f for f in ((result or {}).get('temporal') or {}).get('findings') or [] if f.get('status') == 'DETECTED']
-    entries = [{'what': TEMPORAL_CODES.get(f.get('code'), _words(f.get('code'))), 'detail': f.get('detail'),
+    entries = [{'code': f.get('code'), 'what': TEMPORAL_CODES.get(f.get('code'), _words(f.get('code'))), 'detail': f.get('detail'),
                 'scope': f.get('scope'), 'links': links.evidence_list(f.get('evidence_ids'))} for f in findings]
     if not entries:  # Fall back to the reason's own detail (CODE: detail; ...).
         entries = [{'what': TEMPORAL_CODES.get(code, _words(code)), 'detail': detail, 'scope': None, 'links': []}
                    for code, _, detail in (part.partition(': ') for part in reason['detail'].split('; ') if part)]
+    if findings and all(f.get('code') == 'DOCUMENTATION_STATUS_UNRESOLVED' for f in findings):
+        return {'category': 'CONFLICT', 'title': 'A documentation question is unresolved', 'field': 'Sources',
+                'check': 'The current sources agree on the handling rule. Confirm which document the cited source refers to '
+                         'before editing; the records do not settle it.', 'findings': entries, 'unavailable': None}
     return {'category': 'CONFLICT', 'title': 'Sources disagree, or a cited source was replaced', 'field': 'Sources',
             'check': 'Confirm which source applies before acting; the records do not settle it.', 'findings': entries,
             'unavailable': None}

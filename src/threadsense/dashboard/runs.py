@@ -90,11 +90,15 @@ class Run:
 
     @cached_property
     def cards(self):
-        """Every saved card, validated under its own contract (AdviceCard v3, v4 or v5) and returned unchanged."""
+        """Every saved card, validated under its own contract (AdviceCard v3, v4 or v5) and returned unchanged. A card a
+        combined briefing replaced (inventory REPLACED) is history: it stays in cards.json and is reachable only through
+        the lineage of the issue that replaced it, so it is not served as a card."""
+        replaced = {c['card_id'] for c in self.brief.get('cards') or [] if c.get('inventory') == 'REPLACED'}
         cards = {}
         for raw in read_json(self.path/'cards.json'):
             validate_card(raw)
-            cards[raw['card_id']] = raw
+            if raw['card_id'] not in replaced:
+                cards[raw['card_id']] = raw
         return cards
 
     @cached_property
@@ -143,6 +147,14 @@ class Run:
             'out_of_scope': len((b.get('scope') or {}).get('out_of_scope_work') or []),
             'review_queue_items': counts.get('review_queue_items', 0), 'cards_sha256': self.cards_sha256,
             'provenance': self.provenance(), 'briefing': b.get('briefing'), 'derivation': b.get('derivation'),
+            'consolidation': ({**{k: v for k, v in b['consolidation'].items() if k != 'pending'},
+                               'pending': [{k: m[k] for k in ('consolidated_topic_id', 'topic_name', 'status', 'rationale',
+                                                              'judgment_provenance', 'source_cards', 'open_subquestions',
+                                                              'review_codes_carried', 'member_ids')}
+                                           for m in b['consolidation'].get('pending') or []],
+                               'refreshed': b['consolidation'].get('refreshed') or []} if b.get('consolidation') else None),
+            'processing_history': b.get('processing_history'),
+            'coordinated_actions': (b.get('coordinated_actions') or {}).get('coordinated_actions'),
         }
 
     def provenance(self):
@@ -246,7 +258,29 @@ class Run:
                 'briefing': card.get('briefing') or {'status': 'IN_BRIEFING', 'relevance': 'UNLABELLED', 'label_id': None,
                                                      'label_source': None, 'kept_because': []},
                 'outstanding_step': card.get('outstanding_step'), 'derivation': card.get('derivation'),
-                'unsupported_observation': unsupported_observation}
+                'unsupported_observation': unsupported_observation, **self.grouping_state(card_id)}
+
+    def grouping_state(self, card_id):
+        """Where the card sits after Agent 1 relevance and Agent 2 consolidation (brief entries of a v2 run): its
+        inventory, the consolidated issue it belongs to, and any shared action it supports. Read-only."""
+        entry = self.brief_cards.get(card_id, {})
+        merge = next((m for m in ((self.brief.get('consolidation') or {}).get('pending') or [])
+                      if m['consolidated_topic_id'] == entry.get('consolidated_topic_id')), None)
+        shared = [a for a in ((self.brief.get('coordinated_actions') or {}).get('coordinated_actions') or [])
+                  if card_id in {c['card_id'] for c in a['cards']}]
+        # Combined briefing: a refreshed consolidated issue lists the cards it replaced (historical lineage only).
+        combined = next((m for m in ((self.brief.get('consolidation') or {}).get('refreshed') or []) if m['card_id'] == card_id), None)
+        return {'inventory': entry.get('inventory', 'BRIEF'),
+                'consolidated': {k: merge[k] for k in ('consolidated_topic_id', 'topic_name', 'status', 'rationale',
+                                                       'judgment_provenance', 'source_cards')} if merge else None,
+                'combined': {k: combined[k] for k in ('consolidated_topic_id', 'topic_name', 'rationale', 'judgment_provenance',
+                                                      'advice_provenance', 'replaced_cards')} if combined else None,
+                'replaced_by': entry.get('replaced_by'),
+                # combined-briefing-v2: wording a person wrote that the live model judged SUPPORTED; TL suggestions (not judged).
+                'human_edits': entry.get('human_edits') or [], 'tl_suggestions': entry.get('tl_suggestions') or [],
+                'supersedes_card_id': entry.get('supersedes_card_id'),
+                'shared_actions': [{'action_id': a['action_id'], 'label': a['label'], 'targets': a['targets'], 'note': a['note'],
+                                    'other_cards': [c for c in a['cards'] if c['card_id'] != card_id]} for a in shared]}
 
     @cached_property
     def flag_source(self):

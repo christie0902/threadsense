@@ -19,7 +19,7 @@ uv run --locked --extra dev python -m pytest tests/test_x.py   # single file
 ```
 
 - Always pass a **fresh** `--basetemp .cache/pytest-<name>`: pytest wipes it at start.
-- Full suite: 1139 tests, ~15 min, all expected to pass. Intermittent `WinError 5` on `os.replace` is a Windows file lock (see Known issues), not a code failure.
+- Full suite: 1198 tests, ~15 min, all expected to pass. Intermittent `WinError 5` on `os.replace` is a Windows file lock (see Known issues), not a code failure.
 - No linter/formatter configured. No build step beyond the editable install.
 - UI tests: `npm --prefix web run build` then `npm --prefix web run test:ui` (Playwright, system Chrome; temp output
   in `TS_UI_TMP`, default `D:/tsb/ui-<time>`). Frontend deps are pinned in `web/package.json` + `package-lock.json`.
@@ -159,6 +159,36 @@ Closeout 2026-11-06 (offline): briefing-routing-v2 (labels `briefing_relevance_l
 no automatic relevance classifier; ROUTINE_ADMIN keeps an open status in history, ROUTINE_NOTICE checked against the saved
 cutoff, audit evidence must be SUPPORTED); derived run `threadsense_full_v1_briefing_v2/` (77 in the brief 66/8/3, 4 in
 history: 2 greetings, avatar, tie threshold); "Pending follow-up" UI wording. v1 labels and run kept unchanged.
+Relevance + consolidation (2026-11-06, offline; pipeline `threadsense-full-run-v2` for new runs, v1 runs replay unchanged):
+Agent 1 judges relevance in its interpretation request (`agents/thread_relevance.py`, agent1-relevance-v1; runner flag
+`--relevance`; the 14 fingerprinted Agent 1 files are unchanged), zero-call stage `agent1_relevance` verifies it and writes
+the clustering input + `processing_history.json` (identities and obligations kept; Agent 3 queues them as
+`inherited_agent1_review_processing_history`); `agent2_consolidate` (`agents/topic_merge.py`, agent2-consolidation-v1,
+handoff v3, bounded sets, whole-group validation) merges the same issue across candidate groups; Agent 3 advises a
+consolidated topic as one work item (CardLineage v3 fields). Shared actions: `agents/action_coordination.py` (exact
+target match only, never a shared cause). Cached rebuild `scripts/derive_consolidated_run.py` ->
+`data/experiments/threadsense_full_v1_consolidated_v1/` (audited thread labels `agent1_thread_relevance_labels_v1.json`,
+prepared decisions `agent2_consolidation_decisions_v1.json`; 63 briefing items = 49 reused cards + 14 consolidated issues
+pending fresh grounding over 29 original cards; 3 threads in processing history; 1 shared action). Targeted Agent 3
+refresh (paid, not run): command in that run's `REVIEW.md`, 56 requests max, --max-cost 4.00.
+Combined briefing + repairs (2026-11-06, offline after the paid refresh `threadsense_full_v1_consolidated_refresh_v1`,
+14 consolidated issues, 32 requests, $2.23): `scripts/derive_combined_brief.py` -> `data/experiments/threadsense_full_v1_combined_v1/`
+(63 items 53/7/3 = 49 reused + 14 refreshed; 29 replaced cards only as lineage, not served as cards; 177 threads, 37 review
+items; `REVIEW.md`). Pilot v8 checks: author counts only for claims about authors/reporters (`advisor_checks.about_authors`),
+agreeing current sources + out-of-running items resolve a declared conflict, UNDETERMINED with agreeing rule sources is
+`DOCUMENTATION_STATUS_UNRESOLVED`, partially pending grounding withholds only the unjudged statements. Same-rules replay in
+`ReplayClient` (current grounding contract and inputs: premises, sufficiency and source consistency reused as recorded;
+a rejected-then-pending premise leaves a SUPPORTED verdict). `scripts/replay_overnight_topic.py` replays consolidated items;
+`scripts/reground_topic.py` plans/sends one grounding request (format-card candidate wording
+`data/evaluation/agent3_format_card_wording_v1.json`, pending grounding). Relevance stage v2: model exclusions need the
+semantic verifier (`thread_relevance.assess_exclusion`, agent1-relevance-verification-v1). Observation demo fixture (hand-written,
+test namespace): `tests/fixtures/observation_demo_runs/` (builder `tests/fixtures/make_observation_demo_fixture.py`).
+Demo baseline (2026-11-06): `data/experiments/threadsense_full_v1_combined_v2` (combined-briefing-v2: 63 items 52/8/3; the
+overlap and format cards replaced by targeted live re-groundings `data/experiments/agent3_reground_v1/`, 2 requests, $0.094,
+reproduced offline before use; format card has 3 human edits verified by the live model + one TL suggestion not judged
+`data/evaluation/agent3_tl_suggestions_v1.json`; other 93 cards byte-identical to v1). Walkthrough section 0 in
+`docs/agent3-demo-walkthrough.md`. Agent 1 exclusion checks: one verifier request per proposed exclusion, exercised only with
+prepared responses.
 Agent 1 verification of a new run receives a derived discussion view (`pipeline.discussion_view`) through the runner's
 module constants; Agent 2 `execute_batch` refuses existing dirs, so its resume uses a new attempt dir with cache hits.
 - Agent 3 input: `data/processed/agent2_handoff_v2_projection/` (schema 8 / handoff v2, a zero-call projection of the v7 release; load with `advice_inputs.load_effective_view`): 81 groups / 79 topics / 161 assigned + 17 unassigned / 41 + 8 announcement-route obligations / 3 carried cautions. The frozen v7 release (handoff v1: 90 / 97 / 49 / 3 / 41) is unchanged.

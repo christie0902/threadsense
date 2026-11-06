@@ -46,7 +46,8 @@ from threadsense.handoff_inputs import ROOT, file_hash, read_json
 from threadsense.retrieval.config import DEFAULTS
 from threadsense.severity_rubric import load_rubric
 
-PILOT_VERSION = 'agent3-advisor-pilot-v7'  # v7: AdviceCard v4 (details, next_step) from draft v11.
+PILOT_VERSION = 'agent3-advisor-pilot-v8'  # v8: author-count scope, temporal eligibility of agreeing current sources and
+# documentation-status findings, partially pending grounding (v7: AdviceCard v4 (details, next_step) from draft v11).
 # Prompt text version, recorded in every manifest with the rule fingerprints. v6: team lead-facing writing guide and two
 # STYLE ONLY examples in the draft/revision rules; display-text rules in grounding and ToT; rules sent once per request
 # (agent3_readability_v1 ran v6). v6.1: grounding also receives the open upstream review flags (open_review_flags).
@@ -671,7 +672,13 @@ class ReplayClient:
     evidence context, are unchanged, and only while the grounding call's other inputs are those of the recorded run (its
     rules, the evidence view and the sent schema; read from the run's manifest, missing counts as changed). ACTION and ALTERNATIVE verdicts are not reused when they list premises: since pilot v5 their
     premises are shown as provisional with their dependencies, which changes what was judged. Anything else
-    (sufficiency, source agreement) is PENDING, never invented."""
+    (sufficiency, source agreement) is PENDING, never invented.
+
+    Same-rules replay: when the recorded grounding response has the current GroundingJudgment contract and the call's
+    rules, evidence view, schema and full evidence context are unchanged, a statement with premises is reused if each
+    premise is presented with the status it was sent with (its recorded deterministic rejection, else pending); the
+    recorded sufficiency judgments of reused statements and the recorded source-consistency assessment come back as
+    recorded."""
     label = 'REPLAY_RECORDED'
     replay = True
     retrieval_expansion = False  # Set per recorded run in __init__ (True only if that run used the expansion).
@@ -688,6 +695,7 @@ class ReplayClient:
                 'raw': {c['stage']: c['raw'] for c in r.get('model_calls', []) if c.get('raw')},
                 'failed': {c['stage']: c for c in r.get('model_calls', []) if c.get('status') == 'FAILED'},
                 'statements': {s['statement_id']: s for s in (r.get('grounding') or {}).get('statements', [])},
+                'rejected': (r.get('grounding') or {}).get('rejected') or {},
                 'context': set(r.get('evidence_ledger', {})), 'flag_impact': r.get('flag_impact')}
         self.fingerprint = sha256(json.dumps({k: v['raw'] for k, v in self.recorded.items()}, sort_keys=True).encode()).hexdigest()
         manifest = next((read_json(p) for p in (self.run_dir/'run_manifest.json', self.run_dir/'manifest.json') if p.is_file()), {})
@@ -717,26 +725,56 @@ class ReplayClient:
     def _judgment(self, payload, rec):
         context = {e['evidence_id'] for e in payload['member_threads'] + payload['retrieved_sources']}
         verdicts = []
+        recorded = json.loads(_json_text(rec['raw']['grounding'])) if rec['raw'].get('grounding') else {}
+        exact = (self.grounding_inputs_same and context == rec['context']
+                 and recorded.get('contract_version') == GroundingJudgment.model_fields['contract_version'].default)
         def content(x):  # A summary sentence's dependencies are part of what was judged.
             return x['kind'], x['text'], x['evidence_ids'], x.get('attributions', []), x.get('depends_on', [])
+        sufficiency = {a['statement_id']: a for a in recorded.get('alternative_sufficiency') or []}
+        if recorded.get('action_sufficiency'):
+            sufficiency['action'] = recorded['action_sufficiency']
+
+        def premises_as_sent(s, old):
+            """Same-rules replay: each premise is presented with the status it was judged with. One exception: a premise
+            that was deterministically rejected and is now pending (a corrected check) leaves a SUPPORTED verdict
+            standing, since it was supported without that premise, provided the recorded sufficiency did not name it."""
+            now = [(p['statement_id'], p['status']) for p in s['premises']]
+            then = [(i, rec['rejected'].get(i, 'PENDING_YOUR_VERDICT')) for i in old.get('premises') or []]
+            if now == then:
+                return True
+            if [i for i, _ in now] != [i for i, _ in then] or old.get('model_verdict') != 'SUPPORTED':
+                return False
+            changed = [i for (i, a), (_, b) in zip(now, then) if a != b]
+            essential = set((sufficiency.get(s['statement_id']) or {}).get('essential_statement_ids') or [])
+            return all(dict(then)[i].startswith('REJECTED') and dict(now)[i] == 'PENDING_YOUR_VERDICT' and i not in essential
+                       for i in changed)
         for s in payload['statements']:
             old = rec['statements'].get(s['statement_id'])
             same = (old is not None and self.grounding_inputs_same and context == rec['context'] and old.get('model_verdict') in
-                    ('SUPPORTED', 'PARTIALLY_SUPPORTED', 'UNSUPPORTED') and content(old) == content(s) and 'premises' not in s)
+                    ('SUPPORTED', 'PARTIALLY_SUPPORTED', 'UNSUPPORTED') and content(old) == content(s)
+                    and ('premises' not in s or (exact and premises_as_sent(s, old))))
             self.reuse_log.append({'scenario_id': payload['scenario_id'], 'statement_id': s['statement_id'],
                                    'reused': bool(same), 'reason': None if same else
                                    'not recorded' if old is None else
                                    'grounding rules, evidence view or schema changed since the recorded run'
                                    if not self.grounding_inputs_same else 'context changed' if context != rec['context'] else
                                    'content changed' if content(old) != content(s) else
+                                   'a premise is presented with a different status than when judged' if 'premises' in s and exact else
                                    'premises now shown as provisional with dependencies' if 'premises' in s else
                                    f"recorded verdict {old.get('model_verdict')}"})
             if same:
                 verdicts.append({'statement_id': s['statement_id'], 'verdict': old['model_verdict'],
                                  'rationale': old.get('rationale') or 'Recorded verdict (replay).'})
-        # Recorded judgments predate the source-consistency assessment: it stays NOT_ASSESSED, never "no conflict".
-        out = {'contract_version': 'agent3-grounding-judgment-v4', 'verdicts': verdicts, 'action_sufficiency': None,
-               'alternative_sufficiency': []}
+        if exact:  # The recorded call's own sufficiency and source-consistency judgments, for what is reused.
+            reused = {v['statement_id'] for v in verdicts}
+            out = {'contract_version': recorded['contract_version'], 'verdicts': verdicts,
+                   'action_sufficiency': recorded.get('action_sufficiency') if 'action' in reused else None,
+                   'alternative_sufficiency': [a for a in recorded.get('alternative_sufficiency') or [] if a['statement_id'] in reused],
+                   'source_consistency': recorded.get('source_consistency') or {}}
+        else:
+            # Recorded judgments predate the source-consistency assessment: it stays NOT_ASSESSED, never "no conflict".
+            out = {'contract_version': 'agent3-grounding-judgment-v4', 'verdicts': verdicts, 'action_sufficiency': None,
+                   'alternative_sufficiency': []}
         if 'flag_impacts' in payload:  # Reused only for the same flag inputs, statements, evidence and rules.
             saved = rec.get('flag_impact') or {}
             same = (self.flag_rules_same and saved.get('status') == 'ASSESSED'
@@ -863,7 +901,37 @@ class Stages:
                 **({'input_tokens_estimate': estimate} if estimate is not None else {})}
 
 
+def consolidated_packet(view, scenario):
+    """A consolidated topic (agent2-consolidation-v1): its members from every source group, all records kept."""
+    merge = next((m for m in (view.get('consolidation') or {}).get('merges', [])
+                  if m['consolidated_topic_id'] == scenario['consolidated_topic_id']), None)
+    if merge is None:
+        raise ScenarioError(f"Consolidated topic {scenario['consolidated_topic_id']} is not in the handoff.")
+    records = [r for r in view['records'] if r['candidate_group_id'] in merge['candidate_group_ids']]
+    wanted = set(merge['member_ids'])
+    members = sorted((m for r in records for m in r['members'] if m['member_id'] in wanted), key=lambda m: float(m['thread_id']))
+    if {m['member_id'] for m in members} != wanted:
+        raise ScenarioError(f"Consolidated topic {merge['consolidated_topic_id']} names members the handoff does not have.")
+    return {'record': records[0], 'records': records, 'candidate_group_id': records[0]['candidate_group_id'],
+            'candidate_group_ids': merge['candidate_group_ids'], 'source_topic_ids': merge['source_topic_ids'],
+            'topic_id': merge['consolidated_topic_id'], 'topic_label': merge['topic_name'], 'topic_name': merge['topic_name'],
+            'projection_gap': None, 'project_id': merge['project_id'], 'batch_id': merge['batch_id'],
+            'member_ids': [m['member_id'] for m in members], 'members': members, 'agent1_resolution': agent1_resolution(members),
+            'preliminary_severity': records[0]['topics'][0].get('preliminary_severity') if records[0]['topics'] else None,
+            'handoff_contract': view['consolidation']['handoff_contract'], 'export_sha256': view['canonical_sha256'],
+            'schema_version': records[0]['schema_version'],
+            'threads': [{'project_id': m['project_id'], 'batch_id': m['batch_id'], 'channel_id': m['channel_id'],
+                         'thread_id': m['thread_id'], 'member_id': m['member_id'],
+                         'messages': m['original_thread']['messages']} for m in members]}
+
+
+def packet_records(packet):
+    return packet.get('records') or [packet['record']]
+
+
 def topic_packet(view, scenario):
+    if scenario.get('consolidated_topic_id'):
+        return consolidated_packet(view, scenario)
     gid = scenario['candidate_group_id']
     record = next((r for r in view['records'] if r['candidate_group_id'] == gid), None)
     if record is None:
@@ -1004,7 +1072,7 @@ def _final_grounding(call, draft, ledger, topic, stmts, structural, actions, rev
 
 
 def _review_items(packet, card):
-    items = review_items_from_view({'records': [packet['record']]})
+    items = review_items_from_view({'records': packet_records(packet)})
     linked = set(card.lineage.member_ids)
     return [ModelReviewItem.model_validate({**i.model_dump(mode='json'), 'related_card_ids': [card.card_id]})
             if set(i.member_ids) & linked or not i.member_ids else i for i in items]
@@ -1096,7 +1164,9 @@ def advise(scenario, *, view, retriever, client, budget, rubric, run_id, as_of, 
     revised, normalization = draft is not first, []
     if draft is not None:  # Role-label and recurrence corrections, recorded; never content repair.
         draft, normalization = normalize(draft, ledger)
-    flags = inherited_flags(packet['record'], packet['member_ids'], projection_gap=packet['projection_gap'])
+    flags = [f for record in packet_records(packet) for f in inherited_flags(
+        record, [m for m in packet['member_ids'] if m in {x['member_id'] for x in record['members']}],
+        projection_gap=packet['projection_gap'])]
     tot, diagnostics, temporal_pre, covered_issues, action_notes = {'status': 'NOT_TRIGGERED', 'triggers': []}, [], None, [], []
     prepared, flag_raw = None, None
     if draft is None:
@@ -1177,7 +1247,7 @@ def advise(scenario, *, view, retriever, client, budget, rubric, run_id, as_of, 
             flag_record = impact.record(assessed, prepared, payload=flag_raw['payload'], ledger=ledger,
                                         card=card.model_dump(mode='json'))
     items = _review_items(packet, card)
-    covered = coverage({'records': [packet['record']]}, cards=[card], review_items=items)
+    covered = coverage({'records': packet_records(packet)}, cards=[card], review_items=items)
     # Members of the group's other topics are outside this scenario (not lost); obligations must all be carried.
     covered = {'group_members_outside_this_card': covered['missing_members'],
                'uncarried_obligations': covered['missing_obligations']}

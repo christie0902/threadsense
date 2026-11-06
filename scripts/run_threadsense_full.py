@@ -133,13 +133,17 @@ def open_run(path, mode, *, limit=None, parents=()):
     return Run(path, ex)
 
 
-def start(path, mode, limit, parents=(), label='FRESH_LIVE'):
+def start(path, mode, limit, parents=(), label='FRESH_LIVE', pipeline=None):
+    """pipeline: threadsense-full-run-v2 for new live runs; a replay or branch keeps its parent's pipeline."""
     from threadsense.execution import pipeline as p
+    if pipeline is None:
+        pipeline = (p.read_json(Path(parents[0])/'run_manifest.json')['configuration'].get('pipeline', p.PIPELINE_V1)
+                    if parents else p.PIPELINE_V2)
     if path.exists():
         raise SystemExit(f'{path} exists; every run writes a new directory (use resume).')
     path.mkdir(parents=True)
     p.write_json(path/'run_manifest.json', {'kind': label, 'mode': mode, 'parents': [str(x) for x in parents], 'created_at': p.now(),
-                                            'hard_ceiling_usd': limit, 'target_usd': TARGET, 'configuration': p.configuration(),
+                                            'hard_ceiling_usd': limit, 'target_usd': TARGET, 'configuration': p.configuration(pipeline),
                                             'checkout': p.checkout()})
     return open_run(path, mode, limit=limit, parents=parents)
 
@@ -156,7 +160,7 @@ def go(run):
     finally:
         p.write_json(run.dir/'ledger_summary.json', run.ex.ledger.summary())
     print(json.dumps({'stages': result, 'ledger': run.ex.ledger.summary()}, indent=1, ensure_ascii=False))
-    return 0 if all(r.get('status', 'COMPLETE') == 'COMPLETE' for r in result) and len(result) == len(p.STAGES) else 1
+    return 0 if all(r.get('status', 'COMPLETE') == 'COMPLETE' for r in result) and len(result) == len(run.stages) else 1
 
 
 def render(path):
@@ -226,7 +230,7 @@ def main(argv=None):
     if args.command == 'resume':
         from threadsense.execution import pipeline as p
         saved = p.read_json(args.run_dir/'run_manifest.json')
-        if saved['configuration'] != p.configuration():
+        if saved['configuration'] != p.configuration(saved['configuration'].get('pipeline', p.PIPELINE_V1)):
             parser.error('Semantic configuration changed since this run started; use branch for a new run.')
         current = p.checkout()
         if saved['checkout']['combined_sha256'] != current['combined_sha256'] or saved.get('resumes'):

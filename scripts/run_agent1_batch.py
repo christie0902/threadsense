@@ -99,6 +99,8 @@ def main(argv: list[str] | None = None) -> int:
     )
     parser.add_argument("--fixture-root", type=Path, default=PROJECT_ROOT / "data" / "fixtures" / "slack_generated",
                         help="Slack snapshot to interpret (default: the original fixture).")
+    parser.add_argument("--relevance", action="store_true",
+                        help="Also judge project relevance in the same interpretation request (agent1-relevance-v1).")
     parser.add_argument("--source-destination", type=Path, default=PROJECT_ROOT / "data" / "knowledge" / "decisions",
                         help="Where live runs store extracted announcement sources (a run directory keeps the corpus unchanged).")
     args = parser.parse_args(argv)
@@ -150,6 +152,9 @@ def main(argv: list[str] | None = None) -> int:
         "contract_sha256": fingerprint(ti.ThreadInterpretation.model_json_schema()),
         "packages": package_versions(),
     }
+    if args.relevance:  # Only new-pipeline runs carry this key, so earlier run configs (and caches) are unchanged.
+        from threadsense.agents import thread_relevance
+        config["relevance"] = {"version": thread_relevance.RELEVANCE_VERSION, "sha256": thread_relevance.fingerprint()}
     if manifest_path.exists():
         previous = json.loads(manifest_path.read_text(encoding="utf-8"))
         if previous != config:
@@ -228,7 +233,10 @@ def main(argv: list[str] | None = None) -> int:
             print(f"[{index}/{len(threads)}] review pending {thread.thread_id}")
             continue
         try:
-            result = ti.interpret_thread(thread)
+            if args.relevance:
+                result, relevance = thread_relevance.interpret_thread(thread)
+            else:
+                result, relevance = ti.interpret_thread(thread), None
         except Exception as exc:
             detail = str(exc)
             api_key = os.getenv(key_name, "")
@@ -269,6 +277,7 @@ def main(argv: list[str] | None = None) -> int:
             "input_sha256": input_hash,
             "run_config_sha256": fingerprint(config),
             "interpretation": result.model_dump(mode="json"),
+            **({"relevance": relevance} if relevance is not None else {}),
         }
         write_json(cache_path, record)
         rejected.pop(input_hash, None)

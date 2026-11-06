@@ -1,0 +1,1929 @@
+{
+ "work_item": {
+  "candidate_group_id": "cluster_23fab6d43c64532d",
+  "project_id": "audio_multimodal",
+  "batch_id": "audio_batch_06",
+  "work_id": "topic:cluster_23fab6d43c64532d/topic_1",
+  "kind": "TOPIC",
+  "topic_id": "cluster_23fab6d43c64532d/topic_1",
+  "topic_name": "LT review submission confirmation",
+  "member_ids": [
+   "member_b94dee3ae64a8b2329242893"
+  ],
+  "pilot_scenario": null,
+  "in_scope": true
+ },
+ "workflow": {
+  "outcome": "CARD",
+  "card_id": "card_547b3b47cca774993b0a62fd83f34ea0",
+  "card_line": "RECOMMENDED_ACTION",
+  "grounding": "PASSED",
+  "stage_failures": [],
+  "semantic_source": "LIVE_MODEL"
+ },
+ "result": {
+  "scenario": {
+   "id": "topic:cluster_23fab6d43c64532d/topic_1",
+   "candidate_group_id": "cluster_23fab6d43c64532d",
+   "focus": "LT review submission confirmation",
+   "topic_id": "cluster_23fab6d43c64532d/topic_1"
+  },
+  "status": "CARD",
+  "topic": {
+   "project_id": "audio_multimodal",
+   "batch_id": "audio_batch_06",
+   "candidate_group_id": "cluster_23fab6d43c64532d",
+   "topic_id": "cluster_23fab6d43c64532d/topic_1",
+   "topic_label": "LT review submission confirmation",
+   "projection_gap": null,
+   "as_of": "2026-10-02T12:00:00Z",
+   "member_ids": [
+    "member_b94dee3ae64a8b2329242893"
+   ],
+   "initial_query": "LT review submission confirmation. Does the review process provide a submission confirmation after scoring a recording?"
+  },
+  "retrieval_trace": [
+   {
+    "step": 1,
+    "purpose": "initial_current_guidance",
+    "gap_id": null,
+    "query": "LT review submission confirmation. Does the review process provide a submission confirmation after scoring a recording?",
+    "source_types": [
+     "guideline",
+     "faq",
+     "decision",
+     "announcement"
+    ],
+    "version_mode": "current",
+    "as_of": "2026-10-02T12:00:00Z",
+    "batch": "audio_batch_06",
+    "top_k": 5,
+    "status": "DONE",
+    "mode": "hybrid",
+    "use_mmr": true,
+    "mmr_lambda": 0.9,
+    "result_ids": [
+     "k:audio-multimodal-instructions@1.3:3a08035c",
+     "k:audio-repeat-observation-review@1.0:ae0550d0",
+     "k:audio-playback-trial-outcome@1.0:16332fce",
+     "k:audio-headset-check-approval@1.0:3741e593",
+     "k:audio-playback-trial-post@1.0:d674dbe6"
+    ],
+    "new_evidence_ids": [
+     "k:audio-multimodal-instructions@1.3:3a08035c",
+     "k:audio-repeat-observation-review@1.0:ae0550d0",
+     "k:audio-playback-trial-outcome@1.0:16332fce",
+     "k:audio-headset-check-approval@1.0:3741e593",
+     "k:audio-playback-trial-post@1.0:d674dbe6",
+     "k:audio-multimodal-faq@1.1:c724358c"
+    ],
+    "eligible_chunks": 27,
+    "added": [
+     {
+      "evidence_id": "k:audio-multimodal-faq@1.1:c724358c",
+      "role": "TYPE_COVERAGE",
+      "detail": "best-ranked faq for this query (rank 12), outside the top 5"
+     }
+    ]
+   }
+  ],
+  "retrieval_notes": {
+   "withheld_by_version": [],
+   "version_diagnostics": []
+  },
+  "follow_ups": [],
+  "unfilled_gaps": [
+   {
+    "gap_id": "g1",
+    "need": "OTHER",
+    "description": "The tutor has not answered whether the interface shows a saved/submitted receipt or the same task again. This requires a reply from the tutor, not further document retrieval.",
+    "follow_up": null
+   }
+  ],
+  "model_calls": [
+   {
+    "stage": "draft",
+    "schema": "AdvisorDraft",
+    "agent1_context": {
+     "sha256": "db1b0d0666f5d28f0c2265972c8b68f1e7579cb17497f6f09bd61745fd487932",
+     "boundary": "IN_HTTP_BODY"
+    },
+    "raw": "{\n  \"contract_version\": \"agent3-advisor-draft-v11\",\n  \"summary\": null,\n  \"summary_sentences\": [\n    {\n      \"text\": \"A tutor reports receiving no submission confirmation after scoring a recording; the thread does not establish whether submission succeeded.\",\n      \"support_claim_ids\": [\"c1\", \"c4\"],\n      \"depends_on\": []\n    },\n    {\n      \"text\": \"Current guidance requires checking the actual receipt before recording submission as complete; selecting a rating is not proof of submission.\",\n      \"support_claim_ids\": [\"c3\"],\n      \"depends_on\": []\n    }\n  ],\n  \"detail_sentences\": [\n    {\n      \"text\": \"A QA tutor asks whether the interface shows a saved/submitted receipt or the same task again; no answer appears in the provided thread.\",\n      \"support_claim_ids\": [\"c2\", \"c4\"],\n      \"depends_on\": [],\n      \"summary_depends_on\": []\n    }\n  ],\n  \"reasoning\": \"The tutor's missing-confirmation report warrants a focused reply applying the existing receipt-check rule. The QA tutor's question remains unanswered, so the evidence does not establish a failed submission or a technical cause. Earlier playback and listening records do not supply a submission workaround or change the current rule.\",\n  \"claims\": [\n    {\n      \"claim_id\": \"c1\",\n      \"kind\": \"INCIDENT_FACT\",\n      \"text\": \"A tutor reports that the review never receives a submission confirmation after the tutor scored the recording.\",\n      \"evidence_ids\": [\"m:C_AUDIO_GENERAL:1790923021.000115\"],\n      \"attributions\": [\n        {\n          \"user_id\": \"U010\",\n          \"relation\": \"AUTHOR\",\n          \"evidence_id\": \"m:C_AUDIO_GENERAL:1790923021.000115\"\n        }\n      ],\n      \"quote\": \"Scored the recording, but the review never receives a submission confirmation.\",\n      \"quote_kind\": \"VERBATIM\",\n      \"material\": true\n    },\n    {\n      \"claim_id\": \"c2\",\n      \"kind\": \"INCIDENT_FACT\",\n      \"text\": \"A QA tutor asks whether the interface shows a saved/submitted receipt or the same task again in the tutor's thread.\",\n      \"evidence_ids\": [\"m:C_AUDIO_GENERAL:1790923077.000113\"],\n      \"attributions\": [\n        {\n          \"user_id\": \"U007\",\n          \"relation\": \"AUTHOR\",\n          \"evidence_id\": \"m:C_AUDIO_GENERAL:1790923077.000113\"\n        },\n        {\n          \"user_id\": \"U010\",\n          \"relation\": \"THREAD_STARTER\",\n          \"evidence_id\": \"m:C_AUDIO_GENERAL:1790923077.000113\"\n        }\n      ],\n      \"quote\": \"Does the interface show a saved/submitted receipt or just the same task again?\",\n      \"quote_kind\": \"VERBATIM\",\n      \"material\": true\n    },\n    {\n      \"claim_id\": \"c3\",\n      \"kind\": \"GUIDANCE\",\n      \"text\": \"Current project instructions require checking the actual receipt before recording submission as complete when confirmation is delayed; a selected rating or successful reload is not proof that the original task was submitted.\",\n      \"evidence_ids\": [\"k:audio-multimodal-instructions@1.3:3a08035c\"],\n      \"attributions\": [],\n      \"quote\": \"A selected rating or successful reload is not proof that the original task was submitted.\",\n      \"quote_kind\": \"VERBATIM\",\n      \"material\": true\n    },\n    {\n      \"claim_id\": \"c4\",\n      \"kind\": \"INFERENCE\",\n      \"text\": \"The provided thread contains no answer to the QA tutor's receipt question and does not establish whether the tutor's submission succeeded.\",\n      \"evidence_ids\": [\n        \"m:C_AUDIO_GENERAL:1790923021.000115\",\n        \"m:C_AUDIO_GENERAL:1790923077.000113\"\n      ],\n      \"attributions\": [\n        {\n          \"user_id\": \"U010\",\n          \"relation\": \"AUTHOR\",\n          \"evidence_id\": \"m:C_AUDIO_GENERAL:1790923021.000115\"\n        },\n        {\n          \"user_id\": \"U007\",\n          \"relation\": \"AUTHOR\",\n          \"evidence_id\": \"m:C_AUDIO_GENERAL:1790923077.000113\"\n        }\n      ],\n      \"quote\": null,\n      \"quote_kind\": \"PARAPHRASE\",\n      \"material\": true\n    }\n  ],\n  \"gaps\": [\n    {\n      \"gap_id\": \"g1\",\n      \"need\": \"OTHER\",\n      \"description\": \"The tutor has not answered whether the interface shows a saved/submitted receipt or the same task again. This requires a reply from the tutor, not further document retrieval.\",\n      \"follow_up\": null\n    }\n  ],\n  \"evidence_sufficiency\": \"SUFFICIENT\",\n  \"proposed_action\": {\n    \"action_type\": \"POST_ALIGNMENT\",\n    \"intervention_need\": {\n      \"kind\": \"OPERATIONAL_PROBLEM\",\n      \"statement\": \"A tutor reports missing submission confirmation, leaving completion unverified while the QA tutor's receipt question remains unanswered.\",\n      \"evidence_ids\": [\n        \"m:C_AUDIO_GENERAL:1790923021.000115\",\n        \"m:C_AUDIO_GENERAL:1790923077.000113\"\n      ]\n    },\n    \"instruction\": \"Reply in the tutor's thread with the receipt-check rule and ask the tutor to answer the QA tutor's question.\",\n    \"rationale\": \"The current instructions directly address delayed confirmation. A focused reply applies that rule without treating the missing confirmation as proof of a failed submission.\",\n    \"draft_text\": \"Please check the actual receipt before recording this submission as complete. Selecting a rating or successfully reloading does not prove that the original task was submitted. To answer the QA tutor's question, please clarify what the interface shows: a saved/submitted receipt, or the same task again? That distinction is still missing from this thread, so we cannot yet tell whether the submission succeeded.\",\n    \"scope_note\": \"Apply this reply to the reported submission-confirmation issue; it does not establish a cause or authorize a workaround.\",\n    \"support_claim_ids\": [\"c1\", \"c2\", \"c3\", \"c4\"],\n    \"targets\": [],\n    \"context_claim_ids\": []\n  },\n  \"severity\": {\n    \"level\": \"LOW\",\n    \"rationale\": \"One tutor reports missing confirmation after scoring a recording. The thread does not show inability to complete work, multiple affected tasks, or broader disruption; the immediate correction is to verify the receipt.\",\n    \"signals\": [],\n    \"affected_reporters\": [\n      {\n        \"author_id\": \"U010\",\n        \"evidence_id\": \"m:C_AUDIO_GENERAL:1790923021.000115\"\n      }\n    ],\n    \"recurrence\": \"NONE_FOUND\",\n    \"recurrence_evidence_ids\": [],\n    \"reported_recurrence_evidence_ids\": []\n  },\n  \"confidence\": 0.9,\n  \"open_confirmation\": \"NONE\",\n  \"open_question\": null,\n  \"open_question_evidence_ids\": [],\n  \"source_conflicts\": [],\n  \"announcement_assessments\": [\n    {\n      \"evidence_id\": \"k:audio-playback-trial-post@1.0:d674dbe6\",\n      \"relevant\": false,\n      \"directive\": true,\n      \"directive_quote\": \"Audio batch 05: through Friday, August 28, try at most one reload when the player is stuck at 00:00.\",\n      \"rationale\": \"This expired announcement concerns a playback trial in the earlier batch, not submission confirmation in the current batch.\"\n    }\n  ],\n  \"resolution\": [\n    {\n      \"member_id\": \"member_b94dee3ae64a8b2329242893\",\n      \"state\": \"UNRESOLVED\",\n      \"evidence_ids\": [\n        \"m:C_AUDIO_GENERAL:1790923021.000115\",\n        \"m:C_AUDIO_GENERAL:1790923077.000113\"\n      ],\n      \"basis\": \"The tutor reports no confirmation, and the only follow-up is a QA tutor's unanswered question about the receipt or repeated task display.\"\n    }\n  ],\n  \"coverage\": [\n    {\n      \"need\": \"CURRENT_GUIDANCE\",\n      \"status\": \"COVERED\",\n      \"evidence_ids\": [\"k:audio-multimodal-instructions@1.3:3a08035c\"],\n      \"note\": \"Current project instructions explicitly cover delayed confirmation and the need to check the actual receipt.\",\n      \"gap_id\": null\n    },\n    {\n      \"need\": \"ANNOUNCEMENTS\",\n      \"status\": \"NOT_APPLICABLE\",\n      \"evidence_ids\": [\"k:audio-playback-trial-post@1.0:d674dbe6\"],\n      \"note\": \"The retrieved announcement is an expired playback trial for an earlier batch. The proposed reply relies on current instructions, not an announcement.\",\n      \"gap_id\": null\n    },\n    {\n      \"need\": \"PRIOR_DECISIONS\",\n      \"status\": \"NOT_APPLICABLE\",\n      \"evidence_ids\": [\n        \"k:audio-repeat-observation-review@1.0:ae0550d0\",\n        \"k:audio-playback-trial-outcome@1.0:16332fce\",\n        \"k:audio-headset-check-approval@1.0:3741e593\"\n      ],\n      \"note\": \"The retrieved earlier decisions concern repeated audio, playback reload trials, and listening setup checks, not submission confirmation. No historical workaround or decision is needed to apply the current receipt-check rule.\",\n      \"gap_id\": null\n    },\n    {\n      \"need\": \"MEMBER_QUESTIONS\",\n      \"status\": \"COVERED\",\n      \"evidence_ids\": [\n        \"m:C_AUDIO_GENERAL:1790923021.000115\",\n        \"m:C_AUDIO_GENERAL:1790923077.000113\"\n      ],\n      \"note\": \"The tutor's report and the QA tutor's diagnostic question are available; the tutor's answer remains missing.\",\n      \"gap_id\": null\n    }\n  ],\n  \"review_note\": null,\n  \"action_choice\": null\n}",
+    "raw_sha256": "e3ac8292dffd31ccdfe656d4a736bef8e03f618fe1c1a4e6dedcb7c0d9290acd",
+    "http_requests": {
+     "sent": 1,
+     "blocked": 0,
+     "hosts": [
+      "api.openai.com"
+     ],
+     "responses": [
+      {
+       "status_code": 200,
+       "seconds": 28.613,
+       "model": "gpt-6.1-sol",
+       "usage": {
+        "prompt_tokens": 12125,
+        "completion_tokens": 2407,
+        "total_tokens": 14532,
+        "prompt_tokens_details": {
+         "cached_tokens": 0,
+         "cache_write_tokens": 12122,
+         "audio_tokens": 0
+        },
+        "completion_tokens_details": {
+         "reasoning_tokens": 235,
+         "audio_tokens": 0,
+         "accepted_prediction_tokens": 0,
+         "rejected_prediction_tokens": 0
+        }
+       },
+       "finish_reasons": [
+        "stop"
+       ]
+      }
+     ],
+     "input_tokens": 12131,
+     "refused": null,
+     "charged_usd": 0.04832
+    },
+    "input_tokens_estimate": 12131,
+    "status": "OK"
+   },
+   {
+    "stage": "grounding",
+    "schema": "GroundingJudgment",
+    "raw": "{\n  \"contract_version\": \"agent3-grounding-judgment-v5\",\n  \"verdicts\": [\n    {\n      \"statement_id\": \"claim:c1\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"U010 is a tutor and reports missing submission confirmation after scoring the recording. The quotation matches the message exactly.\"\n    },\n    {\n      \"statement_id\": \"claim:c2\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"U007 is a QA tutor and asks the quoted question in the thread started by U010. The quotation and attributions match the evidence.\"\n    },\n    {\n      \"statement_id\": \"claim:c3\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The current project-wide instructions explicitly require checking the actual receipt when confirmation is delayed and state that a selected rating or successful reload is not proof of submission. The quotation is exact.\"\n    },\n    {\n      \"statement_id\": \"claim:c4\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The complete provided thread contains only the report and the QA tutor's question, with no answer or evidence establishing submission success.\"\n    },\n    {\n      \"statement_id\": \"summary:s1\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The tutor reports missing confirmation after scoring, and neither message establishes whether submission succeeded.\"\n    },\n    {\n      \"statement_id\": \"summary:s2\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The current instructions require an actual receipt check before recording the submission as complete and explicitly reject a selected rating as proof.\"\n    },\n    {\n      \"statement_id\": \"detail:d1\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The QA tutor asks whether a receipt or the same task appears, and the complete provided thread contains no answer. The author and thread-starter attributions are accurate.\"\n    },\n    {\n      \"statement_id\": \"action\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The proposed reply applies the current receipt-check rule to the reported confirmation issue and requests the missing answer to the QA tutor's question. Replying in the affected tutor's own thread is supported by the location of that unresolved exchange, without claiming an official intake route, cause, or workaround.\"\n    },\n    {\n      \"statement_id\": \"action:rationale\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The instructions directly cover delayed confirmation, and the proposed reply correctly avoids equating missing confirmation with a failed submission.\"\n    },\n    {\n      \"statement_id\": \"action:need\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The reported confirmation problem remains operationally unresolved: completion has not been verified and the QA tutor's concrete receipt question remains unanswered. A focused follow-up addresses that outstanding coordination need.\"\n    },\n    {\n      \"statement_id\": \"resolution:member_b94dee3ae64a8b2329242893\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The complete provided thread consists of the initial missing-confirmation report and the unanswered QA question, with no resolution or verified submission outcome.\"\n    },\n    {\n      \"statement_id\": \"severity:rationale\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"Only one tutor reports this issue, and the thread provides no evidence of multiple affected tasks, broader disruption, or confirmed inability to complete work. Checking the receipt is the immediate verification step raised by the QA question; LOW does not imply that submission succeeded.\"\n    },\n    {\n      \"statement_id\": \"reporter:U010\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"U010's own message reports scoring the recording without receiving submission confirmation.\"\n    }\n  ],\n  \"action_sufficiency\": {\n    \"verdict\": \"SUFFICIENT\",\n    \"essential_statement_ids\": [\n      \"claim:c1\",\n      \"claim:c2\",\n      \"claim:c3\",\n      \"claim:c4\"\n    ],\n    \"rationale\": \"All four premises are supported and have no announcement dependencies. Together they justify the exact scoped reply: apply the current receipt-check rule in the affected thread, ask for the outstanding interface clarification, and retain uncertainty about submission success without asserting a cause or authorizing a workaround.\"\n  },\n  \"alternative_sufficiency\": [],\n  \"source_consistency\": {\n    \"assessed_evidence_ids\": [\n      \"k:audio-multimodal-instructions@1.3:3a08035c\",\n      \"k:audio-multimodal-faq@1.1:c724358c\"\n    ],\n    \"relations\": [\n      {\n        \"evidence_ids\": [\n          \"k:audio-multimodal-instructions@1.3:3a08035c\",\n          \"k:audio-multimodal-faq@1.1:c724358c\"\n        ],\n        \"relation\": \"AGREE\",\n        \"point\": \"Unavailable playback must be reported as a tool incident rather than treated as an assessed content-quality failure.\",\n        \"disagreement_scope\": null,\n        \"rationale\": \"Both current sources require reporting unavailable playback and withholding unsupported content-quality judgments. Only the instructions address delayed submission confirmation and receipt verification; the FAQ supplies no competing rule on that issue.\"\n      }\n    ],\n    \"declared_conflict_checks\": []\n  }\n}",
+    "raw_sha256": "8fb05e03d7ea040157500242df70222f71f2e22aa4286e6f8fade5138aed7527",
+    "http_requests": {
+     "sent": 1,
+     "blocked": 0,
+     "hosts": [
+      "api.openai.com"
+     ],
+     "responses": [
+      {
+       "status_code": 200,
+       "seconds": 18.723,
+       "model": "gpt-6.1-sol",
+       "usage": {
+        "prompt_tokens": 8600,
+        "completion_tokens": 1270,
+        "total_tokens": 9870,
+        "prompt_tokens_details": {
+         "cached_tokens": 0,
+         "cache_write_tokens": 8597,
+         "audio_tokens": 0
+        },
+        "completion_tokens_details": {
+         "reasoning_tokens": 135,
+         "audio_tokens": 0,
+         "accepted_prediction_tokens": 0,
+         "rejected_prediction_tokens": 0
+        }
+       },
+       "finish_reasons": [
+        "stop"
+       ]
+      }
+     ],
+     "input_tokens": 8606,
+     "refused": null,
+     "charged_usd": 0.029900000000000003
+    },
+    "input_tokens_estimate": 8606,
+    "status": "OK"
+   }
+  ],
+  "agent1_context": [
+   {
+    "sha256": "db1b0d0666f5d28f0c2265972c8b68f1e7579cb17497f6f09bd61745fd487932",
+    "content": [
+     {
+      "member_id": "member_b94dee3ae64a8b2329242893",
+      "thread_id": "1790923021.000115",
+      "summary": "Avery reported that after scoring a recording, the review process does not provide a submission confirmation. Leo followed up with a question asking whether the interface indicates a saved or submitted receipt or if it simply shows the same task again.",
+      "central_question": "Does the review process provide a submission confirmation after scoring a recording?",
+      "attributed_agent1_resolution": {
+       "state": "UNRESOLVED",
+       "rationale": "The thread does not establish a substantive answer to the central question regarding submission confirmation. Leo's question seeks clarification but does not resolve the issue raised by Avery.",
+       "agent1_verification_status": "VERIFIED",
+       "note": "Agent 1 label, not evidence; NEEDS_REVIEW means Agent 1 did not verify it. Assess resolution from the member messages."
+      },
+      "agent1_review_required": false,
+      "agent1_review_reason": "",
+      "note": "Agent 1 interpretation, not source evidence; cite member messages for incident facts."
+     }
+    ]
+   }
+  ],
+  "drafts": {
+   "initial": {
+    "contract_version": "agent3-advisor-draft-v11",
+    "summary": "A tutor reports receiving no submission confirmation after scoring a recording; the thread does not establish whether submission succeeded. Current guidance requires checking the actual receipt before recording submission as complete; selecting a rating is not proof of submission.",
+    "summary_sentences": [
+     {
+      "text": "A tutor reports receiving no submission confirmation after scoring a recording; the thread does not establish whether submission succeeded.",
+      "support_claim_ids": [
+       "c1",
+       "c4"
+      ],
+      "depends_on": []
+     },
+     {
+      "text": "Current guidance requires checking the actual receipt before recording submission as complete; selecting a rating is not proof of submission.",
+      "support_claim_ids": [
+       "c3"
+      ],
+      "depends_on": []
+     }
+    ],
+    "detail_sentences": [
+     {
+      "text": "A QA tutor asks whether the interface shows a saved/submitted receipt or the same task again; no answer appears in the provided thread.",
+      "support_claim_ids": [
+       "c2",
+       "c4"
+      ],
+      "depends_on": [],
+      "summary_depends_on": []
+     }
+    ],
+    "reasoning": "The tutor's missing-confirmation report warrants a focused reply applying the existing receipt-check rule. The QA tutor's question remains unanswered, so the evidence does not establish a failed submission or a technical cause. Earlier playback and listening records do not supply a submission workaround or change the current rule.",
+    "claims": [
+     {
+      "claim_id": "c1",
+      "kind": "INCIDENT_FACT",
+      "text": "A tutor reports that the review never receives a submission confirmation after the tutor scored the recording.",
+      "evidence_ids": [
+       "m:C_AUDIO_GENERAL:1790923021.000115"
+      ],
+      "attributions": [
+       {
+        "user_id": "U010",
+        "relation": "AUTHOR",
+        "evidence_id": "m:C_AUDIO_GENERAL:1790923021.000115"
+       }
+      ],
+      "quote": "Scored the recording, but the review never receives a submission confirmation.",
+      "quote_kind": "VERBATIM",
+      "material": true
+     },
+     {
+      "claim_id": "c2",
+      "kind": "INCIDENT_FACT",
+      "text": "A QA tutor asks whether the interface shows a saved/submitted receipt or the same task again in the tutor's thread.",
+      "evidence_ids": [
+       "m:C_AUDIO_GENERAL:1790923077.000113"
+      ],
+      "attributions": [
+       {
+        "user_id": "U007",
+        "relation": "AUTHOR",
+        "evidence_id": "m:C_AUDIO_GENERAL:1790923077.000113"
+       },
+       {
+        "user_id": "U010",
+        "relation": "THREAD_STARTER",
+        "evidence_id": "m:C_AUDIO_GENERAL:1790923077.000113"
+       }
+      ],
+      "quote": "Does the interface show a saved/submitted receipt or just the same task again?",
+      "quote_kind": "VERBATIM",
+      "material": true
+     },
+     {
+      "claim_id": "c3",
+      "kind": "GUIDANCE",
+      "text": "Current project instructions require checking the actual receipt before recording submission as complete when confirmation is delayed; a selected rating or successful reload is not proof that the original task was submitted.",
+      "evidence_ids": [
+       "k:audio-multimodal-instructions@1.3:3a08035c"
+      ],
+      "attributions": [],
+      "quote": "A selected rating or successful reload is not proof that the original task was submitted.",
+      "quote_kind": "VERBATIM",
+      "material": true
+     },
+     {
+      "claim_id": "c4",
+      "kind": "INFERENCE",
+      "text": "The provided thread contains no answer to the QA tutor's receipt question and does not establish whether the tutor's submission succeeded.",
+      "evidence_ids": [
+       "m:C_AUDIO_GENERAL:1790923021.000115",
+       "m:C_AUDIO_GENERAL:1790923077.000113"
+      ],
+      "attributions": [
+       {
+        "user_id": "U010",
+        "relation": "AUTHOR",
+        "evidence_id": "m:C_AUDIO_GENERAL:1790923021.000115"
+       },
+       {
+        "user_id": "U007",
+        "relation": "AUTHOR",
+        "evidence_id": "m:C_AUDIO_GENERAL:1790923077.000113"
+       }
+      ],
+      "quote": null,
+      "quote_kind": "PARAPHRASE",
+      "material": true
+     }
+    ],
+    "gaps": [
+     {
+      "gap_id": "g1",
+      "need": "OTHER",
+      "description": "The tutor has not answered whether the interface shows a saved/submitted receipt or the same task again. This requires a reply from the tutor, not further document retrieval.",
+      "follow_up": null
+     }
+    ],
+    "evidence_sufficiency": "SUFFICIENT",
+    "proposed_action": {
+     "action_type": "POST_ALIGNMENT",
+     "intervention_need": {
+      "kind": "OPERATIONAL_PROBLEM",
+      "statement": "A tutor reports missing submission confirmation, leaving completion unverified while the QA tutor's receipt question remains unanswered.",
+      "evidence_ids": [
+       "m:C_AUDIO_GENERAL:1790923021.000115",
+       "m:C_AUDIO_GENERAL:1790923077.000113"
+      ]
+     },
+     "instruction": "Reply in the tutor's thread with the receipt-check rule and ask the tutor to answer the QA tutor's question.",
+     "rationale": "The current instructions directly address delayed confirmation. A focused reply applies that rule without treating the missing confirmation as proof of a failed submission.",
+     "draft_text": "Please check the actual receipt before recording this submission as complete. Selecting a rating or successfully reloading does not prove that the original task was submitted. To answer the QA tutor's question, please clarify what the interface shows: a saved/submitted receipt, or the same task again? That distinction is still missing from this thread, so we cannot yet tell whether the submission succeeded.",
+     "scope_note": "Apply this reply to the reported submission-confirmation issue; it does not establish a cause or authorize a workaround.",
+     "support_claim_ids": [
+      "c1",
+      "c2",
+      "c3",
+      "c4"
+     ],
+     "targets": [],
+     "context_claim_ids": []
+    },
+    "severity": {
+     "level": "LOW",
+     "rationale": "One tutor reports missing confirmation after scoring a recording. The thread does not show inability to complete work, multiple affected tasks, or broader disruption; the immediate correction is to verify the receipt.",
+     "signals": [],
+     "affected_reporters": [
+      {
+       "author_id": "U010",
+       "evidence_id": "m:C_AUDIO_GENERAL:1790923021.000115"
+      }
+     ],
+     "recurrence": "NONE_FOUND",
+     "recurrence_evidence_ids": [],
+     "reported_recurrence_evidence_ids": []
+    },
+    "confidence": 0.9,
+    "open_confirmation": "NONE",
+    "open_question": null,
+    "open_question_evidence_ids": [],
+    "source_conflicts": [],
+    "announcement_assessments": [
+     {
+      "evidence_id": "k:audio-playback-trial-post@1.0:d674dbe6",
+      "relevant": false,
+      "directive": true,
+      "directive_quote": "Audio batch 05: through Friday, August 28, try at most one reload when the player is stuck at 00:00.",
+      "rationale": "This expired announcement concerns a playback trial in the earlier batch, not submission confirmation in the current batch."
+     }
+    ],
+    "resolution": [
+     {
+      "member_id": "member_b94dee3ae64a8b2329242893",
+      "state": "UNRESOLVED",
+      "evidence_ids": [
+       "m:C_AUDIO_GENERAL:1790923021.000115",
+       "m:C_AUDIO_GENERAL:1790923077.000113"
+      ],
+      "basis": "The tutor reports no confirmation, and the only follow-up is a QA tutor's unanswered question about the receipt or repeated task display."
+     }
+    ],
+    "coverage": [
+     {
+      "need": "CURRENT_GUIDANCE",
+      "status": "COVERED",
+      "evidence_ids": [
+       "k:audio-multimodal-instructions@1.3:3a08035c"
+      ],
+      "note": "Current project instructions explicitly cover delayed confirmation and the need to check the actual receipt.",
+      "gap_id": null
+     },
+     {
+      "need": "ANNOUNCEMENTS",
+      "status": "NOT_APPLICABLE",
+      "evidence_ids": [
+       "k:audio-playback-trial-post@1.0:d674dbe6"
+      ],
+      "note": "The retrieved announcement is an expired playback trial for an earlier batch. The proposed reply relies on current instructions, not an announcement.",
+      "gap_id": null
+     },
+     {
+      "need": "PRIOR_DECISIONS",
+      "status": "NOT_APPLICABLE",
+      "evidence_ids": [
+       "k:audio-repeat-observation-review@1.0:ae0550d0",
+       "k:audio-playback-trial-outcome@1.0:16332fce",
+       "k:audio-headset-check-approval@1.0:3741e593"
+      ],
+      "note": "The retrieved earlier decisions concern repeated audio, playback reload trials, and listening setup checks, not submission confirmation. No historical workaround or decision is needed to apply the current receipt-check rule.",
+      "gap_id": null
+     },
+     {
+      "need": "MEMBER_QUESTIONS",
+      "status": "COVERED",
+      "evidence_ids": [
+       "m:C_AUDIO_GENERAL:1790923021.000115",
+       "m:C_AUDIO_GENERAL:1790923077.000113"
+      ],
+      "note": "The tutor's report and the QA tutor's diagnostic question are available; the tutor's answer remains missing.",
+      "gap_id": null
+     }
+    ],
+    "review_note": null,
+    "action_choice": null
+   },
+   "final": {
+    "contract_version": "agent3-advisor-draft-v11",
+    "summary": "A tutor reports receiving no submission confirmation after scoring a recording; the thread does not establish whether submission succeeded. Current guidance requires checking the actual receipt before recording submission as complete; selecting a rating is not proof of submission.",
+    "summary_sentences": [
+     {
+      "text": "A tutor reports receiving no submission confirmation after scoring a recording; the thread does not establish whether submission succeeded.",
+      "support_claim_ids": [
+       "c1",
+       "c4"
+      ],
+      "depends_on": []
+     },
+     {
+      "text": "Current guidance requires checking the actual receipt before recording submission as complete; selecting a rating is not proof of submission.",
+      "support_claim_ids": [
+       "c3"
+      ],
+      "depends_on": []
+     }
+    ],
+    "detail_sentences": [
+     {
+      "text": "A QA tutor asks whether the interface shows a saved/submitted receipt or the same task again; no answer appears in the provided thread.",
+      "support_claim_ids": [
+       "c2",
+       "c4"
+      ],
+      "depends_on": [],
+      "summary_depends_on": []
+     }
+    ],
+    "reasoning": "The tutor's missing-confirmation report warrants a focused reply applying the existing receipt-check rule. The QA tutor's question remains unanswered, so the evidence does not establish a failed submission or a technical cause. Earlier playback and listening records do not supply a submission workaround or change the current rule.",
+    "claims": [
+     {
+      "claim_id": "c1",
+      "kind": "INCIDENT_FACT",
+      "text": "A tutor reports that the review never receives a submission confirmation after the tutor scored the recording.",
+      "evidence_ids": [
+       "m:C_AUDIO_GENERAL:1790923021.000115"
+      ],
+      "attributions": [
+       {
+        "user_id": "U010",
+        "relation": "AUTHOR",
+        "evidence_id": "m:C_AUDIO_GENERAL:1790923021.000115"
+       }
+      ],
+      "quote": "Scored the recording, but the review never receives a submission confirmation.",
+      "quote_kind": "VERBATIM",
+      "material": true
+     },
+     {
+      "claim_id": "c2",
+      "kind": "INCIDENT_FACT",
+      "text": "A QA tutor asks whether the interface shows a saved/submitted receipt or the same task again in the tutor's thread.",
+      "evidence_ids": [
+       "m:C_AUDIO_GENERAL:1790923077.000113"
+      ],
+      "attributions": [
+       {
+        "user_id": "U007",
+        "relation": "AUTHOR",
+        "evidence_id": "m:C_AUDIO_GENERAL:1790923077.000113"
+       },
+       {
+        "user_id": "U010",
+        "relation": "THREAD_STARTER",
+        "evidence_id": "m:C_AUDIO_GENERAL:1790923077.000113"
+       }
+      ],
+      "quote": "Does the interface show a saved/submitted receipt or just the same task again?",
+      "quote_kind": "VERBATIM",
+      "material": true
+     },
+     {
+      "claim_id": "c3",
+      "kind": "GUIDANCE",
+      "text": "Current project instructions require checking the actual receipt before recording submission as complete when confirmation is delayed; a selected rating or successful reload is not proof that the original task was submitted.",
+      "evidence_ids": [
+       "k:audio-multimodal-instructions@1.3:3a08035c"
+      ],
+      "attributions": [],
+      "quote": "A selected rating or successful reload is not proof that the original task was submitted.",
+      "quote_kind": "VERBATIM",
+      "material": true
+     },
+     {
+      "claim_id": "c4",
+      "kind": "INFERENCE",
+      "text": "The provided thread contains no answer to the QA tutor's receipt question and does not establish whether the tutor's submission succeeded.",
+      "evidence_ids": [
+       "m:C_AUDIO_GENERAL:1790923021.000115",
+       "m:C_AUDIO_GENERAL:1790923077.000113"
+      ],
+      "attributions": [
+       {
+        "user_id": "U010",
+        "relation": "AUTHOR",
+        "evidence_id": "m:C_AUDIO_GENERAL:1790923021.000115"
+       },
+       {
+        "user_id": "U007",
+        "relation": "AUTHOR",
+        "evidence_id": "m:C_AUDIO_GENERAL:1790923077.000113"
+       }
+      ],
+      "quote": null,
+      "quote_kind": "PARAPHRASE",
+      "material": true
+     }
+    ],
+    "gaps": [
+     {
+      "gap_id": "g1",
+      "need": "OTHER",
+      "description": "The tutor has not answered whether the interface shows a saved/submitted receipt or the same task again. This requires a reply from the tutor, not further document retrieval.",
+      "follow_up": null
+     }
+    ],
+    "evidence_sufficiency": "SUFFICIENT",
+    "proposed_action": {
+     "action_type": "POST_ALIGNMENT",
+     "intervention_need": {
+      "kind": "OPERATIONAL_PROBLEM",
+      "statement": "A tutor reports missing submission confirmation, leaving completion unverified while the QA tutor's receipt question remains unanswered.",
+      "evidence_ids": [
+       "m:C_AUDIO_GENERAL:1790923021.000115",
+       "m:C_AUDIO_GENERAL:1790923077.000113"
+      ]
+     },
+     "instruction": "Reply in the tutor's thread with the receipt-check rule and ask the tutor to answer the QA tutor's question.",
+     "rationale": "The current instructions directly address delayed confirmation. A focused reply applies that rule without treating the missing confirmation as proof of a failed submission.",
+     "draft_text": "Please check the actual receipt before recording this submission as complete. Selecting a rating or successfully reloading does not prove that the original task was submitted. To answer the QA tutor's question, please clarify what the interface shows: a saved/submitted receipt, or the same task again? That distinction is still missing from this thread, so we cannot yet tell whether the submission succeeded.",
+     "scope_note": "Apply this reply to the reported submission-confirmation issue; it does not establish a cause or authorize a workaround.",
+     "support_claim_ids": [
+      "c1",
+      "c2",
+      "c3",
+      "c4"
+     ],
+     "targets": [],
+     "context_claim_ids": []
+    },
+    "severity": {
+     "level": "LOW",
+     "rationale": "One tutor reports missing confirmation after scoring a recording. The thread does not show inability to complete work, multiple affected tasks, or broader disruption; the immediate correction is to verify the receipt.",
+     "signals": [],
+     "affected_reporters": [
+      {
+       "author_id": "U010",
+       "evidence_id": "m:C_AUDIO_GENERAL:1790923021.000115"
+      }
+     ],
+     "recurrence": "NONE_FOUND",
+     "recurrence_evidence_ids": [],
+     "reported_recurrence_evidence_ids": []
+    },
+    "confidence": 0.9,
+    "open_confirmation": "NONE",
+    "open_question": null,
+    "open_question_evidence_ids": [],
+    "source_conflicts": [],
+    "announcement_assessments": [
+     {
+      "evidence_id": "k:audio-playback-trial-post@1.0:d674dbe6",
+      "relevant": false,
+      "directive": true,
+      "directive_quote": "Audio batch 05: through Friday, August 28, try at most one reload when the player is stuck at 00:00.",
+      "rationale": "This expired announcement concerns a playback trial in the earlier batch, not submission confirmation in the current batch."
+     }
+    ],
+    "resolution": [
+     {
+      "member_id": "member_b94dee3ae64a8b2329242893",
+      "state": "UNRESOLVED",
+      "evidence_ids": [
+       "m:C_AUDIO_GENERAL:1790923021.000115",
+       "m:C_AUDIO_GENERAL:1790923077.000113"
+      ],
+      "basis": "The tutor reports no confirmation, and the only follow-up is a QA tutor's unanswered question about the receipt or repeated task display."
+     }
+    ],
+    "coverage": [
+     {
+      "need": "CURRENT_GUIDANCE",
+      "status": "COVERED",
+      "evidence_ids": [
+       "k:audio-multimodal-instructions@1.3:3a08035c"
+      ],
+      "note": "Current project instructions explicitly cover delayed confirmation and the need to check the actual receipt.",
+      "gap_id": null
+     },
+     {
+      "need": "ANNOUNCEMENTS",
+      "status": "NOT_APPLICABLE",
+      "evidence_ids": [
+       "k:audio-playback-trial-post@1.0:d674dbe6"
+      ],
+      "note": "The retrieved announcement is an expired playback trial for an earlier batch. The proposed reply relies on current instructions, not an announcement.",
+      "gap_id": null
+     },
+     {
+      "need": "PRIOR_DECISIONS",
+      "status": "NOT_APPLICABLE",
+      "evidence_ids": [
+       "k:audio-repeat-observation-review@1.0:ae0550d0",
+       "k:audio-playback-trial-outcome@1.0:16332fce",
+       "k:audio-headset-check-approval@1.0:3741e593"
+      ],
+      "note": "The retrieved earlier decisions concern repeated audio, playback reload trials, and listening setup checks, not submission confirmation. No historical workaround or decision is needed to apply the current receipt-check rule.",
+      "gap_id": null
+     },
+     {
+      "need": "MEMBER_QUESTIONS",
+      "status": "COVERED",
+      "evidence_ids": [
+       "m:C_AUDIO_GENERAL:1790923021.000115",
+       "m:C_AUDIO_GENERAL:1790923077.000113"
+      ],
+      "note": "The tutor's report and the QA tutor's diagnostic question are available; the tutor's answer remains missing.",
+      "gap_id": null
+     }
+    ],
+    "review_note": null,
+    "action_choice": null
+   },
+   "revised": false
+  },
+  "grounding": {
+   "structural_issues": [
+    {
+     "claim_id": "announcement:k:audio-playback-trial-post@1.0:d674dbe6",
+     "statement_id": "announcement:k:audio-playback-trial-post@1.0:d674dbe6",
+     "code": "NOT_A_CURRENT_ANNOUNCEMENT",
+     "detail": "Assessed item is HISTORY_ONLY, not a current announcement."
+    }
+   ],
+   "action_issues": [],
+   "unsupported": [],
+   "unjudged": [],
+   "extraneous_verdicts": [],
+   "rejected": {},
+   "pending": [],
+   "action_sufficiency": {
+    "verdict": "SUFFICIENT",
+    "essential_statement_ids": [
+     "claim:c1",
+     "claim:c2",
+     "claim:c3",
+     "claim:c4"
+    ],
+    "rationale": "All four premises are supported and have no announcement dependencies. Together they justify the exact scoped reply: apply the current receipt-check rule in the affected thread, ask for the outstanding interface clarification, and retain uncertainty about submission success without asserting a cause or authorizing a workaround."
+   },
+   "source_consistency": {
+    "assessed_evidence_ids": [
+     "k:audio-multimodal-instructions@1.3:3a08035c",
+     "k:audio-multimodal-faq@1.1:c724358c"
+    ],
+    "relations": [
+     {
+      "evidence_ids": [
+       "k:audio-multimodal-instructions@1.3:3a08035c",
+       "k:audio-multimodal-faq@1.1:c724358c"
+      ],
+      "relation": "AGREE",
+      "point": "Unavailable playback must be reported as a tool incident rather than treated as an assessed content-quality failure.",
+      "disagreement_scope": null,
+      "rationale": "Both current sources require reporting unavailable playback and withholding unsupported content-quality judgments. Only the instructions address delayed submission confirmation and receipt verification; the FAQ supplies no competing rule on that issue."
+     }
+    ],
+    "declared_conflict_checks": []
+   },
+   "alternative_sufficiency": {},
+   "status": "PASSED",
+   "basis": "SEMANTIC",
+   "statements": [
+    {
+     "statement_id": "claim:c1",
+     "kind": "CLAIM_INCIDENT_FACT",
+     "text": "A tutor reports that the review never receives a submission confirmation after the tutor scored the recording. Verbatim quote: \"Scored the recording, but the review never receives a submission confirmation.\"",
+     "blocking": true,
+     "evidence_ids": [
+      "m:C_AUDIO_GENERAL:1790923021.000115"
+     ],
+     "attributions": [
+      {
+       "user_id": "U010",
+       "relation": "AUTHOR",
+       "evidence_id": "m:C_AUDIO_GENERAL:1790923021.000115",
+       "role": "TUTOR"
+      }
+     ],
+     "verdict": "SUPPORTED",
+     "model_verdict": "SUPPORTED",
+     "rationale": "U010 is a tutor and reports missing submission confirmation after scoring the recording. The quotation matches the message exactly."
+    },
+    {
+     "statement_id": "claim:c2",
+     "kind": "CLAIM_INCIDENT_FACT",
+     "text": "A QA tutor asks whether the interface shows a saved/submitted receipt or the same task again in the tutor's thread. Verbatim quote: \"Does the interface show a saved/submitted receipt or just the same task again?\"",
+     "blocking": true,
+     "evidence_ids": [
+      "m:C_AUDIO_GENERAL:1790923077.000113"
+     ],
+     "attributions": [
+      {
+       "user_id": "U007",
+       "relation": "AUTHOR",
+       "evidence_id": "m:C_AUDIO_GENERAL:1790923077.000113",
+       "role": "QA_TUTOR"
+      },
+      {
+       "user_id": "U010",
+       "relation": "THREAD_STARTER",
+       "evidence_id": "m:C_AUDIO_GENERAL:1790923077.000113",
+       "role": "TUTOR"
+      }
+     ],
+     "verdict": "SUPPORTED",
+     "model_verdict": "SUPPORTED",
+     "rationale": "U007 is a QA tutor and asks the quoted question in the thread started by U010. The quotation and attributions match the evidence."
+    },
+    {
+     "statement_id": "claim:c3",
+     "kind": "CLAIM_GUIDANCE",
+     "text": "Current project instructions require checking the actual receipt before recording submission as complete when confirmation is delayed; a selected rating or successful reload is not proof that the original task was submitted. Verbatim quote: \"A selected rating or successful reload is not proof that the original task was submitted.\"",
+     "blocking": true,
+     "evidence_ids": [
+      "k:audio-multimodal-instructions@1.3:3a08035c"
+     ],
+     "verdict": "SUPPORTED",
+     "model_verdict": "SUPPORTED",
+     "rationale": "The current project-wide instructions explicitly require checking the actual receipt when confirmation is delayed and state that a selected rating or successful reload is not proof of submission. The quotation is exact."
+    },
+    {
+     "statement_id": "claim:c4",
+     "kind": "CLAIM_INFERENCE",
+     "text": "The provided thread contains no answer to the QA tutor's receipt question and does not establish whether the tutor's submission succeeded.",
+     "blocking": true,
+     "evidence_ids": [
+      "m:C_AUDIO_GENERAL:1790923021.000115",
+      "m:C_AUDIO_GENERAL:1790923077.000113"
+     ],
+     "attributions": [
+      {
+       "user_id": "U010",
+       "relation": "AUTHOR",
+       "evidence_id": "m:C_AUDIO_GENERAL:1790923021.000115",
+       "role": "TUTOR"
+      },
+      {
+       "user_id": "U007",
+       "relation": "AUTHOR",
+       "evidence_id": "m:C_AUDIO_GENERAL:1790923077.000113",
+       "role": "QA_TUTOR"
+      }
+     ],
+     "verdict": "SUPPORTED",
+     "model_verdict": "SUPPORTED",
+     "rationale": "The complete provided thread contains only the report and the QA tutor's question, with no answer or evidence establishing submission success."
+    },
+    {
+     "statement_id": "summary:s1",
+     "kind": "SUMMARY",
+     "text": "A tutor reports receiving no submission confirmation after scoring a recording; the thread does not establish whether submission succeeded.",
+     "blocking": true,
+     "evidence_ids": [
+      "m:C_AUDIO_GENERAL:1790923021.000115",
+      "m:C_AUDIO_GENERAL:1790923077.000113"
+     ],
+     "attributions": [
+      {
+       "user_id": "U010",
+       "relation": "AUTHOR",
+       "evidence_id": "m:C_AUDIO_GENERAL:1790923021.000115",
+       "role": "TUTOR"
+      },
+      {
+       "user_id": "U007",
+       "relation": "AUTHOR",
+       "evidence_id": "m:C_AUDIO_GENERAL:1790923077.000113",
+       "role": "QA_TUTOR"
+      }
+     ],
+     "verdict": "SUPPORTED",
+     "model_verdict": "SUPPORTED",
+     "rationale": "The tutor reports missing confirmation after scoring, and neither message establishes whether submission succeeded."
+    },
+    {
+     "statement_id": "summary:s2",
+     "kind": "SUMMARY",
+     "text": "Current guidance requires checking the actual receipt before recording submission as complete; selecting a rating is not proof of submission.",
+     "blocking": true,
+     "evidence_ids": [
+      "k:audio-multimodal-instructions@1.3:3a08035c"
+     ],
+     "verdict": "SUPPORTED",
+     "model_verdict": "SUPPORTED",
+     "rationale": "The current instructions require an actual receipt check before recording the submission as complete and explicitly reject a selected rating as proof."
+    },
+    {
+     "statement_id": "detail:d1",
+     "kind": "DETAIL",
+     "text": "A QA tutor asks whether the interface shows a saved/submitted receipt or the same task again; no answer appears in the provided thread.",
+     "blocking": false,
+     "evidence_ids": [
+      "m:C_AUDIO_GENERAL:1790923077.000113",
+      "m:C_AUDIO_GENERAL:1790923021.000115"
+     ],
+     "attributions": [
+      {
+       "user_id": "U007",
+       "relation": "AUTHOR",
+       "evidence_id": "m:C_AUDIO_GENERAL:1790923077.000113",
+       "role": "QA_TUTOR"
+      },
+      {
+       "user_id": "U010",
+       "relation": "THREAD_STARTER",
+       "evidence_id": "m:C_AUDIO_GENERAL:1790923077.000113",
+       "role": "TUTOR"
+      },
+      {
+       "user_id": "U010",
+       "relation": "AUTHOR",
+       "evidence_id": "m:C_AUDIO_GENERAL:1790923021.000115",
+       "role": "TUTOR"
+      }
+     ],
+     "verdict": "SUPPORTED",
+     "model_verdict": "SUPPORTED",
+     "rationale": "The QA tutor asks whether a receipt or the same task appears, and the complete provided thread contains no answer. The author and thread-starter attributions are accurate."
+    },
+    {
+     "statement_id": "action",
+     "kind": "ACTION",
+     "text": "Post a reminder. Instruction: Reply in the tutor's thread with the receipt-check rule and ask the tutor to answer the QA tutor's question. Draft to copy: Please check the actual receipt before recording this submission as complete. Selecting a rating or successfully reloading does not prove that the original task was submitted. To answer the QA tutor's question, please clarify what the interface shows: a saved/submitted receipt, or the same task again? That distinction is still missing from this thread, so we cannot yet tell whether the submission succeeded. Scope: Apply this reply to the reported submission-confirmation issue; it does not establish a cause or authorize a workaround.",
+     "blocking": true,
+     "evidence_ids": [
+      "m:C_AUDIO_GENERAL:1790923021.000115",
+      "m:C_AUDIO_GENERAL:1790923077.000113",
+      "k:audio-multimodal-instructions@1.3:3a08035c"
+     ],
+     "premises": [
+      "claim:c1",
+      "claim:c2",
+      "claim:c3",
+      "claim:c4"
+     ],
+     "verdict": "SUPPORTED",
+     "model_verdict": "SUPPORTED",
+     "rationale": "The proposed reply applies the current receipt-check rule to the reported confirmation issue and requests the missing answer to the QA tutor's question. Replying in the affected tutor's own thread is supported by the location of that unresolved exchange, without claiming an official intake route, cause, or workaround."
+    },
+    {
+     "statement_id": "action:rationale",
+     "kind": "ACTION_RATIONALE",
+     "text": "Why this helps: The current instructions directly address delayed confirmation. A focused reply applies that rule without treating the missing confirmation as proof of a failed submission.",
+     "blocking": false,
+     "evidence_ids": [
+      "m:C_AUDIO_GENERAL:1790923021.000115",
+      "m:C_AUDIO_GENERAL:1790923077.000113",
+      "k:audio-multimodal-instructions@1.3:3a08035c"
+     ],
+     "verdict": "SUPPORTED",
+     "model_verdict": "SUPPORTED",
+     "rationale": "The instructions directly cover delayed confirmation, and the proposed reply correctly avoids equating missing confirmation with a failed submission."
+    },
+    {
+     "statement_id": "action:need",
+     "kind": "INTERVENTION_NEED",
+     "text": "Why intervening now is needed (an operational problem that needs coordination): A tutor reports missing submission confirmation, leaving completion unverified while the QA tutor's receipt question remains unanswered.",
+     "blocking": false,
+     "evidence_ids": [
+      "m:C_AUDIO_GENERAL:1790923021.000115",
+      "m:C_AUDIO_GENERAL:1790923077.000113"
+     ],
+     "verdict": "SUPPORTED",
+     "model_verdict": "SUPPORTED",
+     "rationale": "The reported confirmation problem remains operationally unresolved: completion has not been verified and the QA tutor's concrete receipt question remains unanswered. A focused follow-up addresses that outstanding coordination need."
+    },
+    {
+     "statement_id": "resolution:member_b94dee3ae64a8b2329242893",
+     "kind": "RESOLUTION",
+     "text": "Member thread member_b94dee3ae64a8b2329242893 is UNRESOLVED: The tutor reports no confirmation, and the only follow-up is a QA tutor's unanswered question about the receipt or repeated task display.",
+     "blocking": true,
+     "evidence_ids": [
+      "m:C_AUDIO_GENERAL:1790923021.000115",
+      "m:C_AUDIO_GENERAL:1790923077.000113"
+     ],
+     "verdict": "SUPPORTED",
+     "model_verdict": "SUPPORTED",
+     "rationale": "The complete provided thread consists of the initial missing-confirmation report and the unanswered QA question, with no resolution or verified submission outcome."
+    },
+    {
+     "statement_id": "severity:rationale",
+     "kind": "SEVERITY_RATIONALE",
+     "text": "Severity LOW: One tutor reports missing confirmation after scoring a recording. The thread does not show inability to complete work, multiple affected tasks, or broader disruption; the immediate correction is to verify the receipt.",
+     "blocking": true,
+     "evidence_ids": [
+      "m:C_AUDIO_GENERAL:1790923021.000115",
+      "m:C_AUDIO_GENERAL:1790923077.000113"
+     ],
+     "verdict": "SUPPORTED",
+     "model_verdict": "SUPPORTED",
+     "rationale": "Only one tutor reports this issue, and the thread provides no evidence of multiple affected tasks, broader disruption, or confirmed inability to complete work. Checking the receipt is the immediate verification step raised by the QA question; LOW does not imply that submission succeeded."
+    },
+    {
+     "statement_id": "reporter:U010",
+     "kind": "AFFECTED_REPORTER",
+     "text": "U010 reports, in their own cited message, being affected by this problem.",
+     "blocking": true,
+     "evidence_ids": [
+      "m:C_AUDIO_GENERAL:1790923021.000115"
+     ],
+     "verdict": "SUPPORTED",
+     "model_verdict": "SUPPORTED",
+     "rationale": "U010's own message reports scoring the recording without receiving submission confirmation."
+    }
+   ]
+  },
+  "temporal": {
+   "status": "NONE_FOUND",
+   "findings": [],
+   "source_consistency": "ASSESSED",
+   "ignored_revision_states": "NOT_YET_EFFECTIVE and NOT_APPROVED revisions never compete with applicable guidance."
+  },
+  "temporal_before_grounding": {
+   "status": "NONE_FOUND",
+   "findings": [],
+   "source_consistency": "NOT_ASSESSED",
+   "ignored_revision_states": "NOT_YET_EFFECTIVE and NOT_APPROVED revisions never compete with applicable guidance."
+  },
+  "severity": {
+   "assessment": {
+    "level": "LOW",
+    "assessment_status": "ASSESSED",
+    "rubric_version": "severity-rubric-v3-semantic-signals",
+    "rubric_content_sha256": "eccaa31a2ab84a0aa7c005216a92fc39681e1dd10107117344948235a76673f4",
+    "rubric_project_id": null,
+    "rubric_scope": "SHARED_DEFAULT",
+    "rationale": "One tutor reports missing confirmation after scoring a recording. The thread does not show inability to complete work, multiple affected tasks, or broader disruption; the immediate correction is to verify the receipt.",
+    "matched_signals": [],
+    "evidence": [],
+    "occurrence": {
+     "affected_reporters": {
+      "status": "LOWER_BOUND",
+      "count": 1,
+      "ids": [
+       "U010"
+      ],
+      "basis": "Distinct authors whose own cited message reports the problem; other participants are not counted.",
+      "evidence": [
+       {
+        "kind": "slack_message",
+        "project_id": "audio_multimodal",
+        "batch_id": "audio_batch_06",
+        "scope": "project",
+        "channel_id": "C_AUDIO_GENERAL",
+        "thread_id": "1790923021.000115",
+        "message_id": "1790923021.000115",
+        "document_id": null,
+        "version_id": null,
+        "authoring_document_id": null,
+        "authoring_version": null,
+        "section": null,
+        "chunk_id": null,
+        "candidate_group_id": null,
+        "member_id": "member_b94dee3ae64a8b2329242893",
+        "artifact": null,
+        "artifact_sha256": null,
+        "quote": null,
+        "note": "m:C_AUDIO_GENERAL:1790923021.000115"
+       }
+      ]
+     },
+     "affected_tasks": {
+      "status": "UNKNOWN",
+      "count": null,
+      "ids": [],
+      "basis": null,
+      "evidence": []
+     },
+     "relevant_threads": [
+      {
+       "project_id": "audio_multimodal",
+       "batch_id": "audio_batch_06",
+       "channel_id": "C_AUDIO_GENERAL",
+       "thread_id": "1790923021.000115",
+       "member_id": "member_b94dee3ae64a8b2329242893"
+      }
+     ],
+     "reporting_window": {
+      "start": "2026-10-02T06:37:01.000115+00:00",
+      "end": "2026-10-02T06:37:57.000113+00:00"
+     },
+     "historical_recurrence": {
+      "status": "NONE_FOUND",
+      "sources": [],
+      "event_series_ids": []
+     },
+     "known_denominator": null,
+     "structural": {
+      "threads": 1,
+      "messages": 2,
+      "distinct_participants": 2,
+      "duplicate_threads_ignored": 0,
+      "duplicate_messages_ignored": 0,
+      "computed_from": "topic member threads (original Slack messages)",
+      "participants_are_not_affected_reporters": true
+     },
+     "semantic_identification": "ASSESSED"
+    },
+    "inherited_from": {
+     "level": "UNKNOWN",
+     "assessment_status": "UNASSESSED",
+     "assessment_deferred_to": "AGENT3",
+     "reason": "Agent 2 performs taxonomy only."
+    }
+   },
+   "issues": [],
+   "notes": [],
+   "proposal": {
+    "level": "LOW",
+    "rationale": "One tutor reports missing confirmation after scoring a recording. The thread does not show inability to complete work, multiple affected tasks, or broader disruption; the immediate correction is to verify the receipt.",
+    "signals": [],
+    "affected_reporters": [
+     {
+      "author_id": "U010",
+      "evidence_id": "m:C_AUDIO_GENERAL:1790923021.000115"
+     }
+    ],
+    "recurrence": "NONE_FOUND",
+    "recurrence_evidence_ids": [],
+    "reported_recurrence_evidence_ids": []
+   }
+  },
+  "resolution": {
+   "topic": "UNRESOLVED",
+   "members": {
+    "member_b94dee3ae64a8b2329242893": "UNRESOLVED"
+   },
+   "agent1_attributed": [
+    {
+     "member_id": "member_b94dee3ae64a8b2329242893",
+     "state": "UNRESOLVED",
+     "agent1_verification_status": "VERIFIED",
+     "agent1_review_required": false
+    }
+   ]
+  },
+  "established_handling": [],
+  "coverage_issues": [],
+  "action_source": "DRAFT",
+  "action_notes": [],
+  "tot": {
+   "status": "NOT_TRIGGERED",
+   "triggers": [],
+   "choice_after_grounding": {
+    "status": "NOT_COMPARED",
+    "viable": []
+   }
+  },
+  "evidence_ledger": {
+   "m:C_AUDIO_GENERAL:1790923021.000115": {
+    "evidence_id": "m:C_AUDIO_GENERAL:1790923021.000115",
+    "origin": "member_message",
+    "use": "MEMBER_REPORT",
+    "member_id": "member_b94dee3ae64a8b2329242893",
+    "channel_id": "C_AUDIO_GENERAL",
+    "thread_id": "1790923021.000115",
+    "message_id": "1790923021.000115",
+    "author_id": "U010",
+    "author_name": "Avery",
+    "author_role": "TUTOR",
+    "timestamp": "2026-10-02T06:37:01.000115Z",
+    "thread_starter_id": "U010",
+    "thread_starter_role": "TUTOR",
+    "reactions": [
+     {
+      "name": "eyes",
+      "users": [
+       {
+        "id": "U006",
+        "name": "Priya"
+       }
+      ]
+     }
+    ],
+    "excerpt": "Scored the recording, but the review never receives a submission confirmation."
+   },
+   "m:C_AUDIO_GENERAL:1790923077.000113": {
+    "evidence_id": "m:C_AUDIO_GENERAL:1790923077.000113",
+    "origin": "member_message",
+    "use": "MEMBER_REPORT",
+    "member_id": "member_b94dee3ae64a8b2329242893",
+    "channel_id": "C_AUDIO_GENERAL",
+    "thread_id": "1790923021.000115",
+    "message_id": "1790923077.000113",
+    "author_id": "U007",
+    "author_name": "Leo",
+    "author_role": "QA_TUTOR",
+    "timestamp": "2026-10-02T06:37:57.000113Z",
+    "thread_starter_id": "U010",
+    "thread_starter_role": "TUTOR",
+    "reactions": [],
+    "excerpt": "Does the interface show a saved/submitted receipt or just the same task again?"
+   },
+   "k:audio-multimodal-instructions@1.3:3a08035c": {
+    "evidence_id": "k:audio-multimodal-instructions@1.3:3a08035c",
+    "origin": "retrieved_source",
+    "use": "CURRENT_GUIDANCE",
+    "citation": {
+     "document_id": "knowledge_3057c26d60654a68d0b76c025ba216366dd48f3e97b64f5aae68364a45170b8a",
+     "version_id": "version_03e4c185c65cbfbe35dccab040cc429ac6887e3cb0edc4f52cb5ea5a56970a24",
+     "chunk_id": "chunk_3a08035c4a67addda4c5d8af4eac0fac",
+     "authoring": "audio-multimodal-instructions@1.3",
+     "title": "Audio Multimodal — Instructions (v1.3)",
+     "sections": [
+      "Tool incidents and submission"
+     ],
+     "source": {
+      "batch_id": null,
+      "channel_id": null,
+      "manual_key": "audio-multimodal-instructions",
+      "message_id": null,
+      "permalink": null,
+      "project_id": "audio_multimodal",
+      "reference": null,
+      "system": "manual",
+      "thread_id": null,
+      "workspace_id": null
+     }
+    },
+    "source_type": "guideline",
+    "record_kind": "guideline",
+    "applicability": {
+     "state": "CURRENT",
+     "revision_state": "CURRENT",
+     "version_mode": "current",
+     "replaced_by": [],
+     "unverified_supersession": [],
+     "supersedes": [],
+     "enactment": null,
+     "other_revisions": []
+    },
+    "dates": {
+     "source_date": "2026-09-15T13:00:00Z",
+     "basis": "effective_at",
+     "effective_at": "2026-09-15T13:00:00Z",
+     "created_at": null,
+     "valid_until": null,
+     "expired_as_of": false,
+     "reference_time": "2026-10-02T12:00:00Z"
+    },
+    "scope": {
+     "project_id": "audio_multimodal",
+     "batch_id": null,
+     "scope": "project",
+     "batch_relation": "project_wide"
+    },
+    "authority": {
+     "role": "TEAM_LEAD",
+     "actor": "U006",
+     "actor_relation": "RECORD_AUTHORITY",
+     "approval_status": "EXPLICIT_SOURCE_MARKER",
+     "provenance": "synthetic_manual_record"
+    },
+    "authorship": {
+     "author_id": null,
+     "verified": false,
+     "basis": "NO_AUTHOR_RECORDED"
+    },
+    "recorded_states": {
+     "status": "approved",
+     "decision_status": null,
+     "execution_status": null,
+     "outcome_status": null
+    },
+    "upstream_review": null,
+    "excerpt": "## Tool incidents and submission\n| Incident | Required handling |\n| --- | --- |\n| Playback unavailable | Report task ID and reproduction details; leave content quality unassessed |\n| Intermittent playback | Record the affected tasks and whether access returned; do not assume every task recovered |\n| Submit disabled or click fails | Capture task ID, required-field state, error and button behavior |\n| Confirmation delayed | Check the actual receipt before recording submission as complete |\n\nTool incidents are assessed separately under the operational severity rubric. A selected rating or successful reload is not proof that the original task was submitted."
+   },
+   "k:audio-repeat-observation-review@1.0:ae0550d0": {
+    "evidence_id": "k:audio-repeat-observation-review@1.0:ae0550d0",
+    "origin": "retrieved_source",
+    "use": "PRIOR_DECISION",
+    "citation": {
+     "document_id": "knowledge_ab54b881b410b811d30b6755b3f03a93630cb02ff92bed49a00eebb6beba1631",
+     "version_id": "version_5a5f26377845f31ca6d86c95f37e4bd29cf834448ba7150c26bcff755640f4b6",
+     "chunk_id": "chunk_ae0550d0ca581c1d6e6ceced6f910af9",
+     "authoring": "audio-repeat-observation-review@1.0",
+     "title": "Repeated ending retained as an observation",
+     "sections": [
+      "Evidence",
+      "Suggested advice",
+      "TL decision",
+      "State"
+     ],
+     "source": {
+      "batch_id": "audio_batch_06",
+      "channel_id": null,
+      "manual_key": "audio-repeat-observation-review",
+      "message_id": null,
+      "permalink": null,
+      "project_id": "audio_multimodal",
+      "reference": null,
+      "system": "manual",
+      "thread_id": null,
+      "workspace_id": null
+     }
+    },
+    "source_type": "decision",
+    "record_kind": "advice_review",
+    "applicability": {
+     "state": "CURRENT",
+     "revision_state": "CURRENT",
+     "version_mode": "current",
+     "replaced_by": [],
+     "unverified_supersession": [],
+     "supersedes": [],
+     "enactment": {
+      "status": "NOT_ENACTED",
+      "basis": null,
+      "governing_sources": [],
+      "missing": [
+       "NO_TL_APPROVAL",
+       "NOT_A_POLICY_CHANGE",
+       "NO_ENACTMENT_EVIDENCE"
+      ],
+      "recorded": {
+       "decision_status": "tl_deferred",
+       "execution_status": "evidence_requested",
+       "authority_role": "TEAM_LEAD",
+       "batch_id": "audio_batch_06",
+       "valid_until": null,
+       "effective_at": "2026-09-29T14:00:00Z"
+      }
+     },
+     "other_revisions": []
+    },
+    "dates": {
+     "source_date": "2026-09-29T14:00:00Z",
+     "basis": "effective_at",
+     "effective_at": "2026-09-29T14:00:00Z",
+     "created_at": null,
+     "valid_until": null,
+     "expired_as_of": false,
+     "reference_time": "2026-10-02T12:00:00Z"
+    },
+    "scope": {
+     "project_id": "audio_multimodal",
+     "batch_id": "audio_batch_06",
+     "scope": "project",
+     "batch_relation": "same_batch"
+    },
+    "authority": {
+     "role": "TEAM_LEAD",
+     "actor": "U006",
+     "actor_relation": "RECORD_AUTHORITY",
+     "approval_status": "NO_APPROVAL_MARKER",
+     "provenance": "synthetic_manual_record"
+    },
+    "authorship": {
+     "author_id": null,
+     "verified": false,
+     "basis": "NO_AUTHOR_RECORDED"
+    },
+    "recorded_states": {
+     "status": "tl_deferred",
+     "decision_status": "tl_deferred",
+     "execution_status": "evidence_requested",
+     "outcome_status": "undetermined"
+    },
+    "upstream_review": null,
+    "excerpt": "[PRIOR RECORD (advice_review; decision_status: tl_deferred; execution_status: evidence_requested; outcome_status: undetermined) - history, not a standing rule.]\n# Repeated ending retained as an observation\n\n## Evidence\nA06-REP-14 was reported as speaking the last phrase twice although its transcript showed the phrase once. The review packet contained a player screenshot and the transcript, but no downloaded recording or comparison on a second player.\n\n## Suggested advice\nA simulated Advisor card proposed escalating a confirmed audio-generation loop.\n\n## TL decision\nPriya deferred that claim and retained the report as a model/process observation. Request a downloaded-file versus player comparison when available. A repeated phrase in the player does not yet locate the defect in the generated file.\n\nNo FAQ rule change or confirmed model-defect announcement was approved. If the additional evidence establishes a generation defect or material operational impact, reassess the intervention.\n\n## State\nThe observation is open. There is no completed diagnostic comparison or engineering escalation in this record."
+   },
+   "k:audio-playback-trial-outcome@1.0:16332fce": {
+    "evidence_id": "k:audio-playback-trial-outcome@1.0:16332fce",
+    "origin": "retrieved_source",
+    "use": "PRIOR_DECISION",
+    "citation": {
+     "document_id": "knowledge_0275b462748a8a7b5a600acb280fce9f69b723e516513fd4e3e4b597636d45aa",
+     "version_id": "version_1b6511c8fab4b27ab142d486c910793ba83b2bf9e5dbe3e96e720c0ce24d0443",
+     "chunk_id": "chunk_16332fce53141e95deee8eda018cb84a",
+     "authoring": "audio-playback-trial-outcome@1.0",
+     "title": "Playback trial follow-up — unsuitable as a general workaround",
+     "sections": [
+      "Trial observation",
+      "TL conclusion"
+     ],
+     "source": {
+      "batch_id": "audio_batch_05",
+      "channel_id": null,
+      "manual_key": "audio-playback-trial-outcome",
+      "message_id": null,
+      "permalink": null,
+      "project_id": "audio_multimodal",
+      "reference": null,
+      "system": "manual",
+      "thread_id": null,
+      "workspace_id": null
+     }
+    },
+    "source_type": "decision",
+    "record_kind": "follow_up",
+    "applicability": {
+     "state": "CURRENT",
+     "revision_state": "CURRENT",
+     "version_mode": "current",
+     "replaced_by": [],
+     "unverified_supersession": [],
+     "supersedes": [],
+     "enactment": {
+      "status": "NOT_ENACTED",
+      "basis": null,
+      "governing_sources": [],
+      "missing": [
+       "NO_TL_APPROVAL",
+       "OUT_OF_SCOPE",
+       "NOT_A_POLICY_CHANGE",
+       "NO_ENACTMENT_EVIDENCE"
+      ],
+      "recorded": {
+       "decision_status": "reported",
+       "execution_status": "trial_completed",
+       "authority_role": "TEAM_LEAD",
+       "batch_id": "audio_batch_05",
+       "valid_until": null,
+       "effective_at": "2026-08-27T16:00:00Z"
+      }
+     },
+     "other_revisions": []
+    },
+    "dates": {
+     "source_date": "2026-08-27T16:00:00Z",
+     "basis": "effective_at",
+     "effective_at": "2026-08-27T16:00:00Z",
+     "created_at": null,
+     "valid_until": null,
+     "expired_as_of": false,
+     "reference_time": "2026-10-02T12:00:00Z"
+    },
+    "scope": {
+     "project_id": "audio_multimodal",
+     "batch_id": "audio_batch_05",
+     "scope": "project",
+     "batch_relation": "other_batch"
+    },
+    "authority": {
+     "role": "TEAM_LEAD",
+     "actor": "U006",
+     "actor_relation": "RECORD_AUTHORITY",
+     "approval_status": "NO_APPROVAL_MARKER",
+     "provenance": "synthetic_manual_record"
+    },
+    "authorship": {
+     "author_id": null,
+     "verified": false,
+     "basis": "NO_AUTHOR_RECORDED"
+    },
+    "recorded_states": {
+     "status": "reported",
+     "decision_status": "reported",
+     "execution_status": "trial_completed",
+     "outcome_status": "unsuccessful_in_sample"
+    },
+    "upstream_review": null,
+    "excerpt": "[PRIOR RECORD (follow_up; decision_status: reported; execution_status: trial_completed; outcome_status: unsuccessful_in_sample) - history, not a standing rule.]\n## Trial observation\nPriya reviewed the six reported trial attempts below. Each row records the participant's observed result after one reload; the review did not establish a common underlying cause.\n\n| Task | Playback after one reload |\n| --- | --- |\n| A05-P101 | Started |\n| A05-P102 | Still stuck |\n| A05-P103 | Still stuck |\n| A05-P104 | Started |\n| A05-P105 | Still stuck |\n| A05-P106 | Still stuck |\n\n## TL conclusion\nTwo of six attempts restored playback; four did not. The trial did not provide a dependable general workaround. The batch-05 authorization remains time-limited and is not extended into a later queue.\n\nContinue recording task IDs and reproduction details. Do not describe the incident as fixed or assume that a new batch has the same cause."
+   },
+   "k:audio-headset-check-approval@1.0:3741e593": {
+    "evidence_id": "k:audio-headset-check-approval@1.0:3741e593",
+    "origin": "retrieved_source",
+    "use": "PRIOR_DECISION",
+    "citation": {
+     "document_id": "knowledge_96cde53eae44a1e872d8bf0e405e2e1cda6efaae1097091e808caef77c22d5d3",
+     "version_id": "version_b8ca885f07c81a4ccbf6f21fbbc64a85703f0436c5f1369da2fd74dc16d5a16b",
+     "chunk_id": "chunk_3741e593f5eca4ace4f1dbdd981364d6",
+     "authoring": "audio-headset-check-approval@1.0",
+     "title": "Approve a workstation output check for two silent-listening reports",
+     "sections": [
+      "Evidence available at review",
+      "Prior ThreadSense advice"
+     ],
+     "source": {
+      "batch_id": "audio_batch_06",
+      "channel_id": null,
+      "manual_key": "audio-headset-check-approval",
+      "message_id": null,
+      "permalink": null,
+      "project_id": "audio_multimodal",
+      "reference": null,
+      "system": "manual",
+      "thread_id": null,
+      "workspace_id": null
+     }
+    },
+    "source_type": "decision",
+    "record_kind": "advice_review",
+    "applicability": {
+     "state": "CURRENT",
+     "revision_state": "CURRENT",
+     "version_mode": "current",
+     "replaced_by": [],
+     "unverified_supersession": [],
+     "supersedes": [],
+     "enactment": {
+      "status": "NOT_ENACTED",
+      "basis": null,
+      "governing_sources": [],
+      "missing": [
+       "NOT_A_POLICY_CHANGE",
+       "NO_ENACTMENT_EVIDENCE"
+      ],
+      "recorded": {
+       "decision_status": "tl_approved",
+       "execution_status": "not_executed",
+       "authority_role": "TEAM_LEAD",
+       "batch_id": "audio_batch_06",
+       "valid_until": null,
+       "effective_at": "2026-09-21T14:00:00Z"
+      }
+     },
+     "other_revisions": []
+    },
+    "dates": {
+     "source_date": "2026-09-21T14:00:00Z",
+     "basis": "effective_at",
+     "effective_at": "2026-09-21T14:00:00Z",
+     "created_at": null,
+     "valid_until": null,
+     "expired_as_of": false,
+     "reference_time": "2026-10-02T12:00:00Z"
+    },
+    "scope": {
+     "project_id": "audio_multimodal",
+     "batch_id": "audio_batch_06",
+     "scope": "project",
+     "batch_relation": "same_batch"
+    },
+    "authority": {
+     "role": "TEAM_LEAD",
+     "actor": "U006",
+     "actor_relation": "RECORD_AUTHORITY",
+     "approval_status": "EXPLICIT_SOURCE_MARKER",
+     "provenance": "synthetic_manual_record"
+    },
+    "authorship": {
+     "author_id": null,
+     "verified": false,
+     "basis": "NO_AUTHOR_RECORDED"
+    },
+    "recorded_states": {
+     "status": "tl_approved",
+     "decision_status": "tl_approved",
+     "execution_status": "not_executed",
+     "outcome_status": "not_observed"
+    },
+    "upstream_review": null,
+    "excerpt": "[PRIOR RECORD (advice_review; decision_status: tl_approved; execution_status: not_executed; outcome_status: not_observed) - history, not a standing rule.]\n## Evidence available at review\n\nMina's intake notes identify two affected tasks, A06-H031 and A06-H032, on WS-A03. In both observations the player counter advanced from 00:00 to 00:12 while the tutor heard nothing. A known-good reference clip was also inaudible on that workstation. Mina heard the reference clip on WS-A04; neither affected task had yet been checked there.\n\nNo browser error, frozen counter, or unavailable waveform was recorded. The evidence supports checking the listening setup, but does not establish a silent source recording or a repaired task.\n\nAt the review cutoff, no output-device change or successful replay of the affected tasks had been recorded. The approved diagnostic is pending.\n\n## Prior ThreadSense advice\n\nAsk the two affected tutors to check the selected output device and headset connection, then replay a known-good reference and their original tasks. Keep content quality unassessed until audible playback is verified."
+   },
+   "k:audio-playback-trial-post@1.0:d674dbe6": {
+    "evidence_id": "k:audio-playback-trial-post@1.0:d674dbe6",
+    "origin": "retrieved_source",
+    "use": "HISTORY_ONLY",
+    "citation": {
+     "document_id": "knowledge_383d84eb3fd9f9835f99f9273bac91bfc703c61f5c0b2dd96d470f5e3ef40c8a",
+     "version_id": "version_c3caae5cf3af990b06b54e1a2fc331fbeac8d6ead502026bb6b5978b1623714d",
+     "chunk_id": "chunk_d674dbe69aeaaef079b556a1a0334ad1",
+     "authoring": "audio-playback-trial-post@1.0",
+     "title": "Playback trial posted to audio announcements",
+     "sections": [],
+     "source": {
+      "batch_id": "audio_batch_05",
+      "channel_id": "C_AUDIO_ANNOUNCEMENTS",
+      "manual_key": null,
+      "message_id": "1787581200.700001",
+      "permalink": null,
+      "project_id": "audio_multimodal",
+      "reference": null,
+      "system": "slack",
+      "thread_id": "1787581200.700001",
+      "workspace_id": null
+     }
+    },
+    "source_type": "announcement",
+    "record_kind": "channel_announcement",
+    "applicability": {
+     "state": "CURRENT",
+     "revision_state": "CURRENT",
+     "version_mode": "current",
+     "replaced_by": [],
+     "unverified_supersession": [],
+     "supersedes": [],
+     "enactment": null,
+     "other_revisions": []
+    },
+    "dates": {
+     "source_date": "2026-08-24T14:20:00Z",
+     "basis": "effective_at",
+     "effective_at": "2026-08-24T14:20:00Z",
+     "created_at": "2026-08-24T14:20:00.700001+00:00",
+     "valid_until": "2026-08-28T21:00:00Z",
+     "expired_as_of": true,
+     "reference_time": "2026-10-02T12:00:00Z"
+    },
+    "scope": {
+     "project_id": "audio_multimodal",
+     "batch_id": "audio_batch_05",
+     "scope": "project",
+     "batch_relation": "other_batch"
+    },
+    "authority": {
+     "role": "TEAM_LEAD",
+     "actor": "U006",
+     "actor_relation": "MESSAGE_AUTHOR",
+     "approval_status": "EXPLICIT_SOURCE_MARKER",
+     "provenance": "synthetic_slack_archive"
+    },
+    "authorship": {
+     "author_id": "U006",
+     "verified": true,
+     "basis": "SLACK_MESSAGE_AUTHOR"
+    },
+    "recorded_states": {
+     "status": "tl_approved",
+     "decision_status": "tl_approved",
+     "execution_status": "posted",
+     "outcome_status": "not_observed"
+    },
+    "upstream_review": null,
+    "excerpt": "[HISTORICAL - NOT CURRENT GUIDANCE: valid_until 2026-08-28T21:00:00Z has passed. May explain an old rule; do not apply it as current.]\nAudio batch 05: through Friday, August 28, try at most one reload when the player is stuck at 00:00. Keep the task ID, browser state, whether the waveform appears, and whether another clip plays. If playback is still unavailable, report the tool incident; do not assign a content-quality failure or content QN solely from the player failure. A reload is a diagnostic trial, not a confirmed repair or submission receipt. We will review the results before extending this approach."
+   },
+   "k:audio-multimodal-faq@1.1:c724358c": {
+    "evidence_id": "k:audio-multimodal-faq@1.1:c724358c",
+    "origin": "retrieved_source",
+    "use": "CURRENT_GUIDANCE",
+    "citation": {
+     "document_id": "knowledge_1f550e377f9c310f57f03e5bf482f810999d822a9cf4b1db3be5f2557678f15e",
+     "version_id": "version_66a170bbd46011e80d06da6d0bf5ec8b73486a84c13e015f60222fa711e05727",
+     "chunk_id": "chunk_c724358ccd850dc7fb3812e8af1ac1bc",
+     "authoring": "audio-multimodal-faq@1.1",
+     "title": "Audio Multimodal — FAQ (v1.1)",
+     "sections": [
+      "Playback and tool issues"
+     ],
+     "source": {
+      "batch_id": null,
+      "channel_id": null,
+      "manual_key": "audio-multimodal-faq",
+      "message_id": null,
+      "permalink": null,
+      "project_id": "audio_multimodal",
+      "reference": null,
+      "system": "manual",
+      "thread_id": null,
+      "workspace_id": null
+     }
+    },
+    "source_type": "faq",
+    "record_kind": "faq",
+    "applicability": {
+     "state": "CURRENT",
+     "revision_state": "CURRENT",
+     "version_mode": "current",
+     "replaced_by": [],
+     "unverified_supersession": [],
+     "supersedes": [],
+     "enactment": null,
+     "other_revisions": []
+    },
+    "dates": {
+     "source_date": "2026-09-20T13:00:00Z",
+     "basis": "effective_at",
+     "effective_at": "2026-09-20T13:00:00Z",
+     "created_at": null,
+     "valid_until": null,
+     "expired_as_of": false,
+     "reference_time": "2026-10-02T12:00:00Z"
+    },
+    "scope": {
+     "project_id": "audio_multimodal",
+     "batch_id": null,
+     "scope": "project",
+     "batch_relation": "project_wide"
+    },
+    "authority": {
+     "role": "TEAM_LEAD",
+     "actor": "U006",
+     "actor_relation": "RECORD_AUTHORITY",
+     "approval_status": "EXPLICIT_SOURCE_MARKER",
+     "provenance": "synthetic_manual_record"
+    },
+    "authorship": {
+     "author_id": null,
+     "verified": false,
+     "basis": "NO_AUTHOR_RECORDED"
+    },
+    "recorded_states": {
+     "status": "approved",
+     "decision_status": null,
+     "execution_status": null,
+     "outcome_status": null
+    },
+    "upstream_review": null,
+    "excerpt": "[ADDED FOR TYPE COVERAGE: best-ranked faq for this query (rank 12), outside the top 5.]\n## Playback and tool issues\n\n### Q: What if the player spins forever or never loads?\nReport the task ID and available reproduction details as a tool incident. Do not score the recording as a model-quality failure while it cannot be evaluated.\n\n### Q: Can I use QN because playback is unavailable?\nPlayback failure alone does not establish a content-based QN reason. Report the tool incident. If other accessible evidence raises a separate content concern, retain it for review rather than assuming what the unavailable audio contains.",
+    "retrieved_as": {
+     "role": "TYPE_COVERAGE",
+     "detail": "best-ranked faq for this query (rank 12), outside the top 5"
+    }
+   }
+  },
+  "card": {
+   "contract_version": "agent3-advice-card-v5",
+   "record_type": "ADVICE_CARD",
+   "card_id": "card_547b3b47cca774993b0a62fd83f34ea0",
+   "project_id": "audio_multimodal",
+   "topic_name": "LT review submission confirmation",
+   "card_line": "RECOMMENDED_ACTION",
+   "summary": "A tutor reports receiving no submission confirmation after scoring a recording; the thread does not establish whether submission succeeded. Current guidance requires checking the actual receipt before recording submission as complete; selecting a rating is not proof of submission.",
+   "severity": {
+    "level": "LOW",
+    "assessment_status": "ASSESSED",
+    "rubric_version": "severity-rubric-v3-semantic-signals",
+    "rubric_content_sha256": "eccaa31a2ab84a0aa7c005216a92fc39681e1dd10107117344948235a76673f4",
+    "rubric_project_id": null,
+    "rubric_scope": "SHARED_DEFAULT",
+    "rationale": "One tutor reports missing confirmation after scoring a recording. The thread does not show inability to complete work, multiple affected tasks, or broader disruption; the immediate correction is to verify the receipt.",
+    "matched_signals": [],
+    "evidence": [],
+    "occurrence": {
+     "affected_reporters": {
+      "status": "LOWER_BOUND",
+      "count": 1,
+      "ids": [
+       "U010"
+      ],
+      "basis": "Distinct authors whose own cited message reports the problem; other participants are not counted.",
+      "evidence": [
+       {
+        "kind": "slack_message",
+        "project_id": "audio_multimodal",
+        "batch_id": "audio_batch_06",
+        "scope": "project",
+        "channel_id": "C_AUDIO_GENERAL",
+        "thread_id": "1790923021.000115",
+        "message_id": "1790923021.000115",
+        "document_id": null,
+        "version_id": null,
+        "authoring_document_id": null,
+        "authoring_version": null,
+        "section": null,
+        "chunk_id": null,
+        "candidate_group_id": null,
+        "member_id": "member_b94dee3ae64a8b2329242893",
+        "artifact": null,
+        "artifact_sha256": null,
+        "quote": null,
+        "note": "m:C_AUDIO_GENERAL:1790923021.000115"
+       }
+      ]
+     },
+     "affected_tasks": {
+      "status": "UNKNOWN",
+      "count": null,
+      "ids": [],
+      "basis": null,
+      "evidence": []
+     },
+     "relevant_threads": [
+      {
+       "project_id": "audio_multimodal",
+       "batch_id": "audio_batch_06",
+       "channel_id": "C_AUDIO_GENERAL",
+       "thread_id": "1790923021.000115",
+       "member_id": "member_b94dee3ae64a8b2329242893"
+      }
+     ],
+     "reporting_window": {
+      "start": "2026-10-02T06:37:01.000115+00:00",
+      "end": "2026-10-02T06:37:57.000113+00:00"
+     },
+     "historical_recurrence": {
+      "status": "NONE_FOUND",
+      "sources": [],
+      "event_series_ids": []
+     },
+     "known_denominator": null,
+     "structural": {
+      "threads": 1,
+      "messages": 2,
+      "distinct_participants": 2,
+      "duplicate_threads_ignored": 0,
+      "duplicate_messages_ignored": 0,
+      "computed_from": "topic member threads (original Slack messages)",
+      "participants_are_not_affected_reporters": true
+     },
+     "semantic_identification": "ASSESSED"
+    },
+    "inherited_from": {
+     "level": "UNKNOWN",
+     "assessment_status": "UNASSESSED",
+     "assessment_deferred_to": "AGENT3",
+     "reason": "Agent 2 performs taxonomy only."
+    }
+   },
+   "severity_is_provisional": false,
+   "resolution_status": "UNRESOLVED",
+   "recommended_action": {
+    "action_type": "POST_ALIGNMENT",
+    "draft_text": "Please check the actual receipt before recording this submission as complete. Selecting a rating or successfully reloading does not prove that the original task was submitted. To answer the QA tutor's question, please clarify what the interface shows: a saved/submitted receipt, or the same task again? That distinction is still missing from this thread, so we cannot yet tell whether the submission succeeded.",
+    "scope_note": "Apply this reply to the reported submission-confirmation issue; it does not establish a cause or authorize a workaround.",
+    "label": "Post a reminder",
+    "instruction": "Reply in the tutor's thread with the receipt-check rule and ask the tutor to answer the QA tutor's question.",
+    "rationale": "The current instructions directly address delayed confirmation. A focused reply applies that rule without treating the missing confirmation as proof of a failed submission.",
+    "targets": [],
+    "essential_premise_ids": [
+     "claim:c1",
+     "claim:c2",
+     "claim:c3",
+     "claim:c4"
+    ],
+    "source": "DRAFT"
+   },
+   "reasoning": "What the evidence shows: A tutor reports that the review never receives a submission confirmation after the tutor scored the recording. A QA tutor asks whether the interface shows a saved/submitted receipt or the same task again in the tutor's thread. Current project instructions require checking the actual receipt before recording submission as complete when confirmation is delayed; a selected rating or successful reload is not proof that the original task was submitted. The provided thread contains no answer to the QA tutor's receipt question and does not establish whether the tutor's submission succeeded. Thread status, read from each thread's own messages: unresolved ×1. Agent 1's earlier labels (an input, not evidence): unresolved ×1.",
+   "supporting_sources": [
+    {
+     "kind": "knowledge_source",
+     "project_id": "audio_multimodal",
+     "batch_id": null,
+     "scope": "project",
+     "channel_id": null,
+     "thread_id": null,
+     "message_id": null,
+     "document_id": "knowledge_3057c26d60654a68d0b76c025ba216366dd48f3e97b64f5aae68364a45170b8a",
+     "version_id": "version_03e4c185c65cbfbe35dccab040cc429ac6887e3cb0edc4f52cb5ea5a56970a24",
+     "authoring_document_id": "audio-multimodal-instructions",
+     "authoring_version": "1.3",
+     "section": "Tool incidents and submission",
+     "chunk_id": "chunk_3a08035c4a67addda4c5d8af4eac0fac",
+     "candidate_group_id": null,
+     "member_id": null,
+     "artifact": null,
+     "artifact_sha256": null,
+     "quote": null,
+     "note": "k:audio-multimodal-instructions@1.3:3a08035c (CURRENT_GUIDANCE; CURRENT)"
+    },
+    {
+     "kind": "slack_message",
+     "project_id": "audio_multimodal",
+     "batch_id": "audio_batch_06",
+     "scope": "project",
+     "channel_id": "C_AUDIO_GENERAL",
+     "thread_id": "1790923021.000115",
+     "message_id": "1790923021.000115",
+     "document_id": null,
+     "version_id": null,
+     "authoring_document_id": null,
+     "authoring_version": null,
+     "section": null,
+     "chunk_id": null,
+     "candidate_group_id": null,
+     "member_id": "member_b94dee3ae64a8b2329242893",
+     "artifact": null,
+     "artifact_sha256": null,
+     "quote": null,
+     "note": "m:C_AUDIO_GENERAL:1790923021.000115"
+    },
+    {
+     "kind": "slack_message",
+     "project_id": "audio_multimodal",
+     "batch_id": "audio_batch_06",
+     "scope": "project",
+     "channel_id": "C_AUDIO_GENERAL",
+     "thread_id": "1790923021.000115",
+     "message_id": "1790923077.000113",
+     "document_id": null,
+     "version_id": null,
+     "authoring_document_id": null,
+     "authoring_version": null,
+     "section": null,
+     "chunk_id": null,
+     "candidate_group_id": null,
+     "member_id": "member_b94dee3ae64a8b2329242893",
+     "artifact": null,
+     "artifact_sha256": null,
+     "quote": null,
+     "note": "m:C_AUDIO_GENERAL:1790923077.000113"
+    }
+   ],
+   "related_threads": [
+    {
+     "project_id": "audio_multimodal",
+     "batch_id": "audio_batch_06",
+     "channel_id": "C_AUDIO_GENERAL",
+     "thread_id": "1790923021.000115",
+     "member_id": "member_b94dee3ae64a8b2329242893",
+     "permalink": null,
+     "display_reference": "1790923021.000115",
+     "label": "#audio-multimodal-general, 2026-10-02, started by a tutor: \"Scored the recording, but the review never receives a submission confirmation.\"",
+     "opening_text": "Scored the recording, but the review never receives a submission confirmation."
+    }
+   ],
+   "confidence": 0.9,
+   "confidence_band": "HIGH",
+   "needs_review_reasons": [],
+   "inherited_flags": [],
+   "checks": {
+    "grounding": "PASSED",
+    "temporal_conflict": "NONE_FOUND",
+    "open_confirmation": "NONE"
+   },
+   "lineage": {
+    "agent3_run_id": "agent3overnight_bdc099a76ee76bdc391050df2aded225",
+    "handoff_contract": "agent2-taxonomy-handoff-v2",
+    "agent2_export_sha256": "6f1f56bf5a5b1f02287d7ac958dc205c05cc9e0ea3e6d5f3fdd7279da0c9e1e7",
+    "agent2_schema_version": 8,
+    "candidate_group_id": "cluster_23fab6d43c64532d",
+    "topic_id": "cluster_23fab6d43c64532d/topic_1",
+    "member_ids": [
+     "member_b94dee3ae64a8b2329242893"
+    ],
+    "project_id": "audio_multimodal",
+    "batch_id": "audio_batch_06"
+   },
+   "review_notes": [],
+   "details": [
+    "A QA tutor asks whether the interface shows a saved/submitted receipt or the same task again; no answer appears in the provided thread."
+   ],
+   "next_step": {
+    "status": "ACTION_RECOMMENDED",
+    "rationale": "The current instructions directly address delayed confirmation. A focused reply applies that rule without treating the missing confirmation as proof of a failed submission.",
+    "explanation": null
+   },
+   "briefing": {
+    "status": "IN_BRIEFING",
+    "relevance": "PROJECT",
+    "label_id": "rel_cluster_23fab6d43c64532d_topic_1",
+    "label_source": "DEVELOPER_AUDIT_2026-11-05/06 (prepared by the coding assistant from the saved source threads; not confirmed by a team lead)",
+    "kept_because": [],
+    "basis": "Project work: annotation guidance, model behavior, tooling or review process.",
+    "evidence_statement_ids": []
+   },
+   "outstanding_step": null,
+   "derivation": {
+    "policy_version": "briefing-routing-v2",
+    "provenance": "OFFLINE_POLICY_APPLICATION",
+    "text_provenance": "PARENT_RUN_JUDGMENTS",
+    "parent_run": "data/experiments/threadsense_full_v1/stages/agent3/overnight_run",
+    "parent_run_instance": "4a48d67e4d8322cf6912e26032663b41fd5f0447103ed8081e5581b3d3183ff8",
+    "parent_card_id": "card_1088275a02e8cafd81fc474d85a6ea1b",
+    "parent_card_sha256": "100b8e9b5eab4d9472d977c300b3d22df2ac5954545c1150e11fa1120036233b",
+    "parent_contract_version": "agent3-advice-card-v4",
+    "changes": []
+   }
+  },
+  "review_items": [],
+  "coverage": {
+   "group_members_outside_this_card": [],
+   "uncarried_obligations": []
+  },
+  "budget": {
+   "consumed": {
+    "retrieval_calls": 1,
+    "model_calls": 2
+   },
+   "limits": {
+    "model_calls_per_topic": 4,
+    "model_calls_total": 28,
+    "retrieval_calls_per_topic": 6,
+    "retrieval_calls_total": 42
+   }
+  },
+  "diagnostics": []
+ },
+ "derivation": {
+  "policy_version": "briefing-routing-v2",
+  "parent_topic_file": "data/experiments/threadsense_full_v1/stages/agent3/overnight_run/topics/topic__cluster_23fab6d43c64532d__topic_1.json",
+  "parent_topic_sha256": "879ea474f5a26ee70d69443d98b6040b82d47a37b51fb0321209359b1451026f",
+  "replaced": [
+   "result.card",
+   "workflow.card_id",
+   "workflow.card_line"
+  ]
+ }
+}

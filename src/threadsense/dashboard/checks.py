@@ -104,9 +104,14 @@ def build_checks(card, result, ledger, view):
 
     for item in by_code.get('TEMPORAL_CONFLICT', []):
         for f in item.get('findings') or []:
-            checks.append({'kind': 'CONFLICT', 'heading': 'Sources disagree', 'text_origin': 'UI',
-                           'text': f"{f.get('what') or 'Sources disagree'}{' (' + f['scope'] + ')' if f.get('scope') else ''}. "
-                                   'Confirm which one applies before acting.',
+            # The disputed point: the judge's scope for a conflict it found, else the recorded conflict description.
+            point = f.get('scope') or f.get('detail')
+            documents = f.get('code') == 'DOCUMENTATION_STATUS_UNRESOLVED'
+            checks.append({'kind': 'CONFLICT', 'heading': 'Documentation question' if documents else 'Sources disagree',
+                           'text_origin': 'UI',
+                           'text': f"{f.get('what') or 'Sources disagree'}{': ' + point.rstrip('.') if point else ''}. "
+                                   + ('The current sources agree on the handling rule; confirm which document is meant '
+                                      'before editing.' if documents else 'Confirm which one applies before acting.'),
                            'links': [labelled(l, ledger=ledger) for l in f.get('links') or []][:3]})
     for item in by_code.get('GROUNDING_FAILURE', []):
         for w in item.get('withheld') or []:

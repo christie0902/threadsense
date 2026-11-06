@@ -94,6 +94,24 @@ PLURAL = re.compile(rf'\b(several|multiple|many|both|two|three|four|five|six|sev
                     rf'|\b{PEOPLE}\s+(?:all\s+|also\s+|each\s+)?{SPEECH}\b', re.I)
 # "One of the tutors reports": a singular subject before a plural noun; not a claim about several people.
 PARTITIVE = re.compile(r'\b(?:one|each|either|neither|any|none)\s+of\s+(?:the\s+|these\s+|those\s+|their\s+)?(?:\w+\s+)?$', re.I)
+# Generic nouns that also describe people inside the task content ("simultaneous speech by two people"); team roles
+# (tutors, team leads, engineers, ...) always name the message authors.
+GENERIC_PEOPLE = frozenset({'people', 'users'})
+AFTER_SPEECH = re.compile(rf'\s+(?:all\s+|also\s+|each\s+|both\s+|then\s+)?(?:{SPEECH}|{PARTICIPATION})\b', re.I)
+REPORTED_BY = re.compile(rf'\b(?:{SPEECH}|raised|flagged|posted|shared|noticed|experienced)\s+by\s+$', re.I)
+
+
+def about_authors(prose, match):
+    """Whether a counted plural is about the message authors or reporters (counted against them) rather than people,
+    speakers or users described in the task content. A team role always is; a generic noun only as the subject of a
+    reporting verb ("two people report"), its agent ("raised by two people") or a possessive ("two users' threads").
+    Any other generic plural is left to the semantic judgment, which sees the cited messages."""
+    if match.group(1) is None:  # "<people> report": the subject of a reporting verb.
+        return True
+    if match.group(0).split()[-1].lower() not in GENERIC_PEOPLE:
+        return True
+    return bool(AFTER_SPEECH.match(prose, match.end()) or REPORTED_BY.search(prose, 0, match.start())
+                or prose[match.end():match.end() + 1] in "'’")
 
 
 RAW_ID = re.compile(r'\b[mk]:[A-Za-z0-9_.:@-]+|\bclaim:\w+|\bmember_[0-9a-f]{8,}|\bcard_[0-9a-f]{8,}|\bU\d{3}\b'
@@ -209,6 +227,8 @@ def prose_issues(text, items, ledger, attributions=()):
     starters = {i.get('thread_starter_id') for i in messages} - {None} or topic
     for match in PLURAL.finditer(prose):
         if match.group(1) is None and PARTITIVE.search(prose[:match.start()]):
+            continue
+        if not about_authors(prose, match):
             continue
         word = (match.group(1) or '').lower()
         needed = int(word) if word.isdigit() else COUNTS.get(word, 2)
@@ -836,9 +856,13 @@ def grounding_result(draft, ledger, stmts, *, structural=(), actions=(), judgmen
         return {**result, 'statements': judged, 'unsupported': failed, 'unjudged': unjudged,
                 'status': 'FAILED' if failed else 'NOT_RUN',
                 'basis': 'STRUCTURAL' if failed else reason or 'SEMANTIC_JUDGMENT_UNAVAILABLE'}
-    if waiting and not (unjudged or unsupported):
+    if waiting and not (unjudged or unsupported) and not given:
         return {**result, 'status': 'NOT_RUN', 'basis': 'PENDING_SEMANTIC_JUDGMENTS', 'statements': judged,
                 'unsupported': unsupported, 'unjudged': unjudged, 'extraneous_verdicts': sorted(set(given) - set(raw))}
+    if waiting:  # Some verdicts exist: the pending statements are withheld as unjudged; the judged ones stand.
+        return {**result, 'status': 'FAILED', 'basis': ('STRUCTURAL+' if rejected else '') + 'SEMANTIC+PENDING',
+                'statements': judged, 'unsupported': unsupported, 'unjudged': unjudged + waiting,
+                'extraneous_verdicts': sorted(set(given) - set(raw))}
     return {**result, 'status': 'FAILED' if unjudged or unsupported else 'PASSED',
             'basis': 'STRUCTURAL+SEMANTIC' if rejected else 'SEMANTIC',
             'statements': judged, 'unsupported': unsupported, 'unjudged': unjudged,
@@ -905,24 +929,68 @@ def _not_competing(items, handling):
     for item in items:
         if item['evidence_id'] in current:
             continue
-        a, dates, scope, states = item.get('applicability') or {}, item.get('dates') or {}, item.get('scope') or {}, item.get('recorded_states') or {}
-        gap = enactment_gap(item) if item['use'] == 'PRIOR_DECISION' else None
-        decisive = [DECISION_OUT_OF_RUNNING[m] for m in (gap or {}).get('missing', []) if m in DECISION_OUT_OF_RUNNING]
-        if item['use'] == 'HISTORY_ONLY' and dates.get('expired_as_of'):
-            reasons[item['evidence_id']] = 'EXPIRED'
-        elif item['use'] == 'HISTORY_ONLY' and a.get('state') in ('SUPERSEDED_REVISION', 'SECTION_SUPERSEDED', *WITHDRAWN_STATES):
-            reasons[item['evidence_id']] = a['state']
-        elif a.get('state') in ('NOT_APPROVED', 'NOT_YET_EFFECTIVE'):  # Never competes (versions.py).
-            reasons[item['evidence_id']] = a['state']
-        elif item['use'] == 'PRIOR_DECISION' and scope.get('batch_relation') == 'other_batch':
-            reasons[item['evidence_id']] = 'OTHER_BATCH_DECISION'
-        elif item['use'] == 'PRIOR_DECISION' and states.get('execution_status') in NOT_EXECUTED:
-            reasons[item['evidence_id']] = 'DECISION_NOT_EXECUTED'  # Approved but explicitly not carried out.
-        elif decisive:
-            reasons[item['evidence_id']] = decisive[0]
-        else:
+        reason = _out_of_running(item)
+        if reason is None:
             return None
+        reasons[item['evidence_id']] = reason
     return current, reasons
+
+
+def _out_of_running(item):
+    """Why a non-current item does not compete with applicable guidance, from recorded state alone, or None."""
+    a, dates, scope, states = item.get('applicability') or {}, item.get('dates') or {}, item.get('scope') or {}, item.get('recorded_states') or {}
+    gap = enactment_gap(item) if item['use'] == 'PRIOR_DECISION' else None
+    decisive = [DECISION_OUT_OF_RUNNING[m] for m in (gap or {}).get('missing', []) if m in DECISION_OUT_OF_RUNNING]
+    if item['use'] == 'HISTORY_ONLY' and dates.get('expired_as_of'):
+        return 'EXPIRED'
+    if item['use'] == 'HISTORY_ONLY' and a.get('state') in ('SUPERSEDED_REVISION', 'SECTION_SUPERSEDED', *WITHDRAWN_STATES):
+        return a['state']
+    if a.get('state') in ('NOT_APPROVED', 'NOT_YET_EFFECTIVE'):  # Never competes (versions.py).
+        return a['state']
+    if item['use'] == 'PRIOR_DECISION' and scope.get('batch_relation') == 'other_batch':
+        return 'OTHER_BATCH_DECISION'
+    if item['use'] == 'PRIOR_DECISION' and states.get('execution_status') in NOT_EXECUTED:
+        return 'DECISION_NOT_EXECUTED'  # Approved but explicitly not carried out.
+    return decisive[0] if decisive else None
+
+
+def _relations(consistency, kind):
+    return [set(r['evidence_ids']) for r in (consistency or {}).get('relations') or [] if r['relation'] == kind]
+
+
+def _agreeing_current(items, handling, consistency):
+    """(current IDs, {other ID: reason}) when a conflict cites several current sources that the final grounding
+    recorded as agreeing (one AGREE relation covers all of them, no CONFLICT relation pairs two of them) and every other
+    item is out of the running by recorded state: a superseded section may explain the history or show where a document
+    still needs correcting, but it does not govern. None otherwise."""
+    current = [i['evidence_id'] for i in items if i['use'] in CURRENT_USES or i['evidence_id'] in handling]
+    if len(current) < 2 or any(_uncertain(i) for i in items):
+        return None
+    if not any(set(current) <= r for r in _relations(consistency, 'AGREE')):
+        return None
+    if any(len(set(current) & r) >= 2 for r in _relations(consistency, 'CONFLICT')):
+        return None
+    reasons = {i['evidence_id']: _out_of_running(i) for i in items if i['evidence_id'] not in current}
+    return (current, reasons) if all(reasons.values()) else None
+
+
+def _documentation_status(items, handling, consistency, verdict):
+    """A declared conflict the judge could not confirm (UNDETERMINED) whose rule-stating current sources agree: the
+    governing rule is settled, but what the remaining current source says about the documents is not. Returns
+    {'agreeing': [...], 'unsettled': [...], 'not_competing': {...}} or None. A CONFLICT relation, an uncertain item or a
+    competing non-current item keeps the ordinary unexplained conflict."""
+    if verdict != 'UNDETERMINED' or any(_uncertain(i) for i in items):
+        return None
+    current = [i['evidence_id'] for i in items if i['use'] in CURRENT_USES or i['evidence_id'] in handling]
+    agree, conflict = _relations(consistency, 'AGREE'), _relations(consistency, 'CONFLICT')
+    agreeing = [c for c in current if any(c in r for r in agree)]
+    unsettled = [c for c in current if c not in agreeing]
+    if not agreeing or not unsettled or any(set(current) & r for r in conflict):
+        return None
+    reasons = {i['evidence_id']: _out_of_running(i) for i in items if i['evidence_id'] not in current}
+    if not all(reasons.values()):
+        return None
+    return {'agreeing': agreeing, 'unsettled': unsettled, 'not_competing': reasons}
 
 
 def agreement_candidates(draft, ledger, handling=None):
@@ -966,12 +1034,21 @@ def temporal_check(draft, ledger, handling=None, verdicts=None, consistency=None
         if found is None:
             settled = _not_competing(items, handling)
             gaps = {i['evidence_id']: enactment_gap(i)['missing'] for i in items if i['use'] == 'PRIOR_DECISION' and enactment_gap(i)}
+            agreeing = None if settled else _agreeing_current(items, handling, consistency)
+            documents = None if settled or agreeing else _documentation_status(items, handling, consistency, checks.get(index))
             if settled:
                 findings.append({'status': 'RESOLVED_BY_RECORDED_STATE', 'code': 'OTHER_SOURCES_DO_NOT_COMPETE', **base,
                                  'current': settled[0], 'not_competing': settled[1]})
             elif checks.get(index) == 'SOURCES_AGREE' and not any(_uncertain(i) for i in items):
                 findings.append({'status': 'RESOLVED_BY_SOURCE_AGREEMENT', 'code': 'DECLARED_CONFLICT_SOURCES_AGREE', **base,
                                  'origin': 'FINAL_GROUNDING'})
+            elif agreeing:
+                findings.append({'status': 'RESOLVED_BY_RECORDED_STATE', 'code': 'OTHER_SOURCES_DO_NOT_COMPETE', **base,
+                                 'current': agreeing[0], 'not_competing': agreeing[1], 'agreement': 'FINAL_GROUNDING',
+                                 'documentation_targets': [e for e, r in agreeing[1].items() if r == 'SECTION_SUPERSEDED']})
+            elif documents:
+                findings.append({'status': 'DETECTED', 'code': 'DOCUMENTATION_STATUS_UNRESOLVED', **base, **documents,
+                                 'governing_rule': 'AGREED'})  # A declared conflict: the option comparison saw it.
             else:
                 findings.append({'status': 'DETECTED', 'code': 'UNEXPLAINED_SOURCE_CONFLICT', **base,
                                  **({'enactment_not_established': gaps} if gaps else {})})
@@ -1459,7 +1536,11 @@ def assemble_card(outcome, packet, *, run_id):
         reason('INHERITED_FLAG', '; '.join(details), ' '.join(notes_),
                obligation_ids=sorted({f.obligation_id for f in flags if f.obligation_id}))
     if temporal and temporal['status'] == 'DETECTED':
-        reason('TEMPORAL_CONFLICT', '; '.join(f"{f['code']}: {f['detail']}" for f in temporal['findings'] if f['status'] == 'DETECTED'),
+        detected = [f for f in temporal['findings'] if f['status'] == 'DETECTED']
+        documents = all(f['code'] == 'DOCUMENTATION_STATUS_UNRESOLVED' for f in detected)
+        reason('TEMPORAL_CONFLICT', '; '.join(f"{f['code']}: {f['detail']}" for f in detected),
+               'The current sources agree on the handling rule, but the records do not settle which document still needs '
+               'updating; confirm before editing.' if documents else
                'Sources disagree on a point, and the records do not settle which applies; confirm before acting.')
         for f in temporal['findings']:
             if f['status'] == 'DETECTED' and f.get('origin') == 'FINAL_GROUNDING':
@@ -1468,8 +1549,10 @@ def assemble_card(outcome, packet, *, run_id):
     if grounding['status'] == 'FAILED':
         detail = [f"{s['statement_id']}: {s['verdict']}" for s in grounding['statements']
                   if s['blocking'] and s['statement_id'] in grounding['unsupported'] + grounding['unjudged']]
+        checked = bool(grounding['unsupported'])  # Otherwise every withheld statement is one not yet judged.
         reason('GROUNDING_FAILURE', 'Withheld from this card: ' + ('; '.join(detail) or 'grounding failed.'),
-               'Some advisor statements were not supported by the evidence and are not shown.')
+               'Some advisor statements were not supported by the evidence and are not shown.' if checked or not detail else
+               'Some advisor statements have not been checked against the evidence yet and are not shown.')
     elif grounding['status'] == 'NOT_RUN':
         reason('GROUNDING_NOT_RUN', f"Grounding not run: {grounding['basis']}; no Advisor statement is shown as established.",
                "The advisor's statements could not be checked against the evidence, so none is shown as established.")
@@ -1545,7 +1628,9 @@ def assemble_card(outcome, packet, *, run_id):
         'lineage': {'agent3_run_id': run_id, 'handoff_contract': packet['handoff_contract'],
                     'agent2_export_sha256': packet['export_sha256'], 'agent2_schema_version': packet['schema_version'],
                     'candidate_group_id': packet['candidate_group_id'], 'topic_id': packet['topic_id'],
-                    'member_ids': packet['member_ids'], 'project_id': packet['project_id'], 'batch_id': packet['batch_id']},
+                    'member_ids': packet['member_ids'], 'project_id': packet['project_id'], 'batch_id': packet['batch_id'],
+                    **({'source_topic_ids': packet['source_topic_ids'], 'candidate_group_ids': packet['candidate_group_ids']}
+                       if packet.get('source_topic_ids') else {})},
     }
     data['next_step'] = next_step_state(
         data['recommended_action'], proposed.model_dump(mode='json') if proposed else None,
