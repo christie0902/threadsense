@@ -35,8 +35,9 @@ from threadsense.agents.advice_contracts import LOW_CONFIDENCE_BELOW
 from threadsense.agents.advisor_checks import CURRENT_USES, KNOWLEDGE_USES, display_issues, prose_issues
 from threadsense.agents.advisor_contracts import ToTComparison
 
-# Controller rules (selection, fallback, finalization, close calls), versioned apart from the prompt (RULES): a controller
-# change alters derived selections without changing any request, so runs fingerprint it (controller_fingerprint).
+# Controller rules (selection, fallback, finalization, close calls), versioned apart from the prompt (RULES), so runs
+# fingerprint them (controller_fingerprint). A post-grounding change (fallback, finalize, close calls) alters derived
+# cards without changing any request; a pre-grounding selection change alters the grounding request itself.
 # v1: before 2026-11-08 (records without tot.controller). v2: explicit REPLACE_INCUMBENT, close calls name no preferred
 # candidate, the fallback never re-admits the withheld action, tot.card_action.
 CONTROLLER_VERSION = 'agent3-tot-controller-v2'

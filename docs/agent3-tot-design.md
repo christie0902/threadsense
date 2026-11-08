@@ -215,8 +215,14 @@ Until then, the partial order is the most the existing ratings support.
 
 ## 6. Replay boundaries and fingerprints
 
-Controller behaviour changes derived selections without changing any request, so the prompt fingerprint alone cannot
-detect it:
+Controller changes fall into two kinds, and the prompt fingerprint alone detects neither:
+- **Pre-grounding** changes (`triggers`, `check_candidates`, `select`, `alternatives`) can change which action and
+  which alternatives are sent to the final grounding call. That **changes the grounding request**: a new, paid request
+  in production, a stopped replay, and PENDING (withheld) verdicts under `ReplayClient`.
+- **Post-grounding** changes (`finalize`, `fallback`, `choice_after_grounding`, `card_action_candidate`, display)
+  re-derive cards from unchanged responses at $0.
+
+Both are fingerprinted:
 - `advisor_tot.controller_fingerprint()` = `CONTROLLER_VERSION` plus the SHA-256 of the controller functions' source
   (line endings normalized).
 - The overnight run manifest records it as `tot_controller`, and `tot_shadow_policy` when the shadow is on. A resume
@@ -230,7 +236,8 @@ detect it:
 - `scripts/replay_overnight_topic.py` reports the recorded and current controller and both card-action links.
 - Each new comparison saves `tot.controller`. Records without it were made under controller v1 (before 2026-11-08).
 
-**What a replay of an older run does.** The v2 controller differs from v1 only on paths no saved live run takes:
+**What a replay of an older run does.** The v2 controller differs from v1 only on paths no saved live run takes. The
+first two are pre-grounding and would change the grounding request where they occur; the last two are post-grounding:
 - a missing decision;
 - an inconsistent REPLACE;
 - a fallback to the incumbent;

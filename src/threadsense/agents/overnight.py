@@ -368,7 +368,7 @@ def fingerprints(rt, limits):
     r = rt.retriever
     from threadsense.agents import advisor_tot, tot_policy
     return {'workflow_version': WORKFLOW_VERSION, 'pilot_version': pilot.PILOT_VERSION, 'prompts': pilot.prompt_fingerprints(),
-            # Controller rules change derived selections without changing a request; a resume under other rules is refused.
+            # Controller rules can change derived selections even when no request changes; a resume under other rules is refused.
             'tot_controller': advisor_tot.controller_fingerprint(),
             'cutoff': _iso(rt.cutoff), 'window': rt.extraction['window'],
             'handoff': {'run': _rel(rt.handoff), 'canonical_sha256': rt.view['canonical_sha256'],

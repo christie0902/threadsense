@@ -2,7 +2,9 @@
 
 Every step reads saved run directories. No model call, API key or network access is needed during the presentation.
 Each run's banner shows its mode (LIVE, SCRIPTED or TEST_FIXTURE), and each card has a badge naming its semantic
-source. Say which run you are on at every step. Implementation baseline: commit `d976eff`. Documentation changes after
+source. Say which run you are on at every step. Current demo baseline: section 0 (architecture and evidence status:
+[architecture/THREADSENSE_END_TO_END.md](architecture/THREADSENSE_END_TO_END.md)). Sections 1-5 were written against
+implementation baseline commit `d976eff`. Documentation changes after
 it are listed in section 7 of [agent3-acceptance.md](agent3-acceptance.md).
 
 ## Setup (once, before the session)
@@ -174,11 +176,21 @@ uv run --locked python scripts/build_decision_snapshot.py --decision-db D:/tsb/d
 ## Do not claim
 
 - That prompts v14 was verified live on anything other than Submit.
-- That 962 tests or 17/17 measure model accuracy.
-- That ToT replacement or close-call handling, or rejection of an unsupported route, has been observed live.
+- That any test count or 17/17 measures model accuracy.
+- That ToT replacement or a ToT fallback, or rejection of an unsupported route, has been observed live. (A close call
+  *has*: the NSFW card in the demo baseline is a live, unresolved close call with two viable options, none preferred.)
 - That any approval was executed or produced an outcome.
-- That Recommended Action or Observation cards came from a live evaluation (they are shown on the labelled fixture).
+- That the demo baseline is one untouched live run. Its 8 Recommended Action and 3 Observation cards come from live
+  Advisor judgments (campaign, refresh, targeted re-groundings), combined offline. Relevance exclusions and cross-group
+  merges are developer-audited labels and prepared decisions, not live Agent 1/2 judgments.
+- That the baseline has 95 active cards: it has 63 active cards (174 threads); the 95 records include 29 replaced and
+  3 processing-history cards.
+- That every discussion was processed: 177 of 178 were; Agent 1 rejected 1 (`AUTHORITY_INELIGIBLE`), recorded as
+  unfinished in the campaign's `final/run_summary.json`. "Accounting COMPLETE" is disposition accounting, not
+  processing success.
+- That every word on a card was checked by the model. Statements shown as established were; fixed UI text, quoted
+  sources, topic names and the labelled editorial suggestions were not.
 - That the dashboard authenticates users.
 - That the format card's three edited statements are model-written (they are human edits the live model judged SUPPORTED).
-- That Agent 1's semantic exclusion check has run live (it has been exercised with prepared verifier responses only).
+- That Agent 1's semantic exclusion check or the live Agent 2 merge judge has run live (both are exercised offline only).
 - That the synthetic Observation examples are live results.

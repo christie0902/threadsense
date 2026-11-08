@@ -153,7 +153,7 @@ def configuration(pipeline=PIPELINE_V1):
                                                        'max_completion_tokens_per_call', 'timeout_seconds',
                                                        'provider_sdk_max_retries', 'model_fallback')}},
         'agent3_prompts': pilot.prompt_fingerprints(), 'agent3_pilot_version': pilot.PILOT_VERSION,
-        # ToT controller rules (selection, fallback, finalization): they change derived selections without changing a request.
+        # ToT controller rules (selection, fallback, finalization): post-grounding changes alter cards without changing a request.
         'agent3_tot_controller': advisor_tot.controller_fingerprint(),
         'agent3_options': {'research_mode': 'batch (ReAct off)', 'flag_impact': False, 'revision_and_tot': 'conditional (existing)'},
         'transport': {'retries': 0, 'fallback_models': None, 'batch_api': 'not used (sequential proven transports)'},
