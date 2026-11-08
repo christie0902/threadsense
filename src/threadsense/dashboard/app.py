@@ -98,7 +98,8 @@ def create_app(*, catalog=None, store=None, fixture_root=FIXTURE_ROOT, clock=now
                             'lineage': c['lineage'], 'confidence': c['confidence'], 'confidence_band': c['confidence_band'],
                             'severity': c['severity'], 'inherited_flags': c['inherited_flags'],
                             'diagnostics': result.get('diagnostics'), 'coverage_issues': result.get('coverage_issues'),
-                            'action_notes': result.get('action_notes'), 'tot_status': (result.get('tot') or {}).get('status')}}
+                            'action_notes': result.get('action_notes'), 'tot_status': (result.get('tot') or {}).get('status'),
+                            'action_candidate': run.action_candidate(card_id)}}
 
     @app.get('/api/runs/{run_key}/cards/{card_id}/flags')
     def card_flags(run_key: str, card_id: str):

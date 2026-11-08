@@ -133,6 +133,18 @@ def open_run(path, mode, *, limit=None, parents=()):
     return Run(path, ex)
 
 
+def rules_vs_parent(configuration, parents):
+    """A replay or branch re-derives selections under the current rules; record which configuration keys (prompts,
+    controller, models, inputs) differ from the first parent's, so a rebuild under changed rules is never presented as a
+    same-rules replay. A key the parent did not record (e.g. agent3_tot_controller before controller v2) counts as changed."""
+    from threadsense.execution import pipeline as p
+    if not parents:
+        return None
+    saved = p.read_json(Path(parents[0])/'run_manifest.json')['configuration']
+    changed = sorted(k for k in configuration.keys() | saved.keys() if configuration.get(k) != saved.get(k))
+    return {'parent': str(parents[0]), 'status': 'CHANGED_RULES' if changed else 'SAME_RULES', 'changed': changed}
+
+
 def start(path, mode, limit, parents=(), label='FRESH_LIVE', pipeline=None):
     """pipeline: threadsense-full-run-v2 for new live runs; a replay or branch keeps its parent's pipeline."""
     from threadsense.execution import pipeline as p
@@ -141,10 +153,14 @@ def start(path, mode, limit, parents=(), label='FRESH_LIVE', pipeline=None):
                     if parents else p.PIPELINE_V2)
     if path.exists():
         raise SystemExit(f'{path} exists; every run writes a new directory (use resume).')
+    configuration = p.configuration(pipeline)
+    rules = rules_vs_parent(configuration, parents)
+    if rules and rules['status'] == 'CHANGED_RULES':
+        print(f"Rebuild under changed rules (not a same-rules replay): {', '.join(rules['changed'])} differ from the parent.")
     path.mkdir(parents=True)
     p.write_json(path/'run_manifest.json', {'kind': label, 'mode': mode, 'parents': [str(x) for x in parents], 'created_at': p.now(),
-                                            'hard_ceiling_usd': limit, 'target_usd': TARGET, 'configuration': p.configuration(pipeline),
-                                            'checkout': p.checkout()})
+                                            'hard_ceiling_usd': limit, 'target_usd': TARGET, 'configuration': configuration,
+                                            'checkout': p.checkout(), **({'rules_vs_parent': rules} if rules else {})})
     return open_run(path, mode, limit=limit, parents=parents)
 
 

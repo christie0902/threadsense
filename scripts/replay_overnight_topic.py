@@ -21,7 +21,7 @@ def replay(run, work_id, *, view=None, retriever=None, client=None):
     """(result, summary) for one work item of a saved overnight run, zero model calls. A consolidated work item and the
     processing history are rebuilt from the records the run itself fingerprinted (threadsense-full-run-v2). client: a
     ReplayClient (subclass) for this run; default the plain recorded replay."""
-    from threadsense.agents import advisor_pilot as pilot
+    from threadsense.agents import advisor_pilot as pilot, advisor_tot
     for name, value in pilot.QUIET_ENV.items():
         os.environ.setdefault(name, value)
     from threadsense.agents import overnight
@@ -60,6 +60,12 @@ def replay(run, work_id, *, view=None, retriever=None, client=None):
                         'replay_action': (result['card']['recommended_action'] or {}).get('action_type'),
                         'replay_line': result['card']['card_line'],
                         'replay_reasons': [r['code'] for r in result['card']['needs_review_reasons']]},
+               # The controller re-derives the selection; a run recorded under other controller rules is a rebuild.
+               'tot_controller': {'recorded': fingerprints.get('tot_controller', {'version': 'agent3-tot-controller-v1 (not recorded)'}),
+                                  'replay': advisor_tot.controller_fingerprint(),
+                                  'same_rules': fingerprints.get('tot_controller') == advisor_tot.controller_fingerprint(),
+                                  'recorded_card_action': (recorded.get('tot') or {}).get('card_action'),
+                                  'replay_card_action': (result.get('tot') or {}).get('card_action')},
                'reuse': {'reused': sum(r['reused'] for r in client.reuse_log), 'not_reused': [
                    {k: r[k] for k in ('statement_id', 'reason')} for r in client.reuse_log if not r['reused']]}}
     return result, summary

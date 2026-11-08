@@ -1,0 +1,824 @@
+{
+ "policy": {
+  "version": "agent3-tot-shadow-partial-order-v1",
+  "sha256": "71e7648ab60f7b28672a233126605ed52e4ceac27f2f4faca6596fcd43c0bb1e"
+ },
+ "model_calls": 0,
+ "runs": [
+  "data/experiments/threadsense_full_v1/stages/agent3/overnight_run",
+  "data/experiments/threadsense_full_v1_replay/stages/agent3/overnight_run",
+  "data/experiments/threadsense_full_v1_consolidated_refresh_v1"
+ ],
+ "basis": "LIVE comparisons as saved (model ratings and final-grounding verdicts); the shadow policy is applied offline and changes no artifact.",
+ "summary": {
+  "distinct_comparisons": 10,
+  "duplicate_copies_skipped": 8,
+  "model_decisions": {
+   "CLOSE_CALL": 3,
+   "KEEP_INCUMBENT": 7
+  },
+  "proposals": {
+   "CLOSE_CALL": 3,
+   "KEEP_INCUMBENT": 7
+  },
+  "shadow_outcomes": {
+   "SAME_AS_PRODUCTION": 10
+  },
+  "explicit_replacements_assessed": 0,
+  "unproposed_relations": {
+   "INELIGIBLE": 5,
+   "RATING_TIE": 4,
+   "INSUFFICIENT_COMPARISON": 7,
+   "INCUMBENT_ADVANTAGE": 1,
+   "CLEAR_ADVANTAGE": 1
+  },
+  "unproposed_relations_by_type": {
+   "CLEAR_ADVANTAGE / OPERATIONAL": 1,
+   "INCUMBENT_ADVANTAGE / OPERATIONAL": 1,
+   "INELIGIBLE / NO_ACTION": 4,
+   "INELIGIBLE / OPERATIONAL": 1,
+   "INSUFFICIENT_COMPARISON / NO_ACTION": 6,
+   "INSUFFICIENT_COMPARISON / OPERATIONAL": 1,
+   "RATING_TIE / OPERATIONAL": 4
+  },
+  "incumbent_issues": [
+   {
+    "topic": "Conflicting guidance source of truth",
+    "candidate_id": "focused_source_review",
+    "issues": [
+     "APPLICABILITY_OVERSTATED"
+    ],
+    "disposition": "LABEL_OVERSTATEMENT",
+    "affected_premises": [],
+    "non_current_citations": []
+   },
+   {
+    "topic": "QN handling for fictional phone numbers",
+    "candidate_id": "correct_help_page",
+    "issues": [
+     "APPLICABILITY_OVERSTATED"
+    ],
+    "disposition": "LABEL_OVERSTATEMENT",
+    "affected_premises": [],
+    "non_current_citations": [
+     {
+      "evidence_id": "k:safety-qn-help-page@1.0:983cdeaa",
+      "use": "HISTORY_ONLY",
+      "role": "DOCUMENTATION_TARGET"
+     },
+     {
+      "evidence_id": "k:safety-doc-sync-outcome@1.0:cd4505b9",
+      "use": "PRIOR_DECISION",
+      "role": "COMPARISON_CONTEXT"
+     }
+    ]
+   },
+   {
+    "topic": "Fictional placeholder contact details and QN handling",
+    "candidate_id": "correct_help_page",
+    "issues": [
+     "APPLICABILITY_OVERSTATED"
+    ],
+    "disposition": "LABEL_OVERSTATEMENT",
+    "affected_premises": [],
+    "non_current_citations": [
+     {
+      "evidence_id": "k:safety-doc-sync-outcome@1.0:cd4505b9",
+      "use": "PRIOR_DECISION",
+      "role": "COMPARISON_CONTEXT"
+     }
+    ]
+   },
+   {
+    "topic": "QN handling for fictional contact details",
+    "candidate_id": "correct_help_page",
+    "issues": [
+     "APPLICABILITY_OVERSTATED"
+    ],
+    "disposition": "LABEL_OVERSTATEMENT",
+    "affected_premises": [],
+    "non_current_citations": [
+     {
+      "evidence_id": "k:safety-doc-sync-outcome@1.0:cd4505b9",
+      "use": "PRIOR_DECISION",
+      "role": "COMPARISON_CONTEXT"
+     }
+    ]
+   }
+  ]
+ },
+ "comparisons": [
+  {
+   "topic": "Conflicting guidance source of truth",
+   "run": "data/experiments/threadsense_full_v1/stages/agent3/overnight_run",
+   "card_id": "card_db7c0b12b0823b548f9634f010925efd",
+   "card_line": "NEEDS_REVIEW",
+   "triggers": [
+    "OPEN_CONFIRMATION"
+   ],
+   "controller_recorded": "agent3-tot-controller-v1 (not recorded)",
+   "card_action": {
+    "candidate_id": "focused_source_review",
+    "basis": "INCUMBENT"
+   },
+   "choice_after_grounding": "RESOLVED_BY_GROUNDING",
+   "shadow": {
+    "policy": "agent3-tot-shadow-partial-order-v1",
+    "proposal": "CLOSE_CALL",
+    "model": {
+     "decision": "CLOSE_CALL",
+     "close_call": true,
+     "preferred_candidate_id": null,
+     "rationale": "The focused review and written collection both address a current unanswered question without inventing a precedence rule. The evidence supports clarification, but does not establish whether a discussion or a written exchange would work better. Both fit the assessed medium severity: a contained risk of inconsistent handling reported by one tutor, not demonstrated batch-wide disruption. Observation is plausible given the recent messages and the separate case-specific answer, but is less responsive to the unanswered question. Historical batch-14 calibration records do not establish current handling for this conflict. No candidate is a clear winner between the two clarification approaches. This comparison leaves OPEN_CONFIRMATION and both upstream announcement review flags unresolved; the team lead decides."
+    },
+    "production_card_action": {
+     "candidate_id": "focused_source_review",
+     "basis": "INCUMBENT"
+    },
+    "outcome": {
+     "status": "SAME_AS_PRODUCTION",
+     "eligible_after_grounding": [],
+     "explanation": "No explicit proposed replacement (CLOSE_CALL); production handling applies unchanged."
+    },
+    "unproposed_relations": [
+     {
+      "candidate_id": "written_source_collection",
+      "action_type": "POST_ALIGNMENT",
+      "assessment": "INELIGIBLE",
+      "ineligible_reason": "candidate issues ['APPLICABILITY_OVERSTATED']",
+      "supporting": [],
+      "opposing": [],
+      "unresolved": []
+     },
+     {
+      "candidate_id": "observe_without_new_intervention",
+      "action_type": "NO_ACTION",
+      "assessment": "INELIGIBLE",
+      "ineligible_reason": "candidate issues ['APPLICABILITY_OVERSTATED']",
+      "supporting": [],
+      "opposing": [],
+      "unresolved": []
+     }
+    ],
+    "incumbent_issues": [
+     {
+      "candidate_id": "focused_source_review",
+      "issues": [
+       "APPLICABILITY_OVERSTATED"
+      ],
+      "claimed_applicability": "CURRENT",
+      "recorded_applicability": "UNCLEAR",
+      "disposition": "LABEL_OVERSTATEMENT",
+      "action_verdict": "SUPPORTED",
+      "sufficiency": "SUFFICIENT",
+      "essential_premises": [
+       "claim:c1",
+       "claim:c2",
+       "claim:c3",
+       "claim:c5"
+      ],
+      "affected_premises": [],
+      "non_current_citations": []
+     }
+    ]
+   },
+   "comparison_sha256": "63cf8be321714605b4f32c4b81b1cab34d34bbe65856805b23cde843259ae11e",
+   "copies": [
+    "data/experiments/threadsense_full_v1/stages/agent3/overnight_run/topics/topic__cluster_35db244277f41789__topic_1.json",
+    "data/experiments/threadsense_full_v1_replay/stages/agent3/overnight_run/topics/topic__cluster_35db244277f41789__topic_1.json"
+   ]
+  },
+  {
+   "topic": "NSFW suggestive-content threshold",
+   "run": "data/experiments/threadsense_full_v1/stages/agent3/overnight_run",
+   "card_id": "card_551371f41074d3e1b2820992731febdb",
+   "card_line": "NEEDS_REVIEW",
+   "triggers": [
+    "OPEN_CONFIRMATION"
+   ],
+   "controller_recorded": "agent3-tot-controller-v1 (not recorded)",
+   "card_action": {
+    "candidate_id": "focused_discussion",
+    "basis": "INCUMBENT"
+   },
+   "choice_after_grounding": "UNRESOLVED",
+   "shadow": {
+    "policy": "agent3-tot-shadow-partial-order-v1",
+    "proposal": "CLOSE_CALL",
+    "model": {
+     "decision": "CLOSE_CALL",
+     "close_call": true,
+     "preferred_candidate_id": null,
+     "rationale": "The focused discussion and written clarification request both address a current, repeated handling question without inventing a cutoff. Either fits the contained consistency concern assessed as medium; the evidence does not establish completed incorrect labels or broader disruption. A discussion allows direct comparison, while a written request avoids scheduling another meeting. Neither is clearly better because the evidence does not establish urgency, participant availability or whether written clarification would suffice. Observation is plausible briefly but weaker because no pending answer is established. All assessments are bounded to the supplied evidence as of the topic date. The open-confirmation trigger and upstream announcement review flags remain unresolved; the team lead decides."
+    },
+    "production_card_action": {
+     "candidate_id": "focused_discussion",
+     "basis": "INCUMBENT"
+    },
+    "outcome": {
+     "status": "SAME_AS_PRODUCTION",
+     "eligible_after_grounding": [],
+     "explanation": "No explicit proposed replacement (CLOSE_CALL); production handling applies unchanged."
+    },
+    "unproposed_relations": [
+     {
+      "candidate_id": "written_clarification_request",
+      "action_type": "POST_ALIGNMENT",
+      "assessment": "RATING_TIE",
+      "supporting": [],
+      "opposing": [],
+      "unresolved": []
+     },
+     {
+      "candidate_id": "observe_existing_threads",
+      "action_type": "NO_ACTION",
+      "assessment": "INELIGIBLE",
+      "ineligible_reason": "candidate issues ['APPLICABILITY_OVERSTATED']",
+      "supporting": [],
+      "opposing": [],
+      "unresolved": []
+     }
+    ],
+    "incumbent_issues": []
+   },
+   "comparison_sha256": "b7da85c133b7b499e7ebd1ec4a054bb9f6a13cc3f359b21b01c74fb532cacb90",
+   "copies": [
+    "data/experiments/threadsense_full_v1/stages/agent3/overnight_run/topics/topic__cluster_44314b0d10532bdb__topic_1.json",
+    "data/experiments/threadsense_full_v1_replay/stages/agent3/overnight_run/topics/topic__cluster_44314b0d10532bdb__topic_1.json"
+   ]
+  },
+  {
+   "topic": "Public business contact information as PII",
+   "run": "data/experiments/threadsense_full_v1/stages/agent3/overnight_run",
+   "card_id": "card_48e05acea3efa675bd18a95bd5202594",
+   "card_line": "NEEDS_REVIEW",
+   "triggers": [
+    "TEMPORAL_CONFLICT"
+   ],
+   "controller_recorded": "agent3-tot-controller-v1 (not recorded)",
+   "card_action": {
+    "candidate_id": "candidate_1",
+    "basis": "INCUMBENT"
+   },
+   "choice_after_grounding": "NOT_A_CLOSE_CALL",
+   "shadow": {
+    "policy": "agent3-tot-shadow-partial-order-v1",
+    "proposal": "KEEP_INCUMBENT",
+    "model": {
+     "decision": "KEEP_INCUMBENT",
+     "close_call": false,
+     "preferred_candidate_id": "candidate_1",
+     "rationale": "The incumbent is clearly better for the supplied record because it answers the explicit general-rule question using current, project-wide guidance while preserving the required context check. Observation is plausible because a QA tutor has already requested that context and no incorrect classification or work stoppage is reported, but it leaves the handling question unanswered in the provided thread. A short conditional reply fits the assessed low severity without changing policy or extending another task’s thread-scoped answer. This comparison is bounded to the topic’s as-of time. It does not clear the TEMPORAL_CONFLICT review trigger, apply the historical blanket-quarantine wording as current guidance, or make a final classification; the team lead retains those review decisions."
+    },
+    "production_card_action": {
+     "candidate_id": "candidate_1",
+     "basis": "INCUMBENT"
+    },
+    "outcome": {
+     "status": "SAME_AS_PRODUCTION",
+     "eligible_after_grounding": [],
+     "explanation": "No explicit proposed replacement (KEEP_INCUMBENT); production handling applies unchanged."
+    },
+    "unproposed_relations": [
+     {
+      "candidate_id": "candidate_2",
+      "action_type": "NO_ACTION",
+      "assessment": "INSUFFICIENT_COMPARISON",
+      "supporting": [],
+      "opposing": [
+       "evidence_support"
+      ],
+      "unresolved": [
+       "need_strength"
+      ]
+     }
+    ],
+    "incumbent_issues": []
+   },
+   "comparison_sha256": "9f72ff4995198898ac9344656be926916d66f193abe1abecbe727b9364875972",
+   "copies": [
+    "data/experiments/threadsense_full_v1/stages/agent3/overnight_run/topics/topic__cluster_5fd689075c20372a__topic_1.json",
+    "data/experiments/threadsense_full_v1_replay/stages/agent3/overnight_run/topics/topic__cluster_5fd689075c20372a__topic_1.json"
+   ]
+  },
+  {
+   "topic": "QN rule version reconciliation",
+   "run": "data/experiments/threadsense_full_v1/stages/agent3/overnight_run",
+   "card_id": "card_4081a5107ce1346b09ff19d230fca30c",
+   "card_line": "NEEDS_REVIEW",
+   "triggers": [
+    "TEMPORAL_CONFLICT"
+   ],
+   "controller_recorded": "agent3-tot-controller-v1 (not recorded)",
+   "card_action": {
+    "candidate_id": null,
+    "basis": "NO_CARD_ACTION"
+   },
+   "choice_after_grounding": "NOT_A_CLOSE_CALL",
+   "shadow": {
+    "policy": "agent3-tot-shadow-partial-order-v1",
+    "proposal": "KEEP_INCUMBENT",
+    "model": {
+     "decision": "KEEP_INCUMBENT",
+     "close_call": false,
+     "preferred_candidate_id": "correct_help_page",
+     "rationale": "Keep the incumbent: current instructions establish the narrow rule, and the current FAQ expressly identifies the stale help-page branch for correction. The current batch announcement corroborates the remaining documentation conflict but directs only example collection, not a replacement quarantine rule or a pause on correction. A scoped edit addresses the conflicting reference more directly than another clarification post, while observation leaves it untouched. This is proportionate to medium-severity uncertainty about safety handling; there is no evidence of bypassed controls or widespread disruption. Historical approval and follow-up are not needed to establish the current rule or to claim completed repairs. This preference does not resolve the TEMPORAL_CONFLICT review trigger, authorize broader policy changes or clear individual tasks; those decisions remain with the team lead."
+    },
+    "production_card_action": {
+     "candidate_id": null,
+     "basis": "NO_CARD_ACTION"
+    },
+    "outcome": {
+     "status": "SAME_AS_PRODUCTION",
+     "eligible_after_grounding": [],
+     "explanation": "No explicit proposed replacement (KEEP_INCUMBENT); production handling applies unchanged."
+    },
+    "unproposed_relations": [
+     {
+      "candidate_id": "post_scoped_alignment",
+      "action_type": "POST_ALIGNMENT",
+      "assessment": "RATING_TIE",
+      "supporting": [],
+      "opposing": [],
+      "unresolved": []
+     },
+     {
+      "candidate_id": "observe_existing_scope_check",
+      "action_type": "NO_ACTION",
+      "assessment": "INSUFFICIENT_COMPARISON",
+      "supporting": [],
+      "opposing": [
+       "evidence_support",
+       "severity_fit",
+       "proportionality"
+      ],
+      "unresolved": [
+       "need_strength"
+      ]
+     }
+    ],
+    "incumbent_issues": []
+   },
+   "comparison_sha256": "a9f1d749e6ee3aa267948a5bed61a1a1939f290d9ebca3df9c40e4ddd2e3af43",
+   "copies": [
+    "data/experiments/threadsense_full_v1/stages/agent3/overnight_run/topics/topic__cluster_691526d72d861e51__topic_1.json",
+    "data/experiments/threadsense_full_v1_replay/stages/agent3/overnight_run/topics/topic__cluster_691526d72d861e51__topic_1.json"
+   ]
+  },
+  {
+   "topic": "QN handling for fictional phone numbers",
+   "run": "data/experiments/threadsense_full_v1/stages/agent3/overnight_run",
+   "card_id": "card_0d7532182c11fefef80d71f44ed9f57f",
+   "card_line": "NEEDS_REVIEW",
+   "triggers": [
+    "TEMPORAL_CONFLICT"
+   ],
+   "controller_recorded": "agent3-tot-controller-v1 (not recorded)",
+   "card_action": {
+    "candidate_id": "correct_help_page",
+    "basis": "INCUMBENT"
+   },
+   "choice_after_grounding": "NOT_A_CLOSE_CALL",
+   "shadow": {
+    "policy": "agent3-tot-shadow-partial-order-v1",
+    "proposal": "KEEP_INCUMBENT",
+    "model": {
+     "decision": "KEEP_INCUMBENT",
+     "close_call": false,
+     "preferred_candidate_id": "correct_help_page",
+     "rationale": "Keep the incumbent: current guidance explicitly identifies the stale copy for correction, and the proposed section-only repair addresses that documented conflict without changing policy. A targeted thread reply is useful for missing task context, but as a substitute it leaves the known documentation problem intact; observation is less adequate given the three current questions and reported differing notes. The bounded repair fits the assessed medium severity: uncertainty is documented, but completed mislabels, bypassed controls and broad disruption are not established. Historical records are used only for their recorded states, not as current policy or proof of later completion. This selection does not resolve the TEMPORAL_CONFLICT review trigger or clear individual task flags; those decisions remain with the team lead."
+    },
+    "production_card_action": {
+     "candidate_id": "correct_help_page",
+     "basis": "INCUMBENT"
+    },
+    "outcome": {
+     "status": "SAME_AS_PRODUCTION",
+     "eligible_after_grounding": [],
+     "explanation": "No explicit proposed replacement (KEEP_INCUMBENT); production handling applies unchanged."
+    },
+    "unproposed_relations": [
+     {
+      "candidate_id": "clarify_threads_and_request_context",
+      "action_type": "POST_ALIGNMENT",
+      "assessment": "RATING_TIE",
+      "supporting": [],
+      "opposing": [],
+      "unresolved": []
+     },
+     {
+      "candidate_id": "observe_existing_process",
+      "action_type": "NO_ACTION",
+      "assessment": "INSUFFICIENT_COMPARISON",
+      "supporting": [],
+      "opposing": [
+       "evidence_support",
+       "severity_fit",
+       "proportionality"
+      ],
+      "unresolved": [
+       "need_strength"
+      ]
+     }
+    ],
+    "incumbent_issues": [
+     {
+      "candidate_id": "correct_help_page",
+      "issues": [
+       "APPLICABILITY_OVERSTATED"
+      ],
+      "claimed_applicability": "CURRENT",
+      "recorded_applicability": "MIXED",
+      "disposition": "LABEL_OVERSTATEMENT",
+      "action_verdict": "SUPPORTED",
+      "sufficiency": "SUFFICIENT",
+      "essential_premises": [
+       "claim:c4",
+       "claim:c5",
+       "claim:c7"
+      ],
+      "affected_premises": [],
+      "non_current_citations": [
+       {
+        "evidence_id": "k:safety-qn-help-page@1.0:983cdeaa",
+        "use": "HISTORY_ONLY",
+        "role": "DOCUMENTATION_TARGET"
+       },
+       {
+        "evidence_id": "k:safety-doc-sync-outcome@1.0:cd4505b9",
+        "use": "PRIOR_DECISION",
+        "role": "COMPARISON_CONTEXT"
+       }
+      ]
+     }
+    ]
+   },
+   "comparison_sha256": "cc72e411e552ff6b17b2046cd3695584ebc39d183c957554d6768775a225dec1",
+   "copies": [
+    "data/experiments/threadsense_full_v1/stages/agent3/overnight_run/topics/topic__cluster_9378eb54bc546fcd__topic_1.json",
+    "data/experiments/threadsense_full_v1_replay/stages/agent3/overnight_run/topics/topic__cluster_9378eb54bc546fcd__topic_1.json"
+   ]
+  },
+  {
+   "topic": "Rubric alignment on significant factual errors",
+   "run": "data/experiments/threadsense_full_v1/stages/agent3/overnight_run",
+   "card_id": "card_f922d756e50f2959ebeb89773deb56c0",
+   "card_line": "NEEDS_REVIEW",
+   "triggers": [
+    "TEMPORAL_CONFLICT"
+   ],
+   "controller_recorded": "agent3-tot-controller-v1 (not recorded)",
+   "card_action": {
+    "candidate_id": "shared_reminder",
+    "basis": "INCUMBENT"
+   },
+   "choice_after_grounding": "NOT_A_CLOSE_CALL",
+   "shadow": {
+    "policy": "agent3-tot-shadow-partial-order-v1",
+    "proposal": "KEEP_INCUMBENT",
+    "model": {
+     "decision": "KEEP_INCUMBENT",
+     "close_call": false,
+     "preferred_candidate_id": "shared_reminder",
+     "rationale": "The incumbent is clearly better on the supplied record: it answers repeated threshold questions using current, project-wide guidance without needing the missing examples or committing time to a meeting. A scheduled review could become useful if complete examples still leave application disputes, but its added coordination is not yet supported. Observation is plausible while the existing request is pending, yet leaves the separate general questions unanswered. The medium severity assessment supports a limited clarification, not an assumption of broader disruption; a major factual defect is not itself an operational severity rating. Temporal-scope ratings concern the supplied record at the topic's stated assessment time, not confirmation of later status. Historical batch-14 calibration results are not used to justify these actions or predict benefits. The TEMPORAL_CONFLICT review trigger, missing example context, and reported discrepancy remain open for the team lead; this selection does not clear them."
+    },
+    "production_card_action": {
+     "candidate_id": "shared_reminder",
+     "basis": "INCUMBENT"
+    },
+    "outcome": {
+     "status": "SAME_AS_PRODUCTION",
+     "eligible_after_grounding": [],
+     "explanation": "No explicit proposed replacement (KEEP_INCUMBENT); production handling applies unchanged."
+    },
+    "unproposed_relations": [
+     {
+      "candidate_id": "focused_review",
+      "action_type": "SCHEDULE_ALIGNMENT",
+      "assessment": "INSUFFICIENT_COMPARISON",
+      "supporting": [],
+      "opposing": [
+       "evidence_support",
+       "need_strength",
+       "severity_fit"
+      ],
+      "unresolved": [
+       "proportionality"
+      ]
+     },
+     {
+      "candidate_id": "observe_existing_followup",
+      "action_type": "NO_ACTION",
+      "assessment": "INSUFFICIENT_COMPARISON",
+      "supporting": [],
+      "opposing": [
+       "evidence_support",
+       "severity_fit",
+       "proportionality"
+      ],
+      "unresolved": [
+       "need_strength"
+      ]
+     }
+    ],
+    "incumbent_issues": []
+   },
+   "comparison_sha256": "9fc12f171697a3c9ff973699ccf2f527a3e129d91c39888ceb4596e5574c5e42",
+   "copies": [
+    "data/experiments/threadsense_full_v1/stages/agent3/overnight_run/topics/topic__cluster_abd05f6abf50117f__topic_1.json",
+    "data/experiments/threadsense_full_v1_replay/stages/agent3/overnight_run/topics/topic__cluster_abd05f6abf50117f__topic_1.json"
+   ]
+  },
+  {
+   "topic": "Fictional placeholder contact details and QN handling",
+   "run": "data/experiments/threadsense_full_v1/stages/agent3/overnight_run",
+   "card_id": "card_6d202d508a0962154e22313f791f1f00",
+   "card_line": "NEEDS_REVIEW",
+   "triggers": [
+    "TEMPORAL_CONFLICT"
+   ],
+   "controller_recorded": "agent3-tot-controller-v1 (not recorded)",
+   "card_action": {
+    "candidate_id": "correct_help_page",
+    "basis": "INCUMBENT"
+   },
+   "choice_after_grounding": "NOT_A_CLOSE_CALL",
+   "shadow": {
+    "policy": "agent3-tot-shadow-partial-order-v1",
+    "proposal": "KEEP_INCUMBENT",
+    "model": {
+     "decision": "KEEP_INCUMBENT",
+     "close_call": false,
+     "preferred_candidate_id": "correct_help_page",
+     "rationale": "Keep the incumbent because current guidance explicitly calls for the narrow help-page correction, and the follow-up record documents that this work remained unfinished. It addresses the identified documentation conflict without expanding the exception or assuming task outcomes. Targeted thread clarification is also supported, but as a substitute it leaves the stale copy unchanged; observation is insufficient for the recurring, medium-severity handling uncertainty. Historical records establish prior completion status, not a competing current rule or proof of the live page today. This comparison does not resolve the temporal-conflict review trigger or clear either unanswered task; the team lead decides."
+    },
+    "production_card_action": {
+     "candidate_id": "correct_help_page",
+     "basis": "INCUMBENT"
+    },
+    "outcome": {
+     "status": "SAME_AS_PRODUCTION",
+     "eligible_after_grounding": [],
+     "explanation": "No explicit proposed replacement (KEEP_INCUMBENT); production handling applies unchanged."
+    },
+    "unproposed_relations": [
+     {
+      "candidate_id": "clarify_unanswered_threads",
+      "action_type": "POST_ALIGNMENT",
+      "assessment": "RATING_TIE",
+      "supporting": [],
+      "opposing": [],
+      "unresolved": []
+     },
+     {
+      "candidate_id": "observe_existing_follow_up",
+      "action_type": "NO_ACTION",
+      "assessment": "INELIGIBLE",
+      "ineligible_reason": "candidate issues ['APPLICABILITY_OVERSTATED']",
+      "supporting": [],
+      "opposing": [],
+      "unresolved": []
+     }
+    ],
+    "incumbent_issues": [
+     {
+      "candidate_id": "correct_help_page",
+      "issues": [
+       "APPLICABILITY_OVERSTATED"
+      ],
+      "claimed_applicability": "CURRENT",
+      "recorded_applicability": "MIXED",
+      "disposition": "LABEL_OVERSTATEMENT",
+      "action_verdict": "SUPPORTED",
+      "sufficiency": "SUFFICIENT",
+      "essential_premises": [
+       "claim:c7",
+       "claim:c8",
+       "claim:c9",
+       "claim:c12",
+       "claim:c13"
+      ],
+      "affected_premises": [],
+      "non_current_citations": [
+       {
+        "evidence_id": "k:safety-doc-sync-outcome@1.0:cd4505b9",
+        "use": "PRIOR_DECISION",
+        "role": "COMPARISON_CONTEXT"
+       }
+      ]
+     }
+    ]
+   },
+   "comparison_sha256": "31a3774e685e64ff7581d4b47a9867d043593b119175ee5c819da981b9e7e9a2",
+   "copies": [
+    "data/experiments/threadsense_full_v1/stages/agent3/overnight_run/topics/topic__cluster_d9ad05f5bda622e1__topic_1.json",
+    "data/experiments/threadsense_full_v1_replay/stages/agent3/overnight_run/topics/topic__cluster_d9ad05f5bda622e1__topic_1.json"
+   ]
+  },
+  {
+   "topic": "Implied intimacy label alignment",
+   "run": "data/experiments/threadsense_full_v1/stages/agent3/overnight_run",
+   "card_id": "card_510790d0513da636f38afcb5596e6f48",
+   "card_line": "NEEDS_REVIEW",
+   "triggers": [
+    "OPEN_CONFIRMATION"
+   ],
+   "controller_recorded": "agent3-tot-controller-v1 (not recorded)",
+   "card_action": {
+    "candidate_id": "candidate_1",
+    "basis": "INCUMBENT"
+   },
+   "choice_after_grounding": "NOT_A_CLOSE_CALL",
+   "shadow": {
+    "policy": "agent3-tot-shadow-partial-order-v1",
+    "proposal": "KEEP_INCUMBENT",
+    "model": {
+     "decision": "KEEP_INCUMBENT",
+     "close_call": false,
+     "preferred_candidate_id": "candidate_1",
+     "rationale": "Keep the incumbent: it is clearly better than observation because it answers the context question using current project guidance and requests the missing passage without assigning an unsupported label. The available messages support a low-severity, localized handling question, not a broader operational incident; a single focused reply is proportionate. Strong support for that reply does not establish the eventual label. The label boundary and OPEN_CONFIRMATION trigger remain unresolved, and the upstream announcement review flags remain open. The team lead decides whether to act."
+    },
+    "production_card_action": {
+     "candidate_id": "candidate_1",
+     "basis": "INCUMBENT"
+    },
+    "outcome": {
+     "status": "SAME_AS_PRODUCTION",
+     "eligible_after_grounding": [],
+     "explanation": "No explicit proposed replacement (KEEP_INCUMBENT); production handling applies unchanged."
+    },
+    "unproposed_relations": [
+     {
+      "candidate_id": "candidate_2",
+      "action_type": "NO_ACTION",
+      "assessment": "INELIGIBLE",
+      "ineligible_reason": "candidate issues ['APPLICABILITY_OVERSTATED']",
+      "supporting": [],
+      "opposing": [],
+      "unresolved": []
+     }
+    ],
+    "incumbent_issues": []
+   },
+   "comparison_sha256": "963b1698da9fe9733088976fc3db455947c15293b94f2e6c1f0d844bed78dd36",
+   "copies": [
+    "data/experiments/threadsense_full_v1/stages/agent3/overnight_run/topics/topic__cluster_e9e06ebfef6532df__topic_1.json",
+    "data/experiments/threadsense_full_v1_replay/stages/agent3/overnight_run/topics/topic__cluster_e9e06ebfef6532df__topic_1.json"
+   ]
+  },
+  {
+   "topic": "QN handling for fictional contact details",
+   "run": "data/experiments/threadsense_full_v1_consolidated_refresh_v1",
+   "card_id": "card_f716a452c7f18e4df5f5a72ece7e2066",
+   "card_line": "NEEDS_REVIEW",
+   "triggers": [
+    "TEMPORAL_CONFLICT"
+   ],
+   "controller_recorded": "agent3-tot-controller-v1 (not recorded)",
+   "card_action": {
+    "candidate_id": "correct_help_page",
+    "basis": "INCUMBENT"
+   },
+   "choice_after_grounding": "NOT_A_CLOSE_CALL",
+   "shadow": {
+    "policy": "agent3-tot-shadow-partial-order-v1",
+    "proposal": "KEEP_INCUMBENT",
+    "model": {
+     "decision": "KEEP_INCUMBENT",
+     "close_call": false,
+     "preferred_candidate_id": "correct_help_page",
+     "rationale": "Keep the incumbent because it directly addresses a specific conflict identified by the current FAQ, using the current instructions and dated clarification rather than treating historical approval as present policy. The assessed high severity concerns repeated uncertainty across distinct reporters, not demonstrated bypassing of safety controls; a narrow documentation correction fits that risk without expanding the exception. A scoped post is supported but leaves the conflicting artifact in place, while observation is plausible only as a temporary pause and is insufficient as the main response. The October status note does not establish a replacement handling rule, but its ambiguous reference to a guide still requires review. This selection does not resolve the TEMPORAL_CONFLICT review trigger or any pending task-review flags; the team lead decides."
+    },
+    "production_card_action": {
+     "candidate_id": "correct_help_page",
+     "basis": "INCUMBENT"
+    },
+    "outcome": {
+     "status": "SAME_AS_PRODUCTION",
+     "eligible_after_grounding": [],
+     "explanation": "No explicit proposed replacement (KEEP_INCUMBENT); production handling applies unchanged."
+    },
+    "unproposed_relations": [
+     {
+      "candidate_id": "post_scoped_alignment",
+      "action_type": "POST_ALIGNMENT",
+      "assessment": "INCUMBENT_ADVANTAGE",
+      "supporting": [],
+      "opposing": [
+       "severity_fit"
+      ],
+      "unresolved": []
+     },
+     {
+      "candidate_id": "observe_existing_review",
+      "action_type": "NO_ACTION",
+      "assessment": "INSUFFICIENT_COMPARISON",
+      "supporting": [],
+      "opposing": [
+       "evidence_support",
+       "severity_fit",
+       "proportionality"
+      ],
+      "unresolved": [
+       "need_strength"
+      ]
+     }
+    ],
+    "incumbent_issues": [
+     {
+      "candidate_id": "correct_help_page",
+      "issues": [
+       "APPLICABILITY_OVERSTATED"
+      ],
+      "claimed_applicability": "CURRENT",
+      "recorded_applicability": "MIXED",
+      "disposition": "LABEL_OVERSTATEMENT",
+      "action_verdict": "SUPPORTED",
+      "sufficiency": "SUFFICIENT",
+      "essential_premises": [
+       "claim:c3",
+       "claim:c4"
+      ],
+      "affected_premises": [],
+      "non_current_citations": [
+       {
+        "evidence_id": "k:safety-doc-sync-outcome@1.0:cd4505b9",
+        "use": "PRIOR_DECISION",
+        "role": "COMPARISON_CONTEXT"
+       }
+      ]
+     }
+    ]
+   },
+   "comparison_sha256": "4870bf1f2b575e3855378eec5c70c5dad3e34b77d1b4cc709eba303cd4b6bff3",
+   "copies": [
+    "data/experiments/threadsense_full_v1_consolidated_refresh_v1/topics/consolidated__consolidated_1eef9f984ee99bde.json"
+   ]
+  },
+  {
+   "topic": "Public business contact details are not private PII",
+   "run": "data/experiments/threadsense_full_v1_consolidated_refresh_v1",
+   "card_id": "card_a01c9982943aa733a64b3e51dd21e119",
+   "card_line": "NEEDS_REVIEW",
+   "triggers": [
+    "TEMPORAL_CONFLICT"
+   ],
+   "controller_recorded": "agent3-tot-controller-v1 (not recorded)",
+   "card_action": {
+    "candidate_id": "incumbent_reminder",
+    "basis": "INCUMBENT"
+   },
+   "choice_after_grounding": "RESOLVED_BY_GROUNDING",
+   "shadow": {
+    "policy": "agent3-tot-shadow-partial-order-v1",
+    "proposal": "CLOSE_CALL",
+    "model": {
+     "decision": "CLOSE_CALL",
+     "close_call": true,
+     "preferred_candidate_id": null,
+     "rationale": "The incumbent reminder and the thread-only follow-up both apply current, project-scoped guidance and preserve the missing task-context check. The reminder addresses several related questions, which fits the assessed medium severity; the thread-only option more narrowly addresses the single unanswered check. Neither is clearly better because the evidence does not establish whether broader communication is still needed. Observation is plausible because QA has already asked the right question, but it offers less assurance that the open check will be answered. The operational candidates rely on current guidance, not the superseded help-page wording or the unrelated fictional-contact decisions. These ratings do not resolve the TEMPORAL_CONFLICT review trigger or authorize clearing any task review requirement; the team lead decides."
+    },
+    "production_card_action": {
+     "candidate_id": "incumbent_reminder",
+     "basis": "INCUMBENT"
+    },
+    "outcome": {
+     "status": "SAME_AS_PRODUCTION",
+     "eligible_after_grounding": [],
+     "explanation": "No explicit proposed replacement (CLOSE_CALL); production handling applies unchanged."
+    },
+    "unproposed_relations": [
+     {
+      "candidate_id": "targeted_thread_followup",
+      "action_type": "POST_ALIGNMENT",
+      "assessment": "CLEAR_ADVANTAGE",
+      "supporting": [
+       "need_strength"
+      ],
+      "opposing": [],
+      "unresolved": []
+     },
+     {
+      "candidate_id": "observe_existing_review",
+      "action_type": "NO_ACTION",
+      "assessment": "INSUFFICIENT_COMPARISON",
+      "supporting": [],
+      "opposing": [
+       "evidence_support",
+       "severity_fit"
+      ],
+      "unresolved": [
+       "need_strength",
+       "proportionality"
+      ]
+     }
+    ],
+    "incumbent_issues": []
+   },
+   "comparison_sha256": "d9d2a129149942996e5f21826d67b16da4a693c36b73b61b260cf44de99d47bd",
+   "copies": [
+    "data/experiments/threadsense_full_v1_consolidated_refresh_v1/topics/consolidated__consolidated_9169449e1b82de41.json"
+   ]
+  }
+ ]
+}

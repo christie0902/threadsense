@@ -35,7 +35,8 @@ def live_settings():
 
 
 def build_runtime(out, mode, *, cutoff, only, max_requests, max_cost, release=(), index_dir=None, flag_impact=False,
-                  handoff=None, fixture_root=None, per_request=None, consolidation=None, processing_history=None):
+                  handoff=None, fixture_root=None, per_request=None, consolidation=None, processing_history=None,
+                  tot_shadow=False):
     from threadsense.agents import advisor_pilot as pilot
     from threadsense.agents import overnight
     if mode == 'LIVE':
@@ -49,10 +50,11 @@ def build_runtime(out, mode, *, cutoff, only, max_requests, max_cost, release=()
                                  mode=mode, release=release, settings=settings, index_dir=index_dir or overnight.INDEX_DIR,
                                  flag_impact=flag_impact, handoff=handoff or pilot.HANDOFF,
                                  fixture_root=fixture_root or overnight.FIXTURE_ROOT,
-                                 consolidation=consolidation, processing_history=processing_history)
+                                 consolidation=consolidation, processing_history=processing_history, tot_shadow=tot_shadow)
     return overnight.Runtime(out, client=overnight.HandoffScriptedClient(), cutoff=cutoff, only=only,
                              max_requests=max_requests, mode=mode, release=release, index_dir=index_dir or overnight.INDEX_DIR,
                              flag_impact=flag_impact, consolidation=consolidation, processing_history=processing_history,
+                             tot_shadow=tot_shadow,
                              **({'handoff': handoff} if handoff else {}), **({'fixture_root': fixture_root} if fixture_root else {}))
 
 
@@ -67,6 +69,8 @@ def main(argv=None):
     parser.add_argument('--only', action='append', help='Work ID, topic ID or pilot scenario ID (repeatable).')
     parser.add_argument('--max-requests', type=int, help='Run-wide HTTP request ceiling.')
     parser.add_argument('--flag-impact', action='store_true', help='Shadow flag-impact assessment in the grounding request.')
+    parser.add_argument('--tot-shadow', action='store_true', help='Record the shadow ToT policy (agent3-tot-shadow-partial-order-v1); '
+                        'no extra request, routing unchanged.')
     parser.add_argument('--max-cost', type=float, help='Run-wide dollar budget (live).')
     parser.add_argument('--release', action='append', default=[], help='With --resume: reprocess this interrupted work ID.')
     parser.add_argument('--handoff', type=Path, help='Agent 2 output directory (default: the projected v7 handoff).')
@@ -85,14 +89,14 @@ def main(argv=None):
     from threadsense.handoff_inputs import read_json
     if args.resume:
         if args.write or args.scripted or args.run or args.only or args.max_requests or args.max_cost or args.cutoff or args.index_dir \
-                or args.flag_impact or args.handoff or args.fixture_root or args.consolidation or args.processing_history:
+                or args.flag_impact or args.tot_shadow or args.handoff or args.fixture_root or args.consolidation or args.processing_history:
             parser.error('--resume takes its options from the run manifest; pass only --release.')
         saved = read_json(args.resume/'run_manifest.json')['fingerprints']
         if not saved['index'].get('index_dir'):
             parser.error('This run predates recorded snapshot paths; it cannot be resumed safely. Start a new run directory.')
         rt = build_runtime(args.resume, saved['mode'], cutoff=saved['cutoff'], only=saved['only'],
                            max_requests=saved['budget_limits']['model_calls_total'], max_cost=saved['cost_limit_usd'],
-                           release=args.release, flag_impact=saved.get('flag_impact', False),
+                           release=args.release, flag_impact=saved.get('flag_impact', False), tot_shadow='tot_shadow_policy' in saved,
                            handoff=overnight.ROOT/saved['handoff']['run'],
                            **{k: overnight.ROOT/saved[k]['path'] for k in ('consolidation', 'processing_history') if k in saved},
                            index_dir=overnight.ROOT/saved['index']['index_dir']
@@ -120,7 +124,7 @@ def main(argv=None):
         rt = build_runtime(args.write, mode, cutoff=args.cutoff, only=args.only, max_requests=args.max_requests,
                            max_cost=args.max_cost, index_dir=args.index_dir, flag_impact=args.flag_impact, handoff=args.handoff,
                            fixture_root=args.fixture_root, consolidation=args.consolidation,
-                           processing_history=args.processing_history)
+                           processing_history=args.processing_history, tot_shadow=args.tot_shadow)
     try:
         state = overnight.run(rt)
     except overnight.OvernightError as error:

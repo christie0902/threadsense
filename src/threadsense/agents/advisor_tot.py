@@ -17,15 +17,29 @@ keeps the incumbent; historical-only support never becomes a current operational
 the operational action but routing (inherited flags, other review reasons) is unchanged. Recorded v2 comparisons keep
 the original `adopt` behaviour.
 
+Selection boundary (mechanical, no numerical score): a v3 comparison replaces the incumbent only on an explicit
+REPLACE_INCUMBENT naming another candidate; a missing decision keeps it. A close call never names a preferred candidate.
+The fallback never re-admits the incumbent (the withheld action, also judged as an alternative). `card_action_candidate`
+links the card action to its candidate ID (saved as tot.card_action for new runs; derivable for saved ones).
+
 After the final grounding (`choice_after_grounding`): a close call matters only if it survives. When the comparison
 was a close call and at least two materially different options (different action types) are still viable - the card
 action, and reviewed candidates whose exact text was judged SUPPORTED with a passing sufficiency check (NO_ACTION needs
 no intervention need and no premises) - the choice is UNRESOLVED: both stay visible, neither is presented as
 preferred, and the card goes to Needs Review. The ACTION_CHOICE trigger itself is never a review reason.
 """
+from hashlib import sha256
+import inspect
+
 from threadsense.agents.advice_contracts import LOW_CONFIDENCE_BELOW
 from threadsense.agents.advisor_checks import CURRENT_USES, KNOWLEDGE_USES, display_issues, prose_issues
 from threadsense.agents.advisor_contracts import ToTComparison
+
+# Controller rules (selection, fallback, finalization, close calls), versioned apart from the prompt (RULES): a controller
+# change alters derived selections without changing any request, so runs fingerprint it (controller_fingerprint).
+# v1: before 2026-11-08 (records without tot.controller). v2: explicit REPLACE_INCUMBENT, close calls name no preferred
+# candidate, the fallback never re-admits the withheld action, tot.card_action.
+CONTROLLER_VERSION = 'agent3-tot-controller-v2'
 
 RULES = (
     'Compare 2-3 materially different candidate actions for this topic. If the draft proposes an action, include it '
@@ -151,10 +165,15 @@ def select(tot, draft):
     if tot.get('contract_version', 'agent3-tot-comparison-v2') == 'agent3-tot-comparison-v2':
         return adopt(tot, draft)
     chosen = next((c for c in tot['candidates'] if c['candidate_id'] == tot['model_preferred_candidate_id']), None)
-    if tot['close_call'] or tot.get('decision') == 'CLOSE_CALL':
+    decision = tot.get('decision')
+    if tot['close_call'] or decision == 'CLOSE_CALL':
         return draft, 'Close call: the draft action is kept; the reviewed alternatives stay visible for the team lead.'
-    if chosen is None or chosen.get('incumbent') or tot.get('decision') == 'KEEP_INCUMBENT':
+    if decision is None:  # v3 requires a decision; a preferred ID alone never replaces the incumbent.
+        return draft, 'ToT stated no decision (comparison v3 requires one); the draft action is kept.' if draft.proposed_action else None
+    if decision == 'KEEP_INCUMBENT':
         return draft, 'ToT kept the draft action (incumbent).' if draft.proposed_action else None
+    if chosen is None or chosen.get('incumbent'):
+        return draft, 'ToT decision REPLACE_INCUMBENT names no other candidate; the draft action is kept.'
     support = premises(chosen['evidence_ids'], draft)
     operational = chosen['action_type'] != 'NO_ACTION'
     reason = ('not valid' if not chosen['valid'] else f"candidate issues {chosen['issues']}" if chosen['issues'] else
@@ -218,7 +237,8 @@ def finalize(tot, grounding):
                    else 'NOT_PRESENTED_INVALID', 'sufficiency': sufficiency.get(f"alternative:{c['candidate_id']}")}
                   for c in tot['candidates']]
     grounded = {c['candidate_id'] for c in candidates if c['grounding'] == 'SUPPORTED'}
-    preferred = tot['model_preferred_candidate_id'] if tot['model_preferred_candidate_id'] in grounded else None
+    close = tot['close_call'] or tot.get('decision') == 'CLOSE_CALL'  # A close call names no preferred candidate.
+    preferred = tot['model_preferred_candidate_id'] if tot['model_preferred_candidate_id'] in grounded and not close else None
     return {**tot, 'candidates': candidates, 'preferred_candidate_id': preferred, 'grounded_candidate_ids': sorted(grounded),
             'presentation': 'PREFERRED_WITH_ALTERNATIVES' if preferred and not tot['close_call'] else
             'SURFACE_GROUNDED_ALTERNATIVES' if grounded else 'NO_GROUNDED_ALTERNATIVES',
@@ -234,8 +254,7 @@ def choice_after_grounding(tot, action):
         return {'status': 'NOT_COMPARED', 'viable': []}
     viable = [] if action is None else [{'candidate_id': None, 'action_type': action.action_type, 'source': 'CARD_ACTION'}]
     for c in tot['candidates']:
-        if action is not None and c['action_type'] == action.action_type and (c.get('draft_text') or '').strip() == (
-                action.draft_text or '').strip():
+        if _same_action(c, action):
             continue  # The card action itself (the incumbent, or the selected or fallback candidate).
         sufficient = c['action_type'] == 'NO_ACTION' or ((c.get('sufficiency') or {}).get('check') == 'SUPPORTED')
         if c['valid'] and not c['issues'] and c.get('grounding') == 'SUPPORTED' and sufficient:
@@ -244,6 +263,30 @@ def choice_after_grounding(tot, action):
     distinct = len({v['action_type'] for v in viable}) >= 2
     return {'status': 'NOT_A_CLOSE_CALL' if not close else 'UNRESOLVED' if distinct else 'RESOLVED_BY_GROUNDING',
             'viable': viable}
+
+
+def _same_action(candidate, action):
+    """A candidate with the action's type and exact draft text (whitespace-trimmed) is that action."""
+    return action is not None and candidate['action_type'] == action.action_type and (
+        candidate.get('draft_text') or '').strip() == (action.draft_text or '').strip()
+
+
+def card_action_candidate(tot, action, source):
+    """Which comparison candidate the card action is, from saved fields only: SELECTED (replaced the incumbent before
+    grounding), FALLBACK (replaced a withheld action after grounding), INCUMBENT (the kept draft action, entered verbatim
+    as the incumbent) or NOT_A_CANDIDATE (a recorded v2 comparison has no incumbent); NO_CARD_ACTION when nothing reached
+    the card. None when no comparison ran. `source`: the result's action_source (DRAFT, TOT, TOT_FALLBACK)."""
+    if tot.get('status') != 'COMPARED':
+        return None
+    if action is None:
+        return {'candidate_id': None, 'basis': 'NO_CARD_ACTION'}
+    if source == 'TOT' and tot.get('selected_candidate_id'):
+        return {'candidate_id': tot['selected_candidate_id'], 'basis': 'SELECTED'}
+    if source == 'TOT_FALLBACK':
+        return {'candidate_id': tot.get('model_preferred_candidate_id'), 'basis': 'FALLBACK'}
+    incumbent = next((c for c in tot.get('candidates') or [] if c.get('incumbent') and _same_action(c, action)), None)
+    return {'candidate_id': incumbent['candidate_id'], 'basis': 'INCUMBENT'} if incumbent else \
+        {'candidate_id': None, 'basis': 'NOT_A_CANDIDATE'}
 
 
 def fallback(tot, draft, verdict):
@@ -261,6 +304,10 @@ def fallback(tot, draft, verdict):
     chosen = next((c for c in tot['candidates'] if c['candidate_id'] == tot['model_preferred_candidate_id']), None)
     if chosen is None:
         return None, None, 'No ToT fallback: no preferred candidate.'
+    if chosen.get('incumbent') or _same_action(chosen, draft.proposed_action):
+        # The withheld action itself, also judged as an alternative; a second verdict on the same text does not re-admit it.
+        return None, None, (f"No ToT fallback: preferred candidate {chosen['candidate_id']} is the incumbent (the draft "
+                            'action that was withheld).')
     check = (chosen.get('sufficiency') or {}).get('check')
     reason = ('close call' if tot['close_call'] else 'not operational' if chosen['action_type'] == 'NO_ACTION' else
               'not valid' if not chosen['valid'] else f"issues {chosen['issues']}" if chosen['issues'] else
@@ -280,3 +327,13 @@ def fallback(tot, draft, verdict):
     essential = chosen['sufficiency']['essential_statement_ids']
     return action, essential, (f"Draft action withheld ({verdict}); card action is reviewed ToT candidate "
                                f"{chosen['candidate_id']}, judged SUPPORTED with sufficient final premises.")
+
+
+CONTROLLER_FUNCTIONS = (choice_trigger, triggers, _applicability, premises, check_candidates, _is_incumbent, compare, select,
+                        adopt, alternatives, finalize, choice_after_grounding, _same_action, card_action_candidate, fallback)
+
+
+def controller_fingerprint():
+    """Version plus SHA-256 of the controller functions' source (line endings normalized, so it matches across OSes)."""
+    source = '\n'.join(inspect.getsource(f).replace('\r\n', '\n') for f in CONTROLLER_FUNCTIONS)
+    return {'version': CONTROLLER_VERSION, 'sha256': sha256(source.encode('utf-8')).hexdigest()}

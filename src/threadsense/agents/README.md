@@ -7,7 +7,8 @@ Agent 3 (research, severity, AdviceCards) and the overnight workflow:
 | `advice_contracts.py` | AdviceCard v1-v4 (v4: `details`, `next_step`; `validate_card` reads v3 and v4), DecisionRecord, AnnouncementRecord, ModelReviewItem |
 | `advice_inputs.py` | Handoff loading/accounting, review items, historical DecisionRecord mapping |
 | `advisor_contracts.py` | Model I/O contracts (draft v11 with `detail_sentences`, grounding judgment, ToT) |
-| `advisor_evidence.py`, `advisor_checks.py`, `advisor_tot.py` | Evidence ledger and research tools; deterministic checks and routing; ToT |
+| `advisor_evidence.py`, `advisor_checks.py`, `advisor_tot.py` | Evidence ledger and research tools; deterministic checks and routing; ToT (design, candidate tracking and selection rules: `docs/agent3-tot-design.md`) |
+| `tot_policy.py` | Optional shadow ToT policy (partial order over the comparison's ratings; records, never routes) and incumbent-issue dispositions |
 | `advisor_pilot.py` | Advisor orchestration (CrewAI stages, request guard, cost ledger) |
 | `overnight.py` | LangGraph overnight workflow over the whole handoff (consolidated topics, processing history) |
 | `action_coordination.py` | Shared actions: one briefing action for distinct topics whose verified proposals match exactly |

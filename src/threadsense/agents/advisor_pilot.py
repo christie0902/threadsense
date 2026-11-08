@@ -1117,12 +1117,14 @@ def _adaptive(call, tools, draft, ledger, topic, rubric, interpretations, budget
 
 
 def advise(scenario, *, view, retriever, client, budget, rubric, run_id, as_of, initial=None, research_mode='batch',
-           flag_impact=False):
+           flag_impact=False, tot_shadow=False):
     """One topic. Never raises for model or budget problems; ScenarioError only for a missing topic.
     `initial` replaces the derived initial query (used to test recovery from an incomplete first pass).
     `research_mode` 'react' is the opt-in adaptive follow-up experiment (advisor_research); 'batch' is production.
     `flag_impact` (opt-in shadow evaluation, off in production): the final grounding call also assesses each inherited
-    flag (agents/flag_impact); the validated record is saved as `flag_impact` and routing does not read it."""
+    flag (agents/flag_impact); the validated record is saved as `flag_impact` and routing does not read it.
+    `tot_shadow` (opt-in, off in production): after the card is assembled, the shadow ToT policy (agents/tot_policy)
+    records `tot.shadow_policy` and its incumbent-issue dispositions in diagnostics; no request, card or route changes."""
     if research_mode not in advisor_research.RESEARCH_MODES:
         raise ValueError(f'research_mode must be one of {advisor_research.RESEARCH_MODES}.')
     budget.start_topic()
@@ -1208,6 +1210,12 @@ def advise(scenario, *, view, retriever, client, budget, rubric, run_id, as_of, 
                 action_notes = action_notes + [note]
         final['action_notes'] = action_notes
         tot['choice_after_grounding'] = advisor_tot.choice_after_grounding(tot, final['action'])
+        if tot['status'] == 'COMPARED':  # Which candidate the card action is (assemble_card drops it on UNSUPPORTED evidence).
+            source = 'TOT_FALLBACK' if final.get('essential') is not None else 'TOT' if action_notes and action_notes[0].startswith(
+                'Action selected') else 'DRAFT'
+            tot['card_action'] = advisor_tot.card_action_candidate(
+                tot, final['action'] if draft.evidence_sufficiency != 'UNSUPPORTED' else None, source)
+            tot['controller'] = advisor_tot.CONTROLLER_VERSION
         # Recorded supersession is credited only to announcements the final grounding verified; several current
         # sources explain a superseded section only if the final grounding judged that they agree. Conflicts the final
         # grounding found on its own reach routing here (the comparison ran before; it is not re-run).
@@ -1251,7 +1259,7 @@ def advise(scenario, *, view, retriever, client, budget, rubric, run_id, as_of, 
     # Members of the group's other topics are outside this scenario (not lost); obligations must all be carried.
     covered = {'group_members_outside_this_card': covered['missing_members'],
                'uncarried_obligations': covered['missing_obligations']}
-    return {'scenario': scenario, 'status': 'CARD', 'topic': {**topic, 'initial_query': query},
+    result = {'scenario': scenario, 'status': 'CARD', 'topic': {**topic, 'initial_query': query},
             'retrieval_trace': tools.trace, 'retrieval_notes': tools.notes(), 'follow_ups': follow_ups,
             **({'adaptive_research': adaptive} if adaptive is not None else {}),
             'unfilled_gaps': unfilled, 'model_calls': call.log, 'agent1_context': call.agent1_context(),
@@ -1270,6 +1278,11 @@ def advise(scenario, *, view, retriever, client, budget, rubric, run_id, as_of, 
             'tot': tot, 'evidence_ledger': ledger, 'card': card.model_dump(mode='json'),
             'review_items': [i.model_dump(mode='json') for i in items], 'coverage': covered,
             'budget': {'consumed': budget.topic_usage(), 'limits': BUDGET}, 'diagnostics': diagnostics}
+    if tot_shadow and tot['status'] == 'COMPARED':  # Shadow only: computed from the finished result, never routed.
+        from threadsense.agents import tot_policy
+        tot['shadow_policy'] = tot_policy.shadow(result)
+        diagnostics += [{'code': 'TOT_INCUMBENT_ISSUE', **d} for d in tot['shadow_policy']['incumbent_issues']]
+    return result
 
 
 def control(scenario, *, retriever, client, budget, rubric, as_of):

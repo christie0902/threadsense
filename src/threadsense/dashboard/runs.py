@@ -201,6 +201,17 @@ class Run:
                          'members': w.get('members', len(w.get('member_ids') or []))})
         return rows
 
+    def action_candidate(self, card_id):
+        """Which ToT candidate the card action is ({candidate_id, basis}; None when no comparison ran): tot.card_action
+        when the run saved it, otherwise derived from the saved selection, fallback source or verbatim incumbent."""
+        from types import SimpleNamespace
+        from threadsense.agents.advisor_tot import card_action_candidate
+        tot = ((self.topics.get(card_id) or {}).get('result') or {}).get('tot') or {}
+        if 'card_action' in tot:
+            return tot['card_action']
+        action = self.cards[card_id].get('recommended_action')
+        return card_action_candidate(tot, SimpleNamespace(**action) if action else None, (action or {}).get('source'))
+
     def alternatives(self, card_id):
         """ToT alternatives the final grounding call judged SUPPORTED and SUFFICIENT, with no recorded prose or display
         issue (advisor_tot.check_candidates), other than the card's action. When a close call survived the final
@@ -214,8 +225,10 @@ class Run:
         statements = {s['statement_id']: s for s in grounding.get('statements') or []}
         action = self.cards[card_id].get('recommended_action') or {}
         shown = action.get('draft_text')
+        own = (Run.action_candidate(self, card_id) or {}).get('candidate_id')  # The card action's own candidate.
         choice = tot.get('choice_after_grounding') or {}
         matched = {v['candidate_id'] for v in choice.get('viable') or []} if choice.get('status') == 'UNRESOLVED' else set()
+        close = bool(tot.get('close_call') or tot.get('decision') == 'CLOSE_CALL')  # A close call prefers no option.
         out = []
         for c in tot.get('candidates') or []:
             sid = f"alternative:{c['candidate_id']}"
@@ -223,11 +236,11 @@ class Run:
             if c['candidate_id'] not in matched and (j.get('check') != 'SUPPORTED' or j.get('verdict') != 'SUFFICIENT'
                                                      or (statements.get(sid) or {}).get('verdict') != 'SUPPORTED'):
                 continue
-            if c.get('issues') or c.get('draft_text') == shown:
+            if c.get('issues') or c.get('draft_text') == shown or (own is not None and c['candidate_id'] == own):
                 continue
             out.append({'candidate_id': c['candidate_id'], 'action_type': c['action_type'], 'label': ACTION_LABELS[c['action_type']],
                         'instruction': c.get('instruction'), 'draft_text': c.get('draft_text'), 'rationale': c.get('rationale'),
-                        'preferred_by_comparison': not matched and c['candidate_id'] == tot.get('preferred_candidate_id'),
+                        'preferred_by_comparison': not matched and not close and c['candidate_id'] == tot.get('preferred_candidate_id'),
                         'closely_matched': c['candidate_id'] in matched,
                         'relation': 'INCUMBENT' if c.get('incumbent') else 'SAME_ACTION_TYPE'
                         if c['action_type'] == action.get('action_type') else 'DIFFERENT_ACTION'})

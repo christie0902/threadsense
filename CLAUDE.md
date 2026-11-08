@@ -47,7 +47,9 @@ uv run --locked --extra dev python -m pytest tests/test_x.py   # single file
 - `data/knowledge/` — knowledge store (instructions, faq, decisions/<project>, `domain_lexicon.json`, `severity_rubric.py`).
 - `data/processed/`, `data/experiments/` — frozen run outputs. `data/metadata/` — hash-bound review registries.
 - `docs/` — Agent1/Agent2 summaries, `announcement-routing.md` (current data flow), `agent3-plan.md`, `repository-cleanup.md`,
-  `agent3-acceptance.md` (acceptance report, scenario coverage, limitations) and `agent3-demo-walkthrough.md` (zero-call dashboard demo).
+  `agent3-acceptance.md` (acceptance report, scenario coverage, limitations), `agent3-demo-walkthrough.md` (zero-call dashboard demo) and `agent3-tot-design.md` (ToT as implemented, controller `agent3-tot-controller-v2` fingerprinted as `tot_controller`,
+  optional shadow policy `agents/tot_policy.py` / `scripts/evaluate_tot_shadow.py`:
+  candidate tracking, selection rules, framework roles, proposals).
 
 ## Conventions
 

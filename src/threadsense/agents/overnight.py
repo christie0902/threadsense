@@ -216,7 +216,7 @@ class Runtime:
     def __init__(self, out_dir, *, client, cutoff, handoff=pilot.HANDOFF, fixture_root=FIXTURE_ROOT, only=None,
                  max_requests=None, ledger=None, mode='SCRIPTED', retriever_factory=None, advise=None,
                  release=(), settings=None, index_dir=INDEX_DIR, flag_impact=False, consolidation=None,
-                 processing_history=None):
+                 processing_history=None, tot_shadow=False):
         self.out, self.client, self.cutoff, self.handoff, self.fixture_root = Path(out_dir), client, cutoff, Path(handoff), Path(fixture_root)
         self.only, self.max_requests, self.ledger, self.mode = (list(only) if only else None), max_requests, ledger, mode
         self.index_dir, self.owns_retriever = Path(index_dir), retriever_factory is None
@@ -224,6 +224,7 @@ class Runtime:
         self.advise, self.release = advise or pilot.advise, set(release)
         self.settings = settings
         self.flag_impact = flag_impact  # opt-in shadow flag-impact assessment (advise(flag_impact=True))
+        self.tot_shadow = tot_shadow  # opt-in shadow ToT policy (advise(tot_shadow=True)); never routes
         # threadsense-full-run-v2: Agent 2 consolidation record and Agent 1 processing history (None for earlier runs).
         self.consolidation = Path(consolidation) if consolidation else None
         self.processing_history = Path(processing_history) if processing_history else None
@@ -365,7 +366,10 @@ def plan_work(rt):
 
 def fingerprints(rt, limits):
     r = rt.retriever
+    from threadsense.agents import advisor_tot, tot_policy
     return {'workflow_version': WORKFLOW_VERSION, 'pilot_version': pilot.PILOT_VERSION, 'prompts': pilot.prompt_fingerprints(),
+            # Controller rules change derived selections without changing a request; a resume under other rules is refused.
+            'tot_controller': advisor_tot.controller_fingerprint(),
             'cutoff': _iso(rt.cutoff), 'window': rt.extraction['window'],
             'handoff': {'run': _rel(rt.handoff), 'canonical_sha256': rt.view['canonical_sha256'],
                         'routing_manifest_sha256': file_hash(rt.handoff/'routing_manifest.json')
@@ -386,6 +390,7 @@ def fingerprints(rt, limits):
             'cost_limit_usd': rt.ledger.limit_usd if rt.ledger is not None else None,
             'work_plan_sha256': _digest([{k: w[k] for k in ('work_id', 'member_ids', 'in_scope')} for w in rt.work]),
             **({'flag_impact': True} if rt.flag_impact else {}),
+            **({'tot_shadow_policy': tot_policy.fingerprint()} if rt.tot_shadow else {}),
             # Present only on threadsense-full-run-v2 runs, so earlier run manifests resume unchanged.
             **({'consolidation': {'path': _rel(rt.consolidation), 'sha256': file_hash(rt.consolidation)}} if rt.consolidation else {}),
             **({'processing_history': {'path': _rel(rt.processing_history), 'sha256': file_hash(rt.processing_history)}}
@@ -454,7 +459,7 @@ def process_topic(rt, state):
     try:
         result = rt.advise(scenario, view=rt.view, retriever=rt.retriever, client=rt.client, budget=rt.state.budget,
                            rubric=rt.rubric, run_id=run_id(rt), as_of=rt.retriever.manifest['cutoff'],
-                           **({'flag_impact': True} if rt.flag_impact else {}))
+                           **({'flag_impact': True} if rt.flag_impact else {}), **({'tot_shadow': True} if rt.tot_shadow else {}))
         validate_card(result['card'])
         failed = [c for c in result['model_calls'] if c['status'] != 'OK']
         workflow = {'outcome': 'CARD_WITH_STAGE_FAILURES' if failed else 'CARD', 'card_id': result['card']['card_id'],
