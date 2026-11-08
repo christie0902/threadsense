@@ -80,7 +80,7 @@ def test_format_card_labels_human_edits_keeps_the_judged_draft_and_lists_the_sug
     [suggestion] = presentation['tl_suggestions']
     assert suggestion['status'] == 'NOT_JUDGED' and 'JSON' in suggestion['text']
     text = (EXP/V2/'morning_brief.md').read_text(encoding='utf-8')
-    assert 'Human edits verified by the live model' in text and 'Suggestion for the team lead (not judged)' in text
+    assert 'Human edits verified by the live model' in text and 'Posting suggestions for the team lead (not judged' in text
 
 
 def test_decisions_stay_isolated_by_run_and_export_with_their_run_binding(env):

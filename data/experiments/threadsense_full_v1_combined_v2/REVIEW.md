@@ -63,3 +63,20 @@ from audited labels.
 ## Screenshots
 
 `screenshots/`: overview, observations, overlapping speech, format card; `observation-demo.png` is the separate fixture run.
+
+## Presentation layer (briefing-presentation-v1, zero calls)
+
+`presentation.json` (built by `scripts/build_presentation.py --write`, bound to this run instance; the four instance
+files are unchanged, so decisions stay bound). `morning_brief.md` was regenerated from it; the original export is kept as
+`exports/morning_brief.derivation.md`.
+
+- Totals: 63 active cards covering 174 threads (52/8/3); 3 processing-history threads and 37 review items stated
+  separately; 95 card records in this directory = 63 active + 29 replaced (history) + 3 processing history.
+- Usage by stage: full pipeline 937 requests, $15.3173 (campaign ledger); refresh 32 requests, $2.2280; targeted checks
+  2 requests, $0.094 as reported ($0.094422 exact); offline assembly 0 requests, $0.
+- Format card: posting suggestions (not judged) apart from the judged draft: reply in the October 2, 10:21 UTC status note
+  thread (`k:slack:C_RP_ANNOUNCEMENTS:1790936513.000019:8237860f`), and the optional JSON-versus-prose line.
+- NSFW card: "Choose a next step" with both saved, eligible options (review session with its scope condition; written
+  request); the cutoff question stays open and the card stays in review.
+- Editorial notes (developer, not judged, with sources): fictional-contact "Confirm before editing"; queue-coverage
+  "Timing unconfirmed".

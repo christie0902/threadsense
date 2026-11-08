@@ -230,6 +230,17 @@ function TechnicalTab({ card, detail, run, displayTitle }) {
   )
 }
 
+// An editorial clarification from saved records (presentation.json): labelled, attributed, never card text.
+function EditorialNote({ note, openPanel }) {
+  return (
+    <div className="mt-2 rounded-lg border border-amber-300/20 bg-amber-300/[0.04] px-3 py-2 text-xs text-slate-300" data-testid="editorial-note">
+      <span className="font-medium text-amber-100">{note.label}</span> <span className="text-slate-500">(editorial note, not judged)</span>: {note.text}
+      <span className="ml-1">{note.sources.map(src => (
+        <button key={src.evidence_id} type="button" className="link mr-2" data-testid="editorial-source" onClick={() => openPanel?.({ type: 'evidence', id: src.evidence_id })}>source</button>))}</span>
+    </div>
+  )
+}
+
 export default function CardView({ runKey, run, item, actor, decisionState, onDecisionChanged, openPanel, openQueueItem, wide = false }) {
   const { card, alternatives, cited_evidence: cited, allowed_decisions: allowed, semantic_source: source, review, presentation } = item
   const step = presentation?.next_step
@@ -293,6 +304,7 @@ export default function CardView({ runKey, run, item, actor, decisionState, onDe
 
         <div className={open || wide ? 'lg:grid lg:grid-cols-[minmax(0,1.2fr)_minmax(0,1fr)] lg:items-start lg:gap-6' : ''}>
         <p className="prose-pre mt-3 text-sm leading-relaxed text-slate-300" data-testid="card-summary">{card.summary}</p>
+        {presentation?.editorial_notes?.filter(n => n.placement === 'SUMMARY').map(n => <EditorialNote key={n.label} note={n} openPanel={openPanel} />)}
 
         {operational && (
           <div className={`mt-4 flex items-start gap-3 rounded-xl border border-cyan-400/15 bg-cyan-400/[0.05] p-3 ${open || wide ? 'lg:mt-2' : ''}`} data-testid="action-box">
@@ -310,6 +322,14 @@ export default function CardView({ runKey, run, item, actor, decisionState, onDe
             </div>
           </div>
         )}
+        {presentation?.choice && (
+          <div className="mt-2 rounded-lg border border-cyan-400/15 bg-cyan-400/[0.04] px-3 py-2 text-xs text-slate-300" data-testid="choice">
+            <div className="font-medium text-cyan-100">{presentation.choice.heading} ({presentation.choice.options.length} options)</div>
+            <ol className="mt-1 list-decimal pl-4">{presentation.choice.options.map(o => <li key={o.label} data-testid="choice-option">{o.label}</li>)}</ol>
+            <div className="mt-1 text-slate-400">{presentation.choice.basis} Both drafts are under Action &amp; draft.</div>
+          </div>
+        )}
+        {presentation?.editorial_notes?.filter(n => n.placement === 'ACTION').map(n => <EditorialNote key={n.label} note={n} openPanel={openPanel} />)}
         {!operational && step && (
           <div className={`mt-4 flex items-center gap-2 text-sm text-slate-300 ${open || wide ? 'lg:mt-2' : ''}`} data-testid="next-step-status" data-status={step.status}>
             <Icon name={(STEP_STYLES[step.status] || STEP_STYLES.NO_RECOMMENDATION_AVAILABLE)[0]} className={`h-4 w-4 ${(STEP_STYLES[step.status] || STEP_STYLES.NO_RECOMMENDATION_AVAILABLE)[1]}`} />
@@ -332,7 +352,15 @@ export default function CardView({ runKey, run, item, actor, decisionState, onDe
             </ul>
           </div>
         )}
-        {presentation?.tl_suggestions?.map(s => (
+        {presentation?.posting_suggestions?.length > 0 && (
+          <div className="mt-2 rounded-lg border border-white/10 bg-white/[0.02] px-3 py-2 text-xs text-slate-300" data-testid="posting-suggestions">
+            <div className="font-medium text-slate-100">Posting suggestions for you (not judged; not part of the draft)</div>
+            <ul className="mt-1 list-disc pl-4">{presentation.posting_suggestions.map(s => (
+              <li key={s.text} data-testid="posting-suggestion"><span className="text-slate-400">{s.label}:</span> {s.text}
+                {s.source && <> <button type="button" className="link" data-testid="posting-source" onClick={() => openPanel?.({ type: 'evidence', id: s.source.evidence_id })}>Open the status note</button></>}</li>))}</ul>
+          </div>
+        )}
+        {!presentation?.posting_suggestions?.length && presentation?.tl_suggestions?.map(s => (
           <div key={s.text} className="mt-2 rounded-lg border border-white/10 bg-white/[0.02] px-3 py-2 text-xs text-slate-300" data-testid="tl-suggestion">
             <span className="font-medium text-slate-100">Suggestion for you (not judged):</span> {s.text}
           </div>

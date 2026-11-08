@@ -4,9 +4,11 @@ Status: **COMPLETE**. Semantic judgments: LIVE_MODEL. Combined briefing (zero mo
 
 Window 2026-10-01T12:00:00+00:00 to 2026-10-02T12:00:00+00:00: 23 announcements (23 in the retrieval snapshot).
 
-95 cards (NEEDS_REVIEW 76, OBSERVATION 7, RECOMMENDED_ACTION 12); 37 Model Review Queue items; 177 discussion members (177 on cards); 0 announcement-route members.
+**63 active cards covering 174 threads:** 52 Needs Review, 8 Recommended Action, 3 Observation.
 
-Briefing (briefing-routing-v2): 63 cards in this brief (NEEDS_REVIEW 52, OBSERVATION 3, RECOMMENDED_ACTION 8); 0 kept in history.
+Separately: 3 processing-history threads (not briefed); 37 Model Review Queue items.
+
+Card records in this directory: 95 (63 active, 29 replaced by combined issues and kept as history, 3 processing history). Not an active total.
 
 Retrieval snapshot `.index/retrieval` (cutoff 2026-10-02T12:00:00Z, build 4da16f090eb5): 0 saved TL decisions, 0 earlier announcements kept as history.
 
@@ -51,7 +53,9 @@ Recommended Action - severity medium (assessed), mixed
 - Reason to intervene: Why intervening now is needed (an unresolved handling question): Three threads ask how a required output format should weigh against accuracy or prose quality, and the provided replies do not settle the comparisons.
 - Severity signal: Rubric signal met - "Recurring confusion about the same rule, tool behavior, or scoring criterion that suggests meaningful workflow or labeling impact": Two QA tutors and a tutor independently ask how a required output format should affect preference against accuracy or prose quality, including a concrete JSON-versus-prose task comparison.
 
-**Suggestion for the team lead (not judged).** Optional addition when posting: a required JSON object answered in well-written prose is still a missing required format; score the prose quality separately.
+**Posting suggestions for the team lead (not judged; not part of the draft):**
+- Where to post: Consider replying in the October 2, 10:21 UTC batch status note in #response-preference-announcements, which asks people to keep factuality-versus-instruction examples in its thread. Source: C_RP_ANNOUNCEMENTS 1790936513.000019 (`k:slack:C_RP_ANNOUNCEMENTS:1790936513.000019:8237860f`).
+- Optional addition when posting: a required JSON object answered in well-written prose is still a missing required format; score the prose quality separately.
 
 Threads: #response-preference-general, 2026-10-01, started by a QA tutor: "Could QA clarify this case: A follows format, B is more accurate." (1790856332.000018); #response-preference-qa, 2026-10-02, started by a QA tutor: "Prompt asked for a JSON object; B explains it beautifully in prose." (1790913824.000016); #response-preference-general, 2026-10-02, started by a tutor: "Can accuracy outweigh ignoring the user's requested output structure?" (1790932885.000015)
 
@@ -528,6 +532,8 @@ Needs Review - severity high (assessed), mixed
 > 
 > The September 10, 2026 clarification replaces this section's former blanket initial-quarantine requirement for fictional contact details only. It does not waive unrelated safety controls.
 
+**Confirm before editing** (editorial note, not judged): The earlier documentation inspection identified the old QN help page's Contact details section as the remaining stale wording. Whether the October 2 status note's “guide” refers to that same document is not established; confirm that before making this edit. Sources: `k:safety-doc-sync-outcome@1.0:cd4505b9`, `k:slack:C_SAFETY_ANNOUNCEMENTS:1790920369.000062:16f43f1b`, `k:safety-qn-help-page@1.0:983cdeaa`.
+
 **Still needs review:**
 - Severity is high under the team rubric.
 - 4 earlier review flags are still open on these threads.
@@ -870,13 +876,17 @@ Needs Review - severity medium (assessed), unresolved
 
 **What happened.** A QA tutor asks about the NSFW cutoff in two threads, including SAFETY-1342; a tutor also reports uncertainty about the threshold. Neither thread establishes an answer, and the follow-up retrieval still does not establish a cutoff for suggestive but non-explicit content.
 
-**What to do: Schedule a short review session.** Schedule a focused discussion of the two suggestive-content questions to establish the applicable NSFW cutoff before presenting a shared answer.
+**Choose a next step.** Closely matched options, none preferred by the saved comparison; both passed the final evidence check. The card stays in review.
 
-**Why.** Repeated uncertainty about the same classification boundary warrants a shared answer. Follow-up retrieval still does not supply that boundary, so a reminder of a settled cutoff would be premature.
+1. **Schedule a short review session.** Schedule a focused discussion of the two suggestive-content questions to establish the applicable NSFW cutoff before presenting a shared answer. Applies only as stated: Limit the discussion to the two reported suggestive-content questions; this proposal does not establish a new cutoff or assign either task a label.
 
-**Draft to copy:**
+   > Let's review the NSFW cutoff together. A QA tutor has asked about suggestive-content handling in two threads, including SAFETY-1342. In that task's thread, a QA tutor and a tutor describe the language as suggestive; the QA tutor says it is never explicit, and the tutor cannot tell which policy threshold applies. Another QA tutor asks whether the quoted passage is explicit or merely suggestive. Please bring the relevant passages and any applicable threshold guidance so we can compare the cases and establish the handling to use.
 
-> Let's review the NSFW cutoff together. A QA tutor has asked about suggestive-content handling in two threads, including SAFETY-1342. In that task's thread, a QA tutor and a tutor describe the language as suggestive; the QA tutor says it is never explicit, and the tutor cannot tell which policy threshold applies. Another QA tutor asks whether the quoted passage is explicit or merely suggestive. Please bring the relevant passages and any applicable threshold guidance so we can compare the cases and establish the handling to use.
+2. **Post a reminder.** Post a linked request in the two threads for the relevant passages and applicable NSFW guidance, keeping the cutoff open until the guidance is confirmed. Why: A written request connects the unanswered questions and gathers the context needed for clarification without requiring a meeting or treating an unknown cutoff as settled.
+
+   > These two threads ask about the boundary between suggestive content and NSFW, including SAFETY-1342. Please add the relevant passages with their surrounding context and any current guidance that answers the cutoff question. The retrieved instructions call for judging meaning and context but do not establish this boundary. Let's use this exchange to seek a confirmed answer rather than announce a new cutoff or assign either task a label.
+
+Still open: What NSFW cutoff should apply to suggestive but non-explicit content, including SAFETY-1342?
 
 **Still needs review:**
 - Open question: What NSFW cutoff should apply to suggestive but non-explicit content, including SAFETY-1342?
@@ -1421,6 +1431,8 @@ Observation - severity n/a (assessed), unknown
 
 **What happened.** A QA tutor reminds members of a same-day queue closure at 6 PM; a different QA tutor reports coverage for the next day's early preference queue shift. A tutor in each thread acknowledges the update and plans to finish open tasks before closure; neither thread raises a handling question or reports a problem.
 
+**Timing unconfirmed** (editorial note, not judged): “Today” is from the closure reminder posted 2026-10-01 18:40 UTC; “tomorrow” is from the coverage post posted 2026-10-02 01:14 UTC. No timezone is recorded for either post, so the days they refer to are unconfirmed. Sources: `m:C_RP_GENERAL:1790880012.001400`, `m:C_RP_GENERAL:1790903659.000050`.
+
 Threads: #response-preference-general, 2026-10-01, started by a QA tutor: "Reminder: the response preference queue closes at 6 PM today." (1790880012.001400); #response-preference-general, 2026-10-02, started by a QA tutor: "Jordan is covering the early preference queue shift tomorrow." (1790903659.000050)
 
 ## Work environment and background noise
@@ -1464,7 +1476,14 @@ Kept out of issue clustering by Agent 1 relevance; identities and review obligat
 
 - agent1 inherited_agent1_review: 37
 
-## Usage
+## Usage by stage
 
-Requests sent 32, blocked 0; input 471824, output 128437 tokens; charged $2.2280.
+| Stage | Requests | Cost for this stage | Source |
+|---|---|---|---|
+| Full pipeline (Agent 1 to Agent 3, campaign ledger) | 937 | $15.3173 | `data/experiments/threadsense_full_v1/final/run_summary.json` |
+| Consolidated-issue refresh (14 issues, Agent 3) | 32 | $2.2280 | `data/experiments/threadsense_full_v1_consolidated_refresh_v1/morning_brief.json` |
+| Targeted grounding checks (2 cards) | 2 | $0.094 (as reported; exact $0.094422) | `data/experiments/agent3_reground_v1` |
+| Offline assembly (combined briefings and this presentation) | 0 | $0.000 | `derivation.json (model_calls 0)` |
+
+The full-pipeline total comes from the campaign ledger; the other rows are later, separate stages.
 

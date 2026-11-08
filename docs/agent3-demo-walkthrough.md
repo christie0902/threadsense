@@ -46,8 +46,9 @@ uv run --locked python scripts/run_dashboard.py --include-test-fixtures --runs d
 Then open http://127.0.0.1:8000/#run=threadsense_full_v1_combined_v2.
 
 Show:
-- **Overview:** 63 in this brief (14 combined issues), 3 kept in history; 52 Needs Review, 8 Recommended Action,
-  3 Observation. Agent 3 advice is live model output; relevance labels and merge decisions are developer audits.
+- **Overview:** 63 active cards covering 174 threads (52 Needs Review, 8 Recommended Action, 3 Observation); separately
+  3 processing-history threads and 37 review-queue items. "Card records in this run 95" includes the 29 replaced cards
+  (history) and is not an active total. Open "Usage by stage" for each stage's own cost. Agent 3 advice is live model output; relevance labels and merge decisions are developer audits.
 - **Observations:** the three live cards ("Suggestive vs explicit content boundary", "Queue coverage and closure
   reminders", "Work environment and background noise"), each with its supported no-action reason.
 - **Combined issue:** "QN handling for fictional contact details": open "Earlier cards this issue replaces (2)" (the
@@ -56,7 +57,12 @@ Show:
 - **Targeted re-grounding ($0.094 for both cards, run separately; this build made no calls):** "Overlapping speech in
   transcription" shows its reminder and stays in review only for its open inherited flag. "Format compliance versus
   accuracy" is a Recommended Action: point out "Human edits, verified by the live model (3)", the unchanged model draft,
-  and the TL suggestion marked "not judged".
+  and the posting suggestions marked "not judged" (reply in the October 2 status note's thread; optional JSON-versus-prose
+  line), kept apart from the copyable draft.
+- **Close call:** "NSFW suggestive-content threshold" asks you to choose a next step between two saved options; the
+  cutoff question stays open.
+- **Editorial notes** (labelled, not judged): "Confirm before editing" on the fictional-contact edit; "Timing
+  unconfirmed" on the queue-coverage observation.
 
 Synthetic Observation examples (model behavior, tool performance) are only in `observation_demo_fixture_v1`
 (TEST_FIXTURE, hand-written); switch runs and say so if you show them.

@@ -700,9 +700,12 @@ def persist(rt):
     return {}
 
 
-def report(brief):
-    """Readable morning brief from the validated card fields; nothing is generated here."""
+def report(brief, presentation=None):
+    """Readable morning brief from the validated card fields; nothing is generated here. presentation: an optional
+    display layer (scripts/build_presentation.py, briefing-presentation-v1) with active totals, usage by stage, posting
+    suggestions, close-call options and attributed editorial notes; card text is printed unchanged either way."""
     c = brief['counts']
+    shown_by = (presentation or {}).get('cards') or {}
     lines = [f"# Morning brief - {brief['cutoff']}", '',
              f"Status: **{brief['status']}**. Semantic judgments: {brief['semantic_judgments']}. {brief['semantic_note']}", '',
              f"Window {brief['window']['start']} to {brief['window']['cutoff']}: {c['window_announcements']} announcements "
@@ -711,7 +714,17 @@ def report(brief):
              f"{c['review_queue_items']} Model Review Queue items; {c['discussion_members']} discussion members "
              f"({c['members_on_cards']} on cards); {c['announcement_route_members']} announcement-route members.", '']
     scope_note = brief.get('briefing')
-    if scope_note:  # briefing_policy: social or routine cards are listed once at the end, not as briefing items.
+    if presentation:  # Active totals lead; history, the queue and historical card records are stated apart.
+        t = presentation['totals']
+        r = t['card_records']
+        lines[-2] = (f"**{t['active_cards']} active cards covering {t['active_threads']} threads:** {t['by_line']['NEEDS_REVIEW']} Needs "
+                     f"Review, {t['by_line']['RECOMMENDED_ACTION']} Recommended Action, {t['by_line']['OBSERVATION']} Observation.")
+        lines += [f"Separately: {t['processing_history_threads']} processing-history threads (not briefed); "
+                  f"{t['review_queue_items']} Model Review Queue items.", '',
+                  f"Card records in this directory: {r['total']} ({r['active']} active, {r['replaced_history']} replaced by combined "
+                  f"issues and kept as history, {r['processing_history']} processing history). Not an active total.", '']
+        scope_note = {**scope_note, 'in_briefing_line_shown': True} if scope_note else scope_note
+    if scope_note and not scope_note.get('in_briefing_line_shown'):  # briefing_policy: social or routine cards are listed once at the end, not as briefing items.
         lines += [f"Briefing ({scope_note['policy_version']}): {scope_note['in_briefing']} cards in this brief "
                   f"({', '.join(f'{k} {v}' for k, v in sorted(scope_note['in_briefing_by_line'].items()))}); "
                   f"{len(scope_note['not_in_briefing'])} kept in history.", '']
@@ -735,21 +748,44 @@ def report(brief):
              and c.get('inventory', 'BRIEF') == 'BRIEF']  # consolidated-pending and processing-history cards are listed below
     for card in shown:
         action = card['recommended_action']
+        extra = shown_by.get(card['card_id']) or {}
+        notes = {n['placement']: n for n in extra.get('editorial_notes') or []}
         lines += [f"## {card['topic_name']}", '',
                   f"{card['card_line'].replace('_', ' ').title()} - severity {card['severity']['level'].lower()} "
                   f"({card['severity']['status'].lower()}), {card['resolution_status'].replace('_', ' ').lower()}"
                   + (f" - {card['semantic_source']}" if card['semantic_source'] != 'LIVE_MODEL' else ''), '',
                   f"**What happened.** {card['summary']}", '']
+        if 'SUMMARY' in notes:
+            lines += [_editorial(notes['SUMMARY']), '']
+        choice = extra.get('choice')
+        if choice:  # A close call: the card asks the team lead to choose between saved, eligible options.
+            lines += [f"**{choice['heading']}.** {choice['basis']}", '']
+            for i, o in enumerate(choice['options'], 1):
+                lines += [f"{i}. **{o['label']}.** {o['instruction']}"
+                          + (f" Applies only as stated: {o['condition']}" if o.get('condition') else '')
+                          + (f" Why: {o['why']}" if o.get('why') else ''), '',
+                          *[f'   > {line}' for line in o['draft_text'].splitlines()], '']
+            if choice.get('open_question'):
+                lines += [f"Still open: {choice['open_question']}", '']
+            action = None
         if action:
             lines += [f"**What to do: {action['label']}.**" + (f" {action['instruction']}" if action['instruction'] else ''), '']
             if action['rationale']:
                 lines += [f"**Why.** {action['rationale']}", '']
             if action['draft_text']:
                 lines += ['**Draft to copy:**', '', *[f'> {line}' for line in action['draft_text'].splitlines()], '']
+            if 'ACTION' in notes:
+                lines += [_editorial(notes['ACTION']), '']
         if card.get('human_edits'):  # combined-briefing-v2: wording written by a person, judged SUPPORTED by the live model
             lines += ['**Human edits verified by the live model:**', *[f"- {e['field']}: {e['text']}" for e in card['human_edits']], '']
-        for s in card.get('tl_suggestions') or []:
-            lines += [f"**Suggestion for the team lead (not judged).** {s['text']}", '']
+        if extra.get('posting_suggestions'):  # Kept apart from the copyable draft above.
+            lines += ['**Posting suggestions for the team lead (not judged; not part of the draft):**',
+                      *[f"- {s['label']}: {s['text']}" + (f" Source: {s['source']['channel_id']} {s['source']['thread_id']} "
+                                                          f"(`{s['source']['evidence_id']}`)." if s.get('source') else '')
+                        for s in extra['posting_suggestions']], '']
+        else:
+            for s in card.get('tl_suggestions') or []:
+                lines += [f"**Suggestion for the team lead (not judged).** {s['text']}", '']
         step = card.get('outstanding_step')
         if step:
             lines += [f"**{step['label']}.**"
@@ -801,10 +837,23 @@ def report(brief):
     lines += ['## Model Review Queue', '', f"{len(brief['model_review_queue'])} items (separate from the cards above):", '']
     kinds = Counter(f"{i['origin']} {i['kind']}" for i in brief['model_review_queue'])
     lines += [f'- {k}: {n}' for k, n in sorted(kinds.items())]
+    if presentation:  # Usage by stage from the saved ledgers; each row is that stage's own cost.
+        lines += ['', '## Usage by stage', '', '| Stage | Requests | Cost for this stage | Source |', '|---|---|---|---|']
+        lines += [f"| {r['stage']} | {r['requests']} | ${r['charged_usd']:.4f} | `{r['source']}` |" if r['stage'].startswith(('Full', 'Consolidated'))
+                  else f"| {r['stage']} | {r['requests']} | ${r['charged_usd']:.3f}"
+                       + (f" (as reported; exact ${r['charged_usd_exact']:.6f})" if r.get('charged_usd_exact') is not None else '')
+                       + f" | `{r['source']}` |" for r in presentation['stage_costs']]
+        lines += ['', 'The full-pipeline total comes from the campaign ledger; the other rows are later, separate stages.', '']
+        return '\n'.join(lines) + '\n'
     u = brief['usage']['totals']
     lines += ['', '## Usage', '', f"Requests sent {u.get('requests_sent', 0)}, blocked {u.get('requests_blocked', 0)}; input "
               f"{u.get('input_tokens', 0)}, output {u.get('output_tokens', 0)} tokens; charged ${u.get('charged_usd', 0):.4f}.", '']
     return '\n'.join(lines) + '\n'
+
+
+def _editorial(note):
+    return (f"**{note['label']}** (editorial note, not judged): {note['text']} Sources: "
+            + ', '.join(f"`{s['evidence_id']}`" for s in note['sources']) + '.')
 
 
 # ---- Graph -----------------------------------------------------------------------------------------------------

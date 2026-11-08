@@ -132,7 +132,13 @@ function RunBanner({ run }) {
         <span className="text-xs text-slate-400"><Icon name="clock" className="mr-1 inline h-3.5 w-3.5 -translate-y-px" />Cutoff {when(run.cutoff)} · window {when(run.window.start)} to {when(run.window.cutoff)}</span>
       </div>
       <div className="mt-1.5 text-xs leading-relaxed text-slate-300">{text} {run.mode !== 'LIVE' && run.semantic_note}</div>
-      {run.derivation && (
+      {run.derivation?.parents?.length > 1 && (
+        <details className="mt-1 text-xs leading-relaxed text-cyan-100/90" data-testid="run-derivation">
+          <summary className="cursor-pointer">Combined offline ({run.derivation.version}) from {run.derivation.parents.length} saved runs; no model call in this step.</summary>
+          <div className="mt-1 text-slate-300">Sources: {run.derivation.parents.map(p => <code key={p} className="mr-2 font-mono">{p}</code>)} Card text is the saved live judgments; cards changed by a targeted live check say so on the card.</div>
+        </details>
+      )}
+      {run.derivation && !(run.derivation.parents?.length > 1) && (
         <details className="mt-1 text-xs leading-relaxed text-cyan-100/90" data-testid="run-derivation">
           <summary className="cursor-pointer">Derived offline from <code className="font-mono">{run.derivation.parent_run_key}</code> ({run.derivation.policy_version}); card text and verdicts unchanged.</summary>
           <div className="mt-1 text-slate-300">No model call. Card lines, review reasons, briefing eligibility and pending follow-ups were recomputed from that run's saved judgments. Briefing relevance comes from audited labels bound to each thread's saved messages, not from an automatic classifier; a card without a matching label stays in the brief. Card IDs are new, so decisions on the original cards do not carry over.</div>
@@ -290,7 +296,17 @@ export default function App() {
                   <Metric icon="queue" label="Model review flags" value={openQueue} tone={TONES.cyan} caption="open · view the queue" onClick={() => setTab('queue')} testid="tile-queue" />
                 </section>
 
-                <div className="flex flex-wrap items-center gap-x-5 gap-y-1 px-1 text-xs text-slate-500">
+                {run.presentation && (() => {
+                  const t = run.presentation.totals
+                  return (
+                    <div className="flex flex-wrap items-center gap-x-5 gap-y-1 px-1 text-xs text-slate-500" data-testid="active-totals">
+                      <span className="text-slate-300" data-testid="tile-active"><b className="tabular-nums text-white">{t.active_cards}</b> active cards covering <b className="tabular-nums text-white">{t.active_threads}</b> threads ({t.by_line.NEEDS_REVIEW} needs review, {t.by_line.RECOMMENDED_ACTION} recommended, {t.by_line.OBSERVATION} observation)</span>
+                      <span data-testid="tile-history-threads">Processing history <b className="tabular-nums text-slate-300">{t.processing_history_threads}</b> threads</span>
+                      <span data-testid="tile-queue-items">Review queue <b className="tabular-nums text-slate-300">{t.review_queue_items}</b> items</span>
+                      <span data-testid="tile-records" title={t.card_records.note}>Card records in this run <b className="tabular-nums text-slate-300">{t.card_records.total}</b> (incl. {t.card_records.replaced_history} replaced, history; not active)</span>
+                    </div>)
+                })()}
+                <div className={`${run.presentation ? 'hidden' : 'flex'} flex-wrap items-center gap-x-5 gap-y-1 px-1 text-xs text-slate-500`}>
                   <span data-testid="tile-cards">Cards <b className="tabular-nums text-slate-300">{counts.cards ?? 0}</b>
                     {run.briefing && <span data-testid="tile-in-brief"> · {run.briefing.in_briefing} in this brief{run.consolidation?.refreshed?.length ? ` (${run.consolidation.refreshed.length} combined issues)` : run.consolidation ? ` (${run.consolidation.pending.length} consolidated issues)` : ''} · {run.briefing.not_in_briefing.length + (run.processing_history?.length || 0)} kept in history</span>}</span>
                   <span data-testid="tile-failed" className={run.failed ? 'text-red-300' : ''}>Failed topics <b className="tabular-nums">{run.failed}</b></span>
@@ -409,6 +425,17 @@ export default function App() {
 
                 <div className="space-y-2 pt-2">
                   <Details summary="Saved briefing (from the run's morning_brief.md)" testid="briefing-details"><Briefing markdown={brief.briefing_markdown} /></Details>
+                  {run.presentation?.stage_costs && (
+                    <Details summary="Usage by stage (saved ledgers)" testid="stage-costs">
+                      <table className="w-full text-left text-xs text-slate-300">
+                        <thead><tr className="text-slate-500"><th className="py-1">Stage</th><th>Requests</th><th>Cost for this stage</th></tr></thead>
+                        <tbody>{run.presentation.stage_costs.map(r => (
+                          <tr key={r.stage} data-testid="stage-cost"><td className="py-1 pr-3">{r.stage}</td><td className="tabular-nums">{r.requests}</td>
+                            <td className="tabular-nums">${r.charged_usd_exact != null ? `${r.charged_usd.toFixed(3)} (as reported)` : r.charged_usd.toFixed(4)}</td></tr>))}</tbody>
+                      </table>
+                      <p className="mt-2 text-xs text-slate-500">The full-pipeline total is from the campaign ledger; the other rows are later, separate stages.</p>
+                    </Details>
+                  )}
                   <Details summary={`Topic summary (${topics.length} work items${project ? ` in ${project}` : ''})`} testid="topics-details"><TopicTable rows={topics} /></Details>
                 </div>
               </>

@@ -19,7 +19,7 @@ uv run --locked --extra dev python -m pytest tests/test_x.py   # single file
 ```
 
 - Always pass a **fresh** `--basetemp .cache/pytest-<name>`: pytest wipes it at start.
-- Full suite: 1198 tests, ~15 min, all expected to pass. Intermittent `WinError 5` on `os.replace` is a Windows file lock (see Known issues), not a code failure.
+- Full suite: 1206 tests, ~15 min, all expected to pass. Intermittent `WinError 5` on `os.replace` is a Windows file lock (see Known issues), not a code failure.
 - No linter/formatter configured. No build step beyond the editable install.
 - UI tests: `npm --prefix web run build` then `npm --prefix web run test:ui` (Playwright, system Chrome; temp output
   in `TS_UI_TMP`, default `D:/tsb/ui-<time>`). Frontend deps are pinned in `web/package.json` + `package-lock.json`.
@@ -187,7 +187,8 @@ Demo baseline (2026-11-06): `data/experiments/threadsense_full_v1_combined_v2` (
 overlap and format cards replaced by targeted live re-groundings `data/experiments/agent3_reground_v1/`, 2 requests, $0.094,
 reproduced offline before use; format card has 3 human edits verified by the live model + one TL suggestion not judged
 `data/evaluation/agent3_tl_suggestions_v1.json`; other 93 cards byte-identical to v1). Walkthrough section 0 in
-`docs/agent3-demo-walkthrough.md`. Agent 1 exclusion checks: one verifier request per proposed exclusion, exercised only with
+`docs/agent3-demo-walkthrough.md`. Presentation layer `presentation.json` (briefing-presentation-v1, `scripts/build_presentation.py`;
+display labels and attributed editorial notes only, bound to the run instance; original export in `exports/`). Agent 1 exclusion checks: one verifier request per proposed exclusion, exercised only with
 prepared responses.
 Agent 1 verification of a new run receives a derived discussion view (`pipeline.discussion_view`) through the runner's
 module constants; Agent 2 `execute_batch` refuses existing dirs, so its resume uses a new attempt dir with cache hits.

@@ -155,7 +155,18 @@ class Run:
                                'refreshed': b['consolidation'].get('refreshed') or []} if b.get('consolidation') else None),
             'processing_history': b.get('processing_history'),
             'coordinated_actions': (b.get('coordinated_actions') or {}).get('coordinated_actions'),
+            'presentation': ({k: self.display_layer[k] for k in ('contract', 'totals', 'stage_costs')} if self.display_layer else None),
         }
+
+    @cached_property
+    def display_layer(self):
+        """presentation.json (briefing-presentation-v1): display labels and attributed editorial notes built from saved
+        records for exactly this run instance; ignored if missing or built for other files. Never changes card data."""
+        path = self.path/'presentation.json'
+        if not path.is_file():
+            return None
+        layer = read_json(path)
+        return layer if layer.get('run_instance') == self.instance else None
 
     def provenance(self):
         """Where the card text came from, as recorded in the run manifest (None when the run did not record it)."""
@@ -258,7 +269,9 @@ class Run:
                 'briefing': card.get('briefing') or {'status': 'IN_BRIEFING', 'relevance': 'UNLABELLED', 'label_id': None,
                                                      'label_source': None, 'kept_because': []},
                 'outstanding_step': card.get('outstanding_step'), 'derivation': card.get('derivation'),
-                'unsupported_observation': unsupported_observation, **self.grouping_state(card_id)}
+                'unsupported_observation': unsupported_observation, **self.grouping_state(card_id),
+                **{k: v for k, v in ((self.display_layer or {}).get('cards') or {}).get(card_id, {}).items()
+                   if k in ('posting_suggestions', 'editorial_notes', 'choice')}}
 
     def grouping_state(self, card_id):
         """Where the card sits after Agent 1 relevance and Agent 2 consolidation (brief entries of a v2 run): its
