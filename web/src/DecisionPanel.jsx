@@ -62,7 +62,7 @@ export function DecisionSummary({ entry, indexing, current = true }) {
         </div>
       )}
       <div className="mt-2 text-xs text-slate-400">{KIND_NOTES[entry.kind]}</div>
-      {idx && <div className="mt-1 text-[11px] text-slate-500" data-testid="indexing-status">
+      {idx && <div className="mt-1 text-xs text-slate-400" data-testid="indexing-status">
         Retrieval: {idx.status === 'PENDING' ? 'saved, not yet in a retrieval snapshot' : idx.status === 'INDEXED' ? `in snapshot ${idx.snapshot}` : `indexing failed (${idx.error}); the decision itself is saved`}
       </div>}
     </div>
@@ -109,7 +109,7 @@ function noDecisionText(card, presentation) {
 export default function DecisionPanel({ runKey, card, alternatives, allowed, actor, state, onChanged, presentation }) {
   const head = state?.head || null
   const [revising, setRevising] = useState(false)
-  if (!allowed.length) return <div className="text-xs text-slate-500" data-testid="no-decision">{noDecisionText(card, presentation)}</div>
+  if (!allowed.length) return <div className="text-xs text-slate-400" data-testid="no-decision">{noDecisionText(card, presentation)}</div>
   if (head && !revising) {
     const older = state.decisions.slice(0, -1).reverse()
     return (
@@ -155,7 +155,8 @@ function DecisionForm({ runKey, card, alternatives, allowed, actor, head, onCanc
           Saved{state.replayed ? ' (the server already had this exact request; no duplicate was created)' : ''}. {KIND_NOTES[state.entry.kind]}
         </div>
         <DecisionSummary entry={state.entry} />
-        <button type="button" className="btn btn-sm" onClick={onDone}>Done (move to resolved)</button>
+        {/* A severity override leaves the decision on what to do open, so that card stays active. */}
+        <button type="button" className="btn btn-sm" onClick={onDone}>{state.entry.kind === 'OVERRIDE_SEVERITY' ? 'Done (stays active)' : 'Done (move to Reviewed)'}</button>
       </div>
     )
   }
@@ -172,7 +173,7 @@ function DecisionForm({ runKey, card, alternatives, allowed, actor, head, onCanc
           {card.card_line === 'RECOMMENDED_ACTION' ? 'Approve…' : 'Resolve…'}
         </button>
         {onCancel && <button type="button" className="btn btn-sm" onClick={onCancel}>Cancel</button>}
-        <span className={`text-[11px] ${actor ? 'text-slate-500' : 'text-amber-200/90'}`}>{actor ? 'Saves your decision only. Nothing is posted or executed.' : `${NO_SESSION} You can review the options; saving needs the server started with a team lead.`}</span>
+        <span className={`text-xs ${actor ? 'text-slate-400' : 'text-amber-200/90'}`}>{actor ? 'Saves your decision only. Nothing is posted or executed.' : `${NO_SESSION} You can review the options; saving needs the server started with a team lead.`}</span>
       </div>
     )
   }

@@ -9,6 +9,8 @@ let server
 test.afterEach(async () => { await server?.stop() })
 
 const cardBox = (scope, name) => scope.locator(`[data-testid=card][data-topic-name=${JSON.stringify(name)}]`)
+// The active feed is one sorted list; a card's line is on the card itself.
+const feedLine = (page, line) => page.getByTestId('feed').locator(`[data-testid=card][data-card-line=${line}]`)
 
 async function open(page, name) {
   const box = cardBox(page, name)
@@ -20,18 +22,21 @@ test('combined briefing: counts, lineage and the revalidated cards', async ({ pa
   server = await startServer('combined', ['--runs', 'data/experiments'])
   await page.goto(`${server.url}/#run=${COMBINED}`)
   await page.reload()
-  await expect(page.getByTestId('tile-in-brief')).toContainText('63 in this brief (14 combined issues) · 3 kept in history')
-  await expect(page.getByTestId('tile-needs-review')).toContainText('53')
-  await expect(page.getByTestId('tile-recommended')).toContainText('7')
+  await expect(page.getByTestId('stat-in-brief')).toContainText('63')
+  await expect(page.getByTestId('stat-in-brief')).toContainText('53 needs review · 7 recommended · 3 observation')
+  await expect(page.getByTestId('stat-history')).toContainText('3 processing history')
   await page.screenshot({ path: `${process.env.TS_UI_TMP}/combined-overview.png` })
 
   // The three live observations, each with its supported no-action reason.
-  const observations = page.getByTestId('active-OBSERVATION').getByTestId('card')
+  const observations = feedLine(page, 'OBSERVATION')
   await expect(observations).toHaveCount(3)
   for (const box of await observations.all()) {
     await expect(box.getByTestId('next-step-status')).toHaveAttribute('data-status', 'NO_ACTION_NEEDED')
   }
-  await page.getByTestId('group-OBSERVATION').screenshot({ path: `${process.env.TS_UI_TMP}/combined-observations.png` })
+  await page.getByTestId('quick-OBSERVATIONS').click()
+  await expect(page.getByTestId('feed').getByTestId('card')).toHaveCount(3)
+  await page.getByTestId('feed').screenshot({ path: `${process.env.TS_UI_TMP}/combined-observations.png` })
+  await page.getByTestId('quick-ALL').click()
 
   // Replaced cards appear only through the lineage of the issue that replaced them.
   await expect(cardBox(page, 'QN handling for fictional phone numbers')).toHaveCount(0)
@@ -68,30 +73,58 @@ test('observation demo fixture: labelled, separate, two observations', async ({ 
   await page.goto(`${server.url}/#run=observation_demo_fixture_v1`)
   await page.reload()
   await expect(page.getByTestId('run-banner')).toContainText(/test fixture/i)
-  const observations = page.getByTestId('active-OBSERVATION').getByTestId('card')
+  const observations = feedLine(page, 'OBSERVATION')
   await expect(observations).toHaveCount(2)
-  await expect(page.getByTestId('active-OBSERVATION')).toContainText('Unrequested markdown headers in plain-text answers')
-  await expect(page.getByTestId('active-OBSERVATION')).toContainText('Slow waveform rendering on long clips (recovered)')
+  for (const name of ['Unrequested markdown headers in plain-text answers', 'Slow waveform rendering on long clips (recovered)'])
+    await expect(cardBox(page.getByTestId('feed'), name)).toHaveAttribute('data-card-line', 'OBSERVATION')
   for (const box of await observations.all()) {
     await expect(box.getByTestId('next-step-status')).toHaveAttribute('data-status', 'NO_ACTION_NEEDED')
   }
-  await page.getByTestId('group-OBSERVATION').screenshot({ path: `${process.env.TS_UI_TMP}/observation-demo.png` })
+  // Observations are identified and listed, but never counted as decisions or actions waiting.
+  await expect(page.getByTestId('stat-awaiting')).toContainText('0')
+  await expect(page.getByTestId('quick-PENDING_ACTIONS')).toContainText('0')
+  await page.getByTestId('feed').screenshot({ path: `${process.env.TS_UI_TMP}/observation-demo.png` })
 })
 
 test('combined briefing v2 (demo baseline): targeted re-groundings, labels and the live observations', async ({ page }) => {
   server = await startServer('combined-v2', ['--runs', 'data/experiments'])
-  await page.goto(`${server.url}/#run=threadsense_full_v1_combined_v2`)
+  await page.goto(`${server.url}/#run=threadsense_full_v1_combined_v2&debug=1`)
   await page.reload()
   await expect(page.getByTestId('run-derivation')).toContainText('Combined offline (combined-briefing-v2) from 4 saved runs')
-  // Presentation layer: active totals lead; history, the queue and historical card records are separate.
-  await expect(page.getByTestId('tile-active')).toContainText('63 active cards covering 174 threads (52 needs review, 8 recommended, 3 observation)')
-  await expect(page.getByTestId('tile-history-threads')).toContainText('Processing history 3 threads')
-  await expect(page.getByTestId('tile-queue-items')).toContainText('Review queue 37 items')
-  await expect(page.getByTestId('tile-records')).toContainText('Card records in this run 95 (incl. 29 replaced, history; not active)')
-  await expect(page.getByTestId('tile-cards')).toBeHidden()
-  await expect(page.getByTestId('tile-needs-review')).toContainText('52')
-  await expect(page.getByTestId('tile-recommended')).toContainText('8')
+  // Statistics come from the briefing's active records: history, the queue and replaced card records are separate.
+  await expect(page.getByTestId('stat-in-brief')).toContainText('63')
+  await expect(page.getByTestId('stat-in-brief')).toContainText('52 needs review · 8 recommended · 3 observation')
+  await expect(page.getByTestId('stat-mismatch')).toHaveCount(0) // agrees with the saved presentation totals
+  await expect(page.getByTestId('stat-history')).toContainText('3 processing history · 29 replaced records (lineage only)')
+  await expect(page.getByTestId('stat-model-review')).toContainText('37')
+  await expect(page.getByTestId('stat-awaiting')).toContainText('60')
+  await expect(page.getByTestId('stat-awaiting')).toContainText('incl. 8 pending actions to approve')
+  await expect(page.getByTestId('tab-active')).toHaveText('Active (63)')
+  await expect(page.getByTestId('tab-reviewed')).toHaveText('Reviewed (0)')
+  await expect(page.getByTestId('visible-count')).toHaveText('Showing 63 of 63 active cards')
+  await expect(page.getByTestId('run-kind')).toHaveText('Offline combination')
+  await expect(page.getByTestId('run-banner')).not.toContainText('Live run')
+  await expect(page.getByTestId('briefing-date')).toHaveText('Fri, 2 Oct 2026')
+  await expect(page.getByTestId('source-window')).toContainText('2026-10-01 12:00 UTC to 2026-10-02 12:00 UTC')
+  await expect(page.getByTestId('generated-at')).toHaveText('Generated: not recorded in this run')
+  // Accounting covers the 177 members handed to advice; the 178th discussion thread is shown as outside it.
+  await expect(page.getByTestId('health-accounting')).toContainText('complete for the 177 discussion members handed to advice')
+  await expect(page.getByTestId('health-gap')).toContainText('178 discussion threads were in the window; 1 is outside this accounting')
+  await expect(page.locator('body')).not.toContainText(/auto-resolved/i)
+  // Default order: severity ranks never go back up the list, and unassessed cards come after every assessed one.
+  const levels = await page.getByTestId('feed').getByTestId('severity').evaluateAll(els => els.map(e => e.dataset.level))
+  const rank = { HIGH: 0, MEDIUM: 1, LOW: 2, 'N/A': 3, UNASSESSED: 4 }
+  expect(levels).toHaveLength(63)
+  expect(levels.map(l => rank[l])).toEqual([...levels.map(l => rank[l])].sort((a, b) => a - b))
+  expect(levels.filter(l => l === 'UNASSESSED')).toHaveLength(7)
+  await expect(page.getByTestId('feed').getByTestId('severity').filter({ hasText: 'Severity unassessed' })).toHaveCount(7)
   await page.screenshot({ path: `${process.env.TS_UI_TMP}/v2-overview.png` })
+  // Pending actions: the 8 approvable recommendations only.
+  await page.getByTestId('quick-PENDING_ACTIONS').click()
+  await expect(page.getByTestId('feed').getByTestId('card')).toHaveCount(8)
+  await expect(page.getByTestId('feed').locator('[data-testid=card]:not([data-card-line=RECOMMENDED_ACTION])')).toHaveCount(0)
+  await expect(page.getByTestId('active-filter')).toHaveText('Pending actions')
+  await page.getByTestId('active-filter').click()
   const costs = page.getByTestId('stage-costs')
   await costs.locator('summary').click()
   await expect(costs.getByTestId('stage-cost')).toHaveCount(4)
@@ -104,12 +137,15 @@ test('combined briefing v2 (demo baseline): targeted re-groundings, labels and t
   await expect(saved).toContainText('63 active cards covering 174 threads')
   await expect(saved).not.toContainText('95 cards (')
 
-  const observations = page.getByTestId('active-OBSERVATION').getByTestId('card')
+  const observations = feedLine(page, 'OBSERVATION')
   await expect(observations).toHaveCount(3)
   for (const name of ['Suggestive vs explicit content boundary', 'Queue coverage and closure reminders', 'Work environment and background noise']) {
-    await expect(cardBox(page.getByTestId('active-OBSERVATION'), name).getByTestId('next-step-status')).toHaveAttribute('data-status', 'NO_ACTION_NEEDED')
+    await expect(cardBox(page.getByTestId('feed'), name)).toHaveAttribute('data-card-line', 'OBSERVATION')
+    await expect(cardBox(page.getByTestId('feed'), name).getByTestId('next-step-status')).toHaveAttribute('data-status', 'NO_ACTION_NEEDED')
   }
-  await page.getByTestId('group-OBSERVATION').screenshot({ path: `${process.env.TS_UI_TMP}/v2-observations.png` })
+  await page.getByTestId('quick-OBSERVATIONS').click()
+  await page.getByTestId('feed').screenshot({ path: `${process.env.TS_UI_TMP}/v2-observations.png` })
+  await page.getByTestId('quick-ALL').click()
 
   const overlap = await open(page, 'Overlapping speech in transcription')
   await expect(overlap.getByTestId('action-box')).toBeVisible()
@@ -117,7 +153,8 @@ test('combined briefing v2 (demo baseline): targeted re-groundings, labels and t
   await expect(overlap.getByTestId('what-to-review')).not.toContainText('not been checked against the evidence yet')
   await overlap.screenshot({ path: `${process.env.TS_UI_TMP}/v2-overlapping-speech.png` })
 
-  const format = cardBox(page.getByTestId('group-RECOMMENDED_ACTION'), 'Format compliance versus accuracy')
+  const format = cardBox(page.getByTestId('feed'), 'Format compliance versus accuracy')
+  await expect(format).toHaveAttribute('data-card-line', 'RECOMMENDED_ACTION')
   await format.getByTestId('card-expand').click()
   await expect(format.getByTestId('action-box')).toBeVisible()
   await expect(format.getByTestId('human-edit')).toHaveCount(3)
@@ -141,7 +178,7 @@ test('combined briefing v2 (demo baseline): targeted re-groundings, labels and t
   await expect(qn.getByTestId('editorial-note')).toContainText('not established')
   await qn.screenshot({ path: `${process.env.TS_UI_TMP}/v2-fictional-contact.png` })
 
-  const queue = cardBox(page.getByTestId('active-OBSERVATION'), 'Queue coverage and closure reminders')
+  const queue = cardBox(page.getByTestId('feed'), 'Queue coverage and closure reminders')
   await expect(queue.getByTestId('editorial-note')).toContainText('Timing unconfirmed')
   await queue.screenshot({ path: `${process.env.TS_UI_TMP}/v2-queue-coverage.png` })
 })

@@ -24,6 +24,11 @@ async function details(box, tab) {
   if (await box.getByTestId('card-detail').count() === 0) await box.getByTestId('card-expand').click()
   if (tab) await box.getByRole('tab', { name: tab }).click()
 }
+// Reviewed cards are listed under the Reviewed tab (a saved decision; execution not recorded).
+async function reviewedTab(page) {
+  await page.getByTestId('tab-reviewed').click()
+  return page.getByTestId('feed')
+}
 async function decisionsFor(run, cardId) {
   const all = (await server.api(`/api/runs/${run}/decisions`)).decisions
   return cardId ? all.filter(d => d.card_id === cardId) : all
@@ -43,6 +48,7 @@ test('approve -> refresh -> restart keeps exactly one decision, never executed',
   const box = cardBox(page, card.topic_name)
   await details(box, 'Action & draft')
   const copyButton = box.getByTestId('card-detail').getByRole('button', { name: 'Copy draft' })
+  await copyButton.scrollIntoViewIfNeeded() // positions are viewport-relative: measure without a scroll in between
   const draftBefore = await box.getByTestId('action-draft').boundingBox()
   await copyButton.click()
   await expect(box.getByTestId('copy-note')).toHaveText('Copied to your clipboard. Nothing was posted.')
@@ -61,14 +67,14 @@ test('approve -> refresh -> restart keeps exactly one decision, never executed',
   await expect(box.getByTestId('decision-text')).toHaveText(card.recommended_action.draft_text)
   await expect(box.getByTestId('decision-states')).toHaveText('Execution: not executed · Outcome: not observed')
   await box.getByRole('button', { name: /Done/ }).click()
-  await expect(page.getByTestId('active-RECOMMENDED_ACTION').getByTestId('card')).toHaveCount(0)
-  await expect(page.getByTestId('resolved-RECOMMENDED_ACTION')).toContainText('Resolved (1)')
+  await expect(page.getByTestId('feed').locator('[data-card-line=RECOMMENDED_ACTION]')).toHaveCount(0)
+  await expect(page.getByTestId('tab-reviewed')).toHaveText('Reviewed (1)')
 
   for (const step of ['refresh', 'restart']) {
     if (step === 'restart') await server.restart()
     await page.reload()
-    const resolved = page.getByTestId('resolved-RECOMMENDED_ACTION')
-    await resolved.locator(':scope > summary').click()
+    const resolved = await reviewedTab(page)
+    await expect(resolved.getByTestId('lifecycle-status')).toHaveText('Approved — execution not recorded')
     await expect(resolved.getByTestId('decision-current')).toHaveCount(1)
     await expect(resolved.getByTestId('card-summary')).toHaveText(card.summary) // original assessment intact
     const saved = await decisionsFor(FIXTURE)
@@ -216,8 +222,7 @@ test('a stale edit is shown as a conflict, not saved over the newer decision', a
   await boxB.getByTestId('save-decision').click()
   await expect(boxB.getByTestId('save-conflict')).toContainText('by U006')
   await boxB.getByRole('button', { name: 'Show the latest decision' }).click()
-  const resolved = b.getByTestId('resolved-RECOMMENDED_ACTION')
-  await resolved.locator(':scope > summary').click()
+  const resolved = await reviewedTab(b)
   await expect(resolved.getByTestId('decision-current')).toContainText('by U006')
   const saved = await decisionsFor(FIXTURE)
   expect(saved.map(d => d.actor_id)).toEqual(['U006'])
@@ -297,17 +302,18 @@ test('source and thread views come from saved evidence and keep superseded label
 
 test('failed, incomplete, scripted and fixture runs are labelled and never merged', async ({ page }) => {
   server = await startServer('runs')
-  await open(page, SMOKE)
+  await open(page, SMOKE, '&debug=1') // run identity and accounting are developer details
   await expect(page.getByTestId('run-banner')).toHaveAttribute('data-mode', 'LIVE')
-  await expect(page.getByTestId('tile-out-of-scope')).toContainText('85')
+  await expect(page.getByTestId('saved-counts')).toContainText('out of scope 85')
   await expect(page.getByTestId('semantic-source').first()).toHaveText('Live model')
 
   await page.getByTestId('run-select').selectOption(V1)
   await expect(page.getByTestId('run-banner')).toHaveAttribute('data-mode', 'SCRIPTED')
   await expect(page.getByTestId('run-banner')).toContainText('Scripted run, not model output')
   await expect(page.getByTestId('run-status')).toHaveText('complete with failures')
-  await expect(page.getByTestId('run-banner')).toContainText(`Another directory (${V2}) has the same run ID`)
-  await expect(page.getByTestId('tile-failed')).toContainText('1')
+  await expect(page.getByTestId('shared-run-id')).toContainText(`Another directory (${V2}) has the same run ID`)
+  await expect(page.getByTestId('saved-counts')).toContainText('Failed topics 1')
+  await expect(page.getByTestId('processing-health')).toContainText('1 failed')
   await expect(page.getByTestId('incomplete-work')).toContainText('topic failed')
   await page.getByTestId('topics-details').locator('summary').click()
   await expect(page.locator('[data-testid=topic-row][data-outcome=TOPIC_FAILED]')).toHaveCount(1)
@@ -317,13 +323,14 @@ test('failed, incomplete, scripted and fixture runs are labelled and never merge
   await page.getByTestId('run-select').selectOption(FIXTURE)
   await expect(page.getByTestId('run-banner')).toHaveAttribute('data-mode', 'TEST_FIXTURE')
   await expect(page.getByTestId('run-status')).toHaveText('incomplete')
-  await expect(page.getByTestId('tile-unprocessed')).toContainText('1')
+  await expect(page.getByTestId('saved-counts')).toContainText('unprocessed 1')
   await expect(page.getByTestId('incomplete-work')).toContainText('unprocessed budget')
   await expect(page.getByTestId('semantic-source').first()).toHaveText('Test fixture (hand-written)')
   // Project filter narrows this run only; other runs' cards never appear.
   await page.getByTestId('project-select').selectOption('audio_multimodal')
   await expect(page.getByTestId('card')).toHaveCount(1)
-  await expect(page.getByTestId('group-OBSERVATION')).toContainText('No action needed now')
+  await expect(page.getByTestId('feed').locator('[data-card-line=OBSERVATION]')).toContainText('No action needed now')
+  await expect(page.getByTestId('visible-count')).toHaveText('Showing 1 of 3 active cards · audio_multimodal')
 })
 
 test('a saved decision reaches a later retrieval snapshot with its exact states', async ({ page }) => {
@@ -346,8 +353,7 @@ test('a saved decision reaches a later retrieval snapshot with its exact states'
   expect(built.decisions_indexed).toBe(1)
   expect(built.decisions_after_cutoff).toEqual([])
   await page.reload()
-  const resolved = page.getByTestId('resolved-RECOMMENDED_ACTION')
-  await resolved.locator(':scope > summary').click()
+  const resolved = await reviewedTab(page)
   await expect(resolved.getByTestId('indexing-status')).toContainText('in snapshot')
   const found = JSON.parse(run(['-c', `
 import json, sys
@@ -376,7 +382,8 @@ test('two runs with the same run_id and card_id keep separate decisions, also af
   for (const step of ['now', 'restart']) {
     if (step === 'restart') await server.restart()
     await open(page, V2, `&project=${card.project_id}`)
-    await expect(page.getByTestId('active-NEEDS_REVIEW').locator(`[data-card-id="${card.card_id}"]`)).toHaveCount(1)
+    await expect(page.getByTestId('feed').locator(`[data-card-id="${card.card_id}"]`)).toHaveAttribute('data-card-line', 'NEEDS_REVIEW')
+    await expect(page.getByTestId('tab-reviewed')).toHaveText('Reviewed (0)')
     expect(await decisionsFor(V2, card.card_id)).toEqual([])
     expect((await decisionsFor(V1, card.card_id)).map(d => [d.kind, d.run_instance])).toEqual([['DISMISS', v1.run_instance]])
   }
@@ -415,7 +422,7 @@ test('closed cards are easy to scan; an opened card leads with what to check, wi
   await expect(box.getByTestId('action-box').getByRole('button', { name: 'Copy draft' })).toBeVisible()
   for (const id of ['what-to-check', 'what-to-review', 'advisor-review-note', 'card-provenance']) await expect(box.getByTestId(id)).toHaveCount(0)
   await expect(box).not.toContainText('reasons from the final checks')
-  await expect(page.getByTestId('run-provenance')).toContainText('agent3-advisor-prompts-v14') // still in the banner
+  await expect(page.getByTestId('run-provenance')).toHaveCount(0) // prompt metadata only under developer details
   await expect(box.getByTestId('card-topic')).toHaveText('Threads awaiting a topic') // projection gap: fallback title
 
   // Opened Submit: the escalation stays at the top; flags lead the checks; no boilerplate.
@@ -503,4 +510,91 @@ test('closed cards state the next step; opened cards explain what happened and w
   await details(legacy)
   await expect(legacy.getByTestId('what-happened')).toHaveAttribute('data-source', 'SAVED_REASONING')
   await expect(legacy.getByTestId('next-step-derived')).toBeVisible()
+})
+
+test('approval moves the card to Reviewed; its model-review item stays open; counts follow the saved records', async ({ page }) => {
+  server = await startServer('lifecycle')
+  const card = await cardId(FIXTURE, c => c.card_line === 'RECOMMENDED_ACTION')
+  await open(page, FIXTURE)
+  await expect(page.getByTestId('stat-awaiting')).toContainText('2')
+  await expect(page.getByTestId('quick-PENDING_ACTIONS')).toContainText('1')
+  await expect(page.getByTestId('stat-model-review')).toContainText('4')
+  const box = cardBox(page, card.topic_name)
+  await expect(box.getByTestId('open-obligations')).toHaveText('1 model-review item open')
+  await box.getByRole('button', { name: 'Approve…' }).click()
+  await box.getByTestId('save-decision').click()
+  await expect(box.getByTestId('save-success')).toBeVisible()
+  await expect(page.getByTestId('feed').locator(`[data-card-id="${card.card_id}"]`)).toHaveCount(1) // stays until Done
+  await box.getByRole('button', { name: 'Done (move to Reviewed)' }).click()
+  await expect(page.getByTestId('feed').locator(`[data-card-id="${card.card_id}"]`)).toHaveCount(0)
+  await expect(page.getByTestId('stat-awaiting')).toContainText('1')
+  await expect(page.getByTestId('stat-awaiting')).toContainText('incl. 0 pending actions')
+  await expect(page.getByTestId('stat-reviewed')).toContainText('1')
+  await expect(page.getByTestId('tab-active')).toHaveText('Active (2)')
+  await expect(page.getByTestId('stat-model-review')).toContainText('4') // approval clears no model-review obligation
+  const reviewed = await reviewedTab(page)
+  const done = cardBox(reviewed, card.topic_name)
+  await expect(done.getByTestId('lifecycle-status')).toHaveText('Approved — execution not recorded')
+  await expect(done.getByTestId('lifecycle-status')).not.toContainText(/resolved/i)
+  await expect(done.getByTestId('open-obligations')).toHaveText('1 model-review item open')
+  await expect(page.getByTestId('reviewed-note')).toContainText('nothing here is marked done or resolved')
+  await done.getByTestId('open-obligations').click()
+  await expect(page.getByTestId('tab-queue')).toHaveAttribute('aria-current', 'page')
+  const states = (await server.api(`/api/runs/${FIXTURE}/review-queue`)).items
+  expect(states.filter(i => i.item.related_card_ids.includes(card.card_id)).map(i => i.review_state)).toEqual(['OPEN'])
+})
+
+test('a failed refresh after saving keeps the card on screen and says so', async ({ page }) => {
+  server = await startServer('refresh-failure')
+  const card = await cardId(FIXTURE, c => c.card_line === 'RECOMMENDED_ACTION')
+  await open(page, FIXTURE)
+  const box = cardBox(page, card.topic_name)
+  await box.getByRole('button', { name: 'Approve…' }).click()
+  await box.getByTestId('save-decision').click()
+  await expect(box.getByTestId('save-success')).toBeVisible()
+  await page.route('**/decisions', route => (route.request().method() === 'GET' ? route.abort('connectionreset') : route.continue()))
+  await box.getByRole('button', { name: 'Done (move to Reviewed)' }).click()
+  await expect(page.getByTestId('sync-error')).toContainText('last confirmed state')
+  await expect(page.getByTestId('feed').locator(`[data-card-id="${card.card_id}"]`)).toHaveCount(1)
+  await page.unroute('**/decisions')
+  await page.getByTestId('sync-error').getByRole('button', { name: 'Retry' }).click()
+  await expect(page.getByTestId('sync-error')).toHaveCount(0)
+  await expect(page.getByTestId('tab-reviewed')).toHaveText('Reviewed (1)')
+})
+
+test('sort and filter controls use structured fields; narrow screens get a drawer', async ({ page }) => {
+  server = await startServer('layout')
+  await open(page, FIXTURE)
+  // Presentation view: no run identity or accounting dump until developer details are switched on.
+  for (const id of ['dev-panel', 'run-identity', 'processing-health', 'run-provenance']) await expect(page.getByTestId(id)).toHaveCount(0)
+  await page.getByTestId('debug-toggle').click()
+  await expect(page.getByTestId('dev-panel')).toContainText('fixture_dashboard_states_v1')
+  await expect(page).toHaveURL(/debug=1/)
+  await page.getByTestId('debug-toggle').click()
+  await expect(page.getByTestId('dev-panel')).toHaveCount(0)
+  // Dropdown options use the dark theme with light text.
+  const [bg, fg] = await page.getByTestId('sort-select').locator('option').first().evaluate(o => [getComputedStyle(o).backgroundColor, getComputedStyle(o).color])
+  expect([bg, fg]).toEqual(['rgb(26, 42, 56)', 'rgb(226, 232, 240)'])
+  const order = () => page.getByTestId('feed').getByTestId('card').evaluateAll(els => els.map(e => e.dataset.cardLine))
+  // Default: MEDIUM review card, then the two LOW cards (newest source activity first).
+  expect(await order()).toEqual(['NEEDS_REVIEW', 'RECOMMENDED_ACTION', 'OBSERVATION'])
+  await page.getByTestId('sort-select').selectOption('activity')
+  const stamps = await page.getByTestId('feed').getByTestId('card-activity').allTextContents()
+  expect(stamps.every(t => t.startsWith('Latest source message'))).toBe(true)
+  expect([...stamps].sort().reverse()).toEqual(stamps)
+  await page.getByTestId('quick-OBSERVATIONS').click()
+  await expect(page.getByTestId('feed').getByTestId('card')).toHaveCount(1)
+  expect(await order()).toEqual(['OBSERVATION'])
+  await expect(page).toHaveURL(/filter=OBSERVATIONS/)
+  await expect(page).toHaveURL(/sort=activity/)
+
+  await page.setViewportSize({ width: 390, height: 844 })
+  await expect(page.getByTestId('sidebar')).toBeHidden()
+  await page.getByTestId('menu-button').click()
+  await expect(page.getByTestId('sidebar')).toBeVisible()
+  await expect(page.getByRole('button', { name: 'Close the briefing menu' })).toBeFocused()
+  await page.keyboard.press('Escape')
+  await expect(page.getByTestId('sidebar')).toBeHidden()
+  await expect(page.getByTestId('menu-button')).toBeFocused()
+  expect(await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth)).toBe(0)
 })

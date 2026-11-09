@@ -27,7 +27,7 @@ const SOURCE_STYLES = {
 }
 
 export function Badge({ children, tone = 'neutral', className = '', ...rest }) {
-  return <span className={`inline-flex items-center gap-1 whitespace-nowrap rounded-md border px-1.5 py-0.5 text-[11px] font-medium ${TONES[tone] || TONES.neutral} ${className}`} {...rest}>{children}</span>
+  return <span className={`inline-flex items-center gap-1 whitespace-nowrap rounded-md border px-1.5 py-0.5 text-xs font-medium ${TONES[tone] || TONES.neutral} ${className}`} {...rest}>{children}</span>
 }
 
 export function SourceBadge({ source }) {
@@ -37,12 +37,15 @@ export function SourceBadge({ source }) {
 
 const SEVERITY = { HIGH: ['red', 'bg-red-400'], MEDIUM: ['amber', 'bg-amber-300'], LOW: ['sky', 'bg-sky-300'] }
 export function SeverityBadge({ severity }) {
-  const [tone, dot] = SEVERITY[severity.level] || ['neutral', 'bg-slate-400']
-  const unassessed = severity.assessment_status === 'UNASSESSED'
+  // Unassessed is not low: it has its own dashed, uncoloured badge, so the two never look alike.
+  const unassessed = severity.assessment_status === 'UNASSESSED' || severity.level === 'UNKNOWN'
+  const [tone, dot] = (!unassessed && SEVERITY[severity.level]) || ['neutral', 'bg-slate-400']
+  const label = unassessed ? 'Severity unassessed' : SEVERITY[severity.level] ? `${cap(severity.level)} severity`
+    : severity.level === 'N/A' ? 'Severity not applicable' : `Severity ${severity.level.toLowerCase()}`
   return (
-    <Badge tone={tone} className="px-2 py-1 text-xs font-semibold" data-testid="severity" title={severity.rationale || undefined}>
-      <span className={`h-1.5 w-1.5 rounded-full ${dot}`} />
-      {SEVERITY[severity.level] ? `${cap(severity.level)} severity` : `Severity ${severity.level.toLowerCase()}`}{unassessed ? ' (unassessed)' : ''}
+    <Badge tone={tone} className={`px-2 py-1 text-xs font-semibold ${unassessed ? 'border-dashed text-slate-400' : ''}`} data-testid="severity"
+      data-level={unassessed ? 'UNASSESSED' : severity.level} title={severity.rationale || undefined}>
+      <span className={`h-1.5 w-1.5 rounded-full ${unassessed ? 'border border-slate-400 bg-transparent' : dot}`} />{label}
     </Badge>
   )
 }
@@ -68,7 +71,7 @@ export function CopyButton({ text, what = 'draft' }) {
       <AnimatePresence>
         {state && (
           <motion.span key={state} role="status" initial={{ opacity: 0, y: -4 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}
-            className={`absolute right-0 top-full z-10 mt-1.5 whitespace-nowrap rounded-lg border px-2.5 py-1 text-[11px] shadow-lg shadow-black/40 ${state === 'ok' ? 'border-emerald-400/30 bg-ink-850 text-emerald-200' : 'border-red-400/40 bg-ink-850 text-red-200'}`}
+            className={`absolute right-0 top-full z-10 mt-1.5 whitespace-nowrap rounded-lg border px-2.5 py-1 text-xs shadow-lg shadow-black/40 ${state === 'ok' ? 'border-emerald-400/30 bg-ink-850 text-emerald-200' : 'border-red-400/40 bg-ink-850 text-red-200'}`}
             data-testid={state === 'ok' ? 'copy-note' : 'copy-failed'}>
             {state === 'ok' ? 'Copied to your clipboard. Nothing was posted.' : 'Copy failed; select the text instead.'}
           </motion.span>
@@ -83,7 +86,7 @@ export function Details({ summary, children, testid, className = '' }) {
   return (
     <details className={`group panel-inset ${className}`} data-testid={testid}>
       <summary className="flex cursor-pointer select-none list-none items-center gap-2 px-3 py-2 text-xs font-medium text-slate-300 hover:text-white [&::-webkit-details-marker]:hidden">
-        <Icon name="chevron" className="h-3.5 w-3.5 text-slate-500 transition group-open:rotate-90" />{summary}
+        <Icon name="chevron" className="h-3.5 w-3.5 text-slate-400 transition group-open:rotate-90" />{summary}
       </summary>
       <div className="border-t border-white/[0.06] p-3 text-xs text-slate-300">{children}</div>
     </details>
@@ -91,7 +94,7 @@ export function Details({ summary, children, testid, className = '' }) {
 }
 
 export function Json({ value }) {
-  return <pre className="prose-pre max-h-96 overflow-auto rounded-lg bg-ink-950/70 p-2 font-mono text-[11px] text-slate-400">{JSON.stringify(value, null, 2)}</pre>
+  return <pre className="prose-pre max-h-96 overflow-auto rounded-lg bg-ink-950/70 p-2 font-mono text-xs text-slate-400">{JSON.stringify(value, null, 2)}</pre>
 }
 
 export function when(iso) {

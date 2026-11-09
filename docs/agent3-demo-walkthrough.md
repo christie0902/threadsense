@@ -18,7 +18,7 @@ npm --prefix web ci && npm --prefix web run build      # web/dist is already cur
 
 Use a new decision store file, outside the repository, for every rehearsal and presentation: pick a name you have not
 used before (for example `D:/tsb/demo-20261101-r2.sqlite3`). Keep earlier store files as they are; don't delete or
-reuse them. A reused store would show earlier decisions as already resolved. Always keep `--decision-origin
+reuse them. A reused store would show earlier decisions as already reviewed. Always keep `--decision-origin
 DEMO_SCRIPT`: it puts rehearsal decisions in the `demo` namespace, so default operational snapshots never ingest them.
 
 ```sh
@@ -134,8 +134,9 @@ expert → Engineering** and save. The card's judgment is live (`judgment_proven
 rehearsal recorded in the `demo` namespace (`DEMO_SCRIPT`), not operational history.
 
 Show:
-- **Saved state:** the success state appears only after the save is persisted. The card moves to Resolved with its
-  text, reasons and evidence unchanged.
+- **Saved state:** the success state appears only after the save is persisted. After **Done** the card moves to the
+  **Reviewed** tab, labelled "Routed to an expert — execution not recorded", with its text, reasons and evidence
+  unchanged. Reviewed is not resolved: its model-review items stay open in the Model Review Queue.
 - **Labels:** the text is model-grounded, and approval is not execution.
 - **No duplicate:** refresh, or click again. There is still exactly one decision; a repeat with the same key is
   replayed, not duplicated.

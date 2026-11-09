@@ -20,7 +20,7 @@ from threadsense.dashboard.runs import FIXTURE_RUN_ROOT, Catalog
 from threadsense.knowledge_markdown import markdown_text_source
 from threadsense.retrieval.config import INDEX_DIR
 from threadsense.retrieval.search import Retriever
-from threadsense.routing import ROOT
+from threadsense.routing import ROOT, aware, slack_datetime
 
 from tests.retrieval_doubles import HashEncoder
 
@@ -483,3 +483,53 @@ def test_session_is_locked_to_one_team_lead(tmp_path, catalog):
     assert post(client, FIXTURE, card['card_id'], {'kind': 'APPROVE_ACTION', 'actor_id': 'U006'}, 'lock3').status_code == 201
     with pytest.raises(ValueError, match='not a recorded team lead'):
         create_app(catalog=catalog, store=DecisionStore(tmp_path/'other.sqlite3'), session_actor='U019')
+
+
+def test_brief_cards_carry_saved_source_activity_never_the_clock(env, catalog, monkeypatch):
+    """Latest activity for sorting comes from the run's own saved member messages; without them, the related threads'
+    start times; otherwise nothing. It never falls back to the current time."""
+    client, *_ = env
+    run = catalog.get(FIXTURE)
+    cards = {c['card']['card_id']: c for c in client.get(f'/api/runs/{FIXTURE}/brief').json()['cards']}
+    for card_id, card in run.cards.items():
+        members = set(card['lineage']['member_ids'])
+        saved = sorted(e['timestamp'] for e in run.ledger(card_id).values()
+                       if e.get('origin') == 'member_message' and e.get('member_id') in members)
+        activity = cards[card_id]['activity']
+        assert activity['basis'] == 'SAVED_MESSAGES' and activity['messages'] == len(saved)
+        assert activity['latest_at'] == aware(saved[-1]).strftime('%Y-%m-%dT%H:%M:%S.%fZ')
+        assert activity['latest_at'] < run.brief['cutoff']
+    fresh = Catalog(include_fixtures=True).get(FIXTURE)
+    card_id, card = next(iter(fresh.cards.items()))
+    monkeypatch.setattr(fresh, 'ledger', lambda _: {})
+    newest = max(t['thread_id'] for t in card['related_threads'])
+    assert fresh.activity(card_id) == {'latest_at': slack_datetime(newest).strftime('%Y-%m-%dT%H:%M:%S.%fZ'),
+                                       'basis': 'THREAD_START', 'messages': 0}
+    monkeypatch.setitem(fresh.__dict__, 'cards', {card_id: {**card, 'related_threads': []}})
+    assert fresh.activity(card_id) == {'latest_at': None, 'basis': 'NONE', 'messages': 0}
+
+
+def test_run_summaries_identify_each_run_without_inventing_a_generation_time(env):
+    client, *_ = env
+    runs = {r['run_key']: r for r in client.get('/api/runs').json()['runs']}
+    fixture = runs[FIXTURE]
+    assert fixture['batches'] == ['audio_batch_06', 'rp_batch_15', 'safety_batch_08']
+    assert fixture['generated_at'] is None  # not recorded by the run; file times are not used
+    assert fixture['accounting_status'] == 'COMPLETE' and fixture['run_instance'] and fixture['cutoff']
+
+
+def test_approval_moves_nothing_in_the_model_review_queue(env, catalog):
+    """A TL approval is a card decision only: the inherited model-review obligations on that card stay open."""
+    client, store, *_ = env
+    card = next(c for c in catalog.get(FIXTURE).cards.values() if c['card_line'] == 'RECOMMENDED_ACTION')
+    related = [i for i, item in catalog.get(FIXTURE).queue.items() if card['card_id'] in item.related_card_ids]
+    assert related  # the fixture links a review item to this card
+    states = lambda: {i['item']['item_id']: i['review_state'] for i in client.get(f'/api/runs/{FIXTURE}/review-queue').json()['items']}
+    before = states()
+    assert post(client, FIXTURE, card['card_id'], {'kind': 'APPROVE_ACTION', 'actor_id': 'U006'}, 'key-obl1').status_code == 201
+    assert states() == before and all(before[i] == 'OPEN' for i in related)
+    assert store.counts()['review_actions'] == 0
+    brief = {c['card']['card_id']: c for c in client.get(f'/api/runs/{FIXTURE}/brief').json()['cards']}
+    assert brief[card['card_id']]['resolved'] and brief[card['card_id']]['card'] == card  # card text unchanged
+    head = client.get(f'/api/runs/{FIXTURE}/decisions').json()['decisions'][-1]
+    assert (head['kind'], head['decision']['execution']['state']) == ('APPROVE_ACTION', 'NOT_EXECUTED')

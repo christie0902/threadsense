@@ -76,7 +76,7 @@ def create_app(*, catalog=None, store=None, fixture_root=FIXTURE_ROOT, clock=now
             'cards': [{'card': card, 'semantic_source': run.semantic_source(card_id),
                        'alternatives': run.alternatives(card_id), 'allowed_decisions': KINDS_BY_LINE[card['card_line']],
                        'cited_evidence': run.cited_evidence(card_id), 'review': run.review(card_id),
-                       'presentation': run.presentation(card_id),
+                       'presentation': run.presentation(card_id), 'activity': run.activity(card_id),
                        'display_title': run.display_title(card_id), 'resolved': card_id in decided}
                       for card_id, card in run.cards.items()],
             'action_labels': ACTION_LABELS,

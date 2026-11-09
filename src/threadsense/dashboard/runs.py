@@ -17,7 +17,7 @@ from threadsense.agents.flag_impact import NOT_ASSESSED_NOTE, flag_id
 from threadsense.agents.flag_provenance import FlagSource, dependencies
 from threadsense.dashboard.review import review_view
 from threadsense.retrieval.config import FIXTURE_ROOT
-from threadsense.routing import ROOT, fixture_fingerprint, slack_datetime
+from threadsense.routing import ROOT, aware, fixture_fingerprint, slack_datetime
 
 BRIEF_VERSION = 'agent3-morning-brief-v1'
 RUN_ROOTS = (ROOT/'data/experiments',)
@@ -140,6 +140,11 @@ class Run:
             'test_fixture_note': self.manifest.get('test_fixture_note'),
             'shares_run_id_with': sorted(o.key for o in others if o is not self and o.brief['run_id'] == b['run_id']),
             'projects': sorted({c['project_id'] for c in b['cards']}),
+            'batches': sorted({c['lineage']['batch_id'] for c in self.cards.values() if c['lineage'].get('batch_id')}),
+            # When the brief was written, only if the run recorded it (file times reflect checkouts, not runs).
+            'generated_at': b.get('generated_at') or self.manifest.get('generated_at'),
+            'handoff_activity': b.get('handoff_activity'),
+            'accounting_status': (b.get('accounting') or {}).get('status'),
             'scope_only': (b.get('scope') or {}).get('only'),
             'cards': counts.get('cards', 0), 'cards_by_line': counts.get('cards_by_line', {}),
             'failed': sum(w['outcome'] == 'TOPIC_FAILED' for w in incomplete),
@@ -325,6 +330,21 @@ class Run:
 
     def ledger(self, card_id):
         return ((self.topics.get(card_id) or {}).get('result') or {}).get('evidence_ledger') or {}
+
+    def activity(self, card_id):
+        """Latest underlying source activity for sorting: the newest saved message of the card's own members in its
+        evidence ledger (SAVED_MESSAGES); without one, the newest related thread start (THREAD_START); otherwise
+        none (NONE). Never the current time. latest_at is UTC with microseconds, so it also sorts as text."""
+        card = self.cards[card_id]
+        members = set(card['lineage']['member_ids'])
+        threads = {(t['channel_id'], t['thread_id']) for t in card['related_threads']}
+        saved = [aware(e['timestamp']) for e in self.ledger(card_id).values()
+                 if e.get('origin') == 'member_message' and e.get('timestamp')
+                 and (e.get('member_id') in members or (e.get('channel_id'), e.get('thread_id')) in threads)]
+        starts = [slack_datetime(thread) for _, thread in threads]
+        basis, stamps = ('SAVED_MESSAGES', saved) if saved else ('THREAD_START', starts) if starts else ('NONE', [])
+        return {'latest_at': max(stamps).strftime('%Y-%m-%dT%H:%M:%S.%fZ') if stamps else None, 'basis': basis,
+                'messages': len(saved)}
 
     def cited(self, card_id):
         card, keys = self.cards[card_id], []

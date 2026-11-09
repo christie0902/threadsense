@@ -10,6 +10,9 @@ let server
 test.afterEach(async () => { await server?.stop() })
 
 const cardBox = (page, name) => page.locator(`[data-testid=card][data-topic-name=${JSON.stringify(name)}]`)
+// The active feed is one sorted list; a card's line is on the card itself.
+const feedLine = (page, line) => page.getByTestId('feed').locator(`[data-testid=card][data-card-line=${line}]`)
+const inFeed = (page, name) => page.getByTestId('feed').locator(`[data-testid=card][data-topic-name=${JSON.stringify(name)}]`)
 async function open(page, run) {
   await page.goto(`${server.url}/#run=${run}`)
   await page.reload()
@@ -25,21 +28,22 @@ test('derived brief: counts, outstanding steps and no contradictory observations
   await expect(relevanceNote).toBeHidden()  // processing detail stays folded
   await page.getByTestId('run-derivation').locator('summary').click()
   await expect(relevanceNote).toBeVisible()
-  await expect(page.getByTestId('tile-needs-review')).toContainText('66')
-  await expect(page.getByTestId('tile-recommended')).toContainText('8')
-  await expect(page.getByTestId('tile-in-brief')).toContainText('77 in this brief · 4 kept in history')
-  await expect(page.getByTestId('headline')).toContainText('3 observations to keep in view')
+  await expect(page.getByTestId('stat-in-brief')).toContainText('77')
+  await expect(page.getByTestId('stat-in-brief')).toContainText('66 needs review · 8 recommended · 3 observation')
+  await expect(page.getByTestId('stat-history')).toContainText('4 not in this brief')
+  await expect(page.getByTestId('stat-awaiting')).toContainText('incl. 8 pending actions to approve')
+  await expect(page.getByTestId('quick-OBSERVATIONS')).toContainText('3')
   await shot(page, 'overview')
 
   // Every observation in the brief has a supported no-action reason; none says withheld or no intervention.
-  const observations = page.getByTestId('active-OBSERVATION').getByTestId('card')
+  const observations = feedLine(page, 'OBSERVATION')
   await expect(observations).toHaveCount(3)
   for (const box of await observations.all()) {
     await expect(box.getByTestId('next-step-status')).toHaveAttribute('data-status', 'NO_ACTION_NEEDED')
     await expect(box.getByTestId('no-decision')).toHaveText('Observations need no decision.')
+    await expect(box).not.toContainText('Recommendation withheld')
+    await expect(box).not.toContainText('No intervention proposed')
   }
-  await expect(page.getByTestId('group-OBSERVATION')).not.toContainText('Recommendation withheld')
-  await expect(page.getByTestId('group-OBSERVATION')).not.toContainText('No intervention proposed')
 
   // The screenshot cases are back in review with their outstanding step.
   const korean = cardBox(page, 'Korean language QA edge cases')
@@ -61,17 +65,17 @@ test('derived brief: counts, outstanding steps and no contradictory observations
   await vietnamese.screenshot({ path: `${process.env.TS_UI_TMP}/briefing-vietnamese-expanded.png` })
   const repeat = cardBox(page, 'Repeated ending phrase in generated answer')
   await expect(repeat.getByTestId('outstanding-label')).toHaveText('Pending follow-up')
-  await expect(page.getByTestId('active-OBSERVATION')).toContainText('Queue coverage and closure reminders')
-  await expect(page.getByTestId('active-OBSERVATION')).toContainText('Suggestive vs explicit content boundary')
+  for (const name of ['Queue coverage and closure reminders', 'Suggestive vs explicit content boundary'])
+    await expect(inFeed(page, name)).toHaveAttribute('data-card-line', 'OBSERVATION')
 
   // Greetings are out of the brief's lists but kept, with their card, in history.
-  await expect(page.getByTestId('active-OBSERVATION')).not.toContainText('Language-day greetings')
+  await expect(inFeed(page, 'Language-day greetings')).toHaveCount(0)
   const history = page.getByTestId('not-in-brief')
   await history.locator('summary').click()
   await expect(history.getByTestId('card')).toHaveCount(4)
   await expect(cardBox(page, 'Language-day greetings').getByTestId('history-badge')).toContainText('Not in this brief')
-  await expect(page.getByTestId('active-OBSERVATION')).not.toContainText('Team avatar asset location')
-  await expect(page.getByTestId('active-OBSERVATION')).not.toContainText('Tie threshold for near-identical responses')
+  await expect(inFeed(page, 'Team avatar asset location')).toHaveCount(0)
+  await expect(inFeed(page, 'Tie threshold for near-identical responses')).toHaveCount(0)
   const avatar = cardBox(page, 'Team avatar asset location')
   await expect(avatar.getByTestId('history-badge')).toContainText('routine admin')
   await expect(avatar).toContainText(/partially resolved/i)

@@ -98,13 +98,16 @@ scripts/  (CLI entry points; read-only by default; writes need --write; paid cal
   generate_slack_fixtures.py, generate_thread_blueprint.py, validate_*.py ... fixture generation and validation
 
 web/  (React 18 + Vite 5 + Tailwind 3 + Framer Motion; Playwright tests)
-  src/App.jsx [P] .............. run list, overview, totals, briefing markdown, card groups
+  src/App.jsx [P] .............. briefing header, Active / Reviewed / Model Review Queue tabs, sort and filter, card feed
+  src/Sidebar.jsx [P] .......... mascot and greeting, briefing selector, briefing statistics, quick filters, processing
+  src/briefView.js [P] ......... shared view model: lifecycle membership, counts, filters, sorting (unit/ tests)
   src/CardView.jsx [P] ......... one card: action and draft, alternatives, sources, evidence, technical tab
   src/DecisionPanel.jsx [P] .... TL decisions (POST with Idempotency-Key); states nothing is executed
   src/ReviewQueue.jsx, ReviewPanel.jsx  Model Review Queue (ACCEPT / REJECT / DEFER)
   src/api.js ................... getJSON / postJSON
   dist/ ........................ built bundle served by FastAPI
   tests/*.spec.js .............. Playwright UI tests (combined.spec.js covers the demo baseline)
+  unit/*.test.js ............... node --test unit tests for briefView.js (npm run test:unit)
 
 data/
   fixtures/slack_generated_demo/ [P]  demo Slack input: 12 channels, 201 threads (23 announcement, 178 discussion)

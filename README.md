@@ -173,7 +173,15 @@ npm --prefix web ci && npm --prefix web run build      # once: build the fronten
 uv run --locked python scripts/run_dashboard.py        # http://127.0.0.1:8000 (add --include-test-fixtures for the labelled fixture run)
 uv run --locked python scripts/build_decision_snapshot.py --cutoff <ISO> --index-dir .index/retrieval_tl_<date> [--build]
 npm --prefix web run test:ui                           # browser tests (system Chrome)
+npm --prefix web run test:unit                         # view-model unit tests (node --test, no browser)
 ```
+
+Layout: a sidebar (mascot, statistic tiles, quick filters) and a sorted two-column Advice Cards
+feed with Active / Reviewed tabs and the separate Model Review Queue; on narrow screens the sidebar is a drawer. The briefing selector sits in the header; run identity, accounting and saved run files are under "Developer details" in the footer (or `#debug=1`). With no run in the URL, the dashboard opens the presentation briefing (the run with a presentation layer).
+Lifecycle membership, counts, filters and sorting share one view model (`web/src/briefView.js`). Default order:
+severity (HIGH, MEDIUM, LOW, not applicable, unassessed), then cards that require review, then the latest saved source
+message, then card ID. A closing decision moves a card to Reviewed ("Approved — execution not recorded"); a severity
+override keeps it active; no state is shown as resolved, because the dashboard records no execution or outcome.
 
 Approving a card records a decision only; nothing is executed or posted. Saved decisions reach retrieval only
 through a new snapshot at a later cutoff (decisions on live runs by default; `--namespace demo|test` for scripted or

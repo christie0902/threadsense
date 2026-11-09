@@ -24,12 +24,12 @@ function ReviewItem({ runKey, row, actor, onChanged, cardTopics, focused }) {
   }
   return (
     <li ref={ref} className={`panel p-4 ${focused ? 'ring-2 ring-cyan-300/60' : ''}`} data-testid="review-item" data-item-id={item.item_id} data-focused={focused || undefined}>
-      {focused && <div className="mb-2 text-[11px] font-medium text-cyan-200">Opened from a card's "What to review" panel</div>}
+      {focused && <div className="mb-2 text-xs font-medium text-cyan-200">Opened from a card's "What to review" panel</div>}
       <div className="flex flex-wrap items-center gap-1.5">
         <Badge tone={STATE_TONES[state]} data-testid="review-state">{state.toLowerCase()}</Badge>
         <Badge tone="cyan" title={`${item.origin} · ${item.kind}`}>{kindLabel(item)}</Badge>
         <Badge>{item.project_id}</Badge>
-        <span className="text-[11px] text-slate-500">{item.member_ids.length} member(s)</span>
+        <span className="text-xs text-slate-400">{item.member_ids.length} member(s)</span>
       </div>
       <div className="prose-pre mt-2 line-clamp-3 text-sm leading-relaxed text-slate-200 hover:line-clamp-none">{item.reason}</div>
       {item.related_card_ids.length > 0 && <div className="mt-1 text-xs text-slate-400">Related card: {item.related_card_ids.map(id => cardTopics[id] || id).join('; ')} (not changed by these actions)</div>}
@@ -76,7 +76,7 @@ export default function ReviewQueue({ runKey, rows, actor, onChanged, cardTopics
         ))}
       </div>
       <ul className="space-y-3">{shown.map(r => <ReviewItem key={r.item.item_id} runKey={runKey} row={r} actor={actor} onChanged={onChanged} cardTopics={cardTopics} focused={r.item.item_id === focus} />)}</ul>
-      {shown.length === 0 && <div className="text-sm text-slate-500">No items.</div>}
+      {shown.length === 0 && <div className="text-sm text-slate-400">No items.</div>}
     </section>
   )
 }

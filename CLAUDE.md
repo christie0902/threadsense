@@ -22,6 +22,7 @@ uv run --locked --extra dev python -m pytest tests/test_x.py   # single file
 - Full suite (dated evidence, no undated total): 1246 tests collected, not run, on 2026-11-08; last executed set 551 passed
   on 2026-11-08 (Agent 3, dashboard, execution, combined-brief and presentation files). A full run takes ~15 min. Intermittent `WinError 5` on `os.replace` is a Windows file lock (see Known issues), not a code failure.
 - No linter/formatter configured. No build step beyond the editable install.
+- UI view-model tests: `npm --prefix web run test:unit` (node --test over `web/src/briefView.js`; no browser).
 - UI tests: `npm --prefix web run build` then `npm --prefix web run test:ui` (Playwright, system Chrome; temp output
   in `TS_UI_TMP`, default `D:/tsb/ui-<time>`). Frontend deps are pinned in `web/package.json` + `package-lock.json`.
 - Zero-call checks: `--dry-run`, `--inspect`, `--check-input` flags (list in README). Anything with `--run`, or Agent 1 without `--dry-run`/`--inspect`, makes **paid model calls** — never run those without asking.

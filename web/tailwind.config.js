@@ -4,7 +4,8 @@ export default {
   theme: {
     extend: {
       colors: {
-        ink: { 950: '#05080f', 900: '#0a0f1a', 850: '#0e1522', 800: '#131c2c', 700: '#1c2738' },
+        // Slate-teal grounds (lighter than the earlier near-black) so panels, tiles and controls separate clearly.
+        ink: { 950: '#0e1822', 900: '#15222f', 850: '#1a2a38', 800: '#213343', 700: '#2b4052' },
       },
       fontFamily: {
         sans: ['"Segoe UI Variable Text"', '"Segoe UI"', 'Inter', 'system-ui', '-apple-system', 'Roboto', 'sans-serif'],

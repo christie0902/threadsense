@@ -3,7 +3,7 @@ import { useRef, useState } from 'react'
 import { getJSON } from './api.js'
 import DecisionPanel from './DecisionPanel.jsx'
 import ReviewPanel, { WhatToCheck } from './ReviewPanel.jsx'
-import { Badge, CopyButton, Icon, Json, LINE_LABELS, LINE_TONES, NotCurrent, SeverityBadge, SourceBadge, words } from './ui.jsx'
+import { Badge, CopyButton, Icon, Json, LINE_LABELS, LINE_TONES, NotCurrent, SeverityBadge, SourceBadge, when, words } from './ui.jsx'
 
 const ACCENTS = { RECOMMENDED_ACTION: 'bg-emerald-400', NEEDS_REVIEW: 'bg-amber-400', OBSERVATION: 'bg-violet-400' }
 // How an alternative relates to the card's action, only as far as the saved comparison records it (runs.alternatives).
@@ -57,7 +57,7 @@ function ActionTab({ action, alternatives, closeCall }) {
             {alternatives.map((a, i) => (
               <div key={a.candidate_id} className="rounded-xl border border-white/[0.07] bg-ink-950/40 p-4 sm:p-5" data-testid="alternative" data-relation={a.relation}>
                 <div className="flex items-start gap-3">
-                  <span className="grid h-6 w-6 shrink-0 place-items-center rounded-full bg-indigo-400/15 text-[11px] font-semibold text-indigo-200">{i + 1}</span>
+                  <span className="grid h-6 w-6 shrink-0 place-items-center rounded-full bg-indigo-400/15 text-xs font-semibold text-indigo-200">{i + 1}</span>
                   <div className="min-w-0 flex-1 space-y-3">
                     <div className="flex flex-wrap items-center gap-2">
                       <span className="font-medium leading-snug text-white">{a.label}</span>
@@ -74,7 +74,7 @@ function ActionTab({ action, alternatives, closeCall }) {
                     {a.draft_text && (
                       <details className="group" data-testid="alternative-draft">
                         <summary className="flex cursor-pointer list-none items-center gap-1.5 text-xs font-medium text-slate-300 hover:text-white [&::-webkit-details-marker]:hidden">
-                          <Icon name="chevron" className="h-3.5 w-3.5 text-slate-500 transition group-open:rotate-90" />Show this option's draft
+                          <Icon name="chevron" className="h-3.5 w-3.5 text-slate-400 transition group-open:rotate-90" />Show this option's draft
                         </summary>
                         <div className="mt-3 space-y-2">
                           <div className="flex justify-end"><CopyButton text={a.draft_text} /></div>
@@ -122,15 +122,15 @@ function Account({ presentation, action }) {
         {details.source === 'SAVED_REASONING' && (
           <details className="group mt-1.5" data-testid="saved-reasoning">
             <summary className="flex cursor-pointer list-none items-center gap-1.5 text-sm text-slate-300 hover:text-white [&::-webkit-details-marker]:hidden">
-              <Icon name="chevron" className="h-3.5 w-3.5 text-slate-500 transition group-open:rotate-90" />Show the supported findings
+              <Icon name="chevron" className="h-3.5 w-3.5 text-slate-400 transition group-open:rotate-90" />Show the supported findings
             </summary>
-            <div className="mt-1 text-[11px] text-slate-500" data-testid="saved-reasoning-note">Saved wording from an earlier card version (written before short and detailed text were separated): the findings that passed the evidence check.</div>
+            <div className="mt-1 text-xs text-slate-400" data-testid="saved-reasoning-note">Saved wording from an earlier card version (written before short and detailed text were separated): the findings that passed the evidence check.</div>
             <div className="prose-pre mt-1.5 text-sm leading-relaxed text-slate-300">{details.findings}</div>
           </details>
         )}
         {details.source === 'CARD' && details.findings && (
           <details className="mt-2 text-xs" data-testid="supported-findings">
-            <summary className="cursor-pointer text-slate-500 hover:text-slate-300">All supported findings</summary>
+            <summary className="cursor-pointer text-slate-400 hover:text-slate-300">All supported findings</summary>
             <div className="prose-pre mt-1 leading-relaxed text-slate-400">{details.findings}</div>
           </details>
         )}
@@ -139,9 +139,9 @@ function Account({ presentation, action }) {
         <h4 className="eyebrow">{operational ? 'Why this next step' : step.label}</h4>
         {step.rationale && <div className="prose-pre mt-1.5 text-sm leading-relaxed text-slate-200" data-testid="next-step-rationale">{step.rationale}</div>}
         {step.explanation && <div className="prose-pre mt-1.5 text-sm leading-relaxed text-slate-400" data-testid="next-step-explanation">{step.explanation}</div>}
-        {step.derived && <div className="mt-1.5 text-[11px] text-slate-500" data-testid="next-step-derived">Read from this run's saved result (an earlier card version).</div>}
+        {step.derived && <div className="mt-1.5 text-xs text-slate-400" data-testid="next-step-derived">Read from this run's saved result (an earlier card version).</div>}
         {outstanding && outstanding.text_source === 'SUPPORTED_STATEMENTS' && (
-          <div className="mt-3 text-[11px] leading-relaxed text-slate-500" data-testid="outstanding-detail" data-kind={outstanding.kind}>
+          <div className="mt-3 text-xs leading-relaxed text-slate-400" data-testid="outstanding-detail" data-kind={outstanding.kind}>
             {KIND_NOTES[outstanding.kind] ? `${KIND_NOTES[outstanding.kind]} ` : ''}The text in the highlighted box is saved wording the final evidence check judged supported.
           </div>
         )}
@@ -170,11 +170,11 @@ function SourcesTab({ card, cited, openPanel }) {
               <div className="min-w-0">
                 <button type="button" className="link text-sm" data-testid="thread-link"
                   onClick={() => openPanel({ type: 'thread', channel: t.channel_id, thread: t.thread_id })}>{t.label}</button>
-                <div className="text-[11px] text-slate-500">{t.permalink ? <a className="link" href={t.permalink} target="_blank" rel="noreferrer">Slack link</a> : 'No Slack link stored · opens the internal view'}</div>
+                <div className="text-xs text-slate-400">{t.permalink ? <a className="link" href={t.permalink} target="_blank" rel="noreferrer">Slack link</a> : 'No Slack link stored · opens the internal view'}</div>
               </div>
             </li>
           ))}
-          {card.related_threads.length === 0 && <li className="text-xs text-slate-500">None.</li>}
+          {card.related_threads.length === 0 && <li className="text-xs text-slate-400">None.</li>}
         </ul>
       </div>
       <div>
@@ -182,7 +182,7 @@ function SourcesTab({ card, cited, openPanel }) {
         <ul className="mt-2 space-y-1.5" data-testid="cited-sources">
           {sources.map(e => (
             <li key={e.evidence_id} className="panel-inset flex flex-wrap items-center gap-1.5 px-3 py-2">
-              <Icon name="doc" className="h-3.5 w-3.5 text-slate-500" />
+              <Icon name="doc" className="h-3.5 w-3.5 text-slate-400" />
               <button type="button" className="link text-sm" data-testid="source-link" onClick={() => openPanel({ type: 'evidence', id: e.evidence_id })}>
                 {e.title || e.evidence_id}{e.sections?.length ? ` - ${e.sections.join(', ')}` : ''}
               </button>
@@ -190,7 +190,7 @@ function SourcesTab({ card, cited, openPanel }) {
             </li>
           ))}
           {messages > 0 && <li className="px-1 text-xs text-slate-400">{messages} cited messages from the related threads</li>}
-          {sources.length === 0 && messages === 0 && <li className="text-xs text-slate-500">None.</li>}
+          {sources.length === 0 && messages === 0 && <li className="text-xs text-slate-400">None.</li>}
         </ul>
       </div>
     </div>
@@ -234,14 +234,24 @@ function TechnicalTab({ card, detail, run, displayTitle }) {
 function EditorialNote({ note, openPanel }) {
   return (
     <div className="mt-2 rounded-lg border border-amber-300/20 bg-amber-300/[0.04] px-3 py-2 text-xs text-slate-300" data-testid="editorial-note">
-      <span className="font-medium text-amber-100">{note.label}</span> <span className="text-slate-500">(editorial note, not judged)</span>: {note.text}
+      <span className="font-medium text-amber-100">{note.label}</span> <span className="text-slate-400">(editorial note, not judged)</span>: {note.text}
       <span className="ml-1">{note.sources.map(src => (
         <button key={src.evidence_id} type="button" className="link mr-2" data-testid="editorial-source" onClick={() => openPanel?.({ type: 'evidence', id: src.evidence_id })}>source</button>))}</span>
     </div>
   )
 }
 
-export default function CardView({ runKey, run, item, actor, decisionState, onDecisionChanged, openPanel, openQueueItem, wide = false }) {
+// Basis of the card's activity time (runs.activity): saved member messages, or only the threads' start times.
+const ACTIVITY_LABELS = { SAVED_MESSAGES: 'Latest source message', THREAD_START: 'Latest thread start' }
+
+/** Decision status from the shared view model (briefView.decisionStatus): saved decision, never execution. */
+function DecisionStatus({ row }) {
+  if (!row || !row.decision.label || row.decision.status === 'PENDING') return null
+  const tone = row.decision.reviewed ? 'emerald' : 'amber'
+  return <Badge tone={tone} data-testid="lifecycle-status" data-status={row.decision.status}>{row.decision.label}</Badge>
+}
+
+export default function CardView({ runKey, run, item, row, actor, decisionState, onDecisionChanged, openPanel, openQueueItem, wide = false }) {
   const { card, alternatives, cited_evidence: cited, allowed_decisions: allowed, semantic_source: source, review, presentation } = item
   const step = presentation?.next_step
   const outstanding = presentation?.outstanding_step
@@ -275,7 +285,7 @@ export default function CardView({ runKey, run, item, actor, decisionState, onDe
 
   return (
     <motion.article ref={ref} layout initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, height: 0 }}
-      className={`panel relative scroll-mt-20 self-start overflow-hidden ${open || wide ? 'lg:col-span-2' : ''}`} data-testid="card" data-card-id={card.card_id} data-card-line={card.card_line} data-topic-name={card.topic_name}>
+      className={`panel relative scroll-mt-20 self-start overflow-hidden ${open || wide ? 'col-span-full' : ''}`} data-testid="card" data-card-id={card.card_id} data-card-line={card.card_line} data-topic-name={card.topic_name}>
       <span className={`absolute inset-y-0 left-0 w-[3px] ${ACCENTS[card.card_line]}`} aria-hidden="true" />
       <div className="p-5 pl-6 sm:p-6 sm:pl-7">
         <header className="flex flex-wrap items-start gap-3">
@@ -284,7 +294,14 @@ export default function CardView({ runKey, run, item, actor, decisionState, onDe
               <Badge tone={LINE_TONES[card.card_line]}>{LINE_LABELS[card.card_line]}</Badge>
               <Badge>{card.project_id}</Badge>
               <SourceBadge source={source} />
-              <Badge>{words(card.resolution_status)}</Badge>
+              <Badge data-testid="thread-status" title="Source-thread status, read from the threads' own messages; not a team-lead decision">Threads: {words(card.resolution_status)}</Badge>
+              <DecisionStatus row={row} />
+              {row?.openObligations.length > 0 && (
+                <button type="button" onClick={() => openQueueItem?.(row.openObligations[0])} data-testid="open-obligations"
+                  className="inline-flex items-center gap-1 whitespace-nowrap rounded-md border border-cyan-400/30 bg-cyan-400/10 px-1.5 py-0.5 text-xs font-medium text-cyan-200 transition hover:border-cyan-300/60">
+                  <Icon name="queue" className="h-3 w-3" />{row.openObligations.length} model-review {row.openObligations.length === 1 ? 'item' : 'items'} open
+                </button>
+              )}
               {briefing && briefing.status !== 'IN_BRIEFING' && presentation?.inventory !== 'CONSOLIDATED_PENDING' && <Badge data-testid="history-badge">Not in this brief · {words(briefing.relevance)}</Badge>}
               {presentation?.consolidated && <Badge data-testid="consolidated-badge">Original topic · combined issue pending</Badge>}
               {presentation?.inventory === 'PROCESSING_HISTORY' && <Badge data-testid="processing-badge">Processing history</Badge>}
@@ -393,6 +410,9 @@ export default function CardView({ runKey, run, item, actor, decisionState, onDe
           <span className="inline-flex items-center gap-1.5"><Icon name="thread" className="h-3.5 w-3.5" />{card.related_threads.length} threads</span>
           <span className="inline-flex items-center gap-1.5"><Icon name="doc" className="h-3.5 w-3.5" />{sourceCount} cited sources</span>
           {alternatives.length > 0 && <span className="inline-flex items-center gap-1.5"><Icon name="layers" className="h-3.5 w-3.5" />{alternatives.length} alternative{alternatives.length === 1 ? '' : 's'}</span>}
+          <span className="inline-flex items-center gap-1.5" data-testid="card-activity" data-basis={item.activity?.basis || 'NONE'}>
+            <Icon name="clock" className="h-3.5 w-3.5" />{item.activity?.latest_at ? `${ACTIVITY_LABELS[item.activity.basis] || 'Latest activity'} ${when(item.activity.latest_at)}` : 'No source time saved'}
+          </span>
           <button type="button" className="btn btn-sm ml-auto" aria-expanded={open} data-testid="card-expand" onClick={toggle}>
             {open ? 'Hide details' : review?.checks?.length ? 'What to check & details' : 'Details & evidence'}<Icon name="chevron" className={`h-3.5 w-3.5 transition ${open ? 'rotate-90' : ''}`} />
           </button>
@@ -408,7 +428,7 @@ export default function CardView({ runKey, run, item, actor, decisionState, onDe
                 {review && (review.items.length > 0 || review.withheld?.length > 0 || review.other_notes.length > 0) && (
                   <details className="group panel-inset" data-testid="all-reasons">
                     <summary className="flex cursor-pointer select-none list-none items-center gap-2 px-3 py-2 text-xs font-medium text-slate-300 hover:text-white [&::-webkit-details-marker]:hidden">
-                      <Icon name="chevron" className="h-3.5 w-3.5 text-slate-500 transition group-open:rotate-90" />All review reasons and evidence
+                      <Icon name="chevron" className="h-3.5 w-3.5 text-slate-400 transition group-open:rotate-90" />All review reasons and evidence
                     </summary>
                     <div className="border-t border-white/[0.06] p-3"><ReviewPanel review={review} openPanel={openPanel} openQueueItem={openQueueItem} /></div>
                   </details>

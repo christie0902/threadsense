@@ -15,7 +15,11 @@ test('consolidated issues, shared action and processing history', async ({ page 
   await page.goto(`${server.url}/#run=${DERIVED}`)
   await page.reload()
   await expect(page.getByTestId('run-banner')).toBeVisible()
-  await expect(page.getByTestId('tile-in-brief')).toContainText('63 in this brief (14 consolidated issues) · 3 kept in history')
+  // 49 cards plus 14 consolidated issues awaiting fresh advice (their 29 original cards sit inside each issue).
+  await expect(page.getByTestId('stat-in-brief')).toContainText('49')
+  await expect(page.getByTestId('stat-consolidated')).toContainText('14')
+  await expect(page.getByTestId('stat-consolidated')).toContainText('29 original cards kept inside')
+  await expect(page.getByTestId('stat-history')).toContainText('3 processing history')
   await page.screenshot({ path: `${process.env.TS_UI_TMP}/consolidation-overview.png` })
 
   // One shared action for the duplicate Contact details edit; each card keeps its review reasons.
@@ -41,13 +45,13 @@ test('consolidated issues, shared action and processing history', async ({ page 
   await expect(phone.getByTestId('action-box')).toBeVisible()  // the original advice stays readable
   await contact.screenshot({ path: `${process.env.TS_UI_TMP}/consolidation-contact-details.png` })
   // Merged source cards are not repeated in the main lists.
-  await expect(page.getByTestId('group-NEEDS_REVIEW')).not.toContainText('QN handling for fictional phone numbers')
+  await expect(cardBox(page.getByTestId('feed'), 'QN handling for fictional phone numbers')).toHaveCount(0)
 
   // Processing history: greetings and the avatar exchange, kept with their cards.
   const history = page.getByTestId('processing-history')
   await history.locator('summary').click()
   await expect(history.getByTestId('card')).toHaveCount(3)
   await expect(cardBox(history, 'Team avatar asset location').getByTestId('processing-badge')).toBeVisible()
-  await expect(page.getByTestId('group-OBSERVATION')).not.toContainText('Language-day greetings')
+  await expect(cardBox(page.getByTestId('feed'), 'Language-day greetings')).toHaveCount(0)
   await history.screenshot({ path: `${process.env.TS_UI_TMP}/consolidation-processing-history.png` })
 })

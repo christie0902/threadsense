@@ -5,7 +5,7 @@ import { Badge, Details, Icon, Json, NotCurrent, when, words } from './ui.jsx'
 
 function Row({ label, children }) {
   if (children === null || children === undefined || children === '') return null
-  return <div className="grid grid-cols-[8.5rem_1fr] gap-3 border-b border-white/[0.04] py-1.5 text-xs last:border-0"><div className="text-slate-500">{label}</div><div className="break-words text-slate-200">{children}</div></div>
+  return <div className="grid grid-cols-[8.5rem_1fr] gap-3 border-b border-white/[0.04] py-1.5 text-xs last:border-0"><div className="text-slate-400">{label}</div><div className="break-words text-slate-200">{children}</div></div>
 }
 
 function Loading({ error }) {
