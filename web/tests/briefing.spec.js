@@ -13,16 +13,16 @@ const cardBox = (page, name) => page.locator(`[data-testid=card][data-topic-name
 // The active feed is one sorted list; a card's line is on the card itself.
 const feedLine = (page, line) => page.getByTestId('feed').locator(`[data-testid=card][data-card-line=${line}]`)
 const inFeed = (page, name) => page.getByTestId('feed').locator(`[data-testid=card][data-topic-name=${JSON.stringify(name)}]`)
-async function open(page, run) {
-  await page.goto(`${server.url}/#run=${run}`)
+async function open(page, run, extra = '') {
+  await page.goto(`${server.url}/#run=${run}${extra}`)
   await page.reload()
-  await expect(page.getByTestId('run-banner')).toBeVisible()
+  await expect(page.getByTestId('briefing-header')).toBeVisible()
 }
 const shot = (page, name) => page.screenshot({ path: `${process.env.TS_UI_TMP}/briefing-${name}.png`, fullPage: false })
 
 test('derived brief: counts, outstanding steps and no contradictory observations', async ({ page }) => {
   server = await startServer('briefing', ROOTS)
-  await open(page, DERIVED)
+  await open(page, DERIVED, '&debug=1') // the provenance banner is a developer detail for live briefings
   await expect(page.getByTestId('run-derivation')).toContainText('briefing-routing-v2')
   const relevanceNote = page.getByTestId('run-derivation').getByText(/not from an automatic classifier/)
   await expect(relevanceNote).toBeHidden()  // processing detail stays folded
@@ -30,7 +30,7 @@ test('derived brief: counts, outstanding steps and no contradictory observations
   await expect(relevanceNote).toBeVisible()
   await expect(page.getByTestId('stat-in-brief')).toContainText('77')
   await expect(page.getByTestId('stat-in-brief')).toContainText('66 needs review · 8 recommended · 3 observation')
-  await expect(page.getByTestId('stat-history')).toContainText('4 not in this brief')
+  await expect(page.getByTestId('stat-history')).toContainText('4 routine or social cards left out of this briefing')
   await expect(page.getByTestId('stat-awaiting')).toContainText('incl. 8 pending actions to approve')
   await expect(page.getByTestId('quick-OBSERVATIONS')).toContainText('3')
   await shot(page, 'overview')

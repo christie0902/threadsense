@@ -6,6 +6,7 @@ import CardView from './CardView.jsx'
 import SidePanel from './Panels.jsx'
 import ReviewQueue from './ReviewQueue.jsx'
 import Sidebar, { Health, RunSelect } from './Sidebar.jsx'
+import CardSlider from './Slider.jsx'
 import { Badge, CopilotAvatar, Details, Icon, Orb, when, words } from './ui.jsx'
 
 const MODE_BANNERS = {
@@ -25,7 +26,7 @@ function readHash() {
   else if (raw?.startsWith('thread:')) { const [, channel, thread] = raw.split(':'); panel = { type: 'thread', channel, thread } }
   const tab = p.get('tab')
   return { run: p.get('run'), project: p.get('project') || '', tab: tab === 'queue' || tab === 'reviewed' ? tab : 'active', panel,
-    item: p.get('item'), sort: SORTS[p.get('sort')] ? p.get('sort') : 'severity', quick: QUICK_FILTERS[p.get('filter')] ? p.get('filter') : 'ALL', debug: p.get('debug') === '1' }
+    item: p.get('item'), sort: SORTS[p.get('sort')] ? p.get('sort') : 'severity', quick: QUICK_FILTERS[p.get('filter')] ? p.get('filter') : 'ALL', debug: p.get('debug') === '1', view: p.get('view') === 'slides' ? 'slides' : 'grid' }
 }
 
 function writeHash(s) {
@@ -36,6 +37,7 @@ function writeHash(s) {
   if (s.sort !== 'severity') p.set('sort', s.sort)
   if (s.quick !== 'ALL') p.set('filter', s.quick)
   if (s.debug) p.set('debug', '1')
+  if (s.view === 'slides') p.set('view', 'slides')
   if (s.tab === 'queue' && s.item) p.set('item', s.item)
   if (s.panel) p.set('panel', s.panel.type === 'evidence' ? `evidence:${s.panel.id}` : `thread:${s.panel.channel}:${s.panel.thread}`)
   const next = `#${p.toString()}`
@@ -119,7 +121,7 @@ function BriefingHeader({ run, children }) {
       <div className="flex flex-wrap items-end justify-between gap-x-6 gap-y-4">
         <div className="min-w-0">
           <div className="eyebrow inline-flex items-center gap-1.5 text-cyan-300"><Icon name="spark" className="h-3.5 w-3.5" />Morning briefing · <span data-testid="run-kind">{kind.label}</span></div>
-          <h2 className="mt-1 font-display text-3xl font-semibold tracking-tight text-white" data-testid="briefing-date">{briefingDate(run) || 'Briefing date not recorded'}</h2>
+          <h2 className="mt-2 bg-gradient-to-r from-white via-cyan-100 to-cyan-300 bg-clip-text pb-1 font-display text-4xl font-bold leading-tight tracking-tight text-transparent sm:text-5xl" data-testid="briefing-date">{briefingDate(run) || 'Briefing date not recorded'}</h2>
         </div>
         <div className="flex flex-wrap items-center gap-2" data-testid="feed-controls">{children}</div>
       </div>
@@ -192,6 +194,7 @@ export default function App() {
   const [focusItem, setFocusItem] = useState(initial.item)
   const [drawer, setDrawer] = useState(false)
   const [debug, setDebug] = useState(initial.debug)
+  const [view, setView] = useState(initial.view)
   const menuRef = useRef(null)
   const openQueueItem = useCallback(id => { setFocusItem(id); setTab('queue'); window.scrollTo({ top: 0 }) }, [])
   const [panel, setPanel] = useState(initial.panel)
@@ -204,7 +207,7 @@ export default function App() {
   const actor = session?.actor_id || ''
 
   useEffect(() => { getJSON('/api/runs').then(d => { setRuns(d.runs); setSession(d.session || null); if (!runKey && d.runs.length) setRunKey((d.runs.find(r => r.presentation) || d.runs[0]).run_key) }).catch(e => setError(String(e.message))) }, [])
-  useEffect(() => { writeHash({ run: runKey, project, tab, panel, item: focusItem, sort, quick, debug }) }, [runKey, project, tab, panel, focusItem, sort, quick, debug])
+  useEffect(() => { writeHash({ run: runKey, project, tab, panel, item: focusItem, sort, quick, debug, view }) }, [runKey, project, tab, panel, focusItem, sort, quick, debug, view])
 
   // Decisions and queue state always come back from the server, so lists and counts follow the saved records. A
   // failed refresh keeps the last confirmed state on screen (no card disappears) and says so.
@@ -289,13 +292,21 @@ export default function App() {
                       {projects.map(p => <option key={p} value={p}>{p}</option>)}
                     </select>
                   </label>
+                  <div className="control gap-1 p-1" role="group" aria-label="Card layout" data-testid="view-toggle">
+                    {[['grid', 'Grid', 'layers'], ['slides', 'Slides', 'doc']].map(([v, label, icon]) => (
+                      <button key={v} type="button" onClick={() => setView(v)} aria-pressed={view === v} data-testid={`view-${v}`}
+                        className={`inline-flex h-8 items-center gap-1.5 rounded-lg px-3 text-sm font-medium transition ${view === v ? 'bg-cyan-300 text-ink-950' : 'text-slate-200 hover:bg-white/[0.08]'}`}>
+                        <Icon name={icon} className="h-4 w-4" />{label}
+                      </button>
+                    ))}
+                  </div>
                   <button type="button" onClick={() => setTab('queue')} data-testid="header-queue"
                     className="control px-4 text-slate-200 hover:border-cyan-300/40" title="Model Review Queue">
                     <Icon name="queue" className="h-4 w-4" />Review queue
                     {openQueue > 0 && <span className="rounded-full bg-cyan-400/20 px-2 text-xs font-semibold tabular-nums text-cyan-200">{openQueue}</span>}
                   </button>
                 </BriefingHeader>
-                <RunBanner run={run} />
+                {(debug || run.mode !== 'LIVE') && <RunBanner run={run} />}
 
                 {brief.incomplete_work.length > 0 && (
                   <section className="rounded-xl border border-red-400/30 bg-red-500/[0.07] p-4" data-testid="incomplete-work">
@@ -341,8 +352,11 @@ export default function App() {
 
                     {/* Keyed by view: switching tab or filter shows the new list at once; only a card leaving after a
                         decision animates out. */}
-                    <section key={`${lifecycle}|${quick}|${project}`} className="grid items-start gap-6 xl:grid-cols-2 min-[2200px]:grid-cols-3" data-testid="feed" data-tab={lifecycle}>
-                      <AnimatePresence initial={false}>{visible.map(card)}</AnimatePresence>
+                    <section key={`${lifecycle}|${quick}|${project}|${view}`} data-testid="feed" data-tab={lifecycle} data-view={view}
+                      className={view === 'slides' ? '' : 'grid items-start gap-6 xl:grid-cols-2 min-[2200px]:grid-cols-3'}>
+                      {view === 'slides'
+                        ? <CardSlider key={sort} rows={visible} renderCard={card} />
+                        : <AnimatePresence initial={false}>{visible.map(card)}</AnimatePresence>}
                       {visible.length === 0 && (
                         <div className="panel-inset px-4 py-3 text-sm text-slate-400 col-span-full" data-testid="feed-empty">
                           {!stats.inBrief ? `No cards${project ? ` in ${project}` : ''} in this briefing.`

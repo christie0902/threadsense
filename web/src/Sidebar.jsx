@@ -101,7 +101,7 @@ export default function Sidebar({ run, session, stats, quick, onQuick, quickCoun
             <CopilotFigure className="h-44" />
           </div>
           <div className="panel mt-4 px-4 py-4 text-center">
-            <div className="font-display text-lg font-semibold text-white">AI Co-pilot</div>
+            <div className="font-display text-lg font-semibold text-white" data-testid="agent-name">Triage</div>
             <p className="mt-1 text-sm leading-6 text-slate-200" data-testid="greeting">
               Good morning{name ? `, ${name}` : ''}.{run && <span className="block text-slate-300">Your briefing for {briefingDate(run) || 'this run'} is ready.</span>}
             </p>
@@ -126,8 +126,11 @@ export default function Sidebar({ run, session, stats, quick, onQuick, quickCoun
             </div>
             {Boolean(stats.notInBrief + stats.processingHistory + (stats.replacedRecords || 0)) && (
               <div className="mt-3 text-xs leading-5 text-slate-300" data-testid="stat-history">
-                History, not counted above: {[stats.notInBrief && `${stats.notInBrief} not in this brief`, stats.processingHistory && `${stats.processingHistory} processing history`,
-                  stats.replacedRecords && `${stats.replacedRecords} replaced records (lineage only)`].filter(Boolean).join(' · ')}.
+                Also kept for reference, not counted above: {[
+                  stats.notInBrief && `${stats.notInBrief} routine or social ${stats.notInBrief === 1 ? 'card' : 'cards'} left out of this briefing`,
+                  stats.processingHistory && `${stats.processingHistory} routine or social ${stats.processingHistory === 1 ? 'thread' : 'threads'} set aside`,
+                  stats.replacedRecords && `${stats.replacedRecords} earlier ${stats.replacedRecords === 1 ? 'card' : 'cards'} merged into combined issues`,
+                ].filter(Boolean).join('; ')}.
               </div>
             )}
             {run?.presentation?.totals && run.presentation.totals.active_cards !== stats.inBrief && (

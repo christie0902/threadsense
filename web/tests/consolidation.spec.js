@@ -14,12 +14,12 @@ test('consolidated issues, shared action and processing history', async ({ page 
   server = await startServer('consolidation', ['--runs', 'data/experiments'])
   await page.goto(`${server.url}/#run=${DERIVED}`)
   await page.reload()
-  await expect(page.getByTestId('run-banner')).toBeVisible()
+  await expect(page.getByTestId('briefing-header')).toBeVisible()
   // 49 cards plus 14 consolidated issues awaiting fresh advice (their 29 original cards sit inside each issue).
   await expect(page.getByTestId('stat-in-brief')).toContainText('49')
   await expect(page.getByTestId('stat-consolidated')).toContainText('14')
   await expect(page.getByTestId('stat-consolidated')).toContainText('29 original cards kept inside')
-  await expect(page.getByTestId('stat-history')).toContainText('3 processing history')
+  await expect(page.getByTestId('stat-history')).toContainText('3 routine or social threads set aside')
   await page.screenshot({ path: `${process.env.TS_UI_TMP}/consolidation-overview.png` })
 
   // One shared action for the duplicate Contact details edit; each card keeps its review reasons.

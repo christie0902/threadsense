@@ -177,7 +177,7 @@ npm --prefix web run test:unit                         # view-model unit tests (
 ```
 
 Layout: a sidebar (mascot, statistic tiles, quick filters) and a sorted two-column Advice Cards
-feed with Active / Reviewed tabs and the separate Model Review Queue; on narrow screens the sidebar is a drawer. The briefing selector sits in the header; run identity, accounting and saved run files are under "Developer details" in the footer (or `#debug=1`). With no run in the URL, the dashboard opens the presentation briefing (the run with a presentation layer).
+feed with Active / Reviewed tabs and the separate Model Review Queue; on narrow screens the sidebar is a drawer. A Grid / Slides toggle in the header switches between the card grid and a one-card-at-a-time slider (arrows, arrow keys, swipe; `#view=slides`). The briefing selector sits in the header; run identity, accounting and saved run files are under "Developer details" in the footer (or `#debug=1`). With no run in the URL, the dashboard opens the presentation briefing (the run with a presentation layer).
 Lifecycle membership, counts, filters and sorting share one view model (`web/src/briefView.js`). Default order:
 severity (HIGH, MEDIUM, LOW, not applicable, unassessed), then cards that require review, then the latest saved source
 message, then card ID. A closing decision moves a card to Reviewed ("Approved — execution not recorded"); a severity

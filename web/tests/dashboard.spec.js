@@ -16,7 +16,7 @@ const cardBox = (page, name) => page.locator(`[data-testid=card][data-topic-name
 async function open(page, run, extra = '') {
   await page.goto(`${server.url}/#run=${run}${extra}`)
   await page.reload() // hash-only navigation does not reload the app
-  await expect(page.getByTestId('run-banner')).toBeVisible()
+  await expect(page.getByTestId('briefing-header')).toBeVisible()
   await expect(page.getByTestId('session-user')).toContainText('Priya')
 }
 // Card details sit behind the card's expander, one tab at a time.
