@@ -117,12 +117,11 @@ function RunBanner({ run }) {
 
 /** Briefing date and source window, prominent. Controls sit on the right of the same bar. */
 function BriefingHeader({ run, children }) {
-  const kind = runKind(run)
   return (
     <header className="space-y-2 border-b border-white/[0.08] pb-6" data-testid="briefing-header">
       <div className="flex flex-wrap items-end justify-between gap-x-6 gap-y-4">
         <div className="min-w-0">
-          <div className="eyebrow inline-flex items-center gap-1.5 text-cyan-300"><Icon name="spark" className="h-3.5 w-3.5" />Morning briefing · <span data-testid="run-kind">{kind.label}</span></div>
+          <div className="eyebrow inline-flex items-center gap-1.5 text-cyan-300" data-testid="briefing-eyebrow"><Icon name="spark" className="h-3.5 w-3.5" />Morning briefing</div>
           <h2 className="mt-2 bg-gradient-to-r from-white via-cyan-100 to-cyan-300 bg-clip-text pb-1 font-display text-4xl font-bold leading-tight tracking-tight text-transparent sm:text-5xl" data-testid="briefing-date">{briefingDate(run) || 'Briefing date not recorded'}</h2>
         </div>
         <div className="flex flex-wrap items-center gap-2" data-testid="feed-controls">{children}</div>

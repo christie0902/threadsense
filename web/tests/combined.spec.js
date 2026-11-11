@@ -102,7 +102,7 @@ test('combined briefing v2 (demo baseline): targeted re-groundings, labels and t
   await expect(page.getByTestId('tab-active')).toHaveText('Active (63)')
   await expect(page.getByTestId('tab-reviewed')).toHaveText('Reviewed (0)')
   await expect(page.getByTestId('visible-count')).toHaveText('Showing 63 of 63 active cards')
-  await expect(page.getByTestId('run-kind')).toHaveText('Offline combination')
+  await expect(page.getByTestId('briefing-eyebrow')).toHaveText('Morning briefing') // run kind: briefing selector and developer details
   await expect(page.getByTestId('run-banner')).not.toContainText('Live run')
   await expect(page.getByTestId('briefing-date')).toHaveText('Fri, 2 Oct 2026')
   await expect(page.getByTestId('source-window')).toContainText('2026-10-01 12:00 UTC to 2026-10-02 12:00 UTC')
@@ -189,7 +189,7 @@ test('presentation view: no developer banner, Triage, and the slides layout over
   await expect(page.getByTestId('run-select')).toHaveValue('threadsense_full_v1_combined_v2') // default: the presentation briefing
   await expect(page.getByTestId('agent-name')).toHaveText('Triage')
   await expect(page.getByTestId('run-banner')).toHaveCount(0)
-  await expect(page.getByTestId('run-kind')).toHaveText('Offline combination') // provenance stays in the header
+  await expect(page.getByTestId('briefing-eyebrow')).toHaveText('Morning briefing') // no run-kind label in the presentation header
   await expect(page.getByTestId('stat-history')).not.toContainText(/lineage|processing history/)
   await page.getByTestId('view-slides').click()
   await expect(page).toHaveURL(/view=slides/)
