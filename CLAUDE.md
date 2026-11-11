@@ -39,6 +39,15 @@ uv run --locked --extra dev python -m pytest tests/test_x.py   # single file
   later snapshots, `app.py` FastAPI), `web/` (React/Vite/Tailwind/Framer Motion; `web/tests/` Playwright). Runners
   `scripts/run_dashboard.py`, `scripts/build_decision_snapshot.py`. Decision store `.state/dashboard/` (ignored).
   Labelled fixture run `tests/fixtures/dashboard_runs/` (builder `tests/fixtures/make_dashboard_fixture_run.py`).
+- Human feedback loop (2026-11-10, offline): `dashboard/feedback.py` (report/event contracts `dashboard-ai-feedback-v1` /
+  `-event-v1`, table `feedback_events`, migration user_version 1; SUBMITTED -> CONFIRMED -> WITHDRAWN / SUPERSEDED),
+  `agents/reviewer_context.py` (snapshot `reviewer-feedback-snapshot-v1`; match = same project + shared thread; sent as
+  `reviewer_corrections` only when matched, so other payloads stay byte-identical), runner `--feedback-snapshot`,
+  scripts `build_feedback_snapshot.py`, `export_feedback_cases.py`. Guide `docs/human-feedback-loop.md`. Not validated live.
+  Lessons for Agents 1/2 (same day): optional `lesson` on a REJECT review action (`dashboard/lessons.py`, table
+  `lesson_events`, migration 2; ACTIVE/INACTIVE/SUPERSEDED), `agents/review_lessons.py` (snapshot
+  `review-lessons-snapshot-v1`, <=5 lessons / 1,500 chars per request, project scope unless ALL_PROJECTS),
+  `scripts/build_lesson_snapshot.py`, `run_agent1_batch.py --relevance --lessons`, `run_agent2_batch.py --lessons`.
 - Full run (2026-11-05): `src/threadsense/execution/` (`guard.py` transport guard + request cache, `ledger.py` SQLite
   budget ledger, `store.py` content-addressed objects, `pricing.py` verified prices, `pipeline.py` stages snapshot ->
   agent1_interpret -> agent1_verify -> grouping -> agent2 -> agent3 -> finalize). Runner `scripts/run_threadsense_full.py`

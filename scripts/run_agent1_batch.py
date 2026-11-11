@@ -101,11 +101,16 @@ def main(argv: list[str] | None = None) -> int:
                         help="Slack snapshot to interpret (default: the original fixture).")
     parser.add_argument("--relevance", action="store_true",
                         help="Also judge project relevance in the same interpretation request (agent1-relevance-v1).")
+    parser.add_argument("--lessons", type=Path,
+                        help="Lessons from human review (scripts/build_lesson_snapshot.py); applicable lessons are added to "
+                             "each interpretation request. Needs --relevance.")
     parser.add_argument("--source-destination", type=Path, default=PROJECT_ROOT / "data" / "knowledge" / "decisions",
                         help="Where live runs store extracted announcement sources (a run directory keeps the corpus unchanged).")
     args = parser.parse_args(argv)
     if args.limit < 0:
         parser.error("--limit must be zero or positive")
+    if args.lessons and not args.relevance:
+        parser.error("--lessons needs --relevance (the lessons extend the relevance interpretation request).")
 
     fixture_root = args.fixture_root
     if not args.dry_run and not args.cutoff:
@@ -155,6 +160,14 @@ def main(argv: list[str] | None = None) -> int:
     if args.relevance:  # Only new-pipeline runs carry this key, so earlier run configs (and caches) are unchanged.
         from threadsense.agents import thread_relevance
         config["relevance"] = {"version": thread_relevance.RELEVANCE_VERSION, "sha256": thread_relevance.fingerprint()}
+    lessons = None
+    if args.lessons:  # Present only when lessons are used: earlier run configs and caches are unchanged.
+        from threadsense.agents import review_lessons
+        try:
+            lessons = review_lessons.load_snapshot(args.lessons)
+        except review_lessons.LessonSnapshotError as exc:
+            parser.error(str(exc))
+        config["review_lessons"] = review_lessons.fingerprint(lessons)
     if manifest_path.exists():
         previous = json.loads(manifest_path.read_text(encoding="utf-8"))
         if previous != config:
@@ -167,8 +180,14 @@ def main(argv: list[str] | None = None) -> int:
     completed = []
     rejected = {}
     config_hash = fingerprint(config)
+    applied = {}
     for thread in threads:
         input_hash = fingerprint(thread.model_dump(mode="json"))
+        if lessons is not None:
+            block, used = review_lessons.select(lessons, "AGENT_1", thread.project_id, "agent1_interpretation")
+            if block is not None:  # The lessons are model input: they are part of this thread's cache identity.
+                input_hash = fingerprint({"thread": input_hash, "review_lessons": used["context_sha256"]})
+                applied[input_hash] = (block, used)
         cache_path = output_dir / "records" / f"{input_hash}.json"
         record = None
         if cache_path.exists():
@@ -233,7 +252,9 @@ def main(argv: list[str] | None = None) -> int:
             print(f"[{index}/{len(threads)}] review pending {thread.thread_id}")
             continue
         try:
-            if args.relevance:
+            if input_hash in applied:
+                result, relevance = review_lessons.interpret_thread(thread, applied[input_hash][0])
+            elif args.relevance:
                 result, relevance = thread_relevance.interpret_thread(thread)
             else:
                 result, relevance = ti.interpret_thread(thread), None
@@ -278,6 +299,7 @@ def main(argv: list[str] | None = None) -> int:
             "run_config_sha256": fingerprint(config),
             "interpretation": result.model_dump(mode="json"),
             **({"relevance": relevance} if relevance is not None else {}),
+            **({"review_lessons": applied[input_hash][1]} if input_hash in applied else {}),
         }
         write_json(cache_path, record)
         rejected.pop(input_hash, None)

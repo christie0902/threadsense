@@ -222,7 +222,7 @@ def test_invalid_requests_are_refused_without_a_row(env, catalog, body, message)
     card = card_named(catalog, FIXTURE, '[Test fixture] Format adherence vs factual accuracy')
     reply = post(client, FIXTURE, card['card_id'], body, 'key-invalid')
     assert reply.status_code == 422 and message in reply.json()['detail'], reply.json()
-    assert store.counts() == {'requests': 0, 'card_decisions': 0, 'review_actions': 0, 'indexing': 0}
+    assert store.counts() == {'requests': 0, 'card_decisions': 0, 'review_actions': 0, 'indexing': 0, 'feedback_events': 0, 'lesson_events': 0}
 
 
 def test_observations_and_missing_keys_are_refused(env, catalog):

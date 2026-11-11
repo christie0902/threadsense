@@ -108,13 +108,32 @@ class Run:
     @cached_property
     def topics(self):
         """card_id -> saved topic result (flat or the first version's nested topic paths)."""
-        found = {}
+        found, self._topic_paths = {}, {}
         for path in sorted((self.path/'topics').rglob('*.json')):
             data = read_json(path)
             card_id = (data.get('workflow') or {}).get('card_id')
             if card_id:
                 found[card_id] = data
+                self._topic_paths[card_id] = path
         return found
+
+    @property
+    def topic_paths(self):
+        """card_id -> path of its saved topic result (an immutable artifact feedback can reference by hash)."""
+        self.topics  # noqa: B018 - fills _topic_paths
+        return self._topic_paths
+
+    @staticmethod
+    def file_hash(path):
+        return file_sha256(path)
+
+    def reviewer_feedback(self, card_id):
+        """Reviewer corrections this card's requests received and those withheld (agents/reviewer_context), as saved
+        in its topic result; None when the run used no reviewer-feedback snapshot."""
+        return ((self.topics.get(card_id) or {}).get('result') or {}).get('reviewer_feedback')
+
+    def reviewer_feedback_used(self):
+        return sorted({x['feedback_id'] for c in self.cards for x in (self.reviewer_feedback(c) or {}).get('sent') or []})
 
     @cached_property
     def queue(self):

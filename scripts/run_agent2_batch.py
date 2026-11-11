@@ -39,6 +39,8 @@ def main(argv=None):
     parser.add_argument('--pilot', type=Path, help='Evidence-bound prepared pilot selection.')
     parser.add_argument('--max-requests', type=int, help='Explicit live request ceiling; must match the pilot.')
     parser.add_argument('--output-dir', type=Path, default=ROOT/'data/processed/agent2_discussions_v8_offline')
+    parser.add_argument('--lessons', type=Path, help='Lessons from human review (scripts/build_lesson_snapshot.py); each '
+                        "group's request carries the lessons that apply to its project.")
     args = parser.parse_args(argv)
     if args.limit < 0 or (args.pilot and args.limit):
         parser.error('Use a nonnegative limit, or a pilot selection, not both.')
@@ -62,7 +64,11 @@ def main(argv=None):
         if not (args.run or args.prepare):
             print('Dry run: no model calls or writes.')
             return 0
-        result = execute_batch(selected, args.output_dir, run=args.run, maximum_requests=ceiling)
+        lessons = None
+        if args.lessons:
+            from threadsense.agents.review_lessons import load_snapshot
+            lessons = load_snapshot(args.lessons)
+        result = execute_batch(selected, args.output_dir, run=args.run, maximum_requests=ceiling, lessons=lessons)
     except (ValueError, RuntimeError, OSError, KeyError) as error:
         parser.error(str(error))
     print(f"State: {result['state']}; attempts: {result['new_request_attempts']}; unprocessed groups: {result['unprocessed_groups']}")

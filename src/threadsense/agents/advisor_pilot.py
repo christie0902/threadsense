@@ -42,6 +42,7 @@ from threadsense.agents.advisor_evidence import (
     EVIDENCE_VIEW_VERSION, Budget, BudgetExhausted, ResearchTools, member_messages, model_view, open_retriever,
 )
 from threadsense.agents.flag_provenance import FlagSource
+from threadsense.agents.reviewer_context import digest as reviewer_digest, source_states as reviewer_sources
 from threadsense.handoff_inputs import ROOT, file_hash, read_json
 from threadsense.retrieval.config import DEFAULTS
 from threadsense.severity_rubric import load_rubric
@@ -678,7 +679,11 @@ class ReplayClient:
     rules, evidence view, schema and full evidence context are unchanged, a statement with premises is reused if each
     premise is presented with the status it was sent with (its recorded deterministic rejection, else pending); the
     recorded sufficiency judgments of reused statements and the recorded source-consistency assessment come back as
-    recorded."""
+    recorded.
+
+    Reviewer corrections (agents/reviewer_context) are model input too: when the corrections a stage receives differ
+    from those the recorded run sent (`reviewer_feedback.context_sha256`, none for runs without feedback), no recorded
+    generation is replayed for that topic and no grounding verdict is reused."""
     label = 'REPLAY_RECORDED'
     replay = True
     retrieval_expansion = False  # Set per recorded run in __init__ (True only if that run used the expansion).
@@ -696,7 +701,8 @@ class ReplayClient:
                 'failed': {c['stage']: c for c in r.get('model_calls', []) if c.get('status') == 'FAILED'},
                 'statements': {s['statement_id']: s for s in (r.get('grounding') or {}).get('statements', [])},
                 'rejected': (r.get('grounding') or {}).get('rejected') or {},
-                'context': set(r.get('evidence_ledger', {})), 'flag_impact': r.get('flag_impact')}
+                'context': set(r.get('evidence_ledger', {})), 'flag_impact': r.get('flag_impact'),
+                'reviewer': (r.get('reviewer_feedback') or {}).get('context_sha256')}
         self.fingerprint = sha256(json.dumps({k: v['raw'] for k, v in self.recorded.items()}, sort_keys=True).encode()).hexdigest()
         manifest = next((read_json(p) for p in (self.run_dir/'run_manifest.json', self.run_dir/'manifest.json') if p.is_file()), {})
         prompts = (manifest.get('fingerprints') or manifest).get('prompts') or {}
@@ -705,6 +711,14 @@ class ReplayClient:
 
     def complete(self, stage, payload, schema):
         rec = self.recorded[payload['scenario_id']]
+        if reviewer_digest(payload.get('reviewer_corrections')) != rec['reviewer']:
+            if stage == 'grounding':  # Every verdict stays pending: what the judge would see is not what was judged.
+                self.reuse_log += [{'scenario_id': payload['scenario_id'], 'statement_id': s['statement_id'], 'reused': False,
+                                    'reason': 'reviewer corrections changed since the recorded run'} for s in payload['statements']]
+                return json.dumps({'contract_version': 'agent3-grounding-judgment-v4', 'verdicts': [],
+                                   'action_sufficiency': None, 'alternative_sufficiency': []})
+            raise LookupError(f'Reviewer corrections for {payload["scenario_id"]} changed since the recorded run; the recorded '
+                              f'{stage} output answered different input and is not replayed.')
         if stage == 'grounding':
             return json.dumps(self._judgment(payload, rec))
         if stage in rec['failed'] and stage not in rec['raw']:
@@ -1009,14 +1023,20 @@ def _split(ledger):
             [model_view(v) for v in ledger.values() if v['origin'] == 'retrieved_source'])
 
 
-def _research_payload(rules, topic, ledger, tools, rubric, interpretations):
+def _research_payload(rules, topic, ledger, tools, rubric, interpretations, reviewer=None):
     members, retrieved = _split(ledger)
     return {'rules': rules, 'topic': topic, 'member_evidence': members, 'agent1_interpretations': interpretations,
             'retrieved_evidence': retrieved, 'retrieval_notes': tools.notes(), 'rubric': rubric_payload(rubric),
-            'limits': {'follow_up_queries': MAX_FOLLOW_UPS}}
+            'limits': {'follow_up_queries': MAX_FOLLOW_UPS}, **_reviewer(reviewer)}
 
 
-def grounding_payload(stmts, ledger, topic, rejected=None, depends=None, review_flags=None, declared=None):
+def _reviewer(block):
+    """Matched reviewer corrections (agents/reviewer_context), only when there are any: a run without feedback sends
+    byte-identical payloads."""
+    return {'reviewer_corrections': block} if block else {}
+
+
+def grounding_payload(stmts, ledger, topic, rejected=None, depends=None, review_flags=None, declared=None, reviewer=None):
     """Sendable statements plus the full topic context: every message of every member thread (canonical IDs, roles,
     thread starters, reactions) and every retrieved source, so the draft's citations do not set the judge's evidence
     window. Premises are shown as provisional (pending the judge's own verdict) with the announcements they depend on,
@@ -1046,10 +1066,11 @@ def grounding_payload(stmts, ledger, topic, rejected=None, depends=None, review_
             'member_threads': members, 'retrieved_sources': retrieved, 'open_review_flags': list(review_flags or []),
             'governing_sources': governing_sources(ledger), 'declared_conflicts': [
                 {'conflict_index': i, 'evidence_ids': c.evidence_ids, 'description': c.description}
-                for i, c in enumerate(declared or [])]}
+                for i, c in enumerate(declared or [])], **_reviewer(reviewer)}
 
 
-def _final_grounding(call, draft, ledger, topic, stmts, structural, actions, review_flags=None, flag_inputs=None):
+def _final_grounding(call, draft, ledger, topic, stmts, structural, actions, review_flags=None, flag_inputs=None,
+                     reviewer=None):
     """Structurally rejected statements are withheld; everything else still goes to the one semantic call.
     `flag_inputs` (opt-in shadow assessment): the same call also judges each flag's impact (GroundingJudgmentV7);
     the judge's raw entries and the payload they were judged on come back under `_flag_impact`."""
@@ -1058,7 +1079,7 @@ def _final_grounding(call, draft, ledger, topic, stmts, structural, actions, rev
         return grounding_result(draft, ledger, stmts, structural=structural, actions=actions,
                                 reason='NOTHING_CITED' if not rejected else 'ALL_STATEMENTS_REJECTED')
     payload, schema = grounding_payload(stmts, ledger, topic, rejected, dependencies(draft, ledger), review_flags,
-                                        draft.source_conflicts), GroundingJudgment
+                                        draft.source_conflicts, reviewer), GroundingJudgment
     if flag_inputs is not None:
         payload, schema = {**payload, 'rules': f'{GROUNDING_RULES}\n\n{impact.FLAG_IMPACT_RULES}',
                            'flag_impacts': flag_inputs}, GroundingJudgmentV7
@@ -1082,7 +1103,7 @@ NOT_RUN = {'structural_issues': [], 'action_issues': [], 'statements': [], 'unsu
            'extraneous_verdicts': []}
 
 
-def _adaptive(call, tools, draft, ledger, topic, rubric, interpretations, budget):
+def _adaptive(call, tools, draft, ledger, topic, rubric, interpretations, budget, reviewer=None):
     """The opt-in react path: sequential follow-ups whose revision may name the next query (advisor_research)."""
     current = {'draft': draft}
 
@@ -1096,7 +1117,7 @@ def _adaptive(call, tools, draft, ledger, topic, rubric, interpretations, budget
 
     def revise(may_search, steps):
         payload = _research_payload(REACT_REVISION_RULES if may_search else REVISION_RULES, topic, ledger, tools, rubric,
-                                    interpretations)
+                                    interpretations, reviewer)
         revised = call('revision', {**payload, 'previous_draft': current['draft'].model_dump(exclude_none=True),
                                     'follow_ups': advisor_research.follow_up_entries(steps)}, AdvisorDraft, reserve=1)
         if revised is None:
@@ -1117,14 +1138,17 @@ def _adaptive(call, tools, draft, ledger, topic, rubric, interpretations, budget
 
 
 def advise(scenario, *, view, retriever, client, budget, rubric, run_id, as_of, initial=None, research_mode='batch',
-           flag_impact=False, tot_shadow=False):
+           flag_impact=False, tot_shadow=False, reviewer_context=None):
     """One topic. Never raises for model or budget problems; ScenarioError only for a missing topic.
     `initial` replaces the derived initial query (used to test recovery from an incomplete first pass).
     `research_mode` 'react' is the opt-in adaptive follow-up experiment (advisor_research); 'batch' is production.
     `flag_impact` (opt-in shadow evaluation, off in production): the final grounding call also assesses each inherited
     flag (agents/flag_impact); the validated record is saved as `flag_impact` and routing does not read it.
     `tot_shadow` (opt-in, off in production): after the card is assembled, the shadow ToT policy (agents/tot_policy)
-    records `tot.shadow_policy` and its incumbent-issue dispositions in diagnostics; no request, card or route changes."""
+    records `tot.shadow_policy` and its incumbent-issue dispositions in diagnostics; no request, card or route changes.
+    `reviewer_context` (agents/reviewer_context.ReviewerContext, opt-in): confirmed reviewer corrections whose scope
+    shares a thread with this topic go into the same requests as labelled advisory context (no extra request); what was
+    sent and withheld is saved as `reviewer_feedback`. The card contract is unchanged."""
     if research_mode not in advisor_research.RESEARCH_MODES:
         raise ValueError(f'research_mode must be one of {advisor_research.RESEARCH_MODES}.')
     budget.start_topic()
@@ -1134,15 +1158,17 @@ def advise(scenario, *, view, retriever, client, budget, rubric, run_id, as_of, 
                           expansion=getattr(client, 'retrieval_expansion', True),
                           budget=budget, top_k=TOP_K, ledger=ledger)
     call, topic, interpretations = Stages(client, budget, scenario['id']), _topic(packet, as_of), _interpretations(packet)
+    selected = reviewer_context.select(packet, reviewer_sources(retriever, packet['project_id'], packet['batch_id'], as_of))         if reviewer_context is not None else {'block': None, 'record': None}
+    reviewer = selected['block']
     query = initial or initial_query(packet)
     tools.search(query, purpose='initial_current_guidance')
     if tools.withheld:  # Superseded material exists in this project: check whether it bears on the topic.
         tools.search(query, purpose='supersession_check', version_mode='history')
-    first = draft = call('draft', _research_payload(DRAFT_RULES, topic, ledger, tools, rubric, interpretations),
+    first = draft = call('draft', _research_payload(DRAFT_RULES, topic, ledger, tools, rubric, interpretations, reviewer),
                          AdvisorDraft, reserve=1)
     follow_ups, unfilled, adaptive = [], [], None
     if draft is not None and research_mode == 'react':
-        draft, follow_ups, adaptive = _adaptive(call, tools, draft, ledger, topic, rubric, interpretations, budget)
+        draft, follow_ups, adaptive = _adaptive(call, tools, draft, ledger, topic, rubric, interpretations, budget, reviewer)
         unfilled = [g.model_dump() for g in draft.gaps]
     elif draft is not None:
         requested = [g for g in draft.gaps if g.follow_up]
@@ -1158,7 +1184,7 @@ def advise(scenario, *, view, retriever, client, budget, rubric, run_id, as_of, 
             follow_ups.append({**entry, 'status': 'DONE' if found else 'SKIPPED_BUDGET',
                                'new_evidence_ids': sorted(set(ledger) - before)})
         if any(f['status'] == 'DONE' for f in follow_ups):
-            payload = _research_payload(REVISION_RULES, topic, ledger, tools, rubric, interpretations)
+            payload = _research_payload(REVISION_RULES, topic, ledger, tools, rubric, interpretations, reviewer)
             revised = call('revision', {**payload, 'previous_draft': draft.model_dump(exclude_none=True), 'follow_ups': follow_ups},
                            AdvisorDraft, reserve=1)
             draft = revised or draft
@@ -1184,7 +1210,7 @@ def advise(scenario, *, view, retriever, client, budget, rubric, run_id, as_of, 
             'topic': topic, 'draft': draft.model_dump(), 'evidence': [model_view(v) for v in ledger.values()],
             'proposed_severity': {'level': severity.level, 'assessment_status': severity.assessment_status,
                                   'note': 'Bound to the rubric; not yet grounded.'},
-            'rubric_levels': sorted(rubric['levels'])})
+            'rubric_levels': sorted(rubric['levels']), **_reviewer(reviewer)})
         draft, adopted = advisor_tot.select(tot, draft)  # A selected candidate may become the action; flags untouched.
         action_notes = [adopted] if adopted else []
         actions = action_issues(draft, ledger)
@@ -1194,7 +1220,7 @@ def advise(scenario, *, view, retriever, client, budget, rubric, run_id, as_of, 
                                       ledger=ledger, topic=topic, query=query, agent1_context=call.agent1_context())
         grounding = _final_grounding(call, draft, ledger, topic, stmts, structural, actions,
                                      [{k: v for k, v in f.model_dump().items() if v} for f in flags],
-                                     flag_inputs=prepared['inputs'] if prepared else None)
+                                     flag_inputs=prepared['inputs'] if prepared else None, reviewer=reviewer)
         flag_raw = grounding.pop('_flag_impact', None)
         tot = advisor_tot.finalize(tot, grounding)
         final = authorize(draft, grounding, ledger, packet, severity=severity, severity_issues=severity_issues, rubric=rubric,
@@ -1264,6 +1290,7 @@ def advise(scenario, *, view, retriever, client, budget, rubric, run_id, as_of, 
             **({'adaptive_research': adaptive} if adaptive is not None else {}),
             'unfilled_gaps': unfilled, 'model_calls': call.log, 'agent1_context': call.agent1_context(),
             **({'flag_impact': flag_record.model_dump(mode='json')} if flag_record else {}),
+            **({'reviewer_feedback': selected['record']} if selected['record'] else {}),
             'drafts': {'initial': first.model_dump() if first else None,
                        'final': draft.model_dump() if draft else None, 'revised': revised},
             'grounding': grounding, 'temporal': temporal, 'temporal_before_grounding': temporal_pre,

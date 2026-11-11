@@ -1,5 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { useIdempotentSave } from './api.js'
+import { RunFeedback } from './Feedback.jsx'
+import { LessonEntry, LessonFields, LessonsOverview } from './Lessons.jsx'
 import { Badge, Details, Json, when } from './ui.jsx'
 
 const STATE_TONES = { OPEN: 'amber', ACCEPTED: 'emerald', REJECTED: 'rose' }
@@ -15,12 +17,17 @@ const kindLabel = item => (item.kind === 'assisted_content_review' && JSON.strin
 function ReviewItem({ runKey, row, actor, onChanged, cardTopics, focused }) {
   const ref = useRef(null)
   useEffect(() => { if (focused) ref.current?.scrollIntoView({ block: 'center' }) }, [focused])
-  const { item, review_state: state, entries, head } = row
+  const { item, review_state: state, entries, head, lessons = [], lesson_agent: lessonAgent } = row
   const { state: save, save: submit, reset } = useIdempotentSave(`/api/runs/${encodeURIComponent(runKey)}/review-items/${item.item_id}/actions`)
   const [note, setNote] = useState('')
+  const [lesson, setLesson] = useState(null)
+  const lessonText = lesson?.text?.trim()
   const act = async action => {
-    const entry = await submit({ action, actor_id: actor, expected_head: head?.entry_id || null, note: note.trim() || null })
-    if (entry) { setNote(''); onChanged(); }
+    // A lesson goes with Reject only; without one, every action is sent exactly as before.
+    const body = { action, actor_id: actor, expected_head: head?.entry_id || null, note: note.trim() || null }
+    if (action === 'REJECT' && lessonText) body.lesson = { ...lesson, text: lessonText }
+    const entry = await submit(body)
+    if (entry) { setNote(''); setLesson(null); onChanged(); }
   }
   return (
     <li ref={ref} className={`panel p-4 ${focused ? 'ring-2 ring-cyan-300/60' : ''}`} data-testid="review-item" data-item-id={item.item_id} data-focused={focused || undefined}>
@@ -47,6 +54,14 @@ function ReviewItem({ runKey, row, actor, onChanged, cardTopics, focused }) {
           </button>
         ))}
       </div>
+      {(lessonAgent || lessons.length > 0) && state !== 'REJECTED' && (
+        <LessonFields agent={lessonAgent} value={lesson} project={item.project_id} onChange={v => { setLesson(v); reset() }} />
+      )}
+      {lessonText && <div className="mt-1 text-xs text-cyan-200" data-testid="lesson-pending">The lesson is saved when you click Reject; Accept and Defer ignore it.</div>}
+      {lessons.length > 0 && (
+        <div className="mt-3"><div className="text-xs text-slate-400">Lessons saved from this item</div>
+          <ul className="mt-1 space-y-2">{lessons.map(v => <LessonEntry key={v.lesson_id} view={v} actor={actor} onChanged={onChanged} />)}</ul></div>
+      )}
       {save.phase === 'uncertain' && <div className="mt-2 text-xs text-amber-200" data-testid="save-uncertain">Not confirmed; the action may or may not be saved. Click the same action again: it reuses the request key and cannot be saved twice.</div>}
       {save.phase === 'conflict' && <div className="mt-2 text-xs text-red-300" data-testid="save-conflict">Not saved: another action was recorded on this item meanwhile. <button className="link" onClick={() => { reset(); onChanged() }}>Refresh</button></div>}
       {save.phase === 'rejected' && <div className="mt-2 text-xs text-red-300">Not saved: {save.detail}</div>}
@@ -65,8 +80,11 @@ export default function ReviewQueue({ runKey, rows, actor, onChanged, cardTopics
     <section data-testid="review-queue" className="space-y-4">
       <p className="max-w-3xl text-sm text-slate-400">
         Flags on upstream model output (Agent 1 obligations and Agent 2 naming cautions), kept apart from the cards.
-        Accept resolves a flag for this run, Reject records a negative example, Defer keeps it open. None of these change a card.
+        Accept resolves a flag for this run, Reject records a negative example, Defer keeps it open. None of these change a card,
+        and none of them records AI feedback.
       </p>
+      <RunFeedback runKey={runKey} cardTopics={cardTopics} />
+      <LessonsOverview actor={actor} version={rows} />
       <div className="inline-flex flex-wrap gap-1 rounded-xl border border-white/[0.06] bg-ink-950/50 p-1 text-sm">
         {['OPEN', 'ACCEPTED', 'REJECTED', 'ALL'].map(s => (
           <button key={s} type="button" onClick={() => setShow(s)}

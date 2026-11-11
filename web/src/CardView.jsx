@@ -2,6 +2,7 @@ import { AnimatePresence, motion } from 'framer-motion'
 import { useRef, useState } from 'react'
 import { getJSON } from './api.js'
 import DecisionPanel from './DecisionPanel.jsx'
+import FeedbackPanel from './Feedback.jsx'
 import ReviewPanel, { WhatToCheck } from './ReviewPanel.jsx'
 import { Badge, CopyButton, Icon, Json, LINE_LABELS, LINE_TONES, NotCurrent, SeverityBadge, SourceBadge, when, words } from './ui.jsx'
 
@@ -296,6 +297,7 @@ export default function CardView({ runKey, run, item, row, actor, decisionState,
               <SourceBadge source={source} />
               <Badge data-testid="thread-status" title="Source-thread status, read from the threads' own messages; not a team-lead decision">Threads: {words(card.resolution_status)}</Badge>
               <DecisionStatus row={row} />
+              {item.reviewer_context_sent > 0 && <Badge tone="cyan" data-testid="reviewer-context-badge" title="This card's model input included confirmed reviewer corrections as labelled advisory context">Reviewer context: {item.reviewer_context_sent}</Badge>}
               {row?.openObligations.length > 0 && (
                 <button type="button" onClick={() => openQueueItem?.(row.openObligations[0])} data-testid="open-obligations"
                   className="inline-flex items-center gap-1 whitespace-nowrap rounded-md border border-cyan-400/30 bg-cyan-400/10 px-1.5 py-0.5 text-xs font-medium text-cyan-200 transition hover:border-cyan-300/60">
@@ -433,6 +435,7 @@ export default function CardView({ runKey, run, item, row, actor, decisionState,
                     <div className="border-t border-white/[0.06] p-3"><ReviewPanel review={review} openPanel={openPanel} openQueueItem={openQueueItem} /></div>
                   </details>
                 )}
+                <FeedbackPanel runKey={runKey} cardId={card.card_id} actor={actor} />
               </div>
               <div role="tablist" className="mt-4 flex flex-wrap gap-1 rounded-xl border border-white/[0.06] bg-ink-950/50 p-1">
                 {tabs.map(([t, label]) => (

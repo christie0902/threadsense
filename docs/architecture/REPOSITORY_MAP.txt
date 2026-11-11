@@ -39,7 +39,9 @@ src/threadsense/  (package)
                                 store.py (content-addressed request/response bytes), pricing.py,
                                 pipeline.py (campaign stages)
   dashboard/ [P] .............. app.py (FastAPI), runs.py (read-only run catalog, run instance), decisions.py
-                                (TL decision contracts + SQLite store), review.py, checks.py, decision_sources.py
+                                (TL decision contracts + SQLite store), review.py, checks.py, decision_sources.py,
+                                feedback.py (AI-quality feedback events, feedback snapshot, evaluation export),
+                                lessons.py (Agent 1/2 lessons from human review, lesson snapshot)
   experiments/ [X] ............ prose comparison experiment
   legacy/ [F] ................. frozen historical engines; grouping_v1.py is the approved clustering (byte-exact)
 
@@ -92,6 +94,9 @@ scripts/  (CLI entry points; read-only by default; writes need --write; paid cal
   run_dashboard.py [P] .......... uvicorn on localhost only; --decision-db, --decision-origin
   build_retrieval_index.py ...... builds .index/retrieval (or a new snapshot directory)
   build_decision_snapshot.py .... exports TL decisions into a NEW retrieval snapshot at a later cutoff
+  build_feedback_snapshot.py .... confirmed reviewer corrections -> reviewer-feedback snapshot (--feedback-snapshot)
+  export_feedback_cases.py ...... reviewer feedback -> JSONL evaluation candidates (confirmed / unconfirmed)
+  build_lesson_snapshot.py ...... active Agent 1/2 lessons -> snapshot (run_agent1_batch/run_agent2_batch --lessons)
   replay_overnight_topic.py ..... zero-call per-topic replay with ReplayClient
   evaluate_tot_shadow.py [X], evaluate_temporal.py [X], evaluate_retrieval*.py [X], report_*.py [X]
   run_agent3_pilot.py, run_agent3_*_comparison.py, run_agent3_closeout.py ... [X][L] earlier milestone runners

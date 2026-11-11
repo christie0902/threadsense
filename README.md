@@ -38,6 +38,7 @@ morning brief and records team-lead decisions, validated offline. The validation
 - [Source JSON Schema](docs/knowledge-source.schema.json).
 - [Prose benchmark](experiments/prose_comparison_v1/README.md).
 - [Repository cleanup record](docs/repository-cleanup.md).
+- [Human feedback loop](docs/human-feedback-loop.md): reporting AI issues, confirmed corrections as context for later runs, evaluation export.
 
 ## Current architecture
 
@@ -172,6 +173,9 @@ Morning-brief dashboard (local, no model calls, no posting; TL decisions go to a
 npm --prefix web ci && npm --prefix web run build      # once: build the frontend into web/dist
 uv run --locked python scripts/run_dashboard.py        # http://127.0.0.1:8000 (add --include-test-fixtures for the labelled fixture run)
 uv run --locked python scripts/build_decision_snapshot.py --cutoff <ISO> --index-dir .index/retrieval_tl_<date> [--build]
+uv run --locked python scripts/build_feedback_snapshot.py --cutoff <ISO> [--write <file>]   # confirmed reviewer corrections -> --feedback-snapshot
+uv run --locked python scripts/export_feedback_cases.py [--write <new dir>]               # feedback -> JSONL evaluation candidates
+uv run --locked python scripts/build_lesson_snapshot.py --cutoff <ISO> [--write <file>]     # Agent 1/2 lessons -> --lessons
 npm --prefix web run test:ui                           # browser tests (system Chrome)
 npm --prefix web run test:unit                         # view-model unit tests (node --test, no browser)
 ```
@@ -230,6 +234,7 @@ the frozen baselines when preparing any future run.
 | Agent 3 evaluation | `scripts/report_flag_dependence.py` (flag provenance and card dependencies for the nine audited cards against human labels; zero calls; `--write` to `data/experiments/agent3_flag_dependence_v1/`) |
 | Agent 3 evaluation | `scripts/report_flag_impact.py` (shadow routing for the opt-in flag-impact assessment; prepared judgments labelled; zero calls; `--write`) and `scripts/measure_grounding_request.py` (exact grounding request size with the flag context, zero calls; `--write <new path>`); `scripts/report_flag_impact_reliability.py` (catalogue, finding history and diagnostic re-validation of the saved live flag judgments, zero calls; `--write`) |
 | Dashboard / TL decisions | `scripts/run_dashboard.py`, `scripts/build_decision_snapshot.py`, `web/` |
+| Reviewer feedback | `scripts/build_feedback_snapshot.py`, `scripts/export_feedback_cases.py`, `scripts/build_lesson_snapshot.py` ([guide](docs/human-feedback-loop.md)) |
 | Combined briefing | `scripts/derive_combined_brief.py` (zero calls, read-only by default; `--write <new dir>` combines the consolidated derivation with a targeted refresh run: each refreshed item revalidated by same-rules replay under the current checks, briefing policy applied, replaced cards kept only as lineage, accounting checked, `derivation.json`, `REVIEW.md`; `--reground <saved result>` and `--previous <combined run>` build v2: each saved targeted re-grounding is applied only after its card reproduces exactly, human edits are labelled, every other card must match the previous run). Demo baseline: `data/experiments/threadsense_full_v1_combined_v2` |
 | Presentation layer | `scripts/build_presentation.py` (zero calls, read-only by default; `--write` saves `presentation.json` for a combined briefing and regenerates its `morning_brief.md`: active totals apart from history and historical card records, usage by stage from the saved ledgers, source-linked posting suggestions apart from the judged drafts, close calls as "Choose a next step", attributed editorial notes; instance files unchanged, original export kept under `exports/`) |
 | ToT shadow evaluation | `scripts/evaluate_tot_shadow.py` (zero calls, read-only by default; applies the optional shadow ToT policy `agent3-tot-shadow-partial-order-v1` to the saved live comparisons, deduplicated; `--write NEW_DIR` saves `report.json`). Live runs record it with `run_agent3_overnight.py --tot-shadow` (no extra request; routing unchanged). Design: `docs/agent3-tot-design.md` |

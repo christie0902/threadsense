@@ -11,6 +11,10 @@ Contracts (persistence extension, documented in docs/agent3-plan.md, Milestone 6
 - ModelReviewEntry (dashboard-model-review-action-v1) wraps one ReviewAction for one ModelReviewItem of one run.
   ACCEPT resolves the flag for that run, REJECT records a negative example, DEFER keeps it open. Neither touches a card.
 
+AI-quality feedback (dashboard/feedback.py, dashboard-ai-feedback-event-v1) lives in its own append-only table in the
+same file (additive migration, schema version 1): it never changes a decision or a review action, and they never
+create feedback.
+
 Every write carries a client idempotency key. The same key with the same request returns the stored result (no
 second row); the same key with a different request is refused; a request whose expected head is not the current
 head is a conflict. The result is returned only after the transaction commits.
@@ -93,6 +97,9 @@ class ReviewRequest(Strict):
     actor_id: Text
     expected_head: str | None = None
     note: str | None = None
+    # Optional lesson for future Agent 1/2 runs, only with REJECT (validated as dashboard/lessons.LessonInput and saved in
+    # the same transaction). Left out of the request hash when absent, so earlier requests keep their identity.
+    lesson: dict | None = None
 
 
 class TextProvenance(Frozen):
@@ -340,7 +347,20 @@ CREATE TABLE IF NOT EXISTS indexing (
     authoring TEXT NOT NULL, status TEXT NOT NULL, snapshot TEXT, snapshot_fingerprint TEXT, error TEXT,
     updated_at TEXT NOT NULL);
 '''
-TABLES = {'card': ('card_decisions', 'card_id'), 'review': ('review_actions', 'item_id')}
+# Additive migrations by PRAGMA user_version; a store created before a migration gains its tables on first open and keeps
+# every existing row.
+MIGRATIONS = {1: '''
+CREATE TABLE IF NOT EXISTS feedback_events (
+    entry_id TEXT PRIMARY KEY, run_key TEXT NOT NULL, feedback_id TEXT NOT NULL, sequence INTEGER NOT NULL,
+    recorded_at TEXT NOT NULL, entry TEXT NOT NULL, UNIQUE (feedback_id, sequence));
+CREATE INDEX IF NOT EXISTS feedback_events_run ON feedback_events (run_key);
+''', 2: '''
+CREATE TABLE IF NOT EXISTS lesson_events (
+    entry_id TEXT PRIMARY KEY, run_key TEXT NOT NULL, lesson_id TEXT NOT NULL, sequence INTEGER NOT NULL,
+    recorded_at TEXT NOT NULL, entry TEXT NOT NULL, UNIQUE (lesson_id, sequence));
+'''}
+TABLES = {'card': ('card_decisions', 'card_id'), 'review': ('review_actions', 'item_id'),
+          'feedback': ('feedback_events', 'feedback_id'), 'lesson': ('lesson_events', 'lesson_id')}
 
 
 class DecisionStore:
@@ -350,6 +370,9 @@ class DecisionStore:
         with self._connect() as db:
             db.execute('PRAGMA journal_mode=WAL')
             db.executescript(SCHEMA)
+            version = db.execute('PRAGMA user_version').fetchone()[0]
+            for target in sorted(v for v in MIGRATIONS if v > version):
+                db.executescript(MIGRATIONS[target] + f'PRAGMA user_version={target};')
 
     def _connect(self):
         db = sqlite3.connect(self.path, timeout=30, isolation_level=None)
@@ -381,9 +404,8 @@ class DecisionStore:
                 db.execute(f'INSERT INTO {table} (entry_id, run_key, {column}, sequence, recorded_at, entry) VALUES (?,?,?,?,?,?)',
                            (entry['entry_id'], run_key, target_id, entry['sequence'], entry.get('recorded_at') or
                             entry['action']['acted_at'], json.dumps(entry, ensure_ascii=False, sort_keys=True)))
-                if on_insert:
-                    on_insert(db, entry)
-                response = {'entry': entry}
+                extra = on_insert(db, entry) if on_insert else None  # e.g. a lesson saved with a rejection
+                response = {'entry': entry, **(extra or {})}
                 db.execute('INSERT INTO requests VALUES (?,?,?,?,?,?)', (key, json.dumps(target), digest, entry['entry_id'],
                                                                         json.dumps(response, ensure_ascii=False, sort_keys=True), now_iso()))
                 db.execute('COMMIT')
@@ -415,6 +437,47 @@ class DecisionStore:
                                   (run_key.replace('%', '') + '#%', run_ref)).fetchone()[0]
                        for t in ('card_decisions', 'review_actions'))
 
+    def feedback(self, run_key=None, feedback_id=None):
+        """Feedback events (all, one run's, or one report's), in order."""
+        query, args = 'SELECT entry FROM feedback_events WHERE 1=1', []
+        if run_key is not None:
+            query, args = query + ' AND run_key=?', args + [run_key]
+        if feedback_id is not None:
+            query, args = query + ' AND feedback_id=?', args + [feedback_id]
+        with self._connect() as db:
+            return [json.loads(r['entry']) for r in db.execute(query + ' ORDER BY feedback_id, sequence', args)]
+
+    @staticmethod
+    def feedback_in_tx(db, feedback_id):
+        rows = db.execute('SELECT entry FROM feedback_events WHERE feedback_id=? ORDER BY sequence', (feedback_id,)).fetchall()
+        return [json.loads(r['entry']) for r in rows]
+
+    @staticmethod
+    def insert_feedback_event(db, entry):
+        """Inside an open transaction (a system event caused by another write, e.g. a supersession)."""
+        db.execute('INSERT INTO feedback_events (entry_id, run_key, feedback_id, sequence, recorded_at, entry) VALUES (?,?,?,?,?,?)',
+                   (entry['entry_id'], entry['run_key'], entry['feedback_id'], entry['sequence'], entry['recorded_at'],
+                    json.dumps(entry, ensure_ascii=False, sort_keys=True)))
+
+    def lessons(self, lesson_id=None):
+        """Lesson events (all, or one lesson's), in order."""
+        query, args = 'SELECT entry FROM lesson_events', []
+        if lesson_id is not None:
+            query, args = query + ' WHERE lesson_id=?', [lesson_id]
+        with self._connect() as db:
+            return [json.loads(r['entry']) for r in db.execute(query + ' ORDER BY lesson_id, sequence', args)]
+
+    @staticmethod
+    def lessons_in_tx(db, lesson_id):
+        rows = db.execute('SELECT entry FROM lesson_events WHERE lesson_id=? ORDER BY sequence', (lesson_id,)).fetchall()
+        return [json.loads(r['entry']) for r in rows]
+
+    @staticmethod
+    def insert_lesson_event(db, entry):
+        db.execute('INSERT INTO lesson_events (entry_id, run_key, lesson_id, sequence, recorded_at, entry) VALUES (?,?,?,?,?,?)',
+                   (entry['entry_id'], entry['run_key'], entry['lesson_id'], entry['sequence'], entry['recorded_at'],
+                    json.dumps(entry, ensure_ascii=False, sort_keys=True)))
+
     def all_card_decisions(self):
         with self._connect() as db:
             return [json.loads(r['entry']) for r in db.execute('SELECT entry FROM card_decisions ORDER BY recorded_at, entry_id')]
@@ -422,7 +485,7 @@ class DecisionStore:
     def counts(self):
         with self._connect() as db:
             return {t: db.execute(f'SELECT COUNT(*) FROM {t}').fetchone()[0]
-                    for t in ('requests', 'card_decisions', 'review_actions', 'indexing')}
+                    for t in ('requests', 'card_decisions', 'review_actions', 'indexing', 'feedback_events', 'lesson_events')}
 
     def indexing(self, entry_ids=None):
         with self._connect() as db:

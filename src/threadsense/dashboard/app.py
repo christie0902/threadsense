@@ -1,5 +1,6 @@
 """FastAPI backend for the morning-brief dashboard. Local only: no model calls, no Slack posting, no endpoints that
-execute an approved action. Run artifacts and the knowledge corpus are read; the only writes go to the decision store.
+execute an approved action. Run artifacts and the knowledge corpus are read; the only writes go to the decision store
+(decisions, review actions and AI-quality feedback events, each in its own table).
 """
 import json
 from pathlib import Path
@@ -9,6 +10,8 @@ from fastapi.responses import FileResponse, JSONResponse
 from pydantic import ValidationError
 
 from threadsense.agents.advice_contracts import ACTION_LABELS
+from threadsense.dashboard import feedback as fb
+from threadsense.dashboard import lessons as ls
 from threadsense.dashboard.decision_sources import authoring_id, ingest
 from threadsense.dashboard.decisions import (
     KINDS_BY_LINE, DecisionError, DecisionRequest, DecisionStore, KeyReused, ReviewRequest, StaleHead,
@@ -66,6 +69,10 @@ def create_app(*, catalog=None, store=None, fixture_root=FIXTURE_ROOT, clock=now
         run = run_of(run_key)
         b = run.brief
         decided = {e['card_id'] for e in store.history('card', run.ref)}
+        reports = [fb.fold(h) for h in fb.grouped(store.feedback(run.ref)).values()]
+        per_card = {}
+        for v in reports:
+            per_card[v['report']['card_id']] = per_card.get(v['report']['card_id'], 0) + 1
         return {
             'run': run.summary(catalog.runs.values()), 'counts': b['counts'], 'validation_baseline': b['validation_baseline'],
             'scope': {k: v for k, v in (b.get('scope') or {}).items() if k != 'out_of_scope_work'},
@@ -77,9 +84,11 @@ def create_app(*, catalog=None, store=None, fixture_root=FIXTURE_ROOT, clock=now
                        'alternatives': run.alternatives(card_id), 'allowed_decisions': KINDS_BY_LINE[card['card_line']],
                        'cited_evidence': run.cited_evidence(card_id), 'review': run.review(card_id),
                        'presentation': run.presentation(card_id), 'activity': run.activity(card_id),
-                       'display_title': run.display_title(card_id), 'resolved': card_id in decided}
+                       'display_title': run.display_title(card_id), 'resolved': card_id in decided,
+                       'feedback_reports': per_card.get(card_id, 0),
+                       'reviewer_context_sent': len((run.reviewer_feedback(card_id) or {}).get('sent') or [])}
                       for card_id, card in run.cards.items()],
-            'action_labels': ACTION_LABELS,
+            'action_labels': ACTION_LABELS, 'feedback_counts': fb.counts(reports, run.reviewer_feedback_used()),
         }
 
     @app.get('/api/runs/{run_key}/cards/{card_id}')
@@ -125,12 +134,16 @@ def create_app(*, catalog=None, store=None, fixture_root=FIXTURE_ROOT, clock=now
     def review_queue(run_key: str):
         run = run_of(run_key)
         actions = store.history('review', run.ref)
+        lesson_views = ls.views(store.lessons())
         items = []
         for item_id, item in run.queue.items():
             mine = [a for a in actions if a['item_id'] == item_id]
             current = review_item_with_actions(item, mine)
             items.append({'item': current.model_dump(mode='json'), 'review_state': current.review_state,
-                          'entries': mine, 'head': mine[-1] if mine else None})
+                          'entries': mine, 'head': mine[-1] if mine else None,
+                          'lesson_agent': ls.ORIGIN_AGENT.get(item.origin),
+                          'lessons': [v for v in lesson_views if v['lesson']['origin']['item_id'] == item_id
+                                      and v['head']['run_key'] == run.ref]})
         return {'items': items}
 
     def _key(value):
@@ -193,18 +206,168 @@ def create_app(*, catalog=None, store=None, fixture_root=FIXTURE_ROOT, clock=now
             raise RunNotFound(f'Review item {item_id} is not in run {run.key}.')
         try:
             parsed = ReviewRequest.model_validate(await _json(request))
+            lesson = ls.LessonInput.model_validate(parsed.lesson) if parsed.lesson is not None else None
         except ValidationError as error:
             return JSONResponse({'code': 'INVALID_DECISION', 'detail': _message(error)}, status_code=422)
         if refused := _session_check(parsed.actor_id):
             return refused
+        if lesson is not None and parsed.action != 'REJECT':
+            return JSONResponse({'code': 'INVALID_DECISION', 'detail': 'A lesson is saved only with a rejection.'}, status_code=422)
 
         def build(head, sequence, digest):
             return build_review_action(run=run, item=run.queue[item_id], request=parsed, actors=actors, sequence=sequence,
                                        head=head, recorded_at=clock(), key=key, request_sha=digest,
                                        decision_origin=decision_origin)
 
-        return _submit(kind='review', run_key=run.ref, target_id=item_id, key=key, body=parsed.model_dump(mode='json'),
-                       build=build)
+        def save_lesson(db, entry):  # Same transaction as the rejection: both are saved or neither.
+            event = ls.from_rejection(run=run, item=run.queue[item_id], review_entry=entry, lesson=lesson, actors=actors,
+                                      key=key, request_sha=entry['request_sha256'])
+            store.insert_lesson_event(db, event)
+            return {'lesson': event}
+
+        body = parsed.model_dump(mode='json', exclude={'lesson'} if lesson is None else None)
+        return _submit(kind='review', run_key=run.ref, target_id=item_id, key=key, body=body, build=build,
+                       on_insert=save_lesson if lesson is not None else None)
+
+    @app.get('/api/lessons')
+    def lessons():
+        """Every lesson from human review (all runs), newest first, with its history and originating review item."""
+        views = ls.views(store.lessons())
+        return {'lessons': views, 'counts': {s: sum(v['state'] == s for v in views) for s in ('ACTIVE', 'INACTIVE', 'SUPERSEDED')},
+                'categories': {a: list(c) for a, c in ls.CATEGORIES.items()}}
+
+    def lesson_events(lesson_id):
+        events = store.lessons(lesson_id)
+        if not events:
+            raise RunNotFound(f'No lesson {lesson_id}.')
+        return events
+
+    @app.post('/api/lessons/{lesson_id}/actions')
+    async def lesson_action(lesson_id: str, request: Request, idempotency_key: str | None = Header(default=None)):
+        key = _key(idempotency_key)
+        events = lesson_events(lesson_id)
+        try:
+            parsed = ls.LessonActionRequest.model_validate(await _json(request))
+        except ValidationError as error:
+            return JSONResponse({'code': 'INVALID_LESSON', 'detail': _message(error)}, status_code=422)
+        if refused := _session_check(parsed.actor_id):
+            return refused
+
+        def build(head, sequence, digest):
+            return ls.action_event(head=head, request=parsed, actors=actors, sequence=sequence, recorded_at=clock(), key=key,
+                                   request_sha=digest)
+
+        return _submit(kind='lesson', run_key=events[0]['run_key'], target_id=lesson_id, key=key,
+                       body=parsed.model_dump(mode='json'), build=build)
+
+    @app.post('/api/lessons/{lesson_id}/supersede')
+    async def lesson_supersede(lesson_id: str, request: Request, idempotency_key: str | None = Header(default=None)):
+        """Save an edited version as a new lesson; the earlier one becomes SUPERSEDED (one transaction, history kept)."""
+        key = _key(idempotency_key)
+        earlier = lesson_events(lesson_id)
+        try:
+            parsed = ls.SupersedeRequest.model_validate(await _json(request))
+        except ValidationError as error:
+            return JSONResponse({'code': 'INVALID_LESSON', 'detail': _message(error)}, status_code=422)
+        if refused := _session_check(parsed.actor_id):
+            return refused
+        new_id = ls.lesson_id_for(earlier[0]['run_key'], f'supersedes:{lesson_id}', key)
+        pending = {}
+
+        def build(head, sequence, digest):
+            saved, old = ls.superseding(earlier=earlier, request=parsed, actors=actors, recorded_at=clock(), key=key,
+                                        request_sha=digest, new_id=new_id)
+            pending['old'] = old
+            return ls.LessonEvent.model_validate(saved)
+
+        def replace(db, entry):  # The earlier lesson must still be at the head the team lead edited.
+            current = store.lessons_in_tx(db, lesson_id)[-1]
+            if current['entry_id'] != parsed.expected_head:
+                raise StaleHead(current)
+            store.insert_lesson_event(db, pending['old'])
+            return {'superseded': pending['old']}
+
+        body = {**parsed.model_dump(mode='json', exclude={'expected_head'}), 'replaces': lesson_id,
+                'replaces_head': parsed.expected_head}
+        return _submit(kind='lesson', run_key=earlier[0]['run_key'], target_id=new_id, key=key, body=body, build=build,
+                       on_insert=replace)
+
+    def feedback_view(run, card_id=None):
+        views = [fb.fold(h) for h in fb.grouped(store.feedback(run.ref)).values()]
+        views = [v for v in views if card_id is None or v['report']['card_id'] == card_id]
+        return sorted(views, key=lambda v: v['report']['submitted_at'], reverse=True)
+
+    def reviewer_context(run, card_id):
+        """The corrections this card's requests received (from its saved topic result), with their text from the store."""
+        record = run.reviewer_feedback(card_id)
+        if not record:
+            return None
+        def described(x):
+            view = fb.fold(store.feedback(feedback_id=x['feedback_id']))
+            r = view and view['report']
+            return {**x, **({'what_is_wrong': r['what_is_wrong'], 'correction': r['suggested_correction'],
+                             'state_now': view['state'], 'origin_topic': r['topic_name']} if r else {'state_now': None})}
+        return {**record, 'sent': [described(x) for x in record['sent']]}
+
+    @app.get('/api/runs/{run_key}/cards/{card_id}/feedback')
+    def card_feedback(run_key: str, card_id: str):
+        run = run_of(run_key)
+        run.card(card_id)
+        return {'targets': fb.targets(run, card_id), 'categories': fb.CATEGORY_LABELS,
+                'problems': {k: list(v) for k, v in fb.PROBLEMS.items()}, 'history': feedback_view(run, card_id),
+                'reviewer_context': reviewer_context(run, card_id),
+                'limits': {'min_correction': fb.MIN_CORRECTION, 'max_scope_threads': fb.MAX_SCOPE_THREADS,
+                           'max_text': fb.MAX_TEXT}}
+
+    @app.get('/api/runs/{run_key}/feedback')
+    def run_feedback(run_key: str):
+        run = run_of(run_key)
+        views = feedback_view(run)
+        return {'items': views, 'counts': fb.counts(views, run.reviewer_feedback_used())}
+
+    @app.post('/api/runs/{run_key}/cards/{card_id}/feedback')
+    async def submit_feedback(run_key: str, card_id: str, request: Request, idempotency_key: str | None = Header(default=None)):
+        """Report an AI issue on this card. Records feedback only: no decision, no review action, no card change."""
+        key = _key(idempotency_key)
+        run = run_of(run_key)
+        card = run.card(card_id)
+        try:
+            parsed = fb.FeedbackRequest.model_validate(await _json(request))
+        except ValidationError as error:
+            return JSONResponse({'code': 'INVALID_FEEDBACK', 'detail': _message(error)}, status_code=422)
+        if refused := _session_check(parsed.actor_id):
+            return refused
+        feedback_id = fb.feedback_id_for(run, card_id, key)
+
+        def build(head, sequence, digest):
+            report = fb.build_report(run=run, card=card, request=parsed, actors=actors, feedback_id=feedback_id,
+                                     recorded_at=clock(), history=lambda fid: store.feedback(feedback_id=fid),
+                                     origin=decision_origin)
+            return fb.submission(run=run, report=report, key=key, request_sha=digest)
+
+        return _submit(kind='feedback', run_key=run.ref, target_id=feedback_id, key=key,
+                       body={**parsed.model_dump(mode='json'), 'card_id': card_id}, build=build)
+
+    @app.post('/api/runs/{run_key}/feedback/{feedback_id}/actions')
+    async def feedback_action(run_key: str, feedback_id: str, request: Request, idempotency_key: str | None = Header(default=None)):
+        """CONFIRM (an authorized team lead; makes an opted-in correction eligible for later snapshots) or WITHDRAW."""
+        key = _key(idempotency_key)
+        run = run_of(run_key)
+        if not store.feedback(run.ref, feedback_id):
+            raise RunNotFound(f'Feedback {feedback_id} is not recorded on run {run.key}.')
+        try:
+            parsed = fb.FeedbackActionRequest.model_validate(await _json(request))
+        except ValidationError as error:
+            return JSONResponse({'code': 'INVALID_FEEDBACK', 'detail': _message(error)}, status_code=422)
+        if refused := _session_check(parsed.actor_id):
+            return refused
+
+        def build(head, sequence, digest):
+            return fb.action_event(head=head, request=parsed, actors=actors, sequence=sequence, recorded_at=clock(), key=key,
+                                   request_sha=digest)
+
+        return _submit(kind='feedback', run_key=run.ref, target_id=feedback_id, key=key, body=parsed.model_dump(mode='json'),
+                       build=build, on_insert=lambda db, entry: fb.supersede_on_confirm(store, db, entry, store.feedback_in_tx))
 
     @app.get('/api/runs/{run_key}/negative-examples')
     def negative_examples(run_key: str):

@@ -19,6 +19,10 @@ routing all stay inside the Advisor (`advisor_pilot.advise`); the graph adds no 
   fingerprints), completed topic results, and the budget/ledger state after every request. A resumed run reuses
   completed topics without new requests and keeps the spent budget; a topic interrupted mid-run is not resent unless
   the operator releases it explicitly; changed inputs refuse the resume. Nothing here is a knowledge or decision store.
+- Reviewer feedback (opt-in, `feedback_snapshot`): a content-addressed snapshot of confirmed reviewer corrections
+  (agents/reviewer_context). Its cutoff may not be later than the run cutoff; its hash is in the run manifest, so a
+  resume with other feedback is refused. Matching corrections reach the Advisor's existing requests as labelled
+  context; each topic result records what was sent and withheld (`reviewer_feedback`).
 - Output: a morning-brief JSON and readable report built only from validated card content, the Model Review Queue
   (separate from cards), accounting, incomplete work, usage and separate diagnostics.
 """
@@ -216,7 +220,7 @@ class Runtime:
     def __init__(self, out_dir, *, client, cutoff, handoff=pilot.HANDOFF, fixture_root=FIXTURE_ROOT, only=None,
                  max_requests=None, ledger=None, mode='SCRIPTED', retriever_factory=None, advise=None,
                  release=(), settings=None, index_dir=INDEX_DIR, flag_impact=False, consolidation=None,
-                 processing_history=None, tot_shadow=False):
+                 processing_history=None, tot_shadow=False, feedback_snapshot=None):
         self.out, self.client, self.cutoff, self.handoff, self.fixture_root = Path(out_dir), client, cutoff, Path(handoff), Path(fixture_root)
         self.only, self.max_requests, self.ledger, self.mode = (list(only) if only else None), max_requests, ledger, mode
         self.index_dir, self.owns_retriever = Path(index_dir), retriever_factory is None
@@ -229,6 +233,8 @@ class Runtime:
         self.consolidation = Path(consolidation) if consolidation else None
         self.processing_history = Path(processing_history) if processing_history else None
         self.history = []
+        self.feedback_snapshot = Path(feedback_snapshot) if feedback_snapshot else None
+        self.reviewer = None  # agents/reviewer_context.ReviewerContext, loaded in prepare_retrieval
         self.view = self.retriever = self.rubric = self.state = None
         self.routing = self.extraction = None
         self.work, self.results, self.outcomes = [], {}, {}
@@ -292,6 +298,16 @@ def prepare_retrieval(rt):
                                             or (identity['channel_id'], identity['thread_id']) in indexed_threads)
     rt.rubric = load_rubric(None)
     rt.handoff_activity = handoff_activity(rt)
+    if rt.feedback_snapshot:
+        from threadsense.agents.reviewer_context import ReviewerContext, SnapshotError
+        from threadsense.routing import aware
+        try:
+            rt.reviewer = ReviewerContext(rt.feedback_snapshot)
+        except SnapshotError as error:
+            raise OvernightError(str(error)) from None
+        if aware(rt.reviewer.cutoff) > aware(rt.cutoff):
+            raise OvernightError(f'Reviewer-feedback snapshot cutoff {rt.reviewer.cutoff} is after the run cutoff '
+                                 f'{_iso(rt.cutoff)}; feedback recorded after the window would leak into it.')
     return {}
 
 
@@ -394,7 +410,9 @@ def fingerprints(rt, limits):
             # Present only on threadsense-full-run-v2 runs, so earlier run manifests resume unchanged.
             **({'consolidation': {'path': _rel(rt.consolidation), 'sha256': file_hash(rt.consolidation)}} if rt.consolidation else {}),
             **({'processing_history': {'path': _rel(rt.processing_history), 'sha256': file_hash(rt.processing_history)}}
-               if rt.processing_history else {})}
+               if rt.processing_history else {}),
+            # Present only when reviewer feedback is used: a different snapshot is a different model input.
+            **({'reviewer_feedback': rt.reviewer.fingerprint(_rel)} if rt.reviewer else {})}
 
 
 def _rel(path):
@@ -459,7 +477,8 @@ def process_topic(rt, state):
     try:
         result = rt.advise(scenario, view=rt.view, retriever=rt.retriever, client=rt.client, budget=rt.state.budget,
                            rubric=rt.rubric, run_id=run_id(rt), as_of=rt.retriever.manifest['cutoff'],
-                           **({'flag_impact': True} if rt.flag_impact else {}), **({'tot_shadow': True} if rt.tot_shadow else {}))
+                           **({'flag_impact': True} if rt.flag_impact else {}), **({'tot_shadow': True} if rt.tot_shadow else {}),
+                           **({'reviewer_context': rt.reviewer} if rt.reviewer else {}))
         validate_card(result['card'])
         failed = [c for c in result['model_calls'] if c['status'] != 'OK']
         workflow = {'outcome': 'CARD_WITH_STAGE_FAILURES' if failed else 'CARD', 'card_id': result['card']['card_id'],
@@ -628,6 +647,15 @@ def aggregate(rt):
         'usage': usage, 'accounting': {k: rt.accounting[k] for k in ('status', 'issues')}}
     if rt.history:
         rt.brief['processing_history'] = rt.accounting['processing_history']
+    if rt.reviewer:  # Workflow counts only: which corrections reached which cards; nothing about accuracy.
+        records = {r['result']['card']['card_id']: r['result'].get('reviewer_feedback') or {}
+                   for r in rt.results.values() if r.get('result')}
+        rt.brief['reviewer_feedback'] = {
+            **rt.reviewer.fingerprint(_rel), 'cards_with_reviewer_context': sorted(k for k, v in records.items() if v.get('sent')),
+            'corrections_sent': sorted({x['feedback_id'] for v in records.values() for x in v.get('sent') or []}),
+            'corrections_withheld': sorted({x['feedback_id'] for v in records.values() for x in v.get('withheld') or []}),
+            'note': 'Confirmed reviewer corrections given to the model as labelled advisory context; not evidence, not '
+                    'policy. Counts are workflow metrics, not accuracy.'}
     if rt.view.get('consolidation'):
         c = rt.view['consolidation']
         rt.brief['consolidation'] = {'version': c['version'], 'judge_provenance': c['judge_provenance'], 'counts': c['counts'],

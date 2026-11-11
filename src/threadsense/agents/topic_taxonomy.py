@@ -30,11 +30,12 @@ taxonomy schema: topics with topic_name, rationale, member_ids; rejected_member_
 """
 
 
-def model_input(payload, glossary):
-    """The sole model-visible projection; full source/provenance stays passive."""
+def model_input(payload, glossary, lessons=None):
+    """The sole model-visible projection; full source/provenance stays passive. `lessons`: an optional
+    review-lessons-context-v1 block (agents/review_lessons), added only when present so other requests are unchanged."""
     members = validate_input(payload)
     for member in members:require_discussion(member)
-    return {
+    return {**({'lessons_from_human_review': lessons} if lessons else {}),
         'schema_version': 7, 'candidate_group_id': payload['candidate_group_id'],
         'project_id': payload['project_id'], 'batch_id': payload['batch_id'],
         'approved_glossary': dict(glossary),
@@ -45,11 +46,11 @@ def model_input(payload, glossary):
     }
 
 
-def build_request(payload, glossary, model):
+def build_request(payload, glossary, model, lessons=None):
     for member in payload['members']:
         require_discussion(member)
     return request_body(model, f'Prompt version: {PROMPT_VERSION}\n{RULES}',
-                        model_input(payload, glossary), response_schema_version=7)
+                        model_input(payload, glossary, lessons), response_schema_version=7)
 
 
 def validate_output(payload, analysis):

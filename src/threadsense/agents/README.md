@@ -12,6 +12,8 @@ Agent 3 (research, severity, AdviceCards) and the overnight workflow:
 | `advisor_pilot.py` | Advisor orchestration (CrewAI stages, request guard, cost ledger) |
 | `overnight.py` | LangGraph overnight workflow over the whole handoff (consolidated topics, processing history) |
 | `action_coordination.py` | Shared actions: one briefing action for distinct topics whose verified proposals match exactly |
+| `review_lessons.py` | Optional: lessons from human review for Agents 1 and 2 (snapshot, deterministic selection, at most 5 per request; Agent 1 request wrapper) |
+| `reviewer_context.py` | Optional: confirmed reviewer corrections from a feedback snapshot, matched by project + shared thread and sent as labelled advisory context (`docs/human-feedback-loop.md`) |
 
 The dashboard and TL decision store live in `../dashboard/` (see `docs/agent3-plan.md`, Milestone 6).
 

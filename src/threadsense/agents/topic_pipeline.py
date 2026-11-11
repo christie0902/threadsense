@@ -46,8 +46,8 @@ CODE_FILES = (
     'scripts/run_agent2_batch.py',
 )
 
-def configuration(payloads, model):
-    return {'schema_version':8 if EXPORT_ADAPTER_VERSION=='taxonomy-to-canonical-v2' else RESPONSE_SCHEMA_VERSION, 'response_schema_version':RESPONSE_SCHEMA_VERSION, 'prompt_version':PROMPT_VERSION,
+def configuration(payloads, model, lessons=None):
+    return {**({'review_lessons': lessons} if lessons else {}),'schema_version':8 if EXPORT_ADAPTER_VERSION=='taxonomy-to-canonical-v2' else RESPONSE_SCHEMA_VERSION, 'response_schema_version':RESPONSE_SCHEMA_VERSION, 'prompt_version':PROMPT_VERSION,
             'rubric_version':RUBRIC_VERSION, 'export_adapter_version':EXPORT_ADAPTER_VERSION,
             'model':model, 'maximum_requests_per_group':1,
             'request_parameters': model_parameters(model), 'response_format_sha256': digest(response_format()),
@@ -117,7 +117,9 @@ def reports(output, payloads, records, run_config, state):
     write_json(output/'effective_output.json', load_effective_output(output))
     return manifest
 
-def execute_batch(payloads, output, *, run=False, maximum_requests=None, model_override=None):
+def execute_batch(payloads, output, *, run=False, maximum_requests=None, model_override=None, lessons=None):
+    """`lessons`: an optional review-lessons snapshot (agents/review_lessons); each group's request carries the lessons
+    selected for its project, and the configuration records the snapshot and the lesson IDs per group."""
     output = Path(output).resolve()
     if output.exists():
         raise FileExistsError('Use a new Agent 2 output directory; never retry/resume an old attempt.')
@@ -126,14 +128,27 @@ def execute_batch(payloads, output, *, run=False, maximum_requests=None, model_o
         model = model_override
         model_parameters(model)  # Explicit, reviewed OpenAI profiles only.
         key_name = 'OPENAI_API_KEY'
-    requests = [build_request(p, get_terms(), model) for p in payloads]
+    selected = {}
+    if lessons is not None:
+        from threadsense.agents import review_lessons
+        for p in payloads:
+            selected[p['candidate_group_id']] = review_lessons.select(lessons, 'AGENT_2', p['project_id'], 'agent2_taxonomy')
+    def request_for(p):  # Lessons exist only for the active v7 contract; a group without lessons keeps the usual request.
+        block = (selected.get(p['candidate_group_id']) or (None,))[0]
+        if block is None:
+            return build_request(p, get_terms(), model)
+        from threadsense.agents import topic_taxonomy
+        return topic_taxonomy.build_request(p, get_terms(), model, block)
+    requests = [request_for(p) for p in payloads]
+    used = None if lessons is None else {**review_lessons.fingerprint(lessons),
+                                         'groups': {g: r for g, (_, r) in sorted(selected.items()) if r['lesson_ids']}}
     from threadsense.topic_inputs import routing_manifest_for_payloads
     routing = routing_manifest_for_payloads(payloads)
     if not payloads or (maximum_requests is not None and len(payloads) > maximum_requests):
         raise ValueError('Selection exceeds the explicit request bound, or is empty.')
     if run:
         config.get_api_key(key_name)  # Missing configuration must fail before writes/attempts.
-    run_config = configuration(payloads, model)
+    run_config = configuration(payloads, model, used)
     output.mkdir(parents=True, exist_ok=False)
     if routing is not None:
         write_json(output/'routing_manifest.json', routing, exclusive=True)

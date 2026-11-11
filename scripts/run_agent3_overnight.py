@@ -12,6 +12,9 @@ checks the retrieval snapshot, and prints the work plan, the worst-case request/
   --only ID                   restrict to work items (work ID, topic ID or pilot scenario ID); repeatable
   --flag-impact               shadow evaluation: add the flag-impact assessment to the reserved grounding request
                               (recorded per topic; routing ignores it; off by default)
+  --feedback-snapshot FILE    confirmed reviewer corrections (scripts/build_feedback_snapshot.py) given to matching
+                              topics as labelled advisory context in the same requests; its cutoff may not be later
+                              than --cutoff; recorded in the run manifest (docs/human-feedback-loop.md)
 
 The run cutoff is explicit and must equal the retrieval snapshot's cutoff. Per topic: at most 4 model calls (one HTTP
 request each, zero retries), 6 retrievals, 24,000 input tokens per request. Every run writes a new directory.
@@ -36,7 +39,7 @@ def live_settings():
 
 def build_runtime(out, mode, *, cutoff, only, max_requests, max_cost, release=(), index_dir=None, flag_impact=False,
                   handoff=None, fixture_root=None, per_request=None, consolidation=None, processing_history=None,
-                  tot_shadow=False):
+                  tot_shadow=False, feedback_snapshot=None):
     from threadsense.agents import advisor_pilot as pilot
     from threadsense.agents import overnight
     if mode == 'LIVE':
@@ -50,11 +53,12 @@ def build_runtime(out, mode, *, cutoff, only, max_requests, max_cost, release=()
                                  mode=mode, release=release, settings=settings, index_dir=index_dir or overnight.INDEX_DIR,
                                  flag_impact=flag_impact, handoff=handoff or pilot.HANDOFF,
                                  fixture_root=fixture_root or overnight.FIXTURE_ROOT,
-                                 consolidation=consolidation, processing_history=processing_history, tot_shadow=tot_shadow)
+                                 consolidation=consolidation, processing_history=processing_history, tot_shadow=tot_shadow,
+                                 feedback_snapshot=feedback_snapshot)
     return overnight.Runtime(out, client=overnight.HandoffScriptedClient(), cutoff=cutoff, only=only,
                              max_requests=max_requests, mode=mode, release=release, index_dir=index_dir or overnight.INDEX_DIR,
                              flag_impact=flag_impact, consolidation=consolidation, processing_history=processing_history,
-                             tot_shadow=tot_shadow,
+                             tot_shadow=tot_shadow, feedback_snapshot=feedback_snapshot,
                              **({'handoff': handoff} if handoff else {}), **({'fixture_root': fixture_root} if fixture_root else {}))
 
 
@@ -78,6 +82,8 @@ def main(argv=None):
     parser.add_argument('--consolidation', type=Path, help='agent2-consolidation-v1 record: consolidated topics become one work item.')
     parser.add_argument('--processing-history', type=Path, help='Agent 1 processing history (agent1-relevance-v1); its threads '
                         'are accounted separately and their obligations queued.')
+    parser.add_argument('--feedback-snapshot', type=Path, help='Reviewer-feedback snapshot (scripts/build_feedback_snapshot.py): '
+                        'confirmed corrections reach matching topics as labelled advisory context.')
     parser.add_argument('--index-dir', type=Path, help='Retrieval snapshot (default .index/retrieval); its cutoff must equal '
                         '--cutoff. A resume always uses the snapshot recorded in the run manifest.')
     args = parser.parse_args(argv)
@@ -89,7 +95,7 @@ def main(argv=None):
     from threadsense.handoff_inputs import read_json
     if args.resume:
         if args.write or args.scripted or args.run or args.only or args.max_requests or args.max_cost or args.cutoff or args.index_dir \
-                or args.flag_impact or args.tot_shadow or args.handoff or args.fixture_root or args.consolidation or args.processing_history:
+                or args.flag_impact or args.tot_shadow or args.handoff or args.fixture_root or args.consolidation or args.processing_history                 or args.feedback_snapshot:
             parser.error('--resume takes its options from the run manifest; pass only --release.')
         saved = read_json(args.resume/'run_manifest.json')['fingerprints']
         if not saved['index'].get('index_dir'):
@@ -99,6 +105,7 @@ def main(argv=None):
                            release=args.release, flag_impact=saved.get('flag_impact', False), tot_shadow='tot_shadow_policy' in saved,
                            handoff=overnight.ROOT/saved['handoff']['run'],
                            **{k: overnight.ROOT/saved[k]['path'] for k in ('consolidation', 'processing_history') if k in saved},
+                           **({'feedback_snapshot': overnight.ROOT/saved['reviewer_feedback']['path']} if 'reviewer_feedback' in saved else {}),
                            index_dir=overnight.ROOT/saved['index']['index_dir']
                            if not Path(saved['index']['index_dir']).is_absolute() else Path(saved['index']['index_dir']))
     else:
@@ -124,7 +131,8 @@ def main(argv=None):
         rt = build_runtime(args.write, mode, cutoff=args.cutoff, only=args.only, max_requests=args.max_requests,
                            max_cost=args.max_cost, index_dir=args.index_dir, flag_impact=args.flag_impact, handoff=args.handoff,
                            fixture_root=args.fixture_root, consolidation=args.consolidation,
-                           processing_history=args.processing_history, tot_shadow=args.tot_shadow)
+                           processing_history=args.processing_history, tot_shadow=args.tot_shadow,
+                           feedback_snapshot=args.feedback_snapshot)
     try:
         state = overnight.run(rt)
     except overnight.OvernightError as error:
