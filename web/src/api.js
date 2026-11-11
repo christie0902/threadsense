@@ -1,6 +1,12 @@
 import { useCallback, useRef, useState } from 'react'
 
+// `vite build --mode demo` (npm run build:demo) swaps the FastAPI backend for the bundled static demo data
+// (demoApi.js); every other build talks to the API as before and does not include the demo module or its data.
+// The mode check is written inline at each import so that other builds drop the demo code.
+export const DEMO = import.meta.env.MODE === 'demo'
+
 export async function getJSON(path) {
+  if (import.meta.env.MODE === 'demo') return (await import('./demoApi.js')).getJSON(path)
   const res = await fetch(path)
   const data = await res.json().catch(() => null)
   if (!res.ok) throw new Error(data?.detail || `${res.status} ${res.statusText}`)
@@ -30,10 +36,13 @@ export function useIdempotentSave(path) {
     setState({ phase: 'saving', key })
     let res, data
     try {
-      res = await fetch(path, {
-        method: 'POST', headers: { 'Content-Type': 'application/json', 'Idempotency-Key': key }, body: serialized,
-      })
-      data = await res.json()
+      if (import.meta.env.MODE === 'demo') ({ data, ...res } = await (await import('./demoApi.js')).post(path, key, serialized))
+      else {
+        res = await fetch(path, {
+          method: 'POST', headers: { 'Content-Type': 'application/json', 'Idempotency-Key': key }, body: serialized,
+        })
+        data = await res.json()
+      }
     } catch (error) {
       inFlight.current = false
       setState({ phase: 'uncertain', key, error: String(error?.message || error) })

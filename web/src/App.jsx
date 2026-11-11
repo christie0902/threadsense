@@ -1,5 +1,5 @@
 import { AnimatePresence, MotionConfig } from 'framer-motion'
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { Suspense, lazy, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { getJSON } from './api.js'
 import { QUICK_FILTERS, SORTS, briefStats, briefingDate, buildRows, decisionsByCard, filterRows, quickCounts, runKind, sortRows } from './briefView.js'
 import CardView from './CardView.jsx'
@@ -17,6 +17,8 @@ const MODE_BANNERS = {
 const OUTCOME_STYLES = { TOPIC_FAILED: 'text-red-300', UNPROCESSED_BUDGET: 'text-amber-200', UNPROCESSED_RUN_STOPPED: 'text-amber-200',
   INTERRUPTED_UNCERTAIN: 'text-amber-200', OUT_OF_SCOPE: 'text-slate-400' }
 const TABS = { active: 'ACTIVE', reviewed: 'REVIEWED' }
+// Static demo build only (npm run build:demo); other builds drop it.
+const DemoNotice = import.meta.env.MODE === 'demo' ? lazy(() => import('./DemoNotice.jsx')) : null
 
 function readHash() {
   const p = new URLSearchParams(window.location.hash.slice(1))
@@ -272,6 +274,7 @@ export default function App() {
           </div>
 
           <main className="max-w-[132rem] space-y-6 px-4 pb-16 pt-6 sm:px-6 lg:px-8 lg:pt-8 2xl:px-12">
+            {DemoNotice && <Suspense fallback={null}><DemoNotice /></Suspense>}
             {error && <div className="rounded-xl border border-red-400/40 bg-red-500/10 p-3 text-sm text-red-100">{error}</div>}
             {!brief && !error && <div className="flex items-center gap-3 py-16 text-sm text-slate-400"><Orb busy className="h-6 w-6" />Loading the brief…</div>}
             {brief && (

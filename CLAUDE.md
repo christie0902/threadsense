@@ -25,6 +25,9 @@ uv run --locked --extra dev python -m pytest tests/test_x.py   # single file
 - UI view-model tests: `npm --prefix web run test:unit` (node --test over `web/src/briefView.js`; no browser).
 - UI tests: `npm --prefix web run build` then `npm --prefix web run test:ui` (Playwright, system Chrome; temp output
   in `TS_UI_TMP`, default `D:/tsb/ui-<time>`). Frontend deps are pinned in `web/package.json` + `package-lock.json`.
+- Static demo: `npm --prefix web run build:demo` (Vite mode `demo` -> `web/dist-demo`; `web/src/demoApi.js` answers the API
+  from `web/demo/briefing.json`, made by `scripts/build_web_demo_data.py`; changes stay in localStorage), test with
+  `npm --prefix web run test:demo`. Other builds exclude the demo code and data. `tests/test_web_demo_data.py` checks the bundle is current.
 - Zero-call checks: `--dry-run`, `--inspect`, `--check-input` flags (list in README). Anything with `--run`, or Agent 1 without `--dry-run`/`--inspect`, makes **paid model calls** — never run those without asking.
 - Dependency changes go in `pyproject.toml` and `uv.lock` together.
 

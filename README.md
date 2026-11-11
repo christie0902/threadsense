@@ -180,6 +180,17 @@ npm --prefix web run test:ui                           # browser tests (system C
 npm --prefix web run test:unit                         # view-model unit tests (node --test, no browser)
 ```
 
+Static presentation demo (same React dashboard, no backend): `npm --prefix web run build:demo` builds `web/dist-demo`
+from the bundled synthetic briefing `web/demo/briefing.json` (the saved API responses of
+`threadsense_full_v1_combined_v2`). Visitors' decisions, review actions, lessons and AI-issue reports are kept in their
+own browser (localStorage, scoped to that briefing) and reach no agent or snapshot. The app routes by URL hash, so static
+hosting needs no rewrite (Vercel: root `web`, build `npm run build:demo`, output `dist-demo`).
+
+```sh
+uv run --locked python scripts/build_web_demo_data.py [--write web/demo/briefing.json]   # refresh the bundle (plan by default)
+npm --prefix web run build:demo && npm --prefix web run test:demo                       # build, then test it with no API server
+```
+
 Layout: a sidebar (mascot, statistic tiles, quick filters) and a sorted two-column Advice Cards
 feed with Active / Reviewed tabs and the separate Model Review Queue; on narrow screens the sidebar is a drawer. A Grid / Slides toggle in the header switches between the card grid and a one-card-at-a-time slider (arrows, arrow keys, swipe; `#view=slides`). The briefing selector sits in the header; run identity, accounting and saved run files are under "Developer details" in the footer (or `#debug=1`). With no run in the URL, the dashboard opens the presentation briefing (the run with a presentation layer).
 Lifecycle membership, counts, filters and sorting share one view model (`web/src/briefView.js`). Default order:
