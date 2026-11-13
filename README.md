@@ -1,273 +1,136 @@
 # ThreadSense
 
-ThreadSense interprets Slack discussions and organizes canonical interpretations into
-related topics. Agent 1's finalized v3 handoff contains **200 records: 81 VERIFIED,
-70 CORRECTED and 49 NEEDS_REVIEW**, in 90 candidate groups.
+ThreadSense turns Slack threads from four annotation projects (audio_multimodal, multilingual_eval,
+response_preference, safety_classification) into a morning brief for team leads. Each brief item is an advice card:
+what happened, how severe it is, what to do and what still needs a human decision.
 
-Agent 2's corrected **v7 scope is taxonomy and cluster hygiene**: coherence,
-splitting, concise reusable topic names and explicit outliers. It consumes Agent 1
-summaries/questions, preserves full canonical records and all 49 inherited review
-obligations passively, and uses one strict request per group without retries.
-Prospective exports leave severity UNKNOWN/UNASSESSED and defer assessment to Agent 3.
-The frozen v7 release retains its historical deterministic metadata. Agent 3 owns research, answer/policy
-reassessment, final severity and recommendations.
+All data is synthetic: generated Slack fixtures and a hand-written knowledge store.
 
-Agent 2 v7 is **complete with nonblocking review**: 90 CONSOLIDATED groups,
-97 topics and all 200 identities/49 inherited obligations retained. The accepted
-four-group pilot was reused; 86 new requests completed, with no failed, interrupted
-or unprocessed groups. Three naming cautions remain in the reviewed effective view.
-See the [Agent 2 summary](docs/Agent2_Summary.md) and the
-[current routing and knowledge-source guide](docs/announcement-routing.md).
-Historical v6/v7 outputs remain preserved.
+## How it works
 
-Agent 3 (2026-10-30): a bounded CrewAI Advisor produces AdviceCards, live-validated on the six pilot topics and,
-for the current prompts, on two topics (audio, Submit); a LangGraph overnight workflow runs the whole handoff,
-validated offline with scripted and placeholder judgments (no full live run yet); a local dashboard shows a run's
-morning brief and records team-lead decisions, validated offline. The validation level of each part is in the
-[Agent 3 plan](docs/agent3-plan.md).
+```mermaid
+flowchart LR
+  S[Slack threads] --> R{Routing}
+  R -- announcements --> K[(Knowledge store)]
+  R -- discussions --> A1[Agent 1<br/>interpret + verify]
+  A1 --> G[Grouping]
+  G --> A2[Agent 2<br/>topic taxonomy]
+  A2 --> A3[Agent 3<br/>research, severity, advice]
+  K --> A3
+  A3 --> D[Dashboard<br/>team-lead decisions]
+  D -. new snapshot .-> K
+```
 
-## Maintained documentation
+1. **Routing.** Announcement channels go to the knowledge store; discussion threads go to the agents.
+2. **Agent 1** summarises each thread and its central question, then verifies the summary against the source, with
+   one revision at most. Unverified threads are flagged for review, never dropped.
+3. **Grouping and Agent 2** cluster related threads and name the topics. Agent 2 does not judge severity.
+4. **Agent 3** (CrewAI Advisor in a LangGraph overnight workflow) researches each topic with hybrid retrieval
+   (BM25 + embeddings) over the instructions, FAQs and earlier decisions. It assesses severity with the team-lead
+   rubric and writes a card. A final grounding call checks every sentence; unsupported text is withheld and the card
+   goes to Needs Review.
+5. **The dashboard** (FastAPI + React) shows the brief and the review queue. Team leads record decisions and report
+   AI mistakes. Decisions feed later runs only through a new knowledge snapshot; nothing is executed or posted.
 
-- [Agent source layout](src/threadsense/agents/README.md): current files and isolated historical compatibility.
-- [Setup and commands](#setup-and-configuration): this page.
-- [Agent 1 summary](docs/Agent1_Summary.md): historical workflow and results.
-- [Agent 2 summary](docs/Agent2_Summary.md): completed taxonomy milestone.
-- [Agent 3 plan](docs/agent3-plan.md): milestones for research, AdviceCards and dashboard.
-- [Announcement routing and knowledge sources](docs/announcement-routing.md):
-  current input boundary, daily commands, manual source format and severity migration.
-- [Source JSON Schema](docs/knowledge-source.schema.json).
-- [Prose benchmark](experiments/prose_comparison_v1/README.md).
-- [Repository cleanup record](docs/repository-cleanup.md).
-- [Human feedback loop](docs/human-feedback-loop.md): reporting AI issues, confirmed corrections as context for later runs, evaluation export.
+Stack: Python 3.13, CrewAI + LiteLLM, LangGraph, Pydantic v2, sentence-transformers, scikit-learn, ChromaDB, FastAPI;
+React, Vite, Tailwind and Framer Motion in `web/`.
 
-## Current architecture
+## Quick start
 
-The Slack adapter loads message text, authors, roles, and actual reaction users
-and targets. Runtime terminology comes from `data/knowledge/domain_lexicon.json`;
-`data/evaluation/` contains separate evaluation material, not model-request inputs.
-
-Agent 1 verification joins the frozen interpretations to original Slack, analyzes
-the source once, compares the current candidate's prose, and applies deterministic
-checks. It permits **one revision maximum**, followed by a fresh candidate check;
-a successful revision becomes CORRECTED. The bound is **four request attempts per
-thread, zero retries and no fallback calls**. NEEDS_REVIEW retains the candidate
-and evidence and does not interrupt subsequent threads.
-
-The baseline lives in `data/processed/agent1_authority_fix/`; the 91 frozen
-groups live in `data/processed/grouping/` as historical evidence. The historical Agent 2 release read
-`data/processed/agent1_verified_v3/interpretations.json` directly and used the
-90 candidates in `data/processed/grouping_agent1_v3/`. It preserves all 49 inherited
-review obligations through taxonomy assignments, rejection and recoverable failure.
-Agent 2's model sees canonical summaries/questions and the approved glossary; original
-Slack and evidence remain in the passive export. It does not generate another
-interpretation, question inventory, answer judgment or research narrative.
-The finalized dataset is `data/processed/agent2_taxonomy_final_v7/`. Use its
-`release_manifest.json` and `effective_output_reviewed.json`, or the mandatory
-effective loader. Per-record `taxonomy_handoff` replaces the historical semantic
-`research_handoff`. All 49 inherited obligations and three naming cautions remain
-visible across 41 effective review groups. Preserve future unassigned/rejected
-members for later work as well.
-
-Prospective ingestion now routes announcement channels into durable knowledge
-sources before interpretation. Discussions keep the existing path. The canonical
-200 records partition into **178 discussions with 41 review obligations** and
-**22 announcements with eight obligations**, all preserved. Projecting historical
-groups yields 81 discussion candidates without computing embeddings. The prompt
-and model response schema remain taxonomy v7; new unassessed-severity exports use
-schema 8 / handoff v2. Historical release bytes and handoff v1 are unchanged.
-
-## Setup and configuration
-
-From this checkout's root on Windows or macOS:
+Install [uv](https://docs.astral.sh/uv/getting-started/installation/), then from the repository root:
 
 ```sh
 uv sync --locked --extra dev
-uv run --locked --extra dev python -m pytest -q --disable-warnings --tb=short --basetemp .cache/pytest-current
+uv run --locked --extra dev python -m pytest -q --basetemp D:/tsb/pytest-run
 ```
 
-Install [uv](https://docs.astral.sh/uv/getting-started/installation/) if needed.
-The project selects Python 3.13 and installs the locked dependencies plus the
-editable local package. No environment activation or PYTHONPATH setting is needed.
-Use a dedicated pytest temporary directory: pytest clears `--basetemp` at startup.
-The offline tests mock model requests and isolate saved credentials.
+Model calls need an API key. Copy `.env.example` to `.env` and set `OPENAI_API_KEY`. Nothing in the quick start or
+the dashboard needs it. (With pip instead of uv: create a Python 3.13 environment and run
+`pip install -r requirements.txt`.)
 
-Select `.venv\Scripts\python.exe` in a Windows editor, or `.venv/bin/python` on
-macOS. After pulling on another computer, repeat `uv sync --locked --extra dev`.
-Keep each computer's environment local; do not copy `.venv` or its executable
-launchers between Windows and macOS. Dependency changes belong together in
-`pyproject.toml` and `uv.lock`.
-
-If using pip, create a Python 3.13 virtual environment and run its interpreter
-with `-m pip install -r requirements.txt`. That installs the declared ranges;
-uv provides the versions recorded in the lockfile.
-
-Create a local `.env` from `.env.example` only if it does not already exist, then
-fill in `OPENAI_API_KEY=` there. Both agent factories read this file; you do not
-need to paste keys into the terminal. Existing terminal variables take precedence.
-The ignored `.env` stays local to each computer; never commit real credentials.
-
-`THREADSENSE_MODEL` selects the interpreter/analyst model.
-`THREADSENSE_VERIFIER_MODEL` selects the verifier, falling back to that model when
-unset. OpenRouter routes use `OPENROUTER_API_KEY`. The finalized v3 fingerprints
-require the original pins shown below, regardless of local defaults.
-
-## Safe inspection commands
-
-These commands inspect existing inputs without paid model calls:
+### Dashboard
 
 ```sh
-uv run --locked python scripts/run_agent1_demo.py --inspect
-uv run --locked python scripts/run_agent1_batch.py --dry-run --limit 1
-uv run --locked python scripts/run_thread_grouping.py --check-input
-uv run --locked python scripts/prepare_agent2_grouping.py
-uv run --locked python scripts/run_agent2_sample.py
-uv run --locked python scripts/run_agent2_batch.py --dry-run --limit 0
-uv run --locked python scripts/validate_agent3_inputs.py
+npm --prefix web ci && npm --prefix web run build
+uv run --locked python scripts/run_dashboard.py          # http://127.0.0.1:8000
 ```
 
-The last command validates the Agent 3 inputs: knowledge corpus (Markdown and JSON),
-severity rubric binding, demo Slack snapshot counts and the schema-8 Agent 2 handoff
-projection (`scripts/project_agent2_handoff.py`, zero calls). See the
-[Agent 3 plan](docs/agent3-plan.md#milestone-2-implemented).
+It opens on the presentation briefing (`data/experiments/threadsense_full_v1_combined_v2`). The session is a single
+team lead (Priya, U006; change it with `--team-lead`). Decisions are stored in `.state/dashboard/` (ignored by git).
+A walkthrough is in [docs/agent3-demo-walkthrough.md](docs/agent3-demo-walkthrough.md).
 
-Shared retrieval (local embeddings and Chroma, no paid calls; index in ignored `.index/`):
+### Static demo
+
+The same dashboard, with no backend. It reads a bundled copy of the briefing (`web/demo/briefing.json`), and visitors'
+changes stay in their own browser.
 
 ```sh
-uv run --locked python scripts/build_retrieval_index.py
-uv run --locked python scripts/evaluate_retrieval.py
+npm --prefix web run build:demo                          # -> web/dist-demo
+npm --prefix web run test:demo
+uv run --locked python scripts/build_web_demo_data.py    # check the bundle; --write web/demo/briefing.json refreshes it
 ```
 
-The build is offline and needs the pinned `all-MiniLM-L6-v2` revision in the local
-Hugging Face cache; add `--allow-download` once to fetch it. See
-[Milestone 3](docs/agent3-plan.md#milestone-3-implemented-shared-hybrid-retrieval).
+The app routes by URL hash, so any static host works. For Vercel: root `web`, build command `npm run build:demo`,
+output `dist-demo`.
 
-Agent 3 Advisor pilot (six handoff topics plus a negative control):
+## Main commands
 
-```sh
-uv run --locked python scripts/run_agent3_pilot.py      # zero calls: freshness check, topics, initial retrieval, budget
-uv run --locked python scripts/run_agent3_pilot.py --scripted tests/fixtures/agent3_pilot_scripted_judgments.json --write <new-dir>
-```
+Scripts are read-only and make no model calls unless you pass `--write` (or `--prepare`) and `--run`; live runs also
+take a request and cost cap. **Exception:** `run_agent1_batch.py` and `run_agent1_demo.py` call the model unless
+given `--dry-run` / `--inspect`. See [docs/development.md](docs/development.md) before running anything paid.
 
-`--scripted` is offline: prepared semantic judgments exercise the deterministic checks and
-routing. `--run --write <new-dir>` makes **paid** model calls through CrewAI (bounded: at
-most 4 per topic, 28 per run, one HTTP request per call with no retries; the zero-call default
-prints the model and limits). `scripts/run_agent3_model_comparison.py` runs the bounded
-two-model comparison (zero calls by default; `--run --write <new-dir>` is paid, with a $3 cost
-reservation ledger); `scripts/replay_agent3_comparison.py` replays it, or a single run such as the
-acceptance pilot (`--source data/experiments/agent3_acceptance_v1`), offline with zero calls;
-`scripts/run_agent3_acceptance.py` runs the Sol acceptance pilot (zero calls by default; `--run` is
-paid, $6 ledger, at most 28 requests); and `scripts/run_agent3_closeout.py` reruns the six topic
-scenarios on the same arm for pilot v5 (zero calls by default; `--run` is paid, $3 ledger);
-`scripts/run_agent3_readability.py` reruns audio and Submit for pilot v6 (`--run` is paid, $2 ledger, 8 requests).
-AdviceCard v3 shows what happened, what to do, why and what needs review in plain language, referring to people
-by role; IDs, enums and premises stay in structured fields. The overnight workflow (LangGraph) runs the whole
-handoff: `scripts/run_agent3_overnight.py --cutoff <ISO>` (zero calls: plan and worst case), `--scripted --write
-<dir>` (offline), `--run --write <dir> --max-requests N --max-cost USD` (paid), `--resume <dir>`, `--flag-impact`
-(shadow flag-impact assessment in the grounding request; routing ignores it); it writes a
-morning brief (`morning_brief.json`/`.md`), cards, Model Review Queue, accounting and diagnostics. See
-[Milestone 4](docs/agent3-plan.md#milestone-4-implemented-bounded-advisor-pilot).
-
-Morning-brief dashboard (local, no model calls, no posting; TL decisions go to an ignored SQLite store):
-
-```sh
-npm --prefix web ci && npm --prefix web run build      # once: build the frontend into web/dist
-uv run --locked python scripts/run_dashboard.py        # http://127.0.0.1:8000 (add --include-test-fixtures for the labelled fixture run)
-uv run --locked python scripts/build_decision_snapshot.py --cutoff <ISO> --index-dir .index/retrieval_tl_<date> [--build]
-uv run --locked python scripts/build_feedback_snapshot.py --cutoff <ISO> [--write <file>]   # confirmed reviewer corrections -> --feedback-snapshot
-uv run --locked python scripts/export_feedback_cases.py [--write <new dir>]               # feedback -> JSONL evaluation candidates
-uv run --locked python scripts/build_lesson_snapshot.py --cutoff <ISO> [--write <file>]     # Agent 1/2 lessons -> --lessons
-npm --prefix web run test:ui                           # browser tests (system Chrome)
-npm --prefix web run test:unit                         # view-model unit tests (node --test, no browser)
-```
-
-Static presentation demo (same React dashboard, no backend): `npm --prefix web run build:demo` builds `web/dist-demo`
-from the bundled synthetic briefing `web/demo/briefing.json` (the saved API responses of
-`threadsense_full_v1_combined_v2`). Visitors' decisions, review actions, lessons and AI-issue reports are kept in their
-own browser (localStorage, scoped to that briefing) and reach no agent or snapshot. The app routes by URL hash, so static
-hosting needs no rewrite (Vercel: root `web`, build `npm run build:demo`, output `dist-demo`).
-
-```sh
-uv run --locked python scripts/build_web_demo_data.py [--write web/demo/briefing.json]   # refresh the bundle (plan by default)
-npm --prefix web run build:demo && npm --prefix web run test:demo                       # build, then test it with no API server
-```
-
-Layout: a sidebar (mascot, statistic tiles, quick filters) and a sorted two-column Advice Cards
-feed with Active / Reviewed tabs and the separate Model Review Queue; on narrow screens the sidebar is a drawer. A Grid / Slides toggle in the header switches between the card grid and a one-card-at-a-time slider (arrows, arrow keys, swipe; `#view=slides`). The briefing selector sits in the header; run identity, accounting and saved run files are under "Developer details" in the footer (or `#debug=1`). With no run in the URL, the dashboard opens the presentation briefing (the run with a presentation layer).
-Lifecycle membership, counts, filters and sorting share one view model (`web/src/briefView.js`). Default order:
-severity (HIGH, MEDIUM, LOW, not applicable, unassessed), then cards that require review, then the latest saved source
-message, then card ID. A closing decision moves a card to Reviewed ("Approved — execution not recorded"); a severity
-override keeps it active; no state is shown as resolved, because the dashboard records no execution or outcome.
-
-Approving a card records a decision only; nothing is executed or posted. Saved decisions reach retrieval only
-through a new snapshot at a later cutoff (decisions on live runs by default; `--namespace demo|test` for scripted or
-fixture runs), which an overnight run selects with `--index-dir`. Offline demonstration of the whole loop:
-`scripts/run_feedback_loop_demo.py --write <new dir>`; scenario coverage: `scripts/report_scenario_coverage.py`.
-See [Milestone 7](docs/agent3-plan.md#milestone-7-implemented-2026-10-30-final-integration-and-demo-validation) and
-[Milestone 6](docs/agent3-plan.md#milestone-6-implemented-2026-10-30-morning-brief-dashboard-and-tl-decision-loop).
-
-Inspect the historical effective handoff without regenerating it:
-
-```powershell
-uv run --locked python -c "from threadsense.agents.topic_effective import load_effective_output; v=load_effective_output('data/processed/agent2_taxonomy_final_v7'); print(len(v['records']), len(v['member_review_queue']), len(v['applied_content_obligations']))"
-```
-
-Expected: **90 groups, 49 inherited obligations, three naming cautions**. The new
-routing code intentionally changes prospective input/configuration fingerprints.
-Do not run a new producer against the frozen v3/v7 output directories or bypass
-fingerprint failures. Historical metadata registries resolve through the verified
-archive described in the current guide.
-
-The verification and Agent 2 runners require `--run` for live calls. Agent 2's
-batch runner additionally requires the prepared pilot and explicit request ceiling;
-each group gets one request, zero retries, and zero repairs. The original
-Agent 1 demo and baseline runner have different defaults: omit `--inspect` or
-`--dry-run` only when intentionally requesting model work, and supply an explicit
-timezone-aware `--cutoff`. Announcement-only extraction is always zero-call. Grouping without
-`--check-input` can load/download an embedding model and write outputs. Preserve
-the frozen baselines when preparing any future run.
-
-## Retained entry points
-
-| Purpose | Entry points |
+| Purpose | Command |
 | --- | --- |
-| Inspect fixtures | `main.py`, `scripts/run_agent1_demo.py --inspect` |
-| Baseline interpretation | `scripts/run_agent1_batch.py` |
-| Verification / canonical handoff | `scripts/run_agent1_verification.py` |
-| Historical offline reconciliation | `scripts/reconcile_agent1_handoff.py` |
-| Historical grouping / canonical refresh | `scripts/run_thread_grouping.py`, `scripts/prepare_agent2_grouping.py` |
-| Taxonomy Agent 2 | `scripts/prepare_agent2_input.py`, `scripts/run_agent2_sample.py`, `scripts/run_agent2_batch.py` |
-| Retired compatibility command | `scripts/repair_agent2_sample.py` explains the v1-to-v2 migration and makes no calls |
-| Retained benchmark | `scripts/run_prose_comparison_experiment.py` |
-| Dataset authoring | `scripts/generate_thread_blueprint.py`, `scripts/generate_slack_fixtures.py` |
-| Dataset checks | `scripts/validate_topic_catalog.py`, `scripts/validate_slack_fixtures.py`, `scripts/validate_threadsense_dataset.py` |
-| Agent 3 | `scripts/run_agent3_pilot.py`, `scripts/run_agent3_overnight.py` (zero calls by default; `--run` is paid) |
-| Agent 3 experiment | `scripts/run_agent3_react_comparison.py` (offline batch-versus-adaptive research comparison; zero calls; `--write <new dir>`) |
-| Agent 3 evaluation | `scripts/report_flag_dependence.py` (flag provenance and card dependencies for the nine audited cards against human labels; zero calls; `--write` to `data/experiments/agent3_flag_dependence_v1/`) |
-| Agent 3 evaluation | `scripts/report_flag_impact.py` (shadow routing for the opt-in flag-impact assessment; prepared judgments labelled; zero calls; `--write`) and `scripts/measure_grounding_request.py` (exact grounding request size with the flag context, zero calls; `--write <new path>`); `scripts/report_flag_impact_reliability.py` (catalogue, finding history and diagnostic re-validation of the saved live flag judgments, zero calls; `--write`) |
-| Dashboard / TL decisions | `scripts/run_dashboard.py`, `scripts/build_decision_snapshot.py`, `web/` |
-| Reviewer feedback | `scripts/build_feedback_snapshot.py`, `scripts/export_feedback_cases.py`, `scripts/build_lesson_snapshot.py` ([guide](docs/human-feedback-loop.md)) |
-| Combined briefing | `scripts/derive_combined_brief.py` (zero calls, read-only by default; `--write <new dir>` combines the consolidated derivation with a targeted refresh run: each refreshed item revalidated by same-rules replay under the current checks, briefing policy applied, replaced cards kept only as lineage, accounting checked, `derivation.json`, `REVIEW.md`; `--reground <saved result>` and `--previous <combined run>` build v2: each saved targeted re-grounding is applied only after its card reproduces exactly, human edits are labelled, every other card must match the previous run). Demo baseline: `data/experiments/threadsense_full_v1_combined_v2` |
-| Presentation layer | `scripts/build_presentation.py` (zero calls, read-only by default; `--write` saves `presentation.json` for a combined briefing and regenerates its `morning_brief.md`: active totals apart from history and historical card records, usage by stage from the saved ledgers, source-linked posting suggestions apart from the judged drafts, close calls as "Choose a next step", attributed editorial notes; instance files unchanged, original export kept under `exports/`) |
-| ToT shadow evaluation | `scripts/evaluate_tot_shadow.py` (zero calls, read-only by default; applies the optional shadow ToT policy `agent3-tot-shadow-partial-order-v1` to the saved live comparisons, deduplicated; `--write NEW_DIR` saves `report.json`). Live runs record it with `run_agent3_overnight.py --tot-shadow` (no extra request; routing unchanged). Design: `docs/agent3-tot-design.md` |
-| Re-ground one item | `scripts/reground_topic.py` (zero calls by default: replays a saved work item from its recorded generations, optionally with prepared wording edits, and prints the exact final grounding request and its cost ceiling; `--run --write` sends that one request, paid) |
-| Relevance + consolidation rebuild | `scripts/derive_consolidated_run.py` (zero calls, read-only by default; `--write <new dir>` rebuilds a completed run with Agent 1 relevance and Agent 2 consolidation from audited labels and prepared decisions: processing history, consolidated issues pending fresh grounding, shared actions, `derivation.json`, `REVIEW.md`) |
-| Briefing repair | `scripts/derive_briefing_repair.py` (re-applies the current briefing policy, briefing-routing-v2 with audited relevance labels, to a saved overnight run: zero calls, read-only by default; `--write <new dir>` writes a derived run with AdviceCard v5, `derivation.json` and `AUDIT.md`) |
-| Full pipeline run | `scripts/run_threadsense_full.py` (Agent 1 -> grouping -> Agent 2 -> Agent 3 under one budget ledger and request cache: `preflight` zero calls; `live --write <new dir> --run --max-cost <=39` is **paid**; `resume <dir> --reason`; `replay --source <run> --write <new dir>` and `render <run>` with the network disabled; `branch` recomputes only changed stages) |
+| Full pipeline (Agent 1 → Agent 3 under one budget) | `scripts/run_threadsense_full.py preflight` · `live --write <dir> --run --max-cost N` · `resume` · `replay` · `render` · `branch` |
+| Agent 3 overnight run | `scripts/run_agent3_overnight.py --cutoff <ISO>` (plan) · `--scripted --write <dir>` (offline) · `--run --write <dir> --max-requests N --max-cost N` |
+| Agent 1 | `scripts/run_agent1_demo.py --inspect`, `scripts/run_agent1_batch.py --dry-run`, `scripts/run_agent1_verification.py` |
+| Grouping and Agent 2 | `scripts/run_thread_grouping.py --check-input`, `scripts/prepare_agent2_grouping.py`, `scripts/run_agent2_sample.py`, `scripts/run_agent2_batch.py --dry-run` |
+| Announcement routing | `scripts/route_source_activity.py --dry-run --cutoff <ISO>` |
+| Retrieval index | `scripts/build_retrieval_index.py` (add `--allow-download` once for the embedding model), `scripts/evaluate_retrieval.py` |
+| Agent 3 input checks | `scripts/validate_agent3_inputs.py` |
+| Decisions and feedback → next run | `scripts/build_decision_snapshot.py`, `scripts/build_feedback_snapshot.py`, `scripts/build_lesson_snapshot.py`, `scripts/export_feedback_cases.py` |
+| Offline derivations of saved runs | `scripts/derive_briefing_repair.py`, `scripts/derive_consolidated_run.py`, `scripts/derive_combined_brief.py`, `scripts/build_presentation.py`, `scripts/reground_topic.py` |
+| Evaluation reports | `scripts/evaluate_temporal.py`, `scripts/evaluate_tot_shadow.py`, `scripts/report_flag_dependence.py`, `scripts/report_flag_impact.py` |
+| Dataset authoring and checks | `scripts/generate_thread_blueprint.py`, `scripts/generate_slack_fixtures.py`, `scripts/validate_topic_catalog.py`, `scripts/validate_slack_fixtures.py`, `scripts/validate_threadsense_dataset.py` |
 
-Agent 2 preparation is read-only unless `--write` or `--prepare` is supplied.
-Dataset authoring writes files; it supports reproducibility, not regeneration of
-the frozen corpus. New output directories keep historical results untouched.
+Most accept `--help` (`uv run --locked python <script> --help`). The exception is the dataset authoring and check
+scripts, which take no options; the two generators write fixture files as soon as they run.
+
+## Repository layout
+
+| Path | Contents |
+| --- | --- |
+| `src/threadsense/` | the package: routing, Slack adapter, knowledge ingestion, grouping, config |
+| `src/threadsense/agents/` | Agents 1–3 ([overview](src/threadsense/agents/README.md)) |
+| `src/threadsense/retrieval/` | hybrid retrieval: chunking, index, search, version eligibility |
+| `src/threadsense/execution/` | full-run pipeline, request guard and cache, budget ledger, pricing |
+| `src/threadsense/dashboard/` | FastAPI app, run catalog, decision and feedback stores |
+| `src/threadsense/legacy/` | historical contracts kept for replaying saved runs |
+| `web/` | React dashboard and static demo |
+| `scripts/` | command-line entry points |
+| `tests/` | offline tests (model calls are mocked) |
+| `data/fixtures/` | synthetic Slack input (`slack_generated/`, demo snapshot `slack_generated_demo/`) |
+| `data/knowledge/` | knowledge store: instructions, FAQs, decisions, lexicon, severity rubric |
+| `data/evaluation/` | labels and benchmarks (not model inputs) |
+| `data/processed/`, `data/experiments/` | saved runs (frozen) |
+
+## Documentation
+
+- [Evaluation and results](docs/evaluation.md): what each agent produced, costs, benchmarks and limitations.
+- [Architecture](docs/architecture/THREADSENSE_END_TO_END.md) and the
+  [schema and artifact map](docs/architecture/SCHEMA_AND_ARTIFACT_MAP.md).
+- [Development guide](docs/development.md): tests, paid-call safety, frozen files, environment notes.
+- [Announcement routing and knowledge sources](docs/announcement-routing.md) and the
+  [source JSON schema](docs/knowledge-source.schema.json).
+- [Human feedback loop](docs/human-feedback-loop.md): AI-issue reports and review lessons.
+- [Tree of Thought design](docs/agent3-tot-design.md).
+- [Dashboard walkthrough](docs/agent3-demo-walkthrough.md).
+- [Prose comparison benchmark](experiments/prose_comparison_v1/README.md).
 
 ## Troubleshooting
 
-- Missing `crewai`, `pydantic`, or `threadsense`: run the locked sync and use
-  `uv run --locked python ...` or this checkout's editor interpreter.
-- Missing pip inside `.venv`: uv environments need not include pip; use uv sync.
-- A copied/broken environment or `encodings` startup failure: use a local Python
-  3.13 installation and recreate the environment with uv. Keep the old environment
-  separately until the replacement works.
-- Windows pytest temporary-directory access errors: choose a new dedicated
-  `--basetemp .cache/pytest-...` directory. Do not put project evidence there.
-- Unexpected model or credential choice: terminal variables override `.env`.
-- Incompatible v3 preflight: inspect the original model pins and code/input/package
-  fingerprints. Do not alter saved metadata to force compatibility.
+- **`crewai`, `pydantic` or `threadsense` not found:** run `uv sync --locked --extra dev` and use `uv run --locked`.
+- **pytest `PermissionError` on Windows:** use a new `--basetemp` outside the repository.
+- **Unexpected model or key:** terminal environment variables override `.env`.
+- **A preflight reports changed code or inputs:** that's the fingerprint check protecting a saved run. Write to a
+  new output directory; don't edit saved metadata.

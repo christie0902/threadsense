@@ -3,9 +3,8 @@
 Every step reads saved run directories. No model call, API key or network access is needed during the presentation.
 Each run's banner shows its mode (LIVE, SCRIPTED or TEST_FIXTURE), and each card has a badge naming its semantic
 source. Say which run you are on at every step. Current demo baseline: section 0 (architecture and evidence status:
-[architecture/THREADSENSE_END_TO_END.md](architecture/THREADSENSE_END_TO_END.md)). Sections 1-5 were written against
-implementation baseline commit `d976eff`. Documentation changes after
-it are listed in section 7 of [agent3-acceptance.md](agent3-acceptance.md).
+[architecture/THREADSENSE_END_TO_END.md](architecture/THREADSENSE_END_TO_END.md); results: [evaluation.md](evaluation.md)).
+Sections 1-5 were written against implementation baseline commit `d976eff`.
 
 ## Setup (once, before the session)
 

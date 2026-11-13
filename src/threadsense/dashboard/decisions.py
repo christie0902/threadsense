@@ -4,7 +4,7 @@ Store: one SQLite file (stdlib sqlite3, WAL, synchronous=FULL). Rows are append-
 card supersedes the earlier one by sequence and both stay in the history. Only the separate indexing-status table
 is updated in place, so a failed or repeated indexing never touches a saved decision.
 
-Contracts (persistence extension, documented in docs/agent3-plan.md, Milestone 6):
+Contracts (persistence extension):
 - TLDecisionEntry (dashboard-tl-decision-v1) wraps the unchanged DecisionRecord v1 with what that record has no
   field for: run and card binding (run directory, run_id, cards.json hash), the structured resolution kind, the
   TL-edited vs model-grounded text, the TL note, the request key and the superseded entry.

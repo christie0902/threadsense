@@ -35,8 +35,8 @@ process_topic (loops once per work item) ----------> -> ONE final grounding call
 ```
 
 The graph adds no model call of its own. It sequences work items, enforces the run budget, records failures without
-dropping members or obligations, and persists. Earlier plans named an "optional ToT node"
-([agent3-plan.md](agent3-plan.md), Milestone 5 row); the build kept ToT inside the Advisor so that it shares the
+dropping members or obligations, and persists. Earlier plans named an "optional ToT node";
+the build kept ToT inside the Advisor so that it shares the
 Advisor's evidence ledger, request budget and reserved grounding call.
 
 **Triggers** (`advisor_tot.triggers`):

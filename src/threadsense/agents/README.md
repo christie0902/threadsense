@@ -15,7 +15,7 @@ Agent 3 (research, severity, AdviceCards) and the overnight workflow:
 | `review_lessons.py` | Optional: lessons from human review for Agents 1 and 2 (snapshot, deterministic selection, at most 5 per request; Agent 1 request wrapper) |
 | `reviewer_context.py` | Optional: confirmed reviewer corrections from a feedback snapshot, matched by project + shared thread and sent as labelled advisory context (`docs/human-feedback-loop.md`) |
 
-The dashboard and TL decision store live in `../dashboard/` (see `docs/agent3-plan.md`, Milestone 6).
+The dashboard and TL decision store live in `../dashboard/`.
 
 For current Agent 2 work, start with:
 
@@ -44,6 +44,4 @@ severity definitions and the retired comparison controller live in
 [`../legacy/agent2/`](../legacy/agent2/README.md). They are loaded only when an
 older contract is explicitly requested, not when importing the current workflow.
 The frozen taxonomy v7 exporter remains in `../legacy/topic_taxonomy_v7.py`.
-
-The unused v1 `topic_review.py` and `review_decisions.py` modules were removed.
-Current review handling uses `topic_effective.py`; no review evidence was deleted.
+Review handling uses `topic_effective.py`.

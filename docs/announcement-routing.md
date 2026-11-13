@@ -139,7 +139,7 @@ version directory before rerunning. No automatic persistence retries are added.
 `knowledge_sources.iter_documents(paths)` accepts extracted and manually supplied
 historical JSON, regardless of age, and Markdown files with
 `authoring_schema: mock-knowledge-markdown-v1` front matter (added for Agent 3
-milestone 2; mapping in [agent3-plan.md](agent3-plan.md#milestone-2-implemented)).
+milestone 2).
 `normalize_document(record)` emits:
 
 ```text

@@ -1,12 +1,9 @@
-# ThreadSense end to end: architectural handoff
+# ThreadSense end to end: architecture
 
-For a principal engineer with no prior context. Every claim cites code (`path:line` in checkout `d212041`), a saved
-artifact, or a test I **inspected** (I ran no tests for this report). Companion files:
-[SCHEMA_AND_ARTIFACT_MAP.md](SCHEMA_AND_ARTIFACT_MAP.md) (contracts, IDs, artifacts) and
-[REPOSITORY_MAP.txt](REPOSITORY_MAP.txt). This report made no model calls. The reconciliation pass (2026-11-08) also
-corrected stale summaries in `docs/agent3-demo-walkthrough.md`, `docs/agent3-tot-design.md` and `CLAUDE.md`, and
-three code comments. The controller, shadow-policy and prompt fingerprints are unchanged; no run, ledger, verdict or
-decision was modified.
+How ThreadSense works from Slack input to the dashboard, written for an engineer new to the project. Claims cite code
+(`path:line` as of checkout `d212041`; line numbers drift as the code changes), a saved artifact or a test. Contracts,
+IDs and artifacts are in the companion [SCHEMA_AND_ARTIFACT_MAP.md](SCHEMA_AND_ARTIFACT_MAP.md); results are in
+[../evaluation.md](../evaluation.md).
 
 Evidence labels used throughout:
 
@@ -336,7 +333,7 @@ The model-call column gives the maximum per item. The reuse column says what can
 | 4 | `stage_grouping` → `refresh_grouping` | `pipeline.py:342`; `topic_grouping.py:64` | Agent 1 export | `approved_grouping` (`topic_grouping.py:12`) loads the **byte-checked** `legacy/grouping_v1.py`; MiniLM-L6-v2 at a pinned revision, offline (`HF_HUB_OFFLINE`); `AgglomerativeClustering` (complete, cosine, threshold 0.5, per project and batch; `legacy/grouping_v1.py:165-177`) | `grouping_v1/clusters.json` (177 threads, 76 clusters, 27 singletons), `embedding_cache/` | sentence-transformers, torch, sklearn | no | embedding cache keyed in the report (`embedding_cache_key`) | refuses if the script hash, model revision or package versions differ (`topic_grouping.py:16-28`) |
 | 5 | `stage_agent2` → `execute_batch` | `pipeline.py:352`; `agents/topic_pipeline.py:120` | `load_candidate_payloads` (`topic_inputs.py:26`) | one taxonomy request per group (`agent2-taxonomy-v7`); validation and export (`topic_taxonomy.py:55`, `:80`); severity deferred to Agent 3 | `agent2_v1/records/<cluster>/{request.json,response.raw.bin,result.json}`, `effective_output.json` (handoff v2, schema 8) | direct HTTP | yes (1 per group; 76) | `execute_batch` refuses existing directories, so a resume uses a new attempt directory with cache hits | an unprocessed group stops the stage |
 | 5b | `stage_agent2_consolidate` | `pipeline.py:369`; `agents/topic_merge.py:242` | topics + member vectors | candidate sets from similarity cliques (`:108`); one judge request per set; whole-group validation (`:146`, `:316`) | `consolidation.json` | numpy, direct HTTP (`LiveJudge` `:182`) | yes | — | **v2 only; not run live.** The presentation used `PreparedJudge` (`:162`) offline (AUDITED) |
-| 6 | knowledge ingestion (offline, ahead of time) | `scripts/build_retrieval_index.py` → `retrieval/index.py:106` `build_index`; `corpus.py:117` `collect`; `knowledge_markdown.py:127`; `chunking.py:142` | `data/knowledge/**.md` (40 files), announcements before the cutoff | front matter → SourceRecord; chunking `knowledge-chunks-v2` (FAQ question/answer units); MiniLM embeddings; Chroma collections guidelines / faq / decisions | `.index/retrieval/` (112 chunks, 63 documents, `build_fingerprint 4da16f09…`) | chromadb, sentence-transformers | no | the index is immutable; decisions reach it only through a new snapshot directory | the Chroma client is closed after build (CLAUDE.md known issue) |
+| 6 | knowledge ingestion (offline, ahead of time) | `scripts/build_retrieval_index.py` → `retrieval/index.py:106` `build_index`; `corpus.py:117` `collect`; `knowledge_markdown.py:127`; `chunking.py:142` | `data/knowledge/**.md` (40 files), announcements before the cutoff | front matter → SourceRecord; chunking `knowledge-chunks-v2` (FAQ question/answer units); MiniLM embeddings; Chroma collections guidelines / faq / decisions | `.index/retrieval/` (112 chunks, 63 documents, `build_fingerprint 4da16f09…`) | chromadb, sentence-transformers | no | the index is immutable; decisions reach it only through a new snapshot directory | the Chroma client is closed after build (see `docs/development.md`) |
 | 7 | `stage_agent3` → `run_agent3_overnight.build_runtime` → `overnight.run` | `pipeline.py:403`; `scripts/run_agent3_overnight.py:37`; `agents/overnight.py:885` | Agent 2 output dir, snapshot fixture, index | the LangGraph above; `plan` (`overnight.py:319`) makes one work item per topic (`topic:<topic_id>`) or consolidated topic (`consolidated:<id>`) | `stages/agent3/overnight_run/` | LangGraph | via `advise` | `freeze` (`overnight.py:405`): resume only with identical fingerprints; completed topic files reused, interrupted ones not resent | a topic that raises becomes `TOPIC_FAILED` with members kept (`:470-479`); budget exhausted becomes `UNPROCESSED_BUDGET` (`:453`) |
 | 7a | `process_topic` → `advise` | `overnight.py:426`, call at `:460`; `agents/advisor_pilot.py:1119` | topic packet (`topic_packet` `:932` / `consolidated_packet` `:904`) | the steps below | topic result JSON | — | — | — | — |
 | 7b | `advise` → `ResearchTools.search` | `advisor_pilot.py:1133-1140`; `agents/advisor_evidence.py:283`; `retrieval/search.py:67` `Retriever` | project, batch, as-of cutoff, query | BM25 + exact dense cosine, RRF (k=60), MMR (λ=0.9); `version_mode=current` withholds superseded versions; a `supersession_check` search in `history` mode when something was withheld | evidence ledger (`m:…`, `k:…` IDs; `use` labels) | chromadb (stored vectors), in-house BM25 | no | 6 retrieval calls per topic (`overnight.PER_TOPIC`) | `StaleIndexError` on a snapshot that does not match its sources |
@@ -479,7 +476,7 @@ and the dashboard display. The v2 controller fixes were of this kind, or affecte
 | Briefing routing or presentation policy | every verdict | derived runs (`derive_briefing_repair.py`, `build_presentation.py`) | $0 |
 | Merge decisions (consolidation) | Agent 1, grouping, Agent 2 topics; Agent 3 cards of unmerged topics (reused in `consolidated_v1`) | Agent 3 for each new merged issue (the refresh: 14 issues, 32 requests) | paid per merged issue |
 | Agent 1 (prompt, model or the 14 fingerprinted files) | snapshot | Agent 1 → descendants (`test_changed_upstream_interpretation_recomputes_its_descendants`, `:70`). Fingerprinted files also invalidate historical preflights | full campaign |
-| Knowledge or chunking | Agent 1/2 | a new index snapshot; Agent 3 (evidence IDs `k:…` drift; scripted judgments need regenerating, per CLAUDE.md) | Agent 3 paid |
+| Knowledge or chunking | Agent 1/2 | a new index snapshot; Agent 3 (evidence IDs `k:…` drift; scripted judgments need regenerating, see `docs/development.md`) | Agent 3 paid |
 
 ## 7. Guardrails and human review
 
@@ -582,15 +579,15 @@ layers can add labelled, unjudged text; they never alter judged text.
   187 requests for 81 items: 60 items used 2 requests, 17 used 3 and 4 used 4 (median 2, maximum 4).
 - **Files as the integration bus.** Stages exchange content-hashed directories, which allows resume, replay, branch and
   offline derivation without recomputation. The cost is many artifacts and long paths: Windows MAX_PATH issues are
-  noted in CLAUDE.md.
+  noted in `docs/development.md`.
 - **One verifier call per topic** limits cost and makes grounding the single semantic gate, but one large request
-  carries everything; the 24k input cap was binding in earlier passes (plan).
+  carries everything; the 24k input cap was binding in earlier passes.
 - **Frozen components** (grouping script, Agent 1 runners) protect historical fingerprints. They also force workarounds
   such as module-constant injection (`pipeline.py:306`) and derived discussion views.
 - **Offline derivations** let policy changes ship at $0. They also produce runs whose cards were judged under earlier
   prompts or pilot versions; the derivation records this.
 - **Scaling limits:**
-  - Chroma is used only as a vector store, with dense ranking by exact cosine because of HNSW instability (CLAUDE.md).
+  - Chroma is used only as a vector store, with dense ranking by exact cosine because of HNSW instability (`docs/development.md`).
     That is fine at 112 chunks but O(n) per query.
   - The dashboard reads whole run directories into memory.
   - The SQLite decision store is single-node.
@@ -620,7 +617,7 @@ layers can add labelled, unjudged text; they never alter judged text.
    - the per-thread maximum for Agent 1 interpretation, and the per-thread distribution of Agent 1 verification calls
      (only the total, 496 + 10 reused, was checked).
 
-### Follow-ups (not done in this documentation pass)
+### Follow-ups
 
 - Add the Agent 1–rejected thread to derived briefs' accounting or derivation summary, so their COMPLETE claims carry it.
 - Price cache writes in `CostLedger` (`advisor_pilot.py:451-455`) the way `execution/pricing.settled_cost` does, or
@@ -631,17 +628,3 @@ layers can add labelled, unjudged text; they never alter judged text.
 - Replace the history-inclusive legacy count fields in derived briefs, or label them in the export.
 - The `presentation.json` stage-cost row for the refresh shows $2.228 (application ledger) without naming the pricing
   basis. Regenerating it would change a run-bound file, so it is left unchanged here.
-
-### Older documentation reconciled in this pass (2026-11-08)
-
-- `docs/agent3-demo-walkthrough.md`, "Do not claim": corrected. Live-derived Recommended Action and Observation cards,
-  and the live unresolved NSFW close call, are now stated; ToT *replacement* stays unobserved.
-- `docs/agent3-plan.md`: the Milestone 5 "optional ToT node" row and the Milestone 4 "never changes the card action" row
-  were already annotated as superseded.
-- `docs/agent3-tot-design.md` §6 and the controller comments said every controller change leaves requests unchanged.
-  They are corrected to separate pre-grounding selection changes (request-changing) from post-grounding changes.
-- `CLAUDE.md`: its "Agent 3 input … 41 + 8 obligations" line describes the earlier pilot input; a note now says the
-  campaign advised its own Agent 2 output. The undated "1206 tests" total is replaced with dated evidence:
-  - 1246 tests **collected** (not run) on 2026-11-08T19:40Z;
-  - the last executed set was 551 passed on 2026-11-08: the Agent 3, dashboard, execution, combined-brief and
-    presentation test files, including the new ToT files.

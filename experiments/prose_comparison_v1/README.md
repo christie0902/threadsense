@@ -49,8 +49,8 @@ This focused benchmark remains in use by offline tests and saved-response replay
 Its comparator is `src/threadsense/experiments/prose_comparison.py`, with entry
 point `scripts/run_prose_comparison_experiment.py`. It uses the existing verifier
 model configuration and `ProseEvidenceAssessment` contract. Production v3's
-batched comparison is a separate workflow; see the
-[current handoff guide](../../docs/agent1-nonblocking-handoff.md).
+batched comparison is a separate workflow; see
+[Agent 1 in the evaluation report](../../docs/evaluation.md#agent-1-interpretation-and-verification-v3).
 
 Each case has an independent system/user request containing only the conversation,
 approved glossary, and one neutral `unit_1`. Expected verdicts, paired candidates,
@@ -108,7 +108,6 @@ experiment must choose an unused directory and keep expected labels outside
 requests. No new experiment was executed during repository cleanup.
 
 The initial implementation had 218 passing offline tests, including 39 benchmark
-checks. Current full-suite validation is in the
-[cleanup report](../../docs/repository-cleanup.md). The tests retain label/history
+checks. The tests retain label/history
 exclusion, candidate/evidence validation, separate scoring, raw failures, partial
 responses, interruptions, overwrite protection, and strict call limits.
