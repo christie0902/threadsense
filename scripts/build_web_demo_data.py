@@ -32,14 +32,18 @@ FORBIDDEN = [re.compile(p) for p in (r'(?<![A-Za-z])[A-Za-z]:(\\\\|/)(?!/)', r'/
                                        r'OPENAI_API_KEY', r'OPENROUTER_API_KEY', r'\.env\b', r'Christie')]
 # Some upstream records name their export file by absolute path; the public copy names it relative to the repository.
 ROOT_PREFIXES = sorted({f'{ROOT}\\', f'{ROOT}/', f'{ROOT.as_posix()}/'}, key=len, reverse=True)
+# Saved runs record the absolute checkout path they were produced in, which differs from ROOT in another clone.
+RECORDED_ROOT = re.compile(r'[A-Za-z]:[\\/](?:[^\\/"\n]+[\\/])*?threadsense[\\/]', re.IGNORECASE)
 
 
 def relative_paths(value, count):
     if isinstance(value, str):
+        before = value
         for prefix in ROOT_PREFIXES:
             if prefix.lower() in value.lower():
-                count[0] += 1
                 value = re.sub(re.escape(prefix), '', value, flags=re.IGNORECASE)
+        value = RECORDED_ROOT.sub('', value)
+        count[0] += value != before
         return value
     if isinstance(value, dict):
         return {k: relative_paths(v, count) for k, v in value.items()}

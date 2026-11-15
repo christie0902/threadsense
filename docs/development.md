@@ -12,7 +12,7 @@ uv run --locked --extra dev python -m pytest tests/test_dashboard.py      # one 
 
 - Use a new `--basetemp` each time: pytest deletes it at startup. A directory outside the repository avoids Windows
   file locks (see below).
-- The full suite has about 1,270 tests and takes around 16 minutes. Tests are offline; model calls are mocked.
+- The full suite has about 1,280 tests and takes around 17 minutes. Tests are offline; model calls are mocked.
 - Frontend: `npm --prefix web ci`, then `npm --prefix web run test:unit` (view model, no browser),
   `npm --prefix web run build && npm --prefix web run test:ui` (Playwright with system Chrome), and
   `npm --prefix web run build:demo && npm --prefix web run test:demo` (static demo).
@@ -80,7 +80,10 @@ integrity checks, so do not edit:
 - **Agent 1 v3 preflight** (`run_agent1_verification.py --dry-run --output-dir data/processed/agent1_verified_v3`)
   refuses with "code … changed". This is expected since announcement routing was added; never retarget frozen
   directories.
-- **Checkout location.** `data/processed/agent2_final_v6/combined_review_supplement.json` records an absolute path,
-  so a few legacy tests only pass in the original checkout location.
+- **Checkout location.** Saved runs record the absolute path they were produced in, and extracted announcements hash
+  that path (`agent1_export_file`, `agent1_lineage_base`) into their version IDs. In a clone at another path the
+  retrieval index must be rebuilt, and 10 tests that compare against recorded inputs or evidence IDs fail. Making the
+  hash path-independent would change every recorded announcement evidence ID, so it is left as is.
+  `tests/guardrails.txt` passes at any path.
 - **Frozen preflights.** The v3 preflight needs `gpt-4o-mini-2024-07-18` with verifier `gpt-4.1`.
 - `.cache/` holds old local helper files and some locked pytest directories; it is ignored and can be left alone.

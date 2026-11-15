@@ -106,7 +106,9 @@ deterministic version and enactment logic, not model accuracy.
 
 `data/experiments/threadsense_full_v1/` is one live run from Slack to cards (2026-11-05): 937 requests, $15.32 of a
 $39 ceiling. Agent 1 accepted 177 of 178 discussion threads, with one rejection recorded. The run produced 76 groups,
-81 cards and 37 review-queue items, with complete accounting. A network-disabled replay reproduced all 89 artifacts.
+81 cards and 37 review-queue items, with complete accounting. A network-disabled replay recorded the same day
+(`threadsense_full_v1_replay`) reproduced all 89 artifacts. With today's code, a replay reproduces the stages through
+Agent 2 and then stops at Agent 3, whose rules changed after that run; the guard refuses to call the network.
 
 The dashboard's default briefing, `threadsense_full_v1_combined_v2`, is built from that run in offline steps:
 

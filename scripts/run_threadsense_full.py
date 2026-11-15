@@ -187,16 +187,22 @@ def render(path):
     from threadsense.dashboard.decisions import DecisionStore
     from threadsense.dashboard.runs import Catalog
     from threadsense.execution.guard import Execution, Guard
+    path = Path(path)
+    if not (path/'stages'/'agent3').is_dir():
+        raise SystemExit(f'{path} is not a full-run directory (no stages/agent3). Render a run written by live or replay, '
+                         'for example data/experiments/threadsense_full_v1.')
     with tempfile.TemporaryDirectory() as tmp:
         ex = Execution(Path(tmp)/'render', mode='REPLAY', limit_usd=0.0)
-        with Guard(ex):
-            catalog = Catalog([path/'stages'/'agent3'])
-            client = TestClient(create_app(catalog=catalog, store=DecisionStore(Path(tmp)/'d.sqlite3'), decision_origin='TEST',
-                                           static_dir=Path(tmp)/'none'))
-            brief = client.get('/api/runs/overnight_run/brief')
-            cards = brief.json()['cards']
-            statuses = {client.get(f"/api/runs/overnight_run/cards/{c['card']['card_id']}").status_code for c in cards}
-        ex.close()
+        try:  # close the ledger even on failure, so Windows can delete the temporary directory
+            with Guard(ex):
+                catalog = Catalog([path/'stages'/'agent3'])
+                client = TestClient(create_app(catalog=catalog, store=DecisionStore(Path(tmp)/'d.sqlite3'), decision_origin='TEST',
+                                               static_dir=Path(tmp)/'none'))
+                brief = client.get('/api/runs/overnight_run/brief')
+                cards = brief.json()['cards']
+                statuses = {client.get(f"/api/runs/overnight_run/cards/{c['card']['card_id']}").status_code for c in cards}
+        finally:
+            ex.close()
     report = {'brief_status': brief.status_code, 'cards': len(cards), 'card_endpoint_statuses': sorted(statuses),
               'network': 'disabled (sockets to non-loopback hosts refused)'}
     print(json.dumps(report, indent=1))

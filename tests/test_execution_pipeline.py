@@ -129,3 +129,11 @@ def test_a_replay_uses_the_parents_agent3_budget_not_its_zero_ceiling(tmp_path):
     assert p.agent3_budget(replay, tmp_path/'replay'/'stages'/'agent3'/'overnight_run', 0.22384) == 34.7432
     live = run_in(tmp_path/'live', 'LIVE', limit=10.0)
     assert p.agent3_budget(live, tmp_path/'live'/'stages'/'agent3'/'overnight_run', 0.25) == 9.75
+
+
+def test_render_loads_a_saved_full_run_and_names_a_wrong_directory():
+    full = p.load_script('run_threadsense_full')
+    report = full.render(p.ROOT/'data/experiments/threadsense_full_v1')
+    assert report['brief_status'] == 200 and report['cards'] == 81 and report['card_endpoint_statuses'] == [200]
+    with pytest.raises(SystemExit, match='not a full-run directory'):  # a derived briefing has no stages/agent3
+        full.render(p.ROOT/'data/experiments/threadsense_full_v1_combined_v2')
