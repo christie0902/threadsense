@@ -39,7 +39,10 @@ saved run; no tracked file and no dependency lock changes.
 | `freeze.json` | sha256 of the fixture, answer key, converter, ID map, inputs and index manifest | checked by preflight and recorded in each run |
 | `run_experiment.py`, `delivery.py`, `preflight.py` | the experiment runner (runtime overrides only) | — |
 | `preflight_report.json` | the last preflight | — |
-| `runs/` | Run A and Run B directories (created by the paid commands) | — |
+| `runs/` | A, A2 (Sonnet), B, B2 (Grok, failed), C v1 (expired key), C v2 (GPT) run directories | — |
+| `summarize_run.py`, `reports/` | read-only run summaries (never read the answer key) and Run C's ledger report | — |
+| `grok_probe.py`, `diagnostics/` | the paid Grok diagnosis probes and their results | — |
+| `RESULTS.md` | scored results, timing, spend, Grok diagnosis | — |
 
 ## Commands
 
