@@ -1,0 +1,2472 @@
+{
+  "work_item": {
+    "candidate_group_id": "cluster_30bad96e288a61c8",
+    "project_id": "audio_multimodal",
+    "batch_id": "audio_pilot_17",
+    "work_id": "topic:cluster_30bad96e288a61c8/topic_1",
+    "kind": "TOPIC",
+    "topic_id": "cluster_30bad96e288a61c8/topic_1",
+    "topic_name": "Audio playback scrubber/clock freeze",
+    "member_ids": [
+      "member_b097379f48ad7a130b9adbac",
+      "member_77774044871dcbe2f1dfe164"
+    ],
+    "pilot_scenario": null,
+    "in_scope": true
+  },
+  "workflow": {
+    "outcome": "CARD",
+    "card_id": "card_509fbc8db113be230669efd42e5f77bd",
+    "card_line": "NEEDS_REVIEW",
+    "grounding": "PASSED",
+    "stage_failures": [],
+    "semantic_source": "LIVE_MODEL"
+  },
+  "result": {
+    "scenario": {
+      "id": "topic:cluster_30bad96e288a61c8/topic_1",
+      "candidate_group_id": "cluster_30bad96e288a61c8",
+      "focus": "Audio playback scrubber/clock freeze",
+      "topic_id": "cluster_30bad96e288a61c8/topic_1"
+    },
+    "status": "CARD",
+    "topic": {
+      "project_id": "audio_multimodal",
+      "batch_id": "audio_pilot_17",
+      "candidate_group_id": "cluster_30bad96e288a61c8",
+      "topic_id": "cluster_30bad96e288a61c8/topic_1",
+      "topic_label": "Audio playback scrubber/clock freeze",
+      "projection_gap": null,
+      "as_of": "2026-10-17T00:00:00Z",
+      "member_ids": [
+        "member_b097379f48ad7a130b9adbac",
+        "member_77774044871dcbe2f1dfe164"
+      ],
+      "initial_query": "Audio playback scrubber/clock freeze. What should be done about the issue where the sound stops and the time display sits at 0:00 when dragging the waveform back to the start in task AUD-741 on Firefox 132?"
+    },
+    "retrieval_trace": [
+      {
+        "step": 1,
+        "purpose": "initial_current_guidance",
+        "gap_id": null,
+        "query": "Audio playback scrubber/clock freeze. What should be done about the issue where the sound stops and the time display sits at 0:00 when dragging the waveform back to the start in task AUD-741 on Firefox 132?",
+        "source_types": [
+          "guideline",
+          "faq",
+          "decision",
+          "announcement"
+        ],
+        "version_mode": "current",
+        "as_of": "2026-10-17T00:00:00Z",
+        "batch": "audio_pilot_17",
+        "top_k": 5,
+        "status": "DONE",
+        "mode": "hybrid",
+        "use_mmr": true,
+        "mmr_lambda": 0.9,
+        "result_ids": [
+          "k:pilot-audio-incident-triage@1.3:3b2b70f0",
+          "k:pilot-media-input-quality-faq@1.1:00309a9c"
+        ],
+        "new_evidence_ids": [
+          "k:pilot-audio-incident-triage@1.3:3b2b70f0",
+          "k:pilot-media-input-quality-faq@1.1:00309a9c"
+        ],
+        "eligible_chunks": 2,
+        "added": []
+      }
+    ],
+    "retrieval_notes": {
+      "withheld_by_version": [],
+      "version_diagnostics": []
+    },
+    "follow_ups": [],
+    "unfilled_gaps": [],
+    "model_calls": [
+      {
+        "stage": "draft",
+        "schema": "AdvisorDraft",
+        "agent1_context": {
+          "sha256": "0fa1f80edccef8444656f18b3c913f6b82036082c6f61c54c4e2501ed01439af",
+          "boundary": "IN_HTTP_BODY"
+        },
+        "raw": "{\n  \"contract_version\": \"agent3-advisor-draft-v11\",\n  \"summary\": null,\n  \"summary_sentences\": [\n    {\n      \"text\": \"Two tutors report that the player clock stops advancing after seeking, with reopening or reloading restoring playback only temporarily.\",\n      \"support_claim_ids\": [\"c1\", \"c2\"],\n      \"depends_on\": []\n    },\n    {\n      \"text\": \"A QA tutor reports reproducing the stuck clock on one task; current guidance calls for one scoped engineering incident for reproducible player freezes after seeking.\",\n      \"support_claim_ids\": [\"c4\", \"c5\"],\n      \"depends_on\": []\n    }\n  ],\n  \"detail_sentences\": [\n    {\n      \"text\": \"A tutor reports that dragging the waveform back to the start stops sound and leaves the display at 0:00 on AUD-741 in Firefox 132.0.2.\",\n      \"support_claim_ids\": [\"c1\"],\n      \"depends_on\": [],\n      \"summary_depends_on\": []\n    },\n    {\n      \"text\": \"A tutor reports that moving the scrubber changes the play triangle without advancing the clock on AUD-754 in Chrome 131.0.6778.85.\",\n      \"support_claim_ids\": [\"c2\"],\n      \"depends_on\": [],\n      \"summary_depends_on\": []\n    },\n    {\n      \"text\": \"In the AUD-741 thread, a QA tutor asked for the task ID and browser build and said a second reproduction was needed before filing; the tutor supplied the ID and full browser version.\",\n      \"support_claim_ids\": [\"c3\", \"c1\"],\n      \"depends_on\": [],\n      \"summary_depends_on\": []\n    },\n    {\n      \"text\": \"In the AUD-754 thread, a QA tutor also reports that the downloaded WAV plays normally.\",\n      \"support_claim_ids\": [\"c4\"],\n      \"depends_on\": [],\n      \"summary_depends_on\": []\n    }\n  ],\n  \"reasoning\": \"The two tutors describe comparable failures after seeking on separate tasks and browsers, and a QA tutor reports reproducing the stuck clock. The current playback-failure guideline directly supports one scoped engineering incident, with task IDs, browser versions and reproduction steps already present. The silent-input procedure has different conditions and does not establish handling for these reported player freezes. No additional historical or announcement research is needed to support this recommendation. The upstream review flag remains open; the QA tutor's message is used only as a report of reproduction, not as handling authority.\",\n  \"claims\": [\n    {\n      \"claim_id\": \"c1\",\n      \"kind\": \"INCIDENT_FACT\",\n      \"text\": \"A tutor reports that sound stops and the display stays at 0:00 after dragging the waveform back to the start on AUD-741 in Firefox 132.0.2; reopening restores playback until seeking again.\",\n      \"evidence_ids\": [\n        \"m:C_91AUDIO01:1792137900.000000\",\n        \"m:C_91AUDIO01:1792138140.000000\"\n      ],\n      \"attributions\": [\n        {\n          \"user_id\": \"U9106\",\n          \"relation\": \"AUTHOR\",\n          \"evidence_id\": \"m:C_91AUDIO01:1792137900.000000\"\n        },\n        {\n          \"user_id\": \"U9106\",\n          \"relation\": \"AUTHOR\",\n          \"evidence_id\": \"m:C_91AUDIO01:1792138140.000000\"\n        }\n      ],\n      \"quote\": null,\n      \"quote_kind\": \"PARAPHRASE\",\n      \"material\": true\n    },\n    {\n      \"claim_id\": \"c2\",\n      \"kind\": \"INCIDENT_FACT\",\n      \"text\": \"A tutor reports that reloading permits one listen, but moving the scrubber changes the play triangle while the clock never advances on AUD-754 in Chrome 131.0.6778.85.\",\n      \"evidence_ids\": [\"m:C_91AUDIO01:1792139520.000000\"],\n      \"attributions\": [\n        {\n          \"user_id\": \"U9107\",\n          \"relation\": \"AUTHOR\",\n          \"evidence_id\": \"m:C_91AUDIO01:1792139520.000000\"\n        }\n      ],\n      \"quote\": null,\n      \"quote_kind\": \"PARAPHRASE\",\n      \"material\": true\n    },\n    {\n      \"claim_id\": \"c3\",\n      \"kind\": \"INCIDENT_FACT\",\n      \"text\": \"A QA tutor asks for the task ID and browser build in the AUD-741 thread and says a second reproduction is needed before filing.\",\n      \"evidence_ids\": [\"m:C_91AUDIO01:1792138020.000000\"],\n      \"attributions\": [\n        {\n          \"user_id\": \"U9104\",\n          \"relation\": \"AUTHOR\",\n          \"evidence_id\": \"m:C_91AUDIO01:1792138020.000000\"\n        }\n      ],\n      \"quote\": null,\n      \"quote_kind\": \"PARAPHRASE\",\n      \"material\": true\n    },\n    {\n      \"claim_id\": \"c4\",\n      \"kind\": \"INCIDENT_FACT\",\n      \"text\": \"A QA tutor reports reproducing the stuck clock on AUD-754 and reports that the downloaded WAV plays normally.\",\n      \"evidence_ids\": [\"m:C_91AUDIO01:1792139640.000000\"],\n      \"attributions\": [\n        {\n          \"user_id\": \"U9104\",\n          \"relation\": \"AUTHOR\",\n          \"evidence_id\": \"m:C_91AUDIO01:1792139640.000000\"\n        }\n      ],\n      \"quote\": null,\n      \"quote_kind\": \"PARAPHRASE\",\n      \"material\": true\n    },\n    {\n      \"claim_id\": \"c5\",\n      \"kind\": \"GUIDANCE\",\n      \"text\": \"The current audio incident triage guideline directs collecting task IDs, browser versions and reproduction steps for a reproducible player freeze after seeking, then sending one scoped engineering incident for the affected player reports.\",\n      \"evidence_ids\": [\"k:pilot-audio-incident-triage@1.3:3b2b70f0\"],\n      \"attributions\": [],\n      \"quote\": \"For a reproducible player freeze after seeking, collect task IDs, browser versions, and reproduction steps. Send one scoped engineering incident for the affected player reports.\",\n      \"quote_kind\": \"VERBATIM\",\n      \"material\": true\n    },\n    {\n      \"claim_id\": \"c6\",\n      \"kind\": \"GUIDANCE\",\n      \"text\": \"The current media-input quality FAQ calls for preserving the sample and using the media-input quality flag when a local copy is confirmed silent and the player advances normally; missing task IDs or local playback checks must be requested before assigning a disposition.\",\n      \"evidence_ids\": [\"k:pilot-media-input-quality-faq@1.1:00309a9c\"],\n      \"attributions\": [],\n      \"quote\": null,\n      \"quote_kind\": \"PARAPHRASE\",\n      \"material\": true\n    }\n  ],\n  \"gaps\": [],\n  \"evidence_sufficiency\": \"SUFFICIENT\",\n  \"proposed_action\": {\n    \"action_type\": \"ESCALATE_ENGINEERING\",\n    \"intervention_need\": {\n      \"kind\": \"OPERATIONAL_PROBLEM\",\n      \"statement\": \"Two tutors report player-clock failures after seeking on separate tasks, and a QA tutor reports reproducing one failure, warranting a scoped technical report now.\",\n      \"evidence_ids\": [\n        \"m:C_91AUDIO01:1792137900.000000\",\n        \"m:C_91AUDIO01:1792138140.000000\",\n        \"m:C_91AUDIO01:1792139520.000000\",\n        \"m:C_91AUDIO01:1792139640.000000\"\n      ]\n    },\n    \"instruction\": \"Send engineering one scoped incident covering both reported player freezes, including the task IDs, browser versions and reported reproduction steps.\",\n    \"rationale\": \"The current triage guideline calls for one engineering incident for reproducible freezes after seeking, and the reports provide the required details.\",\n    \"draft_text\": \"Please investigate a player freeze after seeking on two tasks. Two tutors report that the clock stops advancing after seeking and that reopening or reloading restores playback only temporarily.\\n- AUD-741, Firefox 132.0.2: a tutor reports that dragging the waveform back to the start stops sound and leaves the display at 0:00; reopening restores playback until seeking again.\\n- AUD-754, Chrome 131.0.6778.85: a tutor reports that moving the scrubber changes the play triangle but the clock never advances; reloading permits one listen.\\nA QA tutor reports reproducing the stuck clock on AUD-754 and says its downloaded WAV plays normally.\",\n    \"scope_note\": \"Limit the incident to the reported player failures on AUD-741 and AUD-754; the reports do not establish a technical cause.\",\n    \"support_claim_ids\": [\"c1\", \"c2\", \"c4\", \"c5\"],\n    \"targets\": [],\n    \"context_claim_ids\": [\"c3\", \"c6\"]\n  },\n  \"severity\": {\n    \"level\": \"HIGH\",\n    \"rationale\": \"Two tutors report comparable seeking failures on separate tasks in the same batch and morning, suggesting disruption beyond one isolated task despite temporary recovery.\",\n    \"signals\": [\n      {\n        \"level\": \"HIGH\",\n        \"signal_index\": 3,\n        \"signal_text\": \"Multiple distinct people or affected tasks reporting a comparable problem within the relevant project, batch, and time window, suggesting broader disruption or systemic labeling risk. Consider the number affected relative to the known active group when that information is available; do not require an explicit statement of widespread impact\",\n        \"support\": \"Two distinct tutors report that seeking stops the player clock on AUD-741 and AUD-754, with reopening or reloading restoring playback only temporarily.\",\n        \"evidence_ids\": [\n          \"m:C_91AUDIO01:1792137900.000000\",\n          \"m:C_91AUDIO01:1792138140.000000\",\n          \"m:C_91AUDIO01:1792139520.000000\"\n        ]\n      }\n    ],\n    \"affected_reporters\": [\n      {\n        \"author_id\": \"U9106\",\n        \"evidence_id\": \"m:C_91AUDIO01:1792137900.000000\"\n      },\n      {\n        \"author_id\": \"U9107\",\n        \"evidence_id\": \"m:C_91AUDIO01:1792139520.000000\"\n      }\n    ],\n    \"recurrence\": \"NOT_CHECKED\",\n    \"recurrence_evidence_ids\": [],\n    \"reported_recurrence_evidence_ids\": []\n  },\n  \"confidence\": 0.95,\n  \"open_confirmation\": \"NONE\",\n  \"open_question\": null,\n  \"open_question_evidence_ids\": [],\n  \"source_conflicts\": [],\n  \"announcement_assessments\": [],\n  \"resolution\": [\n    {\n      \"member_id\": \"member_b097379f48ad7a130b9adbac\",\n      \"state\": \"UNRESOLVED\",\n      \"evidence_ids\": [\n        \"m:C_91AUDIO01:1792137900.000000\",\n        \"m:C_91AUDIO01:1792138020.000000\",\n        \"m:C_91AUDIO01:1792138140.000000\"\n      ],\n      \"basis\": \"The tutor supplies the requested task and browser details but reports that seeking triggers the failure again after reopening; the thread establishes no lasting resolution.\"\n    },\n    {\n      \"member_id\": \"member_77774044871dcbe2f1dfe164\",\n      \"state\": \"UNRESOLVED\",\n      \"evidence_ids\": [\n        \"m:C_91AUDIO01:1792139520.000000\",\n        \"m:C_91AUDIO01:1792139640.000000\"\n      ],\n      \"basis\": \"The tutor reports failure after moving the scrubber, and a QA tutor reports reproducing it; neither message establishes a fix or restored player operation.\"\n    }\n  ],\n  \"coverage\": [\n    {\n      \"need\": \"CURRENT_GUIDANCE\",\n      \"status\": \"COVERED\",\n      \"evidence_ids\": [\n        \"k:pilot-audio-incident-triage@1.3:3b2b70f0\",\n        \"k:pilot-media-input-quality-faq@1.1:00309a9c\"\n      ],\n      \"note\": \"Current project guidance distinguishes reproducible player freezes from silent local media and directly supports the engineering incident.\",\n      \"gap_id\": null\n    },\n    {\n      \"need\": \"ANNOUNCEMENTS\",\n      \"status\": \"NOT_APPLICABLE\",\n      \"evidence_ids\": [],\n      \"note\": \"No announcement is provided or needed to establish this action; the current project guideline directly specifies handling.\",\n      \"gap_id\": null\n    },\n    {\n      \"need\": \"PRIOR_DECISIONS\",\n      \"status\": \"NOT_APPLICABLE\",\n      \"evidence_ids\": [],\n      \"note\": \"The recommendation does not depend on an earlier trial, decision, outcome or historical recurrence; current guidance directly covers the reported behavior.\",\n      \"gap_id\": null\n    },\n    {\n      \"need\": \"MEMBER_QUESTIONS\",\n      \"status\": \"COVERED\",\n      \"evidence_ids\": [\n        \"m:C_91AUDIO01:1792137900.000000\",\n        \"m:C_91AUDIO01:1792138020.000000\",\n        \"m:C_91AUDIO01:1792138140.000000\",\n        \"m:C_91AUDIO01:1792139520.000000\",\n        \"m:C_91AUDIO01:1792139640.000000\"\n      ],\n      \"note\": \"The threads include the QA tutor's diagnostic request, the tutor's reply with the full browser version, temporary recovery reports and the QA tutor's reproduction report.\",\n      \"gap_id\": null\n    }\n  ],\n  \"review_note\": null,\n  \"action_choice\": null\n}",
+        "raw_sha256": "6717a48b8e07a986cdd5b9c66c73e3e06f46d4e09211a9069dea2253c02d8303",
+        "http_requests": {
+          "sent": 1,
+          "blocked": 0,
+          "hosts": [
+            "api.openai.com"
+          ],
+          "responses": [
+            {
+              "status_code": 200,
+              "seconds": 36.493,
+              "model": "gpt-6.1-sol",
+              "usage": {
+                "prompt_tokens": 10405,
+                "completion_tokens": 3349,
+                "total_tokens": 13754,
+                "prompt_tokens_details": {
+                  "cached_tokens": 0,
+                  "cache_write_tokens": 10402,
+                  "audio_tokens": 0
+                },
+                "completion_tokens_details": {
+                  "reasoning_tokens": 309,
+                  "audio_tokens": 0,
+                  "accepted_prediction_tokens": 0,
+                  "rejected_prediction_tokens": 0
+                }
+              },
+              "finish_reasons": [
+                "stop"
+              ]
+            }
+          ],
+          "input_tokens": 10411,
+          "refused": null,
+          "charged_usd": 0.0543
+        },
+        "input_tokens_estimate": 10411,
+        "status": "OK"
+      },
+      {
+        "stage": "grounding",
+        "schema": "GroundingJudgment",
+        "raw": "{\n  \"contract_version\": \"agent3-grounding-judgment-v5\",\n  \"verdicts\": [\n    {\n      \"statement_id\": \"claim:c1\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The tutor's two messages provide the symptoms, task ID, full Firefox version and temporary recovery until seeking again.\"\n    },\n    {\n      \"statement_id\": \"claim:c2\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The cited tutor reports exactly this reload behavior, scrubber-triggered clock failure, task ID and Chrome version.\"\n    },\n    {\n      \"statement_id\": \"claim:c3\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The QA tutor requests the task ID and browser build and states that a second reproduction is needed before filing. The statement accurately reports this request without treating it as authoritative guidance.\"\n    },\n    {\n      \"statement_id\": \"claim:c4\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The QA tutor explicitly reports reproducing the stuck clock on the task and says the downloaded WAV plays normally.\"\n    },\n    {\n      \"statement_id\": \"claim:c5\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The current project-wide triage guideline gives these collection and engineering-reporting instructions. The verbatim quotation matches the source.\"\n    },\n    {\n      \"statement_id\": \"claim:c6\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The current FAQ gives the stated silent-input procedure and requires requesting a missing task ID or local playback check before disposition in that context.\"\n    },\n    {\n      \"statement_id\": \"summary:s1\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"Both distinct tutors report a clock failure after seeking and describe playback returning only until another seek or for one listen.\"\n    },\n    {\n      \"statement_id\": \"summary:s2\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The QA tutor reports reproducing the AUD-754 clock failure, and the current triage guideline calls for one scoped engineering incident for reproducible freezes after seeking.\"\n    },\n    {\n      \"statement_id\": \"detail:d1\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The tutor's initial report and follow-up establish the stated waveform action, symptoms, task ID and full browser version.\"\n    },\n    {\n      \"statement_id\": \"detail:d2\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The cited tutor message directly states the scrubber behavior, unchanged clock, task ID and Chrome version.\"\n    },\n    {\n      \"statement_id\": \"detail:d3\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The QA tutor makes the stated request and reproduction comment; the reporting tutor supplies the task ID and full browser version in the same thread.\"\n    },\n    {\n      \"statement_id\": \"detail:d4\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The QA tutor's message in the AUD-754 thread explicitly says the downloaded WAV plays normally.\"\n    },\n    {\n      \"statement_id\": \"action\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The reported seek-triggered player failures, supplied diagnostic details and QA reproduction justify a scoped engineering incident under the current triage guideline. The draft preserves report attribution, limits scope to the two tasks, asserts no technical cause and names no unsupported concrete route.\"\n    },\n    {\n      \"statement_id\": \"action:rationale\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The guideline calls for one scoped engineering incident, and the reports supply task IDs, browser versions and reproduction steps, with QA reproduction of one failure.\"\n    },\n    {\n      \"statement_id\": \"action:need\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"Two unresolved player failures on separate tasks, including a QA-reproduced failure, establish an operational technical problem warranting coordination now.\"\n    },\n    {\n      \"statement_id\": \"resolution:member_b097379f48ad7a130b9adbac\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The complete thread ends with the requested details and a report that seeking causes the failure again after reopening; no lasting resolution is established.\"\n    },\n    {\n      \"statement_id\": \"resolution:member_77774044871dcbe2f1dfe164\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The complete thread contains the tutor's failure report and QA reproduction, with no fix or restored player operation established. Normal downloaded-WAV playback does not resolve the player failure.\"\n    },\n    {\n      \"statement_id\": \"severity:rationale\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"Two distinct tutors report comparable seek-triggered failures on different tasks in the same batch and morning. This supports the stated broader-than-one-task disruption signal without asserting a verified systemic cause.\"\n    },\n    {\n      \"statement_id\": \"severity:signal:HIGH[3]\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The two distinct affected tutors and tasks meet the quoted multiple-reporter or multiple-task signal within the shared project, batch and time window; both describe only temporary playback recovery.\"\n    },\n    {\n      \"statement_id\": \"reporter:U9106\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"U9106 personally reports encountering the sound and clock failure.\"\n    },\n    {\n      \"statement_id\": \"reporter:U9107\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"U9107 personally reports encountering the scrubber-triggered clock failure.\"\n    }\n  ],\n  \"action_sufficiency\": {\n    \"verdict\": \"SUFFICIENT\",\n    \"essential_statement_ids\": [\n      \"claim:c1\",\n      \"claim:c2\",\n      \"claim:c4\",\n      \"claim:c5\"\n    ],\n    \"rationale\": \"All four premises are supported and have no dependencies that void them. They establish the exact two-task scope, diagnostic details, attributed QA findings and current instruction to send one scoped engineering incident. The action does not depend on treating the QA tutor as an authority or on an unestablished intake route.\"\n  },\n  \"alternative_sufficiency\": [],\n  \"source_consistency\": {\n    \"assessed_evidence_ids\": [\n      \"k:pilot-audio-incident-triage@1.3:3b2b70f0\",\n      \"k:pilot-media-input-quality-faq@1.1:00309a9c\"\n    ],\n    \"relations\": [\n      {\n        \"evidence_ids\": [\n          \"k:pilot-audio-incident-triage@1.3:3b2b70f0\",\n          \"k:pilot-media-input-quality-faq@1.1:00309a9c\"\n        ],\n        \"relation\": \"AGREE\",\n        \"point\": \"Silent local or downloaded clips with normally functioning player advancement belong under media-input quality handling.\",\n        \"disagreement_scope\": null,\n        \"rationale\": \"The triage guideline refers silent downloaded clips with functioning counter and seeking to the media-input quality procedure. The FAQ supplies that procedure for confirmed silent local copies when the player advances normally. Its additional details do not conflict with the triage guideline's separate engineering handling for reproducible seek-triggered freezes.\"\n      }\n    ],\n    \"declared_conflict_checks\": []\n  }\n}",
+        "raw_sha256": "48544263726165d59f61a4277dd4527d9054f5870de3457e094c2589573792f2",
+        "http_requests": {
+          "sent": 1,
+          "blocked": 0,
+          "hosts": [
+            "api.openai.com"
+          ],
+          "responses": [
+            {
+              "status_code": 200,
+              "seconds": 24.108,
+              "model": "gpt-6.1-sol",
+              "usage": {
+                "prompt_tokens": 8131,
+                "completion_tokens": 1684,
+                "total_tokens": 9815,
+                "prompt_tokens_details": {
+                  "cached_tokens": 0,
+                  "cache_write_tokens": 8128,
+                  "audio_tokens": 0
+                },
+                "completion_tokens_details": {
+                  "reasoning_tokens": 100,
+                  "audio_tokens": 0,
+                  "accepted_prediction_tokens": 0,
+                  "rejected_prediction_tokens": 0
+                }
+              },
+              "finish_reasons": [
+                "stop"
+              ]
+            }
+          ],
+          "input_tokens": 8137,
+          "refused": null,
+          "charged_usd": 0.033102
+        },
+        "input_tokens_estimate": 8137,
+        "status": "OK"
+      }
+    ],
+    "agent1_context": [
+      {
+        "sha256": "0fa1f80edccef8444656f18b3c913f6b82036082c6f61c54c4e2501ed01439af",
+        "content": [
+          {
+            "member_id": "member_b097379f48ad7a130b9adbac",
+            "thread_id": "1792137900.000000",
+            "summary": "Casey Tran reports that the sound stops when dragging the waveform back to the start, with the time display showing 0:00. The task ID is AUD-741, and the issue occurs in Firefox 132. Riley Chen requests the task ID and browser build for further reproduction before filing a report. Casey provides the task ID and specifies the browser version, noting that reopening restores sound until seeking again.",
+            "central_question": "What should be done about the issue where the sound stops and the time display sits at 0:00 when dragging the waveform back to the start in task AUD-741 on Firefox 132?",
+            "attributed_agent1_resolution": {
+              "state": "UNRESOLVED",
+              "rationale": "The thread does not establish a substantive answer or relevant conclusion regarding the requested decision on how to address the sound issue. The responses involve requests for additional information rather than providing a resolution.",
+              "agent1_verification_status": "CORRECTED",
+              "note": "Agent 1 label, not evidence; NEEDS_REVIEW means Agent 1 did not verify it. Assess resolution from the member messages."
+            },
+            "agent1_review_required": false,
+            "agent1_review_reason": "",
+            "note": "Agent 1 interpretation, not source evidence; cite member messages for incident facts."
+          },
+          {
+            "member_id": "member_77774044871dcbe2f1dfe164",
+            "thread_id": "1792139520.000000",
+            "summary": "Jamie Park reports an issue where reloading gives only one listen, and moving the scrubber causes the play triangle to change without advancing the clock. Riley Chen confirms the issue, stating that the clock is stuck but the downloaded WAV plays normally.",
+            "central_question": "What is causing the clock to be stuck when moving the scrubber in AUD-754 on Chrome 131.0.6778.85?",
+            "attributed_agent1_resolution": {
+              "state": "PARTIALLY_RESOLVED",
+              "rationale": "The issue of the stuck clock has been reproduced by Riley Chen, confirming that it exists. However, no solution or further guidance has been provided, leaving the requested decision incomplete.",
+              "agent1_verification_status": "NEEDS_REVIEW",
+              "note": "Agent 1 label, not evidence; NEEDS_REVIEW means Agent 1 did not verify it. Assess resolution from the member messages."
+            },
+            "agent1_review_required": true,
+            "agent1_review_reason": "The single targeted revision failed: ValueError: The model cited authority evidence without an eligible author role or a qualifying TEAM_LEAD endorsement. Ineligible message IDs: ['1792139640.000000']",
+            "note": "Agent 1 interpretation, not source evidence; cite member messages for incident facts."
+          }
+        ]
+      }
+    ],
+    "drafts": {
+      "initial": {
+        "contract_version": "agent3-advisor-draft-v11",
+        "summary": "Two tutors report that the player clock stops advancing after seeking, with reopening or reloading restoring playback only temporarily. A QA tutor reports reproducing the stuck clock on one task; current guidance calls for one scoped engineering incident for reproducible player freezes after seeking.",
+        "summary_sentences": [
+          {
+            "text": "Two tutors report that the player clock stops advancing after seeking, with reopening or reloading restoring playback only temporarily.",
+            "support_claim_ids": [
+              "c1",
+              "c2"
+            ],
+            "depends_on": []
+          },
+          {
+            "text": "A QA tutor reports reproducing the stuck clock on one task; current guidance calls for one scoped engineering incident for reproducible player freezes after seeking.",
+            "support_claim_ids": [
+              "c4",
+              "c5"
+            ],
+            "depends_on": []
+          }
+        ],
+        "detail_sentences": [
+          {
+            "text": "A tutor reports that dragging the waveform back to the start stops sound and leaves the display at 0:00 on AUD-741 in Firefox 132.0.2.",
+            "support_claim_ids": [
+              "c1"
+            ],
+            "depends_on": [],
+            "summary_depends_on": []
+          },
+          {
+            "text": "A tutor reports that moving the scrubber changes the play triangle without advancing the clock on AUD-754 in Chrome 131.0.6778.85.",
+            "support_claim_ids": [
+              "c2"
+            ],
+            "depends_on": [],
+            "summary_depends_on": []
+          },
+          {
+            "text": "In the AUD-741 thread, a QA tutor asked for the task ID and browser build and said a second reproduction was needed before filing; the tutor supplied the ID and full browser version.",
+            "support_claim_ids": [
+              "c3",
+              "c1"
+            ],
+            "depends_on": [],
+            "summary_depends_on": []
+          },
+          {
+            "text": "In the AUD-754 thread, a QA tutor also reports that the downloaded WAV plays normally.",
+            "support_claim_ids": [
+              "c4"
+            ],
+            "depends_on": [],
+            "summary_depends_on": []
+          }
+        ],
+        "reasoning": "The two tutors describe comparable failures after seeking on separate tasks and browsers, and a QA tutor reports reproducing the stuck clock. The current playback-failure guideline directly supports one scoped engineering incident, with task IDs, browser versions and reproduction steps already present. The silent-input procedure has different conditions and does not establish handling for these reported player freezes. No additional historical or announcement research is needed to support this recommendation. The upstream review flag remains open; the QA tutor's message is used only as a report of reproduction, not as handling authority.",
+        "claims": [
+          {
+            "claim_id": "c1",
+            "kind": "INCIDENT_FACT",
+            "text": "A tutor reports that sound stops and the display stays at 0:00 after dragging the waveform back to the start on AUD-741 in Firefox 132.0.2; reopening restores playback until seeking again.",
+            "evidence_ids": [
+              "m:C_91AUDIO01:1792137900.000000",
+              "m:C_91AUDIO01:1792138140.000000"
+            ],
+            "attributions": [
+              {
+                "user_id": "U9106",
+                "relation": "AUTHOR",
+                "evidence_id": "m:C_91AUDIO01:1792137900.000000"
+              },
+              {
+                "user_id": "U9106",
+                "relation": "AUTHOR",
+                "evidence_id": "m:C_91AUDIO01:1792138140.000000"
+              }
+            ],
+            "quote": null,
+            "quote_kind": "PARAPHRASE",
+            "material": true
+          },
+          {
+            "claim_id": "c2",
+            "kind": "INCIDENT_FACT",
+            "text": "A tutor reports that reloading permits one listen, but moving the scrubber changes the play triangle while the clock never advances on AUD-754 in Chrome 131.0.6778.85.",
+            "evidence_ids": [
+              "m:C_91AUDIO01:1792139520.000000"
+            ],
+            "attributions": [
+              {
+                "user_id": "U9107",
+                "relation": "AUTHOR",
+                "evidence_id": "m:C_91AUDIO01:1792139520.000000"
+              }
+            ],
+            "quote": null,
+            "quote_kind": "PARAPHRASE",
+            "material": true
+          },
+          {
+            "claim_id": "c3",
+            "kind": "INCIDENT_FACT",
+            "text": "A QA tutor asks for the task ID and browser build in the AUD-741 thread and says a second reproduction is needed before filing.",
+            "evidence_ids": [
+              "m:C_91AUDIO01:1792138020.000000"
+            ],
+            "attributions": [
+              {
+                "user_id": "U9104",
+                "relation": "AUTHOR",
+                "evidence_id": "m:C_91AUDIO01:1792138020.000000"
+              }
+            ],
+            "quote": null,
+            "quote_kind": "PARAPHRASE",
+            "material": true
+          },
+          {
+            "claim_id": "c4",
+            "kind": "INCIDENT_FACT",
+            "text": "A QA tutor reports reproducing the stuck clock on AUD-754 and reports that the downloaded WAV plays normally.",
+            "evidence_ids": [
+              "m:C_91AUDIO01:1792139640.000000"
+            ],
+            "attributions": [
+              {
+                "user_id": "U9104",
+                "relation": "AUTHOR",
+                "evidence_id": "m:C_91AUDIO01:1792139640.000000"
+              }
+            ],
+            "quote": null,
+            "quote_kind": "PARAPHRASE",
+            "material": true
+          },
+          {
+            "claim_id": "c5",
+            "kind": "GUIDANCE",
+            "text": "The current audio incident triage guideline directs collecting task IDs, browser versions and reproduction steps for a reproducible player freeze after seeking, then sending one scoped engineering incident for the affected player reports.",
+            "evidence_ids": [
+              "k:pilot-audio-incident-triage@1.3:3b2b70f0"
+            ],
+            "attributions": [],
+            "quote": "For a reproducible player freeze after seeking, collect task IDs, browser versions, and reproduction steps. Send one scoped engineering incident for the affected player reports.",
+            "quote_kind": "VERBATIM",
+            "material": true
+          },
+          {
+            "claim_id": "c6",
+            "kind": "GUIDANCE",
+            "text": "The current media-input quality FAQ calls for preserving the sample and using the media-input quality flag when a local copy is confirmed silent and the player advances normally; missing task IDs or local playback checks must be requested before assigning a disposition.",
+            "evidence_ids": [
+              "k:pilot-media-input-quality-faq@1.1:00309a9c"
+            ],
+            "attributions": [],
+            "quote": null,
+            "quote_kind": "PARAPHRASE",
+            "material": true
+          }
+        ],
+        "gaps": [],
+        "evidence_sufficiency": "SUFFICIENT",
+        "proposed_action": {
+          "action_type": "ESCALATE_ENGINEERING",
+          "intervention_need": {
+            "kind": "OPERATIONAL_PROBLEM",
+            "statement": "Two tutors report player-clock failures after seeking on separate tasks, and a QA tutor reports reproducing one failure, warranting a scoped technical report now.",
+            "evidence_ids": [
+              "m:C_91AUDIO01:1792137900.000000",
+              "m:C_91AUDIO01:1792138140.000000",
+              "m:C_91AUDIO01:1792139520.000000",
+              "m:C_91AUDIO01:1792139640.000000"
+            ]
+          },
+          "instruction": "Send engineering one scoped incident covering both reported player freezes, including the task IDs, browser versions and reported reproduction steps.",
+          "rationale": "The current triage guideline calls for one engineering incident for reproducible freezes after seeking, and the reports provide the required details.",
+          "draft_text": "Please investigate a player freeze after seeking on two tasks. Two tutors report that the clock stops advancing after seeking and that reopening or reloading restores playback only temporarily.\n- AUD-741, Firefox 132.0.2: a tutor reports that dragging the waveform back to the start stops sound and leaves the display at 0:00; reopening restores playback until seeking again.\n- AUD-754, Chrome 131.0.6778.85: a tutor reports that moving the scrubber changes the play triangle but the clock never advances; reloading permits one listen.\nA QA tutor reports reproducing the stuck clock on AUD-754 and says its downloaded WAV plays normally.",
+          "scope_note": "Limit the incident to the reported player failures on AUD-741 and AUD-754; the reports do not establish a technical cause.",
+          "support_claim_ids": [
+            "c1",
+            "c2",
+            "c4",
+            "c5"
+          ],
+          "targets": [],
+          "context_claim_ids": [
+            "c3",
+            "c6"
+          ]
+        },
+        "severity": {
+          "level": "HIGH",
+          "rationale": "Two tutors report comparable seeking failures on separate tasks in the same batch and morning, suggesting disruption beyond one isolated task despite temporary recovery.",
+          "signals": [
+            {
+              "level": "HIGH",
+              "signal_index": 3,
+              "signal_text": "Multiple distinct people or affected tasks reporting a comparable problem within the relevant project, batch, and time window, suggesting broader disruption or systemic labeling risk. Consider the number affected relative to the known active group when that information is available; do not require an explicit statement of widespread impact",
+              "support": "Two distinct tutors report that seeking stops the player clock on AUD-741 and AUD-754, with reopening or reloading restoring playback only temporarily.",
+              "evidence_ids": [
+                "m:C_91AUDIO01:1792137900.000000",
+                "m:C_91AUDIO01:1792138140.000000",
+                "m:C_91AUDIO01:1792139520.000000"
+              ]
+            }
+          ],
+          "affected_reporters": [
+            {
+              "author_id": "U9106",
+              "evidence_id": "m:C_91AUDIO01:1792137900.000000"
+            },
+            {
+              "author_id": "U9107",
+              "evidence_id": "m:C_91AUDIO01:1792139520.000000"
+            }
+          ],
+          "recurrence": "NOT_CHECKED",
+          "recurrence_evidence_ids": [],
+          "reported_recurrence_evidence_ids": []
+        },
+        "confidence": 0.95,
+        "open_confirmation": "NONE",
+        "open_question": null,
+        "open_question_evidence_ids": [],
+        "source_conflicts": [],
+        "announcement_assessments": [],
+        "resolution": [
+          {
+            "member_id": "member_b097379f48ad7a130b9adbac",
+            "state": "UNRESOLVED",
+            "evidence_ids": [
+              "m:C_91AUDIO01:1792137900.000000",
+              "m:C_91AUDIO01:1792138020.000000",
+              "m:C_91AUDIO01:1792138140.000000"
+            ],
+            "basis": "The tutor supplies the requested task and browser details but reports that seeking triggers the failure again after reopening; the thread establishes no lasting resolution."
+          },
+          {
+            "member_id": "member_77774044871dcbe2f1dfe164",
+            "state": "UNRESOLVED",
+            "evidence_ids": [
+              "m:C_91AUDIO01:1792139520.000000",
+              "m:C_91AUDIO01:1792139640.000000"
+            ],
+            "basis": "The tutor reports failure after moving the scrubber, and a QA tutor reports reproducing it; neither message establishes a fix or restored player operation."
+          }
+        ],
+        "coverage": [
+          {
+            "need": "CURRENT_GUIDANCE",
+            "status": "COVERED",
+            "evidence_ids": [
+              "k:pilot-audio-incident-triage@1.3:3b2b70f0",
+              "k:pilot-media-input-quality-faq@1.1:00309a9c"
+            ],
+            "note": "Current project guidance distinguishes reproducible player freezes from silent local media and directly supports the engineering incident.",
+            "gap_id": null
+          },
+          {
+            "need": "ANNOUNCEMENTS",
+            "status": "NOT_APPLICABLE",
+            "evidence_ids": [],
+            "note": "No announcement is provided or needed to establish this action; the current project guideline directly specifies handling.",
+            "gap_id": null
+          },
+          {
+            "need": "PRIOR_DECISIONS",
+            "status": "NOT_APPLICABLE",
+            "evidence_ids": [],
+            "note": "The recommendation does not depend on an earlier trial, decision, outcome or historical recurrence; current guidance directly covers the reported behavior.",
+            "gap_id": null
+          },
+          {
+            "need": "MEMBER_QUESTIONS",
+            "status": "COVERED",
+            "evidence_ids": [
+              "m:C_91AUDIO01:1792137900.000000",
+              "m:C_91AUDIO01:1792138020.000000",
+              "m:C_91AUDIO01:1792138140.000000",
+              "m:C_91AUDIO01:1792139520.000000",
+              "m:C_91AUDIO01:1792139640.000000"
+            ],
+            "note": "The threads include the QA tutor's diagnostic request, the tutor's reply with the full browser version, temporary recovery reports and the QA tutor's reproduction report.",
+            "gap_id": null
+          }
+        ],
+        "review_note": null,
+        "action_choice": null
+      },
+      "final": {
+        "contract_version": "agent3-advisor-draft-v11",
+        "summary": "Two tutors report that the player clock stops advancing after seeking, with reopening or reloading restoring playback only temporarily. A QA tutor reports reproducing the stuck clock on one task; current guidance calls for one scoped engineering incident for reproducible player freezes after seeking.",
+        "summary_sentences": [
+          {
+            "text": "Two tutors report that the player clock stops advancing after seeking, with reopening or reloading restoring playback only temporarily.",
+            "support_claim_ids": [
+              "c1",
+              "c2"
+            ],
+            "depends_on": []
+          },
+          {
+            "text": "A QA tutor reports reproducing the stuck clock on one task; current guidance calls for one scoped engineering incident for reproducible player freezes after seeking.",
+            "support_claim_ids": [
+              "c4",
+              "c5"
+            ],
+            "depends_on": []
+          }
+        ],
+        "detail_sentences": [
+          {
+            "text": "A tutor reports that dragging the waveform back to the start stops sound and leaves the display at 0:00 on AUD-741 in Firefox 132.0.2.",
+            "support_claim_ids": [
+              "c1"
+            ],
+            "depends_on": [],
+            "summary_depends_on": []
+          },
+          {
+            "text": "A tutor reports that moving the scrubber changes the play triangle without advancing the clock on AUD-754 in Chrome 131.0.6778.85.",
+            "support_claim_ids": [
+              "c2"
+            ],
+            "depends_on": [],
+            "summary_depends_on": []
+          },
+          {
+            "text": "In the AUD-741 thread, a QA tutor asked for the task ID and browser build and said a second reproduction was needed before filing; the tutor supplied the ID and full browser version.",
+            "support_claim_ids": [
+              "c3",
+              "c1"
+            ],
+            "depends_on": [],
+            "summary_depends_on": []
+          },
+          {
+            "text": "In the AUD-754 thread, a QA tutor also reports that the downloaded WAV plays normally.",
+            "support_claim_ids": [
+              "c4"
+            ],
+            "depends_on": [],
+            "summary_depends_on": []
+          }
+        ],
+        "reasoning": "The two tutors describe comparable failures after seeking on separate tasks and browsers, and a QA tutor reports reproducing the stuck clock. The current playback-failure guideline directly supports one scoped engineering incident, with task IDs, browser versions and reproduction steps already present. The silent-input procedure has different conditions and does not establish handling for these reported player freezes. No additional historical or announcement research is needed to support this recommendation. The upstream review flag remains open; the QA tutor's message is used only as a report of reproduction, not as handling authority.",
+        "claims": [
+          {
+            "claim_id": "c1",
+            "kind": "INCIDENT_FACT",
+            "text": "A tutor reports that sound stops and the display stays at 0:00 after dragging the waveform back to the start on AUD-741 in Firefox 132.0.2; reopening restores playback until seeking again.",
+            "evidence_ids": [
+              "m:C_91AUDIO01:1792137900.000000",
+              "m:C_91AUDIO01:1792138140.000000"
+            ],
+            "attributions": [
+              {
+                "user_id": "U9106",
+                "relation": "AUTHOR",
+                "evidence_id": "m:C_91AUDIO01:1792137900.000000"
+              },
+              {
+                "user_id": "U9106",
+                "relation": "AUTHOR",
+                "evidence_id": "m:C_91AUDIO01:1792138140.000000"
+              }
+            ],
+            "quote": null,
+            "quote_kind": "PARAPHRASE",
+            "material": true
+          },
+          {
+            "claim_id": "c2",
+            "kind": "INCIDENT_FACT",
+            "text": "A tutor reports that reloading permits one listen, but moving the scrubber changes the play triangle while the clock never advances on AUD-754 in Chrome 131.0.6778.85.",
+            "evidence_ids": [
+              "m:C_91AUDIO01:1792139520.000000"
+            ],
+            "attributions": [
+              {
+                "user_id": "U9107",
+                "relation": "AUTHOR",
+                "evidence_id": "m:C_91AUDIO01:1792139520.000000"
+              }
+            ],
+            "quote": null,
+            "quote_kind": "PARAPHRASE",
+            "material": true
+          },
+          {
+            "claim_id": "c3",
+            "kind": "INCIDENT_FACT",
+            "text": "A QA tutor asks for the task ID and browser build in the AUD-741 thread and says a second reproduction is needed before filing.",
+            "evidence_ids": [
+              "m:C_91AUDIO01:1792138020.000000"
+            ],
+            "attributions": [
+              {
+                "user_id": "U9104",
+                "relation": "AUTHOR",
+                "evidence_id": "m:C_91AUDIO01:1792138020.000000"
+              }
+            ],
+            "quote": null,
+            "quote_kind": "PARAPHRASE",
+            "material": true
+          },
+          {
+            "claim_id": "c4",
+            "kind": "INCIDENT_FACT",
+            "text": "A QA tutor reports reproducing the stuck clock on AUD-754 and reports that the downloaded WAV plays normally.",
+            "evidence_ids": [
+              "m:C_91AUDIO01:1792139640.000000"
+            ],
+            "attributions": [
+              {
+                "user_id": "U9104",
+                "relation": "AUTHOR",
+                "evidence_id": "m:C_91AUDIO01:1792139640.000000"
+              }
+            ],
+            "quote": null,
+            "quote_kind": "PARAPHRASE",
+            "material": true
+          },
+          {
+            "claim_id": "c5",
+            "kind": "GUIDANCE",
+            "text": "The current audio incident triage guideline directs collecting task IDs, browser versions and reproduction steps for a reproducible player freeze after seeking, then sending one scoped engineering incident for the affected player reports.",
+            "evidence_ids": [
+              "k:pilot-audio-incident-triage@1.3:3b2b70f0"
+            ],
+            "attributions": [],
+            "quote": "For a reproducible player freeze after seeking, collect task IDs, browser versions, and reproduction steps. Send one scoped engineering incident for the affected player reports.",
+            "quote_kind": "VERBATIM",
+            "material": true
+          },
+          {
+            "claim_id": "c6",
+            "kind": "GUIDANCE",
+            "text": "The current media-input quality FAQ calls for preserving the sample and using the media-input quality flag when a local copy is confirmed silent and the player advances normally; missing task IDs or local playback checks must be requested before assigning a disposition.",
+            "evidence_ids": [
+              "k:pilot-media-input-quality-faq@1.1:00309a9c"
+            ],
+            "attributions": [],
+            "quote": null,
+            "quote_kind": "PARAPHRASE",
+            "material": true
+          }
+        ],
+        "gaps": [],
+        "evidence_sufficiency": "SUFFICIENT",
+        "proposed_action": {
+          "action_type": "ESCALATE_ENGINEERING",
+          "intervention_need": {
+            "kind": "OPERATIONAL_PROBLEM",
+            "statement": "Two tutors report player-clock failures after seeking on separate tasks, and a QA tutor reports reproducing one failure, warranting a scoped technical report now.",
+            "evidence_ids": [
+              "m:C_91AUDIO01:1792137900.000000",
+              "m:C_91AUDIO01:1792138140.000000",
+              "m:C_91AUDIO01:1792139520.000000",
+              "m:C_91AUDIO01:1792139640.000000"
+            ]
+          },
+          "instruction": "Send engineering one scoped incident covering both reported player freezes, including the task IDs, browser versions and reported reproduction steps.",
+          "rationale": "The current triage guideline calls for one engineering incident for reproducible freezes after seeking, and the reports provide the required details.",
+          "draft_text": "Please investigate a player freeze after seeking on two tasks. Two tutors report that the clock stops advancing after seeking and that reopening or reloading restores playback only temporarily.\n- AUD-741, Firefox 132.0.2: a tutor reports that dragging the waveform back to the start stops sound and leaves the display at 0:00; reopening restores playback until seeking again.\n- AUD-754, Chrome 131.0.6778.85: a tutor reports that moving the scrubber changes the play triangle but the clock never advances; reloading permits one listen.\nA QA tutor reports reproducing the stuck clock on AUD-754 and says its downloaded WAV plays normally.",
+          "scope_note": "Limit the incident to the reported player failures on AUD-741 and AUD-754; the reports do not establish a technical cause.",
+          "support_claim_ids": [
+            "c1",
+            "c2",
+            "c4",
+            "c5"
+          ],
+          "targets": [],
+          "context_claim_ids": [
+            "c3",
+            "c6"
+          ]
+        },
+        "severity": {
+          "level": "HIGH",
+          "rationale": "Two tutors report comparable seeking failures on separate tasks in the same batch and morning, suggesting disruption beyond one isolated task despite temporary recovery.",
+          "signals": [
+            {
+              "level": "HIGH",
+              "signal_index": 3,
+              "signal_text": "Multiple distinct people or affected tasks reporting a comparable problem within the relevant project, batch, and time window, suggesting broader disruption or systemic labeling risk. Consider the number affected relative to the known active group when that information is available; do not require an explicit statement of widespread impact",
+              "support": "Two distinct tutors report that seeking stops the player clock on AUD-741 and AUD-754, with reopening or reloading restoring playback only temporarily.",
+              "evidence_ids": [
+                "m:C_91AUDIO01:1792137900.000000",
+                "m:C_91AUDIO01:1792138140.000000",
+                "m:C_91AUDIO01:1792139520.000000"
+              ]
+            }
+          ],
+          "affected_reporters": [
+            {
+              "author_id": "U9106",
+              "evidence_id": "m:C_91AUDIO01:1792137900.000000"
+            },
+            {
+              "author_id": "U9107",
+              "evidence_id": "m:C_91AUDIO01:1792139520.000000"
+            }
+          ],
+          "recurrence": "NOT_CHECKED",
+          "recurrence_evidence_ids": [],
+          "reported_recurrence_evidence_ids": []
+        },
+        "confidence": 0.95,
+        "open_confirmation": "NONE",
+        "open_question": null,
+        "open_question_evidence_ids": [],
+        "source_conflicts": [],
+        "announcement_assessments": [],
+        "resolution": [
+          {
+            "member_id": "member_b097379f48ad7a130b9adbac",
+            "state": "UNRESOLVED",
+            "evidence_ids": [
+              "m:C_91AUDIO01:1792137900.000000",
+              "m:C_91AUDIO01:1792138020.000000",
+              "m:C_91AUDIO01:1792138140.000000"
+            ],
+            "basis": "The tutor supplies the requested task and browser details but reports that seeking triggers the failure again after reopening; the thread establishes no lasting resolution."
+          },
+          {
+            "member_id": "member_77774044871dcbe2f1dfe164",
+            "state": "UNRESOLVED",
+            "evidence_ids": [
+              "m:C_91AUDIO01:1792139520.000000",
+              "m:C_91AUDIO01:1792139640.000000"
+            ],
+            "basis": "The tutor reports failure after moving the scrubber, and a QA tutor reports reproducing it; neither message establishes a fix or restored player operation."
+          }
+        ],
+        "coverage": [
+          {
+            "need": "CURRENT_GUIDANCE",
+            "status": "COVERED",
+            "evidence_ids": [
+              "k:pilot-audio-incident-triage@1.3:3b2b70f0",
+              "k:pilot-media-input-quality-faq@1.1:00309a9c"
+            ],
+            "note": "Current project guidance distinguishes reproducible player freezes from silent local media and directly supports the engineering incident.",
+            "gap_id": null
+          },
+          {
+            "need": "ANNOUNCEMENTS",
+            "status": "NOT_APPLICABLE",
+            "evidence_ids": [],
+            "note": "No announcement is provided or needed to establish this action; the current project guideline directly specifies handling.",
+            "gap_id": null
+          },
+          {
+            "need": "PRIOR_DECISIONS",
+            "status": "NOT_APPLICABLE",
+            "evidence_ids": [],
+            "note": "The recommendation does not depend on an earlier trial, decision, outcome or historical recurrence; current guidance directly covers the reported behavior.",
+            "gap_id": null
+          },
+          {
+            "need": "MEMBER_QUESTIONS",
+            "status": "COVERED",
+            "evidence_ids": [
+              "m:C_91AUDIO01:1792137900.000000",
+              "m:C_91AUDIO01:1792138020.000000",
+              "m:C_91AUDIO01:1792138140.000000",
+              "m:C_91AUDIO01:1792139520.000000",
+              "m:C_91AUDIO01:1792139640.000000"
+            ],
+            "note": "The threads include the QA tutor's diagnostic request, the tutor's reply with the full browser version, temporary recovery reports and the QA tutor's reproduction report.",
+            "gap_id": null
+          }
+        ],
+        "review_note": null,
+        "action_choice": null
+      },
+      "revised": false
+    },
+    "grounding": {
+      "structural_issues": [],
+      "action_issues": [],
+      "unsupported": [],
+      "unjudged": [],
+      "extraneous_verdicts": [],
+      "rejected": {},
+      "pending": [],
+      "action_sufficiency": {
+        "verdict": "SUFFICIENT",
+        "essential_statement_ids": [
+          "claim:c1",
+          "claim:c2",
+          "claim:c4",
+          "claim:c5"
+        ],
+        "rationale": "All four premises are supported and have no dependencies that void them. They establish the exact two-task scope, diagnostic details, attributed QA findings and current instruction to send one scoped engineering incident. The action does not depend on treating the QA tutor as an authority or on an unestablished intake route."
+      },
+      "source_consistency": {
+        "assessed_evidence_ids": [
+          "k:pilot-audio-incident-triage@1.3:3b2b70f0",
+          "k:pilot-media-input-quality-faq@1.1:00309a9c"
+        ],
+        "relations": [
+          {
+            "evidence_ids": [
+              "k:pilot-audio-incident-triage@1.3:3b2b70f0",
+              "k:pilot-media-input-quality-faq@1.1:00309a9c"
+            ],
+            "relation": "AGREE",
+            "point": "Silent local or downloaded clips with normally functioning player advancement belong under media-input quality handling.",
+            "disagreement_scope": null,
+            "rationale": "The triage guideline refers silent downloaded clips with functioning counter and seeking to the media-input quality procedure. The FAQ supplies that procedure for confirmed silent local copies when the player advances normally. Its additional details do not conflict with the triage guideline's separate engineering handling for reproducible seek-triggered freezes."
+          }
+        ],
+        "declared_conflict_checks": []
+      },
+      "alternative_sufficiency": {},
+      "status": "PASSED",
+      "basis": "SEMANTIC",
+      "statements": [
+        {
+          "statement_id": "claim:c1",
+          "kind": "CLAIM_INCIDENT_FACT",
+          "text": "A tutor reports that sound stops and the display stays at 0:00 after dragging the waveform back to the start on AUD-741 in Firefox 132.0.2; reopening restores playback until seeking again.",
+          "blocking": true,
+          "evidence_ids": [
+            "m:C_91AUDIO01:1792137900.000000",
+            "m:C_91AUDIO01:1792138140.000000"
+          ],
+          "attributions": [
+            {
+              "user_id": "U9106",
+              "relation": "AUTHOR",
+              "evidence_id": "m:C_91AUDIO01:1792137900.000000",
+              "role": "TUTOR"
+            },
+            {
+              "user_id": "U9106",
+              "relation": "AUTHOR",
+              "evidence_id": "m:C_91AUDIO01:1792138140.000000",
+              "role": "TUTOR"
+            }
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "The tutor's two messages provide the symptoms, task ID, full Firefox version and temporary recovery until seeking again."
+        },
+        {
+          "statement_id": "claim:c2",
+          "kind": "CLAIM_INCIDENT_FACT",
+          "text": "A tutor reports that reloading permits one listen, but moving the scrubber changes the play triangle while the clock never advances on AUD-754 in Chrome 131.0.6778.85.",
+          "blocking": true,
+          "evidence_ids": [
+            "m:C_91AUDIO01:1792139520.000000"
+          ],
+          "attributions": [
+            {
+              "user_id": "U9107",
+              "relation": "AUTHOR",
+              "evidence_id": "m:C_91AUDIO01:1792139520.000000",
+              "role": "TUTOR"
+            }
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "The cited tutor reports exactly this reload behavior, scrubber-triggered clock failure, task ID and Chrome version."
+        },
+        {
+          "statement_id": "claim:c3",
+          "kind": "CLAIM_INCIDENT_FACT",
+          "text": "A QA tutor asks for the task ID and browser build in the AUD-741 thread and says a second reproduction is needed before filing.",
+          "blocking": true,
+          "evidence_ids": [
+            "m:C_91AUDIO01:1792138020.000000"
+          ],
+          "attributions": [
+            {
+              "user_id": "U9104",
+              "relation": "AUTHOR",
+              "evidence_id": "m:C_91AUDIO01:1792138020.000000",
+              "role": "QA_TUTOR"
+            }
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "The QA tutor requests the task ID and browser build and states that a second reproduction is needed before filing. The statement accurately reports this request without treating it as authoritative guidance."
+        },
+        {
+          "statement_id": "claim:c4",
+          "kind": "CLAIM_INCIDENT_FACT",
+          "text": "A QA tutor reports reproducing the stuck clock on AUD-754 and reports that the downloaded WAV plays normally.",
+          "blocking": true,
+          "evidence_ids": [
+            "m:C_91AUDIO01:1792139640.000000"
+          ],
+          "attributions": [
+            {
+              "user_id": "U9104",
+              "relation": "AUTHOR",
+              "evidence_id": "m:C_91AUDIO01:1792139640.000000",
+              "role": "QA_TUTOR"
+            }
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "The QA tutor explicitly reports reproducing the stuck clock on the task and says the downloaded WAV plays normally."
+        },
+        {
+          "statement_id": "claim:c5",
+          "kind": "CLAIM_GUIDANCE",
+          "text": "The current audio incident triage guideline directs collecting task IDs, browser versions and reproduction steps for a reproducible player freeze after seeking, then sending one scoped engineering incident for the affected player reports. Verbatim quote: \"For a reproducible player freeze after seeking, collect task IDs, browser versions, and reproduction steps. Send one scoped engineering incident for the affected player reports.\"",
+          "blocking": true,
+          "evidence_ids": [
+            "k:pilot-audio-incident-triage@1.3:3b2b70f0"
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "The current project-wide triage guideline gives these collection and engineering-reporting instructions. The verbatim quotation matches the source."
+        },
+        {
+          "statement_id": "claim:c6",
+          "kind": "CLAIM_GUIDANCE",
+          "text": "The current media-input quality FAQ calls for preserving the sample and using the media-input quality flag when a local copy is confirmed silent and the player advances normally; missing task IDs or local playback checks must be requested before assigning a disposition.",
+          "blocking": true,
+          "evidence_ids": [
+            "k:pilot-media-input-quality-faq@1.1:00309a9c"
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "The current FAQ gives the stated silent-input procedure and requires requesting a missing task ID or local playback check before disposition in that context."
+        },
+        {
+          "statement_id": "summary:s1",
+          "kind": "SUMMARY",
+          "text": "Two tutors report that the player clock stops advancing after seeking, with reopening or reloading restoring playback only temporarily.",
+          "blocking": true,
+          "evidence_ids": [
+            "m:C_91AUDIO01:1792137900.000000",
+            "m:C_91AUDIO01:1792138140.000000",
+            "m:C_91AUDIO01:1792139520.000000"
+          ],
+          "attributions": [
+            {
+              "user_id": "U9106",
+              "relation": "AUTHOR",
+              "evidence_id": "m:C_91AUDIO01:1792137900.000000",
+              "role": "TUTOR"
+            },
+            {
+              "user_id": "U9106",
+              "relation": "AUTHOR",
+              "evidence_id": "m:C_91AUDIO01:1792138140.000000",
+              "role": "TUTOR"
+            },
+            {
+              "user_id": "U9107",
+              "relation": "AUTHOR",
+              "evidence_id": "m:C_91AUDIO01:1792139520.000000",
+              "role": "TUTOR"
+            }
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "Both distinct tutors report a clock failure after seeking and describe playback returning only until another seek or for one listen."
+        },
+        {
+          "statement_id": "summary:s2",
+          "kind": "SUMMARY",
+          "text": "A QA tutor reports reproducing the stuck clock on one task; current guidance calls for one scoped engineering incident for reproducible player freezes after seeking.",
+          "blocking": true,
+          "evidence_ids": [
+            "m:C_91AUDIO01:1792139640.000000",
+            "k:pilot-audio-incident-triage@1.3:3b2b70f0"
+          ],
+          "attributions": [
+            {
+              "user_id": "U9104",
+              "relation": "AUTHOR",
+              "evidence_id": "m:C_91AUDIO01:1792139640.000000",
+              "role": "QA_TUTOR"
+            }
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "The QA tutor reports reproducing the AUD-754 clock failure, and the current triage guideline calls for one scoped engineering incident for reproducible freezes after seeking."
+        },
+        {
+          "statement_id": "detail:d1",
+          "kind": "DETAIL",
+          "text": "A tutor reports that dragging the waveform back to the start stops sound and leaves the display at 0:00 on AUD-741 in Firefox 132.0.2.",
+          "blocking": false,
+          "evidence_ids": [
+            "m:C_91AUDIO01:1792137900.000000",
+            "m:C_91AUDIO01:1792138140.000000"
+          ],
+          "attributions": [
+            {
+              "user_id": "U9106",
+              "relation": "AUTHOR",
+              "evidence_id": "m:C_91AUDIO01:1792137900.000000",
+              "role": "TUTOR"
+            },
+            {
+              "user_id": "U9106",
+              "relation": "AUTHOR",
+              "evidence_id": "m:C_91AUDIO01:1792138140.000000",
+              "role": "TUTOR"
+            }
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "The tutor's initial report and follow-up establish the stated waveform action, symptoms, task ID and full browser version."
+        },
+        {
+          "statement_id": "detail:d2",
+          "kind": "DETAIL",
+          "text": "A tutor reports that moving the scrubber changes the play triangle without advancing the clock on AUD-754 in Chrome 131.0.6778.85.",
+          "blocking": false,
+          "evidence_ids": [
+            "m:C_91AUDIO01:1792139520.000000"
+          ],
+          "attributions": [
+            {
+              "user_id": "U9107",
+              "relation": "AUTHOR",
+              "evidence_id": "m:C_91AUDIO01:1792139520.000000",
+              "role": "TUTOR"
+            }
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "The cited tutor message directly states the scrubber behavior, unchanged clock, task ID and Chrome version."
+        },
+        {
+          "statement_id": "detail:d3",
+          "kind": "DETAIL",
+          "text": "In the AUD-741 thread, a QA tutor asked for the task ID and browser build and said a second reproduction was needed before filing; the tutor supplied the ID and full browser version.",
+          "blocking": false,
+          "evidence_ids": [
+            "m:C_91AUDIO01:1792138020.000000",
+            "m:C_91AUDIO01:1792137900.000000",
+            "m:C_91AUDIO01:1792138140.000000"
+          ],
+          "attributions": [
+            {
+              "user_id": "U9104",
+              "relation": "AUTHOR",
+              "evidence_id": "m:C_91AUDIO01:1792138020.000000",
+              "role": "QA_TUTOR"
+            },
+            {
+              "user_id": "U9106",
+              "relation": "AUTHOR",
+              "evidence_id": "m:C_91AUDIO01:1792137900.000000",
+              "role": "TUTOR"
+            },
+            {
+              "user_id": "U9106",
+              "relation": "AUTHOR",
+              "evidence_id": "m:C_91AUDIO01:1792138140.000000",
+              "role": "TUTOR"
+            }
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "The QA tutor makes the stated request and reproduction comment; the reporting tutor supplies the task ID and full browser version in the same thread."
+        },
+        {
+          "statement_id": "detail:d4",
+          "kind": "DETAIL",
+          "text": "In the AUD-754 thread, a QA tutor also reports that the downloaded WAV plays normally.",
+          "blocking": false,
+          "evidence_ids": [
+            "m:C_91AUDIO01:1792139640.000000"
+          ],
+          "attributions": [
+            {
+              "user_id": "U9104",
+              "relation": "AUTHOR",
+              "evidence_id": "m:C_91AUDIO01:1792139640.000000",
+              "role": "QA_TUTOR"
+            }
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "The QA tutor's message in the AUD-754 thread explicitly says the downloaded WAV plays normally."
+        },
+        {
+          "statement_id": "action",
+          "kind": "ACTION",
+          "text": "Report a technical issue to engineering. Instruction: Send engineering one scoped incident covering both reported player freezes, including the task IDs, browser versions and reported reproduction steps. Draft to copy: Please investigate a player freeze after seeking on two tasks. Two tutors report that the clock stops advancing after seeking and that reopening or reloading restores playback only temporarily.\n- AUD-741, Firefox 132.0.2: a tutor reports that dragging the waveform back to the start stops sound and leaves the display at 0:00; reopening restores playback until seeking again.\n- AUD-754, Chrome 131.0.6778.85: a tutor reports that moving the scrubber changes the play triangle but the clock never advances; reloading permits one listen.\nA QA tutor reports reproducing the stuck clock on AUD-754 and says its downloaded WAV plays normally. Scope: Limit the incident to the reported player failures on AUD-741 and AUD-754; the reports do not establish a technical cause.",
+          "blocking": true,
+          "evidence_ids": [
+            "m:C_91AUDIO01:1792137900.000000",
+            "m:C_91AUDIO01:1792138140.000000",
+            "m:C_91AUDIO01:1792139520.000000",
+            "m:C_91AUDIO01:1792139640.000000",
+            "k:pilot-audio-incident-triage@1.3:3b2b70f0"
+          ],
+          "premises": [
+            "claim:c1",
+            "claim:c2",
+            "claim:c4",
+            "claim:c5"
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "The reported seek-triggered player failures, supplied diagnostic details and QA reproduction justify a scoped engineering incident under the current triage guideline. The draft preserves report attribution, limits scope to the two tasks, asserts no technical cause and names no unsupported concrete route."
+        },
+        {
+          "statement_id": "action:rationale",
+          "kind": "ACTION_RATIONALE",
+          "text": "Why this helps: The current triage guideline calls for one engineering incident for reproducible freezes after seeking, and the reports provide the required details.",
+          "blocking": false,
+          "evidence_ids": [
+            "m:C_91AUDIO01:1792137900.000000",
+            "m:C_91AUDIO01:1792138140.000000",
+            "m:C_91AUDIO01:1792139520.000000",
+            "m:C_91AUDIO01:1792139640.000000",
+            "k:pilot-audio-incident-triage@1.3:3b2b70f0",
+            "m:C_91AUDIO01:1792138020.000000",
+            "k:pilot-media-input-quality-faq@1.1:00309a9c"
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "The guideline calls for one scoped engineering incident, and the reports supply task IDs, browser versions and reproduction steps, with QA reproduction of one failure."
+        },
+        {
+          "statement_id": "action:need",
+          "kind": "INTERVENTION_NEED",
+          "text": "Why intervening now is needed (an operational problem that needs coordination): Two tutors report player-clock failures after seeking on separate tasks, and a QA tutor reports reproducing one failure, warranting a scoped technical report now.",
+          "blocking": false,
+          "evidence_ids": [
+            "m:C_91AUDIO01:1792137900.000000",
+            "m:C_91AUDIO01:1792138140.000000",
+            "m:C_91AUDIO01:1792139520.000000",
+            "m:C_91AUDIO01:1792139640.000000"
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "Two unresolved player failures on separate tasks, including a QA-reproduced failure, establish an operational technical problem warranting coordination now."
+        },
+        {
+          "statement_id": "resolution:member_b097379f48ad7a130b9adbac",
+          "kind": "RESOLUTION",
+          "text": "Member thread member_b097379f48ad7a130b9adbac is UNRESOLVED: The tutor supplies the requested task and browser details but reports that seeking triggers the failure again after reopening; the thread establishes no lasting resolution.",
+          "blocking": true,
+          "evidence_ids": [
+            "m:C_91AUDIO01:1792137900.000000",
+            "m:C_91AUDIO01:1792138020.000000",
+            "m:C_91AUDIO01:1792138140.000000"
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "The complete thread ends with the requested details and a report that seeking causes the failure again after reopening; no lasting resolution is established."
+        },
+        {
+          "statement_id": "resolution:member_77774044871dcbe2f1dfe164",
+          "kind": "RESOLUTION",
+          "text": "Member thread member_77774044871dcbe2f1dfe164 is UNRESOLVED: The tutor reports failure after moving the scrubber, and a QA tutor reports reproducing it; neither message establishes a fix or restored player operation.",
+          "blocking": true,
+          "evidence_ids": [
+            "m:C_91AUDIO01:1792139520.000000",
+            "m:C_91AUDIO01:1792139640.000000"
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "The complete thread contains the tutor's failure report and QA reproduction, with no fix or restored player operation established. Normal downloaded-WAV playback does not resolve the player failure."
+        },
+        {
+          "statement_id": "severity:rationale",
+          "kind": "SEVERITY_RATIONALE",
+          "text": "Severity HIGH: Two tutors report comparable seeking failures on separate tasks in the same batch and morning, suggesting disruption beyond one isolated task despite temporary recovery.",
+          "blocking": true,
+          "evidence_ids": [
+            "m:C_91AUDIO01:1792137900.000000",
+            "m:C_91AUDIO01:1792138140.000000",
+            "m:C_91AUDIO01:1792139520.000000",
+            "m:C_91AUDIO01:1792138020.000000",
+            "m:C_91AUDIO01:1792139640.000000"
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "Two distinct tutors report comparable seek-triggered failures on different tasks in the same batch and morning. This supports the stated broader-than-one-task disruption signal without asserting a verified systemic cause."
+        },
+        {
+          "statement_id": "severity:signal:HIGH[3]",
+          "kind": "SEVERITY_SIGNAL",
+          "text": "Rubric signal met - \"Multiple distinct people or affected tasks reporting a comparable problem within the relevant project, batch, and time window, suggesting broader disruption or systemic labeling risk. Consider the number affected relative to the known active group when that information is available; do not require an explicit statement of widespread impact\": Two distinct tutors report that seeking stops the player clock on AUD-741 and AUD-754, with reopening or reloading restoring playback only temporarily.",
+          "blocking": true,
+          "evidence_ids": [
+            "m:C_91AUDIO01:1792137900.000000",
+            "m:C_91AUDIO01:1792138140.000000",
+            "m:C_91AUDIO01:1792139520.000000"
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "The two distinct affected tutors and tasks meet the quoted multiple-reporter or multiple-task signal within the shared project, batch and time window; both describe only temporary playback recovery."
+        },
+        {
+          "statement_id": "reporter:U9106",
+          "kind": "AFFECTED_REPORTER",
+          "text": "U9106 reports, in their own cited message, being affected by this problem.",
+          "blocking": true,
+          "evidence_ids": [
+            "m:C_91AUDIO01:1792137900.000000"
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "U9106 personally reports encountering the sound and clock failure."
+        },
+        {
+          "statement_id": "reporter:U9107",
+          "kind": "AFFECTED_REPORTER",
+          "text": "U9107 reports, in their own cited message, being affected by this problem.",
+          "blocking": true,
+          "evidence_ids": [
+            "m:C_91AUDIO01:1792139520.000000"
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "U9107 personally reports encountering the scrubber-triggered clock failure."
+        }
+      ]
+    },
+    "temporal": {
+      "status": "NONE_FOUND",
+      "findings": [],
+      "source_consistency": "ASSESSED",
+      "ignored_revision_states": "NOT_YET_EFFECTIVE and NOT_APPROVED revisions never compete with applicable guidance."
+    },
+    "temporal_before_grounding": {
+      "status": "NONE_FOUND",
+      "findings": [],
+      "source_consistency": "NOT_ASSESSED",
+      "ignored_revision_states": "NOT_YET_EFFECTIVE and NOT_APPROVED revisions never compete with applicable guidance."
+    },
+    "severity": {
+      "assessment": {
+        "level": "HIGH",
+        "assessment_status": "ASSESSED",
+        "rubric_version": "severity-rubric-v3-semantic-signals",
+        "rubric_content_sha256": "eccaa31a2ab84a0aa7c005216a92fc39681e1dd10107117344948235a76673f4",
+        "rubric_project_id": null,
+        "rubric_scope": "SHARED_DEFAULT",
+        "rationale": "Two tutors report comparable seeking failures on separate tasks in the same batch and morning, suggesting disruption beyond one isolated task despite temporary recovery.",
+        "matched_signals": [
+          {
+            "level": "HIGH",
+            "signal_index": 3,
+            "signal_text": "Multiple distinct people or affected tasks reporting a comparable problem within the relevant project, batch, and time window, suggesting broader disruption or systemic labeling risk. Consider the number affected relative to the known active group when that information is available; do not require an explicit statement of widespread impact",
+            "support": "Two distinct tutors report that seeking stops the player clock on AUD-741 and AUD-754, with reopening or reloading restoring playback only temporarily.",
+            "evidence": [
+              {
+                "kind": "slack_message",
+                "project_id": "audio_multimodal",
+                "batch_id": "audio_pilot_17",
+                "scope": "project",
+                "channel_id": "C_91AUDIO01",
+                "thread_id": "1792137900.000000",
+                "message_id": "1792137900.000000",
+                "document_id": null,
+                "version_id": null,
+                "authoring_document_id": null,
+                "authoring_version": null,
+                "section": null,
+                "chunk_id": null,
+                "candidate_group_id": null,
+                "member_id": "member_b097379f48ad7a130b9adbac",
+                "artifact": null,
+                "artifact_sha256": null,
+                "quote": null,
+                "note": "m:C_91AUDIO01:1792137900.000000"
+              },
+              {
+                "kind": "slack_message",
+                "project_id": "audio_multimodal",
+                "batch_id": "audio_pilot_17",
+                "scope": "project",
+                "channel_id": "C_91AUDIO01",
+                "thread_id": "1792137900.000000",
+                "message_id": "1792138140.000000",
+                "document_id": null,
+                "version_id": null,
+                "authoring_document_id": null,
+                "authoring_version": null,
+                "section": null,
+                "chunk_id": null,
+                "candidate_group_id": null,
+                "member_id": "member_b097379f48ad7a130b9adbac",
+                "artifact": null,
+                "artifact_sha256": null,
+                "quote": null,
+                "note": "m:C_91AUDIO01:1792138140.000000"
+              },
+              {
+                "kind": "slack_message",
+                "project_id": "audio_multimodal",
+                "batch_id": "audio_pilot_17",
+                "scope": "project",
+                "channel_id": "C_91AUDIO01",
+                "thread_id": "1792139520.000000",
+                "message_id": "1792139520.000000",
+                "document_id": null,
+                "version_id": null,
+                "authoring_document_id": null,
+                "authoring_version": null,
+                "section": null,
+                "chunk_id": null,
+                "candidate_group_id": null,
+                "member_id": "member_77774044871dcbe2f1dfe164",
+                "artifact": null,
+                "artifact_sha256": null,
+                "quote": null,
+                "note": "m:C_91AUDIO01:1792139520.000000"
+              }
+            ]
+          }
+        ],
+        "evidence": [
+          {
+            "kind": "slack_message",
+            "project_id": "audio_multimodal",
+            "batch_id": "audio_pilot_17",
+            "scope": "project",
+            "channel_id": "C_91AUDIO01",
+            "thread_id": "1792137900.000000",
+            "message_id": "1792137900.000000",
+            "document_id": null,
+            "version_id": null,
+            "authoring_document_id": null,
+            "authoring_version": null,
+            "section": null,
+            "chunk_id": null,
+            "candidate_group_id": null,
+            "member_id": "member_b097379f48ad7a130b9adbac",
+            "artifact": null,
+            "artifact_sha256": null,
+            "quote": null,
+            "note": "m:C_91AUDIO01:1792137900.000000"
+          },
+          {
+            "kind": "slack_message",
+            "project_id": "audio_multimodal",
+            "batch_id": "audio_pilot_17",
+            "scope": "project",
+            "channel_id": "C_91AUDIO01",
+            "thread_id": "1792137900.000000",
+            "message_id": "1792138140.000000",
+            "document_id": null,
+            "version_id": null,
+            "authoring_document_id": null,
+            "authoring_version": null,
+            "section": null,
+            "chunk_id": null,
+            "candidate_group_id": null,
+            "member_id": "member_b097379f48ad7a130b9adbac",
+            "artifact": null,
+            "artifact_sha256": null,
+            "quote": null,
+            "note": "m:C_91AUDIO01:1792138140.000000"
+          },
+          {
+            "kind": "slack_message",
+            "project_id": "audio_multimodal",
+            "batch_id": "audio_pilot_17",
+            "scope": "project",
+            "channel_id": "C_91AUDIO01",
+            "thread_id": "1792139520.000000",
+            "message_id": "1792139520.000000",
+            "document_id": null,
+            "version_id": null,
+            "authoring_document_id": null,
+            "authoring_version": null,
+            "section": null,
+            "chunk_id": null,
+            "candidate_group_id": null,
+            "member_id": "member_77774044871dcbe2f1dfe164",
+            "artifact": null,
+            "artifact_sha256": null,
+            "quote": null,
+            "note": "m:C_91AUDIO01:1792139520.000000"
+          }
+        ],
+        "occurrence": {
+          "affected_reporters": {
+            "status": "LOWER_BOUND",
+            "count": 2,
+            "ids": [
+              "U9106",
+              "U9107"
+            ],
+            "basis": "Distinct authors whose own cited message reports the problem; other participants are not counted.",
+            "evidence": [
+              {
+                "kind": "slack_message",
+                "project_id": "audio_multimodal",
+                "batch_id": "audio_pilot_17",
+                "scope": "project",
+                "channel_id": "C_91AUDIO01",
+                "thread_id": "1792137900.000000",
+                "message_id": "1792137900.000000",
+                "document_id": null,
+                "version_id": null,
+                "authoring_document_id": null,
+                "authoring_version": null,
+                "section": null,
+                "chunk_id": null,
+                "candidate_group_id": null,
+                "member_id": "member_b097379f48ad7a130b9adbac",
+                "artifact": null,
+                "artifact_sha256": null,
+                "quote": null,
+                "note": "m:C_91AUDIO01:1792137900.000000"
+              },
+              {
+                "kind": "slack_message",
+                "project_id": "audio_multimodal",
+                "batch_id": "audio_pilot_17",
+                "scope": "project",
+                "channel_id": "C_91AUDIO01",
+                "thread_id": "1792139520.000000",
+                "message_id": "1792139520.000000",
+                "document_id": null,
+                "version_id": null,
+                "authoring_document_id": null,
+                "authoring_version": null,
+                "section": null,
+                "chunk_id": null,
+                "candidate_group_id": null,
+                "member_id": "member_77774044871dcbe2f1dfe164",
+                "artifact": null,
+                "artifact_sha256": null,
+                "quote": null,
+                "note": "m:C_91AUDIO01:1792139520.000000"
+              }
+            ]
+          },
+          "affected_tasks": {
+            "status": "UNKNOWN",
+            "count": null,
+            "ids": [],
+            "basis": null,
+            "evidence": []
+          },
+          "relevant_threads": [
+            {
+              "project_id": "audio_multimodal",
+              "batch_id": "audio_pilot_17",
+              "channel_id": "C_91AUDIO01",
+              "thread_id": "1792137900.000000",
+              "member_id": "member_b097379f48ad7a130b9adbac"
+            },
+            {
+              "project_id": "audio_multimodal",
+              "batch_id": "audio_pilot_17",
+              "channel_id": "C_91AUDIO01",
+              "thread_id": "1792139520.000000",
+              "member_id": "member_77774044871dcbe2f1dfe164"
+            }
+          ],
+          "reporting_window": {
+            "start": "2026-10-16T08:05:00+00:00",
+            "end": "2026-10-16T08:34:00+00:00"
+          },
+          "historical_recurrence": {
+            "status": "NOT_CHECKED",
+            "sources": [],
+            "event_series_ids": []
+          },
+          "known_denominator": null,
+          "structural": {
+            "threads": 2,
+            "messages": 5,
+            "distinct_participants": 3,
+            "duplicate_threads_ignored": 0,
+            "duplicate_messages_ignored": 0,
+            "computed_from": "topic member threads (original Slack messages)",
+            "participants_are_not_affected_reporters": true
+          },
+          "semantic_identification": "ASSESSED"
+        },
+        "inherited_from": {
+          "level": "UNKNOWN",
+          "assessment_status": "UNASSESSED",
+          "assessment_deferred_to": "AGENT3",
+          "reason": "Agent 2 performs taxonomy only."
+        }
+      },
+      "issues": [],
+      "notes": [],
+      "proposal": {
+        "level": "HIGH",
+        "rationale": "Two tutors report comparable seeking failures on separate tasks in the same batch and morning, suggesting disruption beyond one isolated task despite temporary recovery.",
+        "signals": [
+          {
+            "level": "HIGH",
+            "signal_index": 3,
+            "signal_text": "Multiple distinct people or affected tasks reporting a comparable problem within the relevant project, batch, and time window, suggesting broader disruption or systemic labeling risk. Consider the number affected relative to the known active group when that information is available; do not require an explicit statement of widespread impact",
+            "support": "Two distinct tutors report that seeking stops the player clock on AUD-741 and AUD-754, with reopening or reloading restoring playback only temporarily.",
+            "evidence_ids": [
+              "m:C_91AUDIO01:1792137900.000000",
+              "m:C_91AUDIO01:1792138140.000000",
+              "m:C_91AUDIO01:1792139520.000000"
+            ]
+          }
+        ],
+        "affected_reporters": [
+          {
+            "author_id": "U9106",
+            "evidence_id": "m:C_91AUDIO01:1792137900.000000"
+          },
+          {
+            "author_id": "U9107",
+            "evidence_id": "m:C_91AUDIO01:1792139520.000000"
+          }
+        ],
+        "recurrence": "NOT_CHECKED",
+        "recurrence_evidence_ids": [],
+        "reported_recurrence_evidence_ids": []
+      }
+    },
+    "resolution": {
+      "topic": "UNRESOLVED",
+      "members": {
+        "member_b097379f48ad7a130b9adbac": "UNRESOLVED",
+        "member_77774044871dcbe2f1dfe164": "UNRESOLVED"
+      },
+      "agent1_attributed": [
+        {
+          "member_id": "member_b097379f48ad7a130b9adbac",
+          "state": "UNRESOLVED",
+          "agent1_verification_status": "CORRECTED",
+          "agent1_review_required": false
+        },
+        {
+          "member_id": "member_77774044871dcbe2f1dfe164",
+          "state": "PARTIALLY_RESOLVED",
+          "agent1_verification_status": "NEEDS_REVIEW",
+          "agent1_review_required": true
+        }
+      ]
+    },
+    "established_handling": [],
+    "coverage_issues": [],
+    "action_source": "DRAFT",
+    "action_notes": [],
+    "tot": {
+      "status": "NOT_TRIGGERED",
+      "triggers": [],
+      "choice_after_grounding": {
+        "status": "NOT_COMPARED",
+        "viable": []
+      }
+    },
+    "evidence_ledger": {
+      "m:C_91AUDIO01:1792137900.000000": {
+        "evidence_id": "m:C_91AUDIO01:1792137900.000000",
+        "origin": "member_message",
+        "use": "MEMBER_REPORT",
+        "member_id": "member_b097379f48ad7a130b9adbac",
+        "channel_id": "C_91AUDIO01",
+        "thread_id": "1792137900.000000",
+        "message_id": "1792137900.000000",
+        "author_id": "U9106",
+        "author_name": "Casey Tran",
+        "author_role": "TUTOR",
+        "timestamp": "2026-10-16T08:05:00Z",
+        "thread_starter_id": "U9106",
+        "thread_starter_role": "TUTOR",
+        "reactions": [],
+        "excerpt": "The sound stops when I drag the waveform back to the start, and the time display sits at 0:00. Task AUD-741, Firefox 132. It played the first time."
+      },
+      "m:C_91AUDIO01:1792138020.000000": {
+        "evidence_id": "m:C_91AUDIO01:1792138020.000000",
+        "origin": "member_message",
+        "use": "MEMBER_REPORT",
+        "member_id": "member_b097379f48ad7a130b9adbac",
+        "channel_id": "C_91AUDIO01",
+        "thread_id": "1792137900.000000",
+        "message_id": "1792138020.000000",
+        "author_id": "U9104",
+        "author_name": "Riley Chen",
+        "author_role": "QA_TUTOR",
+        "timestamp": "2026-10-16T08:07:00Z",
+        "thread_starter_id": "U9106",
+        "thread_starter_role": "TUTOR",
+        "reactions": [],
+        "excerpt": "Can you send the task ID and browser build? We need a second reproduction before filing."
+      },
+      "m:C_91AUDIO01:1792138140.000000": {
+        "evidence_id": "m:C_91AUDIO01:1792138140.000000",
+        "origin": "member_message",
+        "use": "MEMBER_REPORT",
+        "member_id": "member_b097379f48ad7a130b9adbac",
+        "channel_id": "C_91AUDIO01",
+        "thread_id": "1792137900.000000",
+        "message_id": "1792138140.000000",
+        "author_id": "U9106",
+        "author_name": "Casey Tran",
+        "author_role": "TUTOR",
+        "timestamp": "2026-10-16T08:09:00Z",
+        "thread_starter_id": "U9106",
+        "thread_starter_role": "TUTOR",
+        "reactions": [],
+        "excerpt": "AUD-741, Firefox 132.0.2. Reopening restores it until I seek again."
+      },
+      "m:C_91AUDIO01:1792139520.000000": {
+        "evidence_id": "m:C_91AUDIO01:1792139520.000000",
+        "origin": "member_message",
+        "use": "MEMBER_REPORT",
+        "member_id": "member_77774044871dcbe2f1dfe164",
+        "channel_id": "C_91AUDIO01",
+        "thread_id": "1792139520.000000",
+        "message_id": "1792139520.000000",
+        "author_id": "U9107",
+        "author_name": "Jamie Park",
+        "author_role": "TUTOR",
+        "timestamp": "2026-10-16T08:32:00Z",
+        "thread_starter_id": "U9107",
+        "thread_starter_role": "TUTOR",
+        "reactions": [],
+        "excerpt": "Reloading gives me one listen. As soon as I move the scrubber, the play triangle changes but the clock never advances. AUD-754, Chrome 131.0.6778.85."
+      },
+      "m:C_91AUDIO01:1792139640.000000": {
+        "evidence_id": "m:C_91AUDIO01:1792139640.000000",
+        "origin": "member_message",
+        "use": "MEMBER_REPORT",
+        "member_id": "member_77774044871dcbe2f1dfe164",
+        "channel_id": "C_91AUDIO01",
+        "thread_id": "1792139520.000000",
+        "message_id": "1792139640.000000",
+        "author_id": "U9104",
+        "author_name": "Riley Chen",
+        "author_role": "QA_TUTOR",
+        "timestamp": "2026-10-16T08:34:00Z",
+        "thread_starter_id": "U9107",
+        "thread_starter_role": "TUTOR",
+        "reactions": [],
+        "excerpt": "I reproduced the stuck clock on that task. The downloaded WAV plays normally."
+      },
+      "k:pilot-audio-incident-triage@1.3:3b2b70f0": {
+        "evidence_id": "k:pilot-audio-incident-triage@1.3:3b2b70f0",
+        "origin": "retrieved_source",
+        "use": "CURRENT_GUIDANCE",
+        "citation": {
+          "document_id": "knowledge_396c099397e2b3be500a9f33b2f5bae3e3224f9337fe7a4d600046bf30f4d427",
+          "version_id": "version_9e1bc9706f1c82830c52eb93b1721f33c95a461ec5deeebc707c471a89f1d3d3",
+          "chunk_id": "chunk_3b2b70f032534219699d1bd9da638c98",
+          "authoring": "pilot-audio-incident-triage@1.3",
+          "title": "Audio incident triage (v1.3)",
+          "sections": [
+            "Playback failures"
+          ],
+          "source": {
+            "batch_id": null,
+            "channel_id": null,
+            "manual_key": "pilot-audio-incident-triage",
+            "message_id": null,
+            "permalink": null,
+            "project_id": "audio_multimodal",
+            "reference": null,
+            "system": "manual",
+            "thread_id": null,
+            "workspace_id": null
+          }
+        },
+        "source_type": "guideline",
+        "record_kind": "guideline",
+        "applicability": {
+          "state": "CURRENT",
+          "revision_state": "CURRENT",
+          "version_mode": "current",
+          "replaced_by": [],
+          "unverified_supersession": [],
+          "supersedes": [],
+          "enactment": null,
+          "other_revisions": []
+        },
+        "dates": {
+          "source_date": "2026-09-26T00:00:00Z",
+          "basis": "effective_at",
+          "effective_at": "2026-09-26T00:00:00Z",
+          "created_at": null,
+          "valid_until": null,
+          "expired_as_of": false,
+          "reference_time": "2026-10-17T00:00:00Z"
+        },
+        "scope": {
+          "project_id": "audio_multimodal",
+          "batch_id": null,
+          "scope": "project",
+          "batch_relation": "project_wide"
+        },
+        "authority": {
+          "role": "TEAM_LEAD",
+          "actor": "fixture",
+          "actor_relation": "RECORD_AUTHORITY",
+          "approval_status": "EXPLICIT_SOURCE_MARKER",
+          "provenance": "synthetic_fixture_record"
+        },
+        "authorship": {
+          "author_id": null,
+          "verified": false,
+          "basis": "NO_AUTHOR_RECORDED"
+        },
+        "recorded_states": {
+          "status": "approved",
+          "decision_status": null,
+          "execution_status": null,
+          "outcome_status": null
+        },
+        "upstream_review": null,
+        "excerpt": "## Playback failures\nFor a reproducible player freeze after seeking, collect task IDs, browser versions, and reproduction steps. Send one scoped engineering incident for the affected player reports. If a downloaded clip is silent while the player counter and seeking work, follow the media-input quality procedure for that clip."
+      },
+      "k:pilot-media-input-quality-faq@1.1:00309a9c": {
+        "evidence_id": "k:pilot-media-input-quality-faq@1.1:00309a9c",
+        "origin": "retrieved_source",
+        "use": "CURRENT_GUIDANCE",
+        "citation": {
+          "document_id": "knowledge_3e418d9ffc0b2630409e222058fcc87c5cb25b3a9b8933277f75e55ed4d8c22e",
+          "version_id": "version_724f51858bf4ea6c76042afbffe9e86f9b00659501e878b7692e687f15f86caf",
+          "chunk_id": "chunk_00309a9c02047eb51f97dfb4abdfc898",
+          "authoring": "pilot-media-input-quality-faq@1.1",
+          "title": "Media-input quality FAQ (v1.1)",
+          "sections": [
+            "Silent input"
+          ],
+          "source": {
+            "batch_id": null,
+            "channel_id": null,
+            "manual_key": "pilot-media-input-quality-faq",
+            "message_id": null,
+            "permalink": null,
+            "project_id": "audio_multimodal",
+            "reference": null,
+            "system": "manual",
+            "thread_id": null,
+            "workspace_id": null
+          }
+        },
+        "source_type": "faq",
+        "record_kind": "faq",
+        "applicability": {
+          "state": "CURRENT",
+          "revision_state": "CURRENT",
+          "version_mode": "current",
+          "replaced_by": [],
+          "unverified_supersession": [],
+          "supersedes": [],
+          "enactment": null,
+          "other_revisions": []
+        },
+        "dates": {
+          "source_date": "2026-09-28T00:00:00Z",
+          "basis": "effective_at",
+          "effective_at": "2026-09-28T00:00:00Z",
+          "created_at": null,
+          "valid_until": null,
+          "expired_as_of": false,
+          "reference_time": "2026-10-17T00:00:00Z"
+        },
+        "scope": {
+          "project_id": "audio_multimodal",
+          "batch_id": null,
+          "scope": "project",
+          "batch_relation": "project_wide"
+        },
+        "authority": {
+          "role": "TEAM_LEAD",
+          "actor": "fixture",
+          "actor_relation": "RECORD_AUTHORITY",
+          "approval_status": "EXPLICIT_SOURCE_MARKER",
+          "provenance": "synthetic_fixture_record"
+        },
+        "authorship": {
+          "author_id": null,
+          "verified": false,
+          "basis": "NO_AUTHOR_RECORDED"
+        },
+        "recorded_states": {
+          "status": "approved",
+          "decision_status": null,
+          "execution_status": null,
+          "outcome_status": null
+        },
+        "upstream_review": null,
+        "excerpt": "## Silent input\nIf a local copy is confirmed to be silent and the player advances normally, preserve the sample and use the media-input quality flag. When the task ID or the local playback check is missing, ask for it before assigning a disposition."
+      }
+    },
+    "card": {
+      "contract_version": "agent3-advice-card-v4",
+      "record_type": "ADVICE_CARD",
+      "card_id": "card_509fbc8db113be230669efd42e5f77bd",
+      "project_id": "audio_multimodal",
+      "topic_name": "Audio playback scrubber/clock freeze",
+      "card_line": "NEEDS_REVIEW",
+      "summary": "Two tutors report that the player clock stops advancing after seeking, with reopening or reloading restoring playback only temporarily. A QA tutor reports reproducing the stuck clock on one task; current guidance calls for one scoped engineering incident for reproducible player freezes after seeking.",
+      "severity": {
+        "level": "HIGH",
+        "assessment_status": "ASSESSED",
+        "rubric_version": "severity-rubric-v3-semantic-signals",
+        "rubric_content_sha256": "eccaa31a2ab84a0aa7c005216a92fc39681e1dd10107117344948235a76673f4",
+        "rubric_project_id": null,
+        "rubric_scope": "SHARED_DEFAULT",
+        "rationale": "Two tutors report comparable seeking failures on separate tasks in the same batch and morning, suggesting disruption beyond one isolated task despite temporary recovery.",
+        "matched_signals": [
+          {
+            "level": "HIGH",
+            "signal_index": 3,
+            "signal_text": "Multiple distinct people or affected tasks reporting a comparable problem within the relevant project, batch, and time window, suggesting broader disruption or systemic labeling risk. Consider the number affected relative to the known active group when that information is available; do not require an explicit statement of widespread impact",
+            "support": "Two distinct tutors report that seeking stops the player clock on AUD-741 and AUD-754, with reopening or reloading restoring playback only temporarily.",
+            "evidence": [
+              {
+                "kind": "slack_message",
+                "project_id": "audio_multimodal",
+                "batch_id": "audio_pilot_17",
+                "scope": "project",
+                "channel_id": "C_91AUDIO01",
+                "thread_id": "1792137900.000000",
+                "message_id": "1792137900.000000",
+                "document_id": null,
+                "version_id": null,
+                "authoring_document_id": null,
+                "authoring_version": null,
+                "section": null,
+                "chunk_id": null,
+                "candidate_group_id": null,
+                "member_id": "member_b097379f48ad7a130b9adbac",
+                "artifact": null,
+                "artifact_sha256": null,
+                "quote": null,
+                "note": "m:C_91AUDIO01:1792137900.000000"
+              },
+              {
+                "kind": "slack_message",
+                "project_id": "audio_multimodal",
+                "batch_id": "audio_pilot_17",
+                "scope": "project",
+                "channel_id": "C_91AUDIO01",
+                "thread_id": "1792137900.000000",
+                "message_id": "1792138140.000000",
+                "document_id": null,
+                "version_id": null,
+                "authoring_document_id": null,
+                "authoring_version": null,
+                "section": null,
+                "chunk_id": null,
+                "candidate_group_id": null,
+                "member_id": "member_b097379f48ad7a130b9adbac",
+                "artifact": null,
+                "artifact_sha256": null,
+                "quote": null,
+                "note": "m:C_91AUDIO01:1792138140.000000"
+              },
+              {
+                "kind": "slack_message",
+                "project_id": "audio_multimodal",
+                "batch_id": "audio_pilot_17",
+                "scope": "project",
+                "channel_id": "C_91AUDIO01",
+                "thread_id": "1792139520.000000",
+                "message_id": "1792139520.000000",
+                "document_id": null,
+                "version_id": null,
+                "authoring_document_id": null,
+                "authoring_version": null,
+                "section": null,
+                "chunk_id": null,
+                "candidate_group_id": null,
+                "member_id": "member_77774044871dcbe2f1dfe164",
+                "artifact": null,
+                "artifact_sha256": null,
+                "quote": null,
+                "note": "m:C_91AUDIO01:1792139520.000000"
+              }
+            ]
+          }
+        ],
+        "evidence": [
+          {
+            "kind": "slack_message",
+            "project_id": "audio_multimodal",
+            "batch_id": "audio_pilot_17",
+            "scope": "project",
+            "channel_id": "C_91AUDIO01",
+            "thread_id": "1792137900.000000",
+            "message_id": "1792137900.000000",
+            "document_id": null,
+            "version_id": null,
+            "authoring_document_id": null,
+            "authoring_version": null,
+            "section": null,
+            "chunk_id": null,
+            "candidate_group_id": null,
+            "member_id": "member_b097379f48ad7a130b9adbac",
+            "artifact": null,
+            "artifact_sha256": null,
+            "quote": null,
+            "note": "m:C_91AUDIO01:1792137900.000000"
+          },
+          {
+            "kind": "slack_message",
+            "project_id": "audio_multimodal",
+            "batch_id": "audio_pilot_17",
+            "scope": "project",
+            "channel_id": "C_91AUDIO01",
+            "thread_id": "1792137900.000000",
+            "message_id": "1792138140.000000",
+            "document_id": null,
+            "version_id": null,
+            "authoring_document_id": null,
+            "authoring_version": null,
+            "section": null,
+            "chunk_id": null,
+            "candidate_group_id": null,
+            "member_id": "member_b097379f48ad7a130b9adbac",
+            "artifact": null,
+            "artifact_sha256": null,
+            "quote": null,
+            "note": "m:C_91AUDIO01:1792138140.000000"
+          },
+          {
+            "kind": "slack_message",
+            "project_id": "audio_multimodal",
+            "batch_id": "audio_pilot_17",
+            "scope": "project",
+            "channel_id": "C_91AUDIO01",
+            "thread_id": "1792139520.000000",
+            "message_id": "1792139520.000000",
+            "document_id": null,
+            "version_id": null,
+            "authoring_document_id": null,
+            "authoring_version": null,
+            "section": null,
+            "chunk_id": null,
+            "candidate_group_id": null,
+            "member_id": "member_77774044871dcbe2f1dfe164",
+            "artifact": null,
+            "artifact_sha256": null,
+            "quote": null,
+            "note": "m:C_91AUDIO01:1792139520.000000"
+          }
+        ],
+        "occurrence": {
+          "affected_reporters": {
+            "status": "LOWER_BOUND",
+            "count": 2,
+            "ids": [
+              "U9106",
+              "U9107"
+            ],
+            "basis": "Distinct authors whose own cited message reports the problem; other participants are not counted.",
+            "evidence": [
+              {
+                "kind": "slack_message",
+                "project_id": "audio_multimodal",
+                "batch_id": "audio_pilot_17",
+                "scope": "project",
+                "channel_id": "C_91AUDIO01",
+                "thread_id": "1792137900.000000",
+                "message_id": "1792137900.000000",
+                "document_id": null,
+                "version_id": null,
+                "authoring_document_id": null,
+                "authoring_version": null,
+                "section": null,
+                "chunk_id": null,
+                "candidate_group_id": null,
+                "member_id": "member_b097379f48ad7a130b9adbac",
+                "artifact": null,
+                "artifact_sha256": null,
+                "quote": null,
+                "note": "m:C_91AUDIO01:1792137900.000000"
+              },
+              {
+                "kind": "slack_message",
+                "project_id": "audio_multimodal",
+                "batch_id": "audio_pilot_17",
+                "scope": "project",
+                "channel_id": "C_91AUDIO01",
+                "thread_id": "1792139520.000000",
+                "message_id": "1792139520.000000",
+                "document_id": null,
+                "version_id": null,
+                "authoring_document_id": null,
+                "authoring_version": null,
+                "section": null,
+                "chunk_id": null,
+                "candidate_group_id": null,
+                "member_id": "member_77774044871dcbe2f1dfe164",
+                "artifact": null,
+                "artifact_sha256": null,
+                "quote": null,
+                "note": "m:C_91AUDIO01:1792139520.000000"
+              }
+            ]
+          },
+          "affected_tasks": {
+            "status": "UNKNOWN",
+            "count": null,
+            "ids": [],
+            "basis": null,
+            "evidence": []
+          },
+          "relevant_threads": [
+            {
+              "project_id": "audio_multimodal",
+              "batch_id": "audio_pilot_17",
+              "channel_id": "C_91AUDIO01",
+              "thread_id": "1792137900.000000",
+              "member_id": "member_b097379f48ad7a130b9adbac"
+            },
+            {
+              "project_id": "audio_multimodal",
+              "batch_id": "audio_pilot_17",
+              "channel_id": "C_91AUDIO01",
+              "thread_id": "1792139520.000000",
+              "member_id": "member_77774044871dcbe2f1dfe164"
+            }
+          ],
+          "reporting_window": {
+            "start": "2026-10-16T08:05:00+00:00",
+            "end": "2026-10-16T08:34:00+00:00"
+          },
+          "historical_recurrence": {
+            "status": "NOT_CHECKED",
+            "sources": [],
+            "event_series_ids": []
+          },
+          "known_denominator": null,
+          "structural": {
+            "threads": 2,
+            "messages": 5,
+            "distinct_participants": 3,
+            "duplicate_threads_ignored": 0,
+            "duplicate_messages_ignored": 0,
+            "computed_from": "topic member threads (original Slack messages)",
+            "participants_are_not_affected_reporters": true
+          },
+          "semantic_identification": "ASSESSED"
+        },
+        "inherited_from": {
+          "level": "UNKNOWN",
+          "assessment_status": "UNASSESSED",
+          "assessment_deferred_to": "AGENT3",
+          "reason": "Agent 2 performs taxonomy only."
+        }
+      },
+      "severity_is_provisional": false,
+      "resolution_status": "UNRESOLVED",
+      "recommended_action": {
+        "action_type": "ESCALATE_ENGINEERING",
+        "draft_text": "Please investigate a player freeze after seeking on two tasks. Two tutors report that the clock stops advancing after seeking and that reopening or reloading restores playback only temporarily.\n- AUD-741, Firefox 132.0.2: a tutor reports that dragging the waveform back to the start stops sound and leaves the display at 0:00; reopening restores playback until seeking again.\n- AUD-754, Chrome 131.0.6778.85: a tutor reports that moving the scrubber changes the play triangle but the clock never advances; reloading permits one listen.\nA QA tutor reports reproducing the stuck clock on AUD-754 and says its downloaded WAV plays normally.",
+        "scope_note": "Limit the incident to the reported player failures on AUD-741 and AUD-754; the reports do not establish a technical cause.",
+        "label": "Report a technical issue to engineering",
+        "instruction": "Send engineering one scoped incident covering both reported player freezes, including the task IDs, browser versions and reported reproduction steps.",
+        "rationale": "The current triage guideline calls for one engineering incident for reproducible freezes after seeking, and the reports provide the required details.",
+        "targets": [],
+        "essential_premise_ids": [
+          "claim:c1",
+          "claim:c2",
+          "claim:c4",
+          "claim:c5"
+        ],
+        "source": "DRAFT"
+      },
+      "reasoning": "What the evidence shows: A tutor reports that sound stops and the display stays at 0:00 after dragging the waveform back to the start on AUD-741 in Firefox 132.0.2; reopening restores playback until seeking again. A tutor reports that reloading permits one listen, but moving the scrubber changes the play triangle while the clock never advances on AUD-754 in Chrome 131.0.6778.85. A QA tutor asks for the task ID and browser build in the AUD-741 thread and says a second reproduction is needed before filing. A QA tutor reports reproducing the stuck clock on AUD-754 and reports that the downloaded WAV plays normally. The current audio incident triage guideline directs collecting task IDs, browser versions and reproduction steps for a reproducible player freeze after seeking, then sending one scoped engineering incident for the affected player reports. The current media-input quality FAQ calls for preserving the sample and using the media-input quality flag when a local copy is confirmed silent and the player advances normally; missing task IDs or local playback checks must be requested before assigning a disposition. Thread status, read from each thread's own messages: unresolved ×2. Agent 1's earlier labels (an input, not evidence): partially resolved ×1, unresolved ×1; 1 of 2 were not verified by Agent 1.",
+      "supporting_sources": [
+        {
+          "kind": "knowledge_source",
+          "project_id": "audio_multimodal",
+          "batch_id": null,
+          "scope": "project",
+          "channel_id": null,
+          "thread_id": null,
+          "message_id": null,
+          "document_id": "knowledge_396c099397e2b3be500a9f33b2f5bae3e3224f9337fe7a4d600046bf30f4d427",
+          "version_id": "version_9e1bc9706f1c82830c52eb93b1721f33c95a461ec5deeebc707c471a89f1d3d3",
+          "authoring_document_id": "pilot-audio-incident-triage",
+          "authoring_version": "1.3",
+          "section": "Playback failures",
+          "chunk_id": "chunk_3b2b70f032534219699d1bd9da638c98",
+          "candidate_group_id": null,
+          "member_id": null,
+          "artifact": null,
+          "artifact_sha256": null,
+          "quote": null,
+          "note": "k:pilot-audio-incident-triage@1.3:3b2b70f0 (CURRENT_GUIDANCE; CURRENT)"
+        },
+        {
+          "kind": "knowledge_source",
+          "project_id": "audio_multimodal",
+          "batch_id": null,
+          "scope": "project",
+          "channel_id": null,
+          "thread_id": null,
+          "message_id": null,
+          "document_id": "knowledge_3e418d9ffc0b2630409e222058fcc87c5cb25b3a9b8933277f75e55ed4d8c22e",
+          "version_id": "version_724f51858bf4ea6c76042afbffe9e86f9b00659501e878b7692e687f15f86caf",
+          "authoring_document_id": "pilot-media-input-quality-faq",
+          "authoring_version": "1.1",
+          "section": "Silent input",
+          "chunk_id": "chunk_00309a9c02047eb51f97dfb4abdfc898",
+          "candidate_group_id": null,
+          "member_id": null,
+          "artifact": null,
+          "artifact_sha256": null,
+          "quote": null,
+          "note": "k:pilot-media-input-quality-faq@1.1:00309a9c (CURRENT_GUIDANCE; CURRENT)"
+        },
+        {
+          "kind": "slack_message",
+          "project_id": "audio_multimodal",
+          "batch_id": "audio_pilot_17",
+          "scope": "project",
+          "channel_id": "C_91AUDIO01",
+          "thread_id": "1792137900.000000",
+          "message_id": "1792137900.000000",
+          "document_id": null,
+          "version_id": null,
+          "authoring_document_id": null,
+          "authoring_version": null,
+          "section": null,
+          "chunk_id": null,
+          "candidate_group_id": null,
+          "member_id": "member_b097379f48ad7a130b9adbac",
+          "artifact": null,
+          "artifact_sha256": null,
+          "quote": null,
+          "note": "m:C_91AUDIO01:1792137900.000000"
+        },
+        {
+          "kind": "slack_message",
+          "project_id": "audio_multimodal",
+          "batch_id": "audio_pilot_17",
+          "scope": "project",
+          "channel_id": "C_91AUDIO01",
+          "thread_id": "1792137900.000000",
+          "message_id": "1792138140.000000",
+          "document_id": null,
+          "version_id": null,
+          "authoring_document_id": null,
+          "authoring_version": null,
+          "section": null,
+          "chunk_id": null,
+          "candidate_group_id": null,
+          "member_id": "member_b097379f48ad7a130b9adbac",
+          "artifact": null,
+          "artifact_sha256": null,
+          "quote": null,
+          "note": "m:C_91AUDIO01:1792138140.000000"
+        },
+        {
+          "kind": "slack_message",
+          "project_id": "audio_multimodal",
+          "batch_id": "audio_pilot_17",
+          "scope": "project",
+          "channel_id": "C_91AUDIO01",
+          "thread_id": "1792139520.000000",
+          "message_id": "1792139520.000000",
+          "document_id": null,
+          "version_id": null,
+          "authoring_document_id": null,
+          "authoring_version": null,
+          "section": null,
+          "chunk_id": null,
+          "candidate_group_id": null,
+          "member_id": "member_77774044871dcbe2f1dfe164",
+          "artifact": null,
+          "artifact_sha256": null,
+          "quote": null,
+          "note": "m:C_91AUDIO01:1792139520.000000"
+        },
+        {
+          "kind": "slack_message",
+          "project_id": "audio_multimodal",
+          "batch_id": "audio_pilot_17",
+          "scope": "project",
+          "channel_id": "C_91AUDIO01",
+          "thread_id": "1792137900.000000",
+          "message_id": "1792138020.000000",
+          "document_id": null,
+          "version_id": null,
+          "authoring_document_id": null,
+          "authoring_version": null,
+          "section": null,
+          "chunk_id": null,
+          "candidate_group_id": null,
+          "member_id": "member_b097379f48ad7a130b9adbac",
+          "artifact": null,
+          "artifact_sha256": null,
+          "quote": null,
+          "note": "m:C_91AUDIO01:1792138020.000000"
+        },
+        {
+          "kind": "slack_message",
+          "project_id": "audio_multimodal",
+          "batch_id": "audio_pilot_17",
+          "scope": "project",
+          "channel_id": "C_91AUDIO01",
+          "thread_id": "1792139520.000000",
+          "message_id": "1792139640.000000",
+          "document_id": null,
+          "version_id": null,
+          "authoring_document_id": null,
+          "authoring_version": null,
+          "section": null,
+          "chunk_id": null,
+          "candidate_group_id": null,
+          "member_id": "member_77774044871dcbe2f1dfe164",
+          "artifact": null,
+          "artifact_sha256": null,
+          "quote": null,
+          "note": "m:C_91AUDIO01:1792139640.000000"
+        }
+      ],
+      "related_threads": [
+        {
+          "project_id": "audio_multimodal",
+          "batch_id": "audio_pilot_17",
+          "channel_id": "C_91AUDIO01",
+          "thread_id": "1792137900.000000",
+          "member_id": "member_b097379f48ad7a130b9adbac",
+          "permalink": null,
+          "display_reference": "1792137900.000000",
+          "label": "#audio-pilot, 2026-10-16, started by a tutor: \"The sound stops when I drag the waveform back to the start, and the time display sits at 0:00.\"",
+          "opening_text": "The sound stops when I drag the waveform back to the start, and the time display sits at 0:00. Task AUD-741, Firefox 132. It played the first time."
+        },
+        {
+          "project_id": "audio_multimodal",
+          "batch_id": "audio_pilot_17",
+          "channel_id": "C_91AUDIO01",
+          "thread_id": "1792139520.000000",
+          "member_id": "member_77774044871dcbe2f1dfe164",
+          "permalink": null,
+          "display_reference": "1792139520.000000",
+          "label": "#audio-pilot, 2026-10-16, started by a tutor: \"Reloading gives me one listen.\"",
+          "opening_text": "Reloading gives me one listen. As soon as I move the scrubber, the play triangle changes but the clock never advances. AUD-754, Chrome 131.0.6778.85."
+        }
+      ],
+      "confidence": 0.95,
+      "confidence_band": "HIGH",
+      "needs_review_reasons": [
+        {
+          "code": "HIGH_SEVERITY",
+          "detail": "Assessed HIGH under the shared default rubric.",
+          "obligation_ids": [],
+          "evidence": []
+        },
+        {
+          "code": "INHERITED_FLAG",
+          "detail": "Upstream obligations remain open: inherited_agent1_review x1",
+          "obligation_ids": [],
+          "evidence": []
+        }
+      ],
+      "inherited_flags": [
+        {
+          "origin": "agent1",
+          "kind": "inherited_agent1_review",
+          "candidate_group_id": "cluster_30bad96e288a61c8",
+          "obligation_id": null,
+          "member_ids": [
+            "member_77774044871dcbe2f1dfe164"
+          ],
+          "detail": "The single targeted revision failed: ValueError: The model cited authority evidence without an eligible author role or a qualifying TEAM_LEAD endorsement. Ineligible message IDs: ['1792139640.000000']"
+        }
+      ],
+      "checks": {
+        "grounding": "PASSED",
+        "temporal_conflict": "NONE_FOUND",
+        "open_confirmation": "NONE"
+      },
+      "lineage": {
+        "agent3_run_id": "agent3overnight_f22f4be690e6939ca5f43554548d90b8",
+        "handoff_contract": "agent2-taxonomy-handoff-v2",
+        "agent2_export_sha256": "2dd6d3ac9f878b1e5090dfed5b45f689210847aba03c28f6c549f1ce9ab5c918",
+        "agent2_schema_version": 8,
+        "candidate_group_id": "cluster_30bad96e288a61c8",
+        "topic_id": "cluster_30bad96e288a61c8/topic_1",
+        "member_ids": [
+          "member_b097379f48ad7a130b9adbac",
+          "member_77774044871dcbe2f1dfe164"
+        ],
+        "project_id": "audio_multimodal",
+        "batch_id": "audio_pilot_17"
+      },
+      "review_notes": [
+        "Severity is high under the team rubric.",
+        "1 earlier review flag is still open on these threads."
+      ],
+      "details": [
+        "A tutor reports that dragging the waveform back to the start stops sound and leaves the display at 0:00 on AUD-741 in Firefox 132.0.2.",
+        "A tutor reports that moving the scrubber changes the play triangle without advancing the clock on AUD-754 in Chrome 131.0.6778.85.",
+        "In the AUD-741 thread, a QA tutor asked for the task ID and browser build and said a second reproduction was needed before filing; the tutor supplied the ID and full browser version.",
+        "In the AUD-754 thread, a QA tutor also reports that the downloaded WAV plays normally."
+      ],
+      "next_step": {
+        "status": "ACTION_RECOMMENDED",
+        "rationale": "The current triage guideline calls for one engineering incident for reproducible freezes after seeking, and the reports provide the required details.",
+        "explanation": null
+      }
+    },
+    "review_items": [
+      {
+        "contract_version": "agent3-model-review-item-v1",
+        "record_type": "MODEL_REVIEW_ITEM",
+        "item_id": "review_117885d8417a947a48a58707e93bb892",
+        "origin": "agent1",
+        "kind": "inherited_agent1_review",
+        "project_id": "audio_multimodal",
+        "batch_id": "audio_pilot_17",
+        "candidate_group_id": "cluster_30bad96e288a61c8",
+        "topic_id": "cluster_30bad96e288a61c8/topic_1",
+        "member_ids": [
+          "member_77774044871dcbe2f1dfe164"
+        ],
+        "obligation_id": null,
+        "reason": "The single targeted revision failed: ValueError: The model cited authority evidence without an eligible author role or a qualifying TEAM_LEAD endorsement. Ineligible message IDs: ['1792139640.000000']",
+        "source_obligation": {
+          "origin": "agent1",
+          "member_id": "member_77774044871dcbe2f1dfe164",
+          "project_id": "audio_multimodal",
+          "batch_id": "audio_pilot_17",
+          "channel_id": "C_91AUDIO01",
+          "thread_id": "1792139520.000000",
+          "candidate_group_id": "cluster_30bad96e288a61c8",
+          "candidate_sha256": "ab2e181191a074e9fd47fd652d53556cacfc80778a2b4a81911420b52c0b3e93",
+          "source_sha256": "40ee3c7ace94200258201a9cd1f4df5e51ceaea05f4ba1c4e7e3ed0272dbe151",
+          "agent1_record": {
+            "project_id": "audio_multimodal",
+            "batch_id": "audio_pilot_17",
+            "channel_id": "C_91AUDIO01",
+            "thread_id": "1792139520.000000",
+            "language": null,
+            "model": "openai/gpt-4o-mini-2024-07-18",
+            "run_config_sha256": "473313bf1f0eb5532aa11b8cb061343ff8470b58dbf2e7bf7b573e93a29fea4e",
+            "handoff_version": 1,
+            "verification_origin": "bounded_verification",
+            "input_sha256": "40ee3c7ace94200258201a9cd1f4df5e51ceaea05f4ba1c4e7e3ed0272dbe151",
+            "candidate_sha256": "ab2e181191a074e9fd47fd652d53556cacfc80778a2b4a81911420b52c0b3e93",
+            "source_message_ids": [
+              "1792139520.000000",
+              "1792139640.000000"
+            ],
+            "interpretation": {
+              "thread_id": "1792139520.000000",
+              "summary": "Jamie Park reports an issue where reloading gives only one listen, and moving the scrubber causes the play triangle to change without advancing the clock. Riley Chen confirms the issue, stating that the clock is stuck but the downloaded WAV plays normally.",
+              "central_question": "What is causing the clock to be stuck when moving the scrubber in AUD-754 on Chrome 131.0.6778.85?",
+              "resolution_state": "PARTIALLY_RESOLVED",
+              "authoritative_response_present": false,
+              "authority_evidence_message_ids": [],
+              "resolution_rationale": "The issue of the stuck clock has been reproduced by Riley Chen, confirming that it exists. However, no solution or further guidance has been provided, leaving the requested decision incomplete.",
+              "confidence": 0.8
+            },
+            "automated_verification_status": "NEEDS_REVIEW",
+            "verification_status": "NEEDS_REVIEW",
+            "review_required": true,
+            "revision_count": 1,
+            "provisional_fields": [
+              "summary",
+              "central_question",
+              "resolution_state",
+              "resolution_rationale",
+              "authoritative_response_present",
+              "authority_evidence_message_ids",
+              "confidence"
+            ],
+            "review_reason": "The single targeted revision failed: ValueError: The model cited authority evidence without an eligible author role or a qualifying TEAM_LEAD endorsement. Ineligible message IDs: ['1792139640.000000']",
+            "review_reasons": [
+              "The single targeted revision failed: ValueError: The model cited authority evidence without an eligible author role or a qualifying TEAM_LEAD endorsement. Ineligible message IDs: ['1792139640.000000']"
+            ],
+            "review_findings": [
+              {
+                "category": "CENTRAL_QUESTION",
+                "explanation": "Prose unit central_question:1: UNSUPPORTED.\nCandidate: What is causing the clock to be stuck when moving the scrubber in AUD-754 on Chrome 131.0.6778.85?\nSource establishes: Jamie Park describes the clock not advancing after moving the scrubber in AUD-754 on Chrome 131.0.6778.85, but does not explicitly ask about the cause.\nReason: While the candidate's question is a logical inference from the problem described, the original conversation does not explicitly pose or discuss the cause of the issue. The candidate goes beyond the evidence by framing the central question as an inquiry into the cause.",
+                "evidence_message_ids": [
+                  "1792139520.000000"
+                ],
+                "evidence_quotes": [
+                  "Reloading gives me one listen. As soon as I move the scrubber, the play triangle changes but the clock never advances. AUD-754, Chrome 131.0.6778.85."
+                ],
+                "disputed_fields": [
+                  "central_question"
+                ],
+                "origin": "automated_verification"
+              },
+              {
+                "category": "EVIDENCE",
+                "explanation": "The single targeted revision failed: ValueError: The model cited authority evidence without an eligible author role or a qualifying TEAM_LEAD endorsement. Ineligible message IDs: ['1792139640.000000']",
+                "evidence_message_ids": [],
+                "evidence_quotes": [],
+                "disputed_fields": [
+                  "summary",
+                  "central_question",
+                  "resolution_state",
+                  "resolution_rationale",
+                  "authoritative_response_present",
+                  "authority_evidence_message_ids",
+                  "confidence"
+                ],
+                "origin": "automated_verification"
+              }
+            ],
+            "content_reviews": [],
+            "review_applicability": [],
+            "lineage": {
+              "baseline_file": "D:\\Christie\\2026_AgenticAI\\threadsense\\experiments\\fresh_15_v1\\runs\\C_gpt_v2\\stages\\agent1_interpret\\agent1_interpretations_v1\\interpretations.json",
+              "baseline_record_sha256": "9f7c295dda6141b78b468c6dfa2a66e9d88e9b74760affd35e1fff1f1da86d55",
+              "baseline_run_config_sha256": "4c46aa950fa3a4a153b2fb81266e17cf6a71a312afebd5165bb5aa640dc53e8f",
+              "baseline_model": "openai/gpt-4o-mini-2024-07-18",
+              "baseline_created_at": "2026-11-16T21:00:00.489532+00:00",
+              "source_file": "sources/40ee3c7ace94200258201a9cd1f4df5e51ceaea05f4ba1c4e7e3ed0272dbe151.json",
+              "verification_file": "records/f000ac34326709e58927f79ba16ed5d7c8d52d5057664f1aa1551b3160511b81/result.json",
+              "effective_attempt": "original",
+              "original_candidate_sha256": "ab2e181191a074e9fd47fd652d53556cacfc80778a2b4a81911420b52c0b3e93",
+              "revised_candidate_sha256": null,
+              "effective_candidate_sha256": "ab2e181191a074e9fd47fd652d53556cacfc80778a2b4a81911420b52c0b3e93",
+              "original_candidate_reference": "records/f000ac34326709e58927f79ba16ed5d7c8d52d5057664f1aa1551b3160511b81/result.json#/result/original_interpretation",
+              "revised_candidate_reference": null,
+              "audit_history_reference": "records/f000ac34326709e58927f79ba16ed5d7c8d52d5057664f1aa1551b3160511b81/result.json#/result/passes"
+            }
+          },
+          "agent1_export_file": "D:\\Christie\\2026_AgenticAI\\threadsense\\experiments\\fresh_15_v1\\runs\\C_gpt_v2\\stages\\agent1_relevance\\relevance_v1\\clustering_input\\interpretations.json",
+          "agent1_export_sha256": "63a647718e41f0782faccb70d233f55cfedbc1f0f3ed0c943228f317ce83ae36",
+          "agent1_lineage_base": "D:\\Christie\\2026_AgenticAI\\threadsense\\experiments\\fresh_15_v1\\runs\\C_gpt_v2\\stages\\agent1_relevance\\relevance_v1\\clustering_input"
+        },
+        "related_card_ids": [
+          "card_509fbc8db113be230669efd42e5f77bd"
+        ],
+        "actions": []
+      }
+    ],
+    "coverage": {
+      "group_members_outside_this_card": [],
+      "uncarried_obligations": []
+    },
+    "budget": {
+      "consumed": {
+        "retrieval_calls": 1,
+        "model_calls": 2
+      },
+      "limits": {
+        "model_calls_per_topic": 4,
+        "model_calls_total": 28,
+        "retrieval_calls_per_topic": 6,
+        "retrieval_calls_total": 42
+      }
+    },
+    "diagnostics": []
+  }
+}

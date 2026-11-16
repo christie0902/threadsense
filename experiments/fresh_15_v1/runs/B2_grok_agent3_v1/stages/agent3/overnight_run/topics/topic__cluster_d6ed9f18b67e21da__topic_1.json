@@ -1,0 +1,833 @@
+{
+  "work_item": {
+    "candidate_group_id": "cluster_d6ed9f18b67e21da",
+    "project_id": "audio_multimodal",
+    "batch_id": "audio_pilot_17",
+    "work_id": "topic:cluster_d6ed9f18b67e21da/topic_1",
+    "kind": "TOPIC",
+    "topic_id": "cluster_d6ed9f18b67e21da/topic_1",
+    "topic_name": "Audio playback stalls after seeking or scrubbing",
+    "member_ids": [
+      "member_b097379f48ad7a130b9adbac",
+      "member_77774044871dcbe2f1dfe164",
+      "member_c945ef64798eef3548b64165"
+    ],
+    "pilot_scenario": null,
+    "in_scope": true
+  },
+  "workflow": {
+    "outcome": "CARD_WITH_STAGE_FAILURES",
+    "card_id": "card_83168a31f32c6c176a58f9bd02c4e8e2",
+    "card_line": "NEEDS_REVIEW",
+    "grounding": "NOT_RUN",
+    "stage_failures": [
+      {
+        "stage": "draft",
+        "status": "FAILED",
+        "failure_class": "RESOURCE"
+      }
+    ],
+    "semantic_source": "LIVE_MODEL"
+  },
+  "result": {
+    "scenario": {
+      "id": "topic:cluster_d6ed9f18b67e21da/topic_1",
+      "candidate_group_id": "cluster_d6ed9f18b67e21da",
+      "focus": "Audio playback stalls after seeking or scrubbing",
+      "topic_id": "cluster_d6ed9f18b67e21da/topic_1"
+    },
+    "status": "CARD",
+    "topic": {
+      "project_id": "audio_multimodal",
+      "batch_id": "audio_pilot_17",
+      "candidate_group_id": "cluster_d6ed9f18b67e21da",
+      "topic_id": "cluster_d6ed9f18b67e21da/topic_1",
+      "topic_label": "Audio playback stalls after seeking or scrubbing",
+      "projection_gap": null,
+      "as_of": "2026-10-17T00:00:00Z",
+      "member_ids": [
+        "member_b097379f48ad7a130b9adbac",
+        "member_77774044871dcbe2f1dfe164",
+        "member_c945ef64798eef3548b64165"
+      ],
+      "initial_query": "Audio playback stalls after seeking or scrubbing. Is anyone else experiencing an endless spinner after using jump-back in the audio task tool (AUD-768, Firefox 132.0.2), even though playback had already worked?"
+    },
+    "retrieval_trace": [
+      {
+        "step": 1,
+        "purpose": "initial_current_guidance",
+        "gap_id": null,
+        "query": "Audio playback stalls after seeking or scrubbing. Is anyone else experiencing an endless spinner after using jump-back in the audio task tool (AUD-768, Firefox 132.0.2), even though playback had already worked?",
+        "source_types": [
+          "guideline",
+          "faq",
+          "decision",
+          "announcement"
+        ],
+        "version_mode": "current",
+        "as_of": "2026-10-17T00:00:00Z",
+        "batch": "audio_pilot_17",
+        "top_k": 5,
+        "status": "DONE",
+        "mode": "hybrid",
+        "use_mmr": true,
+        "mmr_lambda": 0.9,
+        "result_ids": [
+          "k:pilot-audio-incident-triage@1.3:3b2b70f0",
+          "k:pilot-media-input-quality-faq@1.1:00309a9c"
+        ],
+        "new_evidence_ids": [
+          "k:pilot-audio-incident-triage@1.3:3b2b70f0",
+          "k:pilot-media-input-quality-faq@1.1:00309a9c"
+        ],
+        "eligible_chunks": 2,
+        "added": []
+      }
+    ],
+    "retrieval_notes": {
+      "withheld_by_version": [],
+      "version_diagnostics": []
+    },
+    "follow_ups": [],
+    "unfilled_gaps": [],
+    "model_calls": [
+      {
+        "stage": "draft",
+        "schema": "AdvisorDraft",
+        "agent1_context": {
+          "sha256": "062bfaf465bf6372e8b15200808050555a037fd5d1b40a56dec67137c4262748",
+          "boundary": "IN_HTTP_BODY"
+        },
+        "http_requests": {
+          "sent": 1,
+          "blocked": 0,
+          "hosts": [
+            "openrouter.ai"
+          ],
+          "responses": [
+            {
+              "error": "TimeoutError",
+              "seconds": 600.637
+            }
+          ],
+          "input_tokens": 11195,
+          "refused": null,
+          "charged_usd": 0.146304
+        },
+        "input_tokens_estimate": 11195,
+        "status": "FAILED",
+        "failure_class": "RESOURCE",
+        "error": "Timeout: litellm.Timeout: APITimeoutError - Request timed out. Error_str: The read operation timed out"
+      }
+    ],
+    "agent1_context": [
+      {
+        "sha256": "062bfaf465bf6372e8b15200808050555a037fd5d1b40a56dec67137c4262748",
+        "content": [
+          {
+            "member_id": "member_b097379f48ad7a130b9adbac",
+            "thread_id": "1792137900.000000",
+            "summary": "Casey Tran (TUTOR) reports an audio playback problem on task AUD-741 in Firefox 132: the audio played the first time, but after dragging the waveform back to the start the sound stops and the time display stays at 0:00. Riley Chen (QA_TUTOR) asks for the task ID and browser build, saying a second reproduction is needed before filing. Casey replies with AUD-741 and Firefox 132.0.2, adding that reopening the task restores playback until the next seek. The thread contains no diagnosis, fix, or handling decision, and the report does not pose an explicit question or request a decision.",
+            "central_question": null,
+            "attributed_agent1_resolution": {
+              "state": "UNRESOLVED",
+              "rationale": "The root is a symptom report with no explicit question or requested decision (no preference, severity, label, or action is asked for), so there is no central question to preserve. The only reply is an evidence request (task ID, browser build, and a second reproduction before filing), which is diagnostic and does not establish an answer. Casey's follow-up supplies the requested details and a workaround observation (reopening restores playback until the next seek) but no cause, fix, or handling decision. No message supplies a substantive conclusion, and no TEAM_LEAD endorsement or eligible author exists, so the thread remains unresolved.",
+              "agent1_verification_status": "CORRECTED",
+              "note": "Agent 1 label, not evidence; NEEDS_REVIEW means Agent 1 did not verify it. Assess resolution from the member messages."
+            },
+            "agent1_review_required": false,
+            "agent1_review_reason": "",
+            "note": "Agent 1 interpretation, not source evidence; cite member messages for incident facts."
+          },
+          {
+            "member_id": "member_77774044871dcbe2f1dfe164",
+            "thread_id": "1792139520.000000",
+            "summary": "Jamie Park (TUTOR) reports that on task AUD-754 in Chrome 131.0.6778.85, reloading gives only one listen; once the scrubber is moved, the play triangle toggles but the clock never advances. Riley Chen (QA_TUTOR) says they reproduced the stuck clock on that task and that the downloaded WAV plays normally. No cause, fix, workaround, or guidance from a lead or engineer is given.",
+            "central_question": null,
+            "attributed_agent1_resolution": {
+              "state": "UNRESOLVED",
+              "rationale": "The root is an incident report with no explicit question or decision request. The only reply confirms reproduction and adds that the downloaded WAV plays fine, which is a diagnostic observation. No cause, resolution, or guidance is established, and no TEAM_LEAD or ENGINEER response or endorsement exists.",
+              "agent1_verification_status": "VERIFIED",
+              "note": "Agent 1 label, not evidence; NEEDS_REVIEW means Agent 1 did not verify it. Assess resolution from the member messages."
+            },
+            "agent1_review_required": false,
+            "agent1_review_reason": "",
+            "note": "Agent 1 interpretation, not source evidence; cite member messages for incident facts."
+          },
+          {
+            "member_id": "member_c945ef64798eef3548b64165",
+            "thread_id": "1792141440.000000",
+            "summary": "Drew Kim (TUTOR) reports an endless spinner after using jump-back on task AUD-768 in Firefox 132.0.2, noting that playback had already worked before the jump-back. Drew asks whether anyone else is seeing it. Avery Lin (TEAM_LEAD) replies asking Drew to keep the affected task open and to add browser and task details to a single report. No one else confirms the issue, and no cause or fix is stated.",
+            "central_question": "Is anyone else experiencing an endless spinner after using jump-back in the audio task tool (AUD-768, Firefox 132.0.2), even though playback had already worked?",
+            "attributed_agent1_resolution": {
+              "state": "UNRESOLVED",
+              "rationale": "The root asks whether others see the same spinner issue. The only reply is a request to keep the task open and consolidate browser and task details into one report, which is evidence gathering. It does not confirm the issue for others, give a cause, or state a conclusion, so nothing about the question is established.",
+              "agent1_verification_status": "NEEDS_REVIEW",
+              "note": "Agent 1 label, not evidence; NEEDS_REVIEW means Agent 1 did not verify it. Assess resolution from the member messages."
+            },
+            "agent1_review_required": true,
+            "agent1_review_reason": "Still unverified after one targeted revision: The audit found no requested decision, but the interpretation supplies a question.",
+            "note": "Agent 1 interpretation, not source evidence; cite member messages for incident facts."
+          }
+        ]
+      }
+    ],
+    "drafts": {
+      "initial": null,
+      "final": null,
+      "revised": false
+    },
+    "grounding": {
+      "structural_issues": [],
+      "action_issues": [],
+      "statements": [],
+      "unsupported": [],
+      "unjudged": [],
+      "extraneous_verdicts": [],
+      "status": "NOT_RUN",
+      "basis": "NO_DRAFT"
+    },
+    "temporal": null,
+    "temporal_before_grounding": null,
+    "severity": {
+      "assessment": {
+        "level": "UNKNOWN",
+        "assessment_status": "UNASSESSED",
+        "rubric_version": null,
+        "rubric_content_sha256": null,
+        "rubric_project_id": null,
+        "rubric_scope": null,
+        "rationale": null,
+        "matched_signals": [],
+        "evidence": [],
+        "occurrence": {
+          "affected_reporters": {
+            "status": "UNKNOWN",
+            "count": null,
+            "ids": [],
+            "basis": null,
+            "evidence": []
+          },
+          "affected_tasks": {
+            "status": "UNKNOWN",
+            "count": null,
+            "ids": [],
+            "basis": null,
+            "evidence": []
+          },
+          "relevant_threads": [],
+          "reporting_window": null,
+          "historical_recurrence": {
+            "status": "NOT_CHECKED",
+            "sources": [],
+            "event_series_ids": []
+          },
+          "known_denominator": null,
+          "structural": null,
+          "semantic_identification": "PENDING"
+        },
+        "inherited_from": {
+          "level": "UNKNOWN",
+          "assessment_status": "UNASSESSED",
+          "assessment_deferred_to": "AGENT3",
+          "reason": "Agent 2 performs taxonomy only."
+        }
+      },
+      "issues": [],
+      "notes": [],
+      "proposal": null
+    },
+    "resolution": {
+      "topic": "UNKNOWN",
+      "members": {
+        "member_b097379f48ad7a130b9adbac": "UNKNOWN",
+        "member_77774044871dcbe2f1dfe164": "UNKNOWN",
+        "member_c945ef64798eef3548b64165": "UNKNOWN"
+      },
+      "agent1_attributed": [
+        {
+          "member_id": "member_b097379f48ad7a130b9adbac",
+          "state": "UNRESOLVED",
+          "agent1_verification_status": "CORRECTED",
+          "agent1_review_required": false
+        },
+        {
+          "member_id": "member_77774044871dcbe2f1dfe164",
+          "state": "UNRESOLVED",
+          "agent1_verification_status": "VERIFIED",
+          "agent1_review_required": false
+        },
+        {
+          "member_id": "member_c945ef64798eef3548b64165",
+          "state": "UNRESOLVED",
+          "agent1_verification_status": "NEEDS_REVIEW",
+          "agent1_review_required": true
+        }
+      ]
+    },
+    "established_handling": [],
+    "coverage_issues": [],
+    "action_source": null,
+    "action_notes": [],
+    "tot": {
+      "status": "NOT_TRIGGERED",
+      "triggers": []
+    },
+    "evidence_ledger": {
+      "m:C_91AUDIO01:1792137900.000000": {
+        "evidence_id": "m:C_91AUDIO01:1792137900.000000",
+        "origin": "member_message",
+        "use": "MEMBER_REPORT",
+        "member_id": "member_b097379f48ad7a130b9adbac",
+        "channel_id": "C_91AUDIO01",
+        "thread_id": "1792137900.000000",
+        "message_id": "1792137900.000000",
+        "author_id": "U9106",
+        "author_name": "Casey Tran",
+        "author_role": "TUTOR",
+        "timestamp": "2026-10-16T08:05:00Z",
+        "thread_starter_id": "U9106",
+        "thread_starter_role": "TUTOR",
+        "reactions": [],
+        "excerpt": "The sound stops when I drag the waveform back to the start, and the time display sits at 0:00. Task AUD-741, Firefox 132. It played the first time."
+      },
+      "m:C_91AUDIO01:1792138020.000000": {
+        "evidence_id": "m:C_91AUDIO01:1792138020.000000",
+        "origin": "member_message",
+        "use": "MEMBER_REPORT",
+        "member_id": "member_b097379f48ad7a130b9adbac",
+        "channel_id": "C_91AUDIO01",
+        "thread_id": "1792137900.000000",
+        "message_id": "1792138020.000000",
+        "author_id": "U9104",
+        "author_name": "Riley Chen",
+        "author_role": "QA_TUTOR",
+        "timestamp": "2026-10-16T08:07:00Z",
+        "thread_starter_id": "U9106",
+        "thread_starter_role": "TUTOR",
+        "reactions": [],
+        "excerpt": "Can you send the task ID and browser build? We need a second reproduction before filing."
+      },
+      "m:C_91AUDIO01:1792138140.000000": {
+        "evidence_id": "m:C_91AUDIO01:1792138140.000000",
+        "origin": "member_message",
+        "use": "MEMBER_REPORT",
+        "member_id": "member_b097379f48ad7a130b9adbac",
+        "channel_id": "C_91AUDIO01",
+        "thread_id": "1792137900.000000",
+        "message_id": "1792138140.000000",
+        "author_id": "U9106",
+        "author_name": "Casey Tran",
+        "author_role": "TUTOR",
+        "timestamp": "2026-10-16T08:09:00Z",
+        "thread_starter_id": "U9106",
+        "thread_starter_role": "TUTOR",
+        "reactions": [],
+        "excerpt": "AUD-741, Firefox 132.0.2. Reopening restores it until I seek again."
+      },
+      "m:C_91AUDIO01:1792139520.000000": {
+        "evidence_id": "m:C_91AUDIO01:1792139520.000000",
+        "origin": "member_message",
+        "use": "MEMBER_REPORT",
+        "member_id": "member_77774044871dcbe2f1dfe164",
+        "channel_id": "C_91AUDIO01",
+        "thread_id": "1792139520.000000",
+        "message_id": "1792139520.000000",
+        "author_id": "U9107",
+        "author_name": "Jamie Park",
+        "author_role": "TUTOR",
+        "timestamp": "2026-10-16T08:32:00Z",
+        "thread_starter_id": "U9107",
+        "thread_starter_role": "TUTOR",
+        "reactions": [],
+        "excerpt": "Reloading gives me one listen. As soon as I move the scrubber, the play triangle changes but the clock never advances. AUD-754, Chrome 131.0.6778.85."
+      },
+      "m:C_91AUDIO01:1792139640.000000": {
+        "evidence_id": "m:C_91AUDIO01:1792139640.000000",
+        "origin": "member_message",
+        "use": "MEMBER_REPORT",
+        "member_id": "member_77774044871dcbe2f1dfe164",
+        "channel_id": "C_91AUDIO01",
+        "thread_id": "1792139520.000000",
+        "message_id": "1792139640.000000",
+        "author_id": "U9104",
+        "author_name": "Riley Chen",
+        "author_role": "QA_TUTOR",
+        "timestamp": "2026-10-16T08:34:00Z",
+        "thread_starter_id": "U9107",
+        "thread_starter_role": "TUTOR",
+        "reactions": [],
+        "excerpt": "I reproduced the stuck clock on that task. The downloaded WAV plays normally."
+      },
+      "m:C_91AUDIO01:1792141440.000000": {
+        "evidence_id": "m:C_91AUDIO01:1792141440.000000",
+        "origin": "member_message",
+        "use": "MEMBER_REPORT",
+        "member_id": "member_c945ef64798eef3548b64165",
+        "channel_id": "C_91AUDIO01",
+        "thread_id": "1792141440.000000",
+        "message_id": "1792141440.000000",
+        "author_id": "U9108",
+        "author_name": "Drew Kim",
+        "author_role": "TUTOR",
+        "timestamp": "2026-10-16T09:04:00Z",
+        "thread_starter_id": "U9108",
+        "thread_starter_role": "TUTOR",
+        "reactions": [],
+        "excerpt": "Anyone else getting the endless spinner after using jump-back? AUD-768, Firefox 132.0.2. This is after playback already worked."
+      },
+      "m:C_91AUDIO01:1792141560.000000": {
+        "evidence_id": "m:C_91AUDIO01:1792141560.000000",
+        "origin": "member_message",
+        "use": "MEMBER_REPORT",
+        "member_id": "member_c945ef64798eef3548b64165",
+        "channel_id": "C_91AUDIO01",
+        "thread_id": "1792141440.000000",
+        "message_id": "1792141560.000000",
+        "author_id": "U9101",
+        "author_name": "Avery Lin",
+        "author_role": "TEAM_LEAD",
+        "timestamp": "2026-10-16T09:06:00Z",
+        "thread_starter_id": "U9108",
+        "thread_starter_role": "TUTOR",
+        "reactions": [],
+        "excerpt": "Please keep the affected task open and add browser and task details to one report."
+      },
+      "k:pilot-audio-incident-triage@1.3:3b2b70f0": {
+        "evidence_id": "k:pilot-audio-incident-triage@1.3:3b2b70f0",
+        "origin": "retrieved_source",
+        "use": "CURRENT_GUIDANCE",
+        "citation": {
+          "document_id": "knowledge_396c099397e2b3be500a9f33b2f5bae3e3224f9337fe7a4d600046bf30f4d427",
+          "version_id": "version_9e1bc9706f1c82830c52eb93b1721f33c95a461ec5deeebc707c471a89f1d3d3",
+          "chunk_id": "chunk_3b2b70f032534219699d1bd9da638c98",
+          "authoring": "pilot-audio-incident-triage@1.3",
+          "title": "Audio incident triage (v1.3)",
+          "sections": [
+            "Playback failures"
+          ],
+          "source": {
+            "batch_id": null,
+            "channel_id": null,
+            "manual_key": "pilot-audio-incident-triage",
+            "message_id": null,
+            "permalink": null,
+            "project_id": "audio_multimodal",
+            "reference": null,
+            "system": "manual",
+            "thread_id": null,
+            "workspace_id": null
+          }
+        },
+        "source_type": "guideline",
+        "record_kind": "guideline",
+        "applicability": {
+          "state": "CURRENT",
+          "revision_state": "CURRENT",
+          "version_mode": "current",
+          "replaced_by": [],
+          "unverified_supersession": [],
+          "supersedes": [],
+          "enactment": null,
+          "other_revisions": []
+        },
+        "dates": {
+          "source_date": "2026-09-26T00:00:00Z",
+          "basis": "effective_at",
+          "effective_at": "2026-09-26T00:00:00Z",
+          "created_at": null,
+          "valid_until": null,
+          "expired_as_of": false,
+          "reference_time": "2026-10-17T00:00:00Z"
+        },
+        "scope": {
+          "project_id": "audio_multimodal",
+          "batch_id": null,
+          "scope": "project",
+          "batch_relation": "project_wide"
+        },
+        "authority": {
+          "role": "TEAM_LEAD",
+          "actor": "fixture",
+          "actor_relation": "RECORD_AUTHORITY",
+          "approval_status": "EXPLICIT_SOURCE_MARKER",
+          "provenance": "synthetic_fixture_record"
+        },
+        "authorship": {
+          "author_id": null,
+          "verified": false,
+          "basis": "NO_AUTHOR_RECORDED"
+        },
+        "recorded_states": {
+          "status": "approved",
+          "decision_status": null,
+          "execution_status": null,
+          "outcome_status": null
+        },
+        "upstream_review": null,
+        "excerpt": "## Playback failures\nFor a reproducible player freeze after seeking, collect task IDs, browser versions, and reproduction steps. Send one scoped engineering incident for the affected player reports. If a downloaded clip is silent while the player counter and seeking work, follow the media-input quality procedure for that clip."
+      },
+      "k:pilot-media-input-quality-faq@1.1:00309a9c": {
+        "evidence_id": "k:pilot-media-input-quality-faq@1.1:00309a9c",
+        "origin": "retrieved_source",
+        "use": "CURRENT_GUIDANCE",
+        "citation": {
+          "document_id": "knowledge_3e418d9ffc0b2630409e222058fcc87c5cb25b3a9b8933277f75e55ed4d8c22e",
+          "version_id": "version_724f51858bf4ea6c76042afbffe9e86f9b00659501e878b7692e687f15f86caf",
+          "chunk_id": "chunk_00309a9c02047eb51f97dfb4abdfc898",
+          "authoring": "pilot-media-input-quality-faq@1.1",
+          "title": "Media-input quality FAQ (v1.1)",
+          "sections": [
+            "Silent input"
+          ],
+          "source": {
+            "batch_id": null,
+            "channel_id": null,
+            "manual_key": "pilot-media-input-quality-faq",
+            "message_id": null,
+            "permalink": null,
+            "project_id": "audio_multimodal",
+            "reference": null,
+            "system": "manual",
+            "thread_id": null,
+            "workspace_id": null
+          }
+        },
+        "source_type": "faq",
+        "record_kind": "faq",
+        "applicability": {
+          "state": "CURRENT",
+          "revision_state": "CURRENT",
+          "version_mode": "current",
+          "replaced_by": [],
+          "unverified_supersession": [],
+          "supersedes": [],
+          "enactment": null,
+          "other_revisions": []
+        },
+        "dates": {
+          "source_date": "2026-09-28T00:00:00Z",
+          "basis": "effective_at",
+          "effective_at": "2026-09-28T00:00:00Z",
+          "created_at": null,
+          "valid_until": null,
+          "expired_as_of": false,
+          "reference_time": "2026-10-17T00:00:00Z"
+        },
+        "scope": {
+          "project_id": "audio_multimodal",
+          "batch_id": null,
+          "scope": "project",
+          "batch_relation": "project_wide"
+        },
+        "authority": {
+          "role": "TEAM_LEAD",
+          "actor": "fixture",
+          "actor_relation": "RECORD_AUTHORITY",
+          "approval_status": "EXPLICIT_SOURCE_MARKER",
+          "provenance": "synthetic_fixture_record"
+        },
+        "authorship": {
+          "author_id": null,
+          "verified": false,
+          "basis": "NO_AUTHOR_RECORDED"
+        },
+        "recorded_states": {
+          "status": "approved",
+          "decision_status": null,
+          "execution_status": null,
+          "outcome_status": null
+        },
+        "upstream_review": null,
+        "excerpt": "## Silent input\nIf a local copy is confirmed to be silent and the player advances normally, preserve the sample and use the media-input quality flag. When the task ID or the local playback check is missing, ask for it before assigning a disposition."
+      }
+    },
+    "card": {
+      "contract_version": "agent3-advice-card-v4",
+      "record_type": "ADVICE_CARD",
+      "card_id": "card_83168a31f32c6c176a58f9bd02c4e8e2",
+      "project_id": "audio_multimodal",
+      "topic_name": "Audio playback stalls after seeking or scrubbing",
+      "card_line": "NEEDS_REVIEW",
+      "summary": "No advisor draft is available; the threads and open review flags are listed.",
+      "severity": {
+        "level": "UNKNOWN",
+        "assessment_status": "UNASSESSED",
+        "rubric_version": null,
+        "rubric_content_sha256": null,
+        "rubric_project_id": null,
+        "rubric_scope": null,
+        "rationale": null,
+        "matched_signals": [],
+        "evidence": [],
+        "occurrence": {
+          "affected_reporters": {
+            "status": "UNKNOWN",
+            "count": null,
+            "ids": [],
+            "basis": null,
+            "evidence": []
+          },
+          "affected_tasks": {
+            "status": "UNKNOWN",
+            "count": null,
+            "ids": [],
+            "basis": null,
+            "evidence": []
+          },
+          "relevant_threads": [],
+          "reporting_window": null,
+          "historical_recurrence": {
+            "status": "NOT_CHECKED",
+            "sources": [],
+            "event_series_ids": []
+          },
+          "known_denominator": null,
+          "structural": null,
+          "semantic_identification": "PENDING"
+        },
+        "inherited_from": {
+          "level": "UNKNOWN",
+          "assessment_status": "UNASSESSED",
+          "assessment_deferred_to": "AGENT3",
+          "reason": "Agent 2 performs taxonomy only."
+        }
+      },
+      "severity_is_provisional": true,
+      "resolution_status": "UNKNOWN",
+      "recommended_action": null,
+      "reasoning": "No advisor reasoning is available. Agent 1's earlier labels (an input, not evidence): unresolved ×3; 1 of 3 were not verified by Agent 1.",
+      "supporting_sources": [],
+      "related_threads": [
+        {
+          "project_id": "audio_multimodal",
+          "batch_id": "audio_pilot_17",
+          "channel_id": "C_91AUDIO01",
+          "thread_id": "1792137900.000000",
+          "member_id": "member_b097379f48ad7a130b9adbac",
+          "permalink": null,
+          "display_reference": "1792137900.000000",
+          "label": "#audio-pilot, 2026-10-16, started by a tutor: \"The sound stops when I drag the waveform back to the start, and the time display sits at 0:00.\"",
+          "opening_text": "The sound stops when I drag the waveform back to the start, and the time display sits at 0:00. Task AUD-741, Firefox 132. It played the first time."
+        },
+        {
+          "project_id": "audio_multimodal",
+          "batch_id": "audio_pilot_17",
+          "channel_id": "C_91AUDIO01",
+          "thread_id": "1792139520.000000",
+          "member_id": "member_77774044871dcbe2f1dfe164",
+          "permalink": null,
+          "display_reference": "1792139520.000000",
+          "label": "#audio-pilot, 2026-10-16, started by a tutor: \"Reloading gives me one listen.\"",
+          "opening_text": "Reloading gives me one listen. As soon as I move the scrubber, the play triangle changes but the clock never advances. AUD-754, Chrome 131.0.6778.85."
+        },
+        {
+          "project_id": "audio_multimodal",
+          "batch_id": "audio_pilot_17",
+          "channel_id": "C_91AUDIO01",
+          "thread_id": "1792141440.000000",
+          "member_id": "member_c945ef64798eef3548b64165",
+          "permalink": null,
+          "display_reference": "1792141440.000000",
+          "label": "#audio-pilot, 2026-10-16, started by a tutor: \"Anyone else getting the endless spinner after using jump-back?\"",
+          "opening_text": "Anyone else getting the endless spinner after using jump-back? AUD-768, Firefox 132.0.2. This is after playback already worked."
+        }
+      ],
+      "confidence": 0.0,
+      "confidence_band": "LOW",
+      "needs_review_reasons": [
+        {
+          "code": "LOW_CONFIDENCE",
+          "detail": "No valid Advisor draft; confidence recorded as 0.",
+          "obligation_ids": [],
+          "evidence": []
+        },
+        {
+          "code": "INHERITED_FLAG",
+          "detail": "Upstream obligations remain open: inherited_agent1_review x1",
+          "obligation_ids": [],
+          "evidence": []
+        },
+        {
+          "code": "GROUNDING_NOT_RUN",
+          "detail": "Grounding not run: NO_DRAFT; no Advisor statement is shown as established.",
+          "obligation_ids": [],
+          "evidence": []
+        },
+        {
+          "code": "OTHER",
+          "detail": "draft: FAILED (Timeout: litellm.Timeout: APITimeoutError - Request timed out. Error_str: The read operation timed out)",
+          "obligation_ids": [],
+          "evidence": []
+        }
+      ],
+      "inherited_flags": [
+        {
+          "origin": "agent1",
+          "kind": "inherited_agent1_review",
+          "candidate_group_id": "cluster_d6ed9f18b67e21da",
+          "obligation_id": null,
+          "member_ids": [
+            "member_c945ef64798eef3548b64165"
+          ],
+          "detail": "Still unverified after one targeted revision: The audit found no requested decision, but the interpretation supplies a question."
+        }
+      ],
+      "checks": {
+        "grounding": "NOT_RUN",
+        "temporal_conflict": "NOT_CHECKED",
+        "open_confirmation": "NOT_CHECKED"
+      },
+      "lineage": {
+        "agent3_run_id": "agent3overnight_2754e69bb94cbf7fe5f93d24483b54b6",
+        "handoff_contract": "agent2-taxonomy-handoff-v2",
+        "agent2_export_sha256": "72f7a6c1cc75821b9c7b8451b311704926f66270117b29c782fb571f01733f5f",
+        "agent2_schema_version": 8,
+        "candidate_group_id": "cluster_d6ed9f18b67e21da",
+        "topic_id": "cluster_d6ed9f18b67e21da/topic_1",
+        "member_ids": [
+          "member_b097379f48ad7a130b9adbac",
+          "member_77774044871dcbe2f1dfe164",
+          "member_c945ef64798eef3548b64165"
+        ],
+        "project_id": "audio_multimodal",
+        "batch_id": "audio_pilot_17"
+      },
+      "review_notes": [
+        "The advisor produced no usable draft; the threads are listed for review.",
+        "1 earlier review flag is still open on these threads.",
+        "The advisor's statements could not be checked against the evidence, so none is shown as established.",
+        "The drafting step did not complete (a request limit was reached); details are in the diagnostics."
+      ],
+      "details": [],
+      "next_step": {
+        "status": "NO_RECOMMENDATION_AVAILABLE",
+        "rationale": null,
+        "explanation": "The advisor produced no usable draft, so no next step can be stated."
+      }
+    },
+    "review_items": [
+      {
+        "contract_version": "agent3-model-review-item-v1",
+        "record_type": "MODEL_REVIEW_ITEM",
+        "item_id": "review_1fdf8528e3f2b34b5bb6545fcfb55bea",
+        "origin": "agent1",
+        "kind": "inherited_agent1_review",
+        "project_id": "audio_multimodal",
+        "batch_id": "audio_pilot_17",
+        "candidate_group_id": "cluster_d6ed9f18b67e21da",
+        "topic_id": "cluster_d6ed9f18b67e21da/topic_1",
+        "member_ids": [
+          "member_c945ef64798eef3548b64165"
+        ],
+        "obligation_id": null,
+        "reason": "Still unverified after one targeted revision: The audit found no requested decision, but the interpretation supplies a question.",
+        "source_obligation": {
+          "origin": "agent1",
+          "member_id": "member_c945ef64798eef3548b64165",
+          "project_id": "audio_multimodal",
+          "batch_id": "audio_pilot_17",
+          "channel_id": "C_91AUDIO01",
+          "thread_id": "1792141440.000000",
+          "candidate_group_id": "cluster_d6ed9f18b67e21da",
+          "candidate_sha256": "70bf8e36b2e345c847b46da84a382b3082d6eb4c70740a7ba267436714c9a310",
+          "source_sha256": "a3436d65d85bbc8a50f8413a47e30f533ed6e1282c8d0ee8832c9a34894a2f33",
+          "agent1_record": {
+            "project_id": "audio_multimodal",
+            "batch_id": "audio_pilot_17",
+            "channel_id": "C_91AUDIO01",
+            "thread_id": "1792141440.000000",
+            "language": null,
+            "model": "openrouter/anthropic/claude-sonnet-5.5",
+            "run_config_sha256": "1157d17d790d42734ebe0a02e6587505f895d441a56f566f16e7777bc35f15cf",
+            "handoff_version": 1,
+            "verification_origin": "bounded_verification",
+            "input_sha256": "a3436d65d85bbc8a50f8413a47e30f533ed6e1282c8d0ee8832c9a34894a2f33",
+            "candidate_sha256": "70bf8e36b2e345c847b46da84a382b3082d6eb4c70740a7ba267436714c9a310",
+            "source_message_ids": [
+              "1792141440.000000",
+              "1792141560.000000"
+            ],
+            "interpretation": {
+              "thread_id": "1792141440.000000",
+              "summary": "Drew Kim (TUTOR) reports an endless spinner after using jump-back on task AUD-768 in Firefox 132.0.2, noting that playback had already worked before the jump-back. Drew asks whether anyone else is seeing it. Avery Lin (TEAM_LEAD) replies asking Drew to keep the affected task open and to add browser and task details to a single report. No one else confirms the issue, and no cause or fix is stated.",
+              "central_question": "Is anyone else experiencing an endless spinner after using jump-back in the audio task tool (AUD-768, Firefox 132.0.2), even though playback had already worked?",
+              "resolution_state": "UNRESOLVED",
+              "authoritative_response_present": false,
+              "authority_evidence_message_ids": [],
+              "resolution_rationale": "The root asks whether others see the same spinner issue. The only reply is a request to keep the task open and consolidate browser and task details into one report, which is evidence gathering. It does not confirm the issue for others, give a cause, or state a conclusion, so nothing about the question is established.",
+              "confidence": 0.88
+            },
+            "automated_verification_status": "NEEDS_REVIEW",
+            "verification_status": "NEEDS_REVIEW",
+            "review_required": true,
+            "revision_count": 1,
+            "provisional_fields": [
+              "central_question"
+            ],
+            "review_reason": "Still unverified after one targeted revision: The audit found no requested decision, but the interpretation supplies a question.",
+            "review_reasons": [
+              "Still unverified after one targeted revision: The audit found no requested decision, but the interpretation supplies a question."
+            ],
+            "review_findings": [
+              {
+                "category": "CENTRAL_QUESTION",
+                "explanation": "The audit found no requested decision, but the interpretation supplies a question.",
+                "evidence_message_ids": [
+                  "1792141440.000000"
+                ],
+                "evidence_quotes": [],
+                "disputed_fields": [
+                  "central_question"
+                ],
+                "origin": "automated_verification"
+              }
+            ],
+            "content_reviews": [],
+            "review_applicability": [],
+            "lineage": {
+              "baseline_file": "D:\\Christie\\2026_AgenticAI\\threadsense\\experiments\\fresh_15_v1\\runs\\A_sonnet_v1\\stages\\agent1_interpret\\agent1_interpretations_v1\\interpretations.json",
+              "baseline_record_sha256": "334793defe015d7f4d224e8d3ea594cd71fcca04968e0a79595ce1b4183b43ad",
+              "baseline_run_config_sha256": "0852cee621fe6e87b673f341cad1a3f2ab80d7e1ca705ead40df2a077bf31fb0",
+              "baseline_model": "openrouter/anthropic/claude-sonnet-5.5",
+              "baseline_created_at": "2026-11-16T18:43:00.604790+00:00",
+              "source_file": "sources/a3436d65d85bbc8a50f8413a47e30f533ed6e1282c8d0ee8832c9a34894a2f33.json",
+              "verification_file": "records/ec0429c417e72393a0c14b195593433333083ceb288fe8bb5604d00b201dd4ac/result.json",
+              "effective_attempt": "original",
+              "original_candidate_sha256": "70bf8e36b2e345c847b46da84a382b3082d6eb4c70740a7ba267436714c9a310",
+              "revised_candidate_sha256": "0a3a4e83fb015c11ac52c6de57f2dafa7c9db06ff4471adf391abd971a58330a",
+              "effective_candidate_sha256": "70bf8e36b2e345c847b46da84a382b3082d6eb4c70740a7ba267436714c9a310",
+              "original_candidate_reference": "records/ec0429c417e72393a0c14b195593433333083ceb288fe8bb5604d00b201dd4ac/result.json#/result/original_interpretation",
+              "revised_candidate_reference": "records/ec0429c417e72393a0c14b195593433333083ceb288fe8bb5604d00b201dd4ac/result.json#/result/revised_interpretation",
+              "audit_history_reference": "records/ec0429c417e72393a0c14b195593433333083ceb288fe8bb5604d00b201dd4ac/result.json#/result/passes"
+            }
+          },
+          "agent1_export_file": "D:\\Christie\\2026_AgenticAI\\threadsense\\experiments\\fresh_15_v1\\runs\\A_sonnet_v1\\stages\\agent1_relevance\\relevance_v1\\clustering_input\\interpretations.json",
+          "agent1_export_sha256": "7fc89576d9b1445d0eda7d05b8f867d18aa3a2250d7ed287927478650c236fc2",
+          "agent1_lineage_base": "D:\\Christie\\2026_AgenticAI\\threadsense\\experiments\\fresh_15_v1\\runs\\A_sonnet_v1\\stages\\agent1_relevance\\relevance_v1\\clustering_input"
+        },
+        "related_card_ids": [
+          "card_83168a31f32c6c176a58f9bd02c4e8e2"
+        ],
+        "actions": []
+      }
+    ],
+    "coverage": {
+      "group_members_outside_this_card": [],
+      "uncarried_obligations": []
+    },
+    "budget": {
+      "consumed": {
+        "retrieval_calls": 1,
+        "model_calls": 1
+      },
+      "limits": {
+        "model_calls_per_topic": 4,
+        "model_calls_total": 28,
+        "retrieval_calls_per_topic": 6,
+        "retrieval_calls_total": 42
+      }
+    },
+    "diagnostics": []
+  }
+}

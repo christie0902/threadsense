@@ -1,0 +1,1179 @@
+{
+  "work_item": {
+    "candidate_group_id": "cluster_ef05cdb71f8e655f",
+    "project_id": "response_preference",
+    "batch_id": "response_pilot_17",
+    "work_id": "topic:cluster_ef05cdb71f8e655f/topic_1",
+    "kind": "TOPIC",
+    "topic_id": "cluster_ef05cdb71f8e655f/topic_1",
+    "topic_name": "Formatting differences and tie labeling",
+    "member_ids": [
+      "member_b82cc19fe1fa9c4e46c179d0"
+    ],
+    "pilot_scenario": null,
+    "in_scope": true
+  },
+  "workflow": {
+    "outcome": "CARD_WITH_STAGE_FAILURES",
+    "card_id": "card_b4195923e4d3866f7c4ef21e36525f71",
+    "card_line": "NEEDS_REVIEW",
+    "grounding": "NOT_RUN",
+    "stage_failures": [
+      {
+        "stage": "grounding",
+        "status": "FAILED",
+        "failure_class": "PROVIDER"
+      }
+    ],
+    "semantic_source": "LIVE_MODEL"
+  },
+  "result": {
+    "scenario": {
+      "id": "topic:cluster_ef05cdb71f8e655f/topic_1",
+      "candidate_group_id": "cluster_ef05cdb71f8e655f",
+      "focus": "Formatting differences and tie labeling",
+      "topic_id": "cluster_ef05cdb71f8e655f/topic_1"
+    },
+    "status": "CARD",
+    "topic": {
+      "project_id": "response_preference",
+      "batch_id": "response_pilot_17",
+      "candidate_group_id": "cluster_ef05cdb71f8e655f",
+      "topic_id": "cluster_ef05cdb71f8e655f/topic_1",
+      "topic_label": "Formatting differences and tie labeling",
+      "projection_gap": null,
+      "as_of": "2026-10-17T00:00:00Z",
+      "member_ids": [
+        "member_b82cc19fe1fa9c4e46c179d0"
+      ],
+      "initial_query": "Formatting differences and tie labeling. Does the presence of a blank line at the beginning of an otherwise identical answer change the label?"
+    },
+    "retrieval_trace": [
+      {
+        "step": 1,
+        "purpose": "initial_current_guidance",
+        "gap_id": null,
+        "query": "Formatting differences and tie labeling. Does the presence of a blank line at the beginning of an otherwise identical answer change the label?",
+        "source_types": [
+          "guideline",
+          "faq",
+          "decision",
+          "announcement"
+        ],
+        "version_mode": "current",
+        "as_of": "2026-10-17T00:00:00Z",
+        "batch": "response_pilot_17",
+        "top_k": 5,
+        "status": "DONE",
+        "mode": "hybrid",
+        "use_mmr": true,
+        "mmr_lambda": 0.9,
+        "result_ids": [
+          "k:pilot-response-preference-scoring-guide@1.1:d0c2c6a5"
+        ],
+        "new_evidence_ids": [
+          "k:pilot-response-preference-scoring-guide@1.1:d0c2c6a5"
+        ],
+        "eligible_chunks": 1,
+        "added": []
+      }
+    ],
+    "retrieval_notes": {
+      "withheld_by_version": [],
+      "version_diagnostics": []
+    },
+    "follow_ups": [],
+    "unfilled_gaps": [],
+    "model_calls": [
+      {
+        "stage": "draft",
+        "schema": "AdvisorDraft",
+        "agent1_context": {
+          "sha256": "3cce80caa4c9c14a5ff35d59bc17360e0e57dc57e1c232b691c1dcbf771f7935",
+          "boundary": "IN_HTTP_BODY"
+        },
+        "raw": "{\n  \"contract_version\": \"agent3-advisor-draft-v11\",\n  \"summary\": null,\n  \"summary_sentences\": [\n    {\n      \"text\": \"A tutor asks whether a leading blank line changes the label when two answers are otherwise identical.\",\n      \"support_claim_ids\": [\"c1\"],\n      \"depends_on\": []\n    },\n    {\n      \"text\": \"The team lead answered the question by instructing the tutor to use Tie for that item because the task does not specify exact serialization.\",\n      \"support_claim_ids\": [\"c2\"],\n      \"depends_on\": [1]\n    }\n  ],\n  \"detail_sentences\": [\n    {\n      \"text\": \"The current scoring guide says whitespace alone does not break a tie when content is otherwise equivalent; exact serialized formats must be evaluated when the task requires them.\",\n      \"support_claim_ids\": [\"c3\"],\n      \"depends_on\": [],\n      \"summary_depends_on\": []\n    }\n  ],\n  \"reasoning\": \"The tutor's specific question has an explicit answer from the team lead, and that answer agrees with the current scoring guide. The thread does not show an unresolved handling question or a separate operational problem requiring intervention. No additional research is needed to support leaving this resolved item without further action.\",\n  \"claims\": [\n    {\n      \"claim_id\": \"c1\",\n      \"kind\": \"INCIDENT_FACT\",\n      \"text\": \"A tutor reports that two answers are otherwise identical except for a leading blank line and asks whether that changes the label.\",\n      \"evidence_ids\": [\"m:C_91RESP001:1792155120.000000\"],\n      \"attributions\": [\n        {\n          \"user_id\": \"U9107\",\n          \"relation\": \"AUTHOR\",\n          \"evidence_id\": \"m:C_91RESP001:1792155120.000000\"\n        }\n      ],\n      \"quote\": null,\n      \"quote_kind\": \"PARAPHRASE\",\n      \"material\": true\n    },\n    {\n      \"claim_id\": \"c2\",\n      \"kind\": \"THREAD_INSTRUCTION\",\n      \"text\": \"The team lead instructs the tutor to use Tie for this item, stating that the task does not specify exact serialization.\",\n      \"evidence_ids\": [\"m:C_91RESP001:1792155240.000000\"],\n      \"attributions\": [\n        {\n          \"user_id\": \"U9103\",\n          \"relation\": \"AUTHOR\",\n          \"evidence_id\": \"m:C_91RESP001:1792155240.000000\"\n        },\n        {\n          \"user_id\": \"U9107\",\n          \"relation\": \"THREAD_STARTER\",\n          \"evidence_id\": \"m:C_91RESP001:1792155240.000000\"\n        }\n      ],\n      \"quote\": \"Use Tie for this item. The task doesn't specify exact serialization.\",\n      \"quote_kind\": \"VERBATIM\",\n      \"material\": true\n    },\n    {\n      \"claim_id\": \"c3\",\n      \"kind\": \"GUIDANCE\",\n      \"text\": \"The current project scoring guide says whitespace alone does not break a tie when content is otherwise equivalent; when a task specifies an exact serialized format, conformance to that requirement must be evaluated.\",\n      \"evidence_ids\": [\"k:pilot-response-preference-scoring-guide@1.1:d0c2c6a5\"],\n      \"attributions\": [],\n      \"quote\": \"When content is otherwise equivalent, whitespace alone does not break a tie. If a task specifies an exact serialized format, evaluate conformance to that requirement.\",\n      \"quote_kind\": \"VERBATIM\",\n      \"material\": true\n    }\n  ],\n  \"gaps\": [],\n  \"evidence_sufficiency\": \"SUFFICIENT\",\n  \"proposed_action\": {\n    \"action_type\": \"NO_ACTION\",\n    \"intervention_need\": null,\n    \"instruction\": \"Leave the item with the thread's Tie instruction; no further intervention is needed for this answered question.\",\n    \"rationale\": \"The team lead already answered the tutor's question, and the item-specific instruction agrees with the current scoring guide.\",\n    \"draft_text\": null,\n    \"scope_note\": \"The team lead's instruction applies to this item, not to tasks that specify an exact serialized format.\",\n    \"support_claim_ids\": [\"c1\", \"c2\", \"c3\"],\n    \"targets\": [],\n    \"context_claim_ids\": []\n  },\n  \"severity\": {\n    \"level\": \"LOW\",\n    \"rationale\": \"A tutor raised a localized labeling question that the team lead answered consistently with the current guide.\",\n    \"signals\": [],\n    \"affected_reporters\": [\n      {\n        \"author_id\": \"U9107\",\n        \"evidence_id\": \"m:C_91RESP001:1792155120.000000\"\n      }\n    ],\n    \"recurrence\": \"NOT_CHECKED\",\n    \"recurrence_evidence_ids\": [],\n    \"reported_recurrence_evidence_ids\": []\n  },\n  \"confidence\": 0.99,\n  \"open_confirmation\": \"NONE\",\n  \"open_question\": null,\n  \"open_question_evidence_ids\": [],\n  \"source_conflicts\": [],\n  \"announcement_assessments\": [],\n  \"resolution\": [\n    {\n      \"member_id\": \"member_b82cc19fe1fa9c4e46c179d0\",\n      \"state\": \"RESOLVED_IN_THREAD\",\n      \"evidence_ids\": [\n        \"m:C_91RESP001:1792155120.000000\",\n        \"m:C_91RESP001:1792155240.000000\"\n      ],\n      \"basis\": \"The team lead directly answers the tutor's labeling question with an instruction to use Tie for the item.\"\n    }\n  ],\n  \"coverage\": [\n    {\n      \"need\": \"CURRENT_GUIDANCE\",\n      \"status\": \"COVERED\",\n      \"evidence_ids\": [\"k:pilot-response-preference-scoring-guide@1.1:d0c2c6a5\"],\n      \"note\": \"The current project guide directly addresses whitespace and exact serialized formats.\",\n      \"gap_id\": null\n    },\n    {\n      \"need\": \"ANNOUNCEMENTS\",\n      \"status\": \"NOT_APPLICABLE\",\n      \"evidence_ids\": [],\n      \"note\": \"No announcement is needed to support leaving this answered item without further intervention; the current guide directly covers the question.\",\n      \"gap_id\": null\n    },\n    {\n      \"need\": \"PRIOR_DECISIONS\",\n      \"status\": \"NOT_APPLICABLE\",\n      \"evidence_ids\": [],\n      \"note\": \"The tutor does not reference an earlier workaround or decision, and historical outcomes are not needed to assess this explicitly answered item.\",\n      \"gap_id\": null\n    },\n    {\n      \"need\": \"MEMBER_QUESTIONS\",\n      \"status\": \"COVERED\",\n      \"evidence_ids\": [\n        \"m:C_91RESP001:1792155120.000000\",\n        \"m:C_91RESP001:1792155240.000000\"\n      ],\n      \"note\": \"The tutor's question and the team lead's item-specific answer are both present.\",\n      \"gap_id\": null\n    }\n  ],\n  \"review_note\": null,\n  \"action_choice\": null\n}",
+        "raw_sha256": "2f953a9bf61ab0070ba8aabfa12c24cf7b619e1e43aa38f75ba69056f48ad3ad",
+        "http_requests": {
+          "sent": 1,
+          "blocked": 0,
+          "hosts": [
+            "api.openai.com"
+          ],
+          "responses": [
+            {
+              "status_code": 200,
+              "seconds": 17.574,
+              "model": "gpt-6.1-sol",
+              "usage": {
+                "prompt_tokens": 9155,
+                "completion_tokens": 1620,
+                "total_tokens": 10775,
+                "prompt_tokens_details": {
+                  "cached_tokens": 0,
+                  "cache_write_tokens": 9152,
+                  "audio_tokens": 0
+                },
+                "completion_tokens_details": {
+                  "reasoning_tokens": 76,
+                  "audio_tokens": 0,
+                  "accepted_prediction_tokens": 0,
+                  "rejected_prediction_tokens": 0
+                }
+              },
+              "finish_reasons": [
+                "stop"
+              ]
+            }
+          ],
+          "input_tokens": 9161,
+          "refused": null,
+          "charged_usd": 0.03451
+        },
+        "input_tokens_estimate": 9161,
+        "status": "OK"
+      },
+      {
+        "stage": "grounding",
+        "schema": "GroundingJudgment",
+        "http_requests": {
+          "sent": 1,
+          "blocked": 0,
+          "hosts": [
+            "api.openai.com"
+          ],
+          "responses": [
+            {
+              "status_code": 520,
+              "seconds": 3.386,
+              "model": null,
+              "usage": null,
+              "finish_reasons": [],
+              "error": {
+                "type": null,
+                "code": null,
+                "param": null,
+                "message": null
+              }
+            }
+          ],
+          "input_tokens": 4978,
+          "refused": null,
+          "charged_usd": 0.21184000000000003
+        },
+        "input_tokens_estimate": 4978,
+        "status": "FAILED",
+        "failure_class": "PROVIDER",
+        "error": "InternalServerError: litellm.InternalServerError: OpenAIException - Error code: 520 - {'type': 'https://developers.cloudflare.com/support/troubleshooting/http-status-codes/cloudflare-5xx-errors/error-520/', 'title': 'Error 520: Web server is returning an unknown error', 'status': 520, 'detail': 'The origin web server sent a response that Cloudflare could not parse. This may indicate the origin returned an empty respon"
+      }
+    ],
+    "agent1_context": [
+      {
+        "sha256": "3cce80caa4c9c14a5ff35d59bc17360e0e57dc57e1c232b691c1dcbf771f7935",
+        "content": [
+          {
+            "member_id": "member_b82cc19fe1fa9c4e46c179d0",
+            "thread_id": "1792155120.000000",
+            "summary": "Jamie Park asks whether the presence of a blank line at the beginning of an otherwise identical answer affects its label. Sam Vega responds that the item should be labeled as 'Tie' since the task does not specify exact serialization.",
+            "central_question": "Does the presence of a blank line at the beginning of an otherwise identical answer change the label?",
+            "attributed_agent1_resolution": {
+              "state": "RESOLVED_IN_THREAD",
+              "rationale": "Sam Vega's response provides a clear decision on how to label the item, indicating that the presence of a blank line does not affect the label, thus fully addressing Jamie Park's question.",
+              "agent1_verification_status": "VERIFIED",
+              "note": "Agent 1 label, not evidence; NEEDS_REVIEW means Agent 1 did not verify it. Assess resolution from the member messages."
+            },
+            "agent1_review_required": false,
+            "agent1_review_reason": "",
+            "note": "Agent 1 interpretation, not source evidence; cite member messages for incident facts."
+          }
+        ]
+      }
+    ],
+    "drafts": {
+      "initial": {
+        "contract_version": "agent3-advisor-draft-v11",
+        "summary": "A tutor asks whether a leading blank line changes the label when two answers are otherwise identical. The team lead answered the question by instructing the tutor to use Tie for that item because the task does not specify exact serialization.",
+        "summary_sentences": [
+          {
+            "text": "A tutor asks whether a leading blank line changes the label when two answers are otherwise identical.",
+            "support_claim_ids": [
+              "c1"
+            ],
+            "depends_on": []
+          },
+          {
+            "text": "The team lead answered the question by instructing the tutor to use Tie for that item because the task does not specify exact serialization.",
+            "support_claim_ids": [
+              "c2"
+            ],
+            "depends_on": [
+              1
+            ]
+          }
+        ],
+        "detail_sentences": [
+          {
+            "text": "The current scoring guide says whitespace alone does not break a tie when content is otherwise equivalent; exact serialized formats must be evaluated when the task requires them.",
+            "support_claim_ids": [
+              "c3"
+            ],
+            "depends_on": [],
+            "summary_depends_on": []
+          }
+        ],
+        "reasoning": "The tutor's specific question has an explicit answer from the team lead, and that answer agrees with the current scoring guide. The thread does not show an unresolved handling question or a separate operational problem requiring intervention. No additional research is needed to support leaving this resolved item without further action.",
+        "claims": [
+          {
+            "claim_id": "c1",
+            "kind": "INCIDENT_FACT",
+            "text": "A tutor reports that two answers are otherwise identical except for a leading blank line and asks whether that changes the label.",
+            "evidence_ids": [
+              "m:C_91RESP001:1792155120.000000"
+            ],
+            "attributions": [
+              {
+                "user_id": "U9107",
+                "relation": "AUTHOR",
+                "evidence_id": "m:C_91RESP001:1792155120.000000"
+              }
+            ],
+            "quote": null,
+            "quote_kind": "PARAPHRASE",
+            "material": true
+          },
+          {
+            "claim_id": "c2",
+            "kind": "THREAD_INSTRUCTION",
+            "text": "The team lead instructs the tutor to use Tie for this item, stating that the task does not specify exact serialization.",
+            "evidence_ids": [
+              "m:C_91RESP001:1792155240.000000"
+            ],
+            "attributions": [
+              {
+                "user_id": "U9103",
+                "relation": "AUTHOR",
+                "evidence_id": "m:C_91RESP001:1792155240.000000"
+              },
+              {
+                "user_id": "U9107",
+                "relation": "THREAD_STARTER",
+                "evidence_id": "m:C_91RESP001:1792155240.000000"
+              }
+            ],
+            "quote": "Use Tie for this item. The task doesn't specify exact serialization.",
+            "quote_kind": "VERBATIM",
+            "material": true
+          },
+          {
+            "claim_id": "c3",
+            "kind": "GUIDANCE",
+            "text": "The current project scoring guide says whitespace alone does not break a tie when content is otherwise equivalent; when a task specifies an exact serialized format, conformance to that requirement must be evaluated.",
+            "evidence_ids": [
+              "k:pilot-response-preference-scoring-guide@1.1:d0c2c6a5"
+            ],
+            "attributions": [],
+            "quote": "When content is otherwise equivalent, whitespace alone does not break a tie. If a task specifies an exact serialized format, evaluate conformance to that requirement.",
+            "quote_kind": "VERBATIM",
+            "material": true
+          }
+        ],
+        "gaps": [],
+        "evidence_sufficiency": "SUFFICIENT",
+        "proposed_action": {
+          "action_type": "NO_ACTION",
+          "intervention_need": null,
+          "instruction": "Leave the item with the thread's Tie instruction; no further intervention is needed for this answered question.",
+          "rationale": "The team lead already answered the tutor's question, and the item-specific instruction agrees with the current scoring guide.",
+          "draft_text": null,
+          "scope_note": "The team lead's instruction applies to this item, not to tasks that specify an exact serialized format.",
+          "support_claim_ids": [
+            "c1",
+            "c2",
+            "c3"
+          ],
+          "targets": [],
+          "context_claim_ids": []
+        },
+        "severity": {
+          "level": "LOW",
+          "rationale": "A tutor raised a localized labeling question that the team lead answered consistently with the current guide.",
+          "signals": [],
+          "affected_reporters": [
+            {
+              "author_id": "U9107",
+              "evidence_id": "m:C_91RESP001:1792155120.000000"
+            }
+          ],
+          "recurrence": "NOT_CHECKED",
+          "recurrence_evidence_ids": [],
+          "reported_recurrence_evidence_ids": []
+        },
+        "confidence": 0.99,
+        "open_confirmation": "NONE",
+        "open_question": null,
+        "open_question_evidence_ids": [],
+        "source_conflicts": [],
+        "announcement_assessments": [],
+        "resolution": [
+          {
+            "member_id": "member_b82cc19fe1fa9c4e46c179d0",
+            "state": "RESOLVED_IN_THREAD",
+            "evidence_ids": [
+              "m:C_91RESP001:1792155120.000000",
+              "m:C_91RESP001:1792155240.000000"
+            ],
+            "basis": "The team lead directly answers the tutor's labeling question with an instruction to use Tie for the item."
+          }
+        ],
+        "coverage": [
+          {
+            "need": "CURRENT_GUIDANCE",
+            "status": "COVERED",
+            "evidence_ids": [
+              "k:pilot-response-preference-scoring-guide@1.1:d0c2c6a5"
+            ],
+            "note": "The current project guide directly addresses whitespace and exact serialized formats.",
+            "gap_id": null
+          },
+          {
+            "need": "ANNOUNCEMENTS",
+            "status": "NOT_APPLICABLE",
+            "evidence_ids": [],
+            "note": "No announcement is needed to support leaving this answered item without further intervention; the current guide directly covers the question.",
+            "gap_id": null
+          },
+          {
+            "need": "PRIOR_DECISIONS",
+            "status": "NOT_APPLICABLE",
+            "evidence_ids": [],
+            "note": "The tutor does not reference an earlier workaround or decision, and historical outcomes are not needed to assess this explicitly answered item.",
+            "gap_id": null
+          },
+          {
+            "need": "MEMBER_QUESTIONS",
+            "status": "COVERED",
+            "evidence_ids": [
+              "m:C_91RESP001:1792155120.000000",
+              "m:C_91RESP001:1792155240.000000"
+            ],
+            "note": "The tutor's question and the team lead's item-specific answer are both present.",
+            "gap_id": null
+          }
+        ],
+        "review_note": null,
+        "action_choice": null
+      },
+      "final": {
+        "contract_version": "agent3-advisor-draft-v11",
+        "summary": "A tutor asks whether a leading blank line changes the label when two answers are otherwise identical. The team lead answered the question by instructing the tutor to use Tie for that item because the task does not specify exact serialization.",
+        "summary_sentences": [
+          {
+            "text": "A tutor asks whether a leading blank line changes the label when two answers are otherwise identical.",
+            "support_claim_ids": [
+              "c1"
+            ],
+            "depends_on": []
+          },
+          {
+            "text": "The team lead answered the question by instructing the tutor to use Tie for that item because the task does not specify exact serialization.",
+            "support_claim_ids": [
+              "c2"
+            ],
+            "depends_on": [
+              1
+            ]
+          }
+        ],
+        "detail_sentences": [
+          {
+            "text": "The current scoring guide says whitespace alone does not break a tie when content is otherwise equivalent; exact serialized formats must be evaluated when the task requires them.",
+            "support_claim_ids": [
+              "c3"
+            ],
+            "depends_on": [],
+            "summary_depends_on": []
+          }
+        ],
+        "reasoning": "The tutor's specific question has an explicit answer from the team lead, and that answer agrees with the current scoring guide. The thread does not show an unresolved handling question or a separate operational problem requiring intervention. No additional research is needed to support leaving this resolved item without further action.",
+        "claims": [
+          {
+            "claim_id": "c1",
+            "kind": "INCIDENT_FACT",
+            "text": "A tutor reports that two answers are otherwise identical except for a leading blank line and asks whether that changes the label.",
+            "evidence_ids": [
+              "m:C_91RESP001:1792155120.000000"
+            ],
+            "attributions": [
+              {
+                "user_id": "U9107",
+                "relation": "AUTHOR",
+                "evidence_id": "m:C_91RESP001:1792155120.000000"
+              }
+            ],
+            "quote": null,
+            "quote_kind": "PARAPHRASE",
+            "material": true
+          },
+          {
+            "claim_id": "c2",
+            "kind": "THREAD_INSTRUCTION",
+            "text": "The team lead instructs the tutor to use Tie for this item, stating that the task does not specify exact serialization.",
+            "evidence_ids": [
+              "m:C_91RESP001:1792155240.000000"
+            ],
+            "attributions": [
+              {
+                "user_id": "U9103",
+                "relation": "AUTHOR",
+                "evidence_id": "m:C_91RESP001:1792155240.000000"
+              },
+              {
+                "user_id": "U9107",
+                "relation": "THREAD_STARTER",
+                "evidence_id": "m:C_91RESP001:1792155240.000000"
+              }
+            ],
+            "quote": "Use Tie for this item. The task doesn't specify exact serialization.",
+            "quote_kind": "VERBATIM",
+            "material": true
+          },
+          {
+            "claim_id": "c3",
+            "kind": "GUIDANCE",
+            "text": "The current project scoring guide says whitespace alone does not break a tie when content is otherwise equivalent; when a task specifies an exact serialized format, conformance to that requirement must be evaluated.",
+            "evidence_ids": [
+              "k:pilot-response-preference-scoring-guide@1.1:d0c2c6a5"
+            ],
+            "attributions": [],
+            "quote": "When content is otherwise equivalent, whitespace alone does not break a tie. If a task specifies an exact serialized format, evaluate conformance to that requirement.",
+            "quote_kind": "VERBATIM",
+            "material": true
+          }
+        ],
+        "gaps": [],
+        "evidence_sufficiency": "SUFFICIENT",
+        "proposed_action": {
+          "action_type": "NO_ACTION",
+          "intervention_need": null,
+          "instruction": "Leave the item with the thread's Tie instruction; no further intervention is needed for this answered question.",
+          "rationale": "The team lead already answered the tutor's question, and the item-specific instruction agrees with the current scoring guide.",
+          "draft_text": null,
+          "scope_note": "The team lead's instruction applies to this item, not to tasks that specify an exact serialized format.",
+          "support_claim_ids": [
+            "c1",
+            "c2",
+            "c3"
+          ],
+          "targets": [],
+          "context_claim_ids": []
+        },
+        "severity": {
+          "level": "LOW",
+          "rationale": "A tutor raised a localized labeling question that the team lead answered consistently with the current guide.",
+          "signals": [],
+          "affected_reporters": [
+            {
+              "author_id": "U9107",
+              "evidence_id": "m:C_91RESP001:1792155120.000000"
+            }
+          ],
+          "recurrence": "NOT_CHECKED",
+          "recurrence_evidence_ids": [],
+          "reported_recurrence_evidence_ids": []
+        },
+        "confidence": 0.99,
+        "open_confirmation": "NONE",
+        "open_question": null,
+        "open_question_evidence_ids": [],
+        "source_conflicts": [],
+        "announcement_assessments": [],
+        "resolution": [
+          {
+            "member_id": "member_b82cc19fe1fa9c4e46c179d0",
+            "state": "RESOLVED_IN_THREAD",
+            "evidence_ids": [
+              "m:C_91RESP001:1792155120.000000",
+              "m:C_91RESP001:1792155240.000000"
+            ],
+            "basis": "The team lead directly answers the tutor's labeling question with an instruction to use Tie for the item."
+          }
+        ],
+        "coverage": [
+          {
+            "need": "CURRENT_GUIDANCE",
+            "status": "COVERED",
+            "evidence_ids": [
+              "k:pilot-response-preference-scoring-guide@1.1:d0c2c6a5"
+            ],
+            "note": "The current project guide directly addresses whitespace and exact serialized formats.",
+            "gap_id": null
+          },
+          {
+            "need": "ANNOUNCEMENTS",
+            "status": "NOT_APPLICABLE",
+            "evidence_ids": [],
+            "note": "No announcement is needed to support leaving this answered item without further intervention; the current guide directly covers the question.",
+            "gap_id": null
+          },
+          {
+            "need": "PRIOR_DECISIONS",
+            "status": "NOT_APPLICABLE",
+            "evidence_ids": [],
+            "note": "The tutor does not reference an earlier workaround or decision, and historical outcomes are not needed to assess this explicitly answered item.",
+            "gap_id": null
+          },
+          {
+            "need": "MEMBER_QUESTIONS",
+            "status": "COVERED",
+            "evidence_ids": [
+              "m:C_91RESP001:1792155120.000000",
+              "m:C_91RESP001:1792155240.000000"
+            ],
+            "note": "The tutor's question and the team lead's item-specific answer are both present.",
+            "gap_id": null
+          }
+        ],
+        "review_note": null,
+        "action_choice": null
+      },
+      "revised": false
+    },
+    "grounding": {
+      "structural_issues": [],
+      "action_issues": [],
+      "unsupported": [],
+      "unjudged": [
+        "claim:c1",
+        "claim:c2",
+        "claim:c3",
+        "summary:s1",
+        "summary:s2",
+        "resolution:member_b82cc19fe1fa9c4e46c179d0",
+        "severity:rationale",
+        "reporter:U9107"
+      ],
+      "extraneous_verdicts": [],
+      "rejected": {},
+      "pending": [],
+      "action_sufficiency": null,
+      "source_consistency": null,
+      "alternative_sufficiency": {},
+      "statements": [
+        {
+          "statement_id": "claim:c1",
+          "kind": "CLAIM_INCIDENT_FACT",
+          "text": "A tutor reports that two answers are otherwise identical except for a leading blank line and asks whether that changes the label.",
+          "blocking": true,
+          "evidence_ids": [
+            "m:C_91RESP001:1792155120.000000"
+          ],
+          "attributions": [
+            {
+              "user_id": "U9107",
+              "relation": "AUTHOR",
+              "evidence_id": "m:C_91RESP001:1792155120.000000",
+              "role": "TUTOR"
+            }
+          ],
+          "verdict": "NOT_JUDGED",
+          "model_verdict": "NOT_JUDGED",
+          "rationale": null
+        },
+        {
+          "statement_id": "claim:c2",
+          "kind": "CLAIM_THREAD_INSTRUCTION",
+          "text": "The team lead instructs the tutor to use Tie for this item, stating that the task does not specify exact serialization. Verbatim quote: \"Use Tie for this item. The task doesn't specify exact serialization.\"",
+          "blocking": true,
+          "evidence_ids": [
+            "m:C_91RESP001:1792155240.000000"
+          ],
+          "attributions": [
+            {
+              "user_id": "U9103",
+              "relation": "AUTHOR",
+              "evidence_id": "m:C_91RESP001:1792155240.000000",
+              "role": "TEAM_LEAD"
+            },
+            {
+              "user_id": "U9107",
+              "relation": "THREAD_STARTER",
+              "evidence_id": "m:C_91RESP001:1792155240.000000",
+              "role": "TUTOR"
+            }
+          ],
+          "verdict": "NOT_JUDGED",
+          "model_verdict": "NOT_JUDGED",
+          "rationale": null
+        },
+        {
+          "statement_id": "claim:c3",
+          "kind": "CLAIM_GUIDANCE",
+          "text": "The current project scoring guide says whitespace alone does not break a tie when content is otherwise equivalent; when a task specifies an exact serialized format, conformance to that requirement must be evaluated. Verbatim quote: \"When content is otherwise equivalent, whitespace alone does not break a tie. If a task specifies an exact serialized format, evaluate conformance to that requirement.\"",
+          "blocking": true,
+          "evidence_ids": [
+            "k:pilot-response-preference-scoring-guide@1.1:d0c2c6a5"
+          ],
+          "verdict": "NOT_JUDGED",
+          "model_verdict": "NOT_JUDGED",
+          "rationale": null
+        },
+        {
+          "statement_id": "summary:s1",
+          "kind": "SUMMARY",
+          "text": "A tutor asks whether a leading blank line changes the label when two answers are otherwise identical.",
+          "blocking": true,
+          "evidence_ids": [
+            "m:C_91RESP001:1792155120.000000"
+          ],
+          "attributions": [
+            {
+              "user_id": "U9107",
+              "relation": "AUTHOR",
+              "evidence_id": "m:C_91RESP001:1792155120.000000",
+              "role": "TUTOR"
+            }
+          ],
+          "verdict": "NOT_JUDGED",
+          "model_verdict": "NOT_JUDGED",
+          "rationale": null
+        },
+        {
+          "statement_id": "summary:s2",
+          "kind": "SUMMARY",
+          "text": "The team lead answered the question by instructing the tutor to use Tie for that item because the task does not specify exact serialization.",
+          "blocking": true,
+          "evidence_ids": [
+            "m:C_91RESP001:1792155240.000000"
+          ],
+          "attributions": [
+            {
+              "user_id": "U9103",
+              "relation": "AUTHOR",
+              "evidence_id": "m:C_91RESP001:1792155240.000000",
+              "role": "TEAM_LEAD"
+            },
+            {
+              "user_id": "U9107",
+              "relation": "THREAD_STARTER",
+              "evidence_id": "m:C_91RESP001:1792155240.000000",
+              "role": "TUTOR"
+            }
+          ],
+          "depends_on": [
+            "summary:s1"
+          ],
+          "verdict": "NOT_JUDGED",
+          "model_verdict": "NOT_JUDGED",
+          "rationale": null
+        },
+        {
+          "statement_id": "detail:d1",
+          "kind": "DETAIL",
+          "text": "The current scoring guide says whitespace alone does not break a tie when content is otherwise equivalent; exact serialized formats must be evaluated when the task requires them.",
+          "blocking": false,
+          "evidence_ids": [
+            "k:pilot-response-preference-scoring-guide@1.1:d0c2c6a5"
+          ],
+          "verdict": "NOT_JUDGED",
+          "model_verdict": "NOT_JUDGED",
+          "rationale": null
+        },
+        {
+          "statement_id": "action:no_action",
+          "kind": "NO_ACTION_RATIONALE",
+          "text": "Why no further action is needed now: The team lead already answered the tutor's question, and the item-specific instruction agrees with the current scoring guide.",
+          "blocking": false,
+          "evidence_ids": [
+            "m:C_91RESP001:1792155120.000000",
+            "m:C_91RESP001:1792155240.000000",
+            "k:pilot-response-preference-scoring-guide@1.1:d0c2c6a5"
+          ],
+          "verdict": "NOT_JUDGED",
+          "model_verdict": "NOT_JUDGED",
+          "rationale": null
+        },
+        {
+          "statement_id": "resolution:member_b82cc19fe1fa9c4e46c179d0",
+          "kind": "RESOLUTION",
+          "text": "Member thread member_b82cc19fe1fa9c4e46c179d0 is RESOLVED_IN_THREAD: The team lead directly answers the tutor's labeling question with an instruction to use Tie for the item.",
+          "blocking": true,
+          "evidence_ids": [
+            "m:C_91RESP001:1792155120.000000",
+            "m:C_91RESP001:1792155240.000000"
+          ],
+          "verdict": "NOT_JUDGED",
+          "model_verdict": "NOT_JUDGED",
+          "rationale": null
+        },
+        {
+          "statement_id": "severity:rationale",
+          "kind": "SEVERITY_RATIONALE",
+          "text": "Severity LOW: A tutor raised a localized labeling question that the team lead answered consistently with the current guide.",
+          "blocking": true,
+          "evidence_ids": [
+            "m:C_91RESP001:1792155120.000000"
+          ],
+          "verdict": "NOT_JUDGED",
+          "model_verdict": "NOT_JUDGED",
+          "rationale": null
+        },
+        {
+          "statement_id": "reporter:U9107",
+          "kind": "AFFECTED_REPORTER",
+          "text": "U9107 reports, in their own cited message, being affected by this problem.",
+          "blocking": true,
+          "evidence_ids": [
+            "m:C_91RESP001:1792155120.000000"
+          ],
+          "verdict": "NOT_JUDGED",
+          "model_verdict": "NOT_JUDGED",
+          "rationale": null
+        }
+      ],
+      "status": "NOT_RUN",
+      "basis": "GROUNDING_CALL_FAILED_OR_OVER_BUDGET"
+    },
+    "temporal": {
+      "status": "NONE_FOUND",
+      "findings": [],
+      "source_consistency": "NOT_ASSESSED",
+      "ignored_revision_states": "NOT_YET_EFFECTIVE and NOT_APPROVED revisions never compete with applicable guidance."
+    },
+    "temporal_before_grounding": {
+      "status": "NONE_FOUND",
+      "findings": [],
+      "source_consistency": "NOT_ASSESSED",
+      "ignored_revision_states": "NOT_YET_EFFECTIVE and NOT_APPROVED revisions never compete with applicable guidance."
+    },
+    "severity": {
+      "assessment": {
+        "level": "UNKNOWN",
+        "assessment_status": "UNASSESSED",
+        "rubric_version": null,
+        "rubric_content_sha256": null,
+        "rubric_project_id": null,
+        "rubric_scope": null,
+        "rationale": null,
+        "matched_signals": [],
+        "evidence": [],
+        "occurrence": {
+          "affected_reporters": {
+            "status": "UNKNOWN",
+            "count": null,
+            "ids": [],
+            "basis": null,
+            "evidence": []
+          },
+          "affected_tasks": {
+            "status": "UNKNOWN",
+            "count": null,
+            "ids": [],
+            "basis": null,
+            "evidence": []
+          },
+          "relevant_threads": [],
+          "reporting_window": null,
+          "historical_recurrence": {
+            "status": "NOT_CHECKED",
+            "sources": [],
+            "event_series_ids": []
+          },
+          "known_denominator": null,
+          "structural": null,
+          "semantic_identification": "PENDING"
+        },
+        "inherited_from": {
+          "level": "UNKNOWN",
+          "assessment_status": "UNASSESSED",
+          "assessment_deferred_to": "AGENT3",
+          "reason": "Agent 2 performs taxonomy only."
+        }
+      },
+      "issues": [
+        "Severity rationale not supported and no rubric signal passed; severity left UNASSESSED."
+      ],
+      "notes": [],
+      "proposal": {
+        "level": "LOW",
+        "rationale": "A tutor raised a localized labeling question that the team lead answered consistently with the current guide.",
+        "signals": [],
+        "affected_reporters": [
+          {
+            "author_id": "U9107",
+            "evidence_id": "m:C_91RESP001:1792155120.000000"
+          }
+        ],
+        "recurrence": "NOT_CHECKED",
+        "recurrence_evidence_ids": [],
+        "reported_recurrence_evidence_ids": []
+      }
+    },
+    "resolution": {
+      "topic": "UNKNOWN",
+      "members": {
+        "member_b82cc19fe1fa9c4e46c179d0": "UNKNOWN"
+      },
+      "agent1_attributed": [
+        {
+          "member_id": "member_b82cc19fe1fa9c4e46c179d0",
+          "state": "RESOLVED_IN_THREAD",
+          "agent1_verification_status": "VERIFIED",
+          "agent1_review_required": false
+        }
+      ]
+    },
+    "established_handling": [],
+    "coverage_issues": [],
+    "action_source": "DRAFT",
+    "action_notes": [],
+    "tot": {
+      "status": "NOT_TRIGGERED",
+      "triggers": [],
+      "choice_after_grounding": {
+        "status": "NOT_COMPARED",
+        "viable": []
+      }
+    },
+    "evidence_ledger": {
+      "m:C_91RESP001:1792155120.000000": {
+        "evidence_id": "m:C_91RESP001:1792155120.000000",
+        "origin": "member_message",
+        "use": "MEMBER_REPORT",
+        "member_id": "member_b82cc19fe1fa9c4e46c179d0",
+        "channel_id": "C_91RESP001",
+        "thread_id": "1792155120.000000",
+        "message_id": "1792155120.000000",
+        "author_id": "U9107",
+        "author_name": "Jamie Park",
+        "author_role": "TUTOR",
+        "timestamp": "2026-10-16T12:52:00Z",
+        "thread_starter_id": "U9107",
+        "thread_starter_role": "TUTOR",
+        "reactions": [],
+        "excerpt": "One answer begins with a blank line and one doesn't. They are otherwise identical. Does that change the label?"
+      },
+      "m:C_91RESP001:1792155240.000000": {
+        "evidence_id": "m:C_91RESP001:1792155240.000000",
+        "origin": "member_message",
+        "use": "MEMBER_REPORT",
+        "member_id": "member_b82cc19fe1fa9c4e46c179d0",
+        "channel_id": "C_91RESP001",
+        "thread_id": "1792155120.000000",
+        "message_id": "1792155240.000000",
+        "author_id": "U9103",
+        "author_name": "Sam Vega",
+        "author_role": "TEAM_LEAD",
+        "timestamp": "2026-10-16T12:54:00Z",
+        "thread_starter_id": "U9107",
+        "thread_starter_role": "TUTOR",
+        "reactions": [],
+        "excerpt": "Use Tie for this item. The task doesn't specify exact serialization."
+      },
+      "k:pilot-response-preference-scoring-guide@1.1:d0c2c6a5": {
+        "evidence_id": "k:pilot-response-preference-scoring-guide@1.1:d0c2c6a5",
+        "origin": "retrieved_source",
+        "use": "CURRENT_GUIDANCE",
+        "citation": {
+          "document_id": "knowledge_7ebc684071cc9d7a8f6f69e7f78000faac4164dd04821023ad710203fe9c430f",
+          "version_id": "version_ded402a36cc72d4f5efb076e842a9511a0bb4f85e12c4cefc4ebca78c18c93c9",
+          "chunk_id": "chunk_d0c2c6a5d8d78fe1c86d9468828ce0a7",
+          "authoring": "pilot-response-preference-scoring-guide@1.1",
+          "title": "Response preference scoring guide (v1.1)",
+          "sections": [
+            "Whitespace and strict output formats"
+          ],
+          "source": {
+            "batch_id": null,
+            "channel_id": null,
+            "manual_key": "pilot-response-preference-scoring-guide",
+            "message_id": null,
+            "permalink": null,
+            "project_id": "response_preference",
+            "reference": null,
+            "system": "manual",
+            "thread_id": null,
+            "workspace_id": null
+          }
+        },
+        "source_type": "guideline",
+        "record_kind": "guideline",
+        "applicability": {
+          "state": "CURRENT",
+          "revision_state": "CURRENT",
+          "version_mode": "current",
+          "replaced_by": [],
+          "unverified_supersession": [],
+          "supersedes": [],
+          "enactment": null,
+          "other_revisions": []
+        },
+        "dates": {
+          "source_date": "2026-09-29T00:00:00Z",
+          "basis": "effective_at",
+          "effective_at": "2026-09-29T00:00:00Z",
+          "created_at": null,
+          "valid_until": null,
+          "expired_as_of": false,
+          "reference_time": "2026-10-17T00:00:00Z"
+        },
+        "scope": {
+          "project_id": "response_preference",
+          "batch_id": null,
+          "scope": "project",
+          "batch_relation": "project_wide"
+        },
+        "authority": {
+          "role": "TEAM_LEAD",
+          "actor": "fixture",
+          "actor_relation": "RECORD_AUTHORITY",
+          "approval_status": "EXPLICIT_SOURCE_MARKER",
+          "provenance": "synthetic_fixture_record"
+        },
+        "authorship": {
+          "author_id": null,
+          "verified": false,
+          "basis": "NO_AUTHOR_RECORDED"
+        },
+        "recorded_states": {
+          "status": "approved",
+          "decision_status": null,
+          "execution_status": null,
+          "outcome_status": null
+        },
+        "upstream_review": null,
+        "excerpt": "## Whitespace and strict output formats\nWhen content is otherwise equivalent, whitespace alone does not break a tie. If a task specifies an exact serialized format, evaluate conformance to that requirement. This guide covers preference decisions."
+      }
+    },
+    "card": {
+      "contract_version": "agent3-advice-card-v4",
+      "record_type": "ADVICE_CARD",
+      "card_id": "card_b4195923e4d3866f7c4ef21e36525f71",
+      "project_id": "response_preference",
+      "topic_name": "Formatting differences and tie labeling",
+      "card_line": "NEEDS_REVIEW",
+      "summary": "The advisor's summary is not shown because the evidence did not support it; see the related threads.",
+      "severity": {
+        "level": "UNKNOWN",
+        "assessment_status": "UNASSESSED",
+        "rubric_version": null,
+        "rubric_content_sha256": null,
+        "rubric_project_id": null,
+        "rubric_scope": null,
+        "rationale": null,
+        "matched_signals": [],
+        "evidence": [],
+        "occurrence": {
+          "affected_reporters": {
+            "status": "UNKNOWN",
+            "count": null,
+            "ids": [],
+            "basis": null,
+            "evidence": []
+          },
+          "affected_tasks": {
+            "status": "UNKNOWN",
+            "count": null,
+            "ids": [],
+            "basis": null,
+            "evidence": []
+          },
+          "relevant_threads": [],
+          "reporting_window": null,
+          "historical_recurrence": {
+            "status": "NOT_CHECKED",
+            "sources": [],
+            "event_series_ids": []
+          },
+          "known_denominator": null,
+          "structural": null,
+          "semantic_identification": "PENDING"
+        },
+        "inherited_from": {
+          "level": "UNKNOWN",
+          "assessment_status": "UNASSESSED",
+          "assessment_deferred_to": "AGENT3",
+          "reason": "Agent 2 performs taxonomy only."
+        }
+      },
+      "severity_is_provisional": true,
+      "resolution_status": "UNKNOWN",
+      "recommended_action": null,
+      "reasoning": "No advisor finding was supported by the evidence. Thread status, read from each thread's own messages: unknown ×1. Agent 1's earlier labels (an input, not evidence): resolved in thread ×1. 10 advisor statements were not supported by the evidence and not shown.",
+      "supporting_sources": [],
+      "related_threads": [
+        {
+          "project_id": "response_preference",
+          "batch_id": "response_pilot_17",
+          "channel_id": "C_91RESP001",
+          "thread_id": "1792155120.000000",
+          "member_id": "member_b82cc19fe1fa9c4e46c179d0",
+          "permalink": null,
+          "display_reference": "1792155120.000000",
+          "label": "#response-pilot, 2026-10-16, started by a tutor: \"One answer begins with a blank line and one doesn't.\"",
+          "opening_text": "One answer begins with a blank line and one doesn't. They are otherwise identical. Does that change the label?"
+        }
+      ],
+      "confidence": 0.99,
+      "confidence_band": "HIGH",
+      "needs_review_reasons": [
+        {
+          "code": "GROUNDING_NOT_RUN",
+          "detail": "Grounding not run: GROUNDING_CALL_FAILED_OR_OVER_BUDGET; no Advisor statement is shown as established.",
+          "obligation_ids": [],
+          "evidence": []
+        },
+        {
+          "code": "OTHER",
+          "detail": "Severity not established: Severity rationale not supported and no rubric signal passed; severity left UNASSESSED.",
+          "obligation_ids": [],
+          "evidence": []
+        },
+        {
+          "code": "OTHER",
+          "detail": "grounding: FAILED (InternalServerError: litellm.InternalServerError: OpenAIException - Error code: 520 - {'type': 'https://developers.cloudflare.com/support/troubleshooting/http-status-codes/cloudflare-5xx-errors/error-520/', 'title': 'Error 520: Web server is returning an unknown error', 'status': 520, 'detail': 'The origin web server sent a response that Cloudflare could not parse. This may indicate the origin returned an empty respon)",
+          "obligation_ids": [],
+          "evidence": []
+        }
+      ],
+      "inherited_flags": [],
+      "checks": {
+        "grounding": "NOT_RUN",
+        "temporal_conflict": "NONE_FOUND",
+        "open_confirmation": "NONE"
+      },
+      "lineage": {
+        "agent3_run_id": "agent3overnight_f22f4be690e6939ca5f43554548d90b8",
+        "handoff_contract": "agent2-taxonomy-handoff-v2",
+        "agent2_export_sha256": "2dd6d3ac9f878b1e5090dfed5b45f689210847aba03c28f6c549f1ce9ab5c918",
+        "agent2_schema_version": 8,
+        "candidate_group_id": "cluster_ef05cdb71f8e655f",
+        "topic_id": "cluster_ef05cdb71f8e655f/topic_1",
+        "member_ids": [
+          "member_b82cc19fe1fa9c4e46c179d0"
+        ],
+        "project_id": "response_preference",
+        "batch_id": "response_pilot_17"
+      },
+      "review_notes": [
+        "The advisor's statements could not be checked against the evidence, so none is shown as established.",
+        "Severity could not be established from the supported evidence.",
+        "The evidence check step did not complete; details are in the diagnostics."
+      ],
+      "details": [],
+      "next_step": {
+        "status": "NO_INTERVENTION_PROPOSED",
+        "rationale": null,
+        "explanation": "The advisor chose not to propose an intervention. Its reason is not shown because the evidence check did not judge it. Treat this as the advisor's choice, not a confirmed decision."
+      }
+    },
+    "review_items": [],
+    "coverage": {
+      "group_members_outside_this_card": [],
+      "uncarried_obligations": []
+    },
+    "budget": {
+      "consumed": {
+        "retrieval_calls": 1,
+        "model_calls": 2
+      },
+      "limits": {
+        "model_calls_per_topic": 4,
+        "model_calls_total": 28,
+        "retrieval_calls_per_topic": 6,
+        "retrieval_calls_total": 42
+      }
+    },
+    "diagnostics": [
+      {
+        "code": "WITHHELD_STATEMENT",
+        "statement_id": "claim:c1",
+        "kind": "CLAIM_INCIDENT_FACT",
+        "text": "A tutor reports that two answers are otherwise identical except for a leading blank line and asks whether that changes the label.",
+        "verdict": "NOT_JUDGED",
+        "rationale": null,
+        "blocking": true
+      },
+      {
+        "code": "WITHHELD_STATEMENT",
+        "statement_id": "claim:c2",
+        "kind": "CLAIM_THREAD_INSTRUCTION",
+        "text": "The team lead instructs the tutor to use Tie for this item, stating that the task does not specify exact serialization. Verbatim quote: \"Use Tie for this item. The task doesn't specify exact serialization.\"",
+        "verdict": "NOT_JUDGED",
+        "rationale": null,
+        "blocking": true
+      },
+      {
+        "code": "WITHHELD_STATEMENT",
+        "statement_id": "claim:c3",
+        "kind": "CLAIM_GUIDANCE",
+        "text": "The current project scoring guide says whitespace alone does not break a tie when content is otherwise equivalent; when a task specifies an exact serialized format, conformance to that requirement must be evaluated. Verbatim quote: \"When content is otherwise equivalent, whitespace alone does not break a tie. If a task specifies an exact serialized format, evaluate conformance to that requirement.\"",
+        "verdict": "NOT_JUDGED",
+        "rationale": null,
+        "blocking": true
+      },
+      {
+        "code": "WITHHELD_STATEMENT",
+        "statement_id": "summary:s1",
+        "kind": "SUMMARY",
+        "text": "A tutor asks whether a leading blank line changes the label when two answers are otherwise identical.",
+        "verdict": "NOT_JUDGED",
+        "rationale": null,
+        "blocking": true
+      },
+      {
+        "code": "WITHHELD_STATEMENT",
+        "statement_id": "summary:s2",
+        "kind": "SUMMARY",
+        "text": "The team lead answered the question by instructing the tutor to use Tie for that item because the task does not specify exact serialization.",
+        "verdict": "NOT_JUDGED",
+        "rationale": null,
+        "blocking": true
+      },
+      {
+        "code": "WITHHELD_STATEMENT",
+        "statement_id": "detail:d1",
+        "kind": "DETAIL",
+        "text": "The current scoring guide says whitespace alone does not break a tie when content is otherwise equivalent; exact serialized formats must be evaluated when the task requires them.",
+        "verdict": "NOT_JUDGED",
+        "rationale": null,
+        "blocking": false
+      },
+      {
+        "code": "WITHHELD_STATEMENT",
+        "statement_id": "action:no_action",
+        "kind": "NO_ACTION_RATIONALE",
+        "text": "Why no further action is needed now: The team lead already answered the tutor's question, and the item-specific instruction agrees with the current scoring guide.",
+        "verdict": "NOT_JUDGED",
+        "rationale": null,
+        "blocking": false
+      },
+      {
+        "code": "WITHHELD_STATEMENT",
+        "statement_id": "resolution:member_b82cc19fe1fa9c4e46c179d0",
+        "kind": "RESOLUTION",
+        "text": "Member thread member_b82cc19fe1fa9c4e46c179d0 is RESOLVED_IN_THREAD: The team lead directly answers the tutor's labeling question with an instruction to use Tie for the item.",
+        "verdict": "NOT_JUDGED",
+        "rationale": null,
+        "blocking": true
+      },
+      {
+        "code": "WITHHELD_STATEMENT",
+        "statement_id": "severity:rationale",
+        "kind": "SEVERITY_RATIONALE",
+        "text": "Severity LOW: A tutor raised a localized labeling question that the team lead answered consistently with the current guide.",
+        "verdict": "NOT_JUDGED",
+        "rationale": null,
+        "blocking": true
+      },
+      {
+        "code": "WITHHELD_STATEMENT",
+        "statement_id": "reporter:U9107",
+        "kind": "AFFECTED_REPORTER",
+        "text": "U9107 reports, in their own cited message, being affected by this problem.",
+        "verdict": "NOT_JUDGED",
+        "rationale": null,
+        "blocking": true
+      }
+    ]
+  }
+}

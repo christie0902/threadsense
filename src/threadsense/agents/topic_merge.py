@@ -120,6 +120,8 @@ def candidates(topics, limits=LIMITS):
             pairs[frozenset((a['topic_id'], b['topic_id']))] = s
     sets = []
     for clique in _cliques([n for n in adjacent if adjacent[n]], adjacent):
+        if len(clique) < 2:  # With no qualifying pair the clique search returns one empty clique: nothing to judge.
+            continue
         members = sorted(clique)
         if len(members) > limits['max_set_size']:  # Too broad to judge as one issue: fall back to its pairs.
             groups = [sorted(p) for p in itertools.combinations(members, 2)]

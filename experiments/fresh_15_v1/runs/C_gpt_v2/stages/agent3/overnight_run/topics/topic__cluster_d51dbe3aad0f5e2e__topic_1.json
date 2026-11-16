@@ -1,0 +1,1561 @@
+{
+  "work_item": {
+    "candidate_group_id": "cluster_d51dbe3aad0f5e2e",
+    "project_id": "audio_multimodal",
+    "batch_id": "audio_pilot_17",
+    "work_id": "topic:cluster_d51dbe3aad0f5e2e/topic_1",
+    "kind": "TOPIC",
+    "topic_id": "cluster_d51dbe3aad0f5e2e/topic_1",
+    "topic_name": "Field sample grading clarification",
+    "member_ids": [
+      "member_31131136e1e660617777fb2f"
+    ],
+    "pilot_scenario": null,
+    "in_scope": true
+  },
+  "workflow": {
+    "outcome": "CARD",
+    "card_id": "card_3d8574258571affd2083d5c39066b841",
+    "card_line": "RECOMMENDED_ACTION",
+    "grounding": "PASSED",
+    "stage_failures": [],
+    "semantic_source": "LIVE_MODEL"
+  },
+  "result": {
+    "scenario": {
+      "id": "topic:cluster_d51dbe3aad0f5e2e/topic_1",
+      "candidate_group_id": "cluster_d51dbe3aad0f5e2e",
+      "focus": "Field sample grading clarification",
+      "topic_id": "cluster_d51dbe3aad0f5e2e/topic_1"
+    },
+    "status": "CARD",
+    "topic": {
+      "project_id": "audio_multimodal",
+      "batch_id": "audio_pilot_17",
+      "candidate_group_id": "cluster_d51dbe3aad0f5e2e",
+      "topic_id": "cluster_d51dbe3aad0f5e2e/topic_1",
+      "topic_label": "Field sample grading clarification",
+      "projection_gap": null,
+      "as_of": "2026-10-17T00:00:00Z",
+      "member_ids": [
+        "member_31131136e1e660617777fb2f"
+      ],
+      "initial_query": "Field sample grading clarification. Is leaving the clip labeled 'field sample' ungraded the right route given its flat waveform?"
+    },
+    "retrieval_trace": [
+      {
+        "step": 1,
+        "purpose": "initial_current_guidance",
+        "gap_id": null,
+        "query": "Field sample grading clarification. Is leaving the clip labeled 'field sample' ungraded the right route given its flat waveform?",
+        "source_types": [
+          "guideline",
+          "faq",
+          "decision",
+          "announcement"
+        ],
+        "version_mode": "current",
+        "as_of": "2026-10-17T00:00:00Z",
+        "batch": "audio_pilot_17",
+        "top_k": 5,
+        "status": "DONE",
+        "mode": "hybrid",
+        "use_mmr": true,
+        "mmr_lambda": 0.9,
+        "result_ids": [
+          "k:pilot-audio-incident-triage@1.3:3b2b70f0",
+          "k:pilot-media-input-quality-faq@1.1:00309a9c"
+        ],
+        "new_evidence_ids": [
+          "k:pilot-audio-incident-triage@1.3:3b2b70f0",
+          "k:pilot-media-input-quality-faq@1.1:00309a9c"
+        ],
+        "eligible_chunks": 2,
+        "added": []
+      }
+    ],
+    "retrieval_notes": {
+      "withheld_by_version": [],
+      "version_diagnostics": []
+    },
+    "follow_ups": [],
+    "unfilled_gaps": [
+      {
+        "gap_id": "g1",
+        "need": "OTHER",
+        "description": "The tutor still needs to provide the task ID and an explicit local playback result before the clip's disposition can be assigned. These are case details to obtain from the tutor, not a missing policy source.",
+        "follow_up": null
+      }
+    ],
+    "model_calls": [
+      {
+        "stage": "draft",
+        "schema": "AdvisorDraft",
+        "agent1_context": {
+          "sha256": "0337ecb8f23eb3618410cf67fb32f60629827ef82aa4c00e1fa9a464f3e1740b",
+          "boundary": "IN_HTTP_BODY"
+        },
+        "raw": "{\n  \"contract_version\": \"agent3-advisor-draft-v11\",\n  \"summary\": null,\n  \"summary_sentences\": [\n    {\n      \"text\": \"A tutor reports leaving a clip labeled 'field sample' ungraded after finding a flat waveform in the downloaded file, despite a working counter and seeking.\",\n      \"support_claim_ids\": [\"c1\"],\n      \"depends_on\": []\n    },\n    {\n      \"text\": \"A QA tutor requested its task ID; the grading question remains unanswered.\",\n      \"support_claim_ids\": [\"c2\", \"c5\"],\n      \"depends_on\": []\n    }\n  ],\n  \"detail_sentences\": [\n    {\n      \"text\": \"The current media-input FAQ requires a task ID and a local playback check before assigning a disposition.\",\n      \"support_claim_ids\": [\"c3\"],\n      \"depends_on\": [],\n      \"summary_depends_on\": []\n    },\n    {\n      \"text\": \"For confirmed local silence with normal player advancement, the FAQ directs preserving the sample and using the media-input quality flag.\",\n      \"support_claim_ids\": [\"c3\"],\n      \"depends_on\": [],\n      \"summary_depends_on\": []\n    }\n  ],\n  \"reasoning\": \"The tutor reports a flat waveform, not confirmed silence or a player freeze. The QA tutor has requested identifying information but has not answered the grading question. Current guidance supplies a conditional procedure, so the useful next step is to obtain the required inputs rather than endorse leaving the clip ungraded or report a player failure to engineering.\",\n  \"claims\": [\n    {\n      \"claim_id\": \"c1\",\n      \"kind\": \"INCIDENT_FACT\",\n      \"text\": \"A tutor reports a flat waveform in a downloaded clip labeled 'field sample', says the counter advances through 00:11 and seeking works, and asks whether leaving the clip ungraded was appropriate.\",\n      \"evidence_ids\": [\"m:C_91AUDIO01:1792145220.000000\"],\n      \"attributions\": [\n        {\n          \"user_id\": \"U9106\",\n          \"relation\": \"AUTHOR\",\n          \"evidence_id\": \"m:C_91AUDIO01:1792145220.000000\"\n        }\n      ],\n      \"quote_kind\": \"PARAPHRASE\"\n    },\n    {\n      \"claim_id\": \"c2\",\n      \"kind\": \"INCIDENT_FACT\",\n      \"text\": \"A QA tutor asks for the task ID before confirming the clip's disposition.\",\n      \"evidence_ids\": [\"m:C_91AUDIO01:1792145340.000000\"],\n      \"attributions\": [\n        {\n          \"user_id\": \"U9104\",\n          \"relation\": \"AUTHOR\",\n          \"evidence_id\": \"m:C_91AUDIO01:1792145340.000000\"\n        }\n      ],\n      \"quote_kind\": \"PARAPHRASE\"\n    },\n    {\n      \"claim_id\": \"c3\",\n      \"kind\": \"GUIDANCE\",\n      \"text\": \"The current media-input quality FAQ says to preserve the sample and use the media-input quality flag when a local copy is confirmed silent and the player advances normally; a missing task ID or local playback check must be requested before assigning a disposition.\",\n      \"evidence_ids\": [\"k:pilot-media-input-quality-faq@1.1:00309a9c\"],\n      \"attributions\": [],\n      \"quote_kind\": \"PARAPHRASE\"\n    },\n    {\n      \"claim_id\": \"c4\",\n      \"kind\": \"GUIDANCE\",\n      \"text\": \"Current audio incident triage directs reproducible player freezes after seeking to engineering, but directs downloaded silent clips with working counters and seeking to the media-input quality procedure.\",\n      \"evidence_ids\": [\"k:pilot-audio-incident-triage@1.3:3b2b70f0\"],\n      \"attributions\": [],\n      \"quote_kind\": \"PARAPHRASE\"\n    },\n    {\n      \"claim_id\": \"c5\",\n      \"kind\": \"INFERENCE\",\n      \"text\": \"The tutor's grading question remains unanswered in the available thread: no task ID or explicit local playback result is provided, and the QA tutor's reply requests information rather than confirming a disposition.\",\n      \"evidence_ids\": [\n        \"m:C_91AUDIO01:1792145220.000000\",\n        \"m:C_91AUDIO01:1792145340.000000\"\n      ],\n      \"attributions\": [\n        {\n          \"user_id\": \"U9106\",\n          \"relation\": \"AUTHOR\",\n          \"evidence_id\": \"m:C_91AUDIO01:1792145220.000000\"\n        },\n        {\n          \"user_id\": \"U9104\",\n          \"relation\": \"AUTHOR\",\n          \"evidence_id\": \"m:C_91AUDIO01:1792145340.000000\"\n        }\n      ],\n      \"quote_kind\": \"PARAPHRASE\"\n    }\n  ],\n  \"gaps\": [\n    {\n      \"gap_id\": \"g1\",\n      \"need\": \"OTHER\",\n      \"description\": \"The tutor still needs to provide the task ID and an explicit local playback result before the clip's disposition can be assigned. These are case details to obtain from the tutor, not a missing policy source.\",\n      \"follow_up\": null\n    }\n  ],\n  \"evidence_sufficiency\": \"SUFFICIENT\",\n  \"proposed_action\": {\n    \"action_type\": \"POST_ALIGNMENT\",\n    \"intervention_need\": {\n      \"kind\": \"UNRESOLVED_HANDLING_QUESTION\",\n      \"statement\": \"The tutor has left the clip ungraded and has not received a disposition; the current FAQ requires case details before one can be assigned.\",\n      \"evidence_ids\": [\n        \"m:C_91AUDIO01:1792145220.000000\",\n        \"m:C_91AUDIO01:1792145340.000000\",\n        \"k:pilot-media-input-quality-faq@1.1:00309a9c\"\n      ]\n    },\n    \"instruction\": \"Ask the tutor for the task ID and a local playback check before confirming how to handle the clip.\",\n    \"rationale\": \"The current FAQ provides a conditional handling rule, but the required case details are incomplete. Requesting them advances the unanswered grading question without assuming that a flat waveform confirms silence.\",\n    \"draft_text\": \"Please share the task ID requested by the QA tutor and check whether the downloaded copy is actually silent during local playback. Your report describes a flat waveform with a working counter and seeking, but does not explicitly confirm local silence. Under the current media-input quality FAQ, if the local copy is confirmed silent and the player advances normally, preserve the sample and use the media-input quality flag. We need the task ID and local playback check before assigning a disposition.\",\n    \"scope_note\": \"This request concerns the reported clip only; it does not confirm that leaving it ungraded is the correct disposition.\",\n    \"support_claim_ids\": [\"c1\", \"c2\", \"c3\", \"c5\"],\n    \"targets\": [],\n    \"context_claim_ids\": [\"c4\"]\n  },\n  \"severity\": {\n    \"level\": \"LOW\",\n    \"rationale\": \"One tutor reports leaving one clip ungraded while asking a handling question. Current guidance provides a straightforward next step, and the messages do not establish broader disruption or conflicting handling rules.\",\n    \"signals\": [],\n    \"affected_reporters\": [\n      {\n        \"author_id\": \"U9106\",\n        \"evidence_id\": \"m:C_91AUDIO01:1792145220.000000\"\n      }\n    ],\n    \"recurrence\": \"NOT_CHECKED\",\n    \"recurrence_evidence_ids\": [],\n    \"reported_recurrence_evidence_ids\": []\n  },\n  \"confidence\": 0.94,\n  \"open_confirmation\": \"NONE\",\n  \"open_question\": null,\n  \"open_question_evidence_ids\": [],\n  \"source_conflicts\": [],\n  \"announcement_assessments\": [],\n  \"resolution\": [\n    {\n      \"member_id\": \"member_31131136e1e660617777fb2f\",\n      \"state\": \"UNRESOLVED\",\n      \"evidence_ids\": [\n        \"m:C_91AUDIO01:1792145220.000000\",\n        \"m:C_91AUDIO01:1792145340.000000\"\n      ],\n      \"basis\": \"The tutor asks whether leaving the clip ungraded was appropriate; the QA tutor requests the task ID but does not confirm a disposition.\"\n    }\n  ],\n  \"coverage\": [\n    {\n      \"need\": \"CURRENT_GUIDANCE\",\n      \"status\": \"COVERED\",\n      \"evidence_ids\": [\n        \"k:pilot-audio-incident-triage@1.3:3b2b70f0\",\n        \"k:pilot-media-input-quality-faq@1.1:00309a9c\"\n      ],\n      \"note\": \"Current project guidance distinguishes player freezes from silent downloaded media and specifies the inputs needed before assigning a disposition.\"\n    },\n    {\n      \"need\": \"ANNOUNCEMENTS\",\n      \"status\": \"NOT_APPLICABLE\",\n      \"evidence_ids\": [],\n      \"note\": \"No announcement was retrieved; the proposed case-specific request relies on current FAQ guidance and does not need an announcement or a batch-wide instruction.\"\n    },\n    {\n      \"need\": \"PRIOR_DECISIONS\",\n      \"status\": \"NOT_APPLICABLE\",\n      \"evidence_ids\": [],\n      \"note\": \"The messages reference no earlier workaround or decision, and requesting the inputs required by the current FAQ does not depend on historical outcomes.\"\n    },\n    {\n      \"need\": \"MEMBER_QUESTIONS\",\n      \"status\": \"COVERED\",\n      \"evidence_ids\": [\n        \"m:C_91AUDIO01:1792145220.000000\",\n        \"m:C_91AUDIO01:1792145340.000000\"\n      ],\n      \"note\": \"The tutor's grading question and the QA tutor's request for the task ID are both available.\"\n    }\n  ],\n  \"review_note\": null,\n  \"action_choice\": null\n}",
+        "raw_sha256": "579fea0a4acccad3e00d486ef480e2255612193183f988554ba236c6842ee758",
+        "http_requests": {
+          "sent": 1,
+          "blocked": 0,
+          "hosts": [
+            "api.openai.com"
+          ],
+          "responses": [
+            {
+              "status_code": 200,
+              "seconds": 33.678,
+              "model": "gpt-6.1-sol",
+              "usage": {
+                "prompt_tokens": 9565,
+                "completion_tokens": 2514,
+                "total_tokens": 12079,
+                "prompt_tokens_details": {
+                  "cached_tokens": 0,
+                  "cache_write_tokens": 9562,
+                  "audio_tokens": 0
+                },
+                "completion_tokens_details": {
+                  "reasoning_tokens": 361,
+                  "audio_tokens": 0,
+                  "accepted_prediction_tokens": 0,
+                  "rejected_prediction_tokens": 0
+                }
+              },
+              "finish_reasons": [
+                "stop"
+              ]
+            }
+          ],
+          "input_tokens": 9571,
+          "refused": null,
+          "charged_usd": 0.044270000000000004
+        },
+        "input_tokens_estimate": 9571,
+        "status": "OK"
+      },
+      {
+        "stage": "grounding",
+        "schema": "GroundingJudgment",
+        "raw": "{\n  \"contract_version\": \"agent3-grounding-judgment-v5\",\n  \"verdicts\": [\n    {\n      \"statement_id\": \"claim:c1\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The tutor reports all of these observations and asks whether leaving the clip ungraded was correct.\"\n    },\n    {\n      \"statement_id\": \"claim:c2\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The cited author is a QA tutor and explicitly requests the task ID before confirming disposition.\"\n    },\n    {\n      \"statement_id\": \"claim:c3\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The current FAQ states both the conditional silent-input procedure and the requirement to request a missing task ID or local playback check before assigning a disposition.\"\n    },\n    {\n      \"statement_id\": \"claim:c4\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The current triage source distinguishes reproducible seek-related player freezes requiring an engineering incident from silent downloaded clips with working counters and seeking, which follow the media-input quality procedure.\"\n    },\n    {\n      \"statement_id\": \"claim:c5\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The complete available thread contains neither a task ID nor an explicit local playback result. The QA reply requests information without answering the grading question.\"\n    },\n    {\n      \"statement_id\": \"summary:s1\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The tutor's own message reports the downloaded file's flat waveform, working counter and seeking, and the decision to leave the clip ungraded.\"\n    },\n    {\n      \"statement_id\": \"summary:s2\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The QA tutor requests the task ID, and no message in the available thread answers the tutor's grading question.\"\n    },\n    {\n      \"statement_id\": \"detail:d1\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The FAQ says to request either missing item before assigning a disposition, directly supporting the need for the task ID and local playback check.\"\n    },\n    {\n      \"statement_id\": \"detail:d2\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The FAQ expressly directs preserving the sample and using the media-input quality flag under these conditions.\"\n    },\n    {\n      \"statement_id\": \"action\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The proposed reminder requests the missing case details, accurately states the FAQ's conditional procedure, and limits its scope to the reported clip without treating a flat waveform as confirmed silence or approving the ungraded disposition.\"\n    },\n    {\n      \"statement_id\": \"action:rationale\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The FAQ supplies a conditional handling rule, while the thread lacks the task ID and explicit local playback check needed to apply it. Requesting those details addresses the unanswered question without assuming silence.\"\n    },\n    {\n      \"statement_id\": \"action:need\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The tutor reports leaving the clip ungraded, the thread provides no disposition, and the current FAQ requires requesting the missing case details before assigning one.\"\n    },\n    {\n      \"statement_id\": \"resolution:member_31131136e1e660617777fb2f\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The complete thread ends with the QA tutor's request for a task ID, leaving the tutor's disposition question unresolved.\"\n    },\n    {\n      \"statement_id\": \"severity:rationale\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The evidence describes one tutor and one ungraded clip, with a concrete next information-gathering step already requested by QA. Neither broader disruption nor conflicting handling instructions is established.\"\n    },\n    {\n      \"statement_id\": \"reporter:U9106\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"U9106 personally reports encountering the clip issue and leaving that clip ungraded.\"\n    }\n  ],\n  \"action_sufficiency\": {\n    \"verdict\": \"SUFFICIENT\",\n    \"essential_statement_ids\": [\n      \"claim:c1\",\n      \"claim:c2\",\n      \"claim:c3\",\n      \"claim:c5\"\n    ],\n    \"rationale\": \"All listed premises are supported. Together they justify requesting the task ID already sought by QA and the missing local playback check, communicating the FAQ's conditional handling rule, and withholding confirmation of the clip's disposition pending those details.\"\n  },\n  \"alternative_sufficiency\": [],\n  \"source_consistency\": {\n    \"assessed_evidence_ids\": [\n      \"k:pilot-audio-incident-triage@1.3:3b2b70f0\",\n      \"k:pilot-media-input-quality-faq@1.1:00309a9c\"\n    ],\n    \"relations\": [\n      {\n        \"evidence_ids\": [\n          \"k:pilot-audio-incident-triage@1.3:3b2b70f0\",\n          \"k:pilot-media-input-quality-faq@1.1:00309a9c\"\n        ],\n        \"relation\": \"AGREE\",\n        \"point\": \"Handling a confirmed silent downloaded clip when player advancement and seeking work.\",\n        \"disagreement_scope\": null,\n        \"rationale\": \"Triage directs these clips to the media-input quality procedure, and the FAQ supplies that procedure: preserve the sample and use the media-input quality flag after confirming local silence. Its missing-information requirement adds detail without contradicting triage.\"\n      }\n    ],\n    \"declared_conflict_checks\": []\n  }\n}",
+        "raw_sha256": "32037439b05670ceaee758f3d3d007c30d9ff29e730c21dcba7fece9392951a2",
+        "http_requests": {
+          "sent": 1,
+          "blocked": 0,
+          "hosts": [
+            "api.openai.com"
+          ],
+          "responses": [
+            {
+              "status_code": 200,
+              "seconds": 17.25,
+              "model": "gpt-6.1-sol",
+              "usage": {
+                "prompt_tokens": 6155,
+                "completion_tokens": 1323,
+                "total_tokens": 7478,
+                "prompt_tokens_details": {
+                  "cached_tokens": 0,
+                  "cache_write_tokens": 6152,
+                  "audio_tokens": 0
+                },
+                "completion_tokens_details": {
+                  "reasoning_tokens": 114,
+                  "audio_tokens": 0,
+                  "accepted_prediction_tokens": 0,
+                  "rejected_prediction_tokens": 0
+                }
+              },
+              "finish_reasons": [
+                "stop"
+              ]
+            }
+          ],
+          "input_tokens": 6161,
+          "refused": null,
+          "charged_usd": 0.02554
+        },
+        "input_tokens_estimate": 6161,
+        "status": "OK"
+      }
+    ],
+    "agent1_context": [
+      {
+        "sha256": "0337ecb8f23eb3618410cf67fb32f60629827ef82aa4c00e1fa9a464f3e1740b",
+        "content": [
+          {
+            "member_id": "member_31131136e1e660617777fb2f",
+            "thread_id": "1792145220.000000",
+            "summary": "Casey Tran questions whether leaving a clip labeled 'field sample' ungraded is appropriate, given that it has a flat waveform but plays correctly. Riley Chen requests the task ID to confirm the disposition before providing guidance.",
+            "central_question": "Is leaving the clip labeled 'field sample' ungraded the right route given its flat waveform?",
+            "attributed_agent1_resolution": {
+              "state": "UNRESOLVED",
+              "rationale": "The thread does not establish a substantive answer to the question about whether leaving the clip ungraded is appropriate. Riley Chen's request for the task ID indicates that further information is needed before a judgment can be made.",
+              "agent1_verification_status": "VERIFIED",
+              "note": "Agent 1 label, not evidence; NEEDS_REVIEW means Agent 1 did not verify it. Assess resolution from the member messages."
+            },
+            "agent1_review_required": false,
+            "agent1_review_reason": "",
+            "note": "Agent 1 interpretation, not source evidence; cite member messages for incident facts."
+          }
+        ]
+      }
+    ],
+    "drafts": {
+      "initial": {
+        "contract_version": "agent3-advisor-draft-v11",
+        "summary": "A tutor reports leaving a clip labeled 'field sample' ungraded after finding a flat waveform in the downloaded file, despite a working counter and seeking. A QA tutor requested its task ID; the grading question remains unanswered.",
+        "summary_sentences": [
+          {
+            "text": "A tutor reports leaving a clip labeled 'field sample' ungraded after finding a flat waveform in the downloaded file, despite a working counter and seeking.",
+            "support_claim_ids": [
+              "c1"
+            ],
+            "depends_on": []
+          },
+          {
+            "text": "A QA tutor requested its task ID; the grading question remains unanswered.",
+            "support_claim_ids": [
+              "c2",
+              "c5"
+            ],
+            "depends_on": []
+          }
+        ],
+        "detail_sentences": [
+          {
+            "text": "The current media-input FAQ requires a task ID and a local playback check before assigning a disposition.",
+            "support_claim_ids": [
+              "c3"
+            ],
+            "depends_on": [],
+            "summary_depends_on": []
+          },
+          {
+            "text": "For confirmed local silence with normal player advancement, the FAQ directs preserving the sample and using the media-input quality flag.",
+            "support_claim_ids": [
+              "c3"
+            ],
+            "depends_on": [],
+            "summary_depends_on": []
+          }
+        ],
+        "reasoning": "The tutor reports a flat waveform, not confirmed silence or a player freeze. The QA tutor has requested identifying information but has not answered the grading question. Current guidance supplies a conditional procedure, so the useful next step is to obtain the required inputs rather than endorse leaving the clip ungraded or report a player failure to engineering.",
+        "claims": [
+          {
+            "claim_id": "c1",
+            "kind": "INCIDENT_FACT",
+            "text": "A tutor reports a flat waveform in a downloaded clip labeled 'field sample', says the counter advances through 00:11 and seeking works, and asks whether leaving the clip ungraded was appropriate.",
+            "evidence_ids": [
+              "m:C_91AUDIO01:1792145220.000000"
+            ],
+            "attributions": [
+              {
+                "user_id": "U9106",
+                "relation": "AUTHOR",
+                "evidence_id": "m:C_91AUDIO01:1792145220.000000"
+              }
+            ],
+            "quote": null,
+            "quote_kind": "PARAPHRASE",
+            "material": true
+          },
+          {
+            "claim_id": "c2",
+            "kind": "INCIDENT_FACT",
+            "text": "A QA tutor asks for the task ID before confirming the clip's disposition.",
+            "evidence_ids": [
+              "m:C_91AUDIO01:1792145340.000000"
+            ],
+            "attributions": [
+              {
+                "user_id": "U9104",
+                "relation": "AUTHOR",
+                "evidence_id": "m:C_91AUDIO01:1792145340.000000"
+              }
+            ],
+            "quote": null,
+            "quote_kind": "PARAPHRASE",
+            "material": true
+          },
+          {
+            "claim_id": "c3",
+            "kind": "GUIDANCE",
+            "text": "The current media-input quality FAQ says to preserve the sample and use the media-input quality flag when a local copy is confirmed silent and the player advances normally; a missing task ID or local playback check must be requested before assigning a disposition.",
+            "evidence_ids": [
+              "k:pilot-media-input-quality-faq@1.1:00309a9c"
+            ],
+            "attributions": [],
+            "quote": null,
+            "quote_kind": "PARAPHRASE",
+            "material": true
+          },
+          {
+            "claim_id": "c4",
+            "kind": "GUIDANCE",
+            "text": "Current audio incident triage directs reproducible player freezes after seeking to engineering, but directs downloaded silent clips with working counters and seeking to the media-input quality procedure.",
+            "evidence_ids": [
+              "k:pilot-audio-incident-triage@1.3:3b2b70f0"
+            ],
+            "attributions": [],
+            "quote": null,
+            "quote_kind": "PARAPHRASE",
+            "material": true
+          },
+          {
+            "claim_id": "c5",
+            "kind": "INFERENCE",
+            "text": "The tutor's grading question remains unanswered in the available thread: no task ID or explicit local playback result is provided, and the QA tutor's reply requests information rather than confirming a disposition.",
+            "evidence_ids": [
+              "m:C_91AUDIO01:1792145220.000000",
+              "m:C_91AUDIO01:1792145340.000000"
+            ],
+            "attributions": [
+              {
+                "user_id": "U9106",
+                "relation": "AUTHOR",
+                "evidence_id": "m:C_91AUDIO01:1792145220.000000"
+              },
+              {
+                "user_id": "U9104",
+                "relation": "AUTHOR",
+                "evidence_id": "m:C_91AUDIO01:1792145340.000000"
+              }
+            ],
+            "quote": null,
+            "quote_kind": "PARAPHRASE",
+            "material": true
+          }
+        ],
+        "gaps": [
+          {
+            "gap_id": "g1",
+            "need": "OTHER",
+            "description": "The tutor still needs to provide the task ID and an explicit local playback result before the clip's disposition can be assigned. These are case details to obtain from the tutor, not a missing policy source.",
+            "follow_up": null
+          }
+        ],
+        "evidence_sufficiency": "SUFFICIENT",
+        "proposed_action": {
+          "action_type": "POST_ALIGNMENT",
+          "intervention_need": {
+            "kind": "UNRESOLVED_HANDLING_QUESTION",
+            "statement": "The tutor has left the clip ungraded and has not received a disposition; the current FAQ requires case details before one can be assigned.",
+            "evidence_ids": [
+              "m:C_91AUDIO01:1792145220.000000",
+              "m:C_91AUDIO01:1792145340.000000",
+              "k:pilot-media-input-quality-faq@1.1:00309a9c"
+            ]
+          },
+          "instruction": "Ask the tutor for the task ID and a local playback check before confirming how to handle the clip.",
+          "rationale": "The current FAQ provides a conditional handling rule, but the required case details are incomplete. Requesting them advances the unanswered grading question without assuming that a flat waveform confirms silence.",
+          "draft_text": "Please share the task ID requested by the QA tutor and check whether the downloaded copy is actually silent during local playback. Your report describes a flat waveform with a working counter and seeking, but does not explicitly confirm local silence. Under the current media-input quality FAQ, if the local copy is confirmed silent and the player advances normally, preserve the sample and use the media-input quality flag. We need the task ID and local playback check before assigning a disposition.",
+          "scope_note": "This request concerns the reported clip only; it does not confirm that leaving it ungraded is the correct disposition.",
+          "support_claim_ids": [
+            "c1",
+            "c2",
+            "c3",
+            "c5"
+          ],
+          "targets": [],
+          "context_claim_ids": [
+            "c4"
+          ]
+        },
+        "severity": {
+          "level": "LOW",
+          "rationale": "One tutor reports leaving one clip ungraded while asking a handling question. Current guidance provides a straightforward next step, and the messages do not establish broader disruption or conflicting handling rules.",
+          "signals": [],
+          "affected_reporters": [
+            {
+              "author_id": "U9106",
+              "evidence_id": "m:C_91AUDIO01:1792145220.000000"
+            }
+          ],
+          "recurrence": "NOT_CHECKED",
+          "recurrence_evidence_ids": [],
+          "reported_recurrence_evidence_ids": []
+        },
+        "confidence": 0.94,
+        "open_confirmation": "NONE",
+        "open_question": null,
+        "open_question_evidence_ids": [],
+        "source_conflicts": [],
+        "announcement_assessments": [],
+        "resolution": [
+          {
+            "member_id": "member_31131136e1e660617777fb2f",
+            "state": "UNRESOLVED",
+            "evidence_ids": [
+              "m:C_91AUDIO01:1792145220.000000",
+              "m:C_91AUDIO01:1792145340.000000"
+            ],
+            "basis": "The tutor asks whether leaving the clip ungraded was appropriate; the QA tutor requests the task ID but does not confirm a disposition."
+          }
+        ],
+        "coverage": [
+          {
+            "need": "CURRENT_GUIDANCE",
+            "status": "COVERED",
+            "evidence_ids": [
+              "k:pilot-audio-incident-triage@1.3:3b2b70f0",
+              "k:pilot-media-input-quality-faq@1.1:00309a9c"
+            ],
+            "note": "Current project guidance distinguishes player freezes from silent downloaded media and specifies the inputs needed before assigning a disposition.",
+            "gap_id": null
+          },
+          {
+            "need": "ANNOUNCEMENTS",
+            "status": "NOT_APPLICABLE",
+            "evidence_ids": [],
+            "note": "No announcement was retrieved; the proposed case-specific request relies on current FAQ guidance and does not need an announcement or a batch-wide instruction.",
+            "gap_id": null
+          },
+          {
+            "need": "PRIOR_DECISIONS",
+            "status": "NOT_APPLICABLE",
+            "evidence_ids": [],
+            "note": "The messages reference no earlier workaround or decision, and requesting the inputs required by the current FAQ does not depend on historical outcomes.",
+            "gap_id": null
+          },
+          {
+            "need": "MEMBER_QUESTIONS",
+            "status": "COVERED",
+            "evidence_ids": [
+              "m:C_91AUDIO01:1792145220.000000",
+              "m:C_91AUDIO01:1792145340.000000"
+            ],
+            "note": "The tutor's grading question and the QA tutor's request for the task ID are both available.",
+            "gap_id": null
+          }
+        ],
+        "review_note": null,
+        "action_choice": null
+      },
+      "final": {
+        "contract_version": "agent3-advisor-draft-v11",
+        "summary": "A tutor reports leaving a clip labeled 'field sample' ungraded after finding a flat waveform in the downloaded file, despite a working counter and seeking. A QA tutor requested its task ID; the grading question remains unanswered.",
+        "summary_sentences": [
+          {
+            "text": "A tutor reports leaving a clip labeled 'field sample' ungraded after finding a flat waveform in the downloaded file, despite a working counter and seeking.",
+            "support_claim_ids": [
+              "c1"
+            ],
+            "depends_on": []
+          },
+          {
+            "text": "A QA tutor requested its task ID; the grading question remains unanswered.",
+            "support_claim_ids": [
+              "c2",
+              "c5"
+            ],
+            "depends_on": []
+          }
+        ],
+        "detail_sentences": [
+          {
+            "text": "The current media-input FAQ requires a task ID and a local playback check before assigning a disposition.",
+            "support_claim_ids": [
+              "c3"
+            ],
+            "depends_on": [],
+            "summary_depends_on": []
+          },
+          {
+            "text": "For confirmed local silence with normal player advancement, the FAQ directs preserving the sample and using the media-input quality flag.",
+            "support_claim_ids": [
+              "c3"
+            ],
+            "depends_on": [],
+            "summary_depends_on": []
+          }
+        ],
+        "reasoning": "The tutor reports a flat waveform, not confirmed silence or a player freeze. The QA tutor has requested identifying information but has not answered the grading question. Current guidance supplies a conditional procedure, so the useful next step is to obtain the required inputs rather than endorse leaving the clip ungraded or report a player failure to engineering.",
+        "claims": [
+          {
+            "claim_id": "c1",
+            "kind": "INCIDENT_FACT",
+            "text": "A tutor reports a flat waveform in a downloaded clip labeled 'field sample', says the counter advances through 00:11 and seeking works, and asks whether leaving the clip ungraded was appropriate.",
+            "evidence_ids": [
+              "m:C_91AUDIO01:1792145220.000000"
+            ],
+            "attributions": [
+              {
+                "user_id": "U9106",
+                "relation": "AUTHOR",
+                "evidence_id": "m:C_91AUDIO01:1792145220.000000"
+              }
+            ],
+            "quote": null,
+            "quote_kind": "PARAPHRASE",
+            "material": true
+          },
+          {
+            "claim_id": "c2",
+            "kind": "INCIDENT_FACT",
+            "text": "A QA tutor asks for the task ID before confirming the clip's disposition.",
+            "evidence_ids": [
+              "m:C_91AUDIO01:1792145340.000000"
+            ],
+            "attributions": [
+              {
+                "user_id": "U9104",
+                "relation": "AUTHOR",
+                "evidence_id": "m:C_91AUDIO01:1792145340.000000"
+              }
+            ],
+            "quote": null,
+            "quote_kind": "PARAPHRASE",
+            "material": true
+          },
+          {
+            "claim_id": "c3",
+            "kind": "GUIDANCE",
+            "text": "The current media-input quality FAQ says to preserve the sample and use the media-input quality flag when a local copy is confirmed silent and the player advances normally; a missing task ID or local playback check must be requested before assigning a disposition.",
+            "evidence_ids": [
+              "k:pilot-media-input-quality-faq@1.1:00309a9c"
+            ],
+            "attributions": [],
+            "quote": null,
+            "quote_kind": "PARAPHRASE",
+            "material": true
+          },
+          {
+            "claim_id": "c4",
+            "kind": "GUIDANCE",
+            "text": "Current audio incident triage directs reproducible player freezes after seeking to engineering, but directs downloaded silent clips with working counters and seeking to the media-input quality procedure.",
+            "evidence_ids": [
+              "k:pilot-audio-incident-triage@1.3:3b2b70f0"
+            ],
+            "attributions": [],
+            "quote": null,
+            "quote_kind": "PARAPHRASE",
+            "material": true
+          },
+          {
+            "claim_id": "c5",
+            "kind": "INFERENCE",
+            "text": "The tutor's grading question remains unanswered in the available thread: no task ID or explicit local playback result is provided, and the QA tutor's reply requests information rather than confirming a disposition.",
+            "evidence_ids": [
+              "m:C_91AUDIO01:1792145220.000000",
+              "m:C_91AUDIO01:1792145340.000000"
+            ],
+            "attributions": [
+              {
+                "user_id": "U9106",
+                "relation": "AUTHOR",
+                "evidence_id": "m:C_91AUDIO01:1792145220.000000"
+              },
+              {
+                "user_id": "U9104",
+                "relation": "AUTHOR",
+                "evidence_id": "m:C_91AUDIO01:1792145340.000000"
+              }
+            ],
+            "quote": null,
+            "quote_kind": "PARAPHRASE",
+            "material": true
+          }
+        ],
+        "gaps": [
+          {
+            "gap_id": "g1",
+            "need": "OTHER",
+            "description": "The tutor still needs to provide the task ID and an explicit local playback result before the clip's disposition can be assigned. These are case details to obtain from the tutor, not a missing policy source.",
+            "follow_up": null
+          }
+        ],
+        "evidence_sufficiency": "SUFFICIENT",
+        "proposed_action": {
+          "action_type": "POST_ALIGNMENT",
+          "intervention_need": {
+            "kind": "UNRESOLVED_HANDLING_QUESTION",
+            "statement": "The tutor has left the clip ungraded and has not received a disposition; the current FAQ requires case details before one can be assigned.",
+            "evidence_ids": [
+              "m:C_91AUDIO01:1792145220.000000",
+              "m:C_91AUDIO01:1792145340.000000",
+              "k:pilot-media-input-quality-faq@1.1:00309a9c"
+            ]
+          },
+          "instruction": "Ask the tutor for the task ID and a local playback check before confirming how to handle the clip.",
+          "rationale": "The current FAQ provides a conditional handling rule, but the required case details are incomplete. Requesting them advances the unanswered grading question without assuming that a flat waveform confirms silence.",
+          "draft_text": "Please share the task ID requested by the QA tutor and check whether the downloaded copy is actually silent during local playback. Your report describes a flat waveform with a working counter and seeking, but does not explicitly confirm local silence. Under the current media-input quality FAQ, if the local copy is confirmed silent and the player advances normally, preserve the sample and use the media-input quality flag. We need the task ID and local playback check before assigning a disposition.",
+          "scope_note": "This request concerns the reported clip only; it does not confirm that leaving it ungraded is the correct disposition.",
+          "support_claim_ids": [
+            "c1",
+            "c2",
+            "c3",
+            "c5"
+          ],
+          "targets": [],
+          "context_claim_ids": [
+            "c4"
+          ]
+        },
+        "severity": {
+          "level": "LOW",
+          "rationale": "One tutor reports leaving one clip ungraded while asking a handling question. Current guidance provides a straightforward next step, and the messages do not establish broader disruption or conflicting handling rules.",
+          "signals": [],
+          "affected_reporters": [
+            {
+              "author_id": "U9106",
+              "evidence_id": "m:C_91AUDIO01:1792145220.000000"
+            }
+          ],
+          "recurrence": "NOT_CHECKED",
+          "recurrence_evidence_ids": [],
+          "reported_recurrence_evidence_ids": []
+        },
+        "confidence": 0.94,
+        "open_confirmation": "NONE",
+        "open_question": null,
+        "open_question_evidence_ids": [],
+        "source_conflicts": [],
+        "announcement_assessments": [],
+        "resolution": [
+          {
+            "member_id": "member_31131136e1e660617777fb2f",
+            "state": "UNRESOLVED",
+            "evidence_ids": [
+              "m:C_91AUDIO01:1792145220.000000",
+              "m:C_91AUDIO01:1792145340.000000"
+            ],
+            "basis": "The tutor asks whether leaving the clip ungraded was appropriate; the QA tutor requests the task ID but does not confirm a disposition."
+          }
+        ],
+        "coverage": [
+          {
+            "need": "CURRENT_GUIDANCE",
+            "status": "COVERED",
+            "evidence_ids": [
+              "k:pilot-audio-incident-triage@1.3:3b2b70f0",
+              "k:pilot-media-input-quality-faq@1.1:00309a9c"
+            ],
+            "note": "Current project guidance distinguishes player freezes from silent downloaded media and specifies the inputs needed before assigning a disposition.",
+            "gap_id": null
+          },
+          {
+            "need": "ANNOUNCEMENTS",
+            "status": "NOT_APPLICABLE",
+            "evidence_ids": [],
+            "note": "No announcement was retrieved; the proposed case-specific request relies on current FAQ guidance and does not need an announcement or a batch-wide instruction.",
+            "gap_id": null
+          },
+          {
+            "need": "PRIOR_DECISIONS",
+            "status": "NOT_APPLICABLE",
+            "evidence_ids": [],
+            "note": "The messages reference no earlier workaround or decision, and requesting the inputs required by the current FAQ does not depend on historical outcomes.",
+            "gap_id": null
+          },
+          {
+            "need": "MEMBER_QUESTIONS",
+            "status": "COVERED",
+            "evidence_ids": [
+              "m:C_91AUDIO01:1792145220.000000",
+              "m:C_91AUDIO01:1792145340.000000"
+            ],
+            "note": "The tutor's grading question and the QA tutor's request for the task ID are both available.",
+            "gap_id": null
+          }
+        ],
+        "review_note": null,
+        "action_choice": null
+      },
+      "revised": false
+    },
+    "grounding": {
+      "structural_issues": [],
+      "action_issues": [],
+      "unsupported": [],
+      "unjudged": [],
+      "extraneous_verdicts": [],
+      "rejected": {},
+      "pending": [],
+      "action_sufficiency": {
+        "verdict": "SUFFICIENT",
+        "essential_statement_ids": [
+          "claim:c1",
+          "claim:c2",
+          "claim:c3",
+          "claim:c5"
+        ],
+        "rationale": "All listed premises are supported. Together they justify requesting the task ID already sought by QA and the missing local playback check, communicating the FAQ's conditional handling rule, and withholding confirmation of the clip's disposition pending those details."
+      },
+      "source_consistency": {
+        "assessed_evidence_ids": [
+          "k:pilot-audio-incident-triage@1.3:3b2b70f0",
+          "k:pilot-media-input-quality-faq@1.1:00309a9c"
+        ],
+        "relations": [
+          {
+            "evidence_ids": [
+              "k:pilot-audio-incident-triage@1.3:3b2b70f0",
+              "k:pilot-media-input-quality-faq@1.1:00309a9c"
+            ],
+            "relation": "AGREE",
+            "point": "Handling a confirmed silent downloaded clip when player advancement and seeking work.",
+            "disagreement_scope": null,
+            "rationale": "Triage directs these clips to the media-input quality procedure, and the FAQ supplies that procedure: preserve the sample and use the media-input quality flag after confirming local silence. Its missing-information requirement adds detail without contradicting triage."
+          }
+        ],
+        "declared_conflict_checks": []
+      },
+      "alternative_sufficiency": {},
+      "status": "PASSED",
+      "basis": "SEMANTIC",
+      "statements": [
+        {
+          "statement_id": "claim:c1",
+          "kind": "CLAIM_INCIDENT_FACT",
+          "text": "A tutor reports a flat waveform in a downloaded clip labeled 'field sample', says the counter advances through 00:11 and seeking works, and asks whether leaving the clip ungraded was appropriate.",
+          "blocking": true,
+          "evidence_ids": [
+            "m:C_91AUDIO01:1792145220.000000"
+          ],
+          "attributions": [
+            {
+              "user_id": "U9106",
+              "relation": "AUTHOR",
+              "evidence_id": "m:C_91AUDIO01:1792145220.000000",
+              "role": "TUTOR"
+            }
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "The tutor reports all of these observations and asks whether leaving the clip ungraded was correct."
+        },
+        {
+          "statement_id": "claim:c2",
+          "kind": "CLAIM_INCIDENT_FACT",
+          "text": "A QA tutor asks for the task ID before confirming the clip's disposition.",
+          "blocking": true,
+          "evidence_ids": [
+            "m:C_91AUDIO01:1792145340.000000"
+          ],
+          "attributions": [
+            {
+              "user_id": "U9104",
+              "relation": "AUTHOR",
+              "evidence_id": "m:C_91AUDIO01:1792145340.000000",
+              "role": "QA_TUTOR"
+            }
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "The cited author is a QA tutor and explicitly requests the task ID before confirming disposition."
+        },
+        {
+          "statement_id": "claim:c3",
+          "kind": "CLAIM_GUIDANCE",
+          "text": "The current media-input quality FAQ says to preserve the sample and use the media-input quality flag when a local copy is confirmed silent and the player advances normally; a missing task ID or local playback check must be requested before assigning a disposition.",
+          "blocking": true,
+          "evidence_ids": [
+            "k:pilot-media-input-quality-faq@1.1:00309a9c"
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "The current FAQ states both the conditional silent-input procedure and the requirement to request a missing task ID or local playback check before assigning a disposition."
+        },
+        {
+          "statement_id": "claim:c4",
+          "kind": "CLAIM_GUIDANCE",
+          "text": "Current audio incident triage directs reproducible player freezes after seeking to engineering, but directs downloaded silent clips with working counters and seeking to the media-input quality procedure.",
+          "blocking": true,
+          "evidence_ids": [
+            "k:pilot-audio-incident-triage@1.3:3b2b70f0"
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "The current triage source distinguishes reproducible seek-related player freezes requiring an engineering incident from silent downloaded clips with working counters and seeking, which follow the media-input quality procedure."
+        },
+        {
+          "statement_id": "claim:c5",
+          "kind": "CLAIM_INFERENCE",
+          "text": "The tutor's grading question remains unanswered in the available thread: no task ID or explicit local playback result is provided, and the QA tutor's reply requests information rather than confirming a disposition.",
+          "blocking": true,
+          "evidence_ids": [
+            "m:C_91AUDIO01:1792145220.000000",
+            "m:C_91AUDIO01:1792145340.000000"
+          ],
+          "attributions": [
+            {
+              "user_id": "U9106",
+              "relation": "AUTHOR",
+              "evidence_id": "m:C_91AUDIO01:1792145220.000000",
+              "role": "TUTOR"
+            },
+            {
+              "user_id": "U9104",
+              "relation": "AUTHOR",
+              "evidence_id": "m:C_91AUDIO01:1792145340.000000",
+              "role": "QA_TUTOR"
+            }
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "The complete available thread contains neither a task ID nor an explicit local playback result. The QA reply requests information without answering the grading question."
+        },
+        {
+          "statement_id": "summary:s1",
+          "kind": "SUMMARY",
+          "text": "A tutor reports leaving a clip labeled 'field sample' ungraded after finding a flat waveform in the downloaded file, despite a working counter and seeking.",
+          "blocking": true,
+          "evidence_ids": [
+            "m:C_91AUDIO01:1792145220.000000"
+          ],
+          "attributions": [
+            {
+              "user_id": "U9106",
+              "relation": "AUTHOR",
+              "evidence_id": "m:C_91AUDIO01:1792145220.000000",
+              "role": "TUTOR"
+            }
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "The tutor's own message reports the downloaded file's flat waveform, working counter and seeking, and the decision to leave the clip ungraded."
+        },
+        {
+          "statement_id": "summary:s2",
+          "kind": "SUMMARY",
+          "text": "A QA tutor requested its task ID; the grading question remains unanswered.",
+          "blocking": true,
+          "evidence_ids": [
+            "m:C_91AUDIO01:1792145340.000000",
+            "m:C_91AUDIO01:1792145220.000000"
+          ],
+          "attributions": [
+            {
+              "user_id": "U9104",
+              "relation": "AUTHOR",
+              "evidence_id": "m:C_91AUDIO01:1792145340.000000",
+              "role": "QA_TUTOR"
+            },
+            {
+              "user_id": "U9106",
+              "relation": "AUTHOR",
+              "evidence_id": "m:C_91AUDIO01:1792145220.000000",
+              "role": "TUTOR"
+            }
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "The QA tutor requests the task ID, and no message in the available thread answers the tutor's grading question."
+        },
+        {
+          "statement_id": "detail:d1",
+          "kind": "DETAIL",
+          "text": "The current media-input FAQ requires a task ID and a local playback check before assigning a disposition.",
+          "blocking": false,
+          "evidence_ids": [
+            "k:pilot-media-input-quality-faq@1.1:00309a9c"
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "The FAQ says to request either missing item before assigning a disposition, directly supporting the need for the task ID and local playback check."
+        },
+        {
+          "statement_id": "detail:d2",
+          "kind": "DETAIL",
+          "text": "For confirmed local silence with normal player advancement, the FAQ directs preserving the sample and using the media-input quality flag.",
+          "blocking": false,
+          "evidence_ids": [
+            "k:pilot-media-input-quality-faq@1.1:00309a9c"
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "The FAQ expressly directs preserving the sample and using the media-input quality flag under these conditions."
+        },
+        {
+          "statement_id": "action",
+          "kind": "ACTION",
+          "text": "Post a reminder. Instruction: Ask the tutor for the task ID and a local playback check before confirming how to handle the clip. Draft to copy: Please share the task ID requested by the QA tutor and check whether the downloaded copy is actually silent during local playback. Your report describes a flat waveform with a working counter and seeking, but does not explicitly confirm local silence. Under the current media-input quality FAQ, if the local copy is confirmed silent and the player advances normally, preserve the sample and use the media-input quality flag. We need the task ID and local playback check before assigning a disposition. Scope: This request concerns the reported clip only; it does not confirm that leaving it ungraded is the correct disposition.",
+          "blocking": true,
+          "evidence_ids": [
+            "m:C_91AUDIO01:1792145220.000000",
+            "m:C_91AUDIO01:1792145340.000000",
+            "k:pilot-media-input-quality-faq@1.1:00309a9c"
+          ],
+          "premises": [
+            "claim:c1",
+            "claim:c2",
+            "claim:c3",
+            "claim:c5"
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "The proposed reminder requests the missing case details, accurately states the FAQ's conditional procedure, and limits its scope to the reported clip without treating a flat waveform as confirmed silence or approving the ungraded disposition."
+        },
+        {
+          "statement_id": "action:rationale",
+          "kind": "ACTION_RATIONALE",
+          "text": "Why this helps: The current FAQ provides a conditional handling rule, but the required case details are incomplete. Requesting them advances the unanswered grading question without assuming that a flat waveform confirms silence.",
+          "blocking": false,
+          "evidence_ids": [
+            "m:C_91AUDIO01:1792145220.000000",
+            "m:C_91AUDIO01:1792145340.000000",
+            "k:pilot-media-input-quality-faq@1.1:00309a9c",
+            "k:pilot-audio-incident-triage@1.3:3b2b70f0"
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "The FAQ supplies a conditional handling rule, while the thread lacks the task ID and explicit local playback check needed to apply it. Requesting those details addresses the unanswered question without assuming silence."
+        },
+        {
+          "statement_id": "action:need",
+          "kind": "INTERVENTION_NEED",
+          "text": "Why intervening now is needed (an unresolved handling question): The tutor has left the clip ungraded and has not received a disposition; the current FAQ requires case details before one can be assigned.",
+          "blocking": false,
+          "evidence_ids": [
+            "m:C_91AUDIO01:1792145220.000000",
+            "m:C_91AUDIO01:1792145340.000000",
+            "k:pilot-media-input-quality-faq@1.1:00309a9c"
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "The tutor reports leaving the clip ungraded, the thread provides no disposition, and the current FAQ requires requesting the missing case details before assigning one."
+        },
+        {
+          "statement_id": "resolution:member_31131136e1e660617777fb2f",
+          "kind": "RESOLUTION",
+          "text": "Member thread member_31131136e1e660617777fb2f is UNRESOLVED: The tutor asks whether leaving the clip ungraded was appropriate; the QA tutor requests the task ID but does not confirm a disposition.",
+          "blocking": true,
+          "evidence_ids": [
+            "m:C_91AUDIO01:1792145220.000000",
+            "m:C_91AUDIO01:1792145340.000000"
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "The complete thread ends with the QA tutor's request for a task ID, leaving the tutor's disposition question unresolved."
+        },
+        {
+          "statement_id": "severity:rationale",
+          "kind": "SEVERITY_RATIONALE",
+          "text": "Severity LOW: One tutor reports leaving one clip ungraded while asking a handling question. Current guidance provides a straightforward next step, and the messages do not establish broader disruption or conflicting handling rules.",
+          "blocking": true,
+          "evidence_ids": [
+            "m:C_91AUDIO01:1792145220.000000",
+            "m:C_91AUDIO01:1792145340.000000"
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "The evidence describes one tutor and one ungraded clip, with a concrete next information-gathering step already requested by QA. Neither broader disruption nor conflicting handling instructions is established."
+        },
+        {
+          "statement_id": "reporter:U9106",
+          "kind": "AFFECTED_REPORTER",
+          "text": "U9106 reports, in their own cited message, being affected by this problem.",
+          "blocking": true,
+          "evidence_ids": [
+            "m:C_91AUDIO01:1792145220.000000"
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "U9106 personally reports encountering the clip issue and leaving that clip ungraded."
+        }
+      ]
+    },
+    "temporal": {
+      "status": "NONE_FOUND",
+      "findings": [],
+      "source_consistency": "ASSESSED",
+      "ignored_revision_states": "NOT_YET_EFFECTIVE and NOT_APPROVED revisions never compete with applicable guidance."
+    },
+    "temporal_before_grounding": {
+      "status": "NONE_FOUND",
+      "findings": [],
+      "source_consistency": "NOT_ASSESSED",
+      "ignored_revision_states": "NOT_YET_EFFECTIVE and NOT_APPROVED revisions never compete with applicable guidance."
+    },
+    "severity": {
+      "assessment": {
+        "level": "LOW",
+        "assessment_status": "ASSESSED",
+        "rubric_version": "severity-rubric-v3-semantic-signals",
+        "rubric_content_sha256": "eccaa31a2ab84a0aa7c005216a92fc39681e1dd10107117344948235a76673f4",
+        "rubric_project_id": null,
+        "rubric_scope": "SHARED_DEFAULT",
+        "rationale": "One tutor reports leaving one clip ungraded while asking a handling question. Current guidance provides a straightforward next step, and the messages do not establish broader disruption or conflicting handling rules.",
+        "matched_signals": [],
+        "evidence": [],
+        "occurrence": {
+          "affected_reporters": {
+            "status": "LOWER_BOUND",
+            "count": 1,
+            "ids": [
+              "U9106"
+            ],
+            "basis": "Distinct authors whose own cited message reports the problem; other participants are not counted.",
+            "evidence": [
+              {
+                "kind": "slack_message",
+                "project_id": "audio_multimodal",
+                "batch_id": "audio_pilot_17",
+                "scope": "project",
+                "channel_id": "C_91AUDIO01",
+                "thread_id": "1792145220.000000",
+                "message_id": "1792145220.000000",
+                "document_id": null,
+                "version_id": null,
+                "authoring_document_id": null,
+                "authoring_version": null,
+                "section": null,
+                "chunk_id": null,
+                "candidate_group_id": null,
+                "member_id": "member_31131136e1e660617777fb2f",
+                "artifact": null,
+                "artifact_sha256": null,
+                "quote": null,
+                "note": "m:C_91AUDIO01:1792145220.000000"
+              }
+            ]
+          },
+          "affected_tasks": {
+            "status": "UNKNOWN",
+            "count": null,
+            "ids": [],
+            "basis": null,
+            "evidence": []
+          },
+          "relevant_threads": [
+            {
+              "project_id": "audio_multimodal",
+              "batch_id": "audio_pilot_17",
+              "channel_id": "C_91AUDIO01",
+              "thread_id": "1792145220.000000",
+              "member_id": "member_31131136e1e660617777fb2f"
+            }
+          ],
+          "reporting_window": {
+            "start": "2026-10-16T10:07:00+00:00",
+            "end": "2026-10-16T10:09:00+00:00"
+          },
+          "historical_recurrence": {
+            "status": "NOT_CHECKED",
+            "sources": [],
+            "event_series_ids": []
+          },
+          "known_denominator": null,
+          "structural": {
+            "threads": 1,
+            "messages": 2,
+            "distinct_participants": 2,
+            "duplicate_threads_ignored": 0,
+            "duplicate_messages_ignored": 0,
+            "computed_from": "topic member threads (original Slack messages)",
+            "participants_are_not_affected_reporters": true
+          },
+          "semantic_identification": "ASSESSED"
+        },
+        "inherited_from": {
+          "level": "UNKNOWN",
+          "assessment_status": "UNASSESSED",
+          "assessment_deferred_to": "AGENT3",
+          "reason": "Agent 2 performs taxonomy only."
+        }
+      },
+      "issues": [],
+      "notes": [],
+      "proposal": {
+        "level": "LOW",
+        "rationale": "One tutor reports leaving one clip ungraded while asking a handling question. Current guidance provides a straightforward next step, and the messages do not establish broader disruption or conflicting handling rules.",
+        "signals": [],
+        "affected_reporters": [
+          {
+            "author_id": "U9106",
+            "evidence_id": "m:C_91AUDIO01:1792145220.000000"
+          }
+        ],
+        "recurrence": "NOT_CHECKED",
+        "recurrence_evidence_ids": [],
+        "reported_recurrence_evidence_ids": []
+      }
+    },
+    "resolution": {
+      "topic": "UNRESOLVED",
+      "members": {
+        "member_31131136e1e660617777fb2f": "UNRESOLVED"
+      },
+      "agent1_attributed": [
+        {
+          "member_id": "member_31131136e1e660617777fb2f",
+          "state": "UNRESOLVED",
+          "agent1_verification_status": "VERIFIED",
+          "agent1_review_required": false
+        }
+      ]
+    },
+    "established_handling": [],
+    "coverage_issues": [],
+    "action_source": "DRAFT",
+    "action_notes": [],
+    "tot": {
+      "status": "NOT_TRIGGERED",
+      "triggers": [],
+      "choice_after_grounding": {
+        "status": "NOT_COMPARED",
+        "viable": []
+      }
+    },
+    "evidence_ledger": {
+      "m:C_91AUDIO01:1792145220.000000": {
+        "evidence_id": "m:C_91AUDIO01:1792145220.000000",
+        "origin": "member_message",
+        "use": "MEMBER_REPORT",
+        "member_id": "member_31131136e1e660617777fb2f",
+        "channel_id": "C_91AUDIO01",
+        "thread_id": "1792145220.000000",
+        "message_id": "1792145220.000000",
+        "author_id": "U9106",
+        "author_name": "Casey Tran",
+        "author_role": "TUTOR",
+        "timestamp": "2026-10-16T10:07:00Z",
+        "thread_starter_id": "U9106",
+        "thread_starter_role": "TUTOR",
+        "reactions": [],
+        "excerpt": "My clip is labeled 'field sample' but has a flat waveform in the file I downloaded. The counter plays through 00:11 and seeking works. I left this one ungraded. Is that the right route?"
+      },
+      "m:C_91AUDIO01:1792145340.000000": {
+        "evidence_id": "m:C_91AUDIO01:1792145340.000000",
+        "origin": "member_message",
+        "use": "MEMBER_REPORT",
+        "member_id": "member_31131136e1e660617777fb2f",
+        "channel_id": "C_91AUDIO01",
+        "thread_id": "1792145220.000000",
+        "message_id": "1792145340.000000",
+        "author_id": "U9104",
+        "author_name": "Riley Chen",
+        "author_role": "QA_TUTOR",
+        "timestamp": "2026-10-16T10:09:00Z",
+        "thread_starter_id": "U9106",
+        "thread_starter_role": "TUTOR",
+        "reactions": [
+          {
+            "name": "eyes",
+            "users": [
+              {
+                "id": "U9101",
+                "name": "Avery Lin"
+              }
+            ]
+          }
+        ],
+        "excerpt": "Can you share its task ID before we confirm the disposition?"
+      },
+      "k:pilot-audio-incident-triage@1.3:3b2b70f0": {
+        "evidence_id": "k:pilot-audio-incident-triage@1.3:3b2b70f0",
+        "origin": "retrieved_source",
+        "use": "CURRENT_GUIDANCE",
+        "citation": {
+          "document_id": "knowledge_396c099397e2b3be500a9f33b2f5bae3e3224f9337fe7a4d600046bf30f4d427",
+          "version_id": "version_9e1bc9706f1c82830c52eb93b1721f33c95a461ec5deeebc707c471a89f1d3d3",
+          "chunk_id": "chunk_3b2b70f032534219699d1bd9da638c98",
+          "authoring": "pilot-audio-incident-triage@1.3",
+          "title": "Audio incident triage (v1.3)",
+          "sections": [
+            "Playback failures"
+          ],
+          "source": {
+            "batch_id": null,
+            "channel_id": null,
+            "manual_key": "pilot-audio-incident-triage",
+            "message_id": null,
+            "permalink": null,
+            "project_id": "audio_multimodal",
+            "reference": null,
+            "system": "manual",
+            "thread_id": null,
+            "workspace_id": null
+          }
+        },
+        "source_type": "guideline",
+        "record_kind": "guideline",
+        "applicability": {
+          "state": "CURRENT",
+          "revision_state": "CURRENT",
+          "version_mode": "current",
+          "replaced_by": [],
+          "unverified_supersession": [],
+          "supersedes": [],
+          "enactment": null,
+          "other_revisions": []
+        },
+        "dates": {
+          "source_date": "2026-09-26T00:00:00Z",
+          "basis": "effective_at",
+          "effective_at": "2026-09-26T00:00:00Z",
+          "created_at": null,
+          "valid_until": null,
+          "expired_as_of": false,
+          "reference_time": "2026-10-17T00:00:00Z"
+        },
+        "scope": {
+          "project_id": "audio_multimodal",
+          "batch_id": null,
+          "scope": "project",
+          "batch_relation": "project_wide"
+        },
+        "authority": {
+          "role": "TEAM_LEAD",
+          "actor": "fixture",
+          "actor_relation": "RECORD_AUTHORITY",
+          "approval_status": "EXPLICIT_SOURCE_MARKER",
+          "provenance": "synthetic_fixture_record"
+        },
+        "authorship": {
+          "author_id": null,
+          "verified": false,
+          "basis": "NO_AUTHOR_RECORDED"
+        },
+        "recorded_states": {
+          "status": "approved",
+          "decision_status": null,
+          "execution_status": null,
+          "outcome_status": null
+        },
+        "upstream_review": null,
+        "excerpt": "## Playback failures\nFor a reproducible player freeze after seeking, collect task IDs, browser versions, and reproduction steps. Send one scoped engineering incident for the affected player reports. If a downloaded clip is silent while the player counter and seeking work, follow the media-input quality procedure for that clip."
+      },
+      "k:pilot-media-input-quality-faq@1.1:00309a9c": {
+        "evidence_id": "k:pilot-media-input-quality-faq@1.1:00309a9c",
+        "origin": "retrieved_source",
+        "use": "CURRENT_GUIDANCE",
+        "citation": {
+          "document_id": "knowledge_3e418d9ffc0b2630409e222058fcc87c5cb25b3a9b8933277f75e55ed4d8c22e",
+          "version_id": "version_724f51858bf4ea6c76042afbffe9e86f9b00659501e878b7692e687f15f86caf",
+          "chunk_id": "chunk_00309a9c02047eb51f97dfb4abdfc898",
+          "authoring": "pilot-media-input-quality-faq@1.1",
+          "title": "Media-input quality FAQ (v1.1)",
+          "sections": [
+            "Silent input"
+          ],
+          "source": {
+            "batch_id": null,
+            "channel_id": null,
+            "manual_key": "pilot-media-input-quality-faq",
+            "message_id": null,
+            "permalink": null,
+            "project_id": "audio_multimodal",
+            "reference": null,
+            "system": "manual",
+            "thread_id": null,
+            "workspace_id": null
+          }
+        },
+        "source_type": "faq",
+        "record_kind": "faq",
+        "applicability": {
+          "state": "CURRENT",
+          "revision_state": "CURRENT",
+          "version_mode": "current",
+          "replaced_by": [],
+          "unverified_supersession": [],
+          "supersedes": [],
+          "enactment": null,
+          "other_revisions": []
+        },
+        "dates": {
+          "source_date": "2026-09-28T00:00:00Z",
+          "basis": "effective_at",
+          "effective_at": "2026-09-28T00:00:00Z",
+          "created_at": null,
+          "valid_until": null,
+          "expired_as_of": false,
+          "reference_time": "2026-10-17T00:00:00Z"
+        },
+        "scope": {
+          "project_id": "audio_multimodal",
+          "batch_id": null,
+          "scope": "project",
+          "batch_relation": "project_wide"
+        },
+        "authority": {
+          "role": "TEAM_LEAD",
+          "actor": "fixture",
+          "actor_relation": "RECORD_AUTHORITY",
+          "approval_status": "EXPLICIT_SOURCE_MARKER",
+          "provenance": "synthetic_fixture_record"
+        },
+        "authorship": {
+          "author_id": null,
+          "verified": false,
+          "basis": "NO_AUTHOR_RECORDED"
+        },
+        "recorded_states": {
+          "status": "approved",
+          "decision_status": null,
+          "execution_status": null,
+          "outcome_status": null
+        },
+        "upstream_review": null,
+        "excerpt": "## Silent input\nIf a local copy is confirmed to be silent and the player advances normally, preserve the sample and use the media-input quality flag. When the task ID or the local playback check is missing, ask for it before assigning a disposition."
+      }
+    },
+    "card": {
+      "contract_version": "agent3-advice-card-v4",
+      "record_type": "ADVICE_CARD",
+      "card_id": "card_3d8574258571affd2083d5c39066b841",
+      "project_id": "audio_multimodal",
+      "topic_name": "Field sample grading clarification",
+      "card_line": "RECOMMENDED_ACTION",
+      "summary": "A tutor reports leaving a clip labeled 'field sample' ungraded after finding a flat waveform in the downloaded file, despite a working counter and seeking. A QA tutor requested its task ID; the grading question remains unanswered.",
+      "severity": {
+        "level": "LOW",
+        "assessment_status": "ASSESSED",
+        "rubric_version": "severity-rubric-v3-semantic-signals",
+        "rubric_content_sha256": "eccaa31a2ab84a0aa7c005216a92fc39681e1dd10107117344948235a76673f4",
+        "rubric_project_id": null,
+        "rubric_scope": "SHARED_DEFAULT",
+        "rationale": "One tutor reports leaving one clip ungraded while asking a handling question. Current guidance provides a straightforward next step, and the messages do not establish broader disruption or conflicting handling rules.",
+        "matched_signals": [],
+        "evidence": [],
+        "occurrence": {
+          "affected_reporters": {
+            "status": "LOWER_BOUND",
+            "count": 1,
+            "ids": [
+              "U9106"
+            ],
+            "basis": "Distinct authors whose own cited message reports the problem; other participants are not counted.",
+            "evidence": [
+              {
+                "kind": "slack_message",
+                "project_id": "audio_multimodal",
+                "batch_id": "audio_pilot_17",
+                "scope": "project",
+                "channel_id": "C_91AUDIO01",
+                "thread_id": "1792145220.000000",
+                "message_id": "1792145220.000000",
+                "document_id": null,
+                "version_id": null,
+                "authoring_document_id": null,
+                "authoring_version": null,
+                "section": null,
+                "chunk_id": null,
+                "candidate_group_id": null,
+                "member_id": "member_31131136e1e660617777fb2f",
+                "artifact": null,
+                "artifact_sha256": null,
+                "quote": null,
+                "note": "m:C_91AUDIO01:1792145220.000000"
+              }
+            ]
+          },
+          "affected_tasks": {
+            "status": "UNKNOWN",
+            "count": null,
+            "ids": [],
+            "basis": null,
+            "evidence": []
+          },
+          "relevant_threads": [
+            {
+              "project_id": "audio_multimodal",
+              "batch_id": "audio_pilot_17",
+              "channel_id": "C_91AUDIO01",
+              "thread_id": "1792145220.000000",
+              "member_id": "member_31131136e1e660617777fb2f"
+            }
+          ],
+          "reporting_window": {
+            "start": "2026-10-16T10:07:00+00:00",
+            "end": "2026-10-16T10:09:00+00:00"
+          },
+          "historical_recurrence": {
+            "status": "NOT_CHECKED",
+            "sources": [],
+            "event_series_ids": []
+          },
+          "known_denominator": null,
+          "structural": {
+            "threads": 1,
+            "messages": 2,
+            "distinct_participants": 2,
+            "duplicate_threads_ignored": 0,
+            "duplicate_messages_ignored": 0,
+            "computed_from": "topic member threads (original Slack messages)",
+            "participants_are_not_affected_reporters": true
+          },
+          "semantic_identification": "ASSESSED"
+        },
+        "inherited_from": {
+          "level": "UNKNOWN",
+          "assessment_status": "UNASSESSED",
+          "assessment_deferred_to": "AGENT3",
+          "reason": "Agent 2 performs taxonomy only."
+        }
+      },
+      "severity_is_provisional": false,
+      "resolution_status": "UNRESOLVED",
+      "recommended_action": {
+        "action_type": "POST_ALIGNMENT",
+        "draft_text": "Please share the task ID requested by the QA tutor and check whether the downloaded copy is actually silent during local playback. Your report describes a flat waveform with a working counter and seeking, but does not explicitly confirm local silence. Under the current media-input quality FAQ, if the local copy is confirmed silent and the player advances normally, preserve the sample and use the media-input quality flag. We need the task ID and local playback check before assigning a disposition.",
+        "scope_note": "This request concerns the reported clip only; it does not confirm that leaving it ungraded is the correct disposition.",
+        "label": "Post a reminder",
+        "instruction": "Ask the tutor for the task ID and a local playback check before confirming how to handle the clip.",
+        "rationale": "The current FAQ provides a conditional handling rule, but the required case details are incomplete. Requesting them advances the unanswered grading question without assuming that a flat waveform confirms silence.",
+        "targets": [],
+        "essential_premise_ids": [
+          "claim:c1",
+          "claim:c2",
+          "claim:c3",
+          "claim:c5"
+        ],
+        "source": "DRAFT"
+      },
+      "reasoning": "What the evidence shows: A tutor reports a flat waveform in a downloaded clip labeled 'field sample', says the counter advances through 00:11 and seeking works, and asks whether leaving the clip ungraded was appropriate. A QA tutor asks for the task ID before confirming the clip's disposition. The current media-input quality FAQ says to preserve the sample and use the media-input quality flag when a local copy is confirmed silent and the player advances normally; a missing task ID or local playback check must be requested before assigning a disposition. Current audio incident triage directs reproducible player freezes after seeking to engineering, but directs downloaded silent clips with working counters and seeking to the media-input quality procedure. The tutor's grading question remains unanswered in the available thread: no task ID or explicit local playback result is provided, and the QA tutor's reply requests information rather than confirming a disposition. Thread status, read from each thread's own messages: unresolved ×1. Agent 1's earlier labels (an input, not evidence): unresolved ×1.",
+      "supporting_sources": [
+        {
+          "kind": "knowledge_source",
+          "project_id": "audio_multimodal",
+          "batch_id": null,
+          "scope": "project",
+          "channel_id": null,
+          "thread_id": null,
+          "message_id": null,
+          "document_id": "knowledge_3e418d9ffc0b2630409e222058fcc87c5cb25b3a9b8933277f75e55ed4d8c22e",
+          "version_id": "version_724f51858bf4ea6c76042afbffe9e86f9b00659501e878b7692e687f15f86caf",
+          "authoring_document_id": "pilot-media-input-quality-faq",
+          "authoring_version": "1.1",
+          "section": "Silent input",
+          "chunk_id": "chunk_00309a9c02047eb51f97dfb4abdfc898",
+          "candidate_group_id": null,
+          "member_id": null,
+          "artifact": null,
+          "artifact_sha256": null,
+          "quote": null,
+          "note": "k:pilot-media-input-quality-faq@1.1:00309a9c (CURRENT_GUIDANCE; CURRENT)"
+        },
+        {
+          "kind": "knowledge_source",
+          "project_id": "audio_multimodal",
+          "batch_id": null,
+          "scope": "project",
+          "channel_id": null,
+          "thread_id": null,
+          "message_id": null,
+          "document_id": "knowledge_396c099397e2b3be500a9f33b2f5bae3e3224f9337fe7a4d600046bf30f4d427",
+          "version_id": "version_9e1bc9706f1c82830c52eb93b1721f33c95a461ec5deeebc707c471a89f1d3d3",
+          "authoring_document_id": "pilot-audio-incident-triage",
+          "authoring_version": "1.3",
+          "section": "Playback failures",
+          "chunk_id": "chunk_3b2b70f032534219699d1bd9da638c98",
+          "candidate_group_id": null,
+          "member_id": null,
+          "artifact": null,
+          "artifact_sha256": null,
+          "quote": null,
+          "note": "k:pilot-audio-incident-triage@1.3:3b2b70f0 (CURRENT_GUIDANCE; CURRENT)"
+        },
+        {
+          "kind": "slack_message",
+          "project_id": "audio_multimodal",
+          "batch_id": "audio_pilot_17",
+          "scope": "project",
+          "channel_id": "C_91AUDIO01",
+          "thread_id": "1792145220.000000",
+          "message_id": "1792145220.000000",
+          "document_id": null,
+          "version_id": null,
+          "authoring_document_id": null,
+          "authoring_version": null,
+          "section": null,
+          "chunk_id": null,
+          "candidate_group_id": null,
+          "member_id": "member_31131136e1e660617777fb2f",
+          "artifact": null,
+          "artifact_sha256": null,
+          "quote": null,
+          "note": "m:C_91AUDIO01:1792145220.000000"
+        },
+        {
+          "kind": "slack_message",
+          "project_id": "audio_multimodal",
+          "batch_id": "audio_pilot_17",
+          "scope": "project",
+          "channel_id": "C_91AUDIO01",
+          "thread_id": "1792145220.000000",
+          "message_id": "1792145340.000000",
+          "document_id": null,
+          "version_id": null,
+          "authoring_document_id": null,
+          "authoring_version": null,
+          "section": null,
+          "chunk_id": null,
+          "candidate_group_id": null,
+          "member_id": "member_31131136e1e660617777fb2f",
+          "artifact": null,
+          "artifact_sha256": null,
+          "quote": null,
+          "note": "m:C_91AUDIO01:1792145340.000000"
+        }
+      ],
+      "related_threads": [
+        {
+          "project_id": "audio_multimodal",
+          "batch_id": "audio_pilot_17",
+          "channel_id": "C_91AUDIO01",
+          "thread_id": "1792145220.000000",
+          "member_id": "member_31131136e1e660617777fb2f",
+          "permalink": null,
+          "display_reference": "1792145220.000000",
+          "label": "#audio-pilot, 2026-10-16, started by a tutor: \"My clip is labeled 'field sample' but has a flat waveform in the file I downloaded.\"",
+          "opening_text": "My clip is labeled 'field sample' but has a flat waveform in the file I downloaded. The counter plays through 00:11 and seeking works. I left this one ungraded. Is that the right route?"
+        }
+      ],
+      "confidence": 0.94,
+      "confidence_band": "HIGH",
+      "needs_review_reasons": [],
+      "inherited_flags": [],
+      "checks": {
+        "grounding": "PASSED",
+        "temporal_conflict": "NONE_FOUND",
+        "open_confirmation": "NONE"
+      },
+      "lineage": {
+        "agent3_run_id": "agent3overnight_f22f4be690e6939ca5f43554548d90b8",
+        "handoff_contract": "agent2-taxonomy-handoff-v2",
+        "agent2_export_sha256": "2dd6d3ac9f878b1e5090dfed5b45f689210847aba03c28f6c549f1ce9ab5c918",
+        "agent2_schema_version": 8,
+        "candidate_group_id": "cluster_d51dbe3aad0f5e2e",
+        "topic_id": "cluster_d51dbe3aad0f5e2e/topic_1",
+        "member_ids": [
+          "member_31131136e1e660617777fb2f"
+        ],
+        "project_id": "audio_multimodal",
+        "batch_id": "audio_pilot_17"
+      },
+      "review_notes": [],
+      "details": [
+        "The current media-input FAQ requires a task ID and a local playback check before assigning a disposition.",
+        "For confirmed local silence with normal player advancement, the FAQ directs preserving the sample and using the media-input quality flag."
+      ],
+      "next_step": {
+        "status": "ACTION_RECOMMENDED",
+        "rationale": "The current FAQ provides a conditional handling rule, but the required case details are incomplete. Requesting them advances the unanswered grading question without assuming that a flat waveform confirms silence.",
+        "explanation": null
+      }
+    },
+    "review_items": [],
+    "coverage": {
+      "group_members_outside_this_card": [],
+      "uncarried_obligations": []
+    },
+    "budget": {
+      "consumed": {
+        "retrieval_calls": 1,
+        "model_calls": 2
+      },
+      "limits": {
+        "model_calls_per_topic": 4,
+        "model_calls_total": 28,
+        "retrieval_calls_per_topic": 6,
+        "retrieval_calls_total": 42
+      }
+    },
+    "diagnostics": []
+  }
+}

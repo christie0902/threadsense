@@ -1,0 +1,214 @@
+{
+ "kind": "FRESH_LIVE",
+ "mode": "LIVE",
+ "parents": [],
+ "created_at": "2026-11-16T20:59:29.637968+00:00",
+ "hard_ceiling_usd": 4.5,
+ "target_usd": 30.0,
+ "configuration": {
+  "pipeline": "threadsense-full-run-v2",
+  "cutoff": "2026-10-17T00:00:00Z",
+  "agent1_relevance": {
+   "version": "agent1-relevance-v1",
+   "sha256": "6890cd2f2960b8122bf1f3a74b29983f9dbf2a86eb8568e3f0373fab0df779e8",
+   "stage_version": "agent1-relevance-v2",
+   "semantic_verification": {
+    "version": "agent1-relevance-verification-v1",
+    "sha256": "138f1a01b1fb4d78abcf8ae1db5b6e6fe4ae8031fbe444113c68f67ea8f1eb46",
+    "model": "openai/gpt-4.1"
+   }
+  },
+  "agent2_consolidation": {
+   "version": "agent2-consolidation-v1",
+   "prompt_version": "agent2-merge-v1",
+   "limits": {
+    "centroid_min": 0.55,
+    "member_min": 0.35,
+    "whole_centroid_min": 0.5,
+    "whole_member_min": 0.3,
+    "max_set_size": 4,
+    "max_sets": 48,
+    "max_union_sets": 8
+   },
+   "rules_sha256": "cd088eb0fae37c57f201e6692c39882594480ba85d52b514dc8494c2a000d2e6",
+   "model": "openai/gpt-5.4-2026-03-05"
+  },
+  "fixture": {
+   "path": "experiments/fresh_15_v1/inputs/slack",
+   "tree_sha256": "f1382d9aea0ddb1112a50aebf676efb5ff68023b272e4d4e735df3354a21d4e6"
+  },
+  "knowledge_tree_sha256": "26ca7f0134d0fa1f9178135701f9f0aaa15aaecff75de005f0386b037ba18a4d",
+  "rubric_sha256": "c3158e1899d73a78a6b77e53520a1404ef99742212c8849f43aa799ffbb679b1",
+  "retrieval_index": {
+   "path": ".index/retrieval",
+   "manifest_sha256": "76dae0fe64c62b9431679c8e514ebe82594732bc4c053f12f856a9ddec5252ca",
+   "build_fingerprint": "b437167740fd17628cff819421672cbaad9a0bc94b07210afee685fb2337be74"
+  },
+  "models": {
+   "agent1_interpreter": "openai/gpt-4o-mini-2024-07-18",
+   "agent1_verifier": "openai/gpt-4.1",
+   "agent2": "openai/gpt-5.4-2026-03-05",
+   "agent2_reasoning_effort": "low",
+   "agent3": {
+    "model": "openai/gpt-6.1-sol",
+    "reasoning_effort": "medium",
+    "service_tier": "default",
+    "input_token_limit": 24000,
+    "max_completion_tokens_per_call": 16384,
+    "timeout_seconds": 120,
+    "provider_sdk_max_retries": 0,
+    "model_fallback": null
+   }
+  },
+  "agent3_prompts": {
+   "prompt_version": "agent3-advisor-prompts-v18",
+   "draft_rules": "b8aed76caf08cad562d92dd855620c62acacb850357eaa05f78136421029d54d",
+   "revision_rules": "2c7d4fe865dc4a0a08b827aaa4bd505a2a765f81bf5bcc857accde89d546192f",
+   "writing_guide": "59850c0b461ba1184f3ed2fa8d1126788dc012acd94239b61d9a5845cbb572a6",
+   "style_examples": "2417b38ae13ff9d61ec4057a15ea8fb14d2cf75514a035b358a12483f881253a",
+   "grounding_rules": "1c14f63b5df7612d7a73e9ca25d5cfd4522d2849c958c8f0ead8bef1699fc906",
+   "tot_rules": "bec9ea8d68df9476726287e28bfa5307be3269a9a030dc416d62df24ee6861b3",
+   "schemas": {
+    "AdvisorDraft": "3440eb0a52496dcc815ed083e4b576bcc9c204c60b0484f07ef368c1b00c8bf1",
+    "GroundingJudgment": "50af5a9b3754699fbba71a24c3c6decee744411e9159b79ec3bd068d2691e38d",
+    "ToTComparison": "a94ba343f3f12d220f9e9807ad7a2e59793ab29c02e06669756d94e3da1a181f"
+   },
+   "sent_schemas": {
+    "AdvisorDraft": "d63b0350d8d7975696622e60563fc83ccf35ffedc19c31a65faaf955ef30945d",
+    "GroundingJudgment": "e2d8f664f3e2eb4d9c24f4a9189c4c3f5e8caf989655435ea841b2fdf0f3a4e8",
+    "ToTComparison": "46ecbab68faa7728f7fcf278307d5a2c64e92fd67868e45df1b7a0093a6b28a3"
+   },
+   "evidence_view": "agent3-evidence-view-v3",
+   "flag_impact": {
+    "rules": "14ed692f5dd79edbe73d99ae00be159aaa792c6d7ea77c6391dc3c9a4ea5f00e",
+    "sent_schema": "826d0156b170b3f45aa6c800028f2d1c037f09ee2eb939623f5da5b7be24a305",
+    "assessment": "agent3-flag-impact-v2"
+   },
+   "contract_versions": {
+    "draft": "agent3-advisor-draft-v11",
+    "grounding": "agent3-grounding-judgment-v5",
+    "tot": "agent3-tot-comparison-v3"
+   }
+  },
+  "agent3_pilot_version": "agent3-advisor-pilot-v8",
+  "agent3_tot_controller": {
+   "version": "agent3-tot-controller-v2",
+   "sha256": "9c451ed65215906cf71818141cc350be94206f5d0603aa8e9a045017d60804b5"
+  },
+  "agent3_options": {
+   "research_mode": "batch (ReAct off)",
+   "flag_impact": false,
+   "revision_and_tot": "conditional (existing)"
+  },
+  "transport": {
+   "retries": 0,
+   "fallback_models": null,
+   "batch_api": "not used (sequential proven transports)"
+  },
+  "experiment": {
+   "fixture_id": "threadsense_fresh_15_v1",
+   "arm": "gpt",
+   "models": {
+    "agent1": "openai/gpt-4o-mini-2024-07-18",
+    "agent1_verifier": "openai/gpt-4.1",
+    "agent2": "openai/gpt-5.4-2026-03-05",
+    "agent3": "openai/gpt-6.1-sol"
+   },
+   "transport": "standard repository transports to api.openai.com (no interception)",
+   "allowed_to_send": [
+    "gpt-4.1",
+    "gpt-4o-mini-2024-07-18",
+    "gpt-5.4-2026-03-05",
+    "gpt-6.1-sol"
+   ],
+   "allowed_hosts": [
+    "api.openai.com"
+   ],
+   "agent2_reasoning_effort": "low",
+   "agent3_settings": "scripts/run_agent3_overnight.live_settings (gpt-6.1-sol, reasoning medium, 120 s timeout)",
+   "pricing": "repository pricing.py (verified prices), default input margin",
+   "inputs": {
+    "fixture": "experiments/fresh_15_v1/inputs/slack",
+    "fixture_tree_sha256": "f1382d9aea0ddb1112a50aebf676efb5ff68023b272e4d4e735df3354a21d4e6",
+    "knowledge": "experiments/fresh_15_v1/inputs/knowledge",
+    "knowledge_tree_sha256": "a32b31b6bcf0e6ea187ff4aec69910106d0b894c7587aad39db96c3665265f2f",
+    "index": ".index/fresh_15_v1",
+    "index_build_fingerprint": "b437167740fd17628cff819421672cbaad9a0bc94b07210afee685fb2337be74",
+    "index_corpus_fingerprint": "7c345e87cddecc66f0294580efaacb89281f21057f0ad3b3f79e80c76989db97",
+    "cutoff": "2026-10-17T00:00:00Z"
+   },
+   "freeze_sha256": "810277da35eb591bf12fbf3a65e0012da8bf22b631397d32c5f10258686521c3",
+   "frozen": {
+    "experiments/fresh_15_v1/source/threadsense_fresh_15_fixture.json": "1b6d196ecdf53d2c22a1ed211bd65fc0293832aee96b1972fd85f4b465c65e3e",
+    "experiments/fresh_15_v1/answer_key/threadsense_fresh_15_answer_key.md": "555117a6f5fbdda2eafb841aeab1e40a9bdd19384d19bbb178a09d3e93fedc26",
+    "experiments/fresh_15_v1/convert_fixture.py": "dce446868c79ee246fef9e9613594553a39d70f02dc480150ad2189c517e7a9b",
+    "experiments/fresh_15_v1/id_map.json": "49767bc5cee6ae0229dd3dcbe20c72cda2b2edbff60297f0c24076d431546398",
+    "experiments/fresh_15_v1/inputs/knowledge/faq/pilot-media-input-quality-faq_v1.1.md": "3814919dfc544c13cb9e4f78f887c508a4d9f83886da59ee1fb6cab545d02336",
+    "experiments/fresh_15_v1/inputs/knowledge/faq/pilot-review-export-troubleshooting_v1.0.md": "11b800fc55f10d62a3fdc76eef44484e4e656fd6b43f95c8b8493d84d84bc7c4",
+    "experiments/fresh_15_v1/inputs/knowledge/instructions/pilot-audio-incident-triage_v1.3.md": "2d9c8f6baa83797de5afcdf33f2e6f985746833fe6cc5f2d644d21c2278919fb",
+    "experiments/fresh_15_v1/inputs/knowledge/instructions/pilot-multilingual-alignment-review-guide_v1.4.md": "08cfeabcecd0ce1b6d8d15f134dafd631f8dcd44ea067b3feef23b70540fae7a",
+    "experiments/fresh_15_v1/inputs/knowledge/instructions/pilot-multilingual-alignment-review-guide_v2.0.md": "4fe612272b78bcdd666d688e995ef834d69b3ba69328f1e994ddf81785265884",
+    "experiments/fresh_15_v1/inputs/knowledge/instructions/pilot-response-preference-scoring-guide_v1.1.md": "4e5c57bb4d3227bac1641ab2384a7e40f10e20fe9102f0a41a7ba2e93446abc5",
+    "experiments/fresh_15_v1/inputs/slack/channels/C_91AUDIO01.json": "53be0509d7270286a3045f72c25398bd6c9ab814dfd843460c06cc5342f21322",
+    "experiments/fresh_15_v1/inputs/slack/channels/C_91MULTI01.json": "4742211d12aa05894082d9da9d2ea3cc5fe18ce1ede3113da2ac1dd0546ec246",
+    "experiments/fresh_15_v1/inputs/slack/channels/C_91MULTI02.json": "f20eccd7d760cc0c2a30d1691405a437fe1e8bc1aa5a174b7f5439e650b71ec3",
+    "experiments/fresh_15_v1/inputs/slack/channels/C_91RESP001.json": "dcfd640b5db3458771555b8cc791790667a91ba72f2bf293939507620d01a75a",
+    "experiments/fresh_15_v1/inputs/slack/users.json": "ee23b8c74520c7035db5c4b07adb8fff8aa4b6730082145c2407fcecb6e8ccff",
+    ".index/fresh_15_v1/manifest.json": "76dae0fe64c62b9431679c8e514ebe82594732bc4c053f12f856a9ddec5252ca"
+   },
+   "disabled": {
+    "reviewer_feedback_snapshot": "not passed (Agent 3 feedback_snapshot=None)",
+    "review_lessons": "not passed (Agent 1/2 --lessons absent)",
+    "parent_caches": "none for Run A; Run B reads Run A only",
+    "react_research": "off",
+    "flag_impact": "off"
+   },
+   "runtime_overrides": [
+    "pipeline FIXTURE/CUTOFF/INDEX_DIR",
+    "Agent 3 user directory = the experiment fixture users",
+    "route allowlist: api.openai.com and the four plan models only",
+    "checkout() ignores experiments/fresh_15_v1/runs/"
+   ]
+  }
+ },
+ "checkout": {
+  "head": "fd4e53c8e1bf0b1ec02f35de100b4fbd63e967a9",
+  "branch": "model-comparison-experiments",
+  "dirty_files_sha256": {
+   "src/threadsense/agents/topic_merge.py": "4144a7874fab1e0b1afaac1869b6808b2a88a202a322a5e57e0b58a8c3816ebc",
+   "tests/test_topic_merge.py": "2d007dac1c36cae567b78c50dcbe351d68284750b09c72598f2f180e23317931",
+   "experiments/fresh_15_v1/README.md": "2acbb6a2d8ffcbf75735a7e2b4a45d9f7bfcaad59a7acbb4c44e3742097e35ee",
+   "experiments/fresh_15_v1/answer_key/threadsense_fresh_15_answer_key.md": "555117a6f5fbdda2eafb841aeab1e40a9bdd19384d19bbb178a09d3e93fedc26",
+   "experiments/fresh_15_v1/convert_fixture.py": "dce446868c79ee246fef9e9613594553a39d70f02dc480150ad2189c517e7a9b",
+   "experiments/fresh_15_v1/delivery.py": "081a10bafa66d02f139a8a0fe05e61b525dcb033d61f267c9a415afaa431a955",
+   "experiments/fresh_15_v1/freeze.json": "810277da35eb591bf12fbf3a65e0012da8bf22b631397d32c5f10258686521c3",
+   "experiments/fresh_15_v1/id_map.json": "49767bc5cee6ae0229dd3dcbe20c72cda2b2edbff60297f0c24076d431546398",
+   "experiments/fresh_15_v1/inputs/knowledge/faq/pilot-media-input-quality-faq_v1.1.md": "3814919dfc544c13cb9e4f78f887c508a4d9f83886da59ee1fb6cab545d02336",
+   "experiments/fresh_15_v1/inputs/knowledge/faq/pilot-review-export-troubleshooting_v1.0.md": "11b800fc55f10d62a3fdc76eef44484e4e656fd6b43f95c8b8493d84d84bc7c4",
+   "experiments/fresh_15_v1/inputs/knowledge/instructions/pilot-audio-incident-triage_v1.3.md": "2d9c8f6baa83797de5afcdf33f2e6f985746833fe6cc5f2d644d21c2278919fb",
+   "experiments/fresh_15_v1/inputs/knowledge/instructions/pilot-multilingual-alignment-review-guide_v1.4.md": "08cfeabcecd0ce1b6d8d15f134dafd631f8dcd44ea067b3feef23b70540fae7a",
+   "experiments/fresh_15_v1/inputs/knowledge/instructions/pilot-multilingual-alignment-review-guide_v2.0.md": "4fe612272b78bcdd666d688e995ef834d69b3ba69328f1e994ddf81785265884",
+   "experiments/fresh_15_v1/inputs/knowledge/instructions/pilot-response-preference-scoring-guide_v1.1.md": "4e5c57bb4d3227bac1641ab2384a7e40f10e20fe9102f0a41a7ba2e93446abc5",
+   "experiments/fresh_15_v1/inputs/slack/channels/C_91AUDIO01.json": "53be0509d7270286a3045f72c25398bd6c9ab814dfd843460c06cc5342f21322",
+   "experiments/fresh_15_v1/inputs/slack/channels/C_91MULTI01.json": "4742211d12aa05894082d9da9d2ea3cc5fe18ce1ede3113da2ac1dd0546ec246",
+   "experiments/fresh_15_v1/inputs/slack/channels/C_91MULTI02.json": "f20eccd7d760cc0c2a30d1691405a437fe1e8bc1aa5a174b7f5439e650b71ec3",
+   "experiments/fresh_15_v1/inputs/slack/channels/C_91RESP001.json": "dcfd640b5db3458771555b8cc791790667a91ba72f2bf293939507620d01a75a",
+   "experiments/fresh_15_v1/inputs/slack/users.json": "ee23b8c74520c7035db5c4b07adb8fff8aa4b6730082145c2407fcecb6e8ccff",
+   "experiments/fresh_15_v1/preflight.py": "8931a32ead16bd1bdc0ce66f4f259e0d56d1eb17df5bfee5d020492e0fbe07e8",
+   "experiments/fresh_15_v1/preflight_report.json": "f30f5b6422ea360931f4c7f2ada555c7286a56bc6807b3ff7ee266ee3177b01d",
+   "experiments/fresh_15_v1/reports/summary_A2_sonnet_agent3_v1.err": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "experiments/fresh_15_v1/reports/summary_A2_sonnet_agent3_v1.txt": "538487c7d03712ebcc1ed48916f9a552ce20305a9c5f42e1f34bb005a101513c",
+   "experiments/fresh_15_v1/reports/summary_A_sonnet_v1.err": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "experiments/fresh_15_v1/reports/summary_A_sonnet_v1.txt": "88b4903647825739a9474ca8d75a8cd7bb1a56df588309a57efcc2e49d2b6dcf",
+   "experiments/fresh_15_v1/reports/summary_B2_grok_agent3_v1.err": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "experiments/fresh_15_v1/reports/summary_B2_grok_agent3_v1.txt": "751bffd532c9895a0fa53db77d1f5881a420bfcb7cbae33c4a85ab02dd2be46a",
+   "experiments/fresh_15_v1/reports/summary_B_grok_v1.err": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "experiments/fresh_15_v1/reports/summary_B_grok_v1.txt": "7836f915cdc3bfda1c0500b643289274c71452b5aba9d2b34ace0034866099c6",
+   "experiments/fresh_15_v1/run_experiment.py": "e6179bf2aa52242a6796b958b0cf0ead28a3cc5d6056e1df8ba417a17826dc18",
+   "experiments/fresh_15_v1/setup_timing.json": "d0315e9b0d49a3f04587758fe41ebc9214ce82bd98a770bbb61f3309c5396bcf",
+   "experiments/fresh_15_v1/source/threadsense_fresh_15_fixture.json": "1b6d196ecdf53d2c22a1ed211bd65fc0293832aee96b1972fd85f4b465c65e3e",
+   "experiments/fresh_15_v1/summarize_run.py": "242e2a58e8a5e7b1fc8698f8296a45bc2fbb332d6778e5fb5fa6f3db08874380"
+  },
+  "combined_sha256": "c3bf7ae69d018d7c96f3eafb31e78e60c85be6866eb11b6b2754555feb512b8b"
+ }
+}

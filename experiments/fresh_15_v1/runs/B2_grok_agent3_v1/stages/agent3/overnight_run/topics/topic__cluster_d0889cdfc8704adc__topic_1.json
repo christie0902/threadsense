@@ -1,0 +1,692 @@
+{
+  "work_item": {
+    "candidate_group_id": "cluster_d0889cdfc8704adc",
+    "project_id": "response_preference",
+    "batch_id": "response_pilot_17",
+    "work_id": "topic:cluster_d0889cdfc8704adc/topic_1",
+    "kind": "TOPIC",
+    "topic_id": "cluster_d0889cdfc8704adc/topic_1",
+    "topic_name": "Whitespace-only differences between otherwise identical answers",
+    "member_ids": [
+      "member_87f955f0c95aa5bc22870168",
+      "member_b82cc19fe1fa9c4e46c179d0"
+    ],
+    "pilot_scenario": null,
+    "in_scope": true
+  },
+  "workflow": {
+    "outcome": "CARD_WITH_STAGE_FAILURES",
+    "card_id": "card_5a85474ca7642b4e8f1045798f6b0319",
+    "card_line": "NEEDS_REVIEW",
+    "grounding": "NOT_RUN",
+    "stage_failures": [
+      {
+        "stage": "draft",
+        "status": "FAILED",
+        "failure_class": "RESOURCE"
+      }
+    ],
+    "semantic_source": "LIVE_MODEL"
+  },
+  "result": {
+    "scenario": {
+      "id": "topic:cluster_d0889cdfc8704adc/topic_1",
+      "candidate_group_id": "cluster_d0889cdfc8704adc",
+      "focus": "Whitespace-only differences between otherwise identical answers",
+      "topic_id": "cluster_d0889cdfc8704adc/topic_1"
+    },
+    "status": "CARD",
+    "topic": {
+      "project_id": "response_preference",
+      "batch_id": "response_pilot_17",
+      "candidate_group_id": "cluster_d0889cdfc8704adc",
+      "topic_id": "cluster_d0889cdfc8704adc/topic_1",
+      "topic_label": "Whitespace-only differences between otherwise identical answers",
+      "projection_gap": null,
+      "as_of": "2026-10-17T00:00:00Z",
+      "member_ids": [
+        "member_87f955f0c95aa5bc22870168",
+        "member_b82cc19fe1fa9c4e46c179d0"
+      ],
+      "initial_query": "Whitespace-only differences between otherwise identical answers. Given two answers that are identical in content except that Candidate B has two extra blank lines between bullets, and no output format restriction, should the preference go to Candidate A?"
+    },
+    "retrieval_trace": [
+      {
+        "step": 1,
+        "purpose": "initial_current_guidance",
+        "gap_id": null,
+        "query": "Whitespace-only differences between otherwise identical answers. Given two answers that are identical in content except that Candidate B has two extra blank lines between bullets, and no output format restriction, should the preference go to Candidate A?",
+        "source_types": [
+          "guideline",
+          "faq",
+          "decision",
+          "announcement"
+        ],
+        "version_mode": "current",
+        "as_of": "2026-10-17T00:00:00Z",
+        "batch": "response_pilot_17",
+        "top_k": 5,
+        "status": "DONE",
+        "mode": "hybrid",
+        "use_mmr": true,
+        "mmr_lambda": 0.9,
+        "result_ids": [
+          "k:pilot-response-preference-scoring-guide@1.1:d0c2c6a5"
+        ],
+        "new_evidence_ids": [
+          "k:pilot-response-preference-scoring-guide@1.1:d0c2c6a5"
+        ],
+        "eligible_chunks": 1,
+        "added": []
+      }
+    ],
+    "retrieval_notes": {
+      "withheld_by_version": [],
+      "version_diagnostics": []
+    },
+    "follow_ups": [],
+    "unfilled_gaps": [],
+    "model_calls": [
+      {
+        "stage": "draft",
+        "schema": "AdvisorDraft",
+        "agent1_context": {
+          "sha256": "5b1dd8e1259638ae1163a52b04d3740a75930714a98a4b91f9f36893b21d33f2",
+          "boundary": "IN_HTTP_BODY"
+        },
+        "http_requests": {
+          "sent": 1,
+          "blocked": 0,
+          "hosts": [
+            "openrouter.ai"
+          ],
+          "responses": [
+            {
+              "error": "TimeoutError",
+              "seconds": 600.486
+            }
+          ],
+          "input_tokens": 9925,
+          "refused": null,
+          "charged_usd": 0.146304
+        },
+        "input_tokens_estimate": 9925,
+        "status": "FAILED",
+        "failure_class": "RESOURCE",
+        "error": "Timeout: litellm.Timeout: APITimeoutError - Request timed out. Error_str: The read operation timed out"
+      }
+    ],
+    "agent1_context": [
+      {
+        "sha256": "5b1dd8e1259638ae1163a52b04d3740a75930714a98a4b91f9f36893b21d33f2",
+        "content": [
+          {
+            "member_id": "member_87f955f0c95aa5bc22870168",
+            "thread_id": "1792152900.000000",
+            "summary": "Casey Tran (TUTOR) reported that Candidate B has two extra blank lines between bullets, that the two answers otherwise say exactly the same thing, and that there is no output format restriction, and asked whether to prefer A. Noah Bell (QA_TUTOR) replied to pick Tie, because extra whitespace alone does not affect preference when there is no format requirement. A TEAM_LEAD (U9103) endorsed that reply with a white_check_mark reaction.",
+            "central_question": "Given two answers that are identical in content except that Candidate B has two extra blank lines between bullets, and no output format restriction, should the preference go to Candidate A?",
+            "attributed_agent1_resolution": {
+              "state": "RESOLVED_IN_THREAD",
+              "rationale": "The root asked a single preference question (prefer A?). The reply directly answers it: choose Tie, since whitespace alone does not affect preference without a format requirement. The QA_TUTOR reply was endorsed by a TEAM_LEAD via white_check_mark (U9103 is mapped to TEAM_LEAD in reactor_roles). No part of the request remains open.",
+              "agent1_verification_status": "NEEDS_REVIEW",
+              "note": "Agent 1 label, not evidence; NEEDS_REVIEW means Agent 1 did not verify it. Assess resolution from the member messages."
+            },
+            "agent1_review_required": true,
+            "agent1_review_reason": "Still unverified after one targeted revision: Independent evidence audit unavailable or invalid: ValueError: summary:3: matching evidence IDs and quotations are required.",
+            "note": "Agent 1 interpretation, not source evidence; cite member messages for incident facts."
+          },
+          {
+            "member_id": "member_b82cc19fe1fa9c4e46c179d0",
+            "thread_id": "1792155120.000000",
+            "summary": "Jamie Park (TUTOR) asked whether a difference in leading whitespace changes the label when two otherwise identical answers differ only in that one begins with a blank line. Sam Vega (TEAM_LEAD) replied that Tie should be used for this item because the task does not specify exact serialization.",
+            "central_question": "For two otherwise identical answers where one begins with a blank line and the other does not, does that difference change the preference label?",
+            "attributed_agent1_resolution": {
+              "state": "RESOLVED_IN_THREAD",
+              "rationale": "The root asks whether the leading blank line changes the label. The TEAM_LEAD reply directly answers: it does not, and Tie should be used, with the stated reason that the task does not specify exact serialization. No part of the question is left open.",
+              "agent1_verification_status": "VERIFIED",
+              "note": "Agent 1 label, not evidence; NEEDS_REVIEW means Agent 1 did not verify it. Assess resolution from the member messages."
+            },
+            "agent1_review_required": false,
+            "agent1_review_reason": "",
+            "note": "Agent 1 interpretation, not source evidence; cite member messages for incident facts."
+          }
+        ]
+      }
+    ],
+    "drafts": {
+      "initial": null,
+      "final": null,
+      "revised": false
+    },
+    "grounding": {
+      "structural_issues": [],
+      "action_issues": [],
+      "statements": [],
+      "unsupported": [],
+      "unjudged": [],
+      "extraneous_verdicts": [],
+      "status": "NOT_RUN",
+      "basis": "NO_DRAFT"
+    },
+    "temporal": null,
+    "temporal_before_grounding": null,
+    "severity": {
+      "assessment": {
+        "level": "UNKNOWN",
+        "assessment_status": "UNASSESSED",
+        "rubric_version": null,
+        "rubric_content_sha256": null,
+        "rubric_project_id": null,
+        "rubric_scope": null,
+        "rationale": null,
+        "matched_signals": [],
+        "evidence": [],
+        "occurrence": {
+          "affected_reporters": {
+            "status": "UNKNOWN",
+            "count": null,
+            "ids": [],
+            "basis": null,
+            "evidence": []
+          },
+          "affected_tasks": {
+            "status": "UNKNOWN",
+            "count": null,
+            "ids": [],
+            "basis": null,
+            "evidence": []
+          },
+          "relevant_threads": [],
+          "reporting_window": null,
+          "historical_recurrence": {
+            "status": "NOT_CHECKED",
+            "sources": [],
+            "event_series_ids": []
+          },
+          "known_denominator": null,
+          "structural": null,
+          "semantic_identification": "PENDING"
+        },
+        "inherited_from": {
+          "level": "UNKNOWN",
+          "assessment_status": "UNASSESSED",
+          "assessment_deferred_to": "AGENT3",
+          "reason": "Agent 2 performs taxonomy only."
+        }
+      },
+      "issues": [],
+      "notes": [],
+      "proposal": null
+    },
+    "resolution": {
+      "topic": "UNKNOWN",
+      "members": {
+        "member_87f955f0c95aa5bc22870168": "UNKNOWN",
+        "member_b82cc19fe1fa9c4e46c179d0": "UNKNOWN"
+      },
+      "agent1_attributed": [
+        {
+          "member_id": "member_87f955f0c95aa5bc22870168",
+          "state": "RESOLVED_IN_THREAD",
+          "agent1_verification_status": "NEEDS_REVIEW",
+          "agent1_review_required": true
+        },
+        {
+          "member_id": "member_b82cc19fe1fa9c4e46c179d0",
+          "state": "RESOLVED_IN_THREAD",
+          "agent1_verification_status": "VERIFIED",
+          "agent1_review_required": false
+        }
+      ]
+    },
+    "established_handling": [],
+    "coverage_issues": [],
+    "action_source": null,
+    "action_notes": [],
+    "tot": {
+      "status": "NOT_TRIGGERED",
+      "triggers": []
+    },
+    "evidence_ledger": {
+      "m:C_91RESP001:1792152900.000000": {
+        "evidence_id": "m:C_91RESP001:1792152900.000000",
+        "origin": "member_message",
+        "use": "MEMBER_REPORT",
+        "member_id": "member_87f955f0c95aa5bc22870168",
+        "channel_id": "C_91RESP001",
+        "thread_id": "1792152900.000000",
+        "message_id": "1792152900.000000",
+        "author_id": "U9106",
+        "author_name": "Casey Tran",
+        "author_role": "TUTOR",
+        "timestamp": "2026-10-16T12:15:00Z",
+        "thread_starter_id": "U9106",
+        "thread_starter_role": "TUTOR",
+        "reactions": [],
+        "excerpt": "Candidate B has two extra blank lines between bullets. Otherwise both answers say exactly the same thing and there is no output format restriction. Should I prefer A?"
+      },
+      "m:C_91RESP001:1792153020.000000": {
+        "evidence_id": "m:C_91RESP001:1792153020.000000",
+        "origin": "member_message",
+        "use": "MEMBER_REPORT",
+        "member_id": "member_87f955f0c95aa5bc22870168",
+        "channel_id": "C_91RESP001",
+        "thread_id": "1792152900.000000",
+        "message_id": "1792153020.000000",
+        "author_id": "U9105",
+        "author_name": "Noah Bell",
+        "author_role": "QA_TUTOR",
+        "timestamp": "2026-10-16T12:17:00Z",
+        "thread_starter_id": "U9106",
+        "thread_starter_role": "TUTOR",
+        "reactions": [
+          {
+            "name": "white_check_mark",
+            "users": [
+              {
+                "id": "U9103",
+                "name": "Sam Vega"
+              }
+            ]
+          }
+        ],
+        "excerpt": "Pick Tie. Extra whitespace alone does not affect preference when there is no format requirement."
+      },
+      "m:C_91RESP001:1792155120.000000": {
+        "evidence_id": "m:C_91RESP001:1792155120.000000",
+        "origin": "member_message",
+        "use": "MEMBER_REPORT",
+        "member_id": "member_b82cc19fe1fa9c4e46c179d0",
+        "channel_id": "C_91RESP001",
+        "thread_id": "1792155120.000000",
+        "message_id": "1792155120.000000",
+        "author_id": "U9107",
+        "author_name": "Jamie Park",
+        "author_role": "TUTOR",
+        "timestamp": "2026-10-16T12:52:00Z",
+        "thread_starter_id": "U9107",
+        "thread_starter_role": "TUTOR",
+        "reactions": [],
+        "excerpt": "One answer begins with a blank line and one doesn't. They are otherwise identical. Does that change the label?"
+      },
+      "m:C_91RESP001:1792155240.000000": {
+        "evidence_id": "m:C_91RESP001:1792155240.000000",
+        "origin": "member_message",
+        "use": "MEMBER_REPORT",
+        "member_id": "member_b82cc19fe1fa9c4e46c179d0",
+        "channel_id": "C_91RESP001",
+        "thread_id": "1792155120.000000",
+        "message_id": "1792155240.000000",
+        "author_id": "U9103",
+        "author_name": "Sam Vega",
+        "author_role": "TEAM_LEAD",
+        "timestamp": "2026-10-16T12:54:00Z",
+        "thread_starter_id": "U9107",
+        "thread_starter_role": "TUTOR",
+        "reactions": [],
+        "excerpt": "Use Tie for this item. The task doesn't specify exact serialization."
+      },
+      "k:pilot-response-preference-scoring-guide@1.1:d0c2c6a5": {
+        "evidence_id": "k:pilot-response-preference-scoring-guide@1.1:d0c2c6a5",
+        "origin": "retrieved_source",
+        "use": "CURRENT_GUIDANCE",
+        "citation": {
+          "document_id": "knowledge_7ebc684071cc9d7a8f6f69e7f78000faac4164dd04821023ad710203fe9c430f",
+          "version_id": "version_ded402a36cc72d4f5efb076e842a9511a0bb4f85e12c4cefc4ebca78c18c93c9",
+          "chunk_id": "chunk_d0c2c6a5d8d78fe1c86d9468828ce0a7",
+          "authoring": "pilot-response-preference-scoring-guide@1.1",
+          "title": "Response preference scoring guide (v1.1)",
+          "sections": [
+            "Whitespace and strict output formats"
+          ],
+          "source": {
+            "batch_id": null,
+            "channel_id": null,
+            "manual_key": "pilot-response-preference-scoring-guide",
+            "message_id": null,
+            "permalink": null,
+            "project_id": "response_preference",
+            "reference": null,
+            "system": "manual",
+            "thread_id": null,
+            "workspace_id": null
+          }
+        },
+        "source_type": "guideline",
+        "record_kind": "guideline",
+        "applicability": {
+          "state": "CURRENT",
+          "revision_state": "CURRENT",
+          "version_mode": "current",
+          "replaced_by": [],
+          "unverified_supersession": [],
+          "supersedes": [],
+          "enactment": null,
+          "other_revisions": []
+        },
+        "dates": {
+          "source_date": "2026-09-29T00:00:00Z",
+          "basis": "effective_at",
+          "effective_at": "2026-09-29T00:00:00Z",
+          "created_at": null,
+          "valid_until": null,
+          "expired_as_of": false,
+          "reference_time": "2026-10-17T00:00:00Z"
+        },
+        "scope": {
+          "project_id": "response_preference",
+          "batch_id": null,
+          "scope": "project",
+          "batch_relation": "project_wide"
+        },
+        "authority": {
+          "role": "TEAM_LEAD",
+          "actor": "fixture",
+          "actor_relation": "RECORD_AUTHORITY",
+          "approval_status": "EXPLICIT_SOURCE_MARKER",
+          "provenance": "synthetic_fixture_record"
+        },
+        "authorship": {
+          "author_id": null,
+          "verified": false,
+          "basis": "NO_AUTHOR_RECORDED"
+        },
+        "recorded_states": {
+          "status": "approved",
+          "decision_status": null,
+          "execution_status": null,
+          "outcome_status": null
+        },
+        "upstream_review": null,
+        "excerpt": "## Whitespace and strict output formats\nWhen content is otherwise equivalent, whitespace alone does not break a tie. If a task specifies an exact serialized format, evaluate conformance to that requirement. This guide covers preference decisions."
+      }
+    },
+    "card": {
+      "contract_version": "agent3-advice-card-v4",
+      "record_type": "ADVICE_CARD",
+      "card_id": "card_5a85474ca7642b4e8f1045798f6b0319",
+      "project_id": "response_preference",
+      "topic_name": "Whitespace-only differences between otherwise identical answers",
+      "card_line": "NEEDS_REVIEW",
+      "summary": "No advisor draft is available; the threads and open review flags are listed.",
+      "severity": {
+        "level": "UNKNOWN",
+        "assessment_status": "UNASSESSED",
+        "rubric_version": null,
+        "rubric_content_sha256": null,
+        "rubric_project_id": null,
+        "rubric_scope": null,
+        "rationale": null,
+        "matched_signals": [],
+        "evidence": [],
+        "occurrence": {
+          "affected_reporters": {
+            "status": "UNKNOWN",
+            "count": null,
+            "ids": [],
+            "basis": null,
+            "evidence": []
+          },
+          "affected_tasks": {
+            "status": "UNKNOWN",
+            "count": null,
+            "ids": [],
+            "basis": null,
+            "evidence": []
+          },
+          "relevant_threads": [],
+          "reporting_window": null,
+          "historical_recurrence": {
+            "status": "NOT_CHECKED",
+            "sources": [],
+            "event_series_ids": []
+          },
+          "known_denominator": null,
+          "structural": null,
+          "semantic_identification": "PENDING"
+        },
+        "inherited_from": {
+          "level": "UNKNOWN",
+          "assessment_status": "UNASSESSED",
+          "assessment_deferred_to": "AGENT3",
+          "reason": "Agent 2 performs taxonomy only."
+        }
+      },
+      "severity_is_provisional": true,
+      "resolution_status": "UNKNOWN",
+      "recommended_action": null,
+      "reasoning": "No advisor reasoning is available. Agent 1's earlier labels (an input, not evidence): resolved in thread ×2; 1 of 2 were not verified by Agent 1.",
+      "supporting_sources": [],
+      "related_threads": [
+        {
+          "project_id": "response_preference",
+          "batch_id": "response_pilot_17",
+          "channel_id": "C_91RESP001",
+          "thread_id": "1792152900.000000",
+          "member_id": "member_87f955f0c95aa5bc22870168",
+          "permalink": null,
+          "display_reference": "1792152900.000000",
+          "label": "#response-pilot, 2026-10-16, started by a tutor: \"Candidate B has two extra blank lines between bullets.\"",
+          "opening_text": "Candidate B has two extra blank lines between bullets. Otherwise both answers say exactly the same thing and there is no output format restriction. Should I prefer A?"
+        },
+        {
+          "project_id": "response_preference",
+          "batch_id": "response_pilot_17",
+          "channel_id": "C_91RESP001",
+          "thread_id": "1792155120.000000",
+          "member_id": "member_b82cc19fe1fa9c4e46c179d0",
+          "permalink": null,
+          "display_reference": "1792155120.000000",
+          "label": "#response-pilot, 2026-10-16, started by a tutor: \"One answer begins with a blank line and one doesn't.\"",
+          "opening_text": "One answer begins with a blank line and one doesn't. They are otherwise identical. Does that change the label?"
+        }
+      ],
+      "confidence": 0.0,
+      "confidence_band": "LOW",
+      "needs_review_reasons": [
+        {
+          "code": "LOW_CONFIDENCE",
+          "detail": "No valid Advisor draft; confidence recorded as 0.",
+          "obligation_ids": [],
+          "evidence": []
+        },
+        {
+          "code": "INHERITED_FLAG",
+          "detail": "Upstream obligations remain open: inherited_agent1_review x1",
+          "obligation_ids": [],
+          "evidence": []
+        },
+        {
+          "code": "GROUNDING_NOT_RUN",
+          "detail": "Grounding not run: NO_DRAFT; no Advisor statement is shown as established.",
+          "obligation_ids": [],
+          "evidence": []
+        },
+        {
+          "code": "OTHER",
+          "detail": "draft: FAILED (Timeout: litellm.Timeout: APITimeoutError - Request timed out. Error_str: The read operation timed out)",
+          "obligation_ids": [],
+          "evidence": []
+        }
+      ],
+      "inherited_flags": [
+        {
+          "origin": "agent1",
+          "kind": "inherited_agent1_review",
+          "candidate_group_id": "cluster_d0889cdfc8704adc",
+          "obligation_id": null,
+          "member_ids": [
+            "member_87f955f0c95aa5bc22870168"
+          ],
+          "detail": "Still unverified after one targeted revision: Independent evidence audit unavailable or invalid: ValueError: summary:3: matching evidence IDs and quotations are required."
+        }
+      ],
+      "checks": {
+        "grounding": "NOT_RUN",
+        "temporal_conflict": "NOT_CHECKED",
+        "open_confirmation": "NOT_CHECKED"
+      },
+      "lineage": {
+        "agent3_run_id": "agent3overnight_2754e69bb94cbf7fe5f93d24483b54b6",
+        "handoff_contract": "agent2-taxonomy-handoff-v2",
+        "agent2_export_sha256": "72f7a6c1cc75821b9c7b8451b311704926f66270117b29c782fb571f01733f5f",
+        "agent2_schema_version": 8,
+        "candidate_group_id": "cluster_d0889cdfc8704adc",
+        "topic_id": "cluster_d0889cdfc8704adc/topic_1",
+        "member_ids": [
+          "member_87f955f0c95aa5bc22870168",
+          "member_b82cc19fe1fa9c4e46c179d0"
+        ],
+        "project_id": "response_preference",
+        "batch_id": "response_pilot_17"
+      },
+      "review_notes": [
+        "The advisor produced no usable draft; the threads are listed for review.",
+        "1 earlier review flag is still open on these threads.",
+        "The advisor's statements could not be checked against the evidence, so none is shown as established.",
+        "The drafting step did not complete (a request limit was reached); details are in the diagnostics."
+      ],
+      "details": [],
+      "next_step": {
+        "status": "NO_RECOMMENDATION_AVAILABLE",
+        "rationale": null,
+        "explanation": "The advisor produced no usable draft, so no next step can be stated."
+      }
+    },
+    "review_items": [
+      {
+        "contract_version": "agent3-model-review-item-v1",
+        "record_type": "MODEL_REVIEW_ITEM",
+        "item_id": "review_4c9100e157d3bbd93f5058b86ec2706c",
+        "origin": "agent1",
+        "kind": "inherited_agent1_review",
+        "project_id": "response_preference",
+        "batch_id": "response_pilot_17",
+        "candidate_group_id": "cluster_d0889cdfc8704adc",
+        "topic_id": "cluster_d0889cdfc8704adc/topic_1",
+        "member_ids": [
+          "member_87f955f0c95aa5bc22870168"
+        ],
+        "obligation_id": null,
+        "reason": "Still unverified after one targeted revision: Independent evidence audit unavailable or invalid: ValueError: summary:3: matching evidence IDs and quotations are required.",
+        "source_obligation": {
+          "origin": "agent1",
+          "member_id": "member_87f955f0c95aa5bc22870168",
+          "project_id": "response_preference",
+          "batch_id": "response_pilot_17",
+          "channel_id": "C_91RESP001",
+          "thread_id": "1792152900.000000",
+          "candidate_group_id": "cluster_d0889cdfc8704adc",
+          "candidate_sha256": "6607c9bcdc122e4fc542c84e84735e0ee3f0e7ebfc3fbf2bab5a9cfae7fc57d2",
+          "source_sha256": "4e1acae34fa6f68ce7865130015b0c304ecd46f53d4f357b9556e5ca677e6a7c",
+          "agent1_record": {
+            "project_id": "response_preference",
+            "batch_id": "response_pilot_17",
+            "channel_id": "C_91RESP001",
+            "thread_id": "1792152900.000000",
+            "language": null,
+            "model": "openrouter/anthropic/claude-sonnet-5.5",
+            "run_config_sha256": "1157d17d790d42734ebe0a02e6587505f895d441a56f566f16e7777bc35f15cf",
+            "handoff_version": 1,
+            "verification_origin": "bounded_verification",
+            "input_sha256": "4e1acae34fa6f68ce7865130015b0c304ecd46f53d4f357b9556e5ca677e6a7c",
+            "candidate_sha256": "6607c9bcdc122e4fc542c84e84735e0ee3f0e7ebfc3fbf2bab5a9cfae7fc57d2",
+            "source_message_ids": [
+              "1792152900.000000",
+              "1792153020.000000"
+            ],
+            "interpretation": {
+              "thread_id": "1792152900.000000",
+              "summary": "Casey Tran (TUTOR) reported that Candidate B has two extra blank lines between bullets, that the two answers otherwise say exactly the same thing, and that there is no output format restriction, and asked whether to prefer A. Noah Bell (QA_TUTOR) replied to pick Tie, because extra whitespace alone does not affect preference when there is no format requirement. A TEAM_LEAD (U9103) endorsed that reply with a white_check_mark reaction.",
+              "central_question": "Given two answers that are identical in content except that Candidate B has two extra blank lines between bullets, and no output format restriction, should the preference go to Candidate A?",
+              "resolution_state": "RESOLVED_IN_THREAD",
+              "authoritative_response_present": true,
+              "authority_evidence_message_ids": [
+                "1792153020.000000"
+              ],
+              "resolution_rationale": "The root asked a single preference question (prefer A?). The reply directly answers it: choose Tie, since whitespace alone does not affect preference without a format requirement. The QA_TUTOR reply was endorsed by a TEAM_LEAD via white_check_mark (U9103 is mapped to TEAM_LEAD in reactor_roles). No part of the request remains open.",
+              "confidence": 0.95
+            },
+            "automated_verification_status": "NEEDS_REVIEW",
+            "verification_status": "NEEDS_REVIEW",
+            "review_required": true,
+            "revision_count": 1,
+            "provisional_fields": [
+              "authoritative_response_present",
+              "authority_evidence_message_ids",
+              "central_question",
+              "confidence",
+              "resolution_rationale",
+              "resolution_state",
+              "summary"
+            ],
+            "review_reason": "Still unverified after one targeted revision: Independent evidence audit unavailable or invalid: ValueError: summary:3: matching evidence IDs and quotations are required.",
+            "review_reasons": [
+              "Still unverified after one targeted revision: Independent evidence audit unavailable or invalid: ValueError: summary:3: matching evidence IDs and quotations are required."
+            ],
+            "review_findings": [
+              {
+                "category": "EVIDENCE",
+                "explanation": "Independent evidence audit unavailable or invalid: ValueError: summary:3: matching evidence IDs and quotations are required.",
+                "evidence_message_ids": [],
+                "evidence_quotes": [],
+                "disputed_fields": [
+                  "summary",
+                  "central_question",
+                  "resolution_state",
+                  "resolution_rationale",
+                  "authoritative_response_present",
+                  "authority_evidence_message_ids",
+                  "confidence"
+                ],
+                "origin": "automated_verification"
+              }
+            ],
+            "content_reviews": [],
+            "review_applicability": [],
+            "lineage": {
+              "baseline_file": "D:\\Christie\\2026_AgenticAI\\threadsense\\experiments\\fresh_15_v1\\runs\\A_sonnet_v1\\stages\\agent1_interpret\\agent1_interpretations_v1\\interpretations.json",
+              "baseline_record_sha256": "5768633db2297024ed02be274ffb56c0fbc009b2cddc52af37bc602bf46fc3ff",
+              "baseline_run_config_sha256": "0852cee621fe6e87b673f341cad1a3f2ab80d7e1ca705ead40df2a077bf31fb0",
+              "baseline_model": "openrouter/anthropic/claude-sonnet-5.5",
+              "baseline_created_at": "2026-11-16T18:42:45.203740+00:00",
+              "source_file": "sources/4e1acae34fa6f68ce7865130015b0c304ecd46f53d4f357b9556e5ca677e6a7c.json",
+              "verification_file": "records/d340c616a3cc26b8746c1e4bb296591e1a4da8bd11f0c70deeb642a3a1451c0e/result.json",
+              "effective_attempt": "original",
+              "original_candidate_sha256": "6607c9bcdc122e4fc542c84e84735e0ee3f0e7ebfc3fbf2bab5a9cfae7fc57d2",
+              "revised_candidate_sha256": "5d3e994aef29362358e78196634ed63fcbeb739f03e64dbb7c9e5a0d12090ff4",
+              "effective_candidate_sha256": "6607c9bcdc122e4fc542c84e84735e0ee3f0e7ebfc3fbf2bab5a9cfae7fc57d2",
+              "original_candidate_reference": "records/d340c616a3cc26b8746c1e4bb296591e1a4da8bd11f0c70deeb642a3a1451c0e/result.json#/result/original_interpretation",
+              "revised_candidate_reference": "records/d340c616a3cc26b8746c1e4bb296591e1a4da8bd11f0c70deeb642a3a1451c0e/result.json#/result/revised_interpretation",
+              "audit_history_reference": "records/d340c616a3cc26b8746c1e4bb296591e1a4da8bd11f0c70deeb642a3a1451c0e/result.json#/result/passes"
+            }
+          },
+          "agent1_export_file": "D:\\Christie\\2026_AgenticAI\\threadsense\\experiments\\fresh_15_v1\\runs\\A_sonnet_v1\\stages\\agent1_relevance\\relevance_v1\\clustering_input\\interpretations.json",
+          "agent1_export_sha256": "7fc89576d9b1445d0eda7d05b8f867d18aa3a2250d7ed287927478650c236fc2",
+          "agent1_lineage_base": "D:\\Christie\\2026_AgenticAI\\threadsense\\experiments\\fresh_15_v1\\runs\\A_sonnet_v1\\stages\\agent1_relevance\\relevance_v1\\clustering_input"
+        },
+        "related_card_ids": [
+          "card_5a85474ca7642b4e8f1045798f6b0319"
+        ],
+        "actions": []
+      }
+    ],
+    "coverage": {
+      "group_members_outside_this_card": [],
+      "uncarried_obligations": []
+    },
+    "budget": {
+      "consumed": {
+        "retrieval_calls": 1,
+        "model_calls": 1
+      },
+      "limits": {
+        "model_calls_per_topic": 4,
+        "model_calls_total": 28,
+        "retrieval_calls_per_topic": 6,
+        "retrieval_calls_total": 42
+      }
+    },
+    "diagnostics": []
+  }
+}

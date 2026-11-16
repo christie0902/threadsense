@@ -1,0 +1,1339 @@
+{
+  "work_item": {
+    "candidate_group_id": "cluster_0e52b5c242ad6474",
+    "project_id": "response_preference",
+    "batch_id": "response_pilot_17",
+    "work_id": "topic:cluster_0e52b5c242ad6474/topic_1",
+    "kind": "TOPIC",
+    "topic_id": "cluster_0e52b5c242ad6474/topic_1",
+    "topic_name": "Whitespace-only formatting differences",
+    "member_ids": [
+      "member_87f955f0c95aa5bc22870168"
+    ],
+    "pilot_scenario": null,
+    "in_scope": true
+  },
+  "workflow": {
+    "outcome": "CARD",
+    "card_id": "card_f1d89351dfb42c7ea17731301f4e3d52",
+    "card_line": "NEEDS_REVIEW",
+    "grounding": "PASSED",
+    "stage_failures": [],
+    "semantic_source": "LIVE_MODEL"
+  },
+  "result": {
+    "scenario": {
+      "id": "topic:cluster_0e52b5c242ad6474/topic_1",
+      "candidate_group_id": "cluster_0e52b5c242ad6474",
+      "focus": "Whitespace-only formatting differences",
+      "topic_id": "cluster_0e52b5c242ad6474/topic_1"
+    },
+    "status": "CARD",
+    "topic": {
+      "project_id": "response_preference",
+      "batch_id": "response_pilot_17",
+      "candidate_group_id": "cluster_0e52b5c242ad6474",
+      "topic_id": "cluster_0e52b5c242ad6474/topic_1",
+      "topic_label": "Whitespace-only formatting differences",
+      "projection_gap": null,
+      "as_of": "2026-10-17T00:00:00Z",
+      "member_ids": [
+        "member_87f955f0c95aa5bc22870168"
+      ],
+      "initial_query": "Whitespace-only formatting differences. Should I prefer Candidate A over Candidate B, given that Candidate B has two extra blank lines between bullets?"
+    },
+    "retrieval_trace": [
+      {
+        "step": 1,
+        "purpose": "initial_current_guidance",
+        "gap_id": null,
+        "query": "Whitespace-only formatting differences. Should I prefer Candidate A over Candidate B, given that Candidate B has two extra blank lines between bullets?",
+        "source_types": [
+          "guideline",
+          "faq",
+          "decision",
+          "announcement"
+        ],
+        "version_mode": "current",
+        "as_of": "2026-10-17T00:00:00Z",
+        "batch": "response_pilot_17",
+        "top_k": 5,
+        "status": "DONE",
+        "mode": "hybrid",
+        "use_mmr": true,
+        "mmr_lambda": 0.9,
+        "result_ids": [
+          "k:pilot-response-preference-scoring-guide@1.1:d0c2c6a5"
+        ],
+        "new_evidence_ids": [
+          "k:pilot-response-preference-scoring-guide@1.1:d0c2c6a5"
+        ],
+        "eligible_chunks": 1,
+        "added": []
+      }
+    ],
+    "retrieval_notes": {
+      "withheld_by_version": [],
+      "version_diagnostics": []
+    },
+    "follow_ups": [],
+    "unfilled_gaps": [],
+    "model_calls": [
+      {
+        "stage": "draft",
+        "schema": "AdvisorDraft",
+        "agent1_context": {
+          "sha256": "c773754b70c0d4856e93334e2e13d9d3c02839167dbbe667128fa6e8d2e53ee0",
+          "boundary": "IN_HTTP_BODY"
+        },
+        "raw": "{\n  \"contract_version\": \"agent3-advisor-draft-v11\",\n  \"summary\": null,\n  \"summary_sentences\": [\n    {\n      \"text\": \"A tutor asks whether to prefer the answer without two extra blank lines when both answers otherwise say the same thing and no output format is required.\",\n      \"support_claim_ids\": [\"c1\"],\n      \"depends_on\": []\n    },\n    {\n      \"text\": \"A QA tutor answered Tie, consistent with the current scoring guide.\",\n      \"support_claim_ids\": [\"c2\", \"c3\"],\n      \"depends_on\": []\n    }\n  ],\n  \"detail_sentences\": [\n    {\n      \"text\": \"The current scoring guide says whitespace alone does not break a tie when content is otherwise equivalent; exact serialized-format requirements must still be evaluated.\",\n      \"support_claim_ids\": [\"c3\"],\n      \"depends_on\": [],\n      \"summary_depends_on\": []\n    }\n  ],\n  \"reasoning\": \"The tutor's question received a direct answer from a QA tutor, and the current scoring guide supports that answer for the reported conditions. No unresolved handling question or operational problem is shown, so no further intervention or research is needed for this recommendation. Historical decisions and announcements are not needed to establish this narrow conclusion. The upstream evidence-audit review flag remains open; the resolution assessment here is based on the member messages, not the earlier interpretation.\",\n  \"claims\": [\n    {\n      \"claim_id\": \"c1\",\n      \"kind\": \"INCIDENT_FACT\",\n      \"text\": \"A tutor reports that Candidate B has two extra blank lines between bullets, that the answers otherwise say exactly the same thing, and that there is no output format restriction; the tutor asks whether to prefer Candidate A.\",\n      \"evidence_ids\": [\"m:C_91RESP001:1792152900.000000\"],\n      \"attributions\": [\n        {\n          \"user_id\": \"U9106\",\n          \"relation\": \"AUTHOR\",\n          \"evidence_id\": \"m:C_91RESP001:1792152900.000000\"\n        }\n      ],\n      \"quote\": \"Candidate B has two extra blank lines between bullets. Otherwise both answers say exactly the same thing and there is no output format restriction. Should I prefer A?\",\n      \"quote_kind\": \"VERBATIM\",\n      \"material\": true\n    },\n    {\n      \"claim_id\": \"c2\",\n      \"kind\": \"INCIDENT_FACT\",\n      \"text\": \"A QA tutor answers Tie and explains that extra whitespace alone does not affect preference when there is no format requirement.\",\n      \"evidence_ids\": [\"m:C_91RESP001:1792153020.000000\"],\n      \"attributions\": [\n        {\n          \"user_id\": \"U9105\",\n          \"relation\": \"AUTHOR\",\n          \"evidence_id\": \"m:C_91RESP001:1792153020.000000\"\n        }\n      ],\n      \"quote\": \"Pick Tie. Extra whitespace alone does not affect preference when there is no format requirement.\",\n      \"quote_kind\": \"VERBATIM\",\n      \"material\": true\n    },\n    {\n      \"claim_id\": \"c3\",\n      \"kind\": \"GUIDANCE\",\n      \"text\": \"The current project-wide scoring guide says whitespace alone does not break a tie when content is otherwise equivalent, while tasks specifying an exact serialized format must be evaluated for conformance to that requirement.\",\n      \"evidence_ids\": [\"k:pilot-response-preference-scoring-guide@1.1:d0c2c6a5\"],\n      \"attributions\": [],\n      \"quote\": \"When content is otherwise equivalent, whitespace alone does not break a tie. If a task specifies an exact serialized format, evaluate conformance to that requirement.\",\n      \"quote_kind\": \"VERBATIM\",\n      \"material\": true\n    }\n  ],\n  \"gaps\": [],\n  \"evidence_sufficiency\": \"SUFFICIENT\",\n  \"proposed_action\": {\n    \"action_type\": \"NO_ACTION\",\n    \"intervention_need\": null,\n    \"instruction\": \"Take no further action on this thread; the QA tutor has answered the question consistently with current guidance.\",\n    \"rationale\": \"The QA tutor's answer resolves the reported preference question and matches the current scoring guide. No further clarification is needed for the reported case.\",\n    \"draft_text\": null,\n    \"scope_note\": \"This conclusion concerns otherwise equivalent answers with no output format restriction.\",\n    \"support_claim_ids\": [\"c1\", \"c2\", \"c3\"],\n    \"targets\": [],\n    \"context_claim_ids\": []\n  },\n  \"severity\": {\n    \"level\": \"LOW\",\n    \"rationale\": \"A tutor raised a localized preference question that a QA tutor answered consistently with clear current guidance.\",\n    \"signals\": [],\n    \"affected_reporters\": [\n      {\n        \"author_id\": \"U9106\",\n        \"evidence_id\": \"m:C_91RESP001:1792152900.000000\"\n      }\n    ],\n    \"recurrence\": \"NOT_CHECKED\",\n    \"recurrence_evidence_ids\": [],\n    \"reported_recurrence_evidence_ids\": []\n  },\n  \"confidence\": 0.98,\n  \"open_confirmation\": \"NONE\",\n  \"open_question\": null,\n  \"open_question_evidence_ids\": [],\n  \"source_conflicts\": [],\n  \"announcement_assessments\": [],\n  \"resolution\": [\n    {\n      \"member_id\": \"member_87f955f0c95aa5bc22870168\",\n      \"state\": \"RESOLVED_IN_THREAD\",\n      \"evidence_ids\": [\n        \"m:C_91RESP001:1792152900.000000\",\n        \"m:C_91RESP001:1792153020.000000\"\n      ],\n      \"basis\": \"The tutor asks whether extra blank lines justify preferring Candidate A; a QA tutor directly answers Tie and explains why. The thread contains no remaining handling question.\"\n    }\n  ],\n  \"coverage\": [\n    {\n      \"need\": \"CURRENT_GUIDANCE\",\n      \"status\": \"COVERED\",\n      \"evidence_ids\": [\"k:pilot-response-preference-scoring-guide@1.1:d0c2c6a5\"],\n      \"note\": \"The current project-wide guide directly covers whitespace-only differences and exact serialized-format requirements.\",\n      \"gap_id\": null\n    },\n    {\n      \"need\": \"ANNOUNCEMENTS\",\n      \"status\": \"NOT_APPLICABLE\",\n      \"evidence_ids\": [],\n      \"note\": \"No announcement is needed for the recommendation: the current guide directly answers the question, and no announcement is relied on.\",\n      \"gap_id\": null\n    },\n    {\n      \"need\": \"PRIOR_DECISIONS\",\n      \"status\": \"NOT_APPLICABLE\",\n      \"evidence_ids\": [],\n      \"note\": \"The thread does not reference an earlier workaround or decision, and historical outcomes are not needed to assess this answered question.\",\n      \"gap_id\": null\n    },\n    {\n      \"need\": \"MEMBER_QUESTIONS\",\n      \"status\": \"COVERED\",\n      \"evidence_ids\": [\n        \"m:C_91RESP001:1792152900.000000\",\n        \"m:C_91RESP001:1792153020.000000\"\n      ],\n      \"note\": \"The tutor's question and the QA tutor's direct answer are both available.\",\n      \"gap_id\": null\n    }\n  ],\n  \"review_note\": null,\n  \"action_choice\": null\n}",
+        "raw_sha256": "66c248b3878c65adc379062a0a65884effbaf3eed69788021ad6b062bd44ac65",
+        "http_requests": {
+          "sent": 1,
+          "blocked": 0,
+          "hosts": [
+            "api.openai.com"
+          ],
+          "responses": [
+            {
+              "status_code": 200,
+              "seconds": 19.193,
+              "model": "gpt-6.1-sol",
+              "usage": {
+                "prompt_tokens": 9230,
+                "completion_tokens": 1714,
+                "total_tokens": 10944,
+                "prompt_tokens_details": {
+                  "cached_tokens": 0,
+                  "cache_write_tokens": 9227,
+                  "audio_tokens": 0
+                },
+                "completion_tokens_details": {
+                  "reasoning_tokens": 129,
+                  "audio_tokens": 0,
+                  "accepted_prediction_tokens": 0,
+                  "rejected_prediction_tokens": 0
+                }
+              },
+              "finish_reasons": [
+                "stop"
+              ]
+            }
+          ],
+          "input_tokens": 9236,
+          "refused": null,
+          "charged_usd": 0.03560000000000001
+        },
+        "input_tokens_estimate": 9236,
+        "status": "OK"
+      },
+      {
+        "stage": "grounding",
+        "schema": "GroundingJudgment",
+        "raw": "{\n  \"contract_version\": \"agent3-grounding-judgment-v5\",\n  \"verdicts\": [\n    {\n      \"statement_id\": \"claim:c1\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The tutor's cited message reports each stated condition and asks whether to prefer Candidate A. The quotation is exact, and the attribution matches the author and role.\"\n    },\n    {\n      \"statement_id\": \"claim:c2\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The cited QA tutor explicitly answers Tie and gives the stated whitespace rationale. The quotation and attribution match the message.\"\n    },\n    {\n      \"statement_id\": \"claim:c3\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The current project-wide guide explicitly states both rules, and the quotation matches its text.\"\n    },\n    {\n      \"statement_id\": \"summary:s1\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The tutor asks whether to prefer Candidate A over Candidate B because of two extra blank lines, while reporting equivalent content and no output-format restriction.\"\n    },\n    {\n      \"statement_id\": \"summary:s2\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The QA tutor answers Tie, which agrees with the current guide's rule for equivalent content differing only in whitespace.\"\n    },\n    {\n      \"statement_id\": \"detail:d1\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The cited current guide expressly states that whitespace alone does not break a tie and that exact serialized-format requirements must be evaluated.\"\n    },\n    {\n      \"statement_id\": \"action:no_action\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The QA tutor directly answers the reported question in accordance with current guidance. The complete thread contains no remaining handling question or operational problem; the upstream audit flag does not establish a substantive guidance gap.\"\n    },\n    {\n      \"statement_id\": \"resolution:member_87f955f0c95aa5bc22870168\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The complete thread consists of the tutor's preference question and the QA tutor's direct, explained answer. No unresolved handling question remains.\"\n    },\n    {\n      \"statement_id\": \"severity:rationale\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The cited exchange shows a localized preference question answered by a QA tutor. That answer states the applicable rule and is consistent with the clear current guidance provided in context, supporting the LOW assessment.\"\n    },\n    {\n      \"statement_id\": \"reporter:U9106\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"U9106's own message reports the candidate-formatting situation and asks how to decide the preference, establishing that they encountered the reported issue.\"\n    }\n  ],\n  \"action_sufficiency\": null,\n  \"alternative_sufficiency\": [],\n  \"source_consistency\": {\n    \"assessed_evidence_ids\": [\n      \"k:pilot-response-preference-scoring-guide@1.1:d0c2c6a5\"\n    ],\n    \"relations\": [],\n    \"declared_conflict_checks\": []\n  }\n}",
+        "raw_sha256": "00aa3920cf83cbae3e7aa382119f63dc942413af87c1e3e50d017c8244b9f16a",
+        "http_requests": {
+          "sent": 1,
+          "blocked": 0,
+          "hosts": [
+            "api.openai.com"
+          ],
+          "responses": [
+            {
+              "status_code": 200,
+              "seconds": 11.299,
+              "model": "gpt-6.1-sol",
+              "usage": {
+                "prompt_tokens": 5093,
+                "completion_tokens": 735,
+                "total_tokens": 5828,
+                "prompt_tokens_details": {
+                  "cached_tokens": 0,
+                  "cache_write_tokens": 5090,
+                  "audio_tokens": 0
+                },
+                "completion_tokens_details": {
+                  "reasoning_tokens": 51,
+                  "audio_tokens": 0,
+                  "accepted_prediction_tokens": 0,
+                  "rejected_prediction_tokens": 0
+                }
+              },
+              "finish_reasons": [
+                "stop"
+              ]
+            }
+          ],
+          "input_tokens": 5099,
+          "refused": null,
+          "charged_usd": 0.017536
+        },
+        "input_tokens_estimate": 5099,
+        "status": "OK"
+      }
+    ],
+    "agent1_context": [
+      {
+        "sha256": "c773754b70c0d4856e93334e2e13d9d3c02839167dbbe667128fa6e8d2e53ee0",
+        "content": [
+          {
+            "member_id": "member_87f955f0c95aa5bc22870168",
+            "thread_id": "1792152900.000000",
+            "summary": "Casey Tran inquires whether to prefer Candidate A over Candidate B, noting that Candidate B has two extra blank lines between bullets but otherwise both answers are identical with no output format restrictions. Noah Bell responds that the preference should be a Tie, as extra whitespace does not affect preference without a format requirement.",
+            "central_question": "Should I prefer Candidate A over Candidate B, given that Candidate B has two extra blank lines between bullets?",
+            "attributed_agent1_resolution": {
+              "state": "RESOLVED_IN_THREAD",
+              "rationale": "Noah Bell's response establishes that the extra whitespace does not affect the preference decision, concluding that the preference should be a Tie. There are no remaining questions or uncertainties regarding the decision.",
+              "agent1_verification_status": "NEEDS_REVIEW",
+              "note": "Agent 1 label, not evidence; NEEDS_REVIEW means Agent 1 did not verify it. Assess resolution from the member messages."
+            },
+            "agent1_review_required": true,
+            "agent1_review_reason": "Still unverified after one targeted revision: Independent evidence audit unavailable or invalid: ValueError: central_question:1: matching evidence IDs and quotations are required.",
+            "note": "Agent 1 interpretation, not source evidence; cite member messages for incident facts."
+          }
+        ]
+      }
+    ],
+    "drafts": {
+      "initial": {
+        "contract_version": "agent3-advisor-draft-v11",
+        "summary": "A tutor asks whether to prefer the answer without two extra blank lines when both answers otherwise say the same thing and no output format is required. A QA tutor answered Tie, consistent with the current scoring guide.",
+        "summary_sentences": [
+          {
+            "text": "A tutor asks whether to prefer the answer without two extra blank lines when both answers otherwise say the same thing and no output format is required.",
+            "support_claim_ids": [
+              "c1"
+            ],
+            "depends_on": []
+          },
+          {
+            "text": "A QA tutor answered Tie, consistent with the current scoring guide.",
+            "support_claim_ids": [
+              "c2",
+              "c3"
+            ],
+            "depends_on": []
+          }
+        ],
+        "detail_sentences": [
+          {
+            "text": "The current scoring guide says whitespace alone does not break a tie when content is otherwise equivalent; exact serialized-format requirements must still be evaluated.",
+            "support_claim_ids": [
+              "c3"
+            ],
+            "depends_on": [],
+            "summary_depends_on": []
+          }
+        ],
+        "reasoning": "The tutor's question received a direct answer from a QA tutor, and the current scoring guide supports that answer for the reported conditions. No unresolved handling question or operational problem is shown, so no further intervention or research is needed for this recommendation. Historical decisions and announcements are not needed to establish this narrow conclusion. The upstream evidence-audit review flag remains open; the resolution assessment here is based on the member messages, not the earlier interpretation.",
+        "claims": [
+          {
+            "claim_id": "c1",
+            "kind": "INCIDENT_FACT",
+            "text": "A tutor reports that Candidate B has two extra blank lines between bullets, that the answers otherwise say exactly the same thing, and that there is no output format restriction; the tutor asks whether to prefer Candidate A.",
+            "evidence_ids": [
+              "m:C_91RESP001:1792152900.000000"
+            ],
+            "attributions": [
+              {
+                "user_id": "U9106",
+                "relation": "AUTHOR",
+                "evidence_id": "m:C_91RESP001:1792152900.000000"
+              }
+            ],
+            "quote": "Candidate B has two extra blank lines between bullets. Otherwise both answers say exactly the same thing and there is no output format restriction. Should I prefer A?",
+            "quote_kind": "VERBATIM",
+            "material": true
+          },
+          {
+            "claim_id": "c2",
+            "kind": "INCIDENT_FACT",
+            "text": "A QA tutor answers Tie and explains that extra whitespace alone does not affect preference when there is no format requirement.",
+            "evidence_ids": [
+              "m:C_91RESP001:1792153020.000000"
+            ],
+            "attributions": [
+              {
+                "user_id": "U9105",
+                "relation": "AUTHOR",
+                "evidence_id": "m:C_91RESP001:1792153020.000000"
+              }
+            ],
+            "quote": "Pick Tie. Extra whitespace alone does not affect preference when there is no format requirement.",
+            "quote_kind": "VERBATIM",
+            "material": true
+          },
+          {
+            "claim_id": "c3",
+            "kind": "GUIDANCE",
+            "text": "The current project-wide scoring guide says whitespace alone does not break a tie when content is otherwise equivalent, while tasks specifying an exact serialized format must be evaluated for conformance to that requirement.",
+            "evidence_ids": [
+              "k:pilot-response-preference-scoring-guide@1.1:d0c2c6a5"
+            ],
+            "attributions": [],
+            "quote": "When content is otherwise equivalent, whitespace alone does not break a tie. If a task specifies an exact serialized format, evaluate conformance to that requirement.",
+            "quote_kind": "VERBATIM",
+            "material": true
+          }
+        ],
+        "gaps": [],
+        "evidence_sufficiency": "SUFFICIENT",
+        "proposed_action": {
+          "action_type": "NO_ACTION",
+          "intervention_need": null,
+          "instruction": "Take no further action on this thread; the QA tutor has answered the question consistently with current guidance.",
+          "rationale": "The QA tutor's answer resolves the reported preference question and matches the current scoring guide. No further clarification is needed for the reported case.",
+          "draft_text": null,
+          "scope_note": "This conclusion concerns otherwise equivalent answers with no output format restriction.",
+          "support_claim_ids": [
+            "c1",
+            "c2",
+            "c3"
+          ],
+          "targets": [],
+          "context_claim_ids": []
+        },
+        "severity": {
+          "level": "LOW",
+          "rationale": "A tutor raised a localized preference question that a QA tutor answered consistently with clear current guidance.",
+          "signals": [],
+          "affected_reporters": [
+            {
+              "author_id": "U9106",
+              "evidence_id": "m:C_91RESP001:1792152900.000000"
+            }
+          ],
+          "recurrence": "NOT_CHECKED",
+          "recurrence_evidence_ids": [],
+          "reported_recurrence_evidence_ids": []
+        },
+        "confidence": 0.98,
+        "open_confirmation": "NONE",
+        "open_question": null,
+        "open_question_evidence_ids": [],
+        "source_conflicts": [],
+        "announcement_assessments": [],
+        "resolution": [
+          {
+            "member_id": "member_87f955f0c95aa5bc22870168",
+            "state": "RESOLVED_IN_THREAD",
+            "evidence_ids": [
+              "m:C_91RESP001:1792152900.000000",
+              "m:C_91RESP001:1792153020.000000"
+            ],
+            "basis": "The tutor asks whether extra blank lines justify preferring Candidate A; a QA tutor directly answers Tie and explains why. The thread contains no remaining handling question."
+          }
+        ],
+        "coverage": [
+          {
+            "need": "CURRENT_GUIDANCE",
+            "status": "COVERED",
+            "evidence_ids": [
+              "k:pilot-response-preference-scoring-guide@1.1:d0c2c6a5"
+            ],
+            "note": "The current project-wide guide directly covers whitespace-only differences and exact serialized-format requirements.",
+            "gap_id": null
+          },
+          {
+            "need": "ANNOUNCEMENTS",
+            "status": "NOT_APPLICABLE",
+            "evidence_ids": [],
+            "note": "No announcement is needed for the recommendation: the current guide directly answers the question, and no announcement is relied on.",
+            "gap_id": null
+          },
+          {
+            "need": "PRIOR_DECISIONS",
+            "status": "NOT_APPLICABLE",
+            "evidence_ids": [],
+            "note": "The thread does not reference an earlier workaround or decision, and historical outcomes are not needed to assess this answered question.",
+            "gap_id": null
+          },
+          {
+            "need": "MEMBER_QUESTIONS",
+            "status": "COVERED",
+            "evidence_ids": [
+              "m:C_91RESP001:1792152900.000000",
+              "m:C_91RESP001:1792153020.000000"
+            ],
+            "note": "The tutor's question and the QA tutor's direct answer are both available.",
+            "gap_id": null
+          }
+        ],
+        "review_note": null,
+        "action_choice": null
+      },
+      "final": {
+        "contract_version": "agent3-advisor-draft-v11",
+        "summary": "A tutor asks whether to prefer the answer without two extra blank lines when both answers otherwise say the same thing and no output format is required. A QA tutor answered Tie, consistent with the current scoring guide.",
+        "summary_sentences": [
+          {
+            "text": "A tutor asks whether to prefer the answer without two extra blank lines when both answers otherwise say the same thing and no output format is required.",
+            "support_claim_ids": [
+              "c1"
+            ],
+            "depends_on": []
+          },
+          {
+            "text": "A QA tutor answered Tie, consistent with the current scoring guide.",
+            "support_claim_ids": [
+              "c2",
+              "c3"
+            ],
+            "depends_on": []
+          }
+        ],
+        "detail_sentences": [
+          {
+            "text": "The current scoring guide says whitespace alone does not break a tie when content is otherwise equivalent; exact serialized-format requirements must still be evaluated.",
+            "support_claim_ids": [
+              "c3"
+            ],
+            "depends_on": [],
+            "summary_depends_on": []
+          }
+        ],
+        "reasoning": "The tutor's question received a direct answer from a QA tutor, and the current scoring guide supports that answer for the reported conditions. No unresolved handling question or operational problem is shown, so no further intervention or research is needed for this recommendation. Historical decisions and announcements are not needed to establish this narrow conclusion. The upstream evidence-audit review flag remains open; the resolution assessment here is based on the member messages, not the earlier interpretation.",
+        "claims": [
+          {
+            "claim_id": "c1",
+            "kind": "INCIDENT_FACT",
+            "text": "A tutor reports that Candidate B has two extra blank lines between bullets, that the answers otherwise say exactly the same thing, and that there is no output format restriction; the tutor asks whether to prefer Candidate A.",
+            "evidence_ids": [
+              "m:C_91RESP001:1792152900.000000"
+            ],
+            "attributions": [
+              {
+                "user_id": "U9106",
+                "relation": "AUTHOR",
+                "evidence_id": "m:C_91RESP001:1792152900.000000"
+              }
+            ],
+            "quote": "Candidate B has two extra blank lines between bullets. Otherwise both answers say exactly the same thing and there is no output format restriction. Should I prefer A?",
+            "quote_kind": "VERBATIM",
+            "material": true
+          },
+          {
+            "claim_id": "c2",
+            "kind": "INCIDENT_FACT",
+            "text": "A QA tutor answers Tie and explains that extra whitespace alone does not affect preference when there is no format requirement.",
+            "evidence_ids": [
+              "m:C_91RESP001:1792153020.000000"
+            ],
+            "attributions": [
+              {
+                "user_id": "U9105",
+                "relation": "AUTHOR",
+                "evidence_id": "m:C_91RESP001:1792153020.000000"
+              }
+            ],
+            "quote": "Pick Tie. Extra whitespace alone does not affect preference when there is no format requirement.",
+            "quote_kind": "VERBATIM",
+            "material": true
+          },
+          {
+            "claim_id": "c3",
+            "kind": "GUIDANCE",
+            "text": "The current project-wide scoring guide says whitespace alone does not break a tie when content is otherwise equivalent, while tasks specifying an exact serialized format must be evaluated for conformance to that requirement.",
+            "evidence_ids": [
+              "k:pilot-response-preference-scoring-guide@1.1:d0c2c6a5"
+            ],
+            "attributions": [],
+            "quote": "When content is otherwise equivalent, whitespace alone does not break a tie. If a task specifies an exact serialized format, evaluate conformance to that requirement.",
+            "quote_kind": "VERBATIM",
+            "material": true
+          }
+        ],
+        "gaps": [],
+        "evidence_sufficiency": "SUFFICIENT",
+        "proposed_action": {
+          "action_type": "NO_ACTION",
+          "intervention_need": null,
+          "instruction": "Take no further action on this thread; the QA tutor has answered the question consistently with current guidance.",
+          "rationale": "The QA tutor's answer resolves the reported preference question and matches the current scoring guide. No further clarification is needed for the reported case.",
+          "draft_text": null,
+          "scope_note": "This conclusion concerns otherwise equivalent answers with no output format restriction.",
+          "support_claim_ids": [
+            "c1",
+            "c2",
+            "c3"
+          ],
+          "targets": [],
+          "context_claim_ids": []
+        },
+        "severity": {
+          "level": "LOW",
+          "rationale": "A tutor raised a localized preference question that a QA tutor answered consistently with clear current guidance.",
+          "signals": [],
+          "affected_reporters": [
+            {
+              "author_id": "U9106",
+              "evidence_id": "m:C_91RESP001:1792152900.000000"
+            }
+          ],
+          "recurrence": "NOT_CHECKED",
+          "recurrence_evidence_ids": [],
+          "reported_recurrence_evidence_ids": []
+        },
+        "confidence": 0.98,
+        "open_confirmation": "NONE",
+        "open_question": null,
+        "open_question_evidence_ids": [],
+        "source_conflicts": [],
+        "announcement_assessments": [],
+        "resolution": [
+          {
+            "member_id": "member_87f955f0c95aa5bc22870168",
+            "state": "RESOLVED_IN_THREAD",
+            "evidence_ids": [
+              "m:C_91RESP001:1792152900.000000",
+              "m:C_91RESP001:1792153020.000000"
+            ],
+            "basis": "The tutor asks whether extra blank lines justify preferring Candidate A; a QA tutor directly answers Tie and explains why. The thread contains no remaining handling question."
+          }
+        ],
+        "coverage": [
+          {
+            "need": "CURRENT_GUIDANCE",
+            "status": "COVERED",
+            "evidence_ids": [
+              "k:pilot-response-preference-scoring-guide@1.1:d0c2c6a5"
+            ],
+            "note": "The current project-wide guide directly covers whitespace-only differences and exact serialized-format requirements.",
+            "gap_id": null
+          },
+          {
+            "need": "ANNOUNCEMENTS",
+            "status": "NOT_APPLICABLE",
+            "evidence_ids": [],
+            "note": "No announcement is needed for the recommendation: the current guide directly answers the question, and no announcement is relied on.",
+            "gap_id": null
+          },
+          {
+            "need": "PRIOR_DECISIONS",
+            "status": "NOT_APPLICABLE",
+            "evidence_ids": [],
+            "note": "The thread does not reference an earlier workaround or decision, and historical outcomes are not needed to assess this answered question.",
+            "gap_id": null
+          },
+          {
+            "need": "MEMBER_QUESTIONS",
+            "status": "COVERED",
+            "evidence_ids": [
+              "m:C_91RESP001:1792152900.000000",
+              "m:C_91RESP001:1792153020.000000"
+            ],
+            "note": "The tutor's question and the QA tutor's direct answer are both available.",
+            "gap_id": null
+          }
+        ],
+        "review_note": null,
+        "action_choice": null
+      },
+      "revised": false
+    },
+    "grounding": {
+      "structural_issues": [],
+      "action_issues": [],
+      "unsupported": [],
+      "unjudged": [],
+      "extraneous_verdicts": [],
+      "rejected": {},
+      "pending": [],
+      "action_sufficiency": null,
+      "source_consistency": {
+        "assessed_evidence_ids": [
+          "k:pilot-response-preference-scoring-guide@1.1:d0c2c6a5"
+        ],
+        "relations": [],
+        "declared_conflict_checks": []
+      },
+      "alternative_sufficiency": {},
+      "status": "PASSED",
+      "basis": "SEMANTIC",
+      "statements": [
+        {
+          "statement_id": "claim:c1",
+          "kind": "CLAIM_INCIDENT_FACT",
+          "text": "A tutor reports that Candidate B has two extra blank lines between bullets, that the answers otherwise say exactly the same thing, and that there is no output format restriction; the tutor asks whether to prefer Candidate A. Verbatim quote: \"Candidate B has two extra blank lines between bullets. Otherwise both answers say exactly the same thing and there is no output format restriction. Should I prefer A?\"",
+          "blocking": true,
+          "evidence_ids": [
+            "m:C_91RESP001:1792152900.000000"
+          ],
+          "attributions": [
+            {
+              "user_id": "U9106",
+              "relation": "AUTHOR",
+              "evidence_id": "m:C_91RESP001:1792152900.000000",
+              "role": "TUTOR"
+            }
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "The tutor's cited message reports each stated condition and asks whether to prefer Candidate A. The quotation is exact, and the attribution matches the author and role."
+        },
+        {
+          "statement_id": "claim:c2",
+          "kind": "CLAIM_INCIDENT_FACT",
+          "text": "A QA tutor answers Tie and explains that extra whitespace alone does not affect preference when there is no format requirement. Verbatim quote: \"Pick Tie. Extra whitespace alone does not affect preference when there is no format requirement.\"",
+          "blocking": true,
+          "evidence_ids": [
+            "m:C_91RESP001:1792153020.000000"
+          ],
+          "attributions": [
+            {
+              "user_id": "U9105",
+              "relation": "AUTHOR",
+              "evidence_id": "m:C_91RESP001:1792153020.000000",
+              "role": "QA_TUTOR"
+            }
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "The cited QA tutor explicitly answers Tie and gives the stated whitespace rationale. The quotation and attribution match the message."
+        },
+        {
+          "statement_id": "claim:c3",
+          "kind": "CLAIM_GUIDANCE",
+          "text": "The current project-wide scoring guide says whitespace alone does not break a tie when content is otherwise equivalent, while tasks specifying an exact serialized format must be evaluated for conformance to that requirement. Verbatim quote: \"When content is otherwise equivalent, whitespace alone does not break a tie. If a task specifies an exact serialized format, evaluate conformance to that requirement.\"",
+          "blocking": true,
+          "evidence_ids": [
+            "k:pilot-response-preference-scoring-guide@1.1:d0c2c6a5"
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "The current project-wide guide explicitly states both rules, and the quotation matches its text."
+        },
+        {
+          "statement_id": "summary:s1",
+          "kind": "SUMMARY",
+          "text": "A tutor asks whether to prefer the answer without two extra blank lines when both answers otherwise say the same thing and no output format is required.",
+          "blocking": true,
+          "evidence_ids": [
+            "m:C_91RESP001:1792152900.000000"
+          ],
+          "attributions": [
+            {
+              "user_id": "U9106",
+              "relation": "AUTHOR",
+              "evidence_id": "m:C_91RESP001:1792152900.000000",
+              "role": "TUTOR"
+            }
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "The tutor asks whether to prefer Candidate A over Candidate B because of two extra blank lines, while reporting equivalent content and no output-format restriction."
+        },
+        {
+          "statement_id": "summary:s2",
+          "kind": "SUMMARY",
+          "text": "A QA tutor answered Tie, consistent with the current scoring guide.",
+          "blocking": true,
+          "evidence_ids": [
+            "m:C_91RESP001:1792153020.000000",
+            "k:pilot-response-preference-scoring-guide@1.1:d0c2c6a5"
+          ],
+          "attributions": [
+            {
+              "user_id": "U9105",
+              "relation": "AUTHOR",
+              "evidence_id": "m:C_91RESP001:1792153020.000000",
+              "role": "QA_TUTOR"
+            }
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "The QA tutor answers Tie, which agrees with the current guide's rule for equivalent content differing only in whitespace."
+        },
+        {
+          "statement_id": "detail:d1",
+          "kind": "DETAIL",
+          "text": "The current scoring guide says whitespace alone does not break a tie when content is otherwise equivalent; exact serialized-format requirements must still be evaluated.",
+          "blocking": false,
+          "evidence_ids": [
+            "k:pilot-response-preference-scoring-guide@1.1:d0c2c6a5"
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "The cited current guide expressly states that whitespace alone does not break a tie and that exact serialized-format requirements must be evaluated."
+        },
+        {
+          "statement_id": "action:no_action",
+          "kind": "NO_ACTION_RATIONALE",
+          "text": "Why no further action is needed now: The QA tutor's answer resolves the reported preference question and matches the current scoring guide. No further clarification is needed for the reported case.",
+          "blocking": false,
+          "evidence_ids": [
+            "m:C_91RESP001:1792152900.000000",
+            "m:C_91RESP001:1792153020.000000",
+            "k:pilot-response-preference-scoring-guide@1.1:d0c2c6a5"
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "The QA tutor directly answers the reported question in accordance with current guidance. The complete thread contains no remaining handling question or operational problem; the upstream audit flag does not establish a substantive guidance gap."
+        },
+        {
+          "statement_id": "resolution:member_87f955f0c95aa5bc22870168",
+          "kind": "RESOLUTION",
+          "text": "Member thread member_87f955f0c95aa5bc22870168 is RESOLVED_IN_THREAD: The tutor asks whether extra blank lines justify preferring Candidate A; a QA tutor directly answers Tie and explains why. The thread contains no remaining handling question.",
+          "blocking": true,
+          "evidence_ids": [
+            "m:C_91RESP001:1792152900.000000",
+            "m:C_91RESP001:1792153020.000000"
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "The complete thread consists of the tutor's preference question and the QA tutor's direct, explained answer. No unresolved handling question remains."
+        },
+        {
+          "statement_id": "severity:rationale",
+          "kind": "SEVERITY_RATIONALE",
+          "text": "Severity LOW: A tutor raised a localized preference question that a QA tutor answered consistently with clear current guidance.",
+          "blocking": true,
+          "evidence_ids": [
+            "m:C_91RESP001:1792152900.000000",
+            "m:C_91RESP001:1792153020.000000"
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "The cited exchange shows a localized preference question answered by a QA tutor. That answer states the applicable rule and is consistent with the clear current guidance provided in context, supporting the LOW assessment."
+        },
+        {
+          "statement_id": "reporter:U9106",
+          "kind": "AFFECTED_REPORTER",
+          "text": "U9106 reports, in their own cited message, being affected by this problem.",
+          "blocking": true,
+          "evidence_ids": [
+            "m:C_91RESP001:1792152900.000000"
+          ],
+          "verdict": "SUPPORTED",
+          "model_verdict": "SUPPORTED",
+          "rationale": "U9106's own message reports the candidate-formatting situation and asks how to decide the preference, establishing that they encountered the reported issue."
+        }
+      ]
+    },
+    "temporal": {
+      "status": "NONE_FOUND",
+      "findings": [],
+      "source_consistency": "ASSESSED",
+      "ignored_revision_states": "NOT_YET_EFFECTIVE and NOT_APPROVED revisions never compete with applicable guidance."
+    },
+    "temporal_before_grounding": {
+      "status": "NONE_FOUND",
+      "findings": [],
+      "source_consistency": "NOT_ASSESSED",
+      "ignored_revision_states": "NOT_YET_EFFECTIVE and NOT_APPROVED revisions never compete with applicable guidance."
+    },
+    "severity": {
+      "assessment": {
+        "level": "LOW",
+        "assessment_status": "ASSESSED",
+        "rubric_version": "severity-rubric-v3-semantic-signals",
+        "rubric_content_sha256": "eccaa31a2ab84a0aa7c005216a92fc39681e1dd10107117344948235a76673f4",
+        "rubric_project_id": null,
+        "rubric_scope": "SHARED_DEFAULT",
+        "rationale": "A tutor raised a localized preference question that a QA tutor answered consistently with clear current guidance.",
+        "matched_signals": [],
+        "evidence": [],
+        "occurrence": {
+          "affected_reporters": {
+            "status": "LOWER_BOUND",
+            "count": 1,
+            "ids": [
+              "U9106"
+            ],
+            "basis": "Distinct authors whose own cited message reports the problem; other participants are not counted.",
+            "evidence": [
+              {
+                "kind": "slack_message",
+                "project_id": "response_preference",
+                "batch_id": "response_pilot_17",
+                "scope": "project",
+                "channel_id": "C_91RESP001",
+                "thread_id": "1792152900.000000",
+                "message_id": "1792152900.000000",
+                "document_id": null,
+                "version_id": null,
+                "authoring_document_id": null,
+                "authoring_version": null,
+                "section": null,
+                "chunk_id": null,
+                "candidate_group_id": null,
+                "member_id": "member_87f955f0c95aa5bc22870168",
+                "artifact": null,
+                "artifact_sha256": null,
+                "quote": null,
+                "note": "m:C_91RESP001:1792152900.000000"
+              }
+            ]
+          },
+          "affected_tasks": {
+            "status": "UNKNOWN",
+            "count": null,
+            "ids": [],
+            "basis": null,
+            "evidence": []
+          },
+          "relevant_threads": [
+            {
+              "project_id": "response_preference",
+              "batch_id": "response_pilot_17",
+              "channel_id": "C_91RESP001",
+              "thread_id": "1792152900.000000",
+              "member_id": "member_87f955f0c95aa5bc22870168"
+            }
+          ],
+          "reporting_window": {
+            "start": "2026-10-16T12:15:00+00:00",
+            "end": "2026-10-16T12:17:00+00:00"
+          },
+          "historical_recurrence": {
+            "status": "NOT_CHECKED",
+            "sources": [],
+            "event_series_ids": []
+          },
+          "known_denominator": null,
+          "structural": {
+            "threads": 1,
+            "messages": 2,
+            "distinct_participants": 2,
+            "duplicate_threads_ignored": 0,
+            "duplicate_messages_ignored": 0,
+            "computed_from": "topic member threads (original Slack messages)",
+            "participants_are_not_affected_reporters": true
+          },
+          "semantic_identification": "ASSESSED"
+        },
+        "inherited_from": {
+          "level": "UNKNOWN",
+          "assessment_status": "UNASSESSED",
+          "assessment_deferred_to": "AGENT3",
+          "reason": "Agent 2 performs taxonomy only."
+        }
+      },
+      "issues": [],
+      "notes": [],
+      "proposal": {
+        "level": "LOW",
+        "rationale": "A tutor raised a localized preference question that a QA tutor answered consistently with clear current guidance.",
+        "signals": [],
+        "affected_reporters": [
+          {
+            "author_id": "U9106",
+            "evidence_id": "m:C_91RESP001:1792152900.000000"
+          }
+        ],
+        "recurrence": "NOT_CHECKED",
+        "recurrence_evidence_ids": [],
+        "reported_recurrence_evidence_ids": []
+      }
+    },
+    "resolution": {
+      "topic": "RESOLVED_IN_THREAD",
+      "members": {
+        "member_87f955f0c95aa5bc22870168": "RESOLVED_IN_THREAD"
+      },
+      "agent1_attributed": [
+        {
+          "member_id": "member_87f955f0c95aa5bc22870168",
+          "state": "RESOLVED_IN_THREAD",
+          "agent1_verification_status": "NEEDS_REVIEW",
+          "agent1_review_required": true
+        }
+      ]
+    },
+    "established_handling": [],
+    "coverage_issues": [],
+    "action_source": "DRAFT",
+    "action_notes": [],
+    "tot": {
+      "status": "NOT_TRIGGERED",
+      "triggers": [],
+      "choice_after_grounding": {
+        "status": "NOT_COMPARED",
+        "viable": []
+      }
+    },
+    "evidence_ledger": {
+      "m:C_91RESP001:1792152900.000000": {
+        "evidence_id": "m:C_91RESP001:1792152900.000000",
+        "origin": "member_message",
+        "use": "MEMBER_REPORT",
+        "member_id": "member_87f955f0c95aa5bc22870168",
+        "channel_id": "C_91RESP001",
+        "thread_id": "1792152900.000000",
+        "message_id": "1792152900.000000",
+        "author_id": "U9106",
+        "author_name": "Casey Tran",
+        "author_role": "TUTOR",
+        "timestamp": "2026-10-16T12:15:00Z",
+        "thread_starter_id": "U9106",
+        "thread_starter_role": "TUTOR",
+        "reactions": [],
+        "excerpt": "Candidate B has two extra blank lines between bullets. Otherwise both answers say exactly the same thing and there is no output format restriction. Should I prefer A?"
+      },
+      "m:C_91RESP001:1792153020.000000": {
+        "evidence_id": "m:C_91RESP001:1792153020.000000",
+        "origin": "member_message",
+        "use": "MEMBER_REPORT",
+        "member_id": "member_87f955f0c95aa5bc22870168",
+        "channel_id": "C_91RESP001",
+        "thread_id": "1792152900.000000",
+        "message_id": "1792153020.000000",
+        "author_id": "U9105",
+        "author_name": "Noah Bell",
+        "author_role": "QA_TUTOR",
+        "timestamp": "2026-10-16T12:17:00Z",
+        "thread_starter_id": "U9106",
+        "thread_starter_role": "TUTOR",
+        "reactions": [
+          {
+            "name": "white_check_mark",
+            "users": [
+              {
+                "id": "U9103",
+                "name": "Sam Vega"
+              }
+            ]
+          }
+        ],
+        "excerpt": "Pick Tie. Extra whitespace alone does not affect preference when there is no format requirement."
+      },
+      "k:pilot-response-preference-scoring-guide@1.1:d0c2c6a5": {
+        "evidence_id": "k:pilot-response-preference-scoring-guide@1.1:d0c2c6a5",
+        "origin": "retrieved_source",
+        "use": "CURRENT_GUIDANCE",
+        "citation": {
+          "document_id": "knowledge_7ebc684071cc9d7a8f6f69e7f78000faac4164dd04821023ad710203fe9c430f",
+          "version_id": "version_ded402a36cc72d4f5efb076e842a9511a0bb4f85e12c4cefc4ebca78c18c93c9",
+          "chunk_id": "chunk_d0c2c6a5d8d78fe1c86d9468828ce0a7",
+          "authoring": "pilot-response-preference-scoring-guide@1.1",
+          "title": "Response preference scoring guide (v1.1)",
+          "sections": [
+            "Whitespace and strict output formats"
+          ],
+          "source": {
+            "batch_id": null,
+            "channel_id": null,
+            "manual_key": "pilot-response-preference-scoring-guide",
+            "message_id": null,
+            "permalink": null,
+            "project_id": "response_preference",
+            "reference": null,
+            "system": "manual",
+            "thread_id": null,
+            "workspace_id": null
+          }
+        },
+        "source_type": "guideline",
+        "record_kind": "guideline",
+        "applicability": {
+          "state": "CURRENT",
+          "revision_state": "CURRENT",
+          "version_mode": "current",
+          "replaced_by": [],
+          "unverified_supersession": [],
+          "supersedes": [],
+          "enactment": null,
+          "other_revisions": []
+        },
+        "dates": {
+          "source_date": "2026-09-29T00:00:00Z",
+          "basis": "effective_at",
+          "effective_at": "2026-09-29T00:00:00Z",
+          "created_at": null,
+          "valid_until": null,
+          "expired_as_of": false,
+          "reference_time": "2026-10-17T00:00:00Z"
+        },
+        "scope": {
+          "project_id": "response_preference",
+          "batch_id": null,
+          "scope": "project",
+          "batch_relation": "project_wide"
+        },
+        "authority": {
+          "role": "TEAM_LEAD",
+          "actor": "fixture",
+          "actor_relation": "RECORD_AUTHORITY",
+          "approval_status": "EXPLICIT_SOURCE_MARKER",
+          "provenance": "synthetic_fixture_record"
+        },
+        "authorship": {
+          "author_id": null,
+          "verified": false,
+          "basis": "NO_AUTHOR_RECORDED"
+        },
+        "recorded_states": {
+          "status": "approved",
+          "decision_status": null,
+          "execution_status": null,
+          "outcome_status": null
+        },
+        "upstream_review": null,
+        "excerpt": "## Whitespace and strict output formats\nWhen content is otherwise equivalent, whitespace alone does not break a tie. If a task specifies an exact serialized format, evaluate conformance to that requirement. This guide covers preference decisions."
+      }
+    },
+    "card": {
+      "contract_version": "agent3-advice-card-v4",
+      "record_type": "ADVICE_CARD",
+      "card_id": "card_f1d89351dfb42c7ea17731301f4e3d52",
+      "project_id": "response_preference",
+      "topic_name": "Whitespace-only formatting differences",
+      "card_line": "NEEDS_REVIEW",
+      "summary": "A tutor asks whether to prefer the answer without two extra blank lines when both answers otherwise say the same thing and no output format is required. A QA tutor answered Tie, consistent with the current scoring guide.",
+      "severity": {
+        "level": "LOW",
+        "assessment_status": "ASSESSED",
+        "rubric_version": "severity-rubric-v3-semantic-signals",
+        "rubric_content_sha256": "eccaa31a2ab84a0aa7c005216a92fc39681e1dd10107117344948235a76673f4",
+        "rubric_project_id": null,
+        "rubric_scope": "SHARED_DEFAULT",
+        "rationale": "A tutor raised a localized preference question that a QA tutor answered consistently with clear current guidance.",
+        "matched_signals": [],
+        "evidence": [],
+        "occurrence": {
+          "affected_reporters": {
+            "status": "LOWER_BOUND",
+            "count": 1,
+            "ids": [
+              "U9106"
+            ],
+            "basis": "Distinct authors whose own cited message reports the problem; other participants are not counted.",
+            "evidence": [
+              {
+                "kind": "slack_message",
+                "project_id": "response_preference",
+                "batch_id": "response_pilot_17",
+                "scope": "project",
+                "channel_id": "C_91RESP001",
+                "thread_id": "1792152900.000000",
+                "message_id": "1792152900.000000",
+                "document_id": null,
+                "version_id": null,
+                "authoring_document_id": null,
+                "authoring_version": null,
+                "section": null,
+                "chunk_id": null,
+                "candidate_group_id": null,
+                "member_id": "member_87f955f0c95aa5bc22870168",
+                "artifact": null,
+                "artifact_sha256": null,
+                "quote": null,
+                "note": "m:C_91RESP001:1792152900.000000"
+              }
+            ]
+          },
+          "affected_tasks": {
+            "status": "UNKNOWN",
+            "count": null,
+            "ids": [],
+            "basis": null,
+            "evidence": []
+          },
+          "relevant_threads": [
+            {
+              "project_id": "response_preference",
+              "batch_id": "response_pilot_17",
+              "channel_id": "C_91RESP001",
+              "thread_id": "1792152900.000000",
+              "member_id": "member_87f955f0c95aa5bc22870168"
+            }
+          ],
+          "reporting_window": {
+            "start": "2026-10-16T12:15:00+00:00",
+            "end": "2026-10-16T12:17:00+00:00"
+          },
+          "historical_recurrence": {
+            "status": "NOT_CHECKED",
+            "sources": [],
+            "event_series_ids": []
+          },
+          "known_denominator": null,
+          "structural": {
+            "threads": 1,
+            "messages": 2,
+            "distinct_participants": 2,
+            "duplicate_threads_ignored": 0,
+            "duplicate_messages_ignored": 0,
+            "computed_from": "topic member threads (original Slack messages)",
+            "participants_are_not_affected_reporters": true
+          },
+          "semantic_identification": "ASSESSED"
+        },
+        "inherited_from": {
+          "level": "UNKNOWN",
+          "assessment_status": "UNASSESSED",
+          "assessment_deferred_to": "AGENT3",
+          "reason": "Agent 2 performs taxonomy only."
+        }
+      },
+      "severity_is_provisional": false,
+      "resolution_status": "RESOLVED_IN_THREAD",
+      "recommended_action": null,
+      "reasoning": "What the evidence shows: A tutor reports that Candidate B has two extra blank lines between bullets, that the answers otherwise say exactly the same thing, and that there is no output format restriction; the tutor asks whether to prefer Candidate A. A QA tutor answers Tie and explains that extra whitespace alone does not affect preference when there is no format requirement. The current project-wide scoring guide says whitespace alone does not break a tie when content is otherwise equivalent, while tasks specifying an exact serialized format must be evaluated for conformance to that requirement. Thread status, read from each thread's own messages: resolved in thread ×1. Agent 1's earlier labels (an input, not evidence): resolved in thread ×1; 1 of 1 were not verified by Agent 1.",
+      "supporting_sources": [
+        {
+          "kind": "knowledge_source",
+          "project_id": "response_preference",
+          "batch_id": null,
+          "scope": "project",
+          "channel_id": null,
+          "thread_id": null,
+          "message_id": null,
+          "document_id": "knowledge_7ebc684071cc9d7a8f6f69e7f78000faac4164dd04821023ad710203fe9c430f",
+          "version_id": "version_ded402a36cc72d4f5efb076e842a9511a0bb4f85e12c4cefc4ebca78c18c93c9",
+          "authoring_document_id": "pilot-response-preference-scoring-guide",
+          "authoring_version": "1.1",
+          "section": "Whitespace and strict output formats",
+          "chunk_id": "chunk_d0c2c6a5d8d78fe1c86d9468828ce0a7",
+          "candidate_group_id": null,
+          "member_id": null,
+          "artifact": null,
+          "artifact_sha256": null,
+          "quote": null,
+          "note": "k:pilot-response-preference-scoring-guide@1.1:d0c2c6a5 (CURRENT_GUIDANCE; CURRENT)"
+        },
+        {
+          "kind": "slack_message",
+          "project_id": "response_preference",
+          "batch_id": "response_pilot_17",
+          "scope": "project",
+          "channel_id": "C_91RESP001",
+          "thread_id": "1792152900.000000",
+          "message_id": "1792152900.000000",
+          "document_id": null,
+          "version_id": null,
+          "authoring_document_id": null,
+          "authoring_version": null,
+          "section": null,
+          "chunk_id": null,
+          "candidate_group_id": null,
+          "member_id": "member_87f955f0c95aa5bc22870168",
+          "artifact": null,
+          "artifact_sha256": null,
+          "quote": null,
+          "note": "m:C_91RESP001:1792152900.000000"
+        },
+        {
+          "kind": "slack_message",
+          "project_id": "response_preference",
+          "batch_id": "response_pilot_17",
+          "scope": "project",
+          "channel_id": "C_91RESP001",
+          "thread_id": "1792152900.000000",
+          "message_id": "1792153020.000000",
+          "document_id": null,
+          "version_id": null,
+          "authoring_document_id": null,
+          "authoring_version": null,
+          "section": null,
+          "chunk_id": null,
+          "candidate_group_id": null,
+          "member_id": "member_87f955f0c95aa5bc22870168",
+          "artifact": null,
+          "artifact_sha256": null,
+          "quote": null,
+          "note": "m:C_91RESP001:1792153020.000000"
+        }
+      ],
+      "related_threads": [
+        {
+          "project_id": "response_preference",
+          "batch_id": "response_pilot_17",
+          "channel_id": "C_91RESP001",
+          "thread_id": "1792152900.000000",
+          "member_id": "member_87f955f0c95aa5bc22870168",
+          "permalink": null,
+          "display_reference": "1792152900.000000",
+          "label": "#response-pilot, 2026-10-16, started by a tutor: \"Candidate B has two extra blank lines between bullets.\"",
+          "opening_text": "Candidate B has two extra blank lines between bullets. Otherwise both answers say exactly the same thing and there is no output format restriction. Should I prefer A?"
+        }
+      ],
+      "confidence": 0.98,
+      "confidence_band": "HIGH",
+      "needs_review_reasons": [
+        {
+          "code": "INHERITED_FLAG",
+          "detail": "Upstream obligations remain open: inherited_agent1_review x1",
+          "obligation_ids": [],
+          "evidence": []
+        }
+      ],
+      "inherited_flags": [
+        {
+          "origin": "agent1",
+          "kind": "inherited_agent1_review",
+          "candidate_group_id": "cluster_0e52b5c242ad6474",
+          "obligation_id": null,
+          "member_ids": [
+            "member_87f955f0c95aa5bc22870168"
+          ],
+          "detail": "Still unverified after one targeted revision: Independent evidence audit unavailable or invalid: ValueError: central_question:1: matching evidence IDs and quotations are required."
+        }
+      ],
+      "checks": {
+        "grounding": "PASSED",
+        "temporal_conflict": "NONE_FOUND",
+        "open_confirmation": "NONE"
+      },
+      "lineage": {
+        "agent3_run_id": "agent3overnight_f22f4be690e6939ca5f43554548d90b8",
+        "handoff_contract": "agent2-taxonomy-handoff-v2",
+        "agent2_export_sha256": "2dd6d3ac9f878b1e5090dfed5b45f689210847aba03c28f6c549f1ce9ab5c918",
+        "agent2_schema_version": 8,
+        "candidate_group_id": "cluster_0e52b5c242ad6474",
+        "topic_id": "cluster_0e52b5c242ad6474/topic_1",
+        "member_ids": [
+          "member_87f955f0c95aa5bc22870168"
+        ],
+        "project_id": "response_preference",
+        "batch_id": "response_pilot_17"
+      },
+      "review_notes": [
+        "1 earlier review flag is still open on these threads."
+      ],
+      "details": [
+        "The current scoring guide says whitespace alone does not break a tie when content is otherwise equivalent; exact serialized-format requirements must still be evaluated."
+      ],
+      "next_step": {
+        "status": "NO_ACTION_NEEDED",
+        "rationale": "The QA tutor's answer resolves the reported preference question and matches the current scoring guide. No further clarification is needed for the reported case.",
+        "explanation": null
+      }
+    },
+    "review_items": [
+      {
+        "contract_version": "agent3-model-review-item-v1",
+        "record_type": "MODEL_REVIEW_ITEM",
+        "item_id": "review_4b23bcaa3597cb813b58058d36ef0c51",
+        "origin": "agent1",
+        "kind": "inherited_agent1_review",
+        "project_id": "response_preference",
+        "batch_id": "response_pilot_17",
+        "candidate_group_id": "cluster_0e52b5c242ad6474",
+        "topic_id": "cluster_0e52b5c242ad6474/topic_1",
+        "member_ids": [
+          "member_87f955f0c95aa5bc22870168"
+        ],
+        "obligation_id": null,
+        "reason": "Still unverified after one targeted revision: Independent evidence audit unavailable or invalid: ValueError: central_question:1: matching evidence IDs and quotations are required.",
+        "source_obligation": {
+          "origin": "agent1",
+          "member_id": "member_87f955f0c95aa5bc22870168",
+          "project_id": "response_preference",
+          "batch_id": "response_pilot_17",
+          "channel_id": "C_91RESP001",
+          "thread_id": "1792152900.000000",
+          "candidate_group_id": "cluster_0e52b5c242ad6474",
+          "candidate_sha256": "de29a2385f55b54d9da28145d1115038256efb7711ff39432445304b3c61868c",
+          "source_sha256": "4e1acae34fa6f68ce7865130015b0c304ecd46f53d4f357b9556e5ca677e6a7c",
+          "agent1_record": {
+            "project_id": "response_preference",
+            "batch_id": "response_pilot_17",
+            "channel_id": "C_91RESP001",
+            "thread_id": "1792152900.000000",
+            "language": null,
+            "model": "openai/gpt-4o-mini-2024-07-18",
+            "run_config_sha256": "473313bf1f0eb5532aa11b8cb061343ff8470b58dbf2e7bf7b573e93a29fea4e",
+            "handoff_version": 1,
+            "verification_origin": "bounded_verification",
+            "input_sha256": "4e1acae34fa6f68ce7865130015b0c304ecd46f53d4f357b9556e5ca677e6a7c",
+            "candidate_sha256": "de29a2385f55b54d9da28145d1115038256efb7711ff39432445304b3c61868c",
+            "source_message_ids": [
+              "1792152900.000000",
+              "1792153020.000000"
+            ],
+            "interpretation": {
+              "thread_id": "1792152900.000000",
+              "summary": "Casey Tran inquires whether to prefer Candidate A over Candidate B, noting that Candidate B has two extra blank lines between bullets but otherwise both answers are identical with no output format restrictions. Noah Bell responds that the preference should be a Tie, as extra whitespace does not affect preference without a format requirement.",
+              "central_question": "Should I prefer Candidate A over Candidate B, given that Candidate B has two extra blank lines between bullets?",
+              "resolution_state": "RESOLVED_IN_THREAD",
+              "authoritative_response_present": true,
+              "authority_evidence_message_ids": [
+                "1792153020.000000"
+              ],
+              "resolution_rationale": "Noah Bell's response establishes that the extra whitespace does not affect the preference decision, concluding that the preference should be a Tie. There are no remaining questions or uncertainties regarding the decision.",
+              "confidence": 1.0
+            },
+            "automated_verification_status": "NEEDS_REVIEW",
+            "verification_status": "NEEDS_REVIEW",
+            "review_required": true,
+            "revision_count": 1,
+            "provisional_fields": [
+              "authoritative_response_present",
+              "authority_evidence_message_ids",
+              "central_question",
+              "confidence",
+              "resolution_rationale",
+              "resolution_state",
+              "summary"
+            ],
+            "review_reason": "Still unverified after one targeted revision: Independent evidence audit unavailable or invalid: ValueError: central_question:1: matching evidence IDs and quotations are required.",
+            "review_reasons": [
+              "Still unverified after one targeted revision: Independent evidence audit unavailable or invalid: ValueError: central_question:1: matching evidence IDs and quotations are required."
+            ],
+            "review_findings": [
+              {
+                "category": "EVIDENCE",
+                "explanation": "Independent evidence audit unavailable or invalid: ValueError: central_question:1: matching evidence IDs and quotations are required.",
+                "evidence_message_ids": [],
+                "evidence_quotes": [],
+                "disputed_fields": [
+                  "summary",
+                  "central_question",
+                  "resolution_state",
+                  "resolution_rationale",
+                  "authoritative_response_present",
+                  "authority_evidence_message_ids",
+                  "confidence"
+                ],
+                "origin": "automated_verification"
+              }
+            ],
+            "content_reviews": [],
+            "review_applicability": [],
+            "lineage": {
+              "baseline_file": "D:\\Christie\\2026_AgenticAI\\threadsense\\experiments\\fresh_15_v1\\runs\\C_gpt_v2\\stages\\agent1_interpret\\agent1_interpretations_v1\\interpretations.json",
+              "baseline_record_sha256": "29f135cab966fb9e9540e63c7e2f798b0e401d92da7def76db68fa70f6b48678",
+              "baseline_run_config_sha256": "4c46aa950fa3a4a153b2fb81266e17cf6a71a312afebd5165bb5aa640dc53e8f",
+              "baseline_model": "openai/gpt-4o-mini-2024-07-18",
+              "baseline_created_at": "2026-11-16T20:59:55.483560+00:00",
+              "source_file": "sources/4e1acae34fa6f68ce7865130015b0c304ecd46f53d4f357b9556e5ca677e6a7c.json",
+              "verification_file": "records/2d034cec175372bf6568fb89499a844ddde2cfc4fe849f6a72b56b70610c1354/result.json",
+              "effective_attempt": "original",
+              "original_candidate_sha256": "de29a2385f55b54d9da28145d1115038256efb7711ff39432445304b3c61868c",
+              "revised_candidate_sha256": "0de117b2fa15bba51e3e7487d6ceca8762c014350e957b9e0211990a24a12267",
+              "effective_candidate_sha256": "de29a2385f55b54d9da28145d1115038256efb7711ff39432445304b3c61868c",
+              "original_candidate_reference": "records/2d034cec175372bf6568fb89499a844ddde2cfc4fe849f6a72b56b70610c1354/result.json#/result/original_interpretation",
+              "revised_candidate_reference": "records/2d034cec175372bf6568fb89499a844ddde2cfc4fe849f6a72b56b70610c1354/result.json#/result/revised_interpretation",
+              "audit_history_reference": "records/2d034cec175372bf6568fb89499a844ddde2cfc4fe849f6a72b56b70610c1354/result.json#/result/passes"
+            }
+          },
+          "agent1_export_file": "D:\\Christie\\2026_AgenticAI\\threadsense\\experiments\\fresh_15_v1\\runs\\C_gpt_v2\\stages\\agent1_relevance\\relevance_v1\\clustering_input\\interpretations.json",
+          "agent1_export_sha256": "63a647718e41f0782faccb70d233f55cfedbc1f0f3ed0c943228f317ce83ae36",
+          "agent1_lineage_base": "D:\\Christie\\2026_AgenticAI\\threadsense\\experiments\\fresh_15_v1\\runs\\C_gpt_v2\\stages\\agent1_relevance\\relevance_v1\\clustering_input"
+        },
+        "related_card_ids": [
+          "card_f1d89351dfb42c7ea17731301f4e3d52"
+        ],
+        "actions": []
+      }
+    ],
+    "coverage": {
+      "group_members_outside_this_card": [],
+      "uncarried_obligations": []
+    },
+    "budget": {
+      "consumed": {
+        "retrieval_calls": 1,
+        "model_calls": 2
+      },
+      "limits": {
+        "model_calls_per_topic": 4,
+        "model_calls_total": 28,
+        "retrieval_calls_per_topic": 6,
+        "retrieval_calls_total": 42
+      }
+    },
+    "diagnostics": []
+  }
+}

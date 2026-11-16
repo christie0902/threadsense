@@ -1,0 +1,484 @@
+{
+ "freeze": {
+  "files": 16,
+  "changed": {},
+  "unlisted_input_files": [],
+  "ok": true
+ },
+ "answer_key_isolation": {
+  "answer_key": "experiments/fresh_15_v1/answer_key/threadsense_fresh_15_answer_key.md",
+  "outside_inputs_and_index": true,
+  "phrase_hits_in_inputs_index_converter": [],
+  "ok": true
+ },
+ "ingestion": {
+  "roots": 15,
+  "discussion": 14,
+  "announcement": 1,
+  "discussion_ids": [
+   "T01",
+   "T02",
+   "T03",
+   "T04",
+   "T05",
+   "T06",
+   "T07",
+   "T08",
+   "T09",
+   "T10",
+   "T11",
+   "T12",
+   "T13",
+   "T14"
+  ],
+  "announcement_ids": [
+   "T15"
+  ],
+  "ok": true
+ },
+ "index": {
+  "build_fingerprint": "b437167740fd17628cff819421672cbaad9a0bc94b07210afee685fb2337be74",
+  "documents": 7,
+  "knowledge_documents": 6,
+  "announcements": {
+   "announcement_threads": 1,
+   "discussion_threads": 14,
+   "extracted": 1,
+   "extraction_failures": []
+  },
+  "sources": {
+   "knowledge_root": "experiments/fresh_15_v1/inputs/knowledge",
+   "fixture_root": "experiments/fresh_15_v1/inputs/slack",
+   "cutoff": "2026-10-17T00:00:00Z"
+  },
+  "current": [
+   "pilot-multilingual-alignment-review-guide@2.0",
+   "C_91MULTI02",
+   "pilot-review-export-troubleshooting@1.0"
+  ],
+  "withheld_in_current": [
+   [
+    "pilot-multilingual-alignment-review-guide@1.4",
+    "SUPERSEDED_REVISION"
+   ]
+  ],
+  "history": [
+   "pilot-multilingual-alignment-review-guide@2.0",
+   "C_91MULTI02",
+   "pilot-multilingual-alignment-review-guide@1.4",
+   "pilot-review-export-troubleshooting@1.0"
+  ],
+  "ok": true
+ },
+ "grok_roles": [
+  {
+   "role": "Agent 1 interpreter (CrewAI LLM, one request per thread; relevance judged in the same request)",
+   "model": "openrouter/anthropic/claude-sonnet-5.5"
+  },
+  {
+   "role": "Agent 1 revision (single-POST transport)",
+   "model": "openrouter/anthropic/claude-sonnet-5.5"
+  },
+  {
+   "role": "Agent 1 decision-evidence auditor (CrewAI LLM)",
+   "model": "openrouter/anthropic/claude-sonnet-5.5"
+  },
+  {
+   "role": "Agent 1 source analysis + prose comparison (single-POST transport)",
+   "model": "openrouter/anthropic/claude-sonnet-5.5"
+  },
+  {
+   "role": "Agent 1 relevance exclusion verifier (single-POST transport)",
+   "model": "openrouter/anthropic/claude-sonnet-5.5"
+  },
+  {
+   "role": "Agent 2 taxonomy (strict json_schema)",
+   "model": "openrouter/anthropic/claude-sonnet-5.5",
+   "note": "via THREADSENSE_MODEL (see overrides)"
+  },
+  {
+   "role": "Agent 2 consolidation judge (strict json_schema)",
+   "model": "openrouter/anthropic/claude-sonnet-5.5"
+  },
+  {
+   "role": "Agent 3 draft / revision / ToT / grounding (CrewAI, json_object)",
+   "model": "openrouter/x-ai/grok-4.7",
+   "settings": {
+    "temperature": 0,
+    "reasoning_effort": null,
+    "max_completion_tokens_per_call": 16384,
+    "input_token_limit": 24000,
+    "provider_sdk_max_retries": 0,
+    "model_fallback": null,
+    "api_key_variable": "OPENROUTER_API_KEY"
+   }
+  },
+  {
+   "role": "Optional paths",
+   "model": null,
+   "note": "ReAct research off, flag impact off, reviewer feedback off, lessons off; retries 0 on every transport; no fallback model anywhere"
+  }
+ ],
+ "grok_agent3_user_directory": {
+  "fixture_authors": 9,
+  "missing": [],
+  "ok": true
+ },
+ "grok_agent3_reservation": {
+  "usd": 0.1463,
+  "ok": true
+ },
+ "grok_captured": [
+  {
+   "role": "agent3 (one client serves draft, revision, ToT and grounding)",
+   "captured": {
+    "url": "https://api.x.ai/v1/chat/completions",
+    "model": "grok-4.7",
+    "agent": "agent3",
+    "params": {
+     "max_tokens": 16384,
+     "temperature": 0.0,
+     "reasoning_effort": "medium",
+     "stream": false
+    },
+    "output_config": {},
+    "response_format": "json_object",
+    "system_chars": 0,
+    "messages": 2,
+    "input_tokens_estimate": 390,
+    "output_cap": 16384,
+    "reservation_usd": 0.09908
+   },
+   "requests_attempted": 1,
+   "error": null,
+   "ok": true
+  }
+ ],
+ "sonnet_roles": [
+  {
+   "role": "Agent 1 interpreter (CrewAI LLM, one request per thread; relevance judged in the same request)",
+   "model": "openrouter/anthropic/claude-sonnet-5.5"
+  },
+  {
+   "role": "Agent 1 revision (single-POST transport)",
+   "model": "openrouter/anthropic/claude-sonnet-5.5"
+  },
+  {
+   "role": "Agent 1 decision-evidence auditor (CrewAI LLM)",
+   "model": "openrouter/anthropic/claude-sonnet-5.5"
+  },
+  {
+   "role": "Agent 1 source analysis + prose comparison (single-POST transport)",
+   "model": "openrouter/anthropic/claude-sonnet-5.5"
+  },
+  {
+   "role": "Agent 1 relevance exclusion verifier (single-POST transport)",
+   "model": "openrouter/anthropic/claude-sonnet-5.5"
+  },
+  {
+   "role": "Agent 2 taxonomy (strict json_schema)",
+   "model": "openrouter/anthropic/claude-sonnet-5.5",
+   "note": "via THREADSENSE_MODEL (see overrides)"
+  },
+  {
+   "role": "Agent 2 consolidation judge (strict json_schema)",
+   "model": "openrouter/anthropic/claude-sonnet-5.5"
+  },
+  {
+   "role": "Agent 3 draft / revision / ToT / grounding (CrewAI, json_object)",
+   "model": "openrouter/anthropic/claude-sonnet-5.5",
+   "settings": {
+    "temperature": 0,
+    "reasoning_effort": null,
+    "max_completion_tokens_per_call": 16384,
+    "input_token_limit": 24000,
+    "provider_sdk_max_retries": 0,
+    "model_fallback": null,
+    "api_key_variable": "OPENROUTER_API_KEY"
+   }
+  },
+  {
+   "role": "Optional paths",
+   "model": null,
+   "note": "ReAct research off, flag impact off, reviewer feedback off, lessons off; retries 0 on every transport; no fallback model anywhere"
+  }
+ ],
+ "sonnet_agent3_user_directory": {
+  "fixture_authors": 9,
+  "missing": [],
+  "ok": true
+ },
+ "sonnet_agent3_reservation": {
+  "usd": 0.21184,
+  "ok": true
+ },
+ "sonnet_captured": [
+  {
+   "role": "agent1_interpreter",
+   "captured": {
+    "url": "https://api.anthropic.com/v1/messages",
+    "model": "claude-sonnet-5-5",
+    "agent": "agent1",
+    "params": {
+     "max_tokens": 4096,
+     "thinking": {
+      "type": "between_tools"
+     },
+     "stop_sequences": [
+      "\nObservation:"
+     ]
+    },
+    "output_config": {},
+    "response_format": null,
+    "system_chars": 271,
+    "messages": 2,
+    "input_tokens_estimate": 2966,
+    "output_cap": 4096,
+    "reservation_usd": 0.04689
+   },
+   "requests_attempted": 1,
+   "error": null,
+   "ok": true
+  },
+  {
+   "role": "agent1_auditor",
+   "captured": {
+    "url": "https://api.anthropic.com/v1/messages",
+    "model": "claude-sonnet-5-5",
+    "agent": "agent1",
+    "params": {
+     "max_tokens": 6144,
+     "thinking": {
+      "type": "between_tools"
+     }
+    },
+    "output_config": {},
+    "response_format": null,
+    "system_chars": 0,
+    "messages": 1,
+    "input_tokens_estimate": 124,
+    "output_cap": 6144,
+    "reservation_usd": 0.06169
+   },
+   "requests_attempted": 1,
+   "error": null,
+   "ok": true
+  },
+  {
+   "role": "agent1_auditor_transport (source analysis, prose comparison, relevance verifier)",
+   "captured": {
+    "url": "https://api.anthropic.com/v1/messages",
+    "model": "claude-sonnet-5-5",
+    "agent": "agent1",
+    "params": {
+     "max_tokens": 16384,
+     "thinking": {
+      "type": "between_tools"
+     }
+    },
+    "output_config": {},
+    "response_format": null,
+    "system_chars": 9,
+    "messages": 1,
+    "input_tokens_estimate": 139,
+    "output_cap": 16384,
+    "reservation_usd": 0.16412
+   },
+   "requests_attempted": 1,
+   "error": null,
+   "ok": true
+  },
+  {
+   "role": "agent1_revision_transport",
+   "captured": {
+    "url": "https://api.anthropic.com/v1/messages",
+    "model": "claude-sonnet-5-5",
+    "agent": "agent1",
+    "params": {
+     "max_tokens": 4096,
+     "thinking": {
+      "type": "between_tools"
+     }
+    },
+    "output_config": {},
+    "response_format": null,
+    "system_chars": 9,
+    "messages": 1,
+    "input_tokens_estimate": 139,
+    "output_cap": 4096,
+    "reservation_usd": 0.04124
+   },
+   "requests_attempted": 1,
+   "error": null,
+   "ok": true
+  },
+  {
+   "role": "agent2_taxonomy",
+   "captured": {
+    "url": "https://api.anthropic.com/v1/messages",
+    "model": "claude-sonnet-5-5",
+    "agent": "agent2",
+    "params": {
+     "max_tokens": 8192,
+     "thinking": {
+      "type": "between_tools"
+     }
+    },
+    "output_config": {
+     "format": {
+      "type": "json_schema",
+      "schema": "present"
+     }
+    },
+    "response_format": null,
+    "system_chars": 9,
+    "messages": 1,
+    "input_tokens_estimate": 403,
+    "output_cap": 8192,
+    "reservation_usd": 0.08273
+   },
+   "requests_attempted": 1,
+   "error": null,
+   "ok": true
+  },
+  {
+   "role": "agent2_consolidation_judge",
+   "captured": {
+    "url": "https://api.anthropic.com/v1/messages",
+    "model": "claude-sonnet-5-5",
+    "agent": "agent2",
+    "params": {
+     "max_tokens": 8192,
+     "thinking": {
+      "type": "between_tools"
+     }
+    },
+    "output_config": {
+     "format": {
+      "type": "json_schema",
+      "schema": "present"
+     }
+    },
+    "response_format": null,
+    "system_chars": 1017,
+    "messages": 1,
+    "input_tokens_estimate": 715,
+    "output_cap": 8192,
+    "reservation_usd": 0.08335
+   },
+   "requests_attempted": 1,
+   "error": null,
+   "ok": true
+  },
+  {
+   "role": "agent3 (one client serves draft, revision, ToT and grounding)",
+   "captured": {
+    "url": "https://api.anthropic.com/v1/messages",
+    "model": "claude-sonnet-5-5",
+    "agent": "agent3",
+    "params": {
+     "max_tokens": 16384,
+     "thinking": {
+      "type": "adaptive"
+     },
+     "stop_sequences": [
+      "\nObservation:"
+     ]
+    },
+    "output_config": {
+     "effort": "medium"
+    },
+    "response_format": null,
+    "system_chars": 290,
+    "messages": 2,
+    "input_tokens_estimate": 395,
+    "output_cap": 16384,
+    "reservation_usd": 0.16463
+   },
+   "requests_attempted": 1,
+   "error": null,
+   "ok": true
+  }
+ ],
+ "replay_smoke": {
+  "stages": [
+   {
+    "stage": "snapshot",
+    "status": "COMPLETE"
+   },
+   {
+    "stage": "agent1_interpret",
+    "status": "STOPPED",
+    "error": "NetworkDisabled"
+   }
+  ],
+  "stopped_with": "NetworkDisabled: agent1_interpret: no saved response for request e40bc9a79e14; replay does not call the network.",
+  "ledger_rows": 0,
+  "snapshot_matches_fixture": true,
+  "manifest_experiment_inputs": {
+   "fixture": "experiments/fresh_15_v1/inputs/slack",
+   "fixture_tree_sha256": "f1382d9aea0ddb1112a50aebf676efb5ff68023b272e4d4e735df3354a21d4e6",
+   "knowledge": "experiments/fresh_15_v1/inputs/knowledge",
+   "knowledge_tree_sha256": "a32b31b6bcf0e6ea187ff4aec69910106d0b894c7587aad39db96c3665265f2f",
+   "index": ".index/fresh_15_v1",
+   "index_build_fingerprint": "b437167740fd17628cff819421672cbaad9a0bc94b07210afee685fb2337be74",
+   "index_corpus_fingerprint": "7c345e87cddecc66f0294580efaacb89281f21057f0ad3b3f79e80c76989db97",
+   "cutoff": "2026-10-17T00:00:00Z"
+  },
+  "manifest_delivery": {
+   "anthropic/claude-sonnet-5.5": {
+    "provider": "anthropic",
+    "model": "claude-sonnet-5-5",
+    "endpoint": "https://api.anthropic.com/v1/messages"
+   },
+   "x-ai/grok-4.7": {
+    "provider": "xai",
+    "model": "grok-4.7",
+    "endpoint": "https://api.x.ai/v1/chat/completions"
+   }
+  },
+  "pipeline": "threadsense-full-run-v2",
+  "ok": true
+ },
+ "credentials": {
+  "anthropic_sdk": "2.4.0",
+  "anthropic_sdk_expected": "2.4.0",
+  "anthropic": "ant profile resolved by the SDK (no request made)",
+  "xai": "XAI_API_KEY present (not printed)",
+  "openrouter": "not used (placeholder only; every request is delivered directly)",
+  "ok": true
+ },
+ "estimate": {
+  "assumed_work": {
+   "threads": 14,
+   "agent1_verify_requests": 40,
+   "groups": 8,
+   "consolidation_sets": 6,
+   "exclusions": 3,
+   "agent3_items": 14,
+   "agent3_requests": 32
+  },
+  "basis": "threadsense_full_v1 ledger means (Agent 1 1.6k/0.2k, verification ~2.0k/0.6k, Agent 2 0.8k/0.14k, Agent 3 12.3k/3.0k tokens per request); input x1.25, output x1.5 (Agents 1-2, thinking off) or x2 (Agent 3, medium reasoning)",
+  "run_a_expected_usd": 3.68,
+  "run_a_by_stage_usd": {
+   "agent1_interpret": 0.094,
+   "agent1_verify": 0.56,
+   "agent1_relevance_verifier": 0.045,
+   "agent2_taxonomy": 0.049,
+   "agent2_consolidation": 0.05,
+   "agent3": 2.879
+  },
+  "run_a_all_limits_hit_usd": 22.36,
+  "run_b_expected_usd": 2.12,
+  "run_b_all_limits_hit_usd": 9.81,
+  "balances_reported_usd": {
+   "anthropic": 5.0,
+   "xai": 5.0
+  },
+  "proposed_caps_usd": {
+   "run_a": 4.5,
+   "run_b": 4.5
+  }
+ },
+ "preflight_ok": true
+}

@@ -1,0 +1,87 @@
+{
+ "version": "agent2-consolidation-v1",
+ "prompt_version": "agent2-merge-v1",
+ "handoff_contract": "agent2-taxonomy-handoff-v3",
+ "limits": {
+  "centroid_min": 0.55,
+  "member_min": 0.35,
+  "whole_centroid_min": 0.5,
+  "whole_member_min": 0.3,
+  "max_set_size": 4,
+  "max_sets": 48,
+  "max_union_sets": 8
+ },
+ "judge_provenance": "LIVE_AGENT2",
+ "candidate_sets": [
+  {
+   "candidate_set_id": "cand_c2966cd7e861",
+   "topic_ids": [
+    "cluster_30bad96e288a61c8/topic_1",
+    "cluster_99f91555f64e7a9a/topic_1"
+   ],
+   "project_id": "audio_multimodal",
+   "batch_id": "audio_pilot_17",
+   "pairs": [
+    {
+     "topic_ids": [
+      "cluster_30bad96e288a61c8/topic_1",
+      "cluster_99f91555f64e7a9a/topic_1"
+     ],
+     "centroid": 0.5851,
+     "member_min": 0.4907
+    }
+   ],
+   "mean_centroid": 0.5851
+  }
+ ],
+ "not_assessed_over_cap": [],
+ "judgments": [
+  {
+   "candidate_set_id": "cand_c2966cd7e861",
+   "topic_ids": [
+    "cluster_30bad96e288a61c8/topic_1",
+    "cluster_99f91555f64e7a9a/topic_1"
+   ],
+   "provenance": "LIVE_AGENT2",
+   "input_sha256": "ed36fc2a799361a9d62d74cca03320313efa868d79d47b79419e7077ed523583",
+   "judgment": {
+    "candidate_set_id": "cand_c2966cd7e861",
+    "decision": "DISTINCT",
+    "same_issue_topic_ids": [],
+    "consolidated_name": null,
+    "rationale": "The topics describe different underlying issues. Topic cluster_30bad96e288a61c8/topic_1 is a playback UI/seek failure where scrubbing or seeking causes playback controls and the clock to freeze or desynchronize despite the audio file itself being valid. Topic cluster_99f91555f64e7a9a/topic_1 is a silent-audio content/task issue where the clip has no audible sound from the start, the timer advances normally, and guidance is about how to flag the bad input. These are different failure modes and scopes.",
+    "distinguishing_factors": [
+     "Playback/scrubber malfunction vs silent source audio",
+     "Clock/control desynchronization after seeking vs normal timer progression",
+     "Valid downloadable WAV with broken in-product playback vs downloaded file also silent",
+     "Bug-reproduction/reporting question vs annotation/flagging guidance question"
+    ]
+   },
+   "status": "JUDGED",
+   "problems": []
+  }
+ ],
+ "merges": [],
+ "blocked_components": [],
+ "pass_through_topic_ids": [
+  "cluster_0e52b5c242ad6474/topic_1",
+  "cluster_22ee3237818bd111/topic_1",
+  "cluster_30bad96e288a61c8/topic_1",
+  "cluster_5055e4d13ec221b3/topic_1",
+  "cluster_687c332d881eec30/topic_1",
+  "cluster_99f91555f64e7a9a/topic_1",
+  "cluster_b4c3cef158251e2e/topic_1",
+  "cluster_ba8e58f843ad0812/topic_1",
+  "cluster_d51dbe3aad0f5e2e/topic_1",
+  "cluster_ef05cdb71f8e655f/topic_1"
+ ],
+ "counts": {
+  "topics_in": 10,
+  "candidate_sets": 1,
+  "judged": 1,
+  "requests": 1,
+  "merges": 0,
+  "topics_merged": 0,
+  "topics_out": 10
+ }
+}

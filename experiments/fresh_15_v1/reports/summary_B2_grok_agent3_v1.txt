@@ -1,0 +1,937 @@
+{
+ "run": "B2_grok_agent3_v1",
+ "kind": "AGENT3_ONLY",
+ "agent3_only": {
+  "source_run": "experiments/fresh_15_v1/runs/A_sonnet_v1",
+  "inputs": {
+   "handoff": {
+    "path": "experiments/fresh_15_v1/runs/A_sonnet_v1/stages/agent2/agent2_v1",
+    "sha256": "80f5245daf163b4573c6b308202f9292eb36e97664a7c1b841780b28d146b0b3"
+   },
+   "consolidation": {
+    "path": "experiments/fresh_15_v1/runs/A_sonnet_v1/stages/agent2_consolidate/consolidation_v2/consolidation.json",
+    "sha256": "57c6a3d67dbc61c3f152112486b8882d9cca43f1c779941ef33adf40fb8710d2"
+   },
+   "processing_history": {
+    "path": "experiments/fresh_15_v1/runs/A_sonnet_v1/stages/agent1_relevance/relevance_v1/processing_history.json",
+    "sha256": "a5338d955b09046ec0b16f3a9625b7955c763aae07dc722e474e6078745f932f"
+   },
+   "fixture_root": {
+    "path": "experiments/fresh_15_v1/runs/A_sonnet_v1/snapshot/slack",
+    "sha256": "f1382d9aea0ddb1112a50aebf676efb5ff68023b272e4d4e735df3354a21d4e6"
+   }
+  },
+  "delivery_timeout_seconds": 600,
+  "response_reuse": "none (no parent runs)"
+ },
+ "experiment": {
+  "arm": "grok",
+  "route_labels": {
+   "agent1": "openrouter/anthropic/claude-sonnet-5.5",
+   "agent2": "openrouter/anthropic/claude-sonnet-5.5",
+   "agent3": "openrouter/x-ai/grok-4.7"
+  },
+  "delivery": {
+   "anthropic/claude-sonnet-5.5": {
+    "provider": "anthropic",
+    "model": "claude-sonnet-5-5",
+    "endpoint": "https://api.anthropic.com/v1/messages"
+   },
+   "x-ai/grok-4.7": {
+    "provider": "xai",
+    "model": "grok-4.7",
+    "endpoint": "https://api.x.ai/v1/chat/completions"
+   }
+  },
+  "allowed_to_send": [
+   "grok-4.7"
+  ]
+ },
+ "parents": [],
+ "resumes": [],
+ "ingestion": {
+  "roots": 15,
+  "discussion": 14,
+  "announcement": 1,
+  "announcement_ids": [
+   "T15"
+  ],
+  "announcement_source_files": [
+   "source.json"
+  ],
+  "agent1_rejected": []
+ },
+ "agent1": {
+  "T01": {
+   "resolution_state": "UNRESOLVED",
+   "verification_status": "CORRECTED",
+   "review_required": false,
+   "review_reasons": [],
+   "authority_messages": [],
+   "central_question": null,
+   "resolution_rationale": "The root is a symptom report with no explicit question or requested decision (no preference, severity, label, or action is asked for), so there is no central question to preserve. The only reply is an evidence request (task ID, browser build, and a second reproduction before filing), which is diagnostic and does not establish an answer. Casey's follow-up supplies the requested details and a workaround observation (reopening restores playback until the next seek) but no cause, fix, or handling decision. No message supplies a substantive conclusion, and no TEAM_LEAD endorsement or eligible author exists, so the thread remains unresolved.",
+   "processing_history": false
+  },
+  "T06": {
+   "resolution_state": "UNRESOLVED",
+   "verification_status": "VERIFIED",
+   "review_required": false,
+   "review_reasons": [],
+   "authority_messages": [],
+   "central_question": "For the bilingual rubric, should a reviewer note still be placed under the two-line alignment check, given that an older help page says everyone should use the note?",
+   "resolution_rationale": "The only reply suggests an October change 'may' apply and asks a clarifying question about whether the task is currently assigned or archived. This is evidence gathering, not a conclusion about whether the note is required. The author is a QA_TUTOR with no TEAM_LEAD endorsement, and no eligible message IDs exist. The requested guidance remains unanswered.",
+   "processing_history": false
+  },
+  "T09": {
+   "resolution_state": "RESOLVED_IN_THREAD",
+   "verification_status": "NEEDS_REVIEW",
+   "review_required": true,
+   "review_reasons": [
+    "Still unverified after one targeted revision: Independent evidence audit unavailable or invalid: ValueError: summary:3: matching evidence IDs and quotations are required."
+   ],
+   "authority_messages": [
+    "T09#1"
+   ],
+   "central_question": "Given two answers that are identical in content except that Candidate B has two extra blank lines between bullets, and no output format restriction, should the preference go to Candidate A?",
+   "resolution_rationale": "The root asked a single preference question (prefer A?). The reply directly answers it: choose Tie, since whitespace alone does not affect preference without a format requirement. The QA_TUTOR reply was endorsed by a TEAM_LEAD via white_check_mark (U9103 is mapped to TEAM_LEAD in reactor_roles). No part of the request remains open.",
+   "processing_history": false
+  },
+  "T02": {
+   "resolution_state": "UNRESOLVED",
+   "verification_status": "VERIFIED",
+   "review_required": false,
+   "review_reasons": [],
+   "authority_messages": [],
+   "central_question": null,
+   "resolution_rationale": "The root is an incident report with no explicit question or decision request. The only reply confirms reproduction and adds that the downloaded WAV plays fine, which is a diagnostic observation. No cause, resolution, or guidance is established, and no TEAM_LEAD or ENGINEER response or endorsement exists.",
+   "processing_history": false
+  },
+  "T07": {
+   "resolution_state": "UNRESOLVED",
+   "verification_status": "VERIFIED",
+   "review_required": false,
+   "review_reasons": [],
+   "authority_messages": [],
+   "central_question": "Can the note field be left blank on task JA-318 when the alignment check passes?",
+   "resolution_rationale": "The only reply is a TEAM_LEAD request for the batch code from the task metadata so the applicable rule can be determined. This is evidence gathering, not a conclusion about whether the note field can be left blank. No guidance on the requested decision is established.",
+   "processing_history": false
+  },
+  "T10": {
+   "resolution_state": "RESOLVED_IN_THREAD",
+   "verification_status": "VERIFIED",
+   "review_required": false,
+   "review_reasons": [],
+   "authority_messages": [
+    "T10#1"
+   ],
+   "central_question": "For two otherwise identical answers where one begins with a blank line and the other does not, does that difference change the preference label?",
+   "resolution_rationale": "The root asks whether the leading blank line changes the label. The TEAM_LEAD reply directly answers: it does not, and Tie should be used, with the stated reason that the task does not specify exact serialization. No part of the question is left open.",
+   "processing_history": false
+  },
+  "T03": {
+   "resolution_state": "UNRESOLVED",
+   "verification_status": "NEEDS_REVIEW",
+   "review_required": true,
+   "review_reasons": [
+    "Still unverified after one targeted revision: The audit found no requested decision, but the interpretation supplies a question."
+   ],
+   "authority_messages": [],
+   "central_question": "Is anyone else experiencing an endless spinner after using jump-back in the audio task tool (AUD-768, Firefox 132.0.2), even though playback had already worked?",
+   "resolution_rationale": "The root asks whether others see the same spinner issue. The only reply is a request to keep the task open and consolidate browser and task details into one report, which is evidence gathering. It does not confirm the issue for others, give a cause, or state a conclusion, so nothing about the question is established.",
+   "processing_history": false
+  },
+  "T08": {
+   "resolution_state": "RESOLVED_IN_THREAD",
+   "verification_status": "NEEDS_REVIEW",
+   "review_required": true,
+   "review_reasons": [
+    "Still unverified after one targeted revision: Independent evidence audit unavailable or invalid: ValueError: summary:3: matching evidence IDs and quotations are required."
+   ],
+   "authority_messages": [
+    "T08#1"
+   ],
+   "central_question": "Does the announcement that notes are exception-only change how the legacy archive export JA-240 should be annotated?",
+   "resolution_rationale": "The root asks one yes/no guidance question about whether the new exception-only note rule applies to the legacy export. Noah Bell's reply answers it directly (keep the old note format; the new instructions apply only to the current batch), citing the export header multi_batch_09. As a QA_TUTOR reply, it is backed by a white_check_mark from U9102, who is mapped to TEAM_LEAD in reactor_roles, so it meets the endorsement requirement. No part of the request is left open.",
+   "processing_history": false
+  },
+  "T11": {
+   "resolution_state": "UNRESOLVED",
+   "verification_status": "NEEDS_REVIEW",
+   "review_required": true,
+   "review_reasons": [
+    "Still unverified after one targeted revision: Independent evidence audit unavailable or invalid: ValueError: summary:3: matching evidence IDs and quotations are required."
+   ],
+   "authority_messages": [],
+   "central_question": "Does the archived reviewer activity counter in the Q-31 activity view include practice tasks that were reopened after midnight?",
+   "resolution_rationale": "The only reply says no definition has been found and asks whether a spec exists; this is a diagnostic question, not an answer about whether reopened practice tasks are counted. The TEAM_LEAD's eyes reaction is acknowledgment, not endorsement or an answer. The requested inclusion behavior remains unestablished.",
+   "processing_history": false
+  },
+  "T04": {
+   "resolution_state": "RESOLVED_IN_THREAD",
+   "verification_status": "NEEDS_REVIEW",
+   "review_required": true,
+   "review_reasons": [
+    "Still unverified after one targeted revision: Independent evidence audit unavailable or invalid: ValueError: summary:3: matching evidence IDs and quotations are required."
+   ],
+   "authority_messages": [
+    "T04#1"
+   ],
+   "central_question": "Where should the silent audio on AUD-777 (no audible sound from the start, silent local download as well) be recorded?",
+   "resolution_rationale": "The root asks only where to record the silent-audio problem. Riley Chen's reply directly answers this: use the media-input quality flag and keep the original clip attached. The reply is from a QA_TUTOR and carries a white_check_mark from U9101, who is mapped to TEAM_LEAD in reactor_roles, so the endorsement requirement is met. No part of the requested guidance is left open.",
+   "processing_history": false
+  },
+  "T13": {
+   "resolution_state": "UNRESOLVED",
+   "verification_status": "VERIFIED",
+   "review_required": false,
+   "review_reasons": [],
+   "authority_messages": [],
+   "central_question": "In the bilingual review export EX-51, why does a Vietnamese diacritic appear as a question mark in the downloaded CSV although it looks correct in the browser preview, and what should be done about it?",
+   "resolution_rationale": "The only reply is a request for evidence (the original export file and the application used to open it) and explicitly says the point of change has not been established. This is diagnostic evidence gathering, not a conclusion or guidance about the diacritic corruption, even though the author is a TEAM_LEAD.",
+   "processing_history": false
+  },
+  "T12": {
+   "resolution_state": "UNRESOLVED",
+   "verification_status": "VERIFIED",
+   "review_required": false,
+   "review_reasons": [],
+   "authority_messages": [],
+   "central_question": "Are the two practice tasks that were reopened after midnight included in the 17 shown for yesterday in the archive activity view?",
+   "resolution_rationale": "The only reply is a request for a screenshot and the reporting time zone so the dashboard owner can be consulted. This is evidence gathering, not a conclusion about whether the reopened tasks are counted in the 17. The requested yes/no determination remains unanswered, and the TEAM_LEAD's message does not supply a substantive answer.",
+   "processing_history": false
+  },
+  "T05": {
+   "resolution_state": "UNRESOLVED",
+   "verification_status": "NEEDS_REVIEW",
+   "review_required": true,
+   "review_reasons": [
+    "Still unverified after one targeted revision: Independent evidence audit unavailable or invalid: ValueError: summary:4: matching evidence IDs and quotations are required."
+   ],
+   "authority_messages": [],
+   "central_question": "Is leaving a clip ungraded the right handling when its file shows a flat waveform despite the 'field sample' label, a working playback counter through 00:11, and working seeking?",
+   "resolution_rationale": "The only reply is Riley Chen's request for the task ID before confirming the disposition, which is evidence gathering and not an answer. The TEAM_LEAD 'eyes' reaction is acknowledgment only. Whether leaving the clip ungraded is correct remains unanswered.",
+   "processing_history": false
+  },
+  "T14": {
+   "resolution_state": "UNRESOLVED",
+   "verification_status": "VERIFIED",
+   "review_required": false,
+   "review_reasons": [],
+   "authority_messages": [],
+   "central_question": "Why does the EX-67 CSV display a missing accent in one editor when the web preview still shows it, and how should this discrepancy be handled?",
+   "resolution_rationale": "The only reply gives diagnostic steps and asks for a follow-up report on whether the downloaded text still differs. That is evidence gathering, not a conclusion about the cause or the correct handling, so the issue remains open even though the author is a TEAM_LEAD.",
+   "processing_history": false
+  }
+ },
+ "agent1_counts": {
+  "threads": 14,
+  "verification": {
+   "CORRECTED": 1,
+   "VERIFIED": 7,
+   "NEEDS_REVIEW": 6
+  },
+  "review_required": 6,
+  "processing_history": 0
+ },
+ "agent2": {
+  "groups": [
+   {
+    "cluster": "cluster_22ee3237818bd111",
+    "state": "CONSOLIDATED",
+    "threads": [
+     "T13",
+     "T14"
+    ],
+    "topics": [
+     {
+      "topic_id": "cluster_22ee3237818bd111",
+      "name": "Diacritics lost in CSV export vs. web preview",
+      "threads": [
+       "T13",
+       "T14"
+      ]
+     }
+    ],
+    "rejected": [],
+    "unassigned": []
+   },
+   {
+    "cluster": "cluster_4a6d2055cf5f5754",
+    "state": "CONSOLIDATED",
+    "threads": [
+     "T06",
+     "T07",
+     "T08"
+    ],
+    "topics": [
+     {
+      "topic_id": "cluster_4a6d2055cf5f5754",
+      "name": "Reviewer note requirement under bilingual rubric alignment check",
+      "threads": [
+       "T06",
+       "T07",
+       "T08"
+      ]
+     }
+    ],
+    "rejected": [],
+    "unassigned": []
+   },
+   {
+    "cluster": "cluster_99f91555f64e7a9a",
+    "state": "CONSOLIDATED",
+    "threads": [
+     "T04"
+    ],
+    "topics": [
+     {
+      "topic_id": "cluster_99f91555f64e7a9a",
+      "name": "Silent or inaudible audio media issues",
+      "threads": [
+       "T04"
+      ]
+     }
+    ],
+    "rejected": [],
+    "unassigned": []
+   },
+   {
+    "cluster": "cluster_ba8e58f843ad0812",
+    "state": "CONSOLIDATED",
+    "threads": [
+     "T11",
+     "T12"
+    ],
+    "topics": [
+     {
+      "topic_id": "cluster_ba8e58f843ad0812",
+      "name": "Archived activity counter treatment of practice tasks reopened after midnight",
+      "threads": [
+       "T11",
+       "T12"
+      ]
+     }
+    ],
+    "rejected": [],
+    "unassigned": []
+   },
+   {
+    "cluster": "cluster_d0889cdfc8704adc",
+    "state": "CONSOLIDATED",
+    "threads": [
+     "T09",
+     "T10"
+    ],
+    "topics": [
+     {
+      "topic_id": "cluster_d0889cdfc8704adc",
+      "name": "Whitespace-only differences between otherwise identical answers",
+      "threads": [
+       "T09",
+       "T10"
+      ]
+     }
+    ],
+    "rejected": [],
+    "unassigned": []
+   },
+   {
+    "cluster": "cluster_d51dbe3aad0f5e2e",
+    "state": "CONSOLIDATED",
+    "threads": [
+     "T05"
+    ],
+    "topics": [
+     {
+      "topic_id": "cluster_d51dbe3aad0f5e2e",
+      "name": "Silent or flat-waveform audio clip handling",
+      "threads": [
+       "T05"
+      ]
+     }
+    ],
+    "rejected": [],
+    "unassigned": []
+   },
+   {
+    "cluster": "cluster_d6ed9f18b67e21da",
+    "state": "CONSOLIDATED",
+    "threads": [
+     "T01",
+     "T02",
+     "T03"
+    ],
+    "topics": [
+     {
+      "topic_id": "cluster_d6ed9f18b67e21da",
+      "name": "Audio playback stalls after seeking or scrubbing",
+      "threads": [
+       "T01",
+       "T02",
+       "T03"
+      ]
+     }
+    ],
+    "rejected": [],
+    "unassigned": []
+   }
+  ],
+  "retained_identities": 14,
+  "inherited_review_obligations": 6,
+  "consolidation": {
+   "topics_in": 7,
+   "candidate_sets": 0,
+   "judged": 0,
+   "requests": 0,
+   "merges": 0,
+   "topics_merged": 0,
+   "topics_out": 7
+  }
+ },
+ "cards": [
+  {
+   "card_id": "card_83168a31f32c6c176a58f9bd02c4e8e2",
+   "topic": "Audio playback stalls after seeking or scrubbing",
+   "threads": [
+    "T01",
+    "T02",
+    "T03"
+   ],
+   "line": "NEEDS_REVIEW",
+   "next_step": "NO_RECOMMENDATION_AVAILABLE",
+   "severity": "UNKNOWN",
+   "review_reasons": [
+    "LOW_CONFIDENCE",
+    "INHERITED_FLAG",
+    "GROUNDING_NOT_RUN",
+    "OTHER"
+   ],
+   "inherited_flags": [
+    {
+     "kind": "inherited_agent1_review",
+     "threads": [
+      "T03"
+     ]
+    }
+   ],
+   "action": null,
+   "summary": "No advisor draft is available; the threads and open review flags are listed.",
+   "details": [],
+   "outstanding_step": null,
+   "cited": [],
+   "grounding": {
+    "status": "NOT_RUN",
+    "verdicts": {},
+    "structural_issues": {}
+   },
+   "cited_evidence_ids": [],
+   "model_calls": [
+    [
+     "draft",
+     "FAILED"
+    ]
+   ],
+   "budget": {
+    "retrieval_calls": 1,
+    "model_calls": 1
+   }
+  },
+  {
+   "card_id": "card_cad1761029d0daa31db2e4c4eee59568",
+   "topic": "Silent or inaudible audio media issues",
+   "threads": [
+    "T04"
+   ],
+   "line": "NEEDS_REVIEW",
+   "next_step": "NO_RECOMMENDATION_AVAILABLE",
+   "severity": "UNKNOWN",
+   "review_reasons": [
+    "LOW_CONFIDENCE",
+    "INHERITED_FLAG",
+    "GROUNDING_NOT_RUN",
+    "OTHER"
+   ],
+   "inherited_flags": [
+    {
+     "kind": "inherited_agent1_review",
+     "threads": [
+      "T04"
+     ]
+    }
+   ],
+   "action": null,
+   "summary": "No advisor draft is available; the threads and open review flags are listed.",
+   "details": [],
+   "outstanding_step": null,
+   "cited": [],
+   "grounding": {
+    "status": "NOT_RUN",
+    "verdicts": {},
+    "structural_issues": {}
+   },
+   "cited_evidence_ids": [],
+   "model_calls": [
+    [
+     "draft",
+     "FAILED"
+    ]
+   ],
+   "budget": {
+    "retrieval_calls": 1,
+    "model_calls": 1
+   }
+  },
+  {
+   "card_id": "card_ef95ed8cd7c7cd7436b1128c6d684edb",
+   "topic": "Silent or flat-waveform audio clip handling",
+   "threads": [
+    "T05"
+   ],
+   "line": "NEEDS_REVIEW",
+   "next_step": "NO_RECOMMENDATION_AVAILABLE",
+   "severity": "UNKNOWN",
+   "review_reasons": [
+    "LOW_CONFIDENCE",
+    "INHERITED_FLAG",
+    "GROUNDING_NOT_RUN",
+    "OTHER"
+   ],
+   "inherited_flags": [
+    {
+     "kind": "inherited_agent1_review",
+     "threads": [
+      "T05"
+     ]
+    }
+   ],
+   "action": null,
+   "summary": "No advisor draft is available; the threads and open review flags are listed.",
+   "details": [],
+   "outstanding_step": null,
+   "cited": [],
+   "grounding": {
+    "status": "NOT_RUN",
+    "verdicts": {},
+    "structural_issues": {}
+   },
+   "cited_evidence_ids": [],
+   "model_calls": [
+    [
+     "draft",
+     "FAILED"
+    ]
+   ],
+   "budget": {
+    "retrieval_calls": 1,
+    "model_calls": 1
+   }
+  },
+  {
+   "card_id": "card_323b37c4df1c30e8c936869cf9091ca9",
+   "topic": "Reviewer note requirement under bilingual rubric alignment check",
+   "threads": [
+    "T06",
+    "T07",
+    "T08"
+   ],
+   "line": "NEEDS_REVIEW",
+   "next_step": "NO_RECOMMENDATION_AVAILABLE",
+   "severity": "UNKNOWN",
+   "review_reasons": [
+    "LOW_CONFIDENCE",
+    "INHERITED_FLAG",
+    "GROUNDING_NOT_RUN",
+    "OTHER"
+   ],
+   "inherited_flags": [
+    {
+     "kind": "inherited_agent1_review",
+     "threads": [
+      "T08"
+     ]
+    }
+   ],
+   "action": null,
+   "summary": "No advisor draft is available; the threads and open review flags are listed.",
+   "details": [],
+   "outstanding_step": null,
+   "cited": [],
+   "grounding": {
+    "status": "NOT_RUN",
+    "verdicts": {},
+    "structural_issues": {}
+   },
+   "cited_evidence_ids": [],
+   "model_calls": [
+    [
+     "draft",
+     "FAILED"
+    ]
+   ],
+   "budget": {
+    "retrieval_calls": 2,
+    "model_calls": 1
+   }
+  },
+  {
+   "card_id": "card_53890e00d95e69840620d9f1dbf369cc",
+   "topic": "Diacritics lost in CSV export vs. web preview",
+   "threads": [
+    "T13",
+    "T14"
+   ],
+   "line": "NEEDS_REVIEW",
+   "next_step": "NO_RECOMMENDATION_AVAILABLE",
+   "severity": "UNKNOWN",
+   "review_reasons": [
+    "LOW_CONFIDENCE",
+    "GROUNDING_NOT_RUN",
+    "OTHER"
+   ],
+   "inherited_flags": [],
+   "action": null,
+   "summary": "No advisor draft is available; the threads and open review flags are listed.",
+   "details": [],
+   "outstanding_step": null,
+   "cited": [],
+   "grounding": {
+    "status": "NOT_RUN",
+    "verdicts": {},
+    "structural_issues": {}
+   },
+   "cited_evidence_ids": [],
+   "model_calls": [
+    [
+     "draft",
+     "FAILED"
+    ]
+   ],
+   "budget": {
+    "retrieval_calls": 2,
+    "model_calls": 1
+   }
+  },
+  {
+   "card_id": "card_eff22712beb9174832700dc2ed1a40eb",
+   "topic": "Archived activity counter treatment of practice tasks reopened after midnight",
+   "threads": [
+    "T11",
+    "T12"
+   ],
+   "line": "NEEDS_REVIEW",
+   "next_step": "NO_RECOMMENDATION_AVAILABLE",
+   "severity": "UNKNOWN",
+   "review_reasons": [
+    "LOW_CONFIDENCE",
+    "INHERITED_FLAG",
+    "GROUNDING_NOT_RUN",
+    "OTHER"
+   ],
+   "inherited_flags": [
+    {
+     "kind": "inherited_agent1_review",
+     "threads": [
+      "T11"
+     ]
+    }
+   ],
+   "action": null,
+   "summary": "No advisor draft is available; the threads and open review flags are listed.",
+   "details": [],
+   "outstanding_step": null,
+   "cited": [],
+   "grounding": {
+    "status": "NOT_RUN",
+    "verdicts": {},
+    "structural_issues": {}
+   },
+   "cited_evidence_ids": [],
+   "model_calls": [
+    [
+     "draft",
+     "FAILED"
+    ]
+   ],
+   "budget": {
+    "retrieval_calls": 1,
+    "model_calls": 1
+   }
+  },
+  {
+   "card_id": "card_5a85474ca7642b4e8f1045798f6b0319",
+   "topic": "Whitespace-only differences between otherwise identical answers",
+   "threads": [
+    "T09",
+    "T10"
+   ],
+   "line": "NEEDS_REVIEW",
+   "next_step": "NO_RECOMMENDATION_AVAILABLE",
+   "severity": "UNKNOWN",
+   "review_reasons": [
+    "LOW_CONFIDENCE",
+    "INHERITED_FLAG",
+    "GROUNDING_NOT_RUN",
+    "OTHER"
+   ],
+   "inherited_flags": [
+    {
+     "kind": "inherited_agent1_review",
+     "threads": [
+      "T09"
+     ]
+    }
+   ],
+   "action": null,
+   "summary": "No advisor draft is available; the threads and open review flags are listed.",
+   "details": [],
+   "outstanding_step": null,
+   "cited": [],
+   "grounding": {
+    "status": "NOT_RUN",
+    "verdicts": {},
+    "structural_issues": {}
+   },
+   "cited_evidence_ids": [],
+   "model_calls": [
+    [
+     "draft",
+     "FAILED"
+    ]
+   ],
+   "budget": {
+    "retrieval_calls": 1,
+    "model_calls": 1
+   }
+  }
+ ],
+ "review_queue": [
+  {
+   "kind": "inherited_agent1_review",
+   "threads": [
+    "T03"
+   ],
+   "reason": "Still unverified after one targeted revision: The audit found no requested decision, but the interpretation supplies a question.",
+   "related_cards": [
+    "card_83168a31f32c6c176a58f9bd02c4e8e2"
+   ]
+  },
+  {
+   "kind": "inherited_agent1_review",
+   "threads": [
+    "T04"
+   ],
+   "reason": "Still unverified after one targeted revision: Independent evidence audit unavailable or invalid: ValueError: summary:3: matching evidence IDs and quotations are required.",
+   "related_cards": [
+    "card_cad1761029d0daa31db2e4c4eee59568"
+   ]
+  },
+  {
+   "kind": "inherited_agent1_review",
+   "threads": [
+    "T05"
+   ],
+   "reason": "Still unverified after one targeted revision: Independent evidence audit unavailable or invalid: ValueError: summary:4: matching evidence IDs and quotations are required.",
+   "related_cards": [
+    "card_ef95ed8cd7c7cd7436b1128c6d684edb"
+   ]
+  },
+  {
+   "kind": "inherited_agent1_review",
+   "threads": [
+    "T08"
+   ],
+   "reason": "Still unverified after one targeted revision: Independent evidence audit unavailable or invalid: ValueError: summary:3: matching evidence IDs and quotations are required.",
+   "related_cards": [
+    "card_323b37c4df1c30e8c936869cf9091ca9"
+   ]
+  },
+  {
+   "kind": "inherited_agent1_review",
+   "threads": [
+    "T11"
+   ],
+   "reason": "Still unverified after one targeted revision: Independent evidence audit unavailable or invalid: ValueError: summary:3: matching evidence IDs and quotations are required.",
+   "related_cards": [
+    "card_eff22712beb9174832700dc2ed1a40eb"
+   ]
+  },
+  {
+   "kind": "inherited_agent1_review",
+   "threads": [
+    "T09"
+   ],
+   "reason": "Still unverified after one targeted revision: Independent evidence audit unavailable or invalid: ValueError: summary:3: matching evidence IDs and quotations are required.",
+   "related_cards": [
+    "card_5a85474ca7642b4e8f1045798f6b0319"
+   ]
+  }
+ ],
+ "brief": {
+  "status": "COMPLETE",
+  "counts": {
+   "discussion_members": 14,
+   "members_by_agent2_disposition": {
+    "ASSIGNED": 14
+   },
+   "members_by_outcome": {
+    "CARD_WITH_STAGE_FAILURES": 14
+   },
+   "members_on_cards": 14,
+   "announcement_route_members": 0,
+   "announcement_route_obligations": 0,
+   "processing_history_members": 0,
+   "processing_history_obligations": 0,
+   "consolidated_topics": 0,
+   "inherited_agent1_obligations": 6,
+   "naming_cautions": 0,
+   "agent2_obligations": 0,
+   "projection_gap_groups": 0,
+   "topics": 7,
+   "work_items": 7,
+   "work_by_outcome": {
+    "CARD_WITH_STAGE_FAILURES": 7
+   },
+   "cards": 7,
+   "cards_by_line": {
+    "NEEDS_REVIEW": 7
+   },
+   "review_queue_items": 6,
+   "review_queue_by_kind": {
+    "agent1:inherited_agent1_review": 6
+   },
+   "window_announcements": 1,
+   "window_announcements_in_snapshot": 1
+  },
+  "accounting": "COMPLETE",
+  "incomplete_work": 0,
+  "usage": {
+   "requests_sent": 7,
+   "requests_blocked": 0,
+   "charged_usd": 1.024128,
+   "input_tokens": 0,
+   "output_tokens": 0,
+   "reasoning_tokens": 0,
+   "model_calls": 7,
+   "failures_RESOURCE": 7
+  }
+ },
+ "input_accounting": {
+  "T01": "card",
+  "T02": "card",
+  "T03": "card",
+  "T04": "card",
+  "T05": "card",
+  "T06": "card",
+  "T07": "card",
+  "T08": "card",
+  "T09": "card",
+  "T10": "card",
+  "T11": "card",
+  "T12": "card",
+  "T13": "card",
+  "T14": "card",
+  "T15": "announcement -> knowledge source"
+ },
+ "timing": {
+  "attempts": [
+   {
+    "clock": "time.perf_counter (monotonic), seconds",
+    "setup_seconds": 5.8,
+    "graph_state": {
+     "status": "COMPLETE",
+     "cursor": 7,
+     "total": 7,
+     "stop_reason": null
+    },
+    "agent3_budget_usd": 2.8537,
+    "per_request_reservation_usd": 0.146304,
+    "stages": [
+     {
+      "stage": "agent3",
+      "seconds": 4224.113,
+      "status": "COMPLETE",
+      "error": null
+     }
+    ],
+    "usable_briefing_check_seconds": 2.504
+   }
+  ]
+ },
+ "usable_briefing": {
+  "brief_status": 200,
+  "cards": 7,
+  "card_lines": {
+   "NEEDS_REVIEW": 7
+  },
+  "card_endpoints_ok": 7,
+  "cited_sources": 0,
+  "cited_sources_resolved": 0,
+  "cited_missing_from_ledger": [],
+  "related_threads": 14,
+  "related_threads_resolved": 14,
+  "review_queue_status": 200,
+  "review_queue_items": 6,
+  "usable": true
+ },
+ "ledger": {
+  "rows": 7,
+  "by_stage": {
+   "agent3": {
+    "requests_FRESH_LIVE": 7,
+    "charged_usd": 0
+   }
+  },
+  "charged_usd": 0,
+  "hosts": {
+   "api.x.ai": 7
+  },
+  "models": {
+   "agent3|FRESH_LIVE|grok-4.7|None": 7
+  },
+  "openai_rows": 0,
+  "non_200": [
+   {
+    "stage": "agent3",
+    "state": "UNCERTAIN",
+    "http_status": null,
+    "error": "TimeoutError: The read operation timed out"
+   },
+   {
+    "stage": "agent3",
+    "state": "UNCERTAIN",
+    "http_status": null,
+    "error": "TimeoutError: The read operation timed out"
+   },
+   {
+    "stage": "agent3",
+    "state": "UNCERTAIN",
+    "http_status": null,
+    "error": "TimeoutError: The read operation timed out"
+   },
+   {
+    "stage": "agent3",
+    "state": "UNCERTAIN",
+    "http_status": null,
+    "error": "TimeoutError: The read operation timed out"
+   },
+   {
+    "stage": "agent3",
+    "state": "UNCERTAIN",
+    "http_status": null,
+    "error": "TimeoutError: The read operation timed out"
+   },
+   {
+    "stage": "agent3",
+    "state": "UNCERTAIN",
+    "http_status": null,
+    "error": "TimeoutError: The read operation timed out"
+   },
+   {
+    "stage": "agent3",
+    "state": "UNCERTAIN",
+    "http_status": null,
+    "error": "TimeoutError: The read operation timed out"
+   }
+  ]
+ }
+}
