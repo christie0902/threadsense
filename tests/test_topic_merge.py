@@ -55,6 +55,16 @@ def test_candidates_are_bounded_cross_group_and_within_scope(topics):
     assert len(capped) == 5 and len(rest) == 32
 
 
+def test_no_qualifying_pair_yields_no_candidate_sets_and_no_merge(topics):
+    """When no cross-group pair passes the similarity floors (a small batch of distinct issues), consolidation has nothing
+    to judge: zero candidate sets, no request, every topic passes through. It used to raise IndexError on an empty clique."""
+    strict = {**tm.LIMITS, 'centroid_min': 1.01}
+    assert tm.candidates(topics, strict) == ([], [])
+    judge = Scripted()
+    record = tm.consolidate(topics, judge, strict)
+    assert judge.calls == [] and record['counts']['candidate_sets'] == 0 and record['counts']['topics_in'] == len(topics)
+
+
 def test_a_valid_cross_group_merge_keeps_every_thread_flag_and_subquestion(topics):
     record = tm.consolidate(topics, Scripted([FICTIONAL]))
     (merge,) = record['merges']
