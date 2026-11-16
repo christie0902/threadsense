@@ -32,7 +32,7 @@ import json
 from pathlib import Path
 from typing import TypedDict
 
-from threadsense.agents import advisor_pilot as pilot
+from threadsense.agents import advisor_evidence, advisor_pilot as pilot
 from threadsense.agents.advice_contracts import ModelReviewItem, stable_id, validate_card
 from threadsense.agents.advice_inputs import (
     accounting_issues, apply_consolidation, load_effective_view, obligation_keys, review_items_from_announcement_route,
@@ -222,6 +222,7 @@ class Runtime:
                  release=(), settings=None, index_dir=INDEX_DIR, flag_impact=False, consolidation=None,
                  processing_history=None, tot_shadow=False, feedback_snapshot=None):
         self.out, self.client, self.cutoff, self.handoff, self.fixture_root = Path(out_dir), client, cutoff, Path(handoff), Path(fixture_root)
+        advisor_evidence.use_fixture_users(self.fixture_root)  # attribution checks read this run's own users
         self.only, self.max_requests, self.ledger, self.mode = (list(only) if only else None), max_requests, ledger, mode
         self.index_dir, self.owns_retriever = Path(index_dir), retriever_factory is None
         self.retriever_factory = retriever_factory or (lambda: open_snapshot(self.index_dir))

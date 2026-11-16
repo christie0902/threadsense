@@ -8,6 +8,7 @@ ResearchTools, which charges every call to a finite budget.
 """
 from functools import cache
 import json
+from pathlib import Path
 
 from threadsense.retrieval.config import FIXTURE_ROOT, INDEX_DIR
 from threadsense.retrieval.index import RetrievalIndexError
@@ -190,9 +191,26 @@ def withheld_item(entry):
             'note': 'Withheld from current-guidance results before ranking; retrievable with version_mode=history.'}
 
 
+DEFAULT_USERS = FIXTURE_ROOT/'users.json'
+_active_users = [DEFAULT_USERS]
+
+
+def use_fixture_users(fixture_root):
+    """Read names and roles from the run's own Slack fixture (the overnight Runtime calls this with its fixture root).
+    Without it, or when that fixture has no users.json, the demo fixture's directory is used, as before. Before this,
+    a run on any other fixture found none of its authors and failed every card's attribution checks."""
+    path = Path(fixture_root)/'users.json'
+    _active_users[0] = path if path.is_file() else DEFAULT_USERS
+    return _active_users[0]
+
+
+def user_directory(path=None):
+    """Canonical user directory: ID -> {name, role} (the active fixture's users unless a path is given)."""
+    return _load_users(Path(path or _active_users[0]).resolve())
+
+
 @cache
-def user_directory(path=FIXTURE_ROOT/'users.json'):
-    """Canonical user directory: ID -> {name, role}."""
+def _load_users(path):
     data = json.loads(path.read_text(encoding='utf-8'))
     return {u['id']: {'name': u['name'], 'role': u['role']} for u in (data['users'] if isinstance(data, dict) else data)}
 
