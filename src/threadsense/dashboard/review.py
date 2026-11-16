@@ -161,6 +161,7 @@ def withheld(result, links):
     statements = (result.get('grounding') or {}).get('statements') or []
     source = diagnostics or [s for s in statements if s.get('verdict') not in (None, 'SUPPORTED')]
     cited = {s['statement_id']: s.get('evidence_ids') for s in statements}  # Diagnostics do not repeat evidence IDs.
+    kinds = {s['statement_id']: s.get('kind') for s in statements}
     for s in source:
         sid = s['statement_id']
         if sid in seen:
@@ -169,10 +170,21 @@ def withheld(result, links):
         field, extra = _field(sid, s.get('kind'), links, labels)
         verdict = s.get('verdict') or 'NOT_JUDGED'
         entries.append({'statement_id': sid, 'field': field, 'verdict': verdict,
-                        'why': VERDICTS.get(verdict, _words(verdict)), 'checker_reason': s.get('rationale') or None,
+                        'why': (_depends(s['withheld_because'], kinds, links, labels) if s.get('withheld_because')
+                                else VERDICTS.get(verdict, _words(verdict))), 'checker_reason': s.get('rationale') or None,
                         'blocking': bool(s.get('blocking', True)),
                         'links': extra + links.evidence_list(s.get('evidence_ids') or cited.get(sid), skip={x.get('id') for x in extra})[:4]})
     return entries
+
+
+def _depends(because, kinds, links, labels):
+    """A supported statement withheld only because it rests on a withheld one (advisor diagnostics `withheld_because`,
+    "depends on withheld <statement id>"): name that statement's field instead of quoting its verdict."""
+    sid = because.removeprefix('depends on withheld ').strip()
+    if sid == because or not sid:
+        return because
+    field, _ = _field(sid, kinds.get(sid), links, labels)
+    return f'it depends on another withheld statement ({field[0].lower() + field[1:]})'
 
 
 def _severity_item(card, links):

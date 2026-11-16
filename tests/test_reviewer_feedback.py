@@ -113,9 +113,12 @@ def test_false_rejection_report_is_bound_to_the_saved_output_and_needs_explicit_
     entry = first.json()['entry']
     r = entry['report']
     assert (entry['event_type'], r['category'], r['target']['id']) == ('SUBMITTED', 'VERIFIER_FALSE_REJECTION', 'claim:c1')
-    # The original output is captured verbatim, with immutable artifact references and the run's recorded versions.
+    # The original output is captured verbatim in the stored report, with immutable artifact references and the run's
+    # recorded versions. The statement was withheld from the card, so no response shows its text (dashboard/disclosure).
     assert r['target']['earlier_verdict'] == 'REJECTED_PLURAL_NOT_SUPPORTED_BY_DISTINCT_AUTHORS'
-    assert 'two people talk at once' in r['target']['earlier_text']
+    assert (r['target']['earlier_text'], r['target']['text_withheld']) == (None, True)
+    [stored] = store.feedback(feedback_id=entry['feedback_id'])
+    assert 'two people talk at once' in stored['report']['target']['earlier_text']
     topic = catalog.get(RUN).topic_paths[CARD]
     assert r['artifacts']['topic_result']['sha256'] == sha256(topic.read_bytes()).hexdigest()
     assert r['versions']['prompt_version'] == 'agent3-advisor-prompts-v18' and r['versions']['rubric']['version']

@@ -343,7 +343,7 @@ function submitFeedback(b, state, cardId, body) {
   } else if (body.target_kind === 'STATEMENT') {
     const s = targets.statements.find(x => x.id === body.target_id)
     if (!s) throw invalid(`${body.target_id} is not a statement on this card.`, 'INVALID_FEEDBACK')
-    target = { kind: 'STATEMENT', id: s.id, statement_kind: s.kind, earlier_text: s.text, earlier_verdict: s.verdict, earlier_rationale: s.rationale, evidence_ids: s.evidence_ids, review_item_kind: null }
+    target = { kind: 'STATEMENT', id: s.id, statement_kind: s.kind, earlier_text: s.text, earlier_verdict: s.verdict, earlier_rationale: s.rationale, evidence_ids: s.evidence_ids, review_item_kind: null, ...(s.text_withheld ? { text_withheld: true } : {}) }
     // Simplified scope: the card's threads whose root message is cited, else the threads in the cited channels.
     const cited = s.evidence_ids.filter(e => e.startsWith('m:')).map(e => e.split(':'))
     const exact = targets.threads.filter(t => cited.some(([, c, ts]) => c === t.channel_id && ts === t.thread_id))

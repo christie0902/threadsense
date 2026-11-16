@@ -13,6 +13,8 @@ const WITHHELD = {
   PER_TOPIC_LIMIT: 'more corrections matched than one topic may receive',
 }
 const FUTURE_NOTE = 'Advisory context only: a later run on the same threads receives it as a labelled reviewer note. It does not edit source documents, prompts, rules or this card, and it executes nothing. A team lead must confirm it first.'
+// A statement kept off the card is named by ID and verdict only; its text is not served (dashboard/disclosure.py).
+const WITHHELD_TEXT = 'Statement withheld from the card after the evidence check; its text is not shown.'
 const short = (s, n = 90) => (s && s.length > n ? `${s.slice(0, n - 1)}…` : s || '')
 
 function targetLabel(t) {
@@ -41,7 +43,9 @@ function HistoryEntry({ runKey, view, actor, onChanged }) {
         {r.problem && <Badge>{PROBLEM_LABELS[r.problem] || r.problem}</Badge>}
         <span className="text-xs text-slate-400">{targetLabel(r.target)}</span>
       </div>
-      {r.target.kind === 'STATEMENT' && <div className="quote mt-2 text-xs">{r.target.earlier_text}</div>}
+      {r.target.kind === 'STATEMENT' && (r.target.text_withheld
+        ? <div className="mt-2 text-xs text-slate-400" data-testid="feedback-text-withheld">{WITHHELD_TEXT}</div>
+        : <div className="quote mt-2 text-xs">{r.target.earlier_text}</div>)}
       <div className="mt-2 text-sm text-slate-200"><span className="text-slate-400">What is wrong: </span>{r.what_is_wrong}</div>
       {r.suggested_correction && <div className="mt-1 text-sm text-slate-200"><span className="text-slate-400">Correction: </span>{r.suggested_correction}</div>}
       {r.source_refs.length > 0 && <div className="mt-1 text-xs text-slate-400">Sources: {r.source_refs.map(x => x.ref).join(', ')}</div>}
@@ -124,7 +128,7 @@ function ReportForm({ runKey, cardId, data, actor, onSaved }) {
           <option value="CARD:">The whole card</option>
           {targets.statements.length > 0 && (
             <optgroup label="Statements on this card">
-              {targets.statements.map(s => <option key={s.id} value={`STATEMENT:${s.id}`}>{s.id} · {short(s.text, 70)}{s.verdict ? ` · ${s.verdict.toLowerCase().replaceAll('_', ' ')}` : ''}</option>)}
+              {targets.statements.map(s => <option key={s.id} value={`STATEMENT:${s.id}`}>{s.id} · {s.text_withheld ? 'text withheld from the card' : short(s.text, 70)}{s.verdict ? ` · ${s.verdict.toLowerCase().replaceAll('_', ' ')}` : ''}</option>)}
             </optgroup>
           )}
           {targets.review_items.length > 0 && (

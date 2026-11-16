@@ -10,6 +10,7 @@ from fastapi.responses import FileResponse, JSONResponse
 from pydantic import ValidationError
 
 from threadsense.agents.advice_contracts import ACTION_LABELS
+from threadsense.dashboard import disclosure
 from threadsense.dashboard import feedback as fb
 from threadsense.dashboard import lessons as ls
 from threadsense.dashboard.decision_sources import authoring_id, ingest
@@ -106,7 +107,7 @@ def create_app(*, catalog=None, store=None, fixture_root=FIXTURE_ROOT, clock=now
                             'checks': c['checks'], 'needs_review_reasons': c['needs_review_reasons'],
                             'lineage': c['lineage'], 'confidence': c['confidence'], 'confidence_band': c['confidence_band'],
                             'severity': c['severity'], 'inherited_flags': c['inherited_flags'],
-                            'diagnostics': result.get('diagnostics'), 'coverage_issues': result.get('coverage_issues'),
+                            'diagnostics': disclosure.diagnostics(result), 'coverage_issues': result.get('coverage_issues'),
                             'action_notes': result.get('action_notes'), 'tot_status': (result.get('tot') or {}).get('status'),
                             'action_candidate': run.action_candidate(card_id)}}
 
@@ -159,17 +160,17 @@ def create_app(*, catalog=None, store=None, fixture_root=FIXTURE_ROOT, clock=now
                                  'detail': f'This dashboard records decisions for {session_actor} only.'}, status_code=403)
         return None
 
-    def _submit(**kwargs):
+    def _submit(view=lambda response: response, **kwargs):
         try:
             response, replayed = store.submit(**kwargs)
         except StaleHead as error:
-            return JSONResponse({'code': 'STALE', 'detail': str(error), 'current_head': error.current}, status_code=409)
+            return JSONResponse({'code': 'STALE', 'detail': str(error), 'current_head': view(error.current)}, status_code=409)
         except KeyReused as error:
             return JSONResponse({'code': 'IDEMPOTENCY_KEY_REUSED', 'detail': str(error),
                                  'original_entry_id': error.original['entry']['entry_id']}, status_code=422)
         except (DecisionError, ValidationError, ValueError) as error:
             return JSONResponse({'code': 'INVALID_DECISION', 'detail': _message(error)}, status_code=422)
-        return JSONResponse({**response, 'replayed': replayed, 'persisted': True}, status_code=200 if replayed else 201)
+        return JSONResponse({**view(response), 'replayed': replayed, 'persisted': True}, status_code=200 if replayed else 201)
 
     @app.post('/api/runs/{run_key}/cards/{card_id}/decisions')
     async def decide(run_key: str, card_id: str, request: Request, idempotency_key: str | None = Header(default=None)):
@@ -295,6 +296,7 @@ def create_app(*, catalog=None, store=None, fixture_root=FIXTURE_ROOT, clock=now
     def feedback_view(run, card_id=None):
         views = [fb.fold(h) for h in fb.grouped(store.feedback(run.ref)).values()]
         views = [v for v in views if card_id is None or v['report']['card_id'] == card_id]
+        views = [disclosure.reports(v, (run.topics.get(v['report']['card_id']) or {}).get('result')) for v in views]
         return sorted(views, key=lambda v: v['report']['submitted_at'], reverse=True)
 
     def reviewer_context(run, card_id):
@@ -346,15 +348,18 @@ def create_app(*, catalog=None, store=None, fixture_root=FIXTURE_ROOT, clock=now
             return fb.submission(run=run, report=report, key=key, request_sha=digest)
 
         return _submit(kind='feedback', run_key=run.ref, target_id=feedback_id, key=key,
-                       body={**parsed.model_dump(mode='json'), 'card_id': card_id}, build=build)
+                       body={**parsed.model_dump(mode='json'), 'card_id': card_id}, build=build,
+                       view=lambda r: disclosure.reports(r, (run.topics.get(card_id) or {}).get('result')))
 
     @app.post('/api/runs/{run_key}/feedback/{feedback_id}/actions')
     async def feedback_action(run_key: str, feedback_id: str, request: Request, idempotency_key: str | None = Header(default=None)):
         """CONFIRM (an authorized team lead; makes an opted-in correction eligible for later snapshots) or WITHDRAW."""
         key = _key(idempotency_key)
         run = run_of(run_key)
-        if not store.feedback(run.ref, feedback_id):
+        events = store.feedback(run.ref, feedback_id)
+        if not events:
             raise RunNotFound(f'Feedback {feedback_id} is not recorded on run {run.key}.')
+        result = (run.topics.get(events[0]['report']['card_id']) or {}).get('result')
         try:
             parsed = fb.FeedbackActionRequest.model_validate(await _json(request))
         except ValidationError as error:
@@ -367,7 +372,8 @@ def create_app(*, catalog=None, store=None, fixture_root=FIXTURE_ROOT, clock=now
                                    request_sha=digest)
 
         return _submit(kind='feedback', run_key=run.ref, target_id=feedback_id, key=key, body=parsed.model_dump(mode='json'),
-                       build=build, on_insert=lambda db, entry: fb.supersede_on_confirm(store, db, entry, store.feedback_in_tx))
+                       build=build, on_insert=lambda db, entry: fb.supersede_on_confirm(store, db, entry, store.feedback_in_tx),
+                       view=lambda r: disclosure.reports(r, result))
 
     @app.get('/api/runs/{run_key}/negative-examples')
     def negative_examples(run_key: str):

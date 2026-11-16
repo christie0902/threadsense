@@ -132,14 +132,14 @@ Open http://127.0.0.1:8000. It opens the accepted briefing: 63 cards in the head
 
 ### 2. Offline checks
 
-**Guardrail tests** (63 tests, about 80 seconds). The list is in [`tests/guardrails.txt`](tests/guardrails.txt) and is
+**Guardrail tests** (67 tests, about 100 seconds). The list is in [`tests/guardrails.txt`](tests/guardrails.txt) and is
 explained [below](#guardrails).
 
 ```sh
 uv run --locked --extra dev python -m pytest -q -p no:cacheprovider --basetemp ../threadsense-pytest-guardrails @tests/guardrails.txt
 ```
 
-Expected: `63 passed`. pytest empties the `--basetemp` folder first, so use a new one each time.
+Expected: `67 passed`. pytest empties the `--basetemp` folder first, so use a new one each time.
 
 **Load a saved run through the real dashboard, network disabled** (about 6 seconds):
 
@@ -262,6 +262,7 @@ Each rule is checked by tests in [`tests/guardrails.txt`](tests/guardrails.txt).
 | HIGH severity stays in review regardless of confidence | the card contract refuses a Recommended HIGH card at confidence 0.99; across the accepted briefing, all 21 HIGH cards are Needs Review, including cards at 0.94 | offline + the saved briefing through the API |
 | Withholding an unsupported recommendation keeps the open follow-up | a withheld card has no action, stays in review and must carry its outstanding step; both withheld cards in the briefing do | offline + the saved briefing |
 | An Observation needs a supported no-action reason | an Observation without one returns to review; each of the 3 Observations in the briefing has `action:no_action` judged SUPPORTED, and the dashboard shows it as an Observation | offline + the saved briefing |
+| Withheld statements are never served to reviewers | the card-detail API (its *Technical* tab), feedback targets and feedback history give a withheld statement's ID, verdict and reason but not its text; no card of the accepted briefing serves one, nor does the static demo bundle (`dashboard/disclosure.py`) | offline + the saved briefing through the API and the demo bundle |
 | An unavailable audit cannot pass | a missing audit response cannot pass on structural checks; audit failures are kept; without the semantic verifier, proposed exclusions stay eligible | offline, mocked failures |
 | Dated and superseded sources | an older revision does not compete in current mode; a future revision waits for its date; a supersession is not applied before the replacement takes effect; an unenacted decision never becomes current | offline, real ingestion code |
 | Request limits | one stage sends exactly one HTTP request; the budget ceiling and persistence failures stop sending; SDK retries are refused; budget exhaustion leaves remaining work unprocessed, not dropped | offline, fake provider |

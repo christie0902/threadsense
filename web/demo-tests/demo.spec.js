@@ -156,6 +156,29 @@ test('review changes persist in this browser across a refresh, and a fresh brows
   await expect(page.getByTestId('review-item')).toHaveCount(37)
 })
 
+// The fictional-contact card (README worked example): its three withheld statements (claim:c5, the unsupported
+// "observe" alternative, and summary:s2 which depends on claim:c5) must not appear anywhere on the page, including the
+// raw JSON of the Technical tab, while its summary and review reasons still render (dashboard/disclosure.py).
+const WITHHELD_SNIPPETS = ['superseded Contact details section requires initial quarantine',
+  'Leave documentation and general-rule messaging unchanged', 'still carries a superseded blanket-quarantine requirement']
+test('withheld statements stay off the page, the Technical tab included', async ({ page }) => {
+  const check = watch(page)
+  const card = runFile('cards.json').find(c => c.card_id === 'card_a03615c8bc678a84c906d5831a4ba1b0')
+  await page.goto(`${origin}/#run=${RUN}&project=safety_classification`)
+  const view = page.locator(`[data-testid="card"][data-card-id="${card.card_id}"]`)
+  await view.getByTestId('card-expand').click()
+  await expect(view.getByTestId('card-summary')).toHaveText(card.summary)
+  await view.getByTestId('all-reasons').locator(':scope > summary').click()
+  const codes = await view.getByTestId('review-item-reason').evaluateAll(els => els.map(e => e.dataset.code))
+  expect(codes).toEqual(expect.arrayContaining(card.needs_review_reasons.map(r => r.code)))
+  await view.getByRole('tab', { name: 'Technical' }).click()
+  await expect(view.getByTestId('technical-details')).toContainText('"text_withheld": true')
+  const html = await page.content()
+  for (const s of WITHHELD_SNIPPETS) expect(html, s).not.toContain(s)
+  await page.screenshot({ path: `${process.env.TS_UI_TMP}/demo-technical-withheld.png` })
+  check()
+})
+
 test('direct navigation: root, hash routes and refresh need no rewrite', async ({ page }) => {
   const check = watch(page)
   for (const hash of ['', `#run=${RUN}`, `#run=${RUN}&tab=queue`, `#run=${RUN}&tab=reviewed`]) {

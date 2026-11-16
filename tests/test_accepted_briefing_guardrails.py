@@ -74,3 +74,20 @@ def test_an_observation_rests_on_a_supported_no_action_reason(served):
         statements = (topic.get('result') or topic)['grounding']['statements']  # derived runs nest the saved result
         verdicts = {s['statement_id']: s['verdict'] for s in statements}
         assert verdicts.get('action:no_action') == 'SUPPORTED', k['card_id']
+
+
+def test_a_mixed_topic_escalation_is_scoped_to_the_thread_it_fits(served):
+    """card_6f0643a3: one buffering thread (C_AUDIO_GENERAL 1790924545.000108) and one silent-clip thread
+    (1790911816.000129) in one topic. The engineering escalation must state that it covers the buffering thread only,
+    inside the judged action text, and the silent thread stays an unresolved member without an action of its own."""
+    active, run = served
+    [item] = [c for c in active if c['card']['card_id'] == 'card_6f0643a3c9edc5ff136705387a4615b1']
+    action = item['card']['recommended_action']
+    assert action['action_type'] == 'ESCALATE_ENGINEERING' and item['card']['card_line'] == 'NEEDS_REVIEW'
+    assert action['scope_note'].startswith('This referral covers the buffering thread only, not the separate silence report.')
+    result = run.topics['card_6f0643a3c9edc5ff136705387a4615b1']['result']
+    verdicts = {s['statement_id']: s for s in result['grounding']['statements']}
+    assert verdicts['action']['verdict'] == 'SUPPORTED' and action['scope_note'] in verdicts['action']['text']
+    silent = verdicts['resolution:member_97c81f2e6e5454c2f2a5ee4b']
+    assert silent['verdict'] == 'SUPPORTED' and 'is UNRESOLVED' in silent['text']
+    assert not any(e.endswith('1790911816.000129') for e in verdicts['action']['evidence_ids'])

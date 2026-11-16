@@ -26,6 +26,7 @@ from pydantic import BaseModel, ConfigDict, Field, StringConstraints, model_vali
 
 from threadsense.agents.advice_contracts import stable_id
 from threadsense.agents.reviewer_context import SNAPSHOT_CONTRACT, content_sha256
+from threadsense.dashboard import disclosure
 from threadsense.dashboard.decisions import ORIGIN_NAMESPACES, DecisionError
 from threadsense.routing import aware
 
@@ -207,12 +208,11 @@ def card_threads(card):
 
 
 def targets(run, card_id):
-    """What a reviewer can point at on this card: its saved statements (grounding statement IDs, verdicts as recorded)
-    and the Model Review Queue items about it. The card itself is always a target."""
+    """What a reviewer can point at on this card: its saved statements (grounding statement IDs, verdicts as recorded;
+    text only for statements not withheld from the card, see disclosure) and the Model Review Queue items about it.
+    The card itself is always a target."""
     result = (run.topics.get(card_id) or {}).get('result') or {}
-    statements = [{'id': s['statement_id'], 'kind': s['kind'], 'text': s['text'], 'verdict': s.get('verdict'),
-                   'rationale': s.get('rationale'), 'evidence_ids': s.get('evidence_ids') or []}
-                  for s in (result.get('grounding') or {}).get('statements') or []]
+    statements = disclosure.statements(result)
     items = [{'id': i.item_id, 'kind': i.kind, 'reason': i.reason, 'member_ids': i.member_ids}
              for i in run.queue.values() if card_id in i.related_card_ids]
     return {'statements': statements, 'review_items': items,
@@ -221,6 +221,7 @@ def targets(run, card_id):
 
 def _target_and_scope(run, card, request):
     found, card_level = targets(run, card['card_id']), card_threads(card)
+    saved = disclosure.statements((run.topics.get(card['card_id']) or {}).get('result') or {}, reveal=True)
     by_member = {t['member_id']: t for t in card_level if t.get('member_id')}
     ledger = run.ledger(card['card_id'])
     if request.target_kind == 'CARD':
@@ -229,7 +230,7 @@ def _target_and_scope(run, card, request):
         target = Target(kind='CARD', id=card['card_id'], earlier_text=card.get('summary'))
         threads, basis = card_level, 'CARD_THREADS'
     elif request.target_kind == 'STATEMENT':
-        s = next((x for x in found['statements'] if x['id'] == request.target_id), None)
+        s = next((x for x in saved if x['id'] == request.target_id), None)
         if s is None:
             raise DecisionError(f'{request.target_id} is not a saved statement of this card.')
         target = Target(kind='STATEMENT', id=s['id'], statement_kind=s['kind'], earlier_text=s['text'],
