@@ -280,8 +280,14 @@ The temporal benchmarks and the saved live evaluations below add evidence, but t
 | End-to-end card check | actions in the proposed set 8/8; required review reasons 8/8; 0 unsupported claims shown; 1 unnecessary review | 8 work items, expectations frozen before the run | no unsupported claim displayed | [`agent3_e2e_eval_v1/evaluation.json`](data/experiments/agent3_e2e_eval_v1/evaluation.json) | saved live run, developer inspection |
 | Temporal reasoning (policy-aligned) | 17/17 joint; 0 false overrides | 17 cases | all fields correct | [`temporal_golden_policy_v1.json`](data/evaluation/temporal_golden_policy_v1.json) | reproducible, prepared judgments |
 | Temporal reasoning (original labels) | 14/15 joint; 0 false overrides | 15 cases | all fields correct | [`temporal_golden.json`](data/evaluation/temporal_golden.json) | reproducible, prepared judgments |
+| Held-out fixture, two model plans | Claude Sonnet 5.5: 5 pass, 1 partial; Agent 1 resolution 13/14. Original OpenAI plan: 4 pass, 2 partial; 12/14. Both: 0 missed reviews, 0 unsupported claims shown, HIGH cards in review | 15 Slack roots, 6 scenario checks, answer key frozen before the runs | no failed scenario, no missed review | [`RESULTS.md`](https://github.com/christie0902/threadsense/blob/model-comparison-experiments/experiments/fresh_15_v1/RESULTS.md) (branch `model-comparison-experiments`) | saved live runs, developer-scored |
 | Relevance labels confirmed by a Team Lead | not measured | — | — | labels are developer-audited | planned |
 | Live answer accuracy across all 87 pilot work items | not measured | — | — | only 8–9 topics per live evaluation | planned |
+
+The held-out fixture was written separately from the development data and run through the unchanged pipeline, once
+per model plan. Its runs live on the `model-comparison-experiments` branch, so the accepted briefing and the demo do
+not depend on them. A third model, Grok 4.7, produced no output there. Each of its requests reasoned for about four
+minutes before answering and ran past the client timeout, so it is not compared.
 
 On the original temporal set, the one miss (T02) expects a decision to override a guideline although the case records
 no enactment; the policy-aligned set splits that case. The two scores are not comparable. Both benchmarks use prepared
@@ -300,6 +306,8 @@ judgments, so they test the version and enactment logic, not the model. More det
 
 - **Synthetic data only.** The Slack fixtures and knowledge store are invented; relevance labels and merge decisions in
   the accepted briefing are developer-audited, not confirmed by a Team Lead.
+- **The held-out test is small.** One run per model plan on one 15-thread fixture, scored by the developer: it shows
+  observed behaviour on that fixture, not a general ranking of the models.
 - **Grounding is a model judgment.** It has falsely rejected and correctly rejected statements in live runs; withheld
   text goes to Needs Review rather than being repaired.
 - **Replay is partial with the current code.** The saved replay `threadsense_full_v1_replay` completed all 7 stages
