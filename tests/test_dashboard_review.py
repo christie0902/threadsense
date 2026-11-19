@@ -147,7 +147,7 @@ def test_flag_only_card_leads_with_the_flag_and_does_not_imply_the_recommendatio
     [check] = run.review(card['card_id'])['checks']
     assert check['kind'] == 'FLAG' and check['heading'] == 'Flagged thread'
     assert card['checks']['grounding'] == 'PASSED' and 'passed the evidence check' in check['related'][0]
-    assert [l['label'] for l in check['links']] == ['Open flagged thread', 'Open its Model Review Queue item']
+    assert [l['label'] for l in check['links']] == ['Open flagged thread', 'Open this flag in the review queue']
 
 
 def test_high_severity_alone_leads_and_links_its_evidence(catalog):

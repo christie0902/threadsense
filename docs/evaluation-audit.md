@@ -58,6 +58,8 @@ texts. The post-redeploy check could therefore not be run. After a redeploy from
 `briefing-*.json` (named in the served `demoApi-*.js`), run `scripts/audit_evaluation_evidence.py disclosure
 --bundle=<file>` (expect 0) and compare its sha256 with `web/demo/briefing.json` (`5c26be86d424caa9`); then open the
 fictional-contact card's *Technical* tab and confirm it shows `"text_withheld": true` and none of the withheld text.
+(Since the 2026-11-19 QA fixes the bundle has been regenerated, so compare with the current file's sha256, and the
+*Technical* tab appears only after switching on Developer details in the footer.)
 
 ## Priority checks
 

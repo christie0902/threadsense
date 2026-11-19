@@ -12,7 +12,7 @@ documents, cards or run artifacts.
 | | Operational decision | AI-quality feedback |
 |---|---|---|
 | Question | What do we do about this? | Is this AI output wrong, and how? |
-| Where | Card decisions (Approve, Confirm, Dismiss, Override severity, Route); queue items (Accept / Reject / Defer) | The "Report an AI issue" section of an opened card |
+| Where | Card decisions (Approve, Confirm, Dismiss, Override severity, Route, Reopen); queue items (Accept / Reject / Defer, Reopen) | The "Report an AI issue" section of an opened card |
 | Store | `card_decisions`, `review_actions` | `feedback_events` (same SQLite file, its own table) |
 | Effect on later runs | Decisions reach retrieval only through a new decision snapshot (`build_decision_snapshot.py`) | Confirmed, opted-in corrections reach matching topics through a feedback snapshot (`build_feedback_snapshot.py`) |
 
@@ -23,6 +23,11 @@ How the two kinds of record relate:
 - None of the operational actions creates feedback, and a feedback report changes no decision or queue item.
 
 The existing behaviour of Accept / Reject / Defer is unchanged. Reject still records the queue item as a negative example for that item. Feedback exports leave queue rejections out entirely.
+
+Undoing a decision appends a record; nothing is deleted. Reopen on an accepted or rejected queue item records a Defer
+with the note "Reopened", so the item is open again with its earlier action in the history. Reopen on a reviewed card
+records a `REOPEN` decision (outcome `DEFERRED`, nothing approved, a reason required) and puts the card back in the
+active list; it is offered only after a closing decision.
 
 ## Submit and confirm
 

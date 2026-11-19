@@ -50,7 +50,8 @@ function Progress({ index, count }) {
 /**
  * One card at a time, its neighbours glimpsed at the sides (desktop) and swiped on touch screens. Same rows, same
  * order and the same full card (decision, evidence and alternatives) as the grid; only the arrangement differs.
- * Arrow keys move between cards unless the focus is in a form field.
+ * Arrow keys move between cards anywhere on the page (not only while the slider has focus: a disabled arrow button
+ * drops focus at the first or last card), unless the focus is in a form field or a dialog is open.
  */
 export default function CardSlider({ rows, renderCard }) {
   const [index, setIndex] = useState(0)
@@ -63,11 +64,20 @@ export default function CardSlider({ rows, renderCard }) {
     const next = Math.min(count - 1, Math.max(0, index + step))
     if (next !== index) { setDirection(step); setIndex(next) }
   }
-  const onKey = e => {
-    if (e.target.closest('input, textarea, select, [contenteditable]')) return
-    if (e.key === 'ArrowLeft') { e.preventDefault(); go(-1) }
-    if (e.key === 'ArrowRight') { e.preventDefault(); go(1) }
-  }
+  const goRef = useRef(go)
+  goRef.current = go
+  useEffect(() => {
+    const onKey = e => {
+      if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return
+      if (e.altKey || e.ctrlKey || e.metaKey || e.shiftKey) return
+      if (e.target.closest?.('input, textarea, select, [contenteditable], [role="tablist"]')) return
+      if (document.querySelector('[role="dialog"]')) return
+      e.preventDefault()
+      goRef.current(e.key === 'ArrowLeft' ? -1 : 1)
+    }
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  }, [])
   const onTouchStart = e => { const t = e.touches[0]; touch.current = { x: t.clientX, y: t.clientY } }
   const onTouchEnd = e => {
     if (!touch.current) return
@@ -80,7 +90,7 @@ export default function CardSlider({ rows, renderCard }) {
 
   return (
     <section className="space-y-6 rounded-3xl border border-white/[0.08] bg-gradient-to-b from-cyan-400/[0.10] to-ink-900/40 px-4 py-6 sm:px-6 lg:py-8"
-      data-testid="card-slider" aria-roledescription="carousel" aria-label="Advice cards" tabIndex={0} onKeyDown={onKey}>
+      data-testid="card-slider" aria-roledescription="carousel" aria-label="Advice cards" tabIndex={0}>
       <div className="grid items-center gap-4 md:grid-cols-[minmax(0,1fr)_auto_minmax(0,2.4fr)_auto_minmax(0,1fr)] md:gap-6">
         <Preview row={rows[index - 1]} side="prev" onClick={() => go(-1)} />
         <div className="hidden md:block"><Arrow dir="prev" disabled={index === 0} onClick={() => go(-1)} /></div>

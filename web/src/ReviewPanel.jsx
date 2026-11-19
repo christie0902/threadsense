@@ -1,3 +1,5 @@
+import { Gloss } from './Markdown.jsx'
+import { plainNotes, plainReason } from './text.js'
 import { Badge, Icon } from './ui.jsx'
 
 // Why review is needed, kept apart: required by severity, disputed content, a missing fact, an upstream flag, ...
@@ -15,7 +17,7 @@ const CATEGORIES = {
 function Ref({ link, openPanel, openQueueItem }) {
   if (link.kind === 'queue') return (
     <button type="button" className="link inline-flex items-center gap-1 text-xs" data-testid="review-queue-link"
-      onClick={() => openQueueItem(link.item_id)}><Icon name="queue" className="h-3 w-3" />{link.label}</button>
+      onClick={() => openQueueItem(link.item_id)}><Icon name="queue" className="h-3 w-3" />Open this flag in the review queue</button>
   )
   if (link.kind === 'thread') return (
     <button type="button" className="link inline-flex items-center gap-1 text-left text-xs" data-testid="review-thread-link"
@@ -80,7 +82,7 @@ function Item({ item, openPanel, openQueueItem }) {
         <Badge tone={tone}>{label}</Badge>
         <span className="text-sm font-medium text-white">{item.title}</span>
       </div>
-      {item.check && <div className="prose-pre mt-1.5 text-sm leading-relaxed text-slate-300">{item.check}</div>}
+      {item.check && <div className="prose-pre mt-1.5 text-sm leading-relaxed text-slate-300"><Gloss text={plainNotes([item.check]).join(' ') || item.check} /></div>}
       {(parts > 0 || links > 0) && (
       <details className="group/specifics mt-2" data-testid="review-specifics">
         <summary className="inline-flex cursor-pointer list-none items-center gap-1.5 text-xs font-medium text-cyan-200/90 hover:text-cyan-100 [&::-webkit-details-marker]:hidden">
@@ -100,35 +102,38 @@ function Item({ item, openPanel, openQueueItem }) {
       )}
       {item.flags?.length > 0 && (
         <ul className="mt-2 space-y-2">
-          {item.flags.map((f, i) => (
+          {item.flags.map((f, i) => {
+            const plain = f.upstream_detail ? plainReason(f.upstream_detail) : null
+            return (
             <li key={i} className="border-l-2 border-violet-400/30 pl-3">
               <div className="text-xs font-medium text-slate-200">{f.label}</div>
               <div className="mt-0.5 text-xs leading-relaxed text-slate-400">{f.check}</div>
+              {plain && (
+                <div className="mt-1 text-xs leading-relaxed text-slate-300" data-testid="flag-plain-reason">
+                  <span className="font-medium text-slate-200">{plain.title}.</span> {plain.explanation}
+                  {plain.detail && <div className="mt-0.5 text-slate-400"><Gloss text={plain.detail} /></div>}
+                </div>
+              )}
               <Refs links={f.links} openPanel={openPanel} openQueueItem={openQueueItem} />
               {f.queue_note && <div className="mt-1 text-xs text-slate-400">{f.queue_note}</div>}
-              {f.finding?.findings?.length > 0 && (
+              {(f.upstream_detail || f.finding?.findings?.length > 0) && (
                 <details className="mt-1 text-xs" data-testid="upstream-finding"><summary className="cursor-pointer text-slate-400 hover:text-slate-300">
-                  {f.finding.recovery === 'NOT_NARROWED' ? 'Upstream check failed without naming what is disputed' : 'What the upstream check disputed'} (verbatim; may name people)</summary>
-                  {f.finding.findings.map((x, j) => (
+                  Technical record (the automatic check's own words; may name people)</summary>
+                  {f.upstream_detail && <div className="prose-pre mt-1 text-slate-400" data-testid="upstream-detail">{f.upstream_detail}</div>}
+                  {f.finding?.findings?.map((x, j) => (
                     <div key={j} className="prose-pre mt-1 text-slate-400"><span className="text-slate-400">{x.fields.join(', ')}: </span>{x.text}</div>
                   ))}
-                  {f.finding.earlier?.map((x, j) => (
+                  {f.finding?.earlier?.map((x, j) => (
                     <div key={`e${j}`} className="mt-1 text-slate-400" data-testid="earlier-finding">
                       Earlier attempt ({{OPEN: 'still open', UNCERTAIN: 'unclear whether corrected', CORRECTED: 'corrected', SUPERSEDED: 'superseded'}[x.status]}): <span className="prose-pre text-slate-400">{x.fields.join(', ')}: {x.text}</span> <span>{x.basis}</span>
                     </div>
                   ))}
-                  {f.finding.attempt_errors?.length > 0 && (
-                    <div className="mt-1 text-slate-400">Also recorded (a failed attempt, not the dispute): {f.finding.attempt_errors.map(e => e.text).join(' | ')}</div>
-                  )}
+                  {f.finding?.note && !f.finding?.findings?.length && <div className="mt-1 text-slate-400">{f.finding.note}</div>}
                 </details>
               )}
-              {f.upstream_detail && !f.finding?.findings?.length && (
-                <details className="mt-1 text-xs"><summary className="cursor-pointer text-slate-400 hover:text-slate-300">Upstream record (verbatim; may name people)</summary>
-                  <div className="prose-pre mt-1 text-slate-400">{f.upstream_detail}</div>
-                  {f.finding?.note && <div className="mt-1 text-slate-400">{f.finding.note}</div>}</details>
-              )}
             </li>
-          ))}
+            )
+          })}
         </ul>
       )}
       {item.withheld?.length > 0 && <ul className="mt-2 space-y-1.5">{item.withheld.map(w => <Withheld key={w.statement_id} entry={w} openPanel={openPanel} openQueueItem={openQueueItem} />)}</ul>}
@@ -155,7 +160,8 @@ export default function ReviewPanel({ review, openPanel, openQueueItem }) {
   if (!review) return null
   const listed = new Set(review.items.flatMap(i => (i.withheld || []).map(w => w.statement_id)))
   const otherWithheld = (review.withheld || []).filter(w => !listed.has(w.statement_id))
-  if (!review.items.length && !review.advisor_note && !otherWithheld.length && !review.other_notes.length) return null
+  const otherNotes = plainNotes(review.other_notes)
+  if (!review.items.length && !review.advisor_note && !otherWithheld.length && !otherNotes.length) return null
   return (
     <section className="space-y-3" data-testid="what-to-review">
       {review.items.length > 0 && <ul className="space-y-2.5">{review.items.map((it, i) => <Item key={i} item={it} openPanel={openPanel} openQueueItem={openQueueItem} />)}</ul>}
@@ -175,10 +181,10 @@ export default function ReviewPanel({ review, openPanel, openQueueItem }) {
           <ul className="mt-1.5 space-y-1.5">{otherWithheld.map(w => <Withheld key={w.statement_id} entry={w} openPanel={openPanel} openQueueItem={openQueueItem} />)}</ul>
         </div>
       )}
-      {review.other_notes.length > 0 && (
+      {otherNotes.length > 0 && (
         <div className="mt-3 text-xs text-slate-300" data-testid="other-notes">
           <div className="text-xs text-slate-400">Also noted</div>
-          <ul className="mt-1 list-disc space-y-0.5 pl-5">{review.other_notes.map((n, i) => <li key={i} className="prose-pre">{n}</li>)}</ul>
+          <ul className="mt-1 list-disc space-y-0.5 pl-5">{otherNotes.map((n, i) => <li key={i} className="prose-pre"><Gloss text={n} /></li>)}</ul>
         </div>
       )}
       {!review.saved_result && <Unavailable text="the topic result was not saved, so evidence links and withheld statements cannot be listed." />}
@@ -202,8 +208,8 @@ function CheckLink({ link, openPanel, openQueueItem }) {
       className="group/link flex w-full items-start gap-2 rounded-lg px-2 py-1.5 text-left hover:bg-white/[0.04]">
       <Icon name={link.kind === 'queue' ? 'queue' : link.kind === 'thread' ? 'thread' : 'doc'} className="mt-0.5 h-3.5 w-3.5 shrink-0 text-cyan-300" />
       <span className="min-w-0">
-        <span className="block text-sm font-medium text-cyan-200 group-hover/link:text-cyan-100">{link.label}</span>
-        {link.detail && <span className="block truncate text-xs text-slate-400">{link.detail}</span>}
+        <span className="block text-sm font-medium text-cyan-200 group-hover/link:text-cyan-100">{link.kind === 'queue' ? 'Open this flag in the review queue' : <Gloss text={link.label} />}</span>
+        {link.detail && <span className="block truncate text-xs text-slate-400" title={link.detail}>{link.detail}</span>}
       </span>
     </button>
   )
@@ -219,7 +225,7 @@ export function WhatToCheck({ checks, openPanel, openQueueItem }) {
         <div key={i} className={`rounded-xl border p-3.5 ${CHECK_TONES[c.kind] || 'border-white/[0.07] bg-ink-950/40'}`} data-testid="check" data-kind={c.kind}>
           <div className="text-xs font-semibold uppercase tracking-wide text-slate-400">{c.heading}</div>
           <div className={`prose-pre mt-1 text-sm leading-relaxed ${c.kind === 'QUESTION' ? 'font-medium text-white' : 'text-slate-200'}`}
-            data-testid="check-text" data-origin={c.text_origin}>{c.text}</div>
+            data-testid="check-text" data-origin={c.text_origin}><Gloss text={c.text} /></div>
           {(c.related || []).map((r, j) => <div key={j} className="mt-1.5 text-xs text-slate-400" data-testid="check-related">{r}</div>)}
           {c.note && (
             <div className="mt-2 border-l-2 border-white/10 pl-3 text-xs leading-relaxed text-slate-300" data-testid="check-note">

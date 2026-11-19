@@ -72,6 +72,7 @@ export function decisionStatus(item, head) {
     return { status: 'SEVERITY_OVERRIDDEN', reviewed: false, kind: head.kind,
       label: `Severity set to ${o?.tl_selected} by the team lead; decision still pending` }
   }
+  if (head.kind === 'REOPEN') return { status: 'REOPENED', reviewed: false, kind: head.kind, label: 'Reopened by the team lead; decision pending' }
   if (CLOSING[head.kind]) {
     const label = head.kind === 'DISMISS' ? 'Dismissed — not evidence the issue is resolved' : `${CLOSING[head.kind]} — ${executionText(head)}`
     return { status: head.kind, reviewed: true, kind: head.kind, label }
@@ -115,29 +116,35 @@ export function buildRows(cards, byCard, queueRows = []) {
 
 /**
  * Statistics for the selected briefing, from the brief's own active records only. Replaced cards are never served;
- * history and processing-history cards are counted separately, never as active.
+ * history and processing-history cards are counted separately, never as active. With a project, every count is for
+ * that project. inBrief = awaitingDecision + reviewed + noDecision (observations and cards without decision options).
  */
-export function briefStats(rows, queueRows = [], totals = null) {
-  const brief = rows.filter(r => r.scope === 'BRIEF')
+export function briefStats(rows, queueRows = [], totals = null, project = '') {
+  const inProject = r => !project || r.card.project_id === project
+  const brief = rows.filter(r => r.scope === 'BRIEF' && inProject(r))
   const active = brief.filter(r => r.tab === 'ACTIVE')
-  const byLine = line => brief.filter(r => r.card.card_line === line).length
+  const byLine = line => active.filter(r => r.card.card_line === line).length
+  const queue = queueRows.filter(r => !project || r.item.project_id === project)
   return {
+    project,
     inBrief: brief.length,
+    // Lines of the cards still awaiting attention, so the line follows decisions as they are saved.
     byLine: { NEEDS_REVIEW: byLine('NEEDS_REVIEW'), RECOMMENDED_ACTION: byLine('RECOMMENDED_ACTION'), OBSERVATION: byLine('OBSERVATION') },
     active: active.length,
     reviewed: brief.length - active.length,
     awaitingDecision: active.filter(r => r.awaitingDecision).length,
     pendingActions: active.filter(r => r.pendingAction).length,
     observations: active.filter(r => r.observation).length,
-    modelReviewOpen: queueRows.filter(r => r.review_state === 'OPEN').length,
-    modelReviewTotal: queueRows.length,
-    notInBrief: rows.filter(r => r.scope === 'NOT_IN_BRIEF').length,
-    processingHistory: rows.filter(r => r.scope === 'PROCESSING_HISTORY').length,
-    consolidatedPending: rows.filter(r => r.scope === 'CONSOLIDATED_PENDING').length,
+    noDecision: active.filter(r => !r.awaitingDecision).length,
+    modelReviewOpen: queue.filter(r => r.review_state === 'OPEN').length,
+    modelReviewTotal: queue.length,
+    notInBrief: rows.filter(r => r.scope === 'NOT_IN_BRIEF' && inProject(r)).length,
+    processingHistory: rows.filter(r => r.scope === 'PROCESSING_HISTORY' && inProject(r)).length,
+    consolidatedPending: rows.filter(r => r.scope === 'CONSOLIDATED_PENDING' && inProject(r)).length,
     // Same-issue groups awaiting fresh advice: briefing items without a card of their own (their original cards above).
-    consolidatedIssues: new Set(rows.filter(r => r.scope === 'CONSOLIDATED_PENDING')
+    consolidatedIssues: new Set(rows.filter(r => r.scope === 'CONSOLIDATED_PENDING' && inProject(r))
       .map(r => r.item.presentation?.consolidated?.consolidated_topic_id).filter(Boolean)).size,
-    replacedRecords: totals?.card_records?.replaced_history ?? null, // reachable only through the card that replaced them
+    replacedRecords: project ? null : totals?.card_records?.replaced_history ?? null, // reachable only through the card that replaced them
   }
 }
 

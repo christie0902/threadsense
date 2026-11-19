@@ -53,16 +53,16 @@ VERDICTS = {
     'NOT_SENT': 'it was not sent to the evidence check', 'REJECTED': 'it failed a deterministic check before the evidence check',
 }
 FLAG_CHECKS = {
-    'inherited_agent1_review': "Agent 1's reading of this thread was not verified. Read the thread itself before relying on "
-                               'its summary.',
-    'inherited_agent1_review_announcement_route': "Agent 1's reading of this announcement-route thread was not verified. "
-                                                  'Read it before relying on its summary.',
+    'inherited_agent1_review': 'The automatic summary of this thread was not verified. Read the thread itself before relying '
+                               'on it.',
+    'inherited_agent1_review_announcement_route': 'The automatic summary of this announcement thread was not verified. Read '
+                                                  'it before relying on it.',
     'projection_gap': 'Agent 2 did not assign these threads to a topic; the projection grouped them. Check that they '
                       'belong together. This is a grouping condition on the card, not an Agent 1/2 review obligation.',
     'assisted_content_review': 'An assisted content review raised a finding on this group; check it.',
 }
-FLAG_LABELS = {'inherited_agent1_review': 'Agent 1 interpretation not verified',
-               'inherited_agent1_review_announcement_route': 'Agent 1 interpretation not verified (announcement route)',
+FLAG_LABELS = {'inherited_agent1_review': 'Thread summary not verified',
+               'inherited_agent1_review_announcement_route': 'Announcement summary not verified',
                'projection_gap': GROUPING_LABEL, 'assisted_content_review': 'Assisted content review finding'}
 TEMPORAL_CODES = {'SUPERSEDED_GUIDANCE': 'A cited source has been replaced', 'SOURCE_CONFLICT': 'Current sources disagree',
                   'UNRESOLVED_VERSION': 'Competing revisions could not be ordered',
@@ -113,7 +113,7 @@ class Links:
         members = set(flag.get('member_ids') or [])
         found = [i for i in self.queue if (flag.get('obligation_id') and i.get('obligation_id') == flag['obligation_id'])
                  or (i.get('kind') == flag['kind'] and members and members <= set(i.get('member_ids') or []))]
-        return [{'kind': 'queue', 'item_id': i['item_id'], 'label': f"Model Review Queue: {_words(i['kind'])}"} for i in found]
+        return [{'kind': 'queue', 'item_id': i['item_id'], 'label': 'Open this flag in the review queue'} for i in found]
 
 
 def _field(statement_id, kind, links, alternatives):
@@ -224,8 +224,8 @@ def _flags_item(card, links, provenance=None):
         entries.append({'kind': f['kind'], 'label': FLAG_LABELS.get(f['kind'], _words(f['kind'])), 'grouping': gap,
                         'check': FLAG_CHECKS.get(f['kind'], 'An upstream review flag is still open; check it.'),
                         'links': threads + queue, 'upstream_detail': f.get('detail'), 'finding': _finding_view(prov),
-                        'queue_note': None if queue else 'No Model Review Queue item: a grouping condition carried on the card '
-                                      'only.' if gap else 'No Model Review Queue item: this flag is carried on the card only.'})
+                        'queue_note': None if queue else 'Not in the review queue: a grouping condition shown on the card '
+                                      'only.' if gap else 'Not in the review queue: this flag is shown on the card only.'})
     n = sum(not e['grouping'] for e in entries)
     parts = [f'{n} earlier review flag{"s are" if n != 1 else " is"} still open'] if n else []
     parts += [GROUPING_LABEL.lower() if parts else GROUPING_LABEL] if any(e['grouping'] for e in entries) else []

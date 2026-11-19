@@ -35,7 +35,7 @@ def labelled(link, verb=None, ledger=None):
     if verb is None and ledger is not None and link['kind'] == 'evidence' and not is_message(link):
         verb = SOURCE_VERBS.get((ledger.get(link['id']) or {}).get('source_type'))
     if link['kind'] == 'queue':
-        return {**link, 'label': 'Open its Model Review Queue item', 'detail': None}
+        return {**link, 'label': 'Open this flag in the review queue', 'detail': None}
     if link['kind'] == 'thread':
         return {**link, 'label': verb or 'Open thread', 'detail': link['label']}
     if is_message(link):

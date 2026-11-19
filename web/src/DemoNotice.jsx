@@ -11,7 +11,8 @@ export default function DemoNotice() {
     const timer = setInterval(count, 3000)
     return () => clearInterval(timer)
   }, [])
-  const reset = async () => { await (await import('./demoApi.js')).resetDemo(); window.location.reload() }
+  // A full reset: saved changes, and the filters, project and layout kept in the address.
+  const reset = async () => { await (await import('./demoApi.js')).resetDemo(); window.location.replace(window.location.pathname + window.location.search) }
   return (
     <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5 rounded-xl border border-violet-400/30 bg-violet-400/[0.07] px-3.5 py-2 text-xs text-slate-200" data-testid="demo-notice">
       <span className="inline-flex items-center gap-1.5 font-semibold text-violet-100"><Icon name="doc" className="h-3.5 w-3.5" />Demo data · Changes saved in this browser.</span>

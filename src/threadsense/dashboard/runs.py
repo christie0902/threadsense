@@ -423,6 +423,19 @@ class Run:
         return saved
 
 
+def message_title(role):
+    """'Message by a QA tutor', 'Message by an engineer'."""
+    words = (role or 'participant').replace('_', ' ').lower().replace('qa ', 'QA ')
+    return f"Message by {'an' if words[0] in 'aeiou' else 'a'} {words}"
+
+
+def thread_in_fixture(fixture_root, channel_id, thread_id):
+    """Whether the thread's root message is in the fixture, so the internal thread view can open it. Earlier announcements
+    kept only in the knowledge store carry a channel and thread but are not in the window's Slack fixture."""
+    path = Path(fixture_root)/'channels'/f'{channel_id}.json'
+    return path.is_file() and any(m.get('ts') == thread_id for m in read_json(path).get('history') or [])
+
+
 def evidence_view(entry, *, cited, full=False):
     citation = entry.get('citation') or {}
     source = citation.get('source') or {}
@@ -430,7 +443,7 @@ def evidence_view(entry, *, cited, full=False):
     view = {
         'evidence_id': entry['evidence_id'], 'origin': entry.get('origin'), 'use': entry.get('use'), 'cited': cited,
         'source_type': 'slack_message' if is_message else entry.get('source_type'),
-        'title': citation.get('title') if not is_message else f"Message by a {(entry.get('author_role') or 'participant').replace('_', ' ').lower()}",
+        'title': citation.get('title') if not is_message else message_title(entry.get('author_role')),
         'authoring': citation.get('authoring'), 'sections': citation.get('sections') or [],
         'document_id': citation.get('document_id'), 'version_id': citation.get('version_id'),
         'chunk_id': citation.get('chunk_id'), 'source_system': 'slack' if is_message else source.get('system'),

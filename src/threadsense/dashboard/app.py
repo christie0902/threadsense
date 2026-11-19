@@ -18,7 +18,7 @@ from threadsense.dashboard.decisions import (
     KINDS_BY_LINE, DecisionError, DecisionRequest, DecisionStore, KeyReused, ReviewRequest, StaleHead,
     build_decision, build_review_action, now_iso, review_item_with_actions,
 )
-from threadsense.dashboard.runs import Catalog, RunNotFound, team_leads, thread_view
+from threadsense.dashboard.runs import Catalog, RunNotFound, team_leads, thread_in_fixture, thread_view
 from threadsense.retrieval.config import FIXTURE_ROOT
 from threadsense.routing import ROOT
 
@@ -118,7 +118,10 @@ def create_app(*, catalog=None, store=None, fixture_root=FIXTURE_ROOT, clock=now
 
     @app.get('/api/runs/{run_key}/evidence/{evidence_id:path}')
     def evidence(run_key: str, evidence_id: str):
-        return run_of(run_key).evidence_entry(evidence_id)
+        entry = run_of(run_key).evidence_entry(evidence_id)
+        if entry.get('channel_id') and entry.get('thread_id'):
+            entry['thread_available'] = thread_in_fixture(fixture_root, entry['channel_id'], entry['thread_id'])
+        return entry
 
     @app.get('/api/runs/{run_key}/threads/{channel_id}/{thread_id}')
     def thread(run_key: str, channel_id: str, thread_id: str):

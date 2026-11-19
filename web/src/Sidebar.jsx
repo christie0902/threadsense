@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react'
 import { QUICK_FILTERS, briefingDate, runKind } from './briefView.js'
+import { GLOSSARY, plural } from './text.js'
 import { CopilotFigure, Icon, Orb } from './ui.jsx'
 
 // Each quick filter as a selectable box: accent, and what it selects (structured fields, see briefView.QUICK).
@@ -110,10 +111,11 @@ export default function Sidebar({ run, session, stats, quick, onQuick, quickCoun
 
         {stats && (
           <section className="panel p-4" aria-labelledby="stats-heading" data-testid="briefing-stats">
-            <h2 id="stats-heading" className="text-base font-semibold text-slate-100">Selected briefing</h2>
+            <h2 id="stats-heading" className="text-base font-semibold text-slate-100">Selected briefing
+              {stats.project && <span className="block text-xs font-normal text-cyan-200" data-testid="stats-project">{stats.project} only</span>}</h2>
             <div className="mt-4 grid grid-cols-2 gap-3">
               <Stat testid="stat-in-brief" wide icon="layers" label="Cards in this briefing" value={stats.inBrief}
-                caption={`${stats.byLine.NEEDS_REVIEW} needs review · ${stats.byLine.RECOMMENDED_ACTION} recommended · ${stats.byLine.OBSERVATION} observation`} />
+                caption={stats.active ? `Still active: ${stats.byLine.NEEDS_REVIEW} needs review · ${stats.byLine.RECOMMENDED_ACTION} recommended · ${plural(stats.byLine.OBSERVATION, 'observation')}` : 'None still active'} />
               {stats.consolidatedIssues > 0 && (
                 <Stat testid="stat-consolidated" wide tone="violet" label="Consolidated issues" value={stats.consolidatedIssues}
                   caption={`fresh advice pending · ${stats.consolidatedPending} original cards kept inside`} />
@@ -121,6 +123,10 @@ export default function Sidebar({ run, session, stats, quick, onQuick, quickCoun
               <Stat testid="stat-awaiting" tone="amber" icon="alert" label="Awaiting decision" value={stats.awaitingDecision}
                 caption={`incl. ${stats.pendingActions} pending ${stats.pendingActions === 1 ? 'action' : 'actions'} to approve`} />
               <Stat testid="stat-reviewed" tone="emerald" icon="check" label="Reviewed" value={stats.reviewed} caption="decision saved; execution not recorded" />
+              {stats.noDecision > 0 && (
+                <Stat testid="stat-no-decision" wide tone="violet" icon="eye" label="No decision needed" value={stats.noDecision}
+                  caption={`observations and cards without decision options · ${stats.awaitingDecision} + ${stats.reviewed} + ${stats.noDecision} = ${stats.inBrief}`} />
+              )}
               <Stat testid="stat-model-review" wide tone="cyan" icon="queue" label="Model-review items open" value={stats.modelReviewOpen}
                 caption={`of ${stats.modelReviewTotal} · separate from card decisions · open the queue`} onClick={onOpenQueue} />
             </div>
@@ -165,6 +171,15 @@ export default function Sidebar({ run, session, stats, quick, onQuick, quickCoun
             </ul>
           </nav>
         )}
+
+        <details className="panel group p-4 text-sm" data-testid="glossary">
+          <summary className="flex cursor-pointer list-none items-center gap-2 font-semibold text-slate-100 [&::-webkit-details-marker]:hidden">
+            <Icon name="chevron" className="h-3.5 w-3.5 text-slate-400 transition group-open:rotate-90" />Terms used
+          </summary>
+          <dl className="mt-3 space-y-1.5 text-xs text-slate-300">
+            {Object.entries(GLOSSARY).map(([k, v]) => <div key={k} className="flex gap-2"><dt className="w-8 shrink-0 font-semibold text-white">{k}</dt><dd>{v}</dd></div>)}
+          </dl>
+        </details>
 
         <div className="mt-auto">
           {session !== undefined && (

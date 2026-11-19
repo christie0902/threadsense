@@ -1,12 +1,14 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useIdempotentSave } from './api.js'
 import { Badge, CopyButton, Icon, textOriginLabel, when } from './ui.jsx'
 
 export const KIND_LABELS = {
   APPROVE_ACTION: 'Approved the recommended action', CONFIRM_FAQ_UPDATE: 'Confirmed an FAQ update',
   CONFIRM_ANNOUNCEMENT: 'Confirmed an announcement', OVERRIDE_SEVERITY: 'Overrode the severity', DISMISS: 'Dismissed',
-  ROUTE_TO_EXPERT: 'Routed to an expert',
+  ROUTE_TO_EXPERT: 'Routed to an expert', REOPEN: 'Reopened for another decision',
 }
+// Decisions that take a card out of the active list (briefView.CLOSING); REOPEN puts it back.
+const CLOSING = ['APPROVE_ACTION', 'CONFIRM_FAQ_UPDATE', 'CONFIRM_ANNOUNCEMENT', 'ROUTE_TO_EXPERT', 'DISMISS']
 const RESOLUTIONS = {
   CONFIRM_FAQ_UPDATE: { label: 'Confirm FAQ update', action: 'UPDATE_FAQ' },
   CONFIRM_ANNOUNCEMENT: { label: 'Confirm announcement', action: 'POST_ALIGNMENT' },
@@ -22,7 +24,10 @@ const KIND_NOTES = {
   OVERRIDE_SEVERITY: 'Recorded as your decision for this card only. The team rubric is unchanged.',
   DISMISS: 'A review disposition. It is not evidence that the underlying issue is resolved.',
   ROUTE_TO_EXPERT: 'Records that this should go to an expert. Nobody is contacted automatically.',
+  REOPEN: 'The card goes back to Active for a new decision. The earlier decision stays in its history.',
 }
+// What to write when a resolution has no matching draft on the card.
+const WRITE_HINTS = { CONFIRM_FAQ_UPDATE: 'FAQ change to confirm (required)', CONFIRM_ANNOUNCEMENT: 'Announcement text to confirm (required)' }
 const NO_SESSION = 'No team-lead session is configured for this dashboard, so decisions cannot be saved.'
 
 export function DecisionSummary({ entry, indexing, current = true }) {
@@ -42,9 +47,9 @@ export function DecisionSummary({ entry, indexing, current = true }) {
       <div className="mt-1 text-xs text-slate-400">
         Saved {when(entry.recorded_at)} by {entry.actor_id} (team lead) · decision #{entry.sequence}
       </div>
-      <div className="mt-1 text-xs text-slate-300" data-testid="decision-states">
+      {entry.kind !== 'REOPEN' && <div className="mt-1 text-xs text-slate-300" data-testid="decision-states">
         Execution: <b className="text-white">not executed</b> · Outcome: <b className="text-white">not observed</b>
-      </div>
+      </div>}
       {override && <div className="mt-2 text-xs text-slate-300">Severity for this card: assessed <b>{override.proposed}</b>, team lead selected <b>{override.tl_selected}</b> (the rubric is unchanged).</div>}
       {entry.note && <div className="mt-2 text-xs text-slate-300"><span className="font-medium text-slate-200">Note:</span> {entry.note}</div>}
       {text && (
@@ -99,6 +104,44 @@ function textSources(card, alternatives, actionType) {
   return out
 }
 
+const operational = card => !!card.recommended_action && card.recommended_action.action_type !== 'NO_ACTION'
+
+/**
+ * Resolutions that fit this card. Confirming an FAQ update or an announcement is offered when the card or a supported
+ * alternative has that draft, or when the card proposes no action of its own (the team lead then writes the text); a card
+ * that proposes something else (an engineering report, say) does not offer them.
+ */
+export function fittingResolutions(card, alternatives, allowed) {
+  return allowed.filter(k => !['CONFIRM_FAQ_UPDATE', 'CONFIRM_ANNOUNCEMENT'].includes(k)
+    || textSources(card, alternatives, RESOLUTIONS[k].action).length > 0 || !operational(card))
+}
+
+function ReopenForm({ runKey, card, actor, head, onCancel, onDone }) {
+  const { state, save } = useIdempotentSave(`/api/runs/${encodeURIComponent(runKey)}/cards/${card.card_id}/decisions`)
+  const [note, setNote] = useState('')
+  const body = () => ({ kind: 'REOPEN', actor_id: actor, expected_head: head.entry_id, note: note.trim(), text: null, severity: null,
+    expert: null, alternative_id: null })
+  useEffect(() => { if (state.phase === 'saved') onDone(state.entry, state.replayed) }, [state.phase]) // eslint-disable-line react-hooks/exhaustive-deps
+  if (state.phase === 'saved') return (
+    <div className="rounded-lg border border-emerald-400/40 bg-emerald-400/10 p-2.5 text-xs text-emerald-100" data-testid="save-success">Reopened. {KIND_NOTES.REOPEN}</div>
+  )
+  return (
+    <form className="space-y-3 rounded-xl border border-amber-300/25 bg-ink-850/80 p-4 text-sm" data-testid="reopen-form"
+      onSubmit={e => { e.preventDefault(); if (note.trim() && actor) save(body()) }}>
+      <div className="text-sm font-medium text-white">Reopen this card</div>
+      <label className="block text-xs text-slate-300">Why reopen it (required)
+        <textarea className="field mt-1 h-16 w-full p-2.5" value={note} name="note" onChange={e => setNote(e.target.value)} />
+      </label>
+      <div className="text-xs text-slate-400">{KIND_NOTES.REOPEN}</div>
+      <SaveStatus state={state} onRetry={() => save(body())} onShowLatest={() => onDone()} />
+      <div className="flex flex-wrap items-center gap-3">
+        <button type="submit" className="btn-primary" disabled={!note.trim() || !actor || state.phase === 'saving'} data-testid="save-reopen">Reopen</button>
+        <button type="button" className="btn btn-sm" onClick={onCancel}>Cancel</button>
+      </div>
+    </form>
+  )
+}
+
 /** Why a card offers no decision. "Observations need no decision" only for an observation with a supported no-action reason. */
 function noDecisionText(card, presentation) {
   if (presentation?.briefing && presentation.briefing.status !== 'IN_BRIEFING') return 'Not in this brief: kept in history, no decision needed.'
@@ -109,21 +152,38 @@ function noDecisionText(card, presentation) {
 export default function DecisionPanel({ runKey, card, alternatives, allowed, actor, state, onChanged, presentation }) {
   const head = state?.head || null
   const [revising, setRevising] = useState(false)
+  const [reopening, setReopening] = useState(false)
+  const fitting = fittingResolutions(card, alternatives, allowed)
   if (!allowed.length) return <div className="text-xs text-slate-400" data-testid="no-decision">{noDecisionText(card, presentation)}</div>
-  if (head && !revising) {
-    const older = state.decisions.slice(0, -1).reverse()
+  const older = state ? state.decisions.slice(0, -1).reverse() : []
+  const history = older.length > 0 && <details className="text-xs"><summary className="cursor-pointer text-slate-400">Earlier decisions ({older.length})</summary>
+    <div className="mt-2 space-y-2">{older.map(e => <DecisionSummary key={e.entry_id} entry={e} indexing={state.indexing} current={false} />)}</div></details>
+  if (reopening) return <ReopenForm runKey={runKey} card={card} actor={actor} head={head} onCancel={() => setReopening(false)}
+    onDone={(entry, replayed) => { setReopening(false); onChanged(entry, replayed) }} />
+  // A reopened card asks for a new decision straight away; its earlier decisions stay listed.
+  if (head && !revising && head.kind !== 'REOPEN') {
     return (
       <div className="space-y-2" data-testid="decision-area">
         <DecisionSummary entry={head} indexing={state.indexing} />
-        {older.length > 0 && <details className="text-xs"><summary className="cursor-pointer text-slate-400">Earlier decisions ({older.length})</summary>
-          <div className="mt-2 space-y-2">{older.map(e => <DecisionSummary key={e.entry_id} entry={e} indexing={state.indexing} current={false} />)}</div></details>}
-        <button type="button" className="link text-xs" onClick={() => setRevising(true)}>Record a new decision (supersedes this one)</button>
+        {history}
+        <div className="flex flex-wrap items-center gap-x-4 gap-y-1">
+          <button type="button" className="link text-xs" onClick={() => setRevising(true)}>Record a new decision (supersedes this one)</button>
+          {CLOSING.includes(head.kind) && <button type="button" className="link text-xs" onClick={() => setReopening(true)} data-testid="reopen-card">Reopen (back to Active)</button>}
+        </div>
       </div>
     )
   }
-  return <DecisionForm key={head?.entry_id || 'first'} runKey={runKey} card={card} alternatives={alternatives} allowed={allowed}
-    actor={actor} head={head} onCancel={head ? () => setRevising(false) : null}
-    onDone={() => { setRevising(false); onChanged() }} />
+  return (
+    <div className="space-y-2">
+      {head?.kind === 'REOPEN' && (
+        <div className="text-xs text-slate-400" data-testid="reopened-note">Reopened {when(head.recorded_at)} by {head.actor_id}{head.note ? `: ${head.note}` : ''}.</div>
+      )}
+      <DecisionForm key={head?.entry_id || 'first'} runKey={runKey} card={card} alternatives={alternatives} allowed={fitting}
+        actor={actor} head={head} onCancel={head && head.kind !== 'REOPEN' ? () => setRevising(false) : null}
+        onDone={(entry, replayed) => { setRevising(false); onChanged(entry, replayed) }} />
+      {head?.kind === 'REOPEN' && history}
+    </div>
+  )
 }
 
 function DecisionForm({ runKey, card, alternatives, allowed, actor, head, onCancel, onDone }) {
@@ -142,21 +202,22 @@ function DecisionForm({ runKey, card, alternatives, allowed, actor, head, onCanc
   const [edits, setEdits] = useState({})
   const editKey = `${kind}|${chosen?.id ?? 'none'}`
   const text = edits[editKey] ?? (chosen?.text || '')
-  const textRequired = ['CONFIRM_FAQ_UPDATE', 'CONFIRM_ANNOUNCEMENT'].includes(kind) && !chosen
+  const textRequired = Boolean(WRITE_HINTS[kind]) && !chosen
   const changed = chosen ? text !== chosen.text : text.trim() !== ''
   const noteRequired = kind === 'OVERRIDE_SEVERITY' || kind === 'DISMISS'
   const ready = kind && actor && (!noteRequired || note.trim()) && (!textRequired || text.trim())
     && (kind !== 'OVERRIDE_SEVERITY' || severity) && !(chosen && !text.trim())
+  // Saved: the list refreshes at once, so the card moves to its tab without another click. Until the refresh lands (or if
+  // it fails) the card shows the saved decision in place.
+  useEffect(() => { if (state.phase === 'saved') onDone(state.entry, state.replayed) }, [state.phase]) // eslint-disable-line react-hooks/exhaustive-deps
 
   if (state.phase === 'saved') {
     return (
       <div className="space-y-2" data-testid="decision-area">
         <div className="rounded-lg border border-emerald-400/40 bg-emerald-400/10 p-2.5 text-xs text-emerald-100" data-testid="save-success">
-          Saved{state.replayed ? ' (the server already had this exact request; no duplicate was created)' : ''}. {KIND_NOTES[state.entry.kind]}
+          Saved{state.replayed ? ' (the server already had this exact request; no duplicate was created)' : ''}.
         </div>
         <DecisionSummary entry={state.entry} />
-        {/* A severity override leaves the decision on what to do open, so that card stays active. */}
-        <button type="button" className="btn btn-sm" onClick={onDone}>{state.entry.kind === 'OVERRIDE_SEVERITY' ? 'Done (stays active)' : 'Done (move to Reviewed)'}</button>
       </div>
     )
   }
@@ -173,7 +234,7 @@ function DecisionForm({ runKey, card, alternatives, allowed, actor, head, onCanc
           {card.card_line === 'RECOMMENDED_ACTION' ? 'Approve…' : 'Resolve…'}
         </button>
         {onCancel && <button type="button" className="btn btn-sm" onClick={onCancel}>Cancel</button>}
-        <span className={`text-xs ${actor ? 'text-slate-400' : 'text-amber-200/90'}`}>{actor ? 'Saves your decision only. Nothing is posted or executed.' : `${NO_SESSION} You can review the options; saving needs the server started with a team lead.`}</span>
+        {!actor && <span className="text-xs text-amber-200/90">{NO_SESSION} You can review the options; saving needs the server started with a team lead.</span>}
       </div>
     )
   }
@@ -216,7 +277,7 @@ function DecisionForm({ runKey, card, alternatives, allowed, actor, head, onCanc
             </label>
           )}
           <div className="flex flex-wrap items-center gap-2 text-xs">
-            <span className="font-medium text-slate-200">{chosen ? 'Draft' : textRequired ? 'Text (required; the card has no matching draft)' : 'Message to the expert (optional)'}</span>
+            <span className="font-medium text-slate-200">{chosen ? 'Draft' : textRequired ? WRITE_HINTS[kind] : 'Message to the expert (optional)'}</span>
             <Badge tone={chosen && !changed ? 'emerald' : 'violet'} data-testid="form-text-origin">
               {chosen ? (changed ? 'TL-edited text (not model-grounded)' : 'Model-grounded text (unchanged)') : 'TL-written text (not model-grounded)'}
             </Badge>
@@ -232,7 +293,7 @@ function DecisionForm({ runKey, card, alternatives, allowed, actor, head, onCanc
       )}
       {kind && <div className="text-xs text-slate-400">{KIND_NOTES[kind]}</div>}
       {!actor && <div className="text-xs text-red-300">{NO_SESSION}</div>}
-      <SaveStatus state={state} onRetry={() => save(body())} onShowLatest={onDone} />
+      <SaveStatus state={state} onRetry={() => save(body())} onShowLatest={() => onDone()} />
       <div className="flex flex-wrap items-center gap-3">
         <button type="submit" disabled={!ready || state.phase === 'saving'} data-testid="save-decision" className="btn-primary">
           {kind === 'APPROVE_ACTION' ? 'Save approval' : 'Save decision'}

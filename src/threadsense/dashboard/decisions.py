@@ -42,10 +42,13 @@ DecisionOrigin = Literal['TL_DASHBOARD', 'DEMO_SCRIPT', 'TEST']
 ORIGIN_NAMESPACES = {'DEMO_SCRIPT': 'demo', 'TEST': 'test'}
 JudgmentProvenance = Literal['LIVE_MODEL', 'SCRIPTED_PILOT', 'SCRIPTED_PLACEHOLDER', 'TEST_FIXTURE', 'UNKNOWN']
 DecisionKind = Literal['APPROVE_ACTION', 'CONFIRM_FAQ_UPDATE', 'CONFIRM_ANNOUNCEMENT', 'OVERRIDE_SEVERITY', 'DISMISS',
-                       'ROUTE_TO_EXPERT']
+                       'ROUTE_TO_EXPERT', 'REOPEN']
 KINDS_BY_LINE = {'RECOMMENDED_ACTION': ('APPROVE_ACTION',),
                  'NEEDS_REVIEW': ('CONFIRM_FAQ_UPDATE', 'CONFIRM_ANNOUNCEMENT', 'OVERRIDE_SEVERITY', 'DISMISS', 'ROUTE_TO_EXPERT'),
                  'OBSERVATION': ()}
+# Decisions that answer the card (it leaves the active list). REOPEN undoes one: it records the team lead's reason, approves
+# nothing (outcome DEFERRED) and puts the card back in the active list; it is offered only after a closing decision.
+CLOSING_KINDS = ('APPROVE_ACTION', 'CONFIRM_FAQ_UPDATE', 'CONFIRM_ANNOUNCEMENT', 'ROUTE_TO_EXPERT', 'DISMISS')
 EXPERTS = {'ENGINEERING': 'ESCALATE_ENGINEERING', 'LANGUAGE_SPECIALIST': 'ROUTE_TO_LANGUAGE_SPECIALIST'}
 # Action type each structured resolution approves; the card's draft is reused only when its type matches.
 KIND_ACTIONS = {'CONFIRM_FAQ_UPDATE': 'UPDATE_FAQ', 'CONFIRM_ANNOUNCEMENT': 'POST_ALIGNMENT'}
@@ -174,7 +177,7 @@ class TLDecisionEntry(Frozen):
             raise ValueError('A dashboard decision records no execution and no observed outcome.')
         if (self.sequence == 1) != (self.supersedes_entry_id is None):
             raise ValueError('Only the first decision on a card supersedes nothing.')
-        if self.kind not in KINDS_BY_LINE[self.card_line]:
+        if self.kind not in KINDS_BY_LINE[self.card_line] and not (self.kind == 'REOPEN' and KINDS_BY_LINE[self.card_line]):
             raise ValueError(f'{self.kind} does not apply to a {self.card_line} card.')
         return self
 
@@ -221,7 +224,10 @@ def request_hash(target, body):
 def build_decision(*, run, card, request, actors, sequence, head, recorded_at, key, request_sha, alternatives=(),
                    decision_origin='TL_DASHBOARD'):
     """DecisionRecord + entry for one TL request on one card; refuses anything the card or contract does not allow."""
-    if request.kind not in KINDS_BY_LINE[card['card_line']]:
+    if request.kind == 'REOPEN':
+        if not head or head['kind'] not in CLOSING_KINDS:
+            raise DecisionError('Only a card with a closing decision can be reopened.')
+    elif request.kind not in KINDS_BY_LINE[card['card_line']]:
         allowed = ', '.join(KINDS_BY_LINE[card['card_line']]) or 'none'
         raise DecisionError(f"{request.kind} does not apply to a {card['card_line']} card (allowed: {allowed}).")
     actor = actors.get(request.actor_id)
@@ -229,7 +235,7 @@ def build_decision(*, run, card, request, actors, sequence, head, recorded_at, k
         raise DecisionError(f'{request.actor_id} is not a recorded team lead.')
     action, source = card.get('recommended_action') or {}, 'CARD_DRAFT'
     if request.alternative_id is not None:
-        if request.kind in ('APPROVE_ACTION', 'DISMISS', 'OVERRIDE_SEVERITY'):
+        if request.kind in ('APPROVE_ACTION', 'DISMISS', 'OVERRIDE_SEVERITY', 'REOPEN'):
             raise DecisionError(f'{request.kind} applies to the card itself, not to an alternative.')
         chosen = [a for a in alternatives if a['candidate_id'] == request.alternative_id]
         if not chosen:
@@ -275,7 +281,7 @@ def build_decision(*, run, card, request, actors, sequence, head, recorded_at, k
         text = {'origin': 'MODEL_GROUNDED', 'model_grounded_text': reuse, **grounded} if reuse else {'origin': 'NONE'}
     else:
         text = {'origin': 'TL_EDITED' if reuse else 'TL_WRITTEN', 'model_grounded_text': reuse, 'tl_text': edited, **grounded}
-    outcome = {'DISMISS': 'REJECTED', 'OVERRIDE_SEVERITY': 'OVERRIDDEN'}.get(
+    outcome = {'DISMISS': 'REJECTED', 'OVERRIDE_SEVERITY': 'OVERRIDDEN', 'REOPEN': 'DEFERRED'}.get(
         request.kind, 'APPROVED_WITH_EDITS' if text['origin'] in ('TL_EDITED', 'TL_WRITTEN') else 'APPROVED')
     lineage = card['lineage']
     entry_id = stable_id('decision', {'run_ref': run.ref, 'card_id': card['card_id'], 'sequence': sequence,

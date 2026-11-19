@@ -7,6 +7,7 @@ import bundleUrl from '../demo/briefing.json?url'
 
 const EFFECTS = { ACCEPT: 'RESOLVED_FOR_RUN', REJECT: 'NEGATIVE_EXAMPLE', DEFER: 'KEPT_OPEN' }
 const KIND_ACTIONS = { CONFIRM_FAQ_UPDATE: 'UPDATE_FAQ', CONFIRM_ANNOUNCEMENT: 'POST_ALIGNMENT' }
+const CLOSING = ['APPROVE_ACTION', 'CONFIRM_FAQ_UPDATE', 'CONFIRM_ANNOUNCEMENT', 'ROUTE_TO_EXPERT', 'DISMISS']
 const EXPERTS = { ENGINEERING: 'ESCALATE_ENGINEERING', LANGUAGE_SPECIALIST: 'ROUTE_TO_LANGUAGE_SPECIALIST' }
 const ORIGIN_AGENT = { agent1: 'AGENT_1', agent2: 'AGENT_2', assisted_content_review: 'AGENT_2' }
 const LESSON_CATEGORIES = { AGENT_1: ['SUMMARY', 'RESOLUTION', 'AUTHORITY', 'RELEVANCE', 'GENERAL'], AGENT_2: ['GROUPING', 'NAMING', 'GENERAL'] }
@@ -200,8 +201,9 @@ function cardItem(b, cardId) {
 
 function decide(b, state, cardId, body) {
   const item = cardItem(b, cardId), card = item.card
-  if (!item.allowed_decisions.includes(body.kind)) throw invalid(`${body.kind} is not offered on this card.`)
   const { head, decisions } = cardState(state, cardId)
+  if (body.kind === 'REOPEN') { if (!head || !CLOSING.includes(head.kind)) throw invalid('Only a card with a closing decision can be reopened.') }
+  else if (!item.allowed_decisions.includes(body.kind)) throw invalid(`${body.kind} is not offered on this card.`)
   checkHead(head, body.expected_head, 'decision')
   let action = card.recommended_action || {}, source = 'CARD_DRAFT'
   if (body.alternative_id) {
@@ -229,7 +231,7 @@ function decide(b, state, cardId, body) {
   const text = !edited || edited === reuse ? (reuse ? { origin: 'MODEL_GROUNDED', model_grounded_text: reuse, ...grounded } : { origin: 'NONE' })
     : { origin: reuse ? 'TL_EDITED' : 'TL_WRITTEN', model_grounded_text: reuse, tl_text: edited, ...grounded }
   const at = now()
-  const outcome = { DISMISS: 'REJECTED', OVERRIDE_SEVERITY: 'OVERRIDDEN' }[body.kind] || (['TL_EDITED', 'TL_WRITTEN'].includes(text.origin) ? 'APPROVED_WITH_EDITS' : 'APPROVED')
+  const outcome = { DISMISS: 'REJECTED', OVERRIDE_SEVERITY: 'OVERRIDDEN', REOPEN: 'DEFERRED' }[body.kind] || (['TL_EDITED', 'TL_WRITTEN'].includes(text.origin) ? 'APPROVED_WITH_EDITS' : 'APPROVED')
   const entry = {
     contract_version: 'dashboard-tl-decision-v3', decision_origin: 'DEMO_SCRIPT', namespace: 'demo', demo_browser_only: true,
     entry_id: newId('decision'), sequence: decisions.length + 1, supersedes_entry_id: head?.entry_id || null,

@@ -52,9 +52,9 @@ test('approve -> refresh -> restart keeps exactly one decision, never executed',
   const draftBefore = await box.getByTestId('action-draft').boundingBox()
   await copyButton.click()
   await expect(box.getByTestId('copy-note')).toHaveText('Copied to your clipboard. Nothing was posted.')
-  // The note sits below its button and does not move the draft.
-  const [note, button] = [await box.getByTestId('copy-note').boundingBox(), await copyButton.boundingBox()]
-  expect(note.y).toBeGreaterThanOrEqual(button.y + button.height)
+  // The button itself confirms (it cannot be clipped by the card) and nothing moves.
+  await expect(box.getByTestId('card-detail').getByRole('button', { name: 'Copied' })).toBeVisible()
+  expect(await page.evaluate(() => navigator.clipboard.readText())).toBe(card.recommended_action.draft_text)
   expect(await box.getByTestId('action-draft').boundingBox()).toEqual(draftBefore)
   expect(posts).toEqual([]) // copying is not posting
   await box.getByTestId('card-collapse').click()
@@ -62,13 +62,17 @@ test('approve -> refresh -> restart keeps exactly one decision, never executed',
   await box.getByRole('button', { name: 'Approve…' }).click()
   await expect(box.getByTestId('form-text-origin')).toHaveText('Model-grounded text (unchanged)')
   await box.getByTestId('save-decision').click()
-  await expect(box.getByTestId('save-success')).toContainText('Nothing is posted or executed')
-  await expect(box.getByTestId('text-origin')).toHaveText('Model-grounded text (validated card text, unchanged)')
-  await expect(box.getByTestId('decision-text')).toHaveText(card.recommended_action.draft_text)
-  await expect(box.getByTestId('decision-states')).toHaveText('Execution: not executed · Outcome: not observed')
-  await box.getByRole('button', { name: /Done/ }).click()
+  // Saved: the card moves to Reviewed at once (no extra click) and a notice says where it went.
+  await expect(page.getByTestId('move-notice')).toContainText('Moved to Reviewed. Nothing is posted or executed.')
   await expect(page.getByTestId('feed').locator('[data-card-line=RECOMMENDED_ACTION]')).toHaveCount(0)
   await expect(page.getByTestId('tab-reviewed')).toHaveText('Reviewed (1)')
+  await page.getByTestId('move-notice-show').click()
+  const moved = cardBox(page, card.topic_name)
+  await expect(page.getByTestId('tab-reviewed')).toHaveAttribute('aria-current', 'page')
+  await expect(moved.getByTestId('decision-current')).toContainText('Nothing is posted or executed') // said once, on the decision
+  await expect(moved.getByTestId('text-origin')).toHaveText('Model-grounded text (validated card text, unchanged)')
+  await expect(moved.getByTestId('decision-text')).toHaveText(card.recommended_action.draft_text)
+  await expect(moved.getByTestId('decision-states')).toHaveText('Execution: not executed · Outcome: not observed')
 
   for (const step of ['refresh', 'restart']) {
     if (step === 'restart') await server.restart()
@@ -95,7 +99,7 @@ test('double click and duplicate requests create one decision; key reuse with ne
   await box.getByRole('button', { name: 'Resolve…' }).click()
   await box.getByLabel('Confirm announcement').check()
   await box.getByTestId('save-decision').dblclick()
-  await expect(box.getByTestId('save-success')).toBeVisible()
+  await expect(page.getByTestId('move-notice')).toBeVisible()
   expect(await decisionsFor(FIXTURE, card.card_id)).toHaveLength(1)
 
   const audio = await cardId(SMOKE, c => c.project_id === 'audio_multimodal')
@@ -137,7 +141,8 @@ test('a lost response is recovered by a safe retry, without a duplicate', async 
   await expect(box.getByTestId('save-success')).toHaveCount(0)
   expect(await decisionsFor(SMOKE, submit.card_id)).toHaveLength(1) // the server did save it
   await box.getByRole('button', { name: 'Retry safely' }).click()
-  await expect(box.getByTestId('save-success')).toContainText('no duplicate was created')
+  await expect(page.getByTestId('move-notice')).toContainText('no duplicate was created')
+  await expect(page.getByTestId('move-notice')).toContainText('It stays where it is.')
   const saved = await decisionsFor(SMOKE, submit.card_id)
   expect(saved).toHaveLength(1)
   expect(saved[0].decision.tl_response.severity_override).toEqual({ proposed: 'HIGH', tl_selected: 'MEDIUM', reason: 'Known workaround limits the impact for this batch.' })
@@ -188,7 +193,7 @@ test('each structured resolution saves its own decision and leaves cards unchang
   await expect(box.getByTestId('save-decision')).toBeDisabled()
   await box.locator('textarea[name=note]').fill('Duplicate of another card.')
   await box.getByTestId('save-decision').click()
-  await expect(box.getByTestId('save-success')).toContainText('not evidence that the underlying issue is resolved')
+  await expect(box.getByTestId('decision-current')).toContainText('not evidence that the underlying issue is resolved')
 
   await open(page, FIXTURE)
   box = cardBox(page, alt.topic_name)
@@ -217,7 +222,7 @@ test('a stale edit is shown as a conflict, not saved over the newer decision', a
     await cardBox(p, card.topic_name).getByRole('button', { name: 'Approve…' }).click()
   }
   await cardBox(a, card.topic_name).getByTestId('save-decision').click()
-  await expect(cardBox(a, card.topic_name).getByTestId('save-success')).toBeVisible()
+  await expect(a.getByTestId('move-notice')).toBeVisible()
   const boxB = cardBox(b, card.topic_name)
   await boxB.getByTestId('save-decision').click()
   await expect(boxB.getByTestId('save-conflict')).toContainText('by U006')
@@ -238,15 +243,28 @@ test('model review Accept/Reject/Defer change only review records', async ({ pag
   await expect(items).toHaveCount(52)
   const ids = await items.evaluateAll(els => els.slice(0, 3).map(e => e.dataset.itemId))
   const item = id => page.locator(`[data-item-id="${id}"]`)
-  await item(ids[0]).getByTestId('review-accept').click()
-  await expect(items).toHaveCount(51) // accepted: out of the open list
+  // An acted item stays in place (so a double click cannot reach the next one), shows its state and offers Reopen.
+  await item(ids[0]).getByTestId('review-accept').dblclick()
+  await expect(item(ids[0]).getByTestId('review-state')).toHaveText('Accepted')
+  await expect(item(ids[0]).getByTestId('review-reopen')).toBeVisible()
+  await expect(item(ids[1]).getByTestId('review-state')).toHaveText('Open') // the double click did not reach it
+  await expect(items).toHaveCount(52)
   await item(ids[1]).getByTestId('review-reject').click()
-  await expect(items).toHaveCount(50)
+  await expect(item(ids[1]).getByTestId('review-state')).toHaveText('Rejected')
   await item(ids[2]).getByTestId('review-defer').click()
   await expect(item(ids[2]).getByTestId('review-history')).toContainText('defer (kept open)')
-  await expect(items).toHaveCount(50) // deferred stays open
+  await page.getByRole('button', { name: /^open/ }).click()
+  await expect(items).toHaveCount(50) // re-filtered: accepted and rejected leave the open list; deferred stays
   await page.getByRole('button', { name: /^accepted/ }).click()
-  await expect(item(ids[0]).getByTestId('review-state')).toHaveText('accepted')
+  await expect(item(ids[0]).getByTestId('review-state')).toHaveText('Accepted')
+  await expect(item(ids[0]).getByTestId('review-history')).toHaveCount(1)
+  expect((await item(ids[0]).getByTestId('review-history').locator('li').allTextContents()).length).toBe(1) // one accept, not two
+  // Reopen undoes an Accept: back to open, with the accept kept in the history.
+  await item(ids[0]).getByTestId('review-reopen').click()
+  await expect(item(ids[0]).getByTestId('review-state')).toHaveText('Open')
+  await expect(item(ids[0]).getByTestId('review-history')).toContainText('reopened')
+  await page.getByRole('button', { name: /^open/ }).click()
+  await expect(items).toHaveCount(51)
   await page.getByRole('button', { name: /^rejected/ }).click()
   await expect(item(ids[1]).getByTestId('review-history')).toContainText('negative example')
   const negatives = await server.api(`/api/runs/${SMOKE}/negative-examples`)
@@ -275,10 +293,12 @@ test('source and thread views come from saved evidence and keep superseded label
   const panel = page.getByTestId('evidence-detail')
   await expect(panel.getByTestId('superseded-banner')).toContainText('Not current: Superseded section')
   await expect(panel.getByTestId('superseded-label')).toBeVisible()
-  await expect(panel.getByTestId('evidence-text')).toContainText('[HISTORICAL - NOT CURRENT GUIDANCE')
+  // The retrieval annotation reads as a note, not a bracketed machine label.
+  await expect(panel.getByTestId('source-annotation').first()).toContainText('Not current guidance:')
+  await expect(panel.getByTestId('evidence-text')).not.toContainText('[HISTORICAL')
   await expect(panel).toContainText('Source date')
   await expect(panel).toContainText('Scope')
-  await expect(panel).toContainText('No Slack permalink stored')
+  await expect(panel).not.toContainText('permalink')
   await page.getByRole('button', { name: 'Close' }).click()
 
   await open(page, SMOKE)
@@ -286,7 +306,8 @@ test('source and thread views come from saved evidence and keep superseded label
   await details(audio, 'Sources & threads')
   await audio.getByTestId('thread-link').first().click()
   const thread = page.getByTestId('thread-detail')
-  await expect(thread.getByTestId('permalink-note')).toContainText('No Slack permalink is stored')
+  await expect(thread.getByTestId('permalink-note')).toContainText('there is no Slack link')
+  await expect(thread.getByTestId('permalink-note')).not.toContainText('data/fixtures')
   // The smoke run predates the fixture fingerprint: the thread is labelled current fixture content, apart from saved evidence.
   await expect(thread.getByTestId('fixture-status')).toHaveAttribute('data-status', 'NOT_RECORDED')
   await expect(thread.getByTestId('fixture-status')).toContainText('separate from the run\'s saved evidence')
@@ -297,7 +318,7 @@ test('source and thread views come from saved evidence and keep superseded label
   await page.getByRole('button', { name: 'Close' }).click()
   await details(audio, 'Sources & threads') // the reload collapsed the card
   await audio.getByTestId('source-link').first().click()
-  await expect(page.getByTestId('evidence-detail')).toContainText('saved evidence')
+  await expect(page.getByTestId('evidence-detail')).toContainText('saved copy')
 })
 
 test('failed, incomplete, scripted and fixture runs are labelled and never merged', async ({ page }) => {
@@ -330,7 +351,7 @@ test('failed, incomplete, scripted and fixture runs are labelled and never merge
   await page.getByTestId('project-select').selectOption('audio_multimodal')
   await expect(page.getByTestId('card')).toHaveCount(1)
   await expect(page.getByTestId('feed').locator('[data-card-line=OBSERVATION]')).toContainText('No action needed now')
-  await expect(page.getByTestId('visible-count')).toHaveText('Showing 1 of 3 active cards · audio_multimodal')
+  await expect(page.getByTestId('visible-count')).toHaveText('Showing 1 of 1 active card in audio_multimodal')
 })
 
 test('a saved decision reaches a later retrieval snapshot with its exact states', async ({ page }) => {
@@ -340,8 +361,7 @@ test('a saved decision reaches a later retrieval snapshot with its exact states'
   const box = cardBox(page, card.topic_name)
   await box.getByRole('button', { name: 'Approve…' }).click()
   await box.getByTestId('save-decision').click()
-  await expect(box.getByTestId('indexing-status')).toHaveCount(0) // a fresh save shows success first
-  await box.getByRole('button', { name: /Done/ }).click()
+  await expect(page.getByTestId('move-notice')).toContainText('Moved to Reviewed')
   const cutoff = new Date().toISOString() // after the decision was saved: a coherent later cutoff
   const run = args => execFileSync('uv', ['run', '--locked', 'python', ...args], { cwd: REPO, encoding: 'utf-8' })
   const snapshotArgs = ['scripts/build_decision_snapshot.py', '--cutoff', cutoff, '--index-dir', `${server.dir}/snapshot`,
@@ -378,7 +398,7 @@ test('two runs with the same run_id and card_id keep separate decisions, also af
   await box.getByLabel('Dismiss').check()
   await box.locator('textarea[name=note]').fill('Handled in the engineering thread.')
   await box.getByTestId('save-decision').click()
-  await expect(box.getByTestId('save-success')).toBeVisible()
+  await expect(page.getByTestId('move-notice')).toBeVisible()
   for (const step of ['now', 'restart']) {
     if (step === 'restart') await server.restart()
     await open(page, V2, `&project=${card.project_id}`)
@@ -403,7 +423,7 @@ test('the session is locked to one team lead: no identity switch, other IDs refu
   const box = cardBox(page, card.topic_name)
   await box.getByRole('button', { name: 'Approve…' }).click()
   await box.getByTestId('save-decision').click()
-  await expect(box.getByTestId('save-success')).toBeVisible()
+  await expect(page.getByTestId('move-notice')).toBeVisible()
   expect((await decisionsFor(FIXTURE)).map(d => d.actor_id)).toEqual(['U006'])
 })
 
@@ -439,12 +459,15 @@ test('closed cards are easy to scan; an opened card leads with what to check, wi
   await box.getByTestId('all-reasons').locator(':scope > summary').click()
   const review = box.getByTestId('what-to-review')
   await expect(review).toContainText('2 earlier review flags are still open; topic grouping needs review')
-  await expect(review.getByTestId('upstream-finding').first()).toContainText('What the upstream check disputed')
+  await expect(review.getByTestId('upstream-finding').first()).toContainText('Technical record')
   await box.getByTestId('all-reasons').locator(':scope > summary').click()
+  // Technical (the raw saved record) is a developer view: hidden until Developer details is switched on.
+  await expect(box.getByRole('tab', { name: 'Technical' })).toHaveCount(0)
+  await page.getByTestId('debug-toggle').click()
   await box.getByRole('tab', { name: 'Technical' }).click()
   await expect(box.getByTestId('saved-title')).toContainText(submit.topic_name) // the saved label is kept here
   await box.getByRole('tab', { name: 'Action & draft' }).click()
-  await checks.getByTestId('check-link').filter({ hasText: 'Open its Model Review Queue item' }).first().click()
+  await checks.getByTestId('check-link').filter({ hasText: 'Open this flag in the review queue' }).first().click()
   await expect(page.locator('[data-testid=review-item][data-focused]')).toHaveCount(1)
 
   // Opened smoke playback (the reload-workaround card): the saved question leads, once; withheld named, not shown.
@@ -523,10 +546,8 @@ test('approval moves the card to Reviewed; its model-review item stays open; cou
   await expect(box.getByTestId('open-obligations')).toHaveText('1 model-review item open')
   await box.getByRole('button', { name: 'Approve…' }).click()
   await box.getByTestId('save-decision').click()
-  await expect(box.getByTestId('save-success')).toBeVisible()
-  await expect(page.getByTestId('feed').locator(`[data-card-id="${card.card_id}"]`)).toHaveCount(1) // stays until Done
-  await box.getByRole('button', { name: 'Done (move to Reviewed)' }).click()
-  await expect(page.getByTestId('feed').locator(`[data-card-id="${card.card_id}"]`)).toHaveCount(0)
+  await expect(page.getByTestId('move-notice')).toContainText('Moved to Reviewed')
+  await expect(page.getByTestId('feed').locator(`[data-card-id="${card.card_id}"]`)).toHaveCount(0) // moved at once
   await expect(page.getByTestId('stat-awaiting')).toContainText('1')
   await expect(page.getByTestId('stat-awaiting')).toContainText('incl. 0 pending actions')
   await expect(page.getByTestId('stat-reviewed')).toContainText('1')
@@ -549,12 +570,11 @@ test('a failed refresh after saving keeps the card on screen and says so', async
   const card = await cardId(FIXTURE, c => c.card_line === 'RECOMMENDED_ACTION')
   await open(page, FIXTURE)
   const box = cardBox(page, card.topic_name)
+  await page.route('**/decisions', route => (route.request().method() === 'GET' ? route.abort('connectionreset') : route.continue()))
   await box.getByRole('button', { name: 'Approve…' }).click()
   await box.getByTestId('save-decision').click()
-  await expect(box.getByTestId('save-success')).toBeVisible()
-  await page.route('**/decisions', route => (route.request().method() === 'GET' ? route.abort('connectionreset') : route.continue()))
-  await box.getByRole('button', { name: 'Done (move to Reviewed)' }).click()
   await expect(page.getByTestId('sync-error')).toContainText('last confirmed state')
+  await expect(box.getByTestId('save-success')).toBeVisible() // the saved decision stays on the card
   await expect(page.getByTestId('feed').locator(`[data-card-id="${card.card_id}"]`)).toHaveCount(1)
   await page.unroute('**/decisions')
   await page.getByTestId('sync-error').getByRole('button', { name: 'Retry' }).click()

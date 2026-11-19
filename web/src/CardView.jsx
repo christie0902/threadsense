@@ -3,7 +3,9 @@ import { useRef, useState } from 'react'
 import { getJSON } from './api.js'
 import DecisionPanel from './DecisionPanel.jsx'
 import FeedbackPanel from './Feedback.jsx'
+import { Gloss } from './Markdown.jsx'
 import ReviewPanel, { WhatToCheck } from './ReviewPanel.jsx'
+import { cleanFindings, plural, threadLabels, uniqueAgainst } from './text.js'
 import { Badge, CopyButton, Icon, Json, LINE_LABELS, LINE_TONES, NotCurrent, SeverityBadge, SourceBadge, when, words } from './ui.jsx'
 
 const ACCENTS = { RECOMMENDED_ACTION: 'bg-emerald-400', NEEDS_REVIEW: 'bg-amber-400', OBSERVATION: 'bg-violet-400' }
@@ -15,6 +17,11 @@ const RELATIONS = {
 }
 const MODES = { LIVE: 'Live model run', SCRIPTED: 'Scripted run (prepared judgments)', TEST_FIXTURE: 'Test fixture (hand-written)' }
 // The closed card's line when it shows no action box (next_step from runs.presentation); wording is fixed UI copy.
+// How a source was used, in a reader's words (the saved enum stays in the Technical tab).
+const USES = { MEMBER_REPORT: 'thread message', HISTORY_ONLY: 'history only', ANNOUNCEMENT: 'announcement', GUIDANCE: 'guidance',
+  ENACTED_DECISION: 'enacted decision', PRIOR_DECISION: 'earlier decision', PRIOR_ANNOUNCEMENT: 'earlier announcement' }
+// Findings longer than this many sentences are folded behind "Show all".
+const FINDINGS_SHOWN = 6
 const STEP_STYLES = {
   NO_ACTION_NEEDED: ['check', 'text-emerald-300'], NO_INTERVENTION_PROPOSED: ['eye', 'text-violet-300'],
   RECOMMENDATION_WITHHELD: ['alert', 'text-amber-300'], NO_RECOMMENDATION_AVAILABLE: ['alert', 'text-slate-400'],
@@ -45,7 +52,7 @@ function ActionTab({ action, alternatives, closeCall }) {
               <b className="font-semibold">Applies only as stated: </b>{action.scope_note}
             </div>
           )}
-          <div className="quote mt-2" data-testid="action-draft">{action.draft_text}</div>
+          <div className="quote mt-2" data-testid="action-draft"><Gloss text={action.draft_text} /></div>
         </div>
       )}
       {shown && !action.draft_text && action.scope_note && (
@@ -70,8 +77,8 @@ function ActionTab({ action, alternatives, closeCall }) {
                           ? " The card shows the advisor's draft wording of this action; this option was preferred in the comparison." : ''}
                       </div>
                     )}
-                    {a.instruction && <div className="prose-pre text-sm leading-relaxed text-slate-300">{a.instruction}</div>}
-                    {a.rationale && <div className="prose-pre text-xs leading-relaxed text-slate-400"><b className="text-slate-300">Why:</b> {a.rationale}</div>}
+                    {a.instruction && <div className="prose-pre text-sm leading-relaxed text-slate-300"><Gloss text={a.instruction} /></div>}
+                    {a.rationale && <div className="prose-pre text-xs leading-relaxed text-slate-400"><b className="text-slate-300">Why:</b> <Gloss text={a.rationale} /></div>}
                     {a.draft_text && (
                       <details className="group" data-testid="alternative-draft">
                         <summary className="flex cursor-pointer list-none items-center gap-1.5 text-xs font-medium text-slate-300 hover:text-white [&::-webkit-details-marker]:hidden">
@@ -79,7 +86,7 @@ function ActionTab({ action, alternatives, closeCall }) {
                         </summary>
                         <div className="mt-3 space-y-2">
                           <div className="flex justify-end"><CopyButton text={a.draft_text} /></div>
-                          <div className="quote">{a.draft_text}</div>
+                          <div className="quote"><Gloss text={a.draft_text} /></div>
                         </div>
                       </details>
                     )}
@@ -103,21 +110,42 @@ const KIND_NOTES = {
   MONITORING: 'No action is needed now, but the thread was judged still open.',
 }
 
+/** Saved findings as sentences: pipeline notes rewritten, repeats of the summary and details removed, long lists folded. */
+function Findings({ findings, shown, testid, note }) {
+  const [all, setAll] = useState(false)
+  const { sentences, notes } = cleanFindings(findings, shown)
+  if (!sentences.length && !notes.length) return <div className="mt-1 text-xs text-slate-400" data-testid={testid}>Nothing beyond what the card already shows.</div>
+  const visible = all ? sentences : sentences.slice(0, FINDINGS_SHOWN)
+  return (
+    <div className="mt-1.5" data-testid={testid}>
+      {note && <div className="mb-1 text-xs text-slate-400" data-testid="saved-reasoning-note">{note}</div>}
+      {visible.length > 0 && <ul className="list-disc space-y-1 pl-5 text-sm leading-relaxed text-slate-300">{visible.map((t, i) => <li key={i} data-testid="finding"><Gloss text={t} /></li>)}</ul>}
+      {sentences.length > FINDINGS_SHOWN && (
+        <button type="button" className="link mt-1 text-xs" onClick={() => setAll(!all)} data-testid="findings-more">
+          {all ? 'Show fewer' : `Show all ${sentences.length} findings`}</button>
+      )}
+      {notes.length > 0 && <div className="mt-1.5 text-xs text-slate-400" data-testid="findings-notes">{notes.join(' ')}</div>}
+    </div>
+  )
+}
+
 /** The opened card's account: what happened (detail sentences, or an earlier card's saved findings) and why this next step. */
-function Account({ presentation, action }) {
+function Account({ presentation, action, summary }) {
   if (!presentation) return null
   const { details, next_step: step, outstanding_step: outstanding, briefing } = presentation
+  const detailSentences = uniqueAgainst(details.sentences, [summary])
+  const shown = [summary, ...detailSentences]
   const operational = action && action.action_type !== 'NO_ACTION'
   return (
     <div className="grid gap-5 md:grid-cols-2">
       <section data-testid="what-happened" data-source={details.source}>
         <h4 className="eyebrow">What happened</h4>
-        {details.source === 'CARD' && details.sentences.length > 0 && (
+        {details.source === 'CARD' && detailSentences.length > 0 && (
           <ul className="mt-1.5 list-disc space-y-1 pl-5 text-sm leading-relaxed text-slate-200">
-            {details.sentences.map((d, i) => <li key={i} className="prose-pre" data-testid="detail-sentence">{d}</li>)}
+            {detailSentences.map((d, i) => <li key={i} className="prose-pre" data-testid="detail-sentence"><Gloss text={d} /></li>)}
           </ul>
         )}
-        {details.source === 'CARD' && details.sentences.length === 0 && (
+        {details.source === 'CARD' && detailSentences.length === 0 && (
           <div className="mt-1.5 text-sm text-slate-400" data-testid="no-details">No further detail is shown beyond the summary.</div>
         )}
         {details.source === 'SAVED_REASONING' && (
@@ -125,21 +153,21 @@ function Account({ presentation, action }) {
             <summary className="flex cursor-pointer list-none items-center gap-1.5 text-sm text-slate-300 hover:text-white [&::-webkit-details-marker]:hidden">
               <Icon name="chevron" className="h-3.5 w-3.5 text-slate-400 transition group-open:rotate-90" />Show the supported findings
             </summary>
-            <div className="mt-1 text-xs text-slate-400" data-testid="saved-reasoning-note">Saved wording from an earlier card version (written before short and detailed text were separated): the findings that passed the evidence check.</div>
-            <div className="prose-pre mt-1.5 text-sm leading-relaxed text-slate-300">{details.findings}</div>
+            <Findings findings={details.findings} shown={shown} testid="saved-findings"
+              note="From an earlier card version: the findings that passed the evidence check." />
           </details>
         )}
         {details.source === 'CARD' && details.findings && (
           <details className="mt-2 text-xs" data-testid="supported-findings">
-            <summary className="cursor-pointer text-slate-400 hover:text-slate-300">All supported findings</summary>
-            <div className="prose-pre mt-1 leading-relaxed text-slate-400">{details.findings}</div>
+            <summary className="cursor-pointer text-slate-400 hover:text-slate-300">More supported findings</summary>
+            <Findings findings={details.findings} shown={shown} testid="card-findings" />
           </details>
         )}
       </section>
       <section data-testid="why-next-step" data-status={step.status}>
         <h4 className="eyebrow">{operational ? 'Why this next step' : step.label}</h4>
-        {step.rationale && <div className="prose-pre mt-1.5 text-sm leading-relaxed text-slate-200" data-testid="next-step-rationale">{step.rationale}</div>}
-        {step.explanation && <div className="prose-pre mt-1.5 text-sm leading-relaxed text-slate-400" data-testid="next-step-explanation">{step.explanation}</div>}
+        {step.rationale && <div className="prose-pre mt-1.5 text-sm leading-relaxed text-slate-200" data-testid="next-step-rationale"><Gloss text={step.rationale} /></div>}
+        {step.explanation && <div className="prose-pre mt-1.5 text-sm leading-relaxed text-slate-400" data-testid="next-step-explanation"><Gloss text={step.explanation} /></div>}
         {step.derived && <div className="mt-1.5 text-xs text-slate-400" data-testid="next-step-derived">Read from this run's saved result (an earlier card version).</div>}
         {outstanding && outstanding.text_source === 'SUPPORTED_STATEMENTS' && (
           <div className="mt-3 text-xs leading-relaxed text-slate-400" data-testid="outstanding-detail" data-kind={outstanding.kind}>
@@ -157,9 +185,10 @@ function Account({ presentation, action }) {
   )
 }
 
-function SourcesTab({ card, cited, openPanel }) {
+function SourcesTab({ card, cited, openPanel, threadNames = {} }) {
   const sources = cited.filter(e => e.origin === 'retrieved_source' || e.missing_from_ledger)
   const messages = cited.filter(e => e.origin === 'member_message').length
+  const labels = { ...threadLabels(card.related_threads), ...threadNames }
   return (
     <div className="grid gap-5 md:grid-cols-2">
       <div>
@@ -170,8 +199,8 @@ function SourcesTab({ card, cited, openPanel }) {
               <span className="mt-0.5 font-mono text-base leading-none text-cyan-300">#</span>
               <div className="min-w-0">
                 <button type="button" className="link text-sm" data-testid="thread-link"
-                  onClick={() => openPanel({ type: 'thread', channel: t.channel_id, thread: t.thread_id })}>{t.label}</button>
-                <div className="text-xs text-slate-400">{t.permalink ? <a className="link" href={t.permalink} target="_blank" rel="noreferrer">Slack link</a> : 'No Slack link stored · opens the internal view'}</div>
+                  onClick={() => openPanel({ type: 'thread', channel: t.channel_id, thread: t.thread_id })}><Gloss text={labels[t.thread_id]} /></button>
+                {t.permalink && <div className="text-xs text-slate-400"><a className="link" href={t.permalink} target="_blank" rel="noreferrer">Open in Slack</a></div>}
               </div>
             </li>
           ))}
@@ -185,12 +214,12 @@ function SourcesTab({ card, cited, openPanel }) {
             <li key={e.evidence_id} className="panel-inset flex flex-wrap items-center gap-1.5 px-3 py-2">
               <Icon name="doc" className="h-3.5 w-3.5 text-slate-400" />
               <button type="button" className="link text-sm" data-testid="source-link" onClick={() => openPanel({ type: 'evidence', id: e.evidence_id })}>
-                {e.title || e.evidence_id}{e.sections?.length ? ` - ${e.sections.join(', ')}` : ''}
+                <Gloss text={`${e.title || e.evidence_id}${e.sections?.length ? ` - ${e.sections.join(', ')}` : ''}`} />
               </button>
               <NotCurrent label={e.superseded_label} />
             </li>
           ))}
-          {messages > 0 && <li className="px-1 text-xs text-slate-400">{messages} cited messages from the related threads</li>}
+          {messages > 0 && <li className="px-1 text-xs text-slate-400">{plural(messages, 'cited message')} from the related threads</li>}
           {sources.length === 0 && messages === 0 && <li className="text-xs text-slate-400">None.</li>}
         </ul>
       </div>
@@ -206,9 +235,9 @@ function EvidenceTab({ detail, error, openPanel }) {
       {detail.evidence.map(e => (
         <li key={e.evidence_id} className="flex flex-wrap items-center gap-1.5 rounded-lg px-2 py-1.5 hover:bg-white/[0.03]">
           <button type="button" className="link text-sm" onClick={() => openPanel({ type: 'evidence', id: e.evidence_id })}>
-            {e.title || e.evidence_id}{e.sections?.length ? ` - ${e.sections.join(', ')}` : ''}
+            <Gloss text={`${e.title || e.evidence_id}${e.sections?.length ? ` - ${e.sections.join(', ')}` : ''}`} />
           </button>
-          <Badge>{words(e.use || e.origin)}</Badge>
+          <Badge>{USES[e.use] || words(e.use || e.origin)}</Badge>
           {e.cited && <Badge tone="cyan">cited</Badge>}
           <NotCurrent label={e.superseded_label} />
         </li>
@@ -235,7 +264,7 @@ function TechnicalTab({ card, detail, run, displayTitle }) {
 function EditorialNote({ note, openPanel }) {
   return (
     <div className="mt-2 rounded-lg border border-amber-300/20 bg-amber-300/[0.04] px-3 py-2 text-xs text-slate-300" data-testid="editorial-note">
-      <span className="font-medium text-amber-100">{note.label}</span> <span className="text-slate-400">(editorial note, not judged)</span>: {note.text}
+      <span className="font-medium text-amber-100">{note.label}</span> <span className="text-slate-400">(editorial note, not judged)</span>: <Gloss text={note.text} />
       <span className="ml-1">{note.sources.map(src => (
         <button key={src.evidence_id} type="button" className="link mr-2" data-testid="editorial-source" onClick={() => openPanel?.({ type: 'evidence', id: src.evidence_id })}>source</button>))}</span>
     </div>
@@ -252,7 +281,7 @@ function DecisionStatus({ row }) {
   return <Badge tone={tone} data-testid="lifecycle-status" data-status={row.decision.status}>{row.decision.label}</Badge>
 }
 
-export default function CardView({ runKey, run, item, row, actor, decisionState, onDecisionChanged, openPanel, openQueueItem, wide = false }) {
+export default function CardView({ runKey, run, item, row, actor, decisionState, onDecisionChanged, openPanel, openQueueItem, wide = false, debug = false, threadNames = {} }) {
   const { card, alternatives, cited_evidence: cited, allowed_decisions: allowed, semantic_source: source, review, presentation } = item
   const step = presentation?.next_step
   const outstanding = presentation?.outstanding_step
@@ -268,11 +297,14 @@ export default function CardView({ runKey, run, item, row, actor, decisionState,
       ref.current.scrollIntoView({ block: 'start', behavior: 'smooth' })
     setOpen(!open)
   }
+  // Technical (raw saved record) only with Developer details on.
   const tabs = [
     ...((action && action.action_type !== 'NO_ACTION') || alternatives.length ? [['action', 'Action & draft']] : []),
-    ['sources', 'Sources & threads'], ['evidence', 'All evidence'], ['technical', 'Technical'],
+    ['sources', 'Sources & threads'], ['evidence', 'All evidence'], ...(debug ? [['technical', 'Technical']] : []),
   ]
   const [tab, setTab] = useState(tabs[0][0])
+  const [draftOpen, setDraftOpen] = useState(false)
+  const shownTab = tabs.some(([t]) => t === tab) ? tab : tabs[0][0]
   const [detail, setDetail] = useState(null)
   const [detailError, setDetailError] = useState(null)
   const choose = t => {
@@ -282,10 +314,10 @@ export default function CardView({ runKey, run, item, row, actor, decisionState,
   }
   const sourceCount = cited.filter(e => e.origin === 'retrieved_source' || e.missing_from_ledger).length
   const operational = action && action.action_type !== 'NO_ACTION'
-  const showDraft = () => { if (!open) setOpen(true); choose('action') }
 
   return (
     <motion.article ref={ref} layout initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, height: 0 }}
+      transition={{ duration: 0.18, ease: 'easeOut' }}
       className={`panel relative scroll-mt-20 self-start overflow-hidden ${open || wide ? 'col-span-full' : ''}`} data-testid="card" data-card-id={card.card_id} data-card-line={card.card_line} data-topic-name={card.topic_name}>
       <span className={`absolute inset-y-0 left-0 w-[3px] ${ACCENTS[card.card_line]}`} aria-hidden="true" />
       <div className="p-5 pl-6 sm:p-6 sm:pl-7">
@@ -309,7 +341,7 @@ export default function CardView({ runKey, run, item, row, actor, decisionState,
               {presentation?.inventory === 'PROCESSING_HISTORY' && <Badge data-testid="processing-badge">Processing history</Badge>}
               {presentation?.combined && <Badge data-testid="combined-badge">Combined issue · replaces {presentation.combined.replaced_cards.length} earlier cards</Badge>}
             </div>
-            <h3 className="mt-2.5 font-display text-lg font-semibold leading-snug text-white" data-testid="card-topic">{displayTitle}</h3>
+            <h3 className="mt-2.5 font-display text-lg font-semibold leading-snug text-white" data-testid="card-topic"><Gloss text={displayTitle} /></h3>
           </div>
           <div className="flex items-center gap-2">
             <SeverityBadge severity={card.severity} />
@@ -322,7 +354,7 @@ export default function CardView({ runKey, run, item, row, actor, decisionState,
         </header>
 
         <div className={open || wide ? 'lg:grid lg:grid-cols-[minmax(0,1.2fr)_minmax(0,1fr)] lg:items-start lg:gap-6' : ''}>
-        <p className="prose-pre mt-3 text-sm leading-relaxed text-slate-300" data-testid="card-summary">{card.summary}</p>
+        <p className="prose-pre mt-3 text-sm leading-relaxed text-slate-300" data-testid="card-summary"><Gloss text={card.summary} /></p>
         {presentation?.editorial_notes?.filter(n => n.placement === 'SUMMARY').map(n => <EditorialNote key={n.label} note={n} openPanel={openPanel} />)}
 
         {operational && (
@@ -331,13 +363,16 @@ export default function CardView({ runKey, run, item, row, actor, decisionState,
             <div className="min-w-0">
               <div className="eyebrow text-cyan-300/80" data-testid="action-heading">{closeCall ? 'One option (closely matched; choose one)' : 'Recommended next step'}</div>
               <div className="mt-0.5 font-medium text-white" data-testid="action-label">{action.label}</div>
-              {action.instruction && <div className="prose-pre mt-0.5 text-sm leading-relaxed text-slate-300" data-testid="action-instruction">{action.instruction}</div>}
-              {action.draft_text && (
+              {action.instruction && <div className="prose-pre mt-0.5 text-sm leading-relaxed text-slate-300" data-testid="action-instruction"><Gloss text={action.instruction} /></div>}
+              {/* Opened, the card shows the draft under "Action & draft"; closed, it can be read and copied here. */}
+              {action.draft_text && !open && (
                 <div className="mt-2.5 flex flex-wrap items-center gap-2">
                   <CopyButton text={action.draft_text} />
-                  <button type="button" className="link text-xs" data-testid="show-draft" onClick={showDraft}>Show draft</button>
+                  <button type="button" className="link text-xs" data-testid="show-draft" aria-expanded={draftOpen} onClick={() => setDraftOpen(!draftOpen)}>
+                    {draftOpen ? 'Hide draft' : 'Show draft'}</button>
                 </div>
               )}
+              {action.draft_text && !open && draftOpen && <div className="quote mt-2 text-sm" data-testid="inline-draft"><Gloss text={action.draft_text} /></div>}
             </div>
           </div>
         )}
@@ -359,8 +394,8 @@ export default function CardView({ runKey, run, item, row, actor, decisionState,
           <div className="mt-2 rounded-lg border border-amber-300/20 bg-amber-300/[0.05] px-3 py-2 text-sm" data-testid="outstanding-step" data-kind={outstanding.kind}>
             <div className="font-medium text-amber-100" data-testid="outstanding-label">{outstanding.label}</div>
             {outstanding.text_source === 'SUPPORTED_STATEMENTS' && (open
-              ? outstanding.details.map((d, i) => <div key={i} className="prose-pre mt-0.5 text-xs leading-relaxed text-slate-300" data-testid="outstanding-text">{d}</div>)
-              : <div className="prose-pre mt-0.5 line-clamp-2 text-xs leading-relaxed text-slate-300" data-testid="outstanding-text">{outstanding.details[0]}</div>)}
+              ? outstanding.details.map((d, i) => <div key={i} className="prose-pre mt-0.5 text-xs leading-relaxed text-slate-300" data-testid="outstanding-text"><Gloss text={d} /></div>)
+              : <div className="prose-pre mt-0.5 line-clamp-2 text-xs leading-relaxed text-slate-300" data-testid="outstanding-text"><Gloss text={outstanding.details[0]} /></div>)}
           </div>
         )}
         {presentation?.human_edits?.length > 0 && (
@@ -409,14 +444,16 @@ export default function CardView({ runKey, run, item, row, actor, decisionState,
         </div>
 
         <div className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-2 border-t border-white/[0.06] pt-3 text-xs text-slate-400">
-          <span className="inline-flex items-center gap-1.5"><Icon name="thread" className="h-3.5 w-3.5" />{card.related_threads.length} threads</span>
-          <span className="inline-flex items-center gap-1.5"><Icon name="doc" className="h-3.5 w-3.5" />{sourceCount} cited sources</span>
+          <span className="inline-flex items-center gap-1.5"><Icon name="thread" className="h-3.5 w-3.5" />{plural(card.related_threads.length, 'thread')}</span>
+          <span className="inline-flex items-center gap-1.5"><Icon name="doc" className="h-3.5 w-3.5" />{plural(sourceCount, 'cited source')}</span>
           {alternatives.length > 0 && <span className="inline-flex items-center gap-1.5"><Icon name="layers" className="h-3.5 w-3.5" />{alternatives.length} alternative{alternatives.length === 1 ? '' : 's'}</span>}
           <span className="inline-flex items-center gap-1.5" data-testid="card-activity" data-basis={item.activity?.basis || 'NONE'}>
             <Icon name="clock" className="h-3.5 w-3.5" />{item.activity?.latest_at ? `${ACTIVITY_LABELS[item.activity.basis] || 'Latest activity'} ${when(item.activity.latest_at)}` : 'No source time saved'}
           </span>
           <button type="button" className="btn btn-sm ml-auto" aria-expanded={open} data-testid="card-expand" onClick={toggle}>
-            {open ? 'Hide details' : review?.checks?.length ? 'What to check & details' : 'Details & evidence'}<Icon name="chevron" className={`h-3.5 w-3.5 transition ${open ? 'rotate-90' : ''}`} />
+            {open ? 'Hide details' : 'Details & evidence'}
+            {!open && review?.checks?.length > 0 && <span className="rounded-full bg-amber-300/15 px-1.5 text-[11px] font-semibold text-amber-200" data-testid="checks-count">{review.checks.length} to check</span>}
+            <Icon name="chevron" className={`h-3.5 w-3.5 transition ${open ? 'rotate-90' : ''}`} />
           </button>
         </div>
 
@@ -425,7 +462,7 @@ export default function CardView({ runKey, run, item, row, actor, decisionState,
             <motion.div key="detail" initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }}
               transition={{ duration: 0.2 }} className="overflow-hidden" data-testid="card-detail">
               <div className="mt-4 space-y-5">
-                <Account presentation={presentation} action={action} />
+                <Account presentation={presentation} action={action} summary={card.summary} />
                 <WhatToCheck checks={review?.checks} openPanel={openPanel} openQueueItem={openQueueItem} />
                 {review && (review.items.length > 0 || review.withheld?.length > 0 || review.other_notes.length > 0) && (
                   <details className="group panel-inset" data-testid="all-reasons">
@@ -435,19 +472,19 @@ export default function CardView({ runKey, run, item, row, actor, decisionState,
                     <div className="border-t border-white/[0.06] p-3"><ReviewPanel review={review} openPanel={openPanel} openQueueItem={openQueueItem} /></div>
                   </details>
                 )}
-                <FeedbackPanel runKey={runKey} cardId={card.card_id} actor={actor} />
+                <FeedbackPanel runKey={runKey} cardId={card.card_id} actor={actor} relatedThreads={card.related_threads.map(t => ({ ...t, label: threadNames[t.thread_id] || t.label }))} />
               </div>
               <div role="tablist" className="mt-4 flex flex-wrap gap-1 rounded-xl border border-white/[0.06] bg-ink-950/50 p-1">
                 {tabs.map(([t, label]) => (
-                  <button key={t} type="button" role="tab" aria-selected={tab === t} onClick={() => choose(t)}
-                    className={`rounded-lg px-3 py-1.5 text-xs font-medium transition ${tab === t ? 'bg-white/[0.08] text-white' : 'text-slate-400 hover:text-slate-200'}`}>{label}</button>
+                  <button key={t} type="button" role="tab" aria-selected={shownTab === t} onClick={() => choose(t)}
+                    className={`rounded-lg px-3 py-1.5 text-xs font-medium transition ${shownTab === t ? 'bg-white/[0.08] text-white' : 'text-slate-400 hover:text-slate-200'}`}>{label}</button>
                 ))}
               </div>
               <div className="pt-5" role="tabpanel">
-                {tab === 'action' && <ActionTab action={action} alternatives={alternatives} closeCall={closeCall} />}
-                {tab === 'sources' && <SourcesTab card={card} cited={cited} openPanel={openPanel} />}
-                {tab === 'evidence' && <div data-testid="all-evidence"><EvidenceTab detail={detail} error={detailError} openPanel={openPanel} /></div>}
-                {tab === 'technical' && <div data-testid="technical-details"><TechnicalTab card={card} detail={detail} run={run} displayTitle={displayTitle} /></div>}
+                {shownTab === 'action' && <ActionTab action={action} alternatives={alternatives} closeCall={closeCall} />}
+                {shownTab === 'sources' && <SourcesTab card={card} cited={cited} openPanel={openPanel} threadNames={threadNames} />}
+                {shownTab === 'evidence' && <div data-testid="all-evidence"><EvidenceTab detail={detail} error={detailError} openPanel={openPanel} /></div>}
+                {shownTab === 'technical' && <div data-testid="technical-details"><TechnicalTab card={card} detail={detail} run={run} displayTitle={displayTitle} /></div>}
               </div>
             </motion.div>
           )}

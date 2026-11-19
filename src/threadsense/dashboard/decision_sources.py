@@ -28,12 +28,13 @@ from threadsense.routing import ROOT, aware
 
 EXPORT_DIR = ROOT/'.state/dashboard/decision_exports'
 STATUS = {'APPROVED': 'tl_approved', 'APPROVED_WITH_EDITS': 'tl_approved', 'REJECTED': 'tl_rejected',
-          'OVERRIDDEN': 'tl_overridden'}
+          'OVERRIDDEN': 'tl_overridden', 'DEFERRED': 'tl_deferred'}
 RESPONSE = {'APPROVED': 'approved', 'APPROVED_WITH_EDITS': 'approved_with_edits', 'REJECTED': 'rejected',
-            'OVERRIDDEN': 'overridden'}
+            'OVERRIDDEN': 'overridden', 'DEFERRED': 'deferred'}
 KIND_WORDING = {'APPROVE_ACTION': 'approved the recommended action', 'CONFIRM_FAQ_UPDATE': 'confirmed an FAQ update',
                 'CONFIRM_ANNOUNCEMENT': 'confirmed an announcement', 'OVERRIDE_SEVERITY': 'overrode the assessed severity',
-                'DISMISS': 'dismissed the card', 'ROUTE_TO_EXPERT': 'routed the topic to an expert'}
+                'DISMISS': 'dismissed the card', 'ROUTE_TO_EXPERT': 'routed the topic to an expert',
+                'REOPEN': 'reopened the card for another decision (approving nothing)'}
 
 
 class _Dumper(yaml.SafeDumper):

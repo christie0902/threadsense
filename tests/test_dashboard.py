@@ -533,3 +533,45 @@ def test_approval_moves_nothing_in_the_model_review_queue(env, catalog):
     assert brief[card['card_id']]['resolved'] and brief[card['card_id']]['card'] == card  # card text unchanged
     head = client.get(f'/api/runs/{FIXTURE}/decisions').json()['decisions'][-1]
     assert (head['kind'], head['decision']['execution']['state']) == ('APPROVE_ACTION', 'NOT_EXECUTED')
+
+
+def test_a_closed_card_can_be_reopened_with_a_reason_and_nothing_is_approved(env, catalog):
+    client, store, clock, _ = env
+    card = card_named(catalog, FIXTURE, '[Test fixture] Fictional phone number quarantine handling')
+    # Nothing to reopen yet: a card without a closing decision refuses REOPEN.
+    early = post(client, FIXTURE, card['card_id'], {'kind': 'REOPEN', 'actor_id': 'U006', 'note': 'Too early.'}, 'key-r0')
+    assert early.status_code == 422 and 'closing decision' in early.json()['detail']
+    approved = post(client, FIXTURE, card['card_id'], {'kind': 'APPROVE_ACTION', 'actor_id': 'U006'}, 'key-r1').json()['entry']
+    clock.value = '2026-10-30T15:10:00Z'
+    no_reason = post(client, FIXTURE, card['card_id'], {'kind': 'REOPEN', 'actor_id': 'U006', 'expected_head': approved['entry_id']}, 'key-r2')
+    assert no_reason.status_code == 422
+    reopened = post(client, FIXTURE, card['card_id'], {'kind': 'REOPEN', 'actor_id': 'U006', 'expected_head': approved['entry_id'],
+                                                      'note': 'Approved the wrong card.'}, 'key-r3')
+    assert reopened.status_code == 201
+    e = reopened.json()['entry']
+    assert (e['sequence'], e['supersedes_entry_id'], e['text']['origin']) == (2, approved['entry_id'], 'NONE')
+    assert (e['decision']['tl_response']['outcome'], e['decision']['tl_response']['approved_actions']) == ('DEFERRED', [])
+    # Reopened twice in a row is refused; the card can be decided again.
+    again = post(client, FIXTURE, card['card_id'], {'kind': 'REOPEN', 'actor_id': 'U006', 'expected_head': e['entry_id'], 'note': 'x'}, 'key-r4')
+    assert again.status_code == 422
+    redo = post(client, FIXTURE, card['card_id'], {'kind': 'APPROVE_ACTION', 'actor_id': 'U006', 'expected_head': e['entry_id']}, 'key-r5')
+    assert redo.status_code == 201 and redo.json()['entry']['sequence'] == 3
+    assert [x['kind'] for x in store.history('card', catalog.get(FIXTURE).ref, card['card_id'])] == ['APPROVE_ACTION', 'REOPEN', 'APPROVE_ACTION']
+    # An observation (no decision options) never takes REOPEN.
+    observation = next((c for c in catalog.get(FIXTURE).cards.values() if c['card_line'] == 'OBSERVATION'), None)
+    if observation:
+        refused = post(client, FIXTURE, observation['card_id'], {'kind': 'REOPEN', 'actor_id': 'U006', 'note': 'x'}, 'key-r6')
+        assert refused.status_code == 422
+
+
+def test_evidence_says_whether_its_thread_can_be_opened_and_messages_read_naturally(tmp_path):
+    from threadsense.dashboard.runs import message_title, thread_in_fixture
+    assert message_title('ENGINEER') == 'Message by an engineer'
+    assert message_title('QA_TUTOR') == 'Message by a QA tutor'
+    assert message_title(None) == 'Message by a participant'
+    root = tmp_path/'slack'
+    (root/'channels').mkdir(parents=True)
+    (root/'channels'/'C_X.json').write_text(json.dumps({'channel': {}, 'history': [{'ts': '1.000001'}], 'replies': {}}), encoding='utf-8')
+    assert thread_in_fixture(root, 'C_X', '1.000001') is True
+    assert thread_in_fixture(root, 'C_X', '2.000002') is False  # an earlier announcement kept only in the knowledge store
+    assert thread_in_fixture(root, 'C_MISSING', '1.000001') is False

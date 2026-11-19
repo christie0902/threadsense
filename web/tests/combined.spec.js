@@ -105,7 +105,7 @@ test('combined briefing v2 (demo baseline): targeted re-groundings, labels and t
   await expect(page.getByTestId('briefing-eyebrow')).toHaveText('Morning briefing') // run kind: briefing selector and developer details
   await expect(page.getByTestId('run-banner')).not.toContainText('Live run')
   await expect(page.getByTestId('briefing-date')).toHaveText('Fri, 2 Oct 2026')
-  await expect(page.getByTestId('source-window')).toContainText('2026-10-01 12:00 UTC to 2026-10-02 12:00 UTC')
+  await expect(page.getByTestId('source-window')).toContainText('1 Oct 2026, 12:00 UTC to 2 Oct 2026, 12:00 UTC')
   await expect(page.getByTestId('generated-at')).toHaveText('Generated: not recorded in this run')
   // Accounting covers the 177 members handed to advice; the 178th discussion thread is shown as outside it.
   await expect(page.getByTestId('health-accounting')).toContainText('complete for the 177 discussion members handed to advice')
@@ -128,9 +128,9 @@ test('combined briefing v2 (demo baseline): targeted re-groundings, labels and t
   const costs = page.getByTestId('stage-costs')
   await costs.locator('summary').click()
   await expect(costs.getByTestId('stage-cost')).toHaveCount(4)
-  await expect(costs).toContainText('$2.2280')
-  await expect(costs).toContainText('$0.094 (as reported)')
-  await expect(costs).toContainText('$0.0000')
+  // One money format: rounded to the cent.
+  for (const amount of ['$15.32', '$2.23', '$0.09', '$0.00']) await expect(costs).toContainText(amount)
+  await expect(costs).not.toContainText('$15.3173')
   await costs.screenshot({ path: `${process.env.TS_UI_TMP}/v2-stage-costs.png` })
   const saved = page.getByTestId('briefing-details')
   await saved.locator('summary').click()

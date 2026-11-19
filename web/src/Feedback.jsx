@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { getJSON, useIdempotentSave } from './api.js'
+import { plainReason, short, statementLabel, threadLabels } from './text.js'
 import { Badge, Icon, when } from './ui.jsx'
 
 // AI-quality feedback (dashboard/feedback.py). Kept apart from the operational decision: Accept/Reject/Defer and the
@@ -15,12 +16,13 @@ const WITHHELD = {
 const FUTURE_NOTE = 'Advisory context only: a later run on the same threads receives it as a labelled reviewer note. It does not edit source documents, prompts, rules or this card, and it executes nothing. A team lead must confirm it first.'
 // A statement kept off the card is named by ID and verdict only; its text is not served (dashboard/disclosure.py).
 const WITHHELD_TEXT = 'Statement withheld from the card after the evidence check; its text is not shown.'
-const short = (s, n = 90) => (s && s.length > n ? `${s.slice(0, n - 1)}…` : s || '')
+// "Other" always last, whatever order the server lists the categories in.
+const orderedCategories = categories => Object.entries(categories).sort(([a], [b]) => (a === 'OTHER') - (b === 'OTHER'))
 
 function targetLabel(t) {
   if (t.kind === 'CARD') return 'The whole card'
-  if (t.kind === 'STATEMENT') return `Statement ${t.id}${t.earlier_verdict ? ` (verifier: ${t.earlier_verdict.toLowerCase().replaceAll('_', ' ')})` : ''}`
-  return `Review item ${t.id.slice(0, 15)}…`
+  if (t.kind === 'STATEMENT') return `${statementLabel(t.id)}${t.earlier_verdict ? ` (evidence check: ${t.earlier_verdict.toLowerCase().replaceAll('_', ' ')})` : ''}`
+  return 'A review finding about this card'
 }
 
 function Saved({ state, reset, onChanged, what }) {
@@ -69,8 +71,9 @@ function HistoryEntry({ runKey, view, actor, onChanged }) {
   )
 }
 
-function ReportForm({ runKey, cardId, data, actor, onSaved }) {
+function ReportForm({ runKey, cardId, data, actor, onSaved, relatedThreads = [] }) {
   const { targets, categories, problems, limits } = data
+  const labels = threadLabels(relatedThreads)
   const [category, setCategory] = useState('')
   const [problem, setProblem] = useState('')
   const [target, setTarget] = useState('CARD:')
@@ -111,7 +114,7 @@ function ReportForm({ runKey, cardId, data, actor, onSaved }) {
         <label className="block text-xs text-slate-300">Category
           <select className="field mt-1 w-full" value={category} onChange={change(setCategory)} required data-testid="feedback-category">
             <option value="" disabled>Choose…</option>
-            {Object.entries(categories).map(([k, label]) => <option key={k} value={k}>{label}</option>)}
+            {orderedCategories(categories).map(([k, label]) => <option key={k} value={k}>{label}</option>)}
           </select>
         </label>
         {problems[category] ? (
@@ -128,12 +131,13 @@ function ReportForm({ runKey, cardId, data, actor, onSaved }) {
           <option value="CARD:">The whole card</option>
           {targets.statements.length > 0 && (
             <optgroup label="Statements on this card">
-              {targets.statements.map(s => <option key={s.id} value={`STATEMENT:${s.id}`}>{s.id} · {s.text_withheld ? 'text withheld from the card' : short(s.text, 70)}{s.verdict ? ` · ${s.verdict.toLowerCase().replaceAll('_', ' ')}` : ''}</option>)}
+              {targets.statements.map(s => <option key={s.id} value={`STATEMENT:${s.id}`} title={s.text_withheld ? undefined : s.text}>
+                {statementLabel(s.id)} · {s.text_withheld ? 'hidden from the card' : short(s.text, 70)}{s.verdict && s.verdict !== 'SUPPORTED' ? ` (${s.verdict.toLowerCase().replaceAll('_', ' ')})` : ''}</option>)}
             </optgroup>
           )}
           {targets.review_items.length > 0 && (
             <optgroup label="Review findings about this card">
-              {targets.review_items.map(i => <option key={i.id} value={`REVIEW_ITEM:${i.id}`}>{short(i.reason, 80)}</option>)}
+              {targets.review_items.map(i => <option key={i.id} value={`REVIEW_ITEM:${i.id}`} title={i.reason}>{plainReason(i.reason).title}</option>)}
             </optgroup>
           )}
         </select>
@@ -141,11 +145,11 @@ function ReportForm({ runKey, cardId, data, actor, onSaved }) {
       {cardLevel ? (
         <fieldset className="text-xs text-slate-300" data-testid="feedback-threads">
           <legend>Threads it applies to (at most {limits.max_scope_threads} for future use)</legend>
-          <div className="mt-1 flex flex-wrap gap-x-4 gap-y-1">
+          <div className="mt-1 space-y-1">
             {targets.threads.map(t => (
-              <label key={t.key} className="inline-flex items-center gap-1.5">
-                <input type="checkbox" checked={threads.includes(t.key)} onChange={e => { setThreads(e.target.checked ? [...threads, t.key] : threads.filter(k => k !== t.key)); reset() }} />
-                <span className="font-mono text-[11px] text-slate-300">{t.key}</span>
+              <label key={t.key} className="flex items-start gap-1.5">
+                <input type="checkbox" className="mt-0.5" checked={threads.includes(t.key)} onChange={e => { setThreads(e.target.checked ? [...threads, t.key] : threads.filter(k => k !== t.key)); reset() }} />
+                <span className="text-slate-300" title={t.key}>{labels[t.thread_id] || t.key}</span>
               </label>
             ))}
           </div>
@@ -157,7 +161,7 @@ function ReportForm({ runKey, cardId, data, actor, onSaved }) {
       <label className="block text-xs text-slate-300">Suggested correction (optional)
         <textarea className="field mt-1 min-h-[4.5rem] w-full" maxLength={limits.max_text} value={correction} onChange={change(setCorrection)} data-testid="feedback-correction" />
       </label>
-      <label className="block text-xs text-slate-300">Supporting source references (optional; evidence IDs such as m:C_AUDIO_QA:1790864427.000131)
+      <label className="block text-xs text-slate-300">Supporting source references (optional; copy them from a source's "Citation IDs" section)
         <input className="field mt-1 w-full" value={refs} onChange={change(setRefs)} data-testid="feedback-refs" />
       </label>
       {replaceable.length > 0 && (
@@ -209,7 +213,7 @@ function ReviewerContext({ context }) {
 }
 
 /** "Report an AI issue" on an opened card, with this card's feedback history and any reviewer context it received. */
-export default function FeedbackPanel({ runKey, cardId, actor }) {
+export default function FeedbackPanel({ runKey, cardId, actor, relatedThreads }) {
   const [data, setData] = useState(null)
   const [error, setError] = useState(null)
   const load = useCallback(() => {
@@ -233,7 +237,7 @@ export default function FeedbackPanel({ runKey, cardId, actor }) {
         <summary className="flex cursor-pointer select-none list-none items-center gap-2 px-3 py-2 text-xs font-medium text-slate-300 hover:text-white [&::-webkit-details-marker]:hidden">
           <Icon name="chevron" className="h-3.5 w-3.5 text-slate-400 transition group-open:rotate-90" />Report an AI issue
         </summary>
-        <div className="border-t border-white/[0.06] p-3"><ReportForm runKey={runKey} cardId={cardId} data={data} actor={actor} onSaved={load} /></div>
+        <div className="border-t border-white/[0.06] p-3"><ReportForm runKey={runKey} cardId={cardId} data={data} actor={actor} onSaved={load} relatedThreads={relatedThreads} /></div>
       </details>
     </section>
   )

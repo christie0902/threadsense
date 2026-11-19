@@ -70,7 +70,7 @@ test('reject with a lesson for future runs, then deactivate and edit it', async 
   await item.getByTestId('review-reject').click()
   const saved = page.locator(`[data-testid=review-item][data-item-id="${itemId}"]`)
   await page.getByTestId('review-queue').getByRole('button', { name: /^all/i }).click()
-  await expect(saved.getByTestId('review-state')).toHaveText('rejected')
+  await expect(saved.getByTestId('review-state')).toHaveText('Rejected')
   await expect(saved.getByTestId('lesson-entry')).toHaveAttribute('data-state', 'ACTIVE')
   await saved.getByTestId('lesson-toggle').click()
   await expect(saved.getByTestId('lesson-entry')).toHaveAttribute('data-state', 'INACTIVE')

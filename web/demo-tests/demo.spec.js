@@ -104,6 +104,9 @@ test('review changes persist in this browser across a refresh, and a fresh brows
   await first.getByTestId('review-reject').click()
   const secondId = await items.nth(1).getAttribute('data-item-id')
   await items.nth(1).getByTestId('review-accept').click()
+  // It stays in place (so a double click cannot reach the next item) until the list is shown again.
+  await expect(page.locator(`[data-testid=review-item][data-item-id="${secondId}"]`).getByTestId('review-state')).toHaveText('Accepted')
+  await page.getByTestId('review-queue').getByRole('button', { name: /^open/ }).click()
   await expect(page.locator(`[data-testid=review-item][data-item-id="${secondId}"]`)).toHaveCount(0) // left the open list
 
   // A card decision (approve a recommended action) and an AI-issue report.
@@ -114,7 +117,10 @@ test('review changes persist in this browser across a refresh, and a fresh brows
   await rec.getByTestId('card-expand').click()
   await rec.getByRole('button', { name: 'Approve…' }).click()
   await rec.getByTestId('save-decision').click()
-  await expect(rec.getByTestId('save-success')).toBeVisible()
+  await expect(page.getByTestId('move-notice')).toContainText('Moved to Reviewed')
+  await page.getByTestId('move-notice-show').click() // the card moved at once; report the issue from Reviewed
+  await expect(page.getByTestId('tab-reviewed')).toHaveAttribute('aria-current', 'page')
+  await rec.getByTestId('card-expand').click()
   await rec.getByTestId('report-ai-issue').locator('summary').click()
   await rec.getByTestId('feedback-category').selectOption('RECOMMENDATION')
   await rec.getByTestId('feedback-wrong').fill('The reminder repeats guidance the thread already quoted.')
@@ -128,9 +134,9 @@ test('review changes persist in this browser across a refresh, and a fresh brows
   await page.getByTestId('header-queue').click()
   await page.getByTestId('review-queue').getByRole('button', { name: /^all/i }).click()
   const rejected = page.locator(`[data-testid=review-item][data-item-id="${itemId}"]`)
-  await expect(rejected.getByTestId('review-state')).toHaveText('rejected')
+  await expect(rejected.getByTestId('review-state')).toHaveText('Rejected')
   await expect(rejected.getByTestId('lesson-entry')).toHaveAttribute('data-state', 'ACTIVE')
-  await expect(page.locator(`[data-testid=review-item][data-item-id="${secondId}"]`).getByTestId('review-state')).toHaveText('accepted')
+  await expect(page.locator(`[data-testid=review-item][data-item-id="${secondId}"]`).getByTestId('review-state')).toHaveText('Accepted')
   await rejected.getByTestId('lesson-toggle').click()
   await expect(rejected.getByTestId('lesson-entry')).toHaveAttribute('data-state', 'INACTIVE')
   await expect(page.getByTestId('feedback-counts')).toContainText('1 report · 1 confirmed')
@@ -150,6 +156,8 @@ test('review changes persist in this browser across a refresh, and a fresh brows
 
   await page.getByTestId('demo-reset').click()
   await page.getByTestId('demo-reset-confirm').click()
+  await page.waitForURL(`${origin}/`) // the reset reloads without the hash (filters, project and view cleared too)
+  await expect(page.getByTestId('briefing-header')).toBeVisible()
   await expect(page.getByTestId('demo-reset')).toHaveCount(0) // cleared and reloaded
   await page.goto(`${origin}/#run=${RUN}&tab=queue`)
   await page.reload()
@@ -164,7 +172,7 @@ const WITHHELD_SNIPPETS = ['superseded Contact details section requires initial 
 test('withheld statements stay off the page, the Technical tab included', async ({ page }) => {
   const check = watch(page)
   const card = runFile('cards.json').find(c => c.card_id === 'card_a03615c8bc678a84c906d5831a4ba1b0')
-  await page.goto(`${origin}/#run=${RUN}&project=safety_classification`)
+  await page.goto(`${origin}/#run=${RUN}&project=safety_classification&debug=1`) // Technical is a Developer details view
   const view = page.locator(`[data-testid="card"][data-card-id="${card.card_id}"]`)
   await view.getByTestId('card-expand').click()
   await expect(view.getByTestId('card-summary')).toHaveText(card.summary)
@@ -187,7 +195,8 @@ test('direct navigation: root, hash routes and refresh need no rewrite', async (
     await expect(page.getByTestId('demo-notice')).toBeVisible()
     await expect(page.getByTestId('briefing-header')).toBeVisible()
   }
-  // Only index.html and hashed assets (plus the browser's own favicon probe); no other path is needed.
-  expect(served.filter(p => p !== '/' && p !== '/favicon.ico' && !p.startsWith('/assets/'))).toEqual([])
+  // Only index.html, the favicon and hashed assets (plus the browser's own favicon probe); no other path is needed.
+  expect(served.filter(p => !['/', '/favicon.ico', '/favicon.svg'].includes(p) && !p.startsWith('/assets/'))).toEqual([])
+  expect(served).toContain('/favicon.svg')
   check()
 })

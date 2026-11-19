@@ -3,10 +3,13 @@ import { Suspense, lazy, useCallback, useEffect, useMemo, useRef, useState } fro
 import { getJSON } from './api.js'
 import { QUICK_FILTERS, SORTS, briefStats, briefingDate, buildRows, decisionsByCard, filterRows, quickCounts, runKind, sortRows } from './briefView.js'
 import CardView from './CardView.jsx'
+import { KIND_LABELS } from './DecisionPanel.jsx'
 import SidePanel from './Panels.jsx'
 import ReviewQueue from './ReviewQueue.jsx'
 import Sidebar, { Health, RunSelect } from './Sidebar.jsx'
+import Markdown from './Markdown.jsx'
 import CardSlider from './Slider.jsx'
+import { plural, threadLabels, usd } from './text.js'
 import { Badge, CopilotAvatar, Details, Icon, Orb, when, words } from './ui.jsx'
 
 const MODE_BANNERS = {
@@ -31,7 +34,13 @@ function readHash() {
     item: p.get('item'), sort: SORTS[p.get('sort')] ? p.get('sort') : 'severity', quick: QUICK_FILTERS[p.get('filter')] ? p.get('filter') : 'ALL', debug: p.get('debug') === '1', view: p.get('view') === 'slides' ? 'slides' : 'grid' }
 }
 
-function writeHash(s) {
+// Moving between tabs, panels, views or projects adds a history entry, so the browser's Back button returns to the previous
+// screen instead of leaving the site; sorting and filters only update the address.
+// Decisions that take a card out of the active list (briefView.CLOSING).
+const CLOSING_KINDS = ['APPROVE_ACTION', 'CONFIRM_FAQ_UPDATE', 'CONFIRM_ANNOUNCEMENT', 'ROUTE_TO_EXPERT', 'DISMISS']
+const navKey = s => `${s.tab}|${s.panel ? `${s.panel.type}:${s.panel.id || `${s.panel.channel}:${s.panel.thread}`}` : ''}|${s.view}|${s.project}`
+
+function writeHash(s, push = false) {
   const p = new URLSearchParams()
   if (s.run) p.set('run', s.run)
   if (s.project) p.set('project', s.project)
@@ -43,22 +52,12 @@ function writeHash(s) {
   if (s.tab === 'queue' && s.item) p.set('item', s.item)
   if (s.panel) p.set('panel', s.panel.type === 'evidence' ? `evidence:${s.panel.id}` : `thread:${s.panel.channel}:${s.panel.thread}`)
   const next = `#${p.toString()}`
-  if (window.location.hash !== next) window.history.replaceState(null, '', next)
+  if (window.location.hash !== next) window.history[push ? 'pushState' : 'replaceState'](null, '', next)
 }
-
-const plural = (n, one, many = `${one}s`) => `${n} ${n === 1 ? one : many}`
 
 function Briefing({ markdown }) {
   if (!markdown) return <div className="text-slate-400">This run saved no readable brief.</div>
-  const blocks = markdown.split(/\n\s*\n/).filter(b => !b.startsWith('# '))
-  const inline = t => t.split(/(\*\*[^*]+\*\*)/).map((part, i) => part.startsWith('**') ? <b key={i} className="text-slate-100">{part.slice(2, -2)}</b> : part)
-  return (
-    <div className="space-y-2 text-sm leading-relaxed text-slate-300" data-testid="briefing">
-      {blocks.map((b, i) => b.startsWith('## ') ? <div key={i} className="font-semibold text-slate-100">{b.slice(3)}</div>
-        : b.split('\n').every(l => l.startsWith('- ')) ? <ul key={i} className="list-disc pl-5">{b.split('\n').map((l, j) => <li key={j}>{inline(l.slice(2))}</li>)}</ul>
-          : <p key={i}>{inline(b)}</p>)}
-    </div>
-  )
+  return <Markdown text={markdown.split('\n').filter(l => !l.startsWith('# ')).join('\n')} className="text-sm leading-relaxed text-slate-300" testid="briefing" />
 }
 
 function TopicTable({ rows }) {
@@ -160,9 +159,9 @@ function DevPanel({ run, brief, topics, project, counts }) {
               <thead><tr className="text-slate-400"><th className="py-1">Stage</th><th>Requests</th><th>Cost for this stage</th></tr></thead>
               <tbody>{run.presentation.stage_costs.map(r => (
                 <tr key={r.stage} data-testid="stage-cost"><td className="py-1 pr-3">{r.stage}</td><td className="tabular-nums">{r.requests}</td>
-                  <td className="tabular-nums">${r.charged_usd_exact != null ? `${r.charged_usd.toFixed(3)} (as reported)` : r.charged_usd.toFixed(4)}</td></tr>))}</tbody>
+                  <td className="tabular-nums">{usd(r.charged_usd)}</td></tr>))}</tbody>
             </table>
-            <p className="mt-2 text-xs text-slate-400">The full-pipeline total is from the campaign ledger; the other rows are later, separate stages.</p>
+            <p className="mt-2 text-xs text-slate-400">Rounded to the cent. The full-pipeline total is from the campaign ledger; the other rows are later, separate stages.</p>
           </Details>
         )}
         <Details summary={`Topic summary (${topics.length} work items${project ? ` in ${project}` : ''})`} testid="topics-details"><TopicTable rows={topics} /></Details>
@@ -208,7 +207,25 @@ export default function App() {
   const actor = session?.actor_id || ''
 
   useEffect(() => { getJSON('/api/runs').then(d => { setRuns(d.runs); setSession(d.session || null); if (!runKey && d.runs.length) setRunKey((d.runs.find(r => r.presentation) || d.runs[0]).run_key) }).catch(e => setError(String(e.message))) }, [])
-  useEffect(() => { writeHash({ run: runKey, project, tab, panel, item: focusItem, sort, quick, debug, view }) }, [runKey, project, tab, panel, focusItem, sort, quick, debug, view])
+  const lastNav = useRef(null)
+  useEffect(() => {
+    const s = { run: runKey, project, tab, panel, item: focusItem, sort, quick, debug, view }
+    const key = navKey(s)
+    writeHash(s, lastNav.current !== null && key !== lastNav.current)
+    lastNav.current = key
+  }, [runKey, project, tab, panel, focusItem, sort, quick, debug, view])
+  // Back / Forward: restore that screen from the address (without adding another history entry).
+  useEffect(() => {
+    const onPop = () => {
+      const h = readHash()
+      lastNav.current = navKey(h)
+      if (h.run) setRunKey(h.run)
+      setTab(h.tab); setPanel(h.panel); setView(h.view); setProject(h.project); setSort(h.sort); setQuick(h.quick); setFocusItem(h.item)
+      setDebug(h.debug)
+    }
+    window.addEventListener('popstate', onPop)
+    return () => window.removeEventListener('popstate', onPop)
+  }, [])
 
   // Decisions and queue state always come back from the server, so lists and counts follow the saved records. A
   // failed refresh keeps the last confirmed state on screen (no card disappears) and says so.
@@ -231,10 +248,10 @@ export default function App() {
   const run = brief?.run
   const inProject = x => !project || x.project_id === project
   const rows = useMemo(() => buildRows(brief?.cards || [], byCard, queue), [brief, byCard, queue])
-  const stats = useMemo(() => brief && briefStats(rows, queue, run?.presentation?.totals), [rows, queue, brief])
+  const stats = useMemo(() => brief && briefStats(rows, queue, run?.presentation?.totals, project), [rows, queue, brief, project])
   const lifecycle = TABS[tab] || 'ACTIVE'
   const counts = useMemo(() => quickCounts(rows, { tab: lifecycle, project }), [rows, lifecycle, project])
-  const tabTotal = useMemo(() => filterRows(rows, { tab: lifecycle }).length, [rows, lifecycle])
+  const tabTotal = useMemo(() => filterRows(rows, { tab: lifecycle, project }).length, [rows, lifecycle, project])
   const visible = useMemo(() => sortRows(filterRows(rows, { tab: lifecycle, quick, project }), sort), [rows, lifecycle, quick, project, sort])
   const historyRows = scope => sortRows(rows.filter(r => r.scope === scope && inProject(r.card)), sort)
   const consolidated = (run?.consolidation?.pending || []).map(m => ({ ...m, rows: rows.filter(r => r.item.presentation?.consolidated?.consolidated_topic_id === m.consolidated_topic_id && inProject(r.card)) }))
@@ -243,12 +260,31 @@ export default function App() {
   const queueRows = queue.filter(r => inProject(r.item))
   const topics = (brief?.topics || []).filter(t => !project || t.project_id === project)
   const cardTopics = Object.fromEntries((brief?.cards || []).map(c => [c.card.card_id, c.display_title || c.card.topic_name]))
+  // Thread labels told apart across the whole briefing (many threads open with the same words).
+  const threadNames = useMemo(() => threadLabels([...new Map((brief?.cards || []).flatMap(c => c.card.related_threads)
+    .map(t => [t.thread_id, t])).values()]), [brief])
+  // Cards replaced by a combined issue are not served; the queue names them through the card that replaced them.
+  const replacedBy = Object.fromEntries((brief?.cards || []).flatMap(c => (c.presentation?.combined?.replaced_cards || [])
+    .map(r => [r.card_id, c.display_title || c.card.topic_name])))
   const projects = runs?.find(r => r.run_key === runKey)?.projects || []
   const openQueue = queueRows.filter(r => r.review_state === 'OPEN').length
   const selectRun = k => { setRunKey(k); setPanel(null); setProject(''); setQuick('ALL'); setDrawer(false) }
+  // What a save did, shown above the list: the card has already moved to its tab.
+  const [notice, setNotice] = useState(null)
+  useEffect(() => { if (!notice) return undefined; const t = setTimeout(() => setNotice(null), 12000); return () => clearTimeout(t) }, [notice])
+  const decided = (r, entry, replayed) => {
+    refresh()
+    if (!entry?.kind) return
+    const where = entry.kind === 'REOPEN' ? 'active' : CLOSING_KINDS.includes(entry.kind) ? 'reviewed' : null
+    setNotice({ id: entry.entry_id, kind: entry.kind, title: r.item.display_title || r.card.topic_name, where, replayed, cardId: r.card.card_id })
+  }
+  const showCard = n => {
+    setTab(n.where || tab); setQuick('ALL'); setNotice(null)
+    setTimeout(() => document.querySelector(`[data-testid=feed] [data-card-id="${n.cardId}"]`)?.scrollIntoView({ block: 'center', behavior: 'smooth' }), 150)
+  }
   const card = r => (
     <CardView key={r.card.card_id} runKey={runKey} run={run} openQueueItem={openQueueItem} item={r.item} row={r} actor={actor}
-      decisionState={r.state} onDecisionChanged={refresh} openPanel={setPanel} />
+      decisionState={r.state} onDecisionChanged={(entry, replayed) => decided(r, entry, replayed)} openPanel={setPanel} debug={debug} threadNames={threadNames} />
   )
 
   return (
@@ -325,6 +361,21 @@ export default function App() {
                   </div>
                 )}
 
+                {notice && (
+                  <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5 rounded-xl border border-emerald-400/30 bg-emerald-400/[0.08] px-4 py-2.5 text-sm text-emerald-50"
+                    role="status" data-testid="move-notice" data-where={notice.where || 'same'}>
+                    <Icon name="check" className="h-4 w-4 text-emerald-300" />
+                    <span><b className="font-semibold">{KIND_LABELS[notice.kind]}:</b> “{notice.title}”. {notice.where === 'reviewed' ? 'Moved to Reviewed.'
+                      : notice.where === 'active' ? 'Moved back to Active.' : 'It stays where it is.'}
+                      {notice.kind === 'APPROVE_ACTION' ? ' Nothing is posted or executed.' : ''}
+                      {notice.replayed ? ' The server already had this exact request; no duplicate was created.' : ''}</span>
+                    <span className="ml-auto flex items-center gap-2">
+                      {notice.where && notice.where !== tab && <button type="button" className="btn btn-sm" onClick={() => showCard(notice)} data-testid="move-notice-show">
+                        Show it in {notice.where === 'reviewed' ? 'Reviewed' : 'Active'}</button>}
+                      <button type="button" className="btn btn-sm" onClick={() => setNotice(null)} aria-label="Dismiss"><Icon name="close" className="h-3.5 w-3.5" /></button>
+                    </span>
+                  </div>
+                )}
                 <nav className="flex gap-1 overflow-x-auto whitespace-nowrap border-b border-white/[0.06]" aria-label="Lifecycle">
                   {[['active', `Active (${stats.active})`], ['reviewed', `Reviewed (${stats.reviewed})`], ['queue', `Model Review Queue (${openQueue} open)`]].map(([t, label]) => (
                     <button key={t} type="button" onClick={() => setTab(t)} data-testid={`tab-${t}`} aria-current={tab === t ? 'page' : undefined}
@@ -342,7 +393,7 @@ export default function App() {
                         </button>
                       )}
                       <span className="ml-auto text-xs text-slate-400" data-testid="visible-count" aria-live="polite">
-                        Showing {visible.length} of {plural(tabTotal, `${tab} card`)}{project ? ` · ${project}` : ''}
+                        Showing {visible.length} of {plural(tabTotal, `${tab} card`)}{project ? ` in ${project}` : ''}
                       </span>
                     </div>
 
@@ -418,7 +469,7 @@ export default function App() {
 
                   </>
                 )}
-                {tab === 'queue' && <ReviewQueue runKey={runKey} rows={queueRows} actor={actor} onChanged={loadQueue} cardTopics={cardTopics} focus={focusItem} />}
+                {tab === 'queue' && <ReviewQueue runKey={runKey} rows={queueRows} actor={actor} onChanged={loadQueue} cardTopics={cardTopics} replacedBy={replacedBy} focus={focusItem} />}
                 {debug && <DevPanel run={run} brief={brief} topics={topics} project={project} counts={brief.counts} />}
               </>
             )}

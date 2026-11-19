@@ -1,7 +1,10 @@
-import { AnimatePresence, motion, useReducedMotion } from 'framer-motion'
+import { motion, useReducedMotion } from 'framer-motion'
 import { useEffect, useRef, useState } from 'react'
 import copilotFace from './assets/copilot-face.webp'
 import copilotFigure from './assets/copilot.webp'
+import { when, words } from './text.js'
+
+export { when, words }
 
 export const LINE_LABELS = { RECOMMENDED_ACTION: 'Recommended action', NEEDS_REVIEW: 'Needs review', OBSERVATION: 'Observation' }
 
@@ -55,7 +58,7 @@ export function NotCurrent({ label }) {
   return <Badge tone="rose" data-testid="superseded-label">{label}</Badge>
 }
 
-/** The confirmation floats directly below the button, so it never pushes neighbouring fields around. */
+/** The button itself confirms ("Copied"); a status line announces it to screen readers. */
 export function CopyButton({ text, what = 'draft' }) {
   const [state, setState] = useState(null)
   const timer = useRef(null)
@@ -67,16 +70,14 @@ export function CopyButton({ text, what = 'draft' }) {
   }
   return (
     <span className="relative inline-flex">
-      <button type="button" onClick={copy} className="btn btn-sm"><Icon name="copy" className="h-3.5 w-3.5" />Copy {what}</button>
-      <AnimatePresence>
-        {state && (
-          <motion.span key={state} role="status" initial={{ opacity: 0, y: -4 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}
-            className={`absolute right-0 top-full z-10 mt-1.5 whitespace-nowrap rounded-lg border px-2.5 py-1 text-xs shadow-lg shadow-black/40 ${state === 'ok' ? 'border-emerald-400/30 bg-ink-850 text-emerald-200' : 'border-red-400/40 bg-ink-850 text-red-200'}`}
-            data-testid={state === 'ok' ? 'copy-note' : 'copy-failed'}>
-            {state === 'ok' ? 'Copied to your clipboard. Nothing was posted.' : 'Copy failed; select the text instead.'}
-          </motion.span>
-        )}
-      </AnimatePresence>
+      <button type="button" onClick={copy} data-copied={state === 'ok' || undefined}
+        className={`btn btn-sm ${state === 'ok' ? 'border-emerald-400/50 text-emerald-200' : state === 'failed' ? 'border-red-400/50 text-red-200' : ''}`}>
+        <Icon name={state === 'ok' ? 'check' : 'copy'} className="h-3.5 w-3.5" />
+        {state === 'ok' ? 'Copied' : state === 'failed' ? 'Copy failed' : `Copy ${what}`}
+      </button>
+      <span role="status" className="sr-only" data-testid={state === 'ok' ? 'copy-note' : state === 'failed' ? 'copy-failed' : undefined}>
+        {state === 'ok' ? 'Copied to your clipboard. Nothing was posted.' : state === 'failed' ? 'Copy failed; select the text instead.' : ''}
+      </span>
     </span>
   )
 }
@@ -97,19 +98,12 @@ export function Json({ value }) {
   return <pre className="prose-pre max-h-96 overflow-auto rounded-lg bg-ink-950/70 p-2 font-mono text-xs text-slate-400">{JSON.stringify(value, null, 2)}</pre>
 }
 
-export function when(iso) {
-  if (!iso) return ''
-  const d = new Date(iso)
-  return Number.isNaN(d.getTime()) ? iso : d.toISOString().replace('T', ' ').replace(/:\d\d(\.\d+)?Z$/, ' UTC')
-}
-
 export function textOriginLabel(origin) {
   return { MODEL_GROUNDED: 'Model-grounded text (validated card text, unchanged)', TL_EDITED: 'TL-edited text (not model-grounded)',
     TL_WRITTEN: 'TL-written text (not model-grounded)', NONE: 'No text' }[origin] || origin
 }
 
 export const cap = s => (s ? s.charAt(0) + s.slice(1).toLowerCase() : s)
-export const words = s => (s || '').replaceAll('_', ' ').toLowerCase()
 
 const PATHS = {
   chevron: 'M9 6l6 6-6 6',
