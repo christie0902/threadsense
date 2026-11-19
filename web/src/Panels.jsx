@@ -10,8 +10,16 @@ function Row({ label, children }) {
   return <div className="grid grid-cols-[8.5rem_1fr] gap-3 border-b border-white/[0.04] py-1.5 text-xs last:border-0"><div className="text-slate-400">{label}</div><div className="break-words text-slate-200">{children}</div></div>
 }
 
+// A thread or source the saved briefing does not contain (for example a link typed or kept from elsewhere), in words.
+function friendly(error) {
+  if (/is not in channel|not referenced by run|is not in the fixture/.test(error))
+    return "This thread is not in this briefing's saved Slack data. It may have been posted before the briefing's window; if a card cites it, the saved text is under that card's sources."
+  if (/is not saved in run|Not part of the demo data/.test(error)) return 'This source is not saved in this briefing.'
+  return error
+}
+
 function Loading({ error }) {
-  if (error) return <div className="text-sm text-red-300">{error}</div>
+  if (error) return <div className="text-sm text-amber-100" data-testid="panel-not-found">{friendly(error)}</div>
   return <div className="text-sm text-slate-400">Loading…</div>
 }
 

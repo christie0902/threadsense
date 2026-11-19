@@ -157,11 +157,22 @@ export function threadLabels(threads) {
   const counts = {}
   for (const t of threads || []) counts[t.label] = (counts[t.label] || 0) + 1
   const DAY = /\b\d{4}-\d\d-\d\d\b/
-  return Object.fromEntries((threads || []).map(t => {
+  const out = (threads || []).map(t => {
     const label = String(t.label || '')
     const start = t.thread_id && !Number.isNaN(Number(t.thread_id)) ? new Date(Number(t.thread_id) * 1000).toISOString() : null
-    if (counts[t.label] > 1 && start) return [t.thread_id, DAY.test(label) ? label.replace(DAY, when(start)) : `${label} (${when(start)})`]
-    return [t.thread_id, label.replace(DAY, d => when(d, { time: false }))]
+    if (counts[t.label] > 1 && start) return [t.thread_id, DAY.test(label) ? label.replace(DAY, when(start)) : `${label} (${when(start)})`, start]
+    return [t.thread_id, label.replace(DAY, d => when(d, { time: false })), start]
+  })
+  // Threads started in the same minute still read alike: add the seconds, then a number if even those match.
+  const again = labels => labels.reduce((acc, [, l]) => ({ ...acc, [l]: (acc[l] || 0) + 1 }), {})
+  let seen = again(out)
+  const withSeconds = out.map(([id, l, start]) => (seen[l] > 1 && start ? [id, l.replace(/(\d\d:\d\d) UTC/, `$1:${start.slice(17, 19)} UTC`), start] : [id, l, start]))
+  seen = again(withSeconds)
+  const used = {}
+  return Object.fromEntries(withSeconds.map(([id, l]) => {
+    if (seen[l] < 2) return [id, l]
+    used[l] = (used[l] || 0) + 1
+    return [id, `${l} (${used[l]})`]
   }))
 }
 
@@ -205,3 +216,30 @@ export function annotation(marker) {
     return `Not current guidance: ${dates(m[1]).replace(/valid_until/g, 'valid until')}`
   return dates(body).replaceAll('_', ' ')
 }
+
+// ISO timestamps and days inside saved text and labels ("… at 2026-10-02T07:06:16.000064+00:00", "#channel, 2026-10-01,")
+// in the site's date format.
+const ISO_IN_TEXT = /\d{4}-\d\d-\d\dT\d\d:\d\d(?::\d\d(?:\.\d+)?)?(?:Z|[+-]\d\d:\d\d)/g
+const DAY_IN_TEXT = /\b\d{4}-\d\d-\d\d\b/g
+export const datesInText = text => String(text ?? '').replace(ISO_IN_TEXT, m => when(m)).replace(DAY_IN_TEXT, d => when(d, { time: false }))
+
+// Fixed wording the checks write into cards ("The advisor chose…", "Its reason is not shown because…"), in the words the
+// rest of the site uses. Only these system phrases change; "not shown in the thread" (a statement about a thread) stays.
+const WORDING = [
+  [/\bSome advisor statements were not supported by the evidence and are not shown\./g, 'Some statements did not pass the evidence check and are hidden.'],
+  [/\bEvidence the advisor needed is missing\b/g, 'Evidence needed for advice is missing'],
+  [/\bThe advisor's\b/g, "The AI's"], [/\bthe advisor's\b/g, "the AI's"],
+  [/\bThe advisor\b/g, 'The AI'], [/\bthe advisor\b/g, 'the AI'],
+  [/\badvisor (statements?)\b/g, '$1'],
+  [/: not shown, because\b/g, ': hidden because'],
+  [/\bNot shown on this card\b/g, 'Hidden on this card'],
+  [/\b(is|are|was|were) not shown\b(?! in the thread)/g, '$1 hidden'],
+  [/\bhidden and is not established\b/g, 'hidden and not established'],
+]
+export function plainWording(text) {
+  let s = String(text ?? '')
+  for (const [rx, to] of WORDING) s = s.replace(rx, to)
+  return s
+}
+/** Everything a reader sees from saved text: system wording, then dates. */
+export const readable = text => datesInText(plainWording(text))

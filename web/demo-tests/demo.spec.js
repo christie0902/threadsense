@@ -78,7 +78,7 @@ test('fresh visit: briefing, filters, sorting, card details and evidence from bu
     await card.getByTestId('card-expand').click()
     await expect(card.getByTestId('ai-feedback')).toBeVisible()
     if (await card.getByTestId('source-link').count()) break
-    await card.getByTestId('card-expand').click()
+    await card.getByTestId('card-collapse').click()
   }
   const source = card.getByTestId('source-link').first()
   await source.scrollIntoViewIfNeeded()

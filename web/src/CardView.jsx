@@ -11,7 +11,7 @@ import { Badge, CopyButton, Icon, Json, LINE_LABELS, LINE_TONES, NotCurrent, Sev
 const ACCENTS = { RECOMMENDED_ACTION: 'bg-emerald-400', NEEDS_REVIEW: 'bg-amber-400', OBSERVATION: 'bg-violet-400' }
 // How an alternative relates to the card's action, only as far as the saved comparison records it (runs.alternatives).
 const RELATIONS = {
-  INCUMBENT: "The advisor's own proposal, as entered in the option comparison.",
+  INCUMBENT: "The AI's own proposal, as entered in the option comparison.",
   SAME_ACTION_TYPE: 'Same kind of action as the recommendation, with its own wording, judged separately. The saved comparison does not record that it is the same recommendation.',
   DIFFERENT_ACTION: 'A different kind of action.',
 }
@@ -74,7 +74,7 @@ function ActionTab({ action, alternatives, closeCall }) {
                     {RELATIONS[a.relation] && (
                       <div className="text-xs leading-relaxed text-indigo-200/80" data-testid="alternative-relation">
                         {RELATIONS[a.relation]}{a.preferred_by_comparison && a.relation === 'SAME_ACTION_TYPE' && fromDraft
-                          ? " The card shows the advisor's draft wording of this action; this option was preferred in the comparison." : ''}
+                          ? " The card shows the AI's draft wording of this action; this option was preferred in the comparison." : ''}
                       </div>
                     )}
                     {a.instruction && <div className="prose-pre text-sm leading-relaxed text-slate-300"><Gloss text={a.instruction} /></div>}
@@ -265,8 +265,9 @@ function EditorialNote({ note, openPanel }) {
   return (
     <div className="mt-2 rounded-lg border border-amber-300/20 bg-amber-300/[0.04] px-3 py-2 text-xs text-slate-300" data-testid="editorial-note">
       <span className="font-medium text-amber-100">{note.label}</span> <span className="text-slate-400">(editorial note, not judged)</span>: <Gloss text={note.text} />
-      <span className="ml-1">{note.sources.map(src => (
-        <button key={src.evidence_id} type="button" className="link mr-2" data-testid="editorial-source" onClick={() => openPanel?.({ type: 'evidence', id: src.evidence_id })}>source</button>))}</span>
+      {note.sources.length > 0 && <span className="ml-1 text-slate-400">{note.sources.length === 1 ? 'Source: ' : 'Sources: '}{note.sources.map((src, i) => (
+        <span key={src.evidence_id}>{i > 0 && ', '}<button type="button" className="link" data-testid="editorial-source"
+          onClick={() => openPanel?.({ type: 'evidence', id: src.evidence_id })}>{note.sources.length === 1 ? 'open' : i + 1}</button></span>))}</span>}
     </div>
   )
 }
@@ -450,11 +451,13 @@ export default function CardView({ runKey, run, item, row, actor, decisionState,
           <span className="inline-flex items-center gap-1.5" data-testid="card-activity" data-basis={item.activity?.basis || 'NONE'}>
             <Icon name="clock" className="h-3.5 w-3.5" />{item.activity?.latest_at ? `${ACTIVITY_LABELS[item.activity.basis] || 'Latest activity'} ${when(item.activity.latest_at)}` : 'No source time saved'}
           </span>
-          <button type="button" className="btn btn-sm ml-auto" aria-expanded={open} data-testid="card-expand" onClick={toggle}>
-            {open ? 'Hide details' : 'Details & evidence'}
-            {!open && review?.checks?.length > 0 && <span className="rounded-full bg-amber-300/15 px-1.5 text-[11px] font-semibold text-amber-200" data-testid="checks-count">{review.checks.length} to check</span>}
-            <Icon name="chevron" className={`h-3.5 w-3.5 transition ${open ? 'rotate-90' : ''}`} />
-          </button>
+          {!open && (
+            <button type="button" className="btn btn-sm ml-auto" aria-expanded={open} data-testid="card-expand" onClick={toggle}>
+              Details & evidence
+              {review?.checks?.length > 0 && <span className="rounded-full bg-amber-300/15 px-1.5 text-[11px] font-semibold text-amber-200" data-testid="checks-count">{review.checks.length} to check</span>}
+              <Icon name="chevron" className="h-3.5 w-3.5" />
+            </button>
+          )}
         </div>
 
         <AnimatePresence initial={false}>

@@ -1,17 +1,23 @@
 import { Fragment } from 'react'
-import { GLOSSARY, annotation } from './text.js'
+import { GLOSSARY, annotation, readable } from './text.js'
 
-// Inline: `code`, **bold**, [label](https://…) and the team abbreviations (LT, QN, TL, L0) with their meaning on hover.
-const INLINE = /(`[^`]+`|\*\*[^*]+\*\*|\[[^\]]+\]\(https?:\/\/[^)\s]+\)|\b(?:LT|QN|TL|L0)\b)/g
+// Inline: `code`, **bold**, [label](link) and the team abbreviations (LT, QN, TL, L0) with their meaning on hover. A link
+// to another knowledge file ("../decisions/….md") has no page in the app, so only its label is shown.
+const INLINE = /(`[^`]+`|\*\*[^*]+\*\*|\[[^\]]+\]\([^)\s]+\)|\b(?:LT|QN|TL|L0)\b)/g
 
+/** Saved text as a reader sees it: system wording and dates normalized (text.readable), then inline marks. */
 export function Gloss({ text }) {
   if (typeof text !== 'string') return text ?? null
-  const parts = text.split(INLINE)
+  const parts = readable(text).split(INLINE)
   return parts.map((p, i) => {
     if (i % 2 === 0) return p ? <Fragment key={i}>{p}</Fragment> : null
     if (p.startsWith('`')) return <code key={i} className="rounded bg-white/[0.06] px-1 font-mono text-[0.85em] text-slate-200">{p.slice(1, -1)}</code>
     if (p.startsWith('**')) return <b key={i} className="font-semibold text-slate-100">{p.slice(2, -2)}</b>
-    if (p.startsWith('[')) { const m = p.match(/^\[([^\]]+)\]\((.+)\)$/); return <a key={i} className="link" href={m[2]} target="_blank" rel="noreferrer">{m[1]}</a> }
+    if (p.startsWith('[')) {
+      const m = p.match(/^\[([^\]]+)\]\((.+)\)$/)
+      return /^https?:\/\//.test(m[2]) ? <a key={i} className="link" href={m[2]} target="_blank" rel="noreferrer">{m[1]}</a>
+        : <span key={i} className="font-medium text-slate-200" title="Another knowledge-base document" data-testid="doc-reference">{m[1]}</span>
+    }
     return <abbr key={i} title={GLOSSARY[p]} className="cursor-help underline decoration-dotted decoration-slate-500 underline-offset-2">{p}</abbr>
   })
 }

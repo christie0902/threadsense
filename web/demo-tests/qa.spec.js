@@ -205,3 +205,67 @@ test('Low: draft buttons toggle, copy once, and confirm; abbreviations explain t
   await expect(page.locator('link[rel=icon]')).toHaveAttribute('href', /favicon\.svg$/)
   await expect(page.locator('meta[name=description]')).toHaveAttribute('content', /morning brief/i)
 })
+
+// ---- Second QA pass (2026-11-19) ----
+const ADVISOR_CARD = 'card_2b05a096d172c66727f5a27fb50d5a18' // "Evidence the advisor needed is missing", ISO-titled sources
+const QN_CARD = 'card_a03615c8bc678a84c906d5831a4ba1b0' // editorial note with three sources
+
+test('Round 2: no "advisor", "not shown" or raw timestamps on an opened card and its source list', async ({ page }) => {
+  await go(page, '&project=response_preference')
+  const box = card(page, ADVISOR_CARD)
+  await box.getByTestId('card-expand').click()
+  await box.getByTestId('all-reasons').locator(':scope > summary').click()
+  await box.getByRole('tab', { name: 'Sources & threads' }).click()
+  const text = await box.innerText()
+  expect(text).not.toMatch(/\badvisor\b/i)
+  expect(text).not.toMatch(/(is|are|was|were) not shown\b(?! in the thread)|: not shown,/)
+  expect(text).not.toMatch(/\d{4}-\d\d-\d\dT\d\d:\d\d/)
+  expect(text).not.toMatch(/\b\d{4}-\d\d-\d\d\b/)
+  // Collapse is the one way to close an opened card.
+  await expect(box.getByTestId('card-collapse')).toBeVisible()
+  await expect(box.getByRole('button', { name: 'Hide details' })).toHaveCount(0)
+})
+
+test('Round 2: links to other knowledge files show their label, not markdown', async ({ page }) => {
+  await go(page, `&project=safety_classification&panel=evidence:${encodeURIComponent('k:safety-classification-faq@1.1:6025b955')}`)
+  const textBox = page.getByTestId('evidence-text')
+  await expect(textBox).toBeVisible()
+  expect(await textBox.innerText()).not.toMatch(/\]\(\.\.\/|\.md\)/)
+  await expect(page.getByTestId('doc-reference').first()).toBeVisible()
+})
+
+test('Round 2: Escape closes an open Approve form', async ({ page }) => {
+  await go(page, '&filter=PENDING_ACTIONS')
+  const box = page.getByTestId('feed').locator('[data-testid=card]').first()
+  await box.getByRole('button', { name: 'Approve…' }).click()
+  await expect(box.getByTestId('decision-form')).toBeVisible()
+  await page.keyboard.press('Escape')
+  await expect(box.getByTestId('decision-form')).toHaveCount(0)
+  await expect(box.getByRole('button', { name: 'Approve…' })).toBeVisible()
+})
+
+test('Round 2: a thread opened by URL that the data does not contain gets a plain message', async ({ page }) => {
+  await go(page, '&panel=thread:C_AUDIO_ANNOUNCEMENTS:1787581200.700001')
+  await expect(page.getByTestId('panel-not-found')).toContainText("not in this briefing's saved Slack data")
+  await expect(page.getByTestId('side-panel')).not.toContainText('is not in channel')
+})
+
+test('Round 2: editorial note sources are separate, numbered links', async ({ page }) => {
+  await go(page, '&project=safety_classification')
+  const note = card(page, QN_CARD).getByTestId('editorial-note').first()
+  const text = await note.innerText()
+  expect(text).not.toContain('sourcesource')
+  expect(text).toMatch(/Sources: 1, 2, 3/)
+})
+
+test('Round 2: favicon.ico exists, and Back undoes a filter change', async ({ page }) => {
+  expect((await page.request.get(`${origin}/favicon.ico`)).status()).toBe(200)
+  await go(page)
+  await page.getByTestId('tab-reviewed').click()
+  await page.getByTestId('tab-active').click()
+  await page.getByTestId('quick-NEEDS_REVIEW').click()
+  await expect(page.getByTestId('active-filter')).toBeVisible()
+  await page.goBack()
+  await expect(page.getByTestId('active-filter')).toHaveCount(0)
+  await expect(page.getByTestId('tab-active')).toHaveAttribute('aria-current', 'page')
+})

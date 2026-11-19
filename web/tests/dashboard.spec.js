@@ -483,7 +483,7 @@ test('closed cards are easy to scan; an opened card leads with what to check, wi
   await expect(box.getByTestId('what-to-check').getByText('Does the earlier reload trial apply', { exact: false })).toHaveCount(1)
   await expect(box.getByTestId('what-to-check').locator('[data-kind=GAP]')).toHaveCount(0) // folded into the question
   const withheld = box.getByTestId('what-to-check').locator('[data-testid=check][data-kind=WITHHELD]')
-  await expect(withheld).toContainText('How an announcement applies to this topic: not shown')
+  await expect(withheld).toContainText('How an announcement applies to this topic: hidden because')
   await withheld.getByTestId('check-link').click()
   await expect(page.getByTestId('evidence-detail')).toBeVisible()
   await page.keyboard.press('Escape')

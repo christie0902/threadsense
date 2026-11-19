@@ -116,12 +116,24 @@ export function fittingResolutions(card, alternatives, allowed) {
     || textSources(card, alternatives, RESOLUTIONS[k].action).length > 0 || !operational(card))
 }
 
+
+/** Escape closes an open decision form (not while a side panel, which handles Escape itself, is open). */
+function useEscape(active, close) {
+  useEffect(() => {
+    if (!active) return undefined
+    const onKey = e => { if (e.key === 'Escape' && !document.querySelector('[role="dialog"]')) close() }
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  }, [active, close])
+}
+
 function ReopenForm({ runKey, card, actor, head, onCancel, onDone }) {
   const { state, save } = useIdempotentSave(`/api/runs/${encodeURIComponent(runKey)}/cards/${card.card_id}/decisions`)
   const [note, setNote] = useState('')
   const body = () => ({ kind: 'REOPEN', actor_id: actor, expected_head: head.entry_id, note: note.trim(), text: null, severity: null,
     expert: null, alternative_id: null })
   useEffect(() => { if (state.phase === 'saved') onDone(state.entry, state.replayed) }, [state.phase]) // eslint-disable-line react-hooks/exhaustive-deps
+  useEscape(state.phase !== 'saved', onCancel)
   if (state.phase === 'saved') return (
     <div className="rounded-lg border border-emerald-400/40 bg-emerald-400/10 p-2.5 text-xs text-emerald-100" data-testid="save-success">Reopened. {KIND_NOTES.REOPEN}</div>
   )
@@ -210,6 +222,7 @@ function DecisionForm({ runKey, card, alternatives, allowed, actor, head, onCanc
   // Saved: the list refreshes at once, so the card moves to its tab without another click. Until the refresh lands (or if
   // it fails) the card shows the saved decision in place.
   useEffect(() => { if (state.phase === 'saved') onDone(state.entry, state.replayed) }, [state.phase]) // eslint-disable-line react-hooks/exhaustive-deps
+  useEscape(open && state.phase !== 'saved', onCancel || (() => setOpen(false)))
 
   if (state.phase === 'saved') {
     return (

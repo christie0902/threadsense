@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
-import { annotation, cleanFindings, plainNote, plainNotes, plainReason, short, statementLabel, threadLabels, uniqueAgainst, usd, when } from '../src/text.js'
+import { annotation, cleanFindings, datesInText, plainNote, plainNotes, plainReason, plainWording, readable, short, statementLabel, threadLabels, uniqueAgainst, usd, when } from '../src/text.js'
 
 // Real reason strings from the accepted briefing's Model Review Queue (data/experiments/threadsense_full_v1_combined_v2).
 const REASONS = {
@@ -104,4 +104,34 @@ test('retrieval annotations inside source excerpts read as notes', () => {
   assert.match(annotation('[HISTORICAL - NOT CURRENT GUIDANCE: valid_until 2026-08-28T21:00:00Z has passed. May explain an old rule; do not apply it as current.]'),
     /^Not current guidance: valid until 28 Aug 2026, 21:00 UTC has passed/)
   assert.match(annotation('[ADDED FOR TYPE COVERAGE: best-ranked faq for this query (rank 12), outside the top 5.]'), /best-ranked FAQ for this search \(rank 12\)/)
+})
+
+test('system wording in saved card text reads plainly; statements about threads keep their meaning', () => {
+  assert.equal(plainWording('The advisor chose not to propose an intervention. Its reason is not shown because the evidence check found no support.'),
+    'The AI chose not to propose an intervention. Its reason is hidden because the evidence check found no support.')
+  assert.equal(plainWording('Evidence the advisor needed is missing'), 'Evidence needed for advice is missing')
+  assert.equal(plainWording('Finding (source fact): not shown, because rejected source fact presents history as current.'),
+    'Finding (source fact): hidden because rejected source fact presents history as current.')
+  assert.equal(plainWording('Some advisor statements were not supported by the evidence and are not shown.'), 'Some statements did not pass the evidence check and are hidden.')
+  assert.equal(plainWording('Their wording is not shown and is not established.'), 'Their wording is hidden and not established.')
+  assert.equal(plainWording('The team lead asked for the target audience; those inputs are not shown in the thread.'),
+    'The team lead asked for the target audience; those inputs are not shown in the thread.')
+  assert.equal(plainWording('proportionate advisory responses'), 'proportionate advisory responses')
+})
+
+test('timestamps and days inside saved text take the site format', () => {
+  assert.equal(datesInText('Slack announcement in safety-classification-announcements at 2026-10-02T07:06:16.000064+00:00'),
+    'Slack announcement in safety-classification-announcements at 2 Oct 2026, 07:06 UTC')
+  assert.equal(datesInText('#multilingual-eval-general, 2026-10-01, started by a tutor'), '#multilingual-eval-general, 1 Oct 2026, started by a tutor')
+  assert.equal(readable('The advisor posted 2026-10-01'), 'The AI posted 1 Oct 2026')
+})
+
+test('threads started in the same minute still get different labels', () => {
+  const same = '#rp-general, 2026-10-01, started by a tutor: "Anyone else seeing this?"'
+  const labels = Object.values(threadLabels([
+    { thread_id: '1790866003.000036', label: same }, { thread_id: '1790866041.000040', label: same }, { thread_id: '1790866041.000041', label: same },
+  ]))
+  assert.equal(new Set(labels).size, 3)
+  assert.match(labels[1], /14:47:21 UTC/) // same minute: seconds, then a number
+  assert.match(labels[0], /14:46 UTC/)
 })

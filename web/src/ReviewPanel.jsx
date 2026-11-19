@@ -1,5 +1,5 @@
 import { Gloss } from './Markdown.jsx'
-import { plainNotes, plainReason } from './text.js'
+import { plainNotes, plainReason, readable } from './text.js'
 import { Badge, Icon } from './ui.jsx'
 
 // Why review is needed, kept apart: required by severity, disputed content, a missing fact, an upstream flag, ...
@@ -21,12 +21,12 @@ function Ref({ link, openPanel, openQueueItem }) {
   )
   if (link.kind === 'thread') return (
     <button type="button" className="link inline-flex items-center gap-1 text-left text-xs" data-testid="review-thread-link"
-      onClick={() => openPanel({ type: 'thread', channel: link.channel, thread: link.thread })}><Icon name="thread" className="h-3 w-3 shrink-0" />{link.label}</button>
+      onClick={() => openPanel({ type: 'thread', channel: link.channel, thread: link.thread })}><Icon name="thread" className="h-3 w-3 shrink-0" /><Gloss text={link.label} /></button>
   )
-  if (!link.available) return <span className="text-xs text-slate-400">{link.label} (not in this run's saved evidence)</span>
+  if (!link.available) return <span className="text-xs text-slate-400"><Gloss text={link.label} /> (not in this run's saved evidence)</span>
   return (
     <button type="button" className="link inline-flex items-center gap-1 text-left text-xs" data-testid="review-evidence-link"
-      onClick={() => openPanel({ type: 'evidence', id: link.id })}><Icon name="doc" className="h-3 w-3 shrink-0" />{link.label}</button>
+      onClick={() => openPanel({ type: 'evidence', id: link.id })}><Icon name="doc" className="h-3 w-3 shrink-0" /><Gloss text={link.label} /></button>
   )
 }
 
@@ -53,7 +53,7 @@ function Unavailable({ text }) {
 function Withheld({ entry, openPanel, openQueueItem }) {
   return (
     <li className="rounded-lg border border-rose-400/15 bg-rose-500/[0.04] px-3 py-2" data-testid="withheld-entry">
-      <div className="text-xs text-slate-200"><b className="font-semibold text-white">{entry.field}</b>: not shown, because {entry.why}.</div>
+      <div className="text-xs text-slate-200"><b className="font-semibold text-white">{entry.field}</b>: hidden because <Gloss text={entry.why} />.</div>
       {entry.checker_reason && (
         <details className="mt-1 text-xs" data-testid="checker-reason"><summary className="cursor-pointer text-slate-400 hover:text-slate-300">Evidence check's reason (an assessment, not an established fact)</summary>
           <div className="mt-1 leading-relaxed text-slate-400">{entry.checker_reason}</div></details>
@@ -80,7 +80,7 @@ function Item({ item, openPanel, openQueueItem }) {
     <li className="rounded-xl border border-white/[0.07] bg-ink-950/40 p-3.5" data-testid="review-item-reason" data-code={item.code} data-category={item.category}>
       <div className="flex flex-wrap items-center gap-2">
         <Badge tone={tone}>{label}</Badge>
-        <span className="text-sm font-medium text-white">{item.title}</span>
+        <span className="text-sm font-medium text-white"><Gloss text={item.title} /></span>
       </div>
       {item.check && <div className="prose-pre mt-1.5 text-sm leading-relaxed text-slate-300"><Gloss text={plainNotes([item.check]).join(' ') || item.check} /></div>}
       {(parts > 0 || links > 0) && (
@@ -106,7 +106,7 @@ function Item({ item, openPanel, openQueueItem }) {
             const plain = f.upstream_detail ? plainReason(f.upstream_detail) : null
             return (
             <li key={i} className="border-l-2 border-violet-400/30 pl-3">
-              <div className="text-xs font-medium text-slate-200">{f.label}</div>
+              <div className="text-xs font-medium text-slate-200"><Gloss text={f.label} /></div>
               <div className="mt-0.5 text-xs leading-relaxed text-slate-400">{f.check}</div>
               {plain && (
                 <div className="mt-1 text-xs leading-relaxed text-slate-300" data-testid="flag-plain-reason">
@@ -167,8 +167,8 @@ export default function ReviewPanel({ review, openPanel, openQueueItem }) {
       {review.items.length > 0 && <ul className="space-y-2.5">{review.items.map((it, i) => <Item key={i} item={it} openPanel={openPanel} openQueueItem={openQueueItem} />)}</ul>}
       {review.advisor_note && (
         <div className="rounded-xl border border-white/[0.07] bg-ink-950/40 p-3.5" data-testid="advisor-review-note">
-          <div className="text-xs text-slate-400">Advisor's note</div>
-          <div className="prose-pre mt-1 text-sm leading-relaxed text-slate-200">{review.advisor_note.text}</div>
+          <div className="text-xs text-slate-400">The AI's note</div>
+          <div className="prose-pre mt-1 text-sm leading-relaxed text-slate-200"><Gloss text={review.advisor_note.text} /></div>
           {review.advisor_note.links.length > 0 && (
             <details className="mt-1.5 text-xs"><summary className="cursor-pointer text-cyan-200/90 hover:text-cyan-100">Show its {review.advisor_note.links.length} evidence link{review.advisor_note.links.length === 1 ? '' : 's'}</summary>
               <Refs links={review.advisor_note.links} openPanel={openPanel} openQueueItem={openQueueItem} max={4} /></details>
@@ -177,7 +177,7 @@ export default function ReviewPanel({ review, openPanel, openQueueItem }) {
       )}
       {otherWithheld.length > 0 && (
         <div className="mt-3" data-testid="other-withheld">
-          <div className="text-xs text-slate-400">Also not shown on this card (not a review reason by itself)</div>
+          <div className="text-xs text-slate-400">Also hidden on this card (not a review reason by itself)</div>
           <ul className="mt-1.5 space-y-1.5">{otherWithheld.map(w => <Withheld key={w.statement_id} entry={w} openPanel={openPanel} openQueueItem={openQueueItem} />)}</ul>
         </div>
       )}
@@ -202,14 +202,14 @@ function CheckLink({ link, openPanel, openQueueItem }) {
   const act = link.kind === 'queue' ? () => openQueueItem(link.item_id)
     : link.kind === 'thread' ? () => openPanel({ type: 'thread', channel: link.channel, thread: link.thread })
       : () => openPanel({ type: 'evidence', id: link.id })
-  if (link.kind === 'evidence' && !link.available) return <span className="text-xs text-slate-400">{link.label} (not saved in this run)</span>
+  if (link.kind === 'evidence' && !link.available) return <span className="text-xs text-slate-400"><Gloss text={link.label} /> (not saved in this run)</span>
   return (
     <button type="button" onClick={act} data-testid="check-link" data-kind={link.kind}
       className="group/link flex w-full items-start gap-2 rounded-lg px-2 py-1.5 text-left hover:bg-white/[0.04]">
       <Icon name={link.kind === 'queue' ? 'queue' : link.kind === 'thread' ? 'thread' : 'doc'} className="mt-0.5 h-3.5 w-3.5 shrink-0 text-cyan-300" />
       <span className="min-w-0">
         <span className="block text-sm font-medium text-cyan-200 group-hover/link:text-cyan-100">{link.kind === 'queue' ? 'Open this flag in the review queue' : <Gloss text={link.label} />}</span>
-        {link.detail && <span className="block truncate text-xs text-slate-400" title={link.detail}>{link.detail}</span>}
+        {link.detail && <span className="block truncate text-xs text-slate-400" title={readable(link.detail)}>{readable(link.detail)}</span>}
       </span>
     </button>
   )
@@ -223,13 +223,13 @@ export function WhatToCheck({ checks, openPanel, openQueueItem }) {
       <h4 className="eyebrow text-amber-200/90">What to check</h4>
       {checks.map((c, i) => (
         <div key={i} className={`rounded-xl border p-3.5 ${CHECK_TONES[c.kind] || 'border-white/[0.07] bg-ink-950/40'}`} data-testid="check" data-kind={c.kind}>
-          <div className="text-xs font-semibold uppercase tracking-wide text-slate-400">{c.heading}</div>
+          <div className="text-xs font-semibold uppercase tracking-wide text-slate-400">{readable(c.heading)}</div>
           <div className={`prose-pre mt-1 text-sm leading-relaxed ${c.kind === 'QUESTION' ? 'font-medium text-white' : 'text-slate-200'}`}
             data-testid="check-text" data-origin={c.text_origin}><Gloss text={c.text} /></div>
           {(c.related || []).map((r, j) => <div key={j} className="mt-1.5 text-xs text-slate-400" data-testid="check-related">{r}</div>)}
           {c.note && (
             <div className="mt-2 border-l-2 border-white/10 pl-3 text-xs leading-relaxed text-slate-300" data-testid="check-note">
-              <span className="text-slate-400">Advisor's note: </span>{c.note}
+              <span className="text-slate-400">The AI's note: </span><Gloss text={c.note} />
             </div>
           )}
           {c.links?.length > 0 && (

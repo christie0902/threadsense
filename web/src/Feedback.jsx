@@ -15,7 +15,7 @@ const WITHHELD = {
 }
 const FUTURE_NOTE = 'Advisory context only: a later run on the same threads receives it as a labelled reviewer note. It does not edit source documents, prompts, rules or this card, and it executes nothing. A team lead must confirm it first.'
 // A statement kept off the card is named by ID and verdict only; its text is not served (dashboard/disclosure.py).
-const WITHHELD_TEXT = 'Statement withheld from the card after the evidence check; its text is not shown.'
+const WITHHELD_TEXT = 'This statement did not pass the evidence check, so its text is hidden.'
 // "Other" always last, whatever order the server lists the categories in.
 const orderedCategories = categories => Object.entries(categories).sort(([a], [b]) => (a === 'OTHER') - (b === 'OTHER'))
 

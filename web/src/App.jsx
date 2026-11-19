@@ -34,11 +34,11 @@ function readHash() {
     item: p.get('item'), sort: SORTS[p.get('sort')] ? p.get('sort') : 'severity', quick: QUICK_FILTERS[p.get('filter')] ? p.get('filter') : 'ALL', debug: p.get('debug') === '1', view: p.get('view') === 'slides' ? 'slides' : 'grid' }
 }
 
-// Moving between tabs, panels, views or projects adds a history entry, so the browser's Back button returns to the previous
-// screen instead of leaving the site; sorting and filters only update the address.
+// Moving between tabs, panels, views, projects, filters or sort orders adds a history entry, so the browser's Back button
+// undoes the last change instead of skipping it or leaving the site.
 // Decisions that take a card out of the active list (briefView.CLOSING).
 const CLOSING_KINDS = ['APPROVE_ACTION', 'CONFIRM_FAQ_UPDATE', 'CONFIRM_ANNOUNCEMENT', 'ROUTE_TO_EXPERT', 'DISMISS']
-const navKey = s => `${s.tab}|${s.panel ? `${s.panel.type}:${s.panel.id || `${s.panel.channel}:${s.panel.thread}`}` : ''}|${s.view}|${s.project}`
+const navKey = s => `${s.tab}|${s.panel ? `${s.panel.type}:${s.panel.id || `${s.panel.channel}:${s.panel.thread}`}` : ''}|${s.view}|${s.project}|${s.quick}|${s.sort}`
 
 function writeHash(s, push = false) {
   const p = new URLSearchParams()
