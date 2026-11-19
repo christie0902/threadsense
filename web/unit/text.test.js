@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
-import { annotation, cleanFindings, datesInText, plainNote, plainNotes, plainReason, plainWording, readable, short, statementLabel, threadLabels, uniqueAgainst, usd, when } from '../src/text.js'
+import { annotation, cleanFindings, datesInText, plainNote, plainNotes, plainReason, plainWording, readable, short, statementLabel, statementNames, statementText, threadLabels, uniqueAgainst, usd, when } from '../src/text.js'
 
 // Real reason strings from the accepted briefing's Model Review Queue (data/experiments/threadsense_full_v1_combined_v2).
 const REASONS = {
@@ -134,4 +134,19 @@ test('threads started in the same minute still get different labels', () => {
   assert.equal(new Set(labels).size, 3)
   assert.match(labels[1], /14:47:21 UTC/) // same minute: seconds, then a number
   assert.match(labels[0], /14:46 UTC/)
+})
+
+test('dates inside document IDs are left alone', () => {
+  assert.equal(datesInText('Clarification SC-PII-2026-09-10 (posted 2026-09-10)'), 'Clarification SC-PII-2026-09-10 (posted 10 Sep 2026)')
+  assert.equal(datesInText('report_2026-09-10.md'), 'report_2026-09-10.md')
+})
+
+test('report-form statements are named by kind and read without internal IDs or codes', () => {
+  const names = statementNames([{ id: 'claim:c1', kind: 'CLAIM_INCIDENT_FACT' }, { id: 'resolution:member_68b6c06c', kind: 'RESOLUTION' },
+    { id: 'reporter:U008', kind: 'AFFECTED_REPORTER' }, { id: 'claim:c2', kind: 'CLAIM_INCIDENT_FACT' }])
+  assert.deepEqual(Object.values(names), ['Fact 1', 'Thread status 1', 'Affected reporter 1', 'Fact 2'])
+  assert.equal(statementText('Member thread member_68b6c06c is UNRESOLVED: no answer yet.', { member_68b6c06c: '#rp-general, 1 Oct 2026' }),
+    'The thread #rp-general, 1 Oct 2026 is unresolved: no answer yet.')
+  assert.equal(statementText('Member thread member_ffff is RESOLVED_IN_THREAD: answered.'), 'A thread is resolved in thread: answered.')
+  assert.equal(statementText('U012 reports, in their own cited message, being affected.'), 'The reporter reports, in their own cited message, being affected.')
 })

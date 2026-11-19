@@ -462,7 +462,7 @@ export default function App() {
 
                     {historyRows('PROCESSING_HISTORY').length > 0 && (
                       <details className="group panel-inset p-3" data-testid="processing-history">
-                        <summary className="cursor-pointer text-sm font-medium text-slate-300">Processing history ({historyRows('PROCESSING_HISTORY').length}): kept out of issue clustering by Agent 1 relevance</summary>
+                        <summary className="cursor-pointer text-sm font-medium text-slate-300">Set aside before grouping ({historyRows('PROCESSING_HISTORY').length}): routine or social threads, kept for reference</summary>
                         <div className="mt-3 grid items-start gap-6 xl:grid-cols-2 min-[2200px]:grid-cols-3">{historyRows('PROCESSING_HISTORY').map(card)}</div>
                       </details>
                     )}

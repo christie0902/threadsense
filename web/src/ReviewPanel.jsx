@@ -13,11 +13,19 @@ const CATEGORIES = {
   OTHER: ['Other', 'neutral'],
 }
 
+// Several queue links in one list are told apart by number.
+const queueLabel = (i, n) => (n > 1 ? `Open flag ${i + 1} of ${n} in the review queue` : 'Open this flag in the review queue')
+function numberQueueLinks(links) {
+  const n = (links || []).filter(l => l.kind === 'queue').length
+  let i = 0
+  return (links || []).map(l => (l.kind === 'queue' ? { ...l, queueText: queueLabel(i++, n) } : l))
+}
+
 /** One link to saved evidence, a related thread or a Model Review Queue item. */
 function Ref({ link, openPanel, openQueueItem }) {
   if (link.kind === 'queue') return (
     <button type="button" className="link inline-flex items-center gap-1 text-xs" data-testid="review-queue-link"
-      onClick={() => openQueueItem(link.item_id)}><Icon name="queue" className="h-3 w-3" />Open this flag in the review queue</button>
+      onClick={() => openQueueItem(link.item_id)}><Icon name="queue" className="h-3 w-3" />{link.queueText || queueLabel(0, 1)}</button>
   )
   if (link.kind === 'thread') return (
     <button type="button" className="link inline-flex items-center gap-1 text-left text-xs" data-testid="review-thread-link"
@@ -30,8 +38,9 @@ function Ref({ link, openPanel, openQueueItem }) {
   )
 }
 
-function Refs({ links, openPanel, openQueueItem, max = 3 }) {
-  if (!links?.length) return null
+function Refs({ links: given, openPanel, openQueueItem, max = 3 }) {
+  if (!given?.length) return null
+  const links = numberQueueLinks(given)
   const head = links.slice(0, max), rest = links.slice(max)
   const render = l => <li key={`${l.kind}:${l.id || l.item_id || l.thread}`}><Ref link={l} openPanel={openPanel} openQueueItem={openQueueItem} /></li>
   return (
@@ -208,7 +217,7 @@ function CheckLink({ link, openPanel, openQueueItem }) {
       className="group/link flex w-full items-start gap-2 rounded-lg px-2 py-1.5 text-left hover:bg-white/[0.04]">
       <Icon name={link.kind === 'queue' ? 'queue' : link.kind === 'thread' ? 'thread' : 'doc'} className="mt-0.5 h-3.5 w-3.5 shrink-0 text-cyan-300" />
       <span className="min-w-0">
-        <span className="block text-sm font-medium text-cyan-200 group-hover/link:text-cyan-100">{link.kind === 'queue' ? 'Open this flag in the review queue' : <Gloss text={link.label} />}</span>
+        <span className="block text-sm font-medium text-cyan-200 group-hover/link:text-cyan-100">{link.kind === 'queue' ? link.queueText || queueLabel(0, 1) : <Gloss text={link.label} />}</span>
         {link.detail && <span className="block truncate text-xs text-slate-400" title={readable(link.detail)}>{readable(link.detail)}</span>}
       </span>
     </button>
@@ -234,7 +243,7 @@ export function WhatToCheck({ checks, openPanel, openQueueItem }) {
           )}
           {c.links?.length > 0 && (
             <div className="-mx-2 mt-2 space-y-0.5">
-              {c.links.map((l, j) => <CheckLink key={j} link={l} openPanel={openPanel} openQueueItem={openQueueItem} />)}
+              {numberQueueLinks(c.links).map((l, j) => <CheckLink key={j} link={l} openPanel={openPanel} openQueueItem={openQueueItem} />)}
               {c.more_links > 0 && <div className="px-2 text-xs text-slate-400">{c.more_links} more under "All review reasons and evidence"</div>}
             </div>
           )}

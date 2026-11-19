@@ -127,13 +127,34 @@ function useEscape(active, close) {
   }, [active, close])
 }
 
+/**
+ * Escape on a form: closes it at once when nothing was typed; otherwise asks first ("Discard what you typed?"), and a
+ * second Escape discards. Returns [asking, keepEditing, discard].
+ */
+function useEscapeToClose(active, dirty, close) {
+  const [asking, setAsking] = useState(false)
+  const discard = () => { setAsking(false); close() }
+  useEscape(active, () => (dirty && !asking ? setAsking(true) : discard()))
+  return [asking, () => setAsking(false), discard]
+}
+
+function DiscardPrompt({ onKeep, onDiscard }) {
+  return (
+    <div className="flex flex-wrap items-center gap-2 rounded-lg border border-amber-300/30 bg-amber-300/[0.07] px-3 py-2 text-xs text-amber-100" role="alert" data-testid="discard-prompt">
+      Discard what you typed?
+      <button type="button" className="btn btn-sm" onClick={onDiscard} data-testid="discard-confirm">Discard</button>
+      <button type="button" className="btn btn-sm" onClick={onKeep} autoFocus>Keep editing</button>
+    </div>
+  )
+}
+
 function ReopenForm({ runKey, card, actor, head, onCancel, onDone }) {
   const { state, save } = useIdempotentSave(`/api/runs/${encodeURIComponent(runKey)}/cards/${card.card_id}/decisions`)
   const [note, setNote] = useState('')
   const body = () => ({ kind: 'REOPEN', actor_id: actor, expected_head: head.entry_id, note: note.trim(), text: null, severity: null,
     expert: null, alternative_id: null })
   useEffect(() => { if (state.phase === 'saved') onDone(state.entry, state.replayed) }, [state.phase]) // eslint-disable-line react-hooks/exhaustive-deps
-  useEscape(state.phase !== 'saved', onCancel)
+  const [asking, keepEditing, discard] = useEscapeToClose(state.phase !== 'saved', Boolean(note.trim()), onCancel)
   if (state.phase === 'saved') return (
     <div className="rounded-lg border border-emerald-400/40 bg-emerald-400/10 p-2.5 text-xs text-emerald-100" data-testid="save-success">Reopened. {KIND_NOTES.REOPEN}</div>
   )
@@ -145,6 +166,7 @@ function ReopenForm({ runKey, card, actor, head, onCancel, onDone }) {
         <textarea className="field mt-1 h-16 w-full p-2.5" value={note} name="note" onChange={e => setNote(e.target.value)} />
       </label>
       <div className="text-xs text-slate-400">{KIND_NOTES.REOPEN}</div>
+      {asking && <DiscardPrompt onKeep={keepEditing} onDiscard={discard} />}
       <SaveStatus state={state} onRetry={() => save(body())} onShowLatest={() => onDone()} />
       <div className="flex flex-wrap items-center gap-3">
         <button type="submit" className="btn-primary" disabled={!note.trim() || !actor || state.phase === 'saving'} data-testid="save-reopen">Reopen</button>
@@ -222,7 +244,8 @@ function DecisionForm({ runKey, card, alternatives, allowed, actor, head, onCanc
   // Saved: the list refreshes at once, so the card moves to its tab without another click. Until the refresh lands (or if
   // it fails) the card shows the saved decision in place.
   useEffect(() => { if (state.phase === 'saved') onDone(state.entry, state.replayed) }, [state.phase]) // eslint-disable-line react-hooks/exhaustive-deps
-  useEscape(open && state.phase !== 'saved', onCancel || (() => setOpen(false)))
+  const typed = Boolean(note.trim() || severity || Object.values(edits).some(v => v !== undefined))
+  const [asking, keepEditing, discard] = useEscapeToClose(open && state.phase !== 'saved', typed, onCancel || (() => setOpen(false)))
 
   if (state.phase === 'saved') {
     return (
@@ -306,6 +329,7 @@ function DecisionForm({ runKey, card, alternatives, allowed, actor, head, onCanc
       )}
       {kind && <div className="text-xs text-slate-400">{KIND_NOTES[kind]}</div>}
       {!actor && <div className="text-xs text-red-300">{NO_SESSION}</div>}
+      {asking && <DiscardPrompt onKeep={keepEditing} onDiscard={discard} />}
       <SaveStatus state={state} onRetry={() => save(body())} onShowLatest={() => onDone()} />
       <div className="flex flex-wrap items-center gap-3">
         <button type="submit" disabled={!ready || state.phase === 'saving'} data-testid="save-decision" className="btn-primary">

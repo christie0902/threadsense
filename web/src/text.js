@@ -219,8 +219,9 @@ export function annotation(marker) {
 
 // ISO timestamps and days inside saved text and labels ("… at 2026-10-02T07:06:16.000064+00:00", "#channel, 2026-10-01,")
 // in the site's date format.
-const ISO_IN_TEXT = /\d{4}-\d\d-\d\dT\d\d:\d\d(?::\d\d(?:\.\d+)?)?(?:Z|[+-]\d\d:\d\d)/g
-const DAY_IN_TEXT = /\b\d{4}-\d\d-\d\d\b/g
+// Not inside an identifier: "SC-PII-2026-09-10" or "report_2026-09-10" keeps its date as written.
+const ISO_IN_TEXT = /(?<![\w-])\d{4}-\d\d-\d\dT\d\d:\d\d(?::\d\d(?:\.\d+)?)?(?:Z|[+-]\d\d:\d\d)/g
+const DAY_IN_TEXT = /(?<![\w-])\d{4}-\d\d-\d\d(?![\w-])/g
 export const datesInText = text => String(text ?? '').replace(ISO_IN_TEXT, m => when(m)).replace(DAY_IN_TEXT, d => when(d, { time: false }))
 
 // Fixed wording the checks write into cards ("The advisor chose…", "Its reason is not shown because…"), in the words the
@@ -243,3 +244,32 @@ export function plainWording(text) {
 }
 /** Everything a reader sees from saved text: system wording, then dates. */
 export const readable = text => datesInText(plainWording(text))
+
+// Statement kinds on the AI-issue form, as a reader would name them (numbered within each kind).
+const KIND_NAMES = {
+  CLAIM_INCIDENT_FACT: 'Fact', CLAIM_GUIDANCE: 'Guidance', CLAIM_INFERENCE: 'Inference', CLAIM_THREAD_INSTRUCTION: 'Thread instruction',
+  CLAIM_HISTORY: 'History', CLAIM_SOURCE_FACT: 'Source fact', DETAIL: 'Detail', SUMMARY: 'Summary sentence', RESOLUTION: 'Thread status',
+  AFFECTED_REPORTER: 'Affected reporter', SEVERITY_RATIONALE: 'Severity reason', SEVERITY_SIGNAL: 'Severity signal',
+  HISTORICAL_RECURRENCE: 'Earlier occurrence', REPORTED_RECURRENCE: 'Recurrence', ACTION: 'Action', ACTION_RATIONALE: 'Why this action',
+  INTERVENTION_NEED: 'Need to act', NO_ACTION_RATIONALE: 'Why no action', ALTERNATIVE: 'Alternative', ANNOUNCEMENT_HANDLING: 'Announcement',
+  OPEN_QUESTION: 'Open question', SOURCE_AGREEMENT: 'Sources agree',
+}
+/** statement id -> "Fact 2", "Thread status 1", … in the order given. */
+export function statementNames(statements) {
+  const n = {}
+  return Object.fromEntries((statements || []).map(s => {
+    const name = KIND_NAMES[s.kind] || statementLabel(s.id)
+    n[name] = (n[name] || 0) + 1
+    return [s.id, `${name} ${n[name]}`]
+  }))
+}
+/**
+ * A statement's saved text without internal IDs: "Member thread member_68b6… is UNRESOLVED: …" -> "<thread> is unresolved: …",
+ * "U012 reports …" -> "The reporter reports …". memberLabels: member_id -> thread label.
+ */
+export function statementText(text, memberLabels = {}) {
+  return readable(codesInWords(String(text || '')
+    .replace(/\bMember thread (member_[0-9a-f]+)/g, (_, m) => (memberLabels[m] ? `The thread ${memberLabels[m]}` : 'A thread'))
+    .replace(/\bmember_[0-9a-f]+\b/g, 'a thread')
+    .replace(/^U\d{3,}\b/, 'The reporter').replace(/\bU\d{3,}\b/g, 'the reporter')))
+}

@@ -269,3 +269,64 @@ test('Round 2: favicon.ico exists, and Back undoes a filter change', async ({ pa
   await expect(page.getByTestId('active-filter')).toHaveCount(0)
   await expect(page.getByTestId('tab-active')).toHaveAttribute('aria-current', 'page')
 })
+
+// ---- Third QA pass (2026-11-19) ----
+test('Round 3: report-form statements carry names and plain text, hidden ones grouped, the chosen one shown in full', async ({ page }) => {
+  await go(page, '&project=safety_classification')
+  const box = card(page, QN_CARD)
+  await box.getByTestId('card-expand').click()
+  await box.getByTestId('report-ai-issue').locator('summary').click()
+  const select = box.getByTestId('feedback-target')
+  const options = await select.locator('option').allTextContents()
+  for (const o of options) {
+    expect(o).not.toMatch(/member_[0-9a-f]|\bU\d{3}\b|\b[A-Z]{3,}_[A-Z_]+\b|hidden from the card/)
+    expect(o).not.toMatch(/^\w+ \d{3}\b/) // no "reporter 008"
+  }
+  const value = await select.locator('option[value^="STATEMENT:"]').first().getAttribute('value')
+  await select.selectOption(value)
+  await expect(box.getByTestId('feedback-statement')).toBeVisible()
+  expect((await box.getByTestId('feedback-statement').innerText()).endsWith('…')).toBe(false)
+})
+
+test('Round 3: superseded sources name the replacing document and date it, without raw IDs or timestamps', async ({ page }) => {
+  await go(page, `&project=safety_classification&panel=evidence:${encodeURIComponent('k:safety-qn-help-page@1.0:983cdeaa')}`)
+  const panel = page.getByTestId('evidence-detail')
+  await expect(panel).toBeVisible()
+  const text = await panel.innerText()
+  expect(text).toContain('SC-PII-2026-09-10') // a document ID keeps its date
+  expect(text).not.toContain('SC-PII-10 Sep 2026')
+  expect(text).not.toContain('safety-fictional-pii-clarification@1.0')
+  expect(text).not.toMatch(/\d{4}-\d\d-\d\dT\d\d:\d\d/)
+  expect(text).toContain('effective 10 Sep 2026')
+})
+
+test('Round 3: several review-queue links on one card are numbered', async ({ page }) => {
+  await go(page, '&project=multilingual_eval')
+  const box = card(page, 'card_20a3cfeeb55bc82ccaf1b1014f3e34e4')
+  await box.getByTestId('card-expand').click()
+  const labels = await box.getByTestId('what-to-check').getByTestId('check-link').filter({ hasText: 'review queue' }).allInnerTexts()
+  expect(labels.length).toBeGreaterThan(1)
+  expect(new Set(labels).size).toBe(labels.length)
+})
+
+test('Round 3: Escape asks before discarding typed text in the Resolve form', async ({ page }) => {
+  await go(page, '&project=response_preference')
+  const box = card(page, ENGINEERING_CARD)
+  await box.getByRole('button', { name: 'Resolve…' }).click()
+  await box.getByLabel('Dismiss').check()
+  await box.locator('textarea[name=note]').fill('Half-written reason')
+  await page.keyboard.press('Escape')
+  await expect(box.getByTestId('discard-prompt')).toBeVisible()
+  await expect(box.locator('textarea[name=note]')).toHaveValue('Half-written reason') // nothing lost yet
+  await box.getByRole('button', { name: 'Keep editing' }).click()
+  await expect(box.getByTestId('discard-prompt')).toHaveCount(0)
+  await page.keyboard.press('Escape')
+  await page.keyboard.press('Escape') // second Escape discards
+  await expect(box.getByTestId('decision-form')).toHaveCount(0)
+})
+
+test('Round 3: the set-aside list has no pipeline wording', async ({ page }) => {
+  await go(page)
+  const section = page.getByTestId('processing-history')
+  if (await section.count()) expect(await section.locator('summary').innerText()).not.toMatch(/Agent \d|clustering/)
+})

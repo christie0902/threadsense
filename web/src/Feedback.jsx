@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { getJSON, useIdempotentSave } from './api.js'
-import { plainReason, short, statementLabel, threadLabels } from './text.js'
+import { plainReason, short, statementNames, statementText, threadLabels } from './text.js'
 import { Badge, Icon, when } from './ui.jsx'
 
 // AI-quality feedback (dashboard/feedback.py). Kept apart from the operational decision: Accept/Reject/Defer and the
@@ -21,7 +21,7 @@ const orderedCategories = categories => Object.entries(categories).sort(([a], [b
 
 function targetLabel(t) {
   if (t.kind === 'CARD') return 'The whole card'
-  if (t.kind === 'STATEMENT') return `${statementLabel(t.id)}${t.earlier_verdict ? ` (evidence check: ${t.earlier_verdict.toLowerCase().replaceAll('_', ' ')})` : ''}`
+  if (t.kind === 'STATEMENT') return `${statementNames([{ id: t.id, kind: t.statement_kind }])[t.id].replace(/ 1$/, '')}${t.earlier_verdict && t.earlier_verdict !== 'SUPPORTED' ? ' (did not pass the evidence check)' : ''}`
   return 'A review finding about this card'
 }
 
@@ -47,7 +47,7 @@ function HistoryEntry({ runKey, view, actor, onChanged }) {
       </div>
       {r.target.kind === 'STATEMENT' && (r.target.text_withheld
         ? <div className="mt-2 text-xs text-slate-400" data-testid="feedback-text-withheld">{WITHHELD_TEXT}</div>
-        : <div className="quote mt-2 text-xs">{r.target.earlier_text}</div>)}
+        : <div className="quote mt-2 text-xs">{statementText(r.target.earlier_text)}</div>)}
       <div className="mt-2 text-sm text-slate-200"><span className="text-slate-400">What is wrong: </span>{r.what_is_wrong}</div>
       {r.suggested_correction && <div className="mt-1 text-sm text-slate-200"><span className="text-slate-400">Correction: </span>{r.suggested_correction}</div>}
       {r.source_refs.length > 0 && <div className="mt-1 text-xs text-slate-400">Sources: {r.source_refs.map(x => x.ref).join(', ')}</div>}
@@ -74,6 +74,10 @@ function HistoryEntry({ runKey, view, actor, onChanged }) {
 function ReportForm({ runKey, cardId, data, actor, onSaved, relatedThreads = [] }) {
   const { targets, categories, problems, limits } = data
   const labels = threadLabels(relatedThreads)
+  const memberLabels = Object.fromEntries(relatedThreads.map(t => [t.member_id, labels[t.thread_id] || t.label]))
+  const names = statementNames(targets.statements)
+  const shownStatements = targets.statements.filter(s => !s.text_withheld)
+  const hiddenStatements = targets.statements.filter(s => s.text_withheld)
   const [category, setCategory] = useState('')
   const [problem, setProblem] = useState('')
   const [target, setTarget] = useState('CARD:')
@@ -129,19 +133,28 @@ function ReportForm({ runKey, cardId, data, actor, onSaved, relatedThreads = [] 
       <label className="block text-xs text-slate-300">Affected output
         <select className="field mt-1 w-full" value={target} onChange={change(setTarget)} data-testid="feedback-target">
           <option value="CARD:">The whole card</option>
-          {targets.statements.length > 0 && (
+          {shownStatements.length > 0 && (
             <optgroup label="Statements on this card">
-              {targets.statements.map(s => <option key={s.id} value={`STATEMENT:${s.id}`} title={s.text_withheld ? undefined : s.text}>
-                {statementLabel(s.id)} · {s.text_withheld ? 'hidden from the card' : short(s.text, 70)}{s.verdict && s.verdict !== 'SUPPORTED' ? ` (${s.verdict.toLowerCase().replaceAll('_', ' ')})` : ''}</option>)}
+              {shownStatements.map(s => <option key={s.id} value={`STATEMENT:${s.id}`}>{names[s.id]} · {short(statementText(s.text, memberLabels), 90)}</option>)}
+            </optgroup>
+          )}
+          {hiddenStatements.length > 0 && (
+            <optgroup label="Hidden statements (did not pass the evidence check)">
+              {hiddenStatements.map(s => <option key={s.id} value={`STATEMENT:${s.id}`}>{names[s.id]}</option>)}
             </optgroup>
           )}
           {targets.review_items.length > 0 && (
             <optgroup label="Review findings about this card">
-              {targets.review_items.map(i => <option key={i.id} value={`REVIEW_ITEM:${i.id}`} title={i.reason}>{plainReason(i.reason).title}</option>)}
+              {targets.review_items.map(i => <option key={i.id} value={`REVIEW_ITEM:${i.id}`} title={plainReason(i.reason).explanation}>{plainReason(i.reason).title}</option>)}
             </optgroup>
           )}
         </select>
       </label>
+      {kind === 'STATEMENT' && (() => {
+        const s = targets.statements.find(x => x.id === id)
+        return s && <div className="rounded-lg border border-white/[0.06] bg-white/[0.02] px-3 py-2 text-xs leading-relaxed text-slate-300" data-testid="feedback-statement">
+          {s.text_withheld ? 'This statement did not pass the evidence check, so its text is hidden.' : statementText(s.text, memberLabels)}</div>
+      })()}
       {cardLevel ? (
         <fieldset className="text-xs text-slate-300" data-testid="feedback-threads">
           <legend>Threads it applies to (at most {limits.max_scope_threads} for future use)</legend>

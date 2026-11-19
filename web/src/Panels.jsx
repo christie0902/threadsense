@@ -29,6 +29,8 @@ function EvidenceDetail({ runKey, id, openPanel }) {
   useEffect(() => { setE(null); getJSON(`/api/runs/${encodeURIComponent(runKey)}/evidence/${encodeURIComponent(id)}`).then(setE).catch(x => setError(String(x.message))) }, [runKey, id])
   if (!e) return <Loading error={error} />
   const a = e.applicability || {}, d = e.dates || {}, s = e.scope || {}, au = e.authority || {}, st = e.recorded_states || {}
+  // Record IDs the text mentions ("safety-fictional-pii-clarification@1.0") by their saved titles.
+  const named = t => Object.entries(e.record_names || {}).reduce((acc, [k, v]) => acc.split(k).join(`“${v}”`), String(t || ''))
   return (
     <div className="space-y-5" data-testid="evidence-detail">
       <div>
@@ -40,12 +42,12 @@ function EvidenceDetail({ runKey, id, openPanel }) {
           <NotCurrent label={e.superseded_label} />
         </div>
         {e.superseded_label && <div className="mt-3 rounded-lg border border-rose-400/40 bg-rose-500/10 p-2.5 text-xs text-rose-100" data-testid="superseded-banner">
-          Not current: {e.superseded_label}. Shown as history only.</div>}
+          Not current: <Gloss text={named(e.superseded_label)} />. Shown as history only.</div>}
       </div>
       <div>
         <div className="eyebrow mb-1">Saved text</div>
         <div className="quote whitespace-normal" data-testid="evidence-text">
-          {e.source_type === 'slack_message' ? <div className="prose-pre"><Gloss text={e.excerpt} /></div> : <Markdown text={e.excerpt} />}
+          {e.source_type === 'slack_message' ? <div className="prose-pre"><Gloss text={e.excerpt} /></div> : <Markdown text={named(e.excerpt)} />}
         </div>
       </div>
       <div className="panel-inset px-3 py-1">
@@ -55,7 +57,7 @@ function EvidenceDetail({ runKey, id, openPanel }) {
         <Row label="Checked as of">{d.reference_time && when(d.reference_time)}</Row>
         <Row label="Scope">{s.scope ? `${s.scope}: ${s.project_id || 'shared'}${s.batch_id ? ` / ${s.batch_id}` : ''}${s.batch_relation ? ` (${s.batch_relation.replaceAll('_', ' ')})` : ''}` : null}</Row>
         <Row label="Applicability">{a.state ? `${words(a.state)} (revision ${words(a.revision_state)}, ${a.version_mode} view)` : null}</Row>
-        <Row label="Replaced by">{(a.replaced_by || []).map(r => `${r.replaced_by}${r.section ? ` (section ${r.section})` : ''}, effective ${r.replacement_effective}`).join('; ')}</Row>
+        <Row label="Replaced by">{(e.replaced_by_labels || (a.replaced_by || []).map(r => `${r.replaced_by}${r.section ? ` (section ${r.section})` : ''}, effective ${when(r.replacement_effective, { time: false })}`)).join('; ')}</Row>
         <Row label="Authority">{au.role ? `${words(au.role)} ${au.actor || ''} · ${words(au.approval_status)}` : null}</Row>
         <Row label="Recorded states">{Object.entries(st).filter(([, v]) => v).map(([k, v]) => `${words(k.replace('_status', ''))}: ${words(v).replace(/^tl /, 'team lead ')}`).join(' · ')}</Row>
         <Row label="Author">{e.author_role ? `${roleLabel(e.author_role, { start: true })} (${e.author_id})` : null}</Row>

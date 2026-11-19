@@ -6,6 +6,7 @@ TEST_FIXTURE for the labelled dashboard fixtures). Card text is returned exactly
 labels around it, never rewording. Evidence comes from the run's saved evidence ledger; thread views come from the
 Slack fixture and are compared with the saved excerpts.
 """
+from datetime import datetime, timezone
 from functools import cached_property
 from hashlib import sha256
 import json
@@ -57,16 +58,27 @@ def evidence_key(ref):
     return (ref.get('note') or '').split(' ')[0] or None
 
 
-def superseded_label(entry):
-    """Visible label for evidence that is not current; None when it is current."""
-    a, dates = entry.get('applicability') or {}, entry.get('dates') or {}
+def label_date(value):
+    """'2026-09-10T13:00:00Z' -> '10 Sep 2026' (the dashboard's day format); anything else unchanged."""
+    try:
+        d = datetime.fromisoformat(str(value).replace('Z', '+00:00')).astimezone(timezone.utc)
+    except ValueError:
+        return value
+    return f"{d.day} {d.strftime('%b %Y')}"
+
+
+def superseded_label(entry, titles=None):
+    """Visible label for evidence that is not current; None when it is current. A replacing record is named by its title
+    when the run saved one (titles: record -> title), otherwise by its record name."""
+    a, dates, titles = entry.get('applicability') or {}, entry.get('dates') or {}, titles or {}
     if a.get('state') == 'SECTION_SUPERSEDED':
-        by = ', '.join(f"{r['replaced_by']} (effective {r.get('replacement_effective')})" for r in a.get('replaced_by') or [])
+        by = ', '.join(f"{titles.get(r['replaced_by'], r['replaced_by'])} (effective {label_date(r.get('replacement_effective'))})"
+                       for r in a.get('replaced_by') or [])
         return f'Superseded section - replaced by {by}' if by else 'Superseded section'
     if a.get('state') == 'SUPERSEDED_REVISION' or a.get('revision_state') == 'SUPERSEDED_REVISION':
         return 'Superseded revision - a later version replaces it'
     if dates.get('expired_as_of'):
-        return f"Expired - valid until {dates.get('valid_until')}"
+        return f"Expired - valid until {label_date(dates.get('valid_until'))}"
     if a.get('state') and a['state'] not in ('CURRENT', 'UNRESOLVED'):
         return a['state'].replace('_', ' ').capitalize()
     return None
@@ -347,6 +359,17 @@ class Run:
                  'impact': assessed.get(flag_id(p.model_dump())) or {'status': record['status'], 'note': record.get('note')}}
                 for p in self.flag_source.provenance(card)]
 
+    @cached_property
+    def record_titles(self):
+        """Record name (citation authoring, e.g. 'safety-fictional-pii-clarification@1.0') -> its saved title, across the run."""
+        titles = {}
+        for card_id in self.cards:
+            for e in self.ledger(card_id).values():
+                c = e.get('citation') or {}
+                if c.get('authoring') and c.get('title'):
+                    titles.setdefault(c['authoring'], c['title'])
+        return titles
+
     def ledger(self, card_id):
         return ((self.topics.get(card_id) or {}).get('result') or {}).get('evidence_ledger') or {}
 
@@ -383,7 +406,7 @@ class Run:
             if entry is None:
                 out.append({'evidence_id': key, 'missing_from_ledger': True})
                 continue
-            view = evidence_view(entry, cited=True)
+            view = evidence_view(entry, cited=True, titles=self.record_titles)
             out.append({k: view[k] for k in ('evidence_id', 'origin', 'use', 'source_type', 'title', 'sections',
                                              'authoring', 'superseded_label', 'channel_id', 'thread_id', 'author_role')})
         return out
@@ -391,14 +414,14 @@ class Run:
     def evidence(self, card_id):
         """Saved evidence for one card: every ledger entry, cited ones first, with labels for non-current sources."""
         cited = self.cited(card_id)
-        entries = [evidence_view(e, cited=k in cited) for k, e in self.ledger(card_id).items()]
+        entries = [evidence_view(e, cited=k in cited, titles=self.record_titles) for k, e in self.ledger(card_id).items()]
         return sorted(entries, key=lambda e: (not e['cited'], e['origin'] != 'retrieved_source', e['evidence_id']))
 
     def evidence_entry(self, evidence_id):
         for card_id in self.cards:
             entry = self.ledger(card_id).get(evidence_id)
             if entry is not None:
-                return evidence_view(entry, cited=evidence_id in self.cited(card_id), full=True) | {'card_id': card_id}
+                return evidence_view(entry, cited=evidence_id in self.cited(card_id), full=True, titles=self.record_titles) | {'card_id': card_id}
         raise RunNotFound(f'Evidence {evidence_id} is not saved in run {self.key}.')
 
     def thread_keys(self):
@@ -436,7 +459,7 @@ def thread_in_fixture(fixture_root, channel_id, thread_id):
     return path.is_file() and any(m.get('ts') == thread_id for m in read_json(path).get('history') or [])
 
 
-def evidence_view(entry, *, cited, full=False):
+def evidence_view(entry, *, cited, full=False, titles=None):
     citation = entry.get('citation') or {}
     source = citation.get('source') or {}
     is_message = entry.get('origin') == 'member_message'
@@ -454,11 +477,18 @@ def evidence_view(entry, *, cited, full=False):
         'author_role': entry.get('author_role'), 'author_id': entry.get('author_id'),
         'timestamp': entry.get('timestamp'), 'dates': entry.get('dates'), 'scope': entry.get('scope'),
         'applicability': entry.get('applicability'), 'authority': entry.get('authority'),
-        'recorded_states': entry.get('recorded_states'), 'superseded_label': superseded_label(entry),
+        'recorded_states': entry.get('recorded_states'), 'superseded_label': superseded_label(entry, titles),
         'excerpt': entry.get('excerpt'),
     }
     if not full and view['excerpt'] and len(view['excerpt']) > 400:
         view['excerpt_preview'] = True
+    if full and titles:
+        # Readable names for record IDs the source mentions (its replacements, or IDs inside its saved text).
+        a = entry.get('applicability') or {}
+        view['replaced_by_labels'] = [f"{titles.get(r['replaced_by'], r['replaced_by'])}"
+                                      f"{' (section ' + r['section'] + ')' if r.get('section') else ''}, effective {label_date(r.get('replacement_effective'))}"
+                                      for r in a.get('replaced_by') or []]
+        view['record_names'] = {k: v for k, v in titles.items() if k in (view['excerpt'] or '') or k in (view['superseded_label'] or '')}
     return view
 
 

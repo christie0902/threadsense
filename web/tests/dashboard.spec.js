@@ -467,7 +467,7 @@ test('closed cards are easy to scan; an opened card leads with what to check, wi
   await box.getByRole('tab', { name: 'Technical' }).click()
   await expect(box.getByTestId('saved-title')).toContainText(submit.topic_name) // the saved label is kept here
   await box.getByRole('tab', { name: 'Action & draft' }).click()
-  await checks.getByTestId('check-link').filter({ hasText: 'Open this flag in the review queue' }).first().click()
+  await checks.getByTestId('check-link').filter({ hasText: /in the review queue/ }).first().click()
   await expect(page.locator('[data-testid=review-item][data-focused]')).toHaveCount(1)
 
   // Opened smoke playback (the reload-workaround card): the saved question leads, once; withheld named, not shown.
