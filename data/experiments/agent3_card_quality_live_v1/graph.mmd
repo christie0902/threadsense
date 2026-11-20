@@ -1,0 +1,30 @@
+---
+config:
+  flowchart:
+    curve: linear
+---
+graph TD;
+	__start__([<p>__start__</p>]):::first
+	load_handoff(load_handoff)
+	extract_announcements(extract_announcements)
+	prepare_retrieval(prepare_retrieval)
+	plan_work(plan_work)
+	validate_accounting(validate_accounting)
+	aggregate(aggregate)
+	persist(persist)
+	process_topic(process_topic)
+	__end__([<p>__end__</p>]):::last
+	__start__ --> load_handoff;
+	aggregate --> persist;
+	extract_announcements --> prepare_retrieval;
+	load_handoff --> extract_announcements;
+	plan_work -.-> process_topic;
+	plan_work -.-> validate_accounting;
+	prepare_retrieval --> plan_work;
+	process_topic -.-> validate_accounting;
+	validate_accounting --> aggregate;
+	persist --> __end__;
+	process_topic -.-> process_topic;
+	classDef default fill:#f2f0ff,line-height:1.2
+	classDef first fill-opacity:0
+	classDef last fill:#bfb6fc

@@ -1,9 +1,10 @@
-// Static demo backend (`npm run build:demo`): answers the dashboard's API paths from a bundled snapshot of one saved
-// run (scripts/build_web_demo_data.py) and keeps the visitor's decisions, review actions, lessons and AI-feedback
-// reports in this browser's localStorage, scoped to that briefing. It mirrors the FastAPI rules the UI relies on
-// (idempotency keys, expected heads, state transitions) in simplified form. No network request leaves the page except
-// the one for the bundled data file, and nothing runs an agent.
-import bundleUrl from '../demo/briefing.json?url'
+// Static demo backend (`npm run build:demo`): answers the dashboard's API paths from bundled snapshots of saved runs
+// (scripts/build_web_demo_data.py) and keeps the visitor's decisions, review actions, lessons and AI-feedback reports in
+// this browser's localStorage, scoped to each briefing. It mirrors the FastAPI rules the UI relies on (idempotency keys,
+// expected heads, state transitions) in simplified form. No network request leaves the page except those for the bundled
+// data files, and nothing runs an agent. With demo/runs.json, each run has its own bundle, fetched when that run is
+// opened; without it, demo/briefing.json is the only run.
+const FILES = import.meta.glob(['../demo/briefing.json', '../demo/runs.json', '../demo/runs/*.json'], { query: '?url', import: 'default', eager: true })
 
 const EFFECTS = { ACCEPT: 'RESOLVED_FOR_RUN', REJECT: 'NEGATIVE_EXAMPLE', DEFER: 'KEPT_OPEN' }
 const KIND_ACTIONS = { CONFIRM_FAQ_UPDATE: 'UPDATE_FAQ', CONFIRM_ANNOUNCEMENT: 'POST_ALIGNMENT' }
@@ -13,17 +14,38 @@ const ORIGIN_AGENT = { agent1: 'AGENT_1', agent2: 'AGENT_2', assisted_content_re
 const LESSON_CATEGORIES = { AGENT_1: ['SUMMARY', 'RESOLUTION', 'AUTHORITY', 'RELEVANCE', 'GENERAL'], AGENT_2: ['GROUPING', 'NAMING', 'GENERAL'] }
 const FEEDBACK_TRANSITIONS = { SUBMITTED: ['CONFIRM', 'WITHDRAW'], CONFIRMED: ['WITHDRAW'] }
 
-let bundle = null
-let memory = null // used when localStorage is unavailable (private window, blocked site data)
+const bundles = new Map() // run_key -> promise of its bundle
+let listing = null
+let active = null // the run whose state Reset demo and the change count refer to: the last one opened
+const memory = new Map() // run storage key -> state, used when localStorage is unavailable (private window, blocked site data)
 
 export const DEMO_NOTE = 'Demo data · Changes saved in this browser.'
 
-export async function load() {
-  if (!bundle) {
-    bundle = fetch(bundleUrl).then(r => { if (!r.ok) throw new Error(`Demo data not found (${r.status}).`); return r.json() })
-      .then(b => ({ ...b, decoded: new Map(Object.keys(b.responses).map(k => [decoded(k), k])) }))
+function fetchJSON(url) {
+  return fetch(url).then(r => { if (!r.ok) throw new Error(`Demo data not found (${r.status}).`); return r.json() })
+}
+
+/** The demo's runs: demo/runs.json when present, else the one bundle in demo/briefing.json. */
+function runs() {
+  if (!listing) {
+    listing = FILES['../demo/runs.json']
+      ? fetchJSON(FILES['../demo/runs.json']).then(l => ({ ...l, files: Object.fromEntries(l.runs.map(r => [r.run_key, FILES[`../demo/${r.file}`]])) }))
+      : fetchJSON(FILES['../demo/briefing.json']).then(b => {
+        bundles.set(b.run_key, Promise.resolve(withIndex(b)))
+        return { default_run: b.run_key, api_runs: null, files: { [b.run_key]: FILES['../demo/briefing.json'] } }
+      })
   }
-  return bundle
+  return listing
+}
+
+const withIndex = b => ({ ...b, decoded: new Map(Object.keys(b.responses).map(k => [decoded(k), k])) })
+
+export async function load(runKey = null) {
+  const l = await runs()
+  const key = runKey ?? active ?? l.default_run
+  if (!l.files[key]) return null
+  if (!bundles.has(key)) bundles.set(key, fetchJSON(l.files[key]).then(withIndex))
+  return bundles.get(key)
 }
 
 // Python's quote() and encodeURIComponent() escape a few characters differently; paths are compared decoded.
@@ -39,17 +61,17 @@ function readState(b) {
     const raw = window.localStorage.getItem(storageKey(b))
     if (raw) return { ...empty(), ...JSON.parse(raw) }
   } catch { /* fall through to memory */ }
-  return memory || empty()
+  return memory.get(storageKey(b)) || empty()
 }
 
 function writeState(b, state) {
-  memory = state
+  memory.set(storageKey(b), state)
   try { window.localStorage.setItem(storageKey(b), JSON.stringify(state)) } catch { /* kept in memory for this tab */ }
 }
 
 export async function resetDemo() {
   const b = await load()
-  memory = null
+  memory.delete(storageKey(b))
   try { window.localStorage.removeItem(storageKey(b)) } catch { /* nothing stored */ }
 }
 
@@ -130,13 +152,18 @@ function queueRow(b, state, row) {
 // ---- GET ----
 
 export async function getJSON(path) {
-  const b = await load()
-  const state = readState(b)
   const url = new URL(path, 'http://demo.invalid')
   const p = url.pathname
-  const base = `/api/runs/${encodeURIComponent(b.run_key)}`
   const run = p.startsWith('/api/runs/') ? decodeURIComponent(p.split('/')[3]) : null
-  if (run !== null && run !== b.run_key) notFound(`No run ${run}.`)
+  if (p === '/api/runs') {
+    const l = await runs()
+    if (l.api_runs) return clone(l.api_runs)
+  }
+  const b = await load(run)
+  if (!b) notFound(`No run ${run}.`)
+  if (run !== null) active = b.run_key
+  const state = readState(b)
+  const base = `/api/runs/${encodeURIComponent(b.run_key)}`
   const rest = run === null ? p : p.slice(`/api/runs/${p.split('/')[3]}`.length)
   const used = saved(b, `${base}/feedback`).counts.corrections_used_by_this_run
 
@@ -411,7 +438,9 @@ function feedbackAction(state, id, body) {
 
 /** One POST, answered like the API: { ok, status, data }. Same key + same body replays; same key + other body is refused. */
 export async function post(path, key, serialized) {
-  const b = await load()
+  const target = new URL(path, 'http://demo.invalid').pathname
+  const b = await load(target.startsWith('/api/runs/') ? decodeURIComponent(target.split('/')[3]) : null)
+  if (!b) return { ok: false, status: 404, data: { code: 'NOT_FOUND', detail: 'No such run in the demo.' } }
   const state = readState(b)
   const prior = state.keys[key]
   if (prior) {

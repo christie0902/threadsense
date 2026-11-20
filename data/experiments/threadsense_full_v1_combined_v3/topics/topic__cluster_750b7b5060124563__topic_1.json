@@ -1,0 +1,3300 @@
+{
+ "work_item": {
+  "candidate_group_id": "cluster_750b7b5060124563",
+  "project_id": "response_preference",
+  "batch_id": "rp_batch_15",
+  "work_id": "topic:cluster_750b7b5060124563/topic_1",
+  "kind": "TOPIC",
+  "topic_id": "cluster_750b7b5060124563/topic_1",
+  "topic_name": "Preference requires material user benefit",
+  "member_ids": [
+   "member_a6c0032f49d046f8e80dd119",
+   "member_b7f9b6276cc5d77211bb73c7",
+   "member_5a0db8eea777cc90029866c4"
+  ],
+  "pilot_scenario": null,
+  "in_scope": true
+ },
+ "workflow": {
+  "outcome": "CARD",
+  "card_id": "card_910ceac9c670f475b947939b4d069f38",
+  "card_line": "NEEDS_REVIEW",
+  "grounding": "PASSED",
+  "stage_failures": [],
+  "semantic_source": "LIVE_MODEL"
+ },
+ "result": {
+  "scenario": {
+   "id": "topic:cluster_750b7b5060124563/topic_1",
+   "candidate_group_id": "cluster_750b7b5060124563",
+   "focus": "Preference requires material user benefit",
+   "topic_id": "cluster_750b7b5060124563/topic_1"
+  },
+  "status": "CARD",
+  "topic": {
+   "project_id": "response_preference",
+   "batch_id": "rp_batch_15",
+   "candidate_group_id": "cluster_750b7b5060124563",
+   "topic_id": "cluster_750b7b5060124563/topic_1",
+   "topic_label": "Preference requires material user benefit",
+   "projection_gap": null,
+   "as_of": "2026-10-02T12:00:00Z",
+   "member_ids": [
+    "member_a6c0032f49d046f8e80dd119",
+    "member_b7f9b6276cc5d77211bb73c7",
+    "member_5a0db8eea777cc90029866c4"
+   ],
+   "initial_query": "Preference requires material user benefit. Is slightly clearer wording enough to pick B over A for task RP-4354?"
+  },
+  "retrieval_trace": [
+   {
+    "step": 1,
+    "purpose": "initial_current_guidance",
+    "gap_id": null,
+    "query": "Preference requires material user benefit. Is slightly clearer wording enough to pick B over A for task RP-4354?",
+    "source_types": [
+     "guideline",
+     "faq",
+     "decision",
+     "announcement"
+    ],
+    "version_mode": "current",
+    "as_of": "2026-10-02T12:00:00Z",
+    "batch": "rp_batch_15",
+    "top_k": 5,
+    "status": "DONE",
+    "mode": "hybrid",
+    "use_mmr": true,
+    "mmr_lambda": 0.9,
+    "result_ids": [
+     "k:response-preference-instructions@1.1:176ce67d",
+     "k:rp-tie-calibration-approval@1.0:99b5da48",
+     "k:slack:C_RP_ANNOUNCEMENTS:1790883558.000028:d0ddced2",
+     "k:response-preference-instructions@1.1:4745e3e0",
+     "k:response-preference-faq@1.1:4683724f"
+    ],
+    "new_evidence_ids": [
+     "k:response-preference-instructions@1.1:176ce67d",
+     "k:rp-tie-calibration-approval@1.0:99b5da48",
+     "k:slack:C_RP_ANNOUNCEMENTS:1790883558.000028:d0ddced2",
+     "k:response-preference-instructions@1.1:4745e3e0",
+     "k:response-preference-faq@1.1:4683724f"
+    ],
+    "eligible_chunks": 28,
+    "added": []
+   }
+  ],
+  "retrieval_notes": {
+   "withheld_by_version": [],
+   "version_diagnostics": []
+  },
+  "follow_ups": [],
+  "unfilled_gaps": [],
+  "model_calls": [
+   {
+    "stage": "draft",
+    "schema": "AdvisorDraft",
+    "agent1_context": {
+     "sha256": "fa94f6f478c949a9d36700c8d4463651d3f48f113d609ff76435c943ff4ac486",
+     "boundary": "IN_HTTP_BODY"
+    },
+    "raw": "{\n  \"contract_version\": \"agent3-advisor-draft-v11\",\n  \"summary\": null,\n  \"summary_sentences\": [\n    {\n      \"text\": \"A tutor asks whether slightly clearer wording justifies preferring B on RP-4354; a QA tutor asks whether cleanliness versus detail warrants a slight preference.\",\n      \"support_claim_ids\": [\"c2\", \"c3\"],\n      \"depends_on\": []\n    },\n    {\n      \"text\": \"Current guidance requires meaningful user benefit, but the RP-4354 thread has not yet received a handling answer.\",\n      \"support_claim_ids\": [\"c4\", \"c7\"],\n      \"depends_on\": []\n    }\n  ],\n  \"detail_sentences\": [\n    {\n      \"text\": \"In an earlier thread, the same QA tutor reports that both responses are acceptable but B sounds clearer.\",\n      \"support_claim_ids\": [\"c1\"],\n      \"depends_on\": [],\n      \"summary_depends_on\": [1]\n    },\n    {\n      \"text\": \"The team lead instructed the QA tutor in both threads to specify which response materially helps the user more; neither thread contains the requested explanation.\",\n      \"support_claim_ids\": [\"c5\", \"c6\"],\n      \"depends_on\": [],\n      \"summary_depends_on\": []\n    },\n    {\n      \"text\": \"In the RP-4354 thread, a tutor reports that A answers fully and B adds nothing substantive, while a QA tutor asks what meaningful user-facing benefit would justify a preference.\",\n      \"support_claim_ids\": [\"c4\"],\n      \"depends_on\": [],\n      \"summary_depends_on\": []\n    },\n    {\n      \"text\": \"An earlier batch-14 approval records a similar concern about unexplained clarity preferences, but posting and the review exercise were still pending and their outcomes were not observed.\",\n      \"support_claim_ids\": [\"c8\"],\n      \"depends_on\": [],\n      \"summary_depends_on\": []\n    }\n  ],\n  \"reasoning\": \"The RP-4354 question remains unanswered in its own thread; comments from a tutor and a QA tutor are not authoritative handling instructions. The current tie guideline directly answers the criterion question, so a focused reply is supported without inventing a new threshold or deciding the task's label. The team lead already supplied thread-scoped instructions in the QA tutor's two threads, where the requested user-benefit explanations remain absent. The earlier batch-14 approval supports historical recurrence, not current authority or a claim that its exercise succeeded. No additional retrieval is needed for this reply. The member-thread review flag and the announcement's upstream review flags remain open.\",\n  \"claims\": [\n    {\n      \"claim_id\": \"c1\",\n      \"kind\": \"INCIDENT_FACT\",\n      \"text\": \"A QA tutor reports that both responses are acceptable but B sounds clearer.\",\n      \"evidence_ids\": [\"m:C_RP_GENERAL:1790859242.000048\"],\n      \"attributions\": [\n        {\n          \"user_id\": \"U008\",\n          \"relation\": \"AUTHOR\",\n          \"evidence_id\": \"m:C_RP_GENERAL:1790859242.000048\"\n        }\n      ],\n      \"quote_kind\": \"PARAPHRASE\"\n    },\n    {\n      \"claim_id\": \"c2\",\n      \"kind\": \"INCIDENT_FACT\",\n      \"text\": \"A tutor asks whether slightly clearer wording is enough to prefer B when both responses are acceptable on RP-4354.\",\n      \"evidence_ids\": [\"m:C_RP_GENERAL:1790904354.000049\"],\n      \"attributions\": [\n        {\n          \"user_id\": \"U013\",\n          \"relation\": \"AUTHOR\",\n          \"evidence_id\": \"m:C_RP_GENERAL:1790904354.000049\"\n        }\n      ],\n      \"quote_kind\": \"PARAPHRASE\"\n    },\n    {\n      \"claim_id\": \"c3\",\n      \"kind\": \"INCIDENT_FACT\",\n      \"text\": \"A QA tutor asks whether A being cleaner and B being more detailed warrants a slight preference.\",\n      \"evidence_ids\": [\"m:C_RP_QA:1790940523.000045\"],\n      \"attributions\": [\n        {\n          \"user_id\": \"U008\",\n          \"relation\": \"AUTHOR\",\n          \"evidence_id\": \"m:C_RP_QA:1790940523.000045\"\n        }\n      ],\n      \"quote_kind\": \"PARAPHRASE\"\n    },\n    {\n      \"claim_id\": \"c4\",\n      \"kind\": \"INFERENCE\",\n      \"text\": \"The RP-4354 thread contains a tutor's question, another tutor's assessment that A answers fully and B adds nothing substantive, and a QA tutor's request for a meaningful user-facing benefit, but no handling answer.\",\n      \"evidence_ids\": [\n        \"m:C_RP_GENERAL:1790904354.000049\",\n        \"m:C_RP_GENERAL:1790904409.000113\",\n        \"m:C_RP_GENERAL:1790904449.000226\"\n      ],\n      \"attributions\": [\n        {\n          \"user_id\": \"U013\",\n          \"relation\": \"AUTHOR\",\n          \"evidence_id\": \"m:C_RP_GENERAL:1790904354.000049\"\n        },\n        {\n          \"user_id\": \"U010\",\n          \"relation\": \"AUTHOR\",\n          \"evidence_id\": \"m:C_RP_GENERAL:1790904409.000113\"\n        },\n        {\n          \"user_id\": \"U014\",\n          \"relation\": \"AUTHOR\",\n          \"evidence_id\": \"m:C_RP_GENERAL:1790904449.000226\"\n        }\n      ],\n      \"quote_kind\": \"PARAPHRASE\"\n    },\n    {\n      \"claim_id\": \"c5\",\n      \"kind\": \"THREAD_INSTRUCTION\",\n      \"text\": \"In the earlier clarity thread, the team lead instructs the QA tutor to specify which response materially helps the user more before calling a slight preference; the supplied thread contains no subsequent explanation.\",\n      \"evidence_ids\": [\n        \"m:C_RP_GENERAL:1790859242.000048\",\n        \"m:C_RP_GENERAL:1790859337.000226\"\n      ],\n      \"attributions\": [\n        {\n          \"user_id\": \"U008\",\n          \"relation\": \"AUTHOR\",\n          \"evidence_id\": \"m:C_RP_GENERAL:1790859242.000048\"\n        },\n        {\n          \"user_id\": \"U001\",\n          \"relation\": \"AUTHOR\",\n          \"evidence_id\": \"m:C_RP_GENERAL:1790859337.000226\"\n        }\n      ],\n      \"quote_kind\": \"PARAPHRASE\"\n    },\n    {\n      \"claim_id\": \"c6\",\n      \"kind\": \"THREAD_INSTRUCTION\",\n      \"text\": \"In the cleanliness-versus-detail thread, the team lead instructs the QA tutor to specify which response materially helps the user more and says the exact user task should decide; the supplied thread contains no subsequent explanation.\",\n      \"evidence_ids\": [\n        \"m:C_RP_QA:1790940523.000045\",\n        \"m:C_RP_QA:1790940616.000226\"\n      ],\n      \"attributions\": [\n        {\n          \"user_id\": \"U008\",\n          \"relation\": \"AUTHOR\",\n          \"evidence_id\": \"m:C_RP_QA:1790940523.000045\"\n        },\n        {\n          \"user_id\": \"U001\",\n          \"relation\": \"AUTHOR\",\n          \"evidence_id\": \"m:C_RP_QA:1790940616.000226\"\n        }\n      ],\n      \"quote_kind\": \"PARAPHRASE\"\n    },\n    {\n      \"claim_id\": \"c7\",\n      \"kind\": \"GUIDANCE\",\n      \"text\": \"The current project instructions require a tie when neither response has a meaningful quality advantage, reject cosmetic phrasing alone as justification for a preference, and require explaining the user-facing benefit when selecting on a small difference.\",\n      \"evidence_ids\": [\"k:response-preference-instructions@1.1:176ce67d\"],\n      \"attributions\": [],\n      \"quote_kind\": \"PARAPHRASE\"\n    },\n    {\n      \"claim_id\": \"c8\",\n      \"kind\": \"HISTORY\",\n      \"text\": \"The earlier batch-14 approval records reviewers using slight clarity differences without explaining usefulness and authorizes advice and an eight-pair review exercise; posting and review completion are not recorded, and outcomes were not observed. Its approval is limited to that exercise, not a standing policy change.\",\n      \"evidence_ids\": [\"k:rp-tie-calibration-approval@1.0:99b5da48\"],\n      \"attributions\": [],\n      \"quote_kind\": \"PARAPHRASE\"\n    },\n    {\n      \"claim_id\": \"c9\",\n      \"kind\": \"SOURCE_FACT\",\n      \"text\": \"The batch announcement asks for affected task references for model/task connection drops; it does not address the criterion for a preference.\",\n      \"evidence_ids\": [\"k:slack:C_RP_ANNOUNCEMENTS:1790883558.000028:d0ddced2\"],\n      \"attributions\": [],\n      \"quote_kind\": \"PARAPHRASE\"\n    }\n  ],\n  \"gaps\": [],\n  \"evidence_sufficiency\": \"SUFFICIENT\",\n  \"proposed_action\": {\n    \"action_type\": \"POST_ALIGNMENT\",\n    \"intervention_need\": {\n      \"kind\": \"UNRESOLVED_HANDLING_QUESTION\",\n      \"statement\": \"The tutor's RP-4354 question remains unanswered after replies assessing the responses and asking for a user-facing benefit.\",\n      \"evidence_ids\": [\n        \"m:C_RP_GENERAL:1790904354.000049\",\n        \"m:C_RP_GENERAL:1790904409.000113\",\n        \"m:C_RP_GENERAL:1790904449.000226\"\n      ]\n    },\n    \"instruction\": \"Reply in the RP-4354 thread with the current tie rule and ask for the user-facing benefit behind any preference.\",\n    \"rationale\": \"The current instructions directly answer the criterion question. A focused reply supplies that rule without treating the other threads' instructions as project-wide guidance or deciding the label without a stated benefit.\",\n    \"draft_text\": \"For RP-4354, slightly clearer wording alone is not enough to establish a preference. Under the current instructions, choose a tie when neither response has a meaningful quality advantage; cosmetic phrasing alone does not justify a preference. If you select B on a small difference, explain the user-facing benefit. Please identify what the clearer wording improves for the user's request, rather than relying on clarity as a label.\",\n    \"scope_note\": \"This reply explains the criterion for RP-4354; it does not decide which response has a meaningful advantage.\",\n    \"support_claim_ids\": [\"c2\", \"c4\", \"c7\"],\n    \"targets\": [],\n    \"context_claim_ids\": [\"c5\", \"c6\", \"c8\", \"c9\"]\n  },\n  \"severity\": {\n    \"level\": \"MEDIUM\",\n    \"rationale\": \"A tutor and a QA tutor raise comparable uncertainty about the tie-versus-preference criterion across three threads. This can change labels, but the messages do not establish broad disruption or incorrect submissions.\",\n    \"signals\": [\n      {\n        \"level\": \"MEDIUM\",\n        \"signal_index\": 0,\n        \"signal_text\": \"Recurring confusion about the same rule, tool behavior, or scoring criterion that suggests meaningful workflow or labeling impact\",\n        \"support\": \"A tutor asks whether slightly clearer wording warrants choosing B, while a QA tutor raises clarity and cleanliness-versus-detail comparisons in two threads; these concern whether to assign a preference rather than a tie.\",\n        \"evidence_ids\": [\n          \"m:C_RP_GENERAL:1790859242.000048\",\n          \"m:C_RP_GENERAL:1790904354.000049\",\n          \"m:C_RP_QA:1790940523.000045\"\n        ]\n      }\n    ],\n    \"affected_reporters\": [\n      {\n        \"author_id\": \"U013\",\n        \"evidence_id\": \"m:C_RP_GENERAL:1790904354.000049\"\n      },\n      {\n        \"author_id\": \"U008\",\n        \"evidence_id\": \"m:C_RP_QA:1790940523.000045\"\n      }\n    ],\n    \"recurrence\": \"FOUND\",\n    \"recurrence_evidence_ids\": [\"k:rp-tie-calibration-approval@1.0:99b5da48\"],\n    \"reported_recurrence_evidence_ids\": []\n  },\n  \"confidence\": 0.91,\n  \"open_confirmation\": \"NONE\",\n  \"open_question\": null,\n  \"open_question_evidence_ids\": [],\n  \"source_conflicts\": [],\n  \"announcement_assessments\": [\n    {\n      \"evidence_id\": \"k:slack:C_RP_ANNOUNCEMENTS:1790883558.000028:d0ddced2\",\n      \"relevant\": false,\n      \"directive\": true,\n      \"directive_quote\": \"Add affected task references here; no policy change has been announced.\",\n      \"rationale\": \"The announcement concerns connection drops in the same batch, not whether a response offers enough user benefit to justify a preference. Its example-collection direction does not govern this topic.\"\n    }\n  ],\n  \"resolution\": [\n    {\n      \"member_id\": \"member_a6c0032f49d046f8e80dd119\",\n      \"state\": \"PARTIALLY_RESOLVED\",\n      \"evidence_ids\": [\n        \"m:C_RP_GENERAL:1790859242.000048\",\n        \"m:C_RP_GENERAL:1790859300.000113\",\n        \"m:C_RP_GENERAL:1790859337.000226\"\n      ],\n      \"basis\": \"The team lead supplies a thread-scoped criterion, but the QA tutor has not supplied the requested material user benefit or a final comparison.\"\n    },\n    {\n      \"member_id\": \"member_b7f9b6276cc5d77211bb73c7\",\n      \"state\": \"UNRESOLVED\",\n      \"evidence_ids\": [\n        \"m:C_RP_GENERAL:1790904354.000049\",\n        \"m:C_RP_GENERAL:1790904409.000113\",\n        \"m:C_RP_GENERAL:1790904449.000226\"\n      ],\n      \"basis\": \"The tutor's question receives another tutor's assessment and a QA tutor's question, but no handling answer or final label.\"\n    },\n    {\n      \"member_id\": \"member_5a0db8eea777cc90029866c4\",\n      \"state\": \"PARTIALLY_RESOLVED\",\n      \"evidence_ids\": [\n        \"m:C_RP_QA:1790940523.000045\",\n        \"m:C_RP_QA:1790940571.000113\",\n        \"m:C_RP_QA:1790940616.000226\"\n      ],\n      \"basis\": \"The team lead explains the criterion within the thread, but the QA tutor has not provided the requested user-benefit explanation or a final comparison.\"\n    }\n  ],\n  \"coverage\": [\n    {\n      \"need\": \"CURRENT_GUIDANCE\",\n      \"status\": \"COVERED\",\n      \"evidence_ids\": [\n        \"k:response-preference-instructions@1.1:176ce67d\",\n        \"k:response-preference-faq@1.1:4683724f\"\n      ],\n      \"note\": \"The current instructions and FAQ address meaningful benefit, cosmetic phrasing and ties.\"\n    },\n    {\n      \"need\": \"ANNOUNCEMENTS\",\n      \"status\": \"COVERED\",\n      \"evidence_ids\": [\"k:slack:C_RP_ANNOUNCEMENTS:1790883558.000028:d0ddced2\"],\n      \"note\": \"The retrieved batch announcement was assessed and concerns a different problem; it supplies no handling rule for this topic.\"\n    },\n    {\n      \"need\": \"PRIOR_DECISIONS\",\n      \"status\": \"COVERED\",\n      \"evidence_ids\": [\"k:rp-tie-calibration-approval@1.0:99b5da48\"],\n      \"note\": \"The earlier approval establishes a similar historical concern and records pending execution and unobserved outcomes. Further outcome research is not needed to reply using current instructions.\"\n    },\n    {\n      \"need\": \"MEMBER_QUESTIONS\",\n      \"status\": \"COVERED\",\n      \"evidence_ids\": [\n        \"m:C_RP_GENERAL:1790859242.000048\",\n        \"m:C_RP_GENERAL:1790859300.000113\",\n        \"m:C_RP_GENERAL:1790904354.000049\",\n        \"m:C_RP_GENERAL:1790904449.000226\",\n        \"m:C_RP_QA:1790940523.000045\",\n        \"m:C_RP_QA:1790940571.000113\"\n      ],\n      \"note\": \"The threads show the comparison questions and requests for user-facing benefit. They contain no references to an earlier workaround requiring investigation.\"\n    }\n  ],\n  \"review_note\": null,\n  \"action_choice\": null\n}",
+    "raw_sha256": "b0c1d7a2cbc27595173fdf3a1d92368513310d1656f07075f75de32390ba7658",
+    "http_requests": {
+     "sent": 1,
+     "blocked": 0,
+     "hosts": [
+      "api.openai.com"
+     ],
+     "responses": [
+      {
+       "status_code": 200,
+       "seconds": 47.587,
+       "model": "gpt-6.1-sol",
+       "usage": {
+        "prompt_tokens": 12909,
+        "completion_tokens": 3985,
+        "total_tokens": 16894,
+        "prompt_tokens_details": {
+         "cached_tokens": 0,
+         "cache_write_tokens": 12906,
+         "audio_tokens": 0
+        },
+        "completion_tokens_details": {
+         "reasoning_tokens": 319,
+         "audio_tokens": 0,
+         "accepted_prediction_tokens": 0,
+         "rejected_prediction_tokens": 0
+        }
+       },
+       "finish_reasons": [
+        "stop"
+       ]
+      }
+     ],
+     "input_tokens": 12915,
+     "refused": null,
+     "charged_usd": 0.065668
+    },
+    "input_tokens_estimate": 12915,
+    "status": "OK"
+   },
+   {
+    "stage": "grounding",
+    "schema": "GroundingJudgment",
+    "raw": "{\n  \"contract_version\": \"agent3-grounding-judgment-v5\",\n  \"verdicts\": [\n    {\n      \"statement_id\": \"claim:c1\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"U008 is a QA tutor and explicitly reports that both responses are okay but B sounds clearer.\"\n    },\n    {\n      \"statement_id\": \"claim:c2\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"U013, a tutor, asks exactly this question and identifies task RP-4354.\"\n    },\n    {\n      \"statement_id\": \"claim:c3\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"U008, a QA tutor, asks whether A being cleaner and B more detailed warrants a slight preference.\"\n    },\n    {\n      \"statement_id\": \"claim:c4\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The three messages contain the attributed question, assessment and request for a meaningful benefit. No subsequent handling answer appears in the complete supplied thread.\"\n    },\n    {\n      \"statement_id\": \"claim:c5\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The team lead explicitly gives this thread-scoped instruction, and the supplied thread ends without the requested explanation.\"\n    },\n    {\n      \"statement_id\": \"claim:c6\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The team lead explicitly requires identifying material user benefit and says the exact user task should decide. No subsequent explanation is supplied.\"\n    },\n    {\n      \"statement_id\": \"claim:c7\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The current project instructions explicitly state all three requirements.\"\n    },\n    {\n      \"statement_id\": \"claim:c8\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The prior batch-14 record describes unexplained clarity preferences, approves the advice and eight-pair exercise, records no completion or observed outcome, and expressly limits the approval to that exercise rather than a standing policy change.\"\n    },\n    {\n      \"statement_id\": \"claim:c9\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The announcement requests affected task references for connection drops and gives no preference-selection criterion.\"\n    },\n    {\n      \"statement_id\": \"summary:s1\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"Both questions are explicitly stated by the cited tutor and QA tutor, with roles and attributions matching their messages.\"\n    },\n    {\n      \"statement_id\": \"summary:s2\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"Current instructions require a meaningful advantage and explanation of user-facing benefit; the complete RP-4354 thread contains no handling answer.\"\n    },\n    {\n      \"statement_id\": \"detail:d1\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"U008 is the same QA tutor referenced in summary:s1 and makes this report in the earlier thread.\"\n    },\n    {\n      \"statement_id\": \"detail:d2\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The team lead gives the stated instruction in both threads, and neither complete supplied thread contains the requested explanation.\"\n    },\n    {\n      \"statement_id\": \"detail:d3\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"U010 reports that A answers fully and B adds nothing substantive, while U014 asks what meaningful benefit would justify a preference.\"\n    },\n    {\n      \"statement_id\": \"detail:d4\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The historical approval records the similar concern, pending posting and unrecorded exercise completion, with outcomes not observed.\"\n    },\n    {\n      \"statement_id\": \"action\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The unanswered RP-4354 criterion question justifies a reply in that same discussion. The proposed text accurately conveys the current tie rule, requests a concrete user-facing benefit, and expressly avoids deciding the pair's label.\"\n    },\n    {\n      \"statement_id\": \"action:rationale\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The current instructions directly supply the criterion requested in RP-4354. The proposed reply relies on those instructions rather than extending other threads' authority or asserting an unsupported final comparison.\"\n    },\n    {\n      \"statement_id\": \"action:need\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The complete RP-4354 thread leaves the tutor's handling question unanswered; the replies provide an assessment and ask for a benefit without supplying the rule.\"\n    },\n    {\n      \"statement_id\": \"resolution:member_a6c0032f49d046f8e80dd119\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The team lead supplies a thread-scoped criterion, but the thread ends without U008 explaining material benefit or providing a final comparison.\"\n    },\n    {\n      \"statement_id\": \"resolution:member_b7f9b6276cc5d77211bb73c7\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The complete thread contains the tutor's question, another tutor's assessment and a QA tutor's question, with no handling answer or final label.\"\n    },\n    {\n      \"statement_id\": \"resolution:member_5a0db8eea777cc90029866c4\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The team lead explains the criterion within this thread, but no subsequent user-benefit explanation or final comparison is recorded.\"\n    },\n    {\n      \"statement_id\": \"severity:rationale\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The cited messages show one tutor and one QA tutor raising related preference uncertainty across three threads. The uncertainty concerns label selection, while no broad disruption or incorrect submission is established.\"\n    },\n    {\n      \"statement_id\": \"severity:signal:MEDIUM[0]\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The three messages repeatedly raise clarity or detail differences relevant to preference selection, supporting recurring criterion confusion with potential labeling impact.\"\n    },\n    {\n      \"statement_id\": \"severity:recurrence\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"The retrieved prior approval records reviewers previously using slight clarity differences without explaining usefulness, establishing an earlier occurrence of the same concern.\"\n    },\n    {\n      \"statement_id\": \"reporter:U013\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"U013's own task-specific question reports their uncertainty about whether to prefer B on RP-4354.\"\n    },\n    {\n      \"statement_id\": \"reporter:U008\",\n      \"verdict\": \"SUPPORTED\",\n      \"rationale\": \"U008's own comparison question reports their uncertainty about whether cleanliness versus detail warrants a slight preference.\"\n    }\n  ],\n  \"action_sufficiency\": {\n    \"verdict\": \"SUFFICIENT\",\n    \"essential_statement_ids\": [\n      \"claim:c2\",\n      \"claim:c4\",\n      \"claim:c7\"\n    ],\n    \"rationale\": \"All listed premises are supported. They establish the task-specific question, its unanswered status and the applicable current rule. Together they justify the exact scoped reply and benefit request without requiring a final label or asserting that the thread is an official intake route.\"\n  },\n  \"alternative_sufficiency\": [],\n  \"source_consistency\": {\n    \"assessed_evidence_ids\": [\n      \"k:response-preference-instructions@1.1:176ce67d\",\n      \"k:response-preference-instructions@1.1:4745e3e0\",\n      \"k:response-preference-faq@1.1:4683724f\"\n    ],\n    \"relations\": [\n      {\n        \"evidence_ids\": [\n          \"k:response-preference-instructions@1.1:176ce67d\",\n          \"k:response-preference-faq@1.1:4683724f\"\n        ],\n        \"relation\": \"AGREE\",\n        \"point\": \"A preference requires a meaningful user benefit rather than merely cosmetic wording, and the benefit should be explained.\",\n        \"disagreement_scope\": null,\n        \"rationale\": \"Both sources require a meaningful benefit and its explanation. The FAQ's statement that cosmetic phrasing usually does not provide that benefit does not authorize preferences without a meaningful advantage.\"\n      },\n      {\n        \"evidence_ids\": [\n          \"k:response-preference-instructions@1.1:176ce67d\",\n          \"k:response-preference-instructions@1.1:4745e3e0\",\n          \"k:response-preference-faq@1.1:4683724f\"\n        ],\n        \"relation\": \"AGREE\",\n        \"point\": \"Response comparison should turn on meaningful differences relevant to the user's request.\",\n        \"disagreement_scope\": null,\n        \"rationale\": \"The project-purpose section calls for meaningful differences in accuracy, adherence, citation support and usefulness, consistent with the meaningful-advantage and user-benefit criteria in the ties guidance and FAQ. The connection-drop announcement does not govern this handling question, and the batch-14 approval is a prior record rather than current policy.\"\n      }\n    ],\n    \"declared_conflict_checks\": []\n  }\n}",
+    "raw_sha256": "405705f738f21ca2a0a0d790df6f51d67093b0a79b4fb67fe43279460ce35f0e",
+    "http_requests": {
+     "sent": 1,
+     "blocked": 0,
+     "hosts": [
+      "api.openai.com"
+     ],
+     "responses": [
+      {
+       "status_code": 200,
+       "seconds": 28.089,
+       "model": "gpt-6.1-sol",
+       "usage": {
+        "prompt_tokens": 10930,
+        "completion_tokens": 2124,
+        "total_tokens": 13054,
+        "prompt_tokens_details": {
+         "cached_tokens": 0,
+         "cache_write_tokens": 10927,
+         "audio_tokens": 0
+        },
+        "completion_tokens_details": {
+         "reasoning_tokens": 152,
+         "audio_tokens": 0,
+         "accepted_prediction_tokens": 0,
+         "rejected_prediction_tokens": 0
+        }
+       },
+       "finish_reasons": [
+        "stop"
+       ]
+      }
+     ],
+     "input_tokens": 10936,
+     "refused": null,
+     "charged_usd": 0.0431
+    },
+    "input_tokens_estimate": 10936,
+    "status": "OK"
+   }
+  ],
+  "agent1_context": [
+   {
+    "sha256": "fa94f6f478c949a9d36700c8d4463651d3f48f113d609ff76435c943ff4ac486",
+    "content": [
+     {
+      "member_id": "member_a6c0032f49d046f8e80dd119",
+      "thread_id": "1790859242.000048",
+      "summary": "The discussion revolves around the clarity of two responses, with Hana stating that both are acceptable but that response B is clearer. Leo questions the justification for a preference, asking for specific user-facing benefits that would indicate an improvement in completeness or clarity. Alex, a team lead, emphasizes the need to specify which response materially benefits the user before establishing a preference.",
+      "central_question": null,
+      "attributed_agent1_resolution": {
+       "state": "UNRESOLVED",
+       "rationale": "While there is acknowledgment of the clarity of response B, the discussion has not reached a definitive conclusion on which response should be preferred based on user benefit. Alex's request for specification indicates that further clarification is needed before a decision can be made.",
+       "agent1_verification_status": "CORRECTED",
+       "note": "Agent 1 label, not evidence; NEEDS_REVIEW means Agent 1 did not verify it. Assess resolution from the member messages."
+      },
+      "agent1_review_required": false,
+      "agent1_review_reason": "",
+      "note": "Agent 1 interpretation, not source evidence; cite member messages for incident facts."
+     },
+     {
+      "member_id": "member_b7f9b6276cc5d77211bb73c7",
+      "thread_id": "1790904354.000049",
+      "summary": "The thread discusses the acceptability of two responses, A and B, in relation to task RP-4354. Jun asks if slightly clearer wording is sufficient to prefer response B over A. Avery states that response A fully answers the question, while response B only adds a sentence that does not change anything substantive. Linh questions what meaningful user-facing benefit would justify a preference for one response over the other.",
+      "central_question": "Is slightly clearer wording enough to pick B over A for task RP-4354?",
+      "attributed_agent1_resolution": {
+       "state": "UNRESOLVED",
+       "rationale": "The thread does not establish a clear preference for either response A or B. While opinions are shared regarding the completeness of response A and the minimal change in response B, no definitive conclusion or guidance is provided on whether to prefer one over the other.",
+       "agent1_verification_status": "NEEDS_REVIEW",
+       "note": "Agent 1 label, not evidence; NEEDS_REVIEW means Agent 1 did not verify it. Assess resolution from the member messages."
+      },
+      "agent1_review_required": true,
+      "agent1_review_reason": "The single targeted revision failed: ValueError: The model cited authority evidence without an eligible author role or a qualifying TEAM_LEAD endorsement. Ineligible message IDs: ['1790904409.000113', '1790904449.000226']",
+      "note": "Agent 1 interpretation, not source evidence; cite member messages for incident facts."
+     },
+     {
+      "member_id": "member_5a0db8eea777cc90029866c4",
+      "thread_id": "1790940523.000045",
+      "summary": "Hana questions whether the cleaner response (A) warrants a slight preference over the more detailed response (B). Mina asks for a meaningful user-facing benefit that would justify such a preference, suggesting that the difference might be cosmetic and that the user task should dictate the decision. Alex, a team lead, emphasizes the need to specify which response materially helps the user more before determining a slight preference, reiterating that the difference might be cosmetic and dependent on the user task.",
+      "central_question": "Does the cleaner response (A) warrant a slight preference over the more detailed response (B)?",
+      "attributed_agent1_resolution": {
+       "state": "UNRESOLVED",
+       "rationale": "The thread discusses the need for clarity on which response better serves the user before establishing a preference. While both replies request clarification and suggest that the decision depends on user-facing benefits and the specific user task, neither provides a substantive answer to whether a slight preference is warranted based on the information given.",
+       "agent1_verification_status": "CORRECTED",
+       "note": "Agent 1 label, not evidence; NEEDS_REVIEW means Agent 1 did not verify it. Assess resolution from the member messages."
+      },
+      "agent1_review_required": false,
+      "agent1_review_reason": "",
+      "note": "Agent 1 interpretation, not source evidence; cite member messages for incident facts."
+     }
+    ]
+   }
+  ],
+  "drafts": {
+   "initial": {
+    "contract_version": "agent3-advisor-draft-v11",
+    "summary": "A tutor asks whether slightly clearer wording justifies preferring B on RP-4354; a QA tutor asks whether cleanliness versus detail warrants a slight preference. Current guidance requires meaningful user benefit, but the RP-4354 thread has not yet received a handling answer.",
+    "summary_sentences": [
+     {
+      "text": "A tutor asks whether slightly clearer wording justifies preferring B on RP-4354; a QA tutor asks whether cleanliness versus detail warrants a slight preference.",
+      "support_claim_ids": [
+       "c2",
+       "c3"
+      ],
+      "depends_on": []
+     },
+     {
+      "text": "Current guidance requires meaningful user benefit, but the RP-4354 thread has not yet received a handling answer.",
+      "support_claim_ids": [
+       "c4",
+       "c7"
+      ],
+      "depends_on": []
+     }
+    ],
+    "detail_sentences": [
+     {
+      "text": "In an earlier thread, the same QA tutor reports that both responses are acceptable but B sounds clearer.",
+      "support_claim_ids": [
+       "c1"
+      ],
+      "depends_on": [],
+      "summary_depends_on": [
+       1
+      ]
+     },
+     {
+      "text": "The team lead instructed the QA tutor in both threads to specify which response materially helps the user more; neither thread contains the requested explanation.",
+      "support_claim_ids": [
+       "c5",
+       "c6"
+      ],
+      "depends_on": [],
+      "summary_depends_on": []
+     },
+     {
+      "text": "In the RP-4354 thread, a tutor reports that A answers fully and B adds nothing substantive, while a QA tutor asks what meaningful user-facing benefit would justify a preference.",
+      "support_claim_ids": [
+       "c4"
+      ],
+      "depends_on": [],
+      "summary_depends_on": []
+     },
+     {
+      "text": "An earlier batch-14 approval records a similar concern about unexplained clarity preferences, but posting and the review exercise were still pending and their outcomes were not observed.",
+      "support_claim_ids": [
+       "c8"
+      ],
+      "depends_on": [],
+      "summary_depends_on": []
+     }
+    ],
+    "reasoning": "The RP-4354 question remains unanswered in its own thread; comments from a tutor and a QA tutor are not authoritative handling instructions. The current tie guideline directly answers the criterion question, so a focused reply is supported without inventing a new threshold or deciding the task's label. The team lead already supplied thread-scoped instructions in the QA tutor's two threads, where the requested user-benefit explanations remain absent. The earlier batch-14 approval supports historical recurrence, not current authority or a claim that its exercise succeeded. No additional retrieval is needed for this reply. The member-thread review flag and the announcement's upstream review flags remain open.",
+    "claims": [
+     {
+      "claim_id": "c1",
+      "kind": "INCIDENT_FACT",
+      "text": "A QA tutor reports that both responses are acceptable but B sounds clearer.",
+      "evidence_ids": [
+       "m:C_RP_GENERAL:1790859242.000048"
+      ],
+      "attributions": [
+       {
+        "user_id": "U008",
+        "relation": "AUTHOR",
+        "evidence_id": "m:C_RP_GENERAL:1790859242.000048"
+       }
+      ],
+      "quote": null,
+      "quote_kind": "PARAPHRASE",
+      "material": true
+     },
+     {
+      "claim_id": "c2",
+      "kind": "INCIDENT_FACT",
+      "text": "A tutor asks whether slightly clearer wording is enough to prefer B when both responses are acceptable on RP-4354.",
+      "evidence_ids": [
+       "m:C_RP_GENERAL:1790904354.000049"
+      ],
+      "attributions": [
+       {
+        "user_id": "U013",
+        "relation": "AUTHOR",
+        "evidence_id": "m:C_RP_GENERAL:1790904354.000049"
+       }
+      ],
+      "quote": null,
+      "quote_kind": "PARAPHRASE",
+      "material": true
+     },
+     {
+      "claim_id": "c3",
+      "kind": "INCIDENT_FACT",
+      "text": "A QA tutor asks whether A being cleaner and B being more detailed warrants a slight preference.",
+      "evidence_ids": [
+       "m:C_RP_QA:1790940523.000045"
+      ],
+      "attributions": [
+       {
+        "user_id": "U008",
+        "relation": "AUTHOR",
+        "evidence_id": "m:C_RP_QA:1790940523.000045"
+       }
+      ],
+      "quote": null,
+      "quote_kind": "PARAPHRASE",
+      "material": true
+     },
+     {
+      "claim_id": "c4",
+      "kind": "INFERENCE",
+      "text": "The RP-4354 thread contains a tutor's question, another tutor's assessment that A answers fully and B adds nothing substantive, and a QA tutor's request for a meaningful user-facing benefit, but no handling answer.",
+      "evidence_ids": [
+       "m:C_RP_GENERAL:1790904354.000049",
+       "m:C_RP_GENERAL:1790904409.000113",
+       "m:C_RP_GENERAL:1790904449.000226"
+      ],
+      "attributions": [
+       {
+        "user_id": "U013",
+        "relation": "AUTHOR",
+        "evidence_id": "m:C_RP_GENERAL:1790904354.000049"
+       },
+       {
+        "user_id": "U010",
+        "relation": "AUTHOR",
+        "evidence_id": "m:C_RP_GENERAL:1790904409.000113"
+       },
+       {
+        "user_id": "U014",
+        "relation": "AUTHOR",
+        "evidence_id": "m:C_RP_GENERAL:1790904449.000226"
+       }
+      ],
+      "quote": null,
+      "quote_kind": "PARAPHRASE",
+      "material": true
+     },
+     {
+      "claim_id": "c5",
+      "kind": "THREAD_INSTRUCTION",
+      "text": "In the earlier clarity thread, the team lead instructs the QA tutor to specify which response materially helps the user more before calling a slight preference; the supplied thread contains no subsequent explanation.",
+      "evidence_ids": [
+       "m:C_RP_GENERAL:1790859242.000048",
+       "m:C_RP_GENERAL:1790859337.000226"
+      ],
+      "attributions": [
+       {
+        "user_id": "U008",
+        "relation": "AUTHOR",
+        "evidence_id": "m:C_RP_GENERAL:1790859242.000048"
+       },
+       {
+        "user_id": "U001",
+        "relation": "AUTHOR",
+        "evidence_id": "m:C_RP_GENERAL:1790859337.000226"
+       }
+      ],
+      "quote": null,
+      "quote_kind": "PARAPHRASE",
+      "material": true
+     },
+     {
+      "claim_id": "c6",
+      "kind": "THREAD_INSTRUCTION",
+      "text": "In the cleanliness-versus-detail thread, the team lead instructs the QA tutor to specify which response materially helps the user more and says the exact user task should decide; the supplied thread contains no subsequent explanation.",
+      "evidence_ids": [
+       "m:C_RP_QA:1790940523.000045",
+       "m:C_RP_QA:1790940616.000226"
+      ],
+      "attributions": [
+       {
+        "user_id": "U008",
+        "relation": "AUTHOR",
+        "evidence_id": "m:C_RP_QA:1790940523.000045"
+       },
+       {
+        "user_id": "U001",
+        "relation": "AUTHOR",
+        "evidence_id": "m:C_RP_QA:1790940616.000226"
+       }
+      ],
+      "quote": null,
+      "quote_kind": "PARAPHRASE",
+      "material": true
+     },
+     {
+      "claim_id": "c7",
+      "kind": "GUIDANCE",
+      "text": "The current project instructions require a tie when neither response has a meaningful quality advantage, reject cosmetic phrasing alone as justification for a preference, and require explaining the user-facing benefit when selecting on a small difference.",
+      "evidence_ids": [
+       "k:response-preference-instructions@1.1:176ce67d"
+      ],
+      "attributions": [],
+      "quote": null,
+      "quote_kind": "PARAPHRASE",
+      "material": true
+     },
+     {
+      "claim_id": "c8",
+      "kind": "HISTORY",
+      "text": "The earlier batch-14 approval records reviewers using slight clarity differences without explaining usefulness and authorizes advice and an eight-pair review exercise; posting and review completion are not recorded, and outcomes were not observed. Its approval is limited to that exercise, not a standing policy change.",
+      "evidence_ids": [
+       "k:rp-tie-calibration-approval@1.0:99b5da48"
+      ],
+      "attributions": [],
+      "quote": null,
+      "quote_kind": "PARAPHRASE",
+      "material": true
+     },
+     {
+      "claim_id": "c9",
+      "kind": "SOURCE_FACT",
+      "text": "The batch announcement asks for affected task references for model/task connection drops; it does not address the criterion for a preference.",
+      "evidence_ids": [
+       "k:slack:C_RP_ANNOUNCEMENTS:1790883558.000028:d0ddced2"
+      ],
+      "attributions": [],
+      "quote": null,
+      "quote_kind": "PARAPHRASE",
+      "material": true
+     }
+    ],
+    "gaps": [],
+    "evidence_sufficiency": "SUFFICIENT",
+    "proposed_action": {
+     "action_type": "POST_ALIGNMENT",
+     "intervention_need": {
+      "kind": "UNRESOLVED_HANDLING_QUESTION",
+      "statement": "The tutor's RP-4354 question remains unanswered after replies assessing the responses and asking for a user-facing benefit.",
+      "evidence_ids": [
+       "m:C_RP_GENERAL:1790904354.000049",
+       "m:C_RP_GENERAL:1790904409.000113",
+       "m:C_RP_GENERAL:1790904449.000226"
+      ]
+     },
+     "instruction": "Reply in the RP-4354 thread with the current tie rule and ask for the user-facing benefit behind any preference.",
+     "rationale": "The current instructions directly answer the criterion question. A focused reply supplies that rule without treating the other threads' instructions as project-wide guidance or deciding the label without a stated benefit.",
+     "draft_text": "For RP-4354, slightly clearer wording alone is not enough to establish a preference. Under the current instructions, choose a tie when neither response has a meaningful quality advantage; cosmetic phrasing alone does not justify a preference. If you select B on a small difference, explain the user-facing benefit. Please identify what the clearer wording improves for the user's request, rather than relying on clarity as a label.",
+     "scope_note": "This reply explains the criterion for RP-4354; it does not decide which response has a meaningful advantage.",
+     "support_claim_ids": [
+      "c2",
+      "c4",
+      "c7"
+     ],
+     "targets": [],
+     "context_claim_ids": [
+      "c5",
+      "c6",
+      "c8",
+      "c9"
+     ]
+    },
+    "severity": {
+     "level": "MEDIUM",
+     "rationale": "A tutor and a QA tutor raise comparable uncertainty about the tie-versus-preference criterion across three threads. This can change labels, but the messages do not establish broad disruption or incorrect submissions.",
+     "signals": [
+      {
+       "level": "MEDIUM",
+       "signal_index": 0,
+       "signal_text": "Recurring confusion about the same rule, tool behavior, or scoring criterion that suggests meaningful workflow or labeling impact",
+       "support": "A tutor asks whether slightly clearer wording warrants choosing B, while a QA tutor raises clarity and cleanliness-versus-detail comparisons in two threads; these concern whether to assign a preference rather than a tie.",
+       "evidence_ids": [
+        "m:C_RP_GENERAL:1790859242.000048",
+        "m:C_RP_GENERAL:1790904354.000049",
+        "m:C_RP_QA:1790940523.000045"
+       ]
+      }
+     ],
+     "affected_reporters": [
+      {
+       "author_id": "U013",
+       "evidence_id": "m:C_RP_GENERAL:1790904354.000049"
+      },
+      {
+       "author_id": "U008",
+       "evidence_id": "m:C_RP_QA:1790940523.000045"
+      }
+     ],
+     "recurrence": "FOUND",
+     "recurrence_evidence_ids": [
+      "k:rp-tie-calibration-approval@1.0:99b5da48"
+     ],
+     "reported_recurrence_evidence_ids": []
+    },
+    "confidence": 0.91,
+    "open_confirmation": "NONE",
+    "open_question": null,
+    "open_question_evidence_ids": [],
+    "source_conflicts": [],
+    "announcement_assessments": [
+     {
+      "evidence_id": "k:slack:C_RP_ANNOUNCEMENTS:1790883558.000028:d0ddced2",
+      "relevant": false,
+      "directive": true,
+      "directive_quote": "Add affected task references here; no policy change has been announced.",
+      "rationale": "The announcement concerns connection drops in the same batch, not whether a response offers enough user benefit to justify a preference. Its example-collection direction does not govern this topic."
+     }
+    ],
+    "resolution": [
+     {
+      "member_id": "member_a6c0032f49d046f8e80dd119",
+      "state": "PARTIALLY_RESOLVED",
+      "evidence_ids": [
+       "m:C_RP_GENERAL:1790859242.000048",
+       "m:C_RP_GENERAL:1790859300.000113",
+       "m:C_RP_GENERAL:1790859337.000226"
+      ],
+      "basis": "The team lead supplies a thread-scoped criterion, but the QA tutor has not supplied the requested material user benefit or a final comparison."
+     },
+     {
+      "member_id": "member_b7f9b6276cc5d77211bb73c7",
+      "state": "UNRESOLVED",
+      "evidence_ids": [
+       "m:C_RP_GENERAL:1790904354.000049",
+       "m:C_RP_GENERAL:1790904409.000113",
+       "m:C_RP_GENERAL:1790904449.000226"
+      ],
+      "basis": "The tutor's question receives another tutor's assessment and a QA tutor's question, but no handling answer or final label."
+     },
+     {
+      "member_id": "member_5a0db8eea777cc90029866c4",
+      "state": "PARTIALLY_RESOLVED",
+      "evidence_ids": [
+       "m:C_RP_QA:1790940523.000045",
+       "m:C_RP_QA:1790940571.000113",
+       "m:C_RP_QA:1790940616.000226"
+      ],
+      "basis": "The team lead explains the criterion within the thread, but the QA tutor has not provided the requested user-benefit explanation or a final comparison."
+     }
+    ],
+    "coverage": [
+     {
+      "need": "CURRENT_GUIDANCE",
+      "status": "COVERED",
+      "evidence_ids": [
+       "k:response-preference-instructions@1.1:176ce67d",
+       "k:response-preference-faq@1.1:4683724f"
+      ],
+      "note": "The current instructions and FAQ address meaningful benefit, cosmetic phrasing and ties.",
+      "gap_id": null
+     },
+     {
+      "need": "ANNOUNCEMENTS",
+      "status": "COVERED",
+      "evidence_ids": [
+       "k:slack:C_RP_ANNOUNCEMENTS:1790883558.000028:d0ddced2"
+      ],
+      "note": "The retrieved batch announcement was assessed and concerns a different problem; it supplies no handling rule for this topic.",
+      "gap_id": null
+     },
+     {
+      "need": "PRIOR_DECISIONS",
+      "status": "COVERED",
+      "evidence_ids": [
+       "k:rp-tie-calibration-approval@1.0:99b5da48"
+      ],
+      "note": "The earlier approval establishes a similar historical concern and records pending execution and unobserved outcomes. Further outcome research is not needed to reply using current instructions.",
+      "gap_id": null
+     },
+     {
+      "need": "MEMBER_QUESTIONS",
+      "status": "COVERED",
+      "evidence_ids": [
+       "m:C_RP_GENERAL:1790859242.000048",
+       "m:C_RP_GENERAL:1790859300.000113",
+       "m:C_RP_GENERAL:1790904354.000049",
+       "m:C_RP_GENERAL:1790904449.000226",
+       "m:C_RP_QA:1790940523.000045",
+       "m:C_RP_QA:1790940571.000113"
+      ],
+      "note": "The threads show the comparison questions and requests for user-facing benefit. They contain no references to an earlier workaround requiring investigation.",
+      "gap_id": null
+     }
+    ],
+    "review_note": null,
+    "action_choice": null
+   },
+   "final": {
+    "contract_version": "agent3-advisor-draft-v11",
+    "summary": "A tutor asks whether slightly clearer wording justifies preferring B on RP-4354; a QA tutor asks whether cleanliness versus detail warrants a slight preference. Current guidance requires meaningful user benefit, but the RP-4354 thread has not yet received a handling answer.",
+    "summary_sentences": [
+     {
+      "text": "A tutor asks whether slightly clearer wording justifies preferring B on RP-4354; a QA tutor asks whether cleanliness versus detail warrants a slight preference.",
+      "support_claim_ids": [
+       "c2",
+       "c3"
+      ],
+      "depends_on": []
+     },
+     {
+      "text": "Current guidance requires meaningful user benefit, but the RP-4354 thread has not yet received a handling answer.",
+      "support_claim_ids": [
+       "c4",
+       "c7"
+      ],
+      "depends_on": []
+     }
+    ],
+    "detail_sentences": [
+     {
+      "text": "In an earlier thread, the same QA tutor reports that both responses are acceptable but B sounds clearer.",
+      "support_claim_ids": [
+       "c1"
+      ],
+      "depends_on": [],
+      "summary_depends_on": [
+       1
+      ]
+     },
+     {
+      "text": "The team lead instructed the QA tutor in both threads to specify which response materially helps the user more; neither thread contains the requested explanation.",
+      "support_claim_ids": [
+       "c5",
+       "c6"
+      ],
+      "depends_on": [],
+      "summary_depends_on": []
+     },
+     {
+      "text": "In the RP-4354 thread, a tutor reports that A answers fully and B adds nothing substantive, while a QA tutor asks what meaningful user-facing benefit would justify a preference.",
+      "support_claim_ids": [
+       "c4"
+      ],
+      "depends_on": [],
+      "summary_depends_on": []
+     },
+     {
+      "text": "An earlier batch-14 approval records a similar concern about unexplained clarity preferences, but posting and the review exercise were still pending and their outcomes were not observed.",
+      "support_claim_ids": [
+       "c8"
+      ],
+      "depends_on": [],
+      "summary_depends_on": []
+     }
+    ],
+    "reasoning": "The RP-4354 question remains unanswered in its own thread; comments from a tutor and a QA tutor are not authoritative handling instructions. The current tie guideline directly answers the criterion question, so a focused reply is supported without inventing a new threshold or deciding the task's label. The team lead already supplied thread-scoped instructions in the QA tutor's two threads, where the requested user-benefit explanations remain absent. The earlier batch-14 approval supports historical recurrence, not current authority or a claim that its exercise succeeded. No additional retrieval is needed for this reply. The member-thread review flag and the announcement's upstream review flags remain open.",
+    "claims": [
+     {
+      "claim_id": "c1",
+      "kind": "INCIDENT_FACT",
+      "text": "A QA tutor reports that both responses are acceptable but B sounds clearer.",
+      "evidence_ids": [
+       "m:C_RP_GENERAL:1790859242.000048"
+      ],
+      "attributions": [
+       {
+        "user_id": "U008",
+        "relation": "AUTHOR",
+        "evidence_id": "m:C_RP_GENERAL:1790859242.000048"
+       }
+      ],
+      "quote": null,
+      "quote_kind": "PARAPHRASE",
+      "material": true
+     },
+     {
+      "claim_id": "c2",
+      "kind": "INCIDENT_FACT",
+      "text": "A tutor asks whether slightly clearer wording is enough to prefer B when both responses are acceptable on RP-4354.",
+      "evidence_ids": [
+       "m:C_RP_GENERAL:1790904354.000049"
+      ],
+      "attributions": [
+       {
+        "user_id": "U013",
+        "relation": "AUTHOR",
+        "evidence_id": "m:C_RP_GENERAL:1790904354.000049"
+       }
+      ],
+      "quote": null,
+      "quote_kind": "PARAPHRASE",
+      "material": true
+     },
+     {
+      "claim_id": "c3",
+      "kind": "INCIDENT_FACT",
+      "text": "A QA tutor asks whether A being cleaner and B being more detailed warrants a slight preference.",
+      "evidence_ids": [
+       "m:C_RP_QA:1790940523.000045"
+      ],
+      "attributions": [
+       {
+        "user_id": "U008",
+        "relation": "AUTHOR",
+        "evidence_id": "m:C_RP_QA:1790940523.000045"
+       }
+      ],
+      "quote": null,
+      "quote_kind": "PARAPHRASE",
+      "material": true
+     },
+     {
+      "claim_id": "c4",
+      "kind": "INFERENCE",
+      "text": "The RP-4354 thread contains a tutor's question, another tutor's assessment that A answers fully and B adds nothing substantive, and a QA tutor's request for a meaningful user-facing benefit, but no handling answer.",
+      "evidence_ids": [
+       "m:C_RP_GENERAL:1790904354.000049",
+       "m:C_RP_GENERAL:1790904409.000113",
+       "m:C_RP_GENERAL:1790904449.000226"
+      ],
+      "attributions": [
+       {
+        "user_id": "U013",
+        "relation": "AUTHOR",
+        "evidence_id": "m:C_RP_GENERAL:1790904354.000049"
+       },
+       {
+        "user_id": "U010",
+        "relation": "AUTHOR",
+        "evidence_id": "m:C_RP_GENERAL:1790904409.000113"
+       },
+       {
+        "user_id": "U014",
+        "relation": "AUTHOR",
+        "evidence_id": "m:C_RP_GENERAL:1790904449.000226"
+       }
+      ],
+      "quote": null,
+      "quote_kind": "PARAPHRASE",
+      "material": true
+     },
+     {
+      "claim_id": "c5",
+      "kind": "THREAD_INSTRUCTION",
+      "text": "In the earlier clarity thread, the team lead instructs the QA tutor to specify which response materially helps the user more before calling a slight preference; the supplied thread contains no subsequent explanation.",
+      "evidence_ids": [
+       "m:C_RP_GENERAL:1790859242.000048",
+       "m:C_RP_GENERAL:1790859337.000226"
+      ],
+      "attributions": [
+       {
+        "user_id": "U008",
+        "relation": "AUTHOR",
+        "evidence_id": "m:C_RP_GENERAL:1790859242.000048"
+       },
+       {
+        "user_id": "U001",
+        "relation": "AUTHOR",
+        "evidence_id": "m:C_RP_GENERAL:1790859337.000226"
+       }
+      ],
+      "quote": null,
+      "quote_kind": "PARAPHRASE",
+      "material": true
+     },
+     {
+      "claim_id": "c6",
+      "kind": "THREAD_INSTRUCTION",
+      "text": "In the cleanliness-versus-detail thread, the team lead instructs the QA tutor to specify which response materially helps the user more and says the exact user task should decide; the supplied thread contains no subsequent explanation.",
+      "evidence_ids": [
+       "m:C_RP_QA:1790940523.000045",
+       "m:C_RP_QA:1790940616.000226"
+      ],
+      "attributions": [
+       {
+        "user_id": "U008",
+        "relation": "AUTHOR",
+        "evidence_id": "m:C_RP_QA:1790940523.000045"
+       },
+       {
+        "user_id": "U001",
+        "relation": "AUTHOR",
+        "evidence_id": "m:C_RP_QA:1790940616.000226"
+       }
+      ],
+      "quote": null,
+      "quote_kind": "PARAPHRASE",
+      "material": true
+     },
+     {
+      "claim_id": "c7",
+      "kind": "GUIDANCE",
+      "text": "The current project instructions require a tie when neither response has a meaningful quality advantage, reject cosmetic phrasing alone as justification for a preference, and require explaining the user-facing benefit when selecting on a small difference.",
+      "evidence_ids": [
+       "k:response-preference-instructions@1.1:176ce67d"
+      ],
+      "attributions": [],
+      "quote": null,
+      "quote_kind": "PARAPHRASE",
+      "material": true
+     },
+     {
+      "claim_id": "c8",
+      "kind": "HISTORY",
+      "text": "The earlier batch-14 approval records reviewers using slight clarity differences without explaining usefulness and authorizes advice and an eight-pair review exercise; posting and review completion are not recorded, and outcomes were not observed. Its approval is limited to that exercise, not a standing policy change.",
+      "evidence_ids": [
+       "k:rp-tie-calibration-approval@1.0:99b5da48"
+      ],
+      "attributions": [],
+      "quote": null,
+      "quote_kind": "PARAPHRASE",
+      "material": true
+     },
+     {
+      "claim_id": "c9",
+      "kind": "SOURCE_FACT",
+      "text": "The batch announcement asks for affected task references for model/task connection drops; it does not address the criterion for a preference.",
+      "evidence_ids": [
+       "k:slack:C_RP_ANNOUNCEMENTS:1790883558.000028:d0ddced2"
+      ],
+      "attributions": [],
+      "quote": null,
+      "quote_kind": "PARAPHRASE",
+      "material": true
+     }
+    ],
+    "gaps": [],
+    "evidence_sufficiency": "SUFFICIENT",
+    "proposed_action": {
+     "action_type": "POST_ALIGNMENT",
+     "intervention_need": {
+      "kind": "UNRESOLVED_HANDLING_QUESTION",
+      "statement": "The tutor's RP-4354 question remains unanswered after replies assessing the responses and asking for a user-facing benefit.",
+      "evidence_ids": [
+       "m:C_RP_GENERAL:1790904354.000049",
+       "m:C_RP_GENERAL:1790904409.000113",
+       "m:C_RP_GENERAL:1790904449.000226"
+      ]
+     },
+     "instruction": "Reply in the RP-4354 thread with the current tie rule and ask for the user-facing benefit behind any preference.",
+     "rationale": "The current instructions directly answer the criterion question. A focused reply supplies that rule without treating the other threads' instructions as project-wide guidance or deciding the label without a stated benefit.",
+     "draft_text": "For RP-4354, slightly clearer wording alone is not enough to establish a preference. Under the current instructions, choose a tie when neither response has a meaningful quality advantage; cosmetic phrasing alone does not justify a preference. If you select B on a small difference, explain the user-facing benefit. Please identify what the clearer wording improves for the user's request, rather than relying on clarity as a label.",
+     "scope_note": "This reply explains the criterion for RP-4354; it does not decide which response has a meaningful advantage.",
+     "support_claim_ids": [
+      "c2",
+      "c4",
+      "c7"
+     ],
+     "targets": [],
+     "context_claim_ids": [
+      "c5",
+      "c6",
+      "c8",
+      "c9"
+     ]
+    },
+    "severity": {
+     "level": "MEDIUM",
+     "rationale": "A tutor and a QA tutor raise comparable uncertainty about the tie-versus-preference criterion across three threads. This can change labels, but the messages do not establish broad disruption or incorrect submissions.",
+     "signals": [
+      {
+       "level": "MEDIUM",
+       "signal_index": 0,
+       "signal_text": "Recurring confusion about the same rule, tool behavior, or scoring criterion that suggests meaningful workflow or labeling impact",
+       "support": "A tutor asks whether slightly clearer wording warrants choosing B, while a QA tutor raises clarity and cleanliness-versus-detail comparisons in two threads; these concern whether to assign a preference rather than a tie.",
+       "evidence_ids": [
+        "m:C_RP_GENERAL:1790859242.000048",
+        "m:C_RP_GENERAL:1790904354.000049",
+        "m:C_RP_QA:1790940523.000045"
+       ]
+      }
+     ],
+     "affected_reporters": [
+      {
+       "author_id": "U013",
+       "evidence_id": "m:C_RP_GENERAL:1790904354.000049"
+      },
+      {
+       "author_id": "U008",
+       "evidence_id": "m:C_RP_QA:1790940523.000045"
+      }
+     ],
+     "recurrence": "FOUND",
+     "recurrence_evidence_ids": [
+      "k:rp-tie-calibration-approval@1.0:99b5da48"
+     ],
+     "reported_recurrence_evidence_ids": []
+    },
+    "confidence": 0.91,
+    "open_confirmation": "NONE",
+    "open_question": null,
+    "open_question_evidence_ids": [],
+    "source_conflicts": [],
+    "announcement_assessments": [
+     {
+      "evidence_id": "k:slack:C_RP_ANNOUNCEMENTS:1790883558.000028:d0ddced2",
+      "relevant": false,
+      "directive": true,
+      "directive_quote": "Add affected task references here; no policy change has been announced.",
+      "rationale": "The announcement concerns connection drops in the same batch, not whether a response offers enough user benefit to justify a preference. Its example-collection direction does not govern this topic."
+     }
+    ],
+    "resolution": [
+     {
+      "member_id": "member_a6c0032f49d046f8e80dd119",
+      "state": "PARTIALLY_RESOLVED",
+      "evidence_ids": [
+       "m:C_RP_GENERAL:1790859242.000048",
+       "m:C_RP_GENERAL:1790859300.000113",
+       "m:C_RP_GENERAL:1790859337.000226"
+      ],
+      "basis": "The team lead supplies a thread-scoped criterion, but the QA tutor has not supplied the requested material user benefit or a final comparison."
+     },
+     {
+      "member_id": "member_b7f9b6276cc5d77211bb73c7",
+      "state": "UNRESOLVED",
+      "evidence_ids": [
+       "m:C_RP_GENERAL:1790904354.000049",
+       "m:C_RP_GENERAL:1790904409.000113",
+       "m:C_RP_GENERAL:1790904449.000226"
+      ],
+      "basis": "The tutor's question receives another tutor's assessment and a QA tutor's question, but no handling answer or final label."
+     },
+     {
+      "member_id": "member_5a0db8eea777cc90029866c4",
+      "state": "PARTIALLY_RESOLVED",
+      "evidence_ids": [
+       "m:C_RP_QA:1790940523.000045",
+       "m:C_RP_QA:1790940571.000113",
+       "m:C_RP_QA:1790940616.000226"
+      ],
+      "basis": "The team lead explains the criterion within the thread, but the QA tutor has not provided the requested user-benefit explanation or a final comparison."
+     }
+    ],
+    "coverage": [
+     {
+      "need": "CURRENT_GUIDANCE",
+      "status": "COVERED",
+      "evidence_ids": [
+       "k:response-preference-instructions@1.1:176ce67d",
+       "k:response-preference-faq@1.1:4683724f"
+      ],
+      "note": "The current instructions and FAQ address meaningful benefit, cosmetic phrasing and ties.",
+      "gap_id": null
+     },
+     {
+      "need": "ANNOUNCEMENTS",
+      "status": "COVERED",
+      "evidence_ids": [
+       "k:slack:C_RP_ANNOUNCEMENTS:1790883558.000028:d0ddced2"
+      ],
+      "note": "The retrieved batch announcement was assessed and concerns a different problem; it supplies no handling rule for this topic.",
+      "gap_id": null
+     },
+     {
+      "need": "PRIOR_DECISIONS",
+      "status": "COVERED",
+      "evidence_ids": [
+       "k:rp-tie-calibration-approval@1.0:99b5da48"
+      ],
+      "note": "The earlier approval establishes a similar historical concern and records pending execution and unobserved outcomes. Further outcome research is not needed to reply using current instructions.",
+      "gap_id": null
+     },
+     {
+      "need": "MEMBER_QUESTIONS",
+      "status": "COVERED",
+      "evidence_ids": [
+       "m:C_RP_GENERAL:1790859242.000048",
+       "m:C_RP_GENERAL:1790859300.000113",
+       "m:C_RP_GENERAL:1790904354.000049",
+       "m:C_RP_GENERAL:1790904449.000226",
+       "m:C_RP_QA:1790940523.000045",
+       "m:C_RP_QA:1790940571.000113"
+      ],
+      "note": "The threads show the comparison questions and requests for user-facing benefit. They contain no references to an earlier workaround requiring investigation.",
+      "gap_id": null
+     }
+    ],
+    "review_note": null,
+    "action_choice": null
+   },
+   "revised": false
+  },
+  "grounding": {
+   "structural_issues": [],
+   "action_issues": [],
+   "unsupported": [],
+   "unjudged": [],
+   "extraneous_verdicts": [],
+   "rejected": {},
+   "pending": [],
+   "action_sufficiency": {
+    "verdict": "SUFFICIENT",
+    "essential_statement_ids": [
+     "claim:c2",
+     "claim:c4",
+     "claim:c7"
+    ],
+    "rationale": "All listed premises are supported. They establish the task-specific question, its unanswered status and the applicable current rule. Together they justify the exact scoped reply and benefit request without requiring a final label or asserting that the thread is an official intake route."
+   },
+   "source_consistency": {
+    "assessed_evidence_ids": [
+     "k:response-preference-instructions@1.1:176ce67d",
+     "k:response-preference-instructions@1.1:4745e3e0",
+     "k:response-preference-faq@1.1:4683724f"
+    ],
+    "relations": [
+     {
+      "evidence_ids": [
+       "k:response-preference-instructions@1.1:176ce67d",
+       "k:response-preference-faq@1.1:4683724f"
+      ],
+      "relation": "AGREE",
+      "point": "A preference requires a meaningful user benefit rather than merely cosmetic wording, and the benefit should be explained.",
+      "disagreement_scope": null,
+      "rationale": "Both sources require a meaningful benefit and its explanation. The FAQ's statement that cosmetic phrasing usually does not provide that benefit does not authorize preferences without a meaningful advantage."
+     },
+     {
+      "evidence_ids": [
+       "k:response-preference-instructions@1.1:176ce67d",
+       "k:response-preference-instructions@1.1:4745e3e0",
+       "k:response-preference-faq@1.1:4683724f"
+      ],
+      "relation": "AGREE",
+      "point": "Response comparison should turn on meaningful differences relevant to the user's request.",
+      "disagreement_scope": null,
+      "rationale": "The project-purpose section calls for meaningful differences in accuracy, adherence, citation support and usefulness, consistent with the meaningful-advantage and user-benefit criteria in the ties guidance and FAQ. The connection-drop announcement does not govern this handling question, and the batch-14 approval is a prior record rather than current policy."
+     }
+    ],
+    "declared_conflict_checks": []
+   },
+   "alternative_sufficiency": {},
+   "status": "PASSED",
+   "basis": "SEMANTIC",
+   "statements": [
+    {
+     "statement_id": "claim:c1",
+     "kind": "CLAIM_INCIDENT_FACT",
+     "text": "A QA tutor reports that both responses are acceptable but B sounds clearer.",
+     "blocking": true,
+     "evidence_ids": [
+      "m:C_RP_GENERAL:1790859242.000048"
+     ],
+     "attributions": [
+      {
+       "user_id": "U008",
+       "relation": "AUTHOR",
+       "evidence_id": "m:C_RP_GENERAL:1790859242.000048",
+       "role": "QA_TUTOR"
+      }
+     ],
+     "verdict": "SUPPORTED",
+     "model_verdict": "SUPPORTED",
+     "rationale": "U008 is a QA tutor and explicitly reports that both responses are okay but B sounds clearer."
+    },
+    {
+     "statement_id": "claim:c2",
+     "kind": "CLAIM_INCIDENT_FACT",
+     "text": "A tutor asks whether slightly clearer wording is enough to prefer B when both responses are acceptable on RP-4354.",
+     "blocking": true,
+     "evidence_ids": [
+      "m:C_RP_GENERAL:1790904354.000049"
+     ],
+     "attributions": [
+      {
+       "user_id": "U013",
+       "relation": "AUTHOR",
+       "evidence_id": "m:C_RP_GENERAL:1790904354.000049",
+       "role": "TUTOR"
+      }
+     ],
+     "verdict": "SUPPORTED",
+     "model_verdict": "SUPPORTED",
+     "rationale": "U013, a tutor, asks exactly this question and identifies task RP-4354."
+    },
+    {
+     "statement_id": "claim:c3",
+     "kind": "CLAIM_INCIDENT_FACT",
+     "text": "A QA tutor asks whether A being cleaner and B being more detailed warrants a slight preference.",
+     "blocking": true,
+     "evidence_ids": [
+      "m:C_RP_QA:1790940523.000045"
+     ],
+     "attributions": [
+      {
+       "user_id": "U008",
+       "relation": "AUTHOR",
+       "evidence_id": "m:C_RP_QA:1790940523.000045",
+       "role": "QA_TUTOR"
+      }
+     ],
+     "verdict": "SUPPORTED",
+     "model_verdict": "SUPPORTED",
+     "rationale": "U008, a QA tutor, asks whether A being cleaner and B more detailed warrants a slight preference."
+    },
+    {
+     "statement_id": "claim:c4",
+     "kind": "CLAIM_INFERENCE",
+     "text": "The RP-4354 thread contains a tutor's question, another tutor's assessment that A answers fully and B adds nothing substantive, and a QA tutor's request for a meaningful user-facing benefit, but no handling answer.",
+     "blocking": true,
+     "evidence_ids": [
+      "m:C_RP_GENERAL:1790904354.000049",
+      "m:C_RP_GENERAL:1790904409.000113",
+      "m:C_RP_GENERAL:1790904449.000226"
+     ],
+     "attributions": [
+      {
+       "user_id": "U013",
+       "relation": "AUTHOR",
+       "evidence_id": "m:C_RP_GENERAL:1790904354.000049",
+       "role": "TUTOR"
+      },
+      {
+       "user_id": "U010",
+       "relation": "AUTHOR",
+       "evidence_id": "m:C_RP_GENERAL:1790904409.000113",
+       "role": "TUTOR"
+      },
+      {
+       "user_id": "U014",
+       "relation": "AUTHOR",
+       "evidence_id": "m:C_RP_GENERAL:1790904449.000226",
+       "role": "QA_TUTOR"
+      }
+     ],
+     "verdict": "SUPPORTED",
+     "model_verdict": "SUPPORTED",
+     "rationale": "The three messages contain the attributed question, assessment and request for a meaningful benefit. No subsequent handling answer appears in the complete supplied thread."
+    },
+    {
+     "statement_id": "claim:c5",
+     "kind": "CLAIM_THREAD_INSTRUCTION",
+     "text": "In the earlier clarity thread, the team lead instructs the QA tutor to specify which response materially helps the user more before calling a slight preference; the supplied thread contains no subsequent explanation.",
+     "blocking": true,
+     "evidence_ids": [
+      "m:C_RP_GENERAL:1790859242.000048",
+      "m:C_RP_GENERAL:1790859337.000226"
+     ],
+     "attributions": [
+      {
+       "user_id": "U008",
+       "relation": "AUTHOR",
+       "evidence_id": "m:C_RP_GENERAL:1790859242.000048",
+       "role": "QA_TUTOR"
+      },
+      {
+       "user_id": "U001",
+       "relation": "AUTHOR",
+       "evidence_id": "m:C_RP_GENERAL:1790859337.000226",
+       "role": "TEAM_LEAD"
+      }
+     ],
+     "verdict": "SUPPORTED",
+     "model_verdict": "SUPPORTED",
+     "rationale": "The team lead explicitly gives this thread-scoped instruction, and the supplied thread ends without the requested explanation."
+    },
+    {
+     "statement_id": "claim:c6",
+     "kind": "CLAIM_THREAD_INSTRUCTION",
+     "text": "In the cleanliness-versus-detail thread, the team lead instructs the QA tutor to specify which response materially helps the user more and says the exact user task should decide; the supplied thread contains no subsequent explanation.",
+     "blocking": true,
+     "evidence_ids": [
+      "m:C_RP_QA:1790940523.000045",
+      "m:C_RP_QA:1790940616.000226"
+     ],
+     "attributions": [
+      {
+       "user_id": "U008",
+       "relation": "AUTHOR",
+       "evidence_id": "m:C_RP_QA:1790940523.000045",
+       "role": "QA_TUTOR"
+      },
+      {
+       "user_id": "U001",
+       "relation": "AUTHOR",
+       "evidence_id": "m:C_RP_QA:1790940616.000226",
+       "role": "TEAM_LEAD"
+      }
+     ],
+     "verdict": "SUPPORTED",
+     "model_verdict": "SUPPORTED",
+     "rationale": "The team lead explicitly requires identifying material user benefit and says the exact user task should decide. No subsequent explanation is supplied."
+    },
+    {
+     "statement_id": "claim:c7",
+     "kind": "CLAIM_GUIDANCE",
+     "text": "The current project instructions require a tie when neither response has a meaningful quality advantage, reject cosmetic phrasing alone as justification for a preference, and require explaining the user-facing benefit when selecting on a small difference.",
+     "blocking": true,
+     "evidence_ids": [
+      "k:response-preference-instructions@1.1:176ce67d"
+     ],
+     "verdict": "SUPPORTED",
+     "model_verdict": "SUPPORTED",
+     "rationale": "The current project instructions explicitly state all three requirements."
+    },
+    {
+     "statement_id": "claim:c8",
+     "kind": "CLAIM_HISTORY",
+     "text": "The earlier batch-14 approval records reviewers using slight clarity differences without explaining usefulness and authorizes advice and an eight-pair review exercise; posting and review completion are not recorded, and outcomes were not observed. Its approval is limited to that exercise, not a standing policy change.",
+     "blocking": true,
+     "evidence_ids": [
+      "k:rp-tie-calibration-approval@1.0:99b5da48"
+     ],
+     "verdict": "SUPPORTED",
+     "model_verdict": "SUPPORTED",
+     "rationale": "The prior batch-14 record describes unexplained clarity preferences, approves the advice and eight-pair exercise, records no completion or observed outcome, and expressly limits the approval to that exercise rather than a standing policy change."
+    },
+    {
+     "statement_id": "claim:c9",
+     "kind": "CLAIM_SOURCE_FACT",
+     "text": "The batch announcement asks for affected task references for model/task connection drops; it does not address the criterion for a preference.",
+     "blocking": true,
+     "evidence_ids": [
+      "k:slack:C_RP_ANNOUNCEMENTS:1790883558.000028:d0ddced2"
+     ],
+     "verdict": "SUPPORTED",
+     "model_verdict": "SUPPORTED",
+     "rationale": "The announcement requests affected task references for connection drops and gives no preference-selection criterion."
+    },
+    {
+     "statement_id": "summary:s1",
+     "kind": "SUMMARY",
+     "text": "A tutor asks whether slightly clearer wording justifies preferring B on RP-4354; a QA tutor asks whether cleanliness versus detail warrants a slight preference.",
+     "blocking": true,
+     "evidence_ids": [
+      "m:C_RP_GENERAL:1790904354.000049",
+      "m:C_RP_QA:1790940523.000045"
+     ],
+     "attributions": [
+      {
+       "user_id": "U013",
+       "relation": "AUTHOR",
+       "evidence_id": "m:C_RP_GENERAL:1790904354.000049",
+       "role": "TUTOR"
+      },
+      {
+       "user_id": "U008",
+       "relation": "AUTHOR",
+       "evidence_id": "m:C_RP_QA:1790940523.000045",
+       "role": "QA_TUTOR"
+      }
+     ],
+     "verdict": "SUPPORTED",
+     "model_verdict": "SUPPORTED",
+     "rationale": "Both questions are explicitly stated by the cited tutor and QA tutor, with roles and attributions matching their messages."
+    },
+    {
+     "statement_id": "summary:s2",
+     "kind": "SUMMARY",
+     "text": "Current guidance requires meaningful user benefit, but the RP-4354 thread has not yet received a handling answer.",
+     "blocking": true,
+     "evidence_ids": [
+      "m:C_RP_GENERAL:1790904354.000049",
+      "m:C_RP_GENERAL:1790904409.000113",
+      "m:C_RP_GENERAL:1790904449.000226",
+      "k:response-preference-instructions@1.1:176ce67d"
+     ],
+     "attributions": [
+      {
+       "user_id": "U013",
+       "relation": "AUTHOR",
+       "evidence_id": "m:C_RP_GENERAL:1790904354.000049",
+       "role": "TUTOR"
+      },
+      {
+       "user_id": "U010",
+       "relation": "AUTHOR",
+       "evidence_id": "m:C_RP_GENERAL:1790904409.000113",
+       "role": "TUTOR"
+      },
+      {
+       "user_id": "U014",
+       "relation": "AUTHOR",
+       "evidence_id": "m:C_RP_GENERAL:1790904449.000226",
+       "role": "QA_TUTOR"
+      }
+     ],
+     "verdict": "SUPPORTED",
+     "model_verdict": "SUPPORTED",
+     "rationale": "Current instructions require a meaningful advantage and explanation of user-facing benefit; the complete RP-4354 thread contains no handling answer."
+    },
+    {
+     "statement_id": "detail:d1",
+     "kind": "DETAIL",
+     "text": "In an earlier thread, the same QA tutor reports that both responses are acceptable but B sounds clearer.",
+     "blocking": false,
+     "evidence_ids": [
+      "m:C_RP_GENERAL:1790859242.000048"
+     ],
+     "attributions": [
+      {
+       "user_id": "U008",
+       "relation": "AUTHOR",
+       "evidence_id": "m:C_RP_GENERAL:1790859242.000048",
+       "role": "QA_TUTOR"
+      }
+     ],
+     "depends_on": [
+      "summary:s1"
+     ],
+     "verdict": "SUPPORTED",
+     "model_verdict": "SUPPORTED",
+     "rationale": "U008 is the same QA tutor referenced in summary:s1 and makes this report in the earlier thread."
+    },
+    {
+     "statement_id": "detail:d2",
+     "kind": "DETAIL",
+     "text": "The team lead instructed the QA tutor in both threads to specify which response materially helps the user more; neither thread contains the requested explanation.",
+     "blocking": false,
+     "evidence_ids": [
+      "m:C_RP_GENERAL:1790859242.000048",
+      "m:C_RP_GENERAL:1790859337.000226",
+      "m:C_RP_QA:1790940523.000045",
+      "m:C_RP_QA:1790940616.000226"
+     ],
+     "attributions": [
+      {
+       "user_id": "U008",
+       "relation": "AUTHOR",
+       "evidence_id": "m:C_RP_GENERAL:1790859242.000048",
+       "role": "QA_TUTOR"
+      },
+      {
+       "user_id": "U001",
+       "relation": "AUTHOR",
+       "evidence_id": "m:C_RP_GENERAL:1790859337.000226",
+       "role": "TEAM_LEAD"
+      },
+      {
+       "user_id": "U008",
+       "relation": "AUTHOR",
+       "evidence_id": "m:C_RP_QA:1790940523.000045",
+       "role": "QA_TUTOR"
+      },
+      {
+       "user_id": "U001",
+       "relation": "AUTHOR",
+       "evidence_id": "m:C_RP_QA:1790940616.000226",
+       "role": "TEAM_LEAD"
+      }
+     ],
+     "verdict": "SUPPORTED",
+     "model_verdict": "SUPPORTED",
+     "rationale": "The team lead gives the stated instruction in both threads, and neither complete supplied thread contains the requested explanation."
+    },
+    {
+     "statement_id": "detail:d3",
+     "kind": "DETAIL",
+     "text": "In the RP-4354 thread, a tutor reports that A answers fully and B adds nothing substantive, while a QA tutor asks what meaningful user-facing benefit would justify a preference.",
+     "blocking": false,
+     "evidence_ids": [
+      "m:C_RP_GENERAL:1790904354.000049",
+      "m:C_RP_GENERAL:1790904409.000113",
+      "m:C_RP_GENERAL:1790904449.000226"
+     ],
+     "attributions": [
+      {
+       "user_id": "U013",
+       "relation": "AUTHOR",
+       "evidence_id": "m:C_RP_GENERAL:1790904354.000049",
+       "role": "TUTOR"
+      },
+      {
+       "user_id": "U010",
+       "relation": "AUTHOR",
+       "evidence_id": "m:C_RP_GENERAL:1790904409.000113",
+       "role": "TUTOR"
+      },
+      {
+       "user_id": "U014",
+       "relation": "AUTHOR",
+       "evidence_id": "m:C_RP_GENERAL:1790904449.000226",
+       "role": "QA_TUTOR"
+      }
+     ],
+     "verdict": "SUPPORTED",
+     "model_verdict": "SUPPORTED",
+     "rationale": "U010 reports that A answers fully and B adds nothing substantive, while U014 asks what meaningful benefit would justify a preference."
+    },
+    {
+     "statement_id": "detail:d4",
+     "kind": "DETAIL",
+     "text": "An earlier batch-14 approval records a similar concern about unexplained clarity preferences, but posting and the review exercise were still pending and their outcomes were not observed.",
+     "blocking": false,
+     "evidence_ids": [
+      "k:rp-tie-calibration-approval@1.0:99b5da48"
+     ],
+     "verdict": "SUPPORTED",
+     "model_verdict": "SUPPORTED",
+     "rationale": "The historical approval records the similar concern, pending posting and unrecorded exercise completion, with outcomes not observed."
+    },
+    {
+     "statement_id": "action",
+     "kind": "ACTION",
+     "text": "Post a reminder. Instruction: Reply in the RP-4354 thread with the current tie rule and ask for the user-facing benefit behind any preference. Draft to copy: For RP-4354, slightly clearer wording alone is not enough to establish a preference. Under the current instructions, choose a tie when neither response has a meaningful quality advantage; cosmetic phrasing alone does not justify a preference. If you select B on a small difference, explain the user-facing benefit. Please identify what the clearer wording improves for the user's request, rather than relying on clarity as a label. Scope: This reply explains the criterion for RP-4354; it does not decide which response has a meaningful advantage.",
+     "blocking": true,
+     "evidence_ids": [
+      "m:C_RP_GENERAL:1790904354.000049",
+      "m:C_RP_GENERAL:1790904409.000113",
+      "m:C_RP_GENERAL:1790904449.000226",
+      "k:response-preference-instructions@1.1:176ce67d"
+     ],
+     "premises": [
+      "claim:c2",
+      "claim:c4",
+      "claim:c7"
+     ],
+     "verdict": "SUPPORTED",
+     "model_verdict": "SUPPORTED",
+     "rationale": "The unanswered RP-4354 criterion question justifies a reply in that same discussion. The proposed text accurately conveys the current tie rule, requests a concrete user-facing benefit, and expressly avoids deciding the pair's label."
+    },
+    {
+     "statement_id": "action:rationale",
+     "kind": "ACTION_RATIONALE",
+     "text": "Why this helps: The current instructions directly answer the criterion question. A focused reply supplies that rule without treating the other threads' instructions as project-wide guidance or deciding the label without a stated benefit.",
+     "blocking": false,
+     "evidence_ids": [
+      "m:C_RP_GENERAL:1790904354.000049",
+      "m:C_RP_GENERAL:1790904409.000113",
+      "m:C_RP_GENERAL:1790904449.000226",
+      "k:response-preference-instructions@1.1:176ce67d",
+      "m:C_RP_GENERAL:1790859242.000048",
+      "m:C_RP_GENERAL:1790859337.000226",
+      "m:C_RP_QA:1790940523.000045",
+      "m:C_RP_QA:1790940616.000226",
+      "k:rp-tie-calibration-approval@1.0:99b5da48",
+      "k:slack:C_RP_ANNOUNCEMENTS:1790883558.000028:d0ddced2"
+     ],
+     "verdict": "SUPPORTED",
+     "model_verdict": "SUPPORTED",
+     "rationale": "The current instructions directly supply the criterion requested in RP-4354. The proposed reply relies on those instructions rather than extending other threads' authority or asserting an unsupported final comparison."
+    },
+    {
+     "statement_id": "action:need",
+     "kind": "INTERVENTION_NEED",
+     "text": "Why intervening now is needed (an unresolved handling question): The tutor's RP-4354 question remains unanswered after replies assessing the responses and asking for a user-facing benefit.",
+     "blocking": false,
+     "evidence_ids": [
+      "m:C_RP_GENERAL:1790904354.000049",
+      "m:C_RP_GENERAL:1790904409.000113",
+      "m:C_RP_GENERAL:1790904449.000226"
+     ],
+     "verdict": "SUPPORTED",
+     "model_verdict": "SUPPORTED",
+     "rationale": "The complete RP-4354 thread leaves the tutor's handling question unanswered; the replies provide an assessment and ask for a benefit without supplying the rule."
+    },
+    {
+     "statement_id": "resolution:member_a6c0032f49d046f8e80dd119",
+     "kind": "RESOLUTION",
+     "text": "Member thread member_a6c0032f49d046f8e80dd119 is PARTIALLY_RESOLVED: The team lead supplies a thread-scoped criterion, but the QA tutor has not supplied the requested material user benefit or a final comparison.",
+     "blocking": true,
+     "evidence_ids": [
+      "m:C_RP_GENERAL:1790859242.000048",
+      "m:C_RP_GENERAL:1790859300.000113",
+      "m:C_RP_GENERAL:1790859337.000226"
+     ],
+     "verdict": "SUPPORTED",
+     "model_verdict": "SUPPORTED",
+     "rationale": "The team lead supplies a thread-scoped criterion, but the thread ends without U008 explaining material benefit or providing a final comparison."
+    },
+    {
+     "statement_id": "resolution:member_b7f9b6276cc5d77211bb73c7",
+     "kind": "RESOLUTION",
+     "text": "Member thread member_b7f9b6276cc5d77211bb73c7 is UNRESOLVED: The tutor's question receives another tutor's assessment and a QA tutor's question, but no handling answer or final label.",
+     "blocking": true,
+     "evidence_ids": [
+      "m:C_RP_GENERAL:1790904354.000049",
+      "m:C_RP_GENERAL:1790904409.000113",
+      "m:C_RP_GENERAL:1790904449.000226"
+     ],
+     "verdict": "SUPPORTED",
+     "model_verdict": "SUPPORTED",
+     "rationale": "The complete thread contains the tutor's question, another tutor's assessment and a QA tutor's question, with no handling answer or final label."
+    },
+    {
+     "statement_id": "resolution:member_5a0db8eea777cc90029866c4",
+     "kind": "RESOLUTION",
+     "text": "Member thread member_5a0db8eea777cc90029866c4 is PARTIALLY_RESOLVED: The team lead explains the criterion within the thread, but the QA tutor has not provided the requested user-benefit explanation or a final comparison.",
+     "blocking": true,
+     "evidence_ids": [
+      "m:C_RP_QA:1790940523.000045",
+      "m:C_RP_QA:1790940571.000113",
+      "m:C_RP_QA:1790940616.000226"
+     ],
+     "verdict": "SUPPORTED",
+     "model_verdict": "SUPPORTED",
+     "rationale": "The team lead explains the criterion within this thread, but no subsequent user-benefit explanation or final comparison is recorded."
+    },
+    {
+     "statement_id": "severity:rationale",
+     "kind": "SEVERITY_RATIONALE",
+     "text": "Severity MEDIUM: A tutor and a QA tutor raise comparable uncertainty about the tie-versus-preference criterion across three threads. This can change labels, but the messages do not establish broad disruption or incorrect submissions.",
+     "blocking": true,
+     "evidence_ids": [
+      "m:C_RP_GENERAL:1790859242.000048",
+      "m:C_RP_GENERAL:1790904354.000049",
+      "m:C_RP_QA:1790940523.000045"
+     ],
+     "verdict": "SUPPORTED",
+     "model_verdict": "SUPPORTED",
+     "rationale": "The cited messages show one tutor and one QA tutor raising related preference uncertainty across three threads. The uncertainty concerns label selection, while no broad disruption or incorrect submission is established."
+    },
+    {
+     "statement_id": "severity:signal:MEDIUM[0]",
+     "kind": "SEVERITY_SIGNAL",
+     "text": "Rubric signal met - \"Recurring confusion about the same rule, tool behavior, or scoring criterion that suggests meaningful workflow or labeling impact\": A tutor asks whether slightly clearer wording warrants choosing B, while a QA tutor raises clarity and cleanliness-versus-detail comparisons in two threads; these concern whether to assign a preference rather than a tie.",
+     "blocking": true,
+     "evidence_ids": [
+      "m:C_RP_GENERAL:1790859242.000048",
+      "m:C_RP_GENERAL:1790904354.000049",
+      "m:C_RP_QA:1790940523.000045"
+     ],
+     "verdict": "SUPPORTED",
+     "model_verdict": "SUPPORTED",
+     "rationale": "The three messages repeatedly raise clarity or detail differences relevant to preference selection, supporting recurring criterion confusion with potential labeling impact."
+    },
+    {
+     "statement_id": "severity:recurrence",
+     "kind": "HISTORICAL_RECURRENCE",
+     "text": "Retrieved records show this problem occurred before.",
+     "blocking": true,
+     "evidence_ids": [
+      "k:rp-tie-calibration-approval@1.0:99b5da48"
+     ],
+     "verdict": "SUPPORTED",
+     "model_verdict": "SUPPORTED",
+     "rationale": "The retrieved prior approval records reviewers previously using slight clarity differences without explaining usefulness, establishing an earlier occurrence of the same concern."
+    },
+    {
+     "statement_id": "reporter:U013",
+     "kind": "AFFECTED_REPORTER",
+     "text": "U013 reports, in their own cited message, being affected by this problem.",
+     "blocking": true,
+     "evidence_ids": [
+      "m:C_RP_GENERAL:1790904354.000049"
+     ],
+     "verdict": "SUPPORTED",
+     "model_verdict": "SUPPORTED",
+     "rationale": "U013's own task-specific question reports their uncertainty about whether to prefer B on RP-4354."
+    },
+    {
+     "statement_id": "reporter:U008",
+     "kind": "AFFECTED_REPORTER",
+     "text": "U008 reports, in their own cited message, being affected by this problem.",
+     "blocking": true,
+     "evidence_ids": [
+      "m:C_RP_QA:1790940523.000045"
+     ],
+     "verdict": "SUPPORTED",
+     "model_verdict": "SUPPORTED",
+     "rationale": "U008's own comparison question reports their uncertainty about whether cleanliness versus detail warrants a slight preference."
+    }
+   ]
+  },
+  "temporal": {
+   "status": "NONE_FOUND",
+   "findings": [],
+   "source_consistency": "ASSESSED",
+   "ignored_revision_states": "NOT_YET_EFFECTIVE and NOT_APPROVED revisions never compete with applicable guidance."
+  },
+  "temporal_before_grounding": {
+   "status": "NONE_FOUND",
+   "findings": [],
+   "source_consistency": "NOT_ASSESSED",
+   "ignored_revision_states": "NOT_YET_EFFECTIVE and NOT_APPROVED revisions never compete with applicable guidance."
+  },
+  "severity": {
+   "assessment": {
+    "level": "MEDIUM",
+    "assessment_status": "ASSESSED",
+    "rubric_version": "severity-rubric-v3-semantic-signals",
+    "rubric_content_sha256": "eccaa31a2ab84a0aa7c005216a92fc39681e1dd10107117344948235a76673f4",
+    "rubric_project_id": null,
+    "rubric_scope": "SHARED_DEFAULT",
+    "rationale": "A tutor and a QA tutor raise comparable uncertainty about the tie-versus-preference criterion across three threads. This can change labels, but the messages do not establish broad disruption or incorrect submissions.",
+    "matched_signals": [
+     {
+      "level": "MEDIUM",
+      "signal_index": 0,
+      "signal_text": "Recurring confusion about the same rule, tool behavior, or scoring criterion that suggests meaningful workflow or labeling impact",
+      "support": "A tutor asks whether slightly clearer wording warrants choosing B, while a QA tutor raises clarity and cleanliness-versus-detail comparisons in two threads; these concern whether to assign a preference rather than a tie.",
+      "evidence": [
+       {
+        "kind": "slack_message",
+        "project_id": "response_preference",
+        "batch_id": "rp_batch_15",
+        "scope": "project",
+        "channel_id": "C_RP_GENERAL",
+        "thread_id": "1790859242.000048",
+        "message_id": "1790859242.000048",
+        "document_id": null,
+        "version_id": null,
+        "authoring_document_id": null,
+        "authoring_version": null,
+        "section": null,
+        "chunk_id": null,
+        "candidate_group_id": null,
+        "member_id": "member_a6c0032f49d046f8e80dd119",
+        "artifact": null,
+        "artifact_sha256": null,
+        "quote": null,
+        "note": "m:C_RP_GENERAL:1790859242.000048"
+       },
+       {
+        "kind": "slack_message",
+        "project_id": "response_preference",
+        "batch_id": "rp_batch_15",
+        "scope": "project",
+        "channel_id": "C_RP_GENERAL",
+        "thread_id": "1790904354.000049",
+        "message_id": "1790904354.000049",
+        "document_id": null,
+        "version_id": null,
+        "authoring_document_id": null,
+        "authoring_version": null,
+        "section": null,
+        "chunk_id": null,
+        "candidate_group_id": null,
+        "member_id": "member_b7f9b6276cc5d77211bb73c7",
+        "artifact": null,
+        "artifact_sha256": null,
+        "quote": null,
+        "note": "m:C_RP_GENERAL:1790904354.000049"
+       },
+       {
+        "kind": "slack_message",
+        "project_id": "response_preference",
+        "batch_id": "rp_batch_15",
+        "scope": "project",
+        "channel_id": "C_RP_QA",
+        "thread_id": "1790940523.000045",
+        "message_id": "1790940523.000045",
+        "document_id": null,
+        "version_id": null,
+        "authoring_document_id": null,
+        "authoring_version": null,
+        "section": null,
+        "chunk_id": null,
+        "candidate_group_id": null,
+        "member_id": "member_5a0db8eea777cc90029866c4",
+        "artifact": null,
+        "artifact_sha256": null,
+        "quote": null,
+        "note": "m:C_RP_QA:1790940523.000045"
+       }
+      ]
+     }
+    ],
+    "evidence": [
+     {
+      "kind": "slack_message",
+      "project_id": "response_preference",
+      "batch_id": "rp_batch_15",
+      "scope": "project",
+      "channel_id": "C_RP_GENERAL",
+      "thread_id": "1790859242.000048",
+      "message_id": "1790859242.000048",
+      "document_id": null,
+      "version_id": null,
+      "authoring_document_id": null,
+      "authoring_version": null,
+      "section": null,
+      "chunk_id": null,
+      "candidate_group_id": null,
+      "member_id": "member_a6c0032f49d046f8e80dd119",
+      "artifact": null,
+      "artifact_sha256": null,
+      "quote": null,
+      "note": "m:C_RP_GENERAL:1790859242.000048"
+     },
+     {
+      "kind": "slack_message",
+      "project_id": "response_preference",
+      "batch_id": "rp_batch_15",
+      "scope": "project",
+      "channel_id": "C_RP_GENERAL",
+      "thread_id": "1790904354.000049",
+      "message_id": "1790904354.000049",
+      "document_id": null,
+      "version_id": null,
+      "authoring_document_id": null,
+      "authoring_version": null,
+      "section": null,
+      "chunk_id": null,
+      "candidate_group_id": null,
+      "member_id": "member_b7f9b6276cc5d77211bb73c7",
+      "artifact": null,
+      "artifact_sha256": null,
+      "quote": null,
+      "note": "m:C_RP_GENERAL:1790904354.000049"
+     },
+     {
+      "kind": "slack_message",
+      "project_id": "response_preference",
+      "batch_id": "rp_batch_15",
+      "scope": "project",
+      "channel_id": "C_RP_QA",
+      "thread_id": "1790940523.000045",
+      "message_id": "1790940523.000045",
+      "document_id": null,
+      "version_id": null,
+      "authoring_document_id": null,
+      "authoring_version": null,
+      "section": null,
+      "chunk_id": null,
+      "candidate_group_id": null,
+      "member_id": "member_5a0db8eea777cc90029866c4",
+      "artifact": null,
+      "artifact_sha256": null,
+      "quote": null,
+      "note": "m:C_RP_QA:1790940523.000045"
+     }
+    ],
+    "occurrence": {
+     "affected_reporters": {
+      "status": "LOWER_BOUND",
+      "count": 2,
+      "ids": [
+       "U013",
+       "U008"
+      ],
+      "basis": "Distinct authors whose own cited message reports the problem; other participants are not counted.",
+      "evidence": [
+       {
+        "kind": "slack_message",
+        "project_id": "response_preference",
+        "batch_id": "rp_batch_15",
+        "scope": "project",
+        "channel_id": "C_RP_GENERAL",
+        "thread_id": "1790904354.000049",
+        "message_id": "1790904354.000049",
+        "document_id": null,
+        "version_id": null,
+        "authoring_document_id": null,
+        "authoring_version": null,
+        "section": null,
+        "chunk_id": null,
+        "candidate_group_id": null,
+        "member_id": "member_b7f9b6276cc5d77211bb73c7",
+        "artifact": null,
+        "artifact_sha256": null,
+        "quote": null,
+        "note": "m:C_RP_GENERAL:1790904354.000049"
+       },
+       {
+        "kind": "slack_message",
+        "project_id": "response_preference",
+        "batch_id": "rp_batch_15",
+        "scope": "project",
+        "channel_id": "C_RP_QA",
+        "thread_id": "1790940523.000045",
+        "message_id": "1790940523.000045",
+        "document_id": null,
+        "version_id": null,
+        "authoring_document_id": null,
+        "authoring_version": null,
+        "section": null,
+        "chunk_id": null,
+        "candidate_group_id": null,
+        "member_id": "member_5a0db8eea777cc90029866c4",
+        "artifact": null,
+        "artifact_sha256": null,
+        "quote": null,
+        "note": "m:C_RP_QA:1790940523.000045"
+       }
+      ]
+     },
+     "affected_tasks": {
+      "status": "UNKNOWN",
+      "count": null,
+      "ids": [],
+      "basis": null,
+      "evidence": []
+     },
+     "relevant_threads": [
+      {
+       "project_id": "response_preference",
+       "batch_id": "rp_batch_15",
+       "channel_id": "C_RP_GENERAL",
+       "thread_id": "1790859242.000048",
+       "member_id": "member_a6c0032f49d046f8e80dd119"
+      },
+      {
+       "project_id": "response_preference",
+       "batch_id": "rp_batch_15",
+       "channel_id": "C_RP_GENERAL",
+       "thread_id": "1790904354.000049",
+       "member_id": "member_b7f9b6276cc5d77211bb73c7"
+      },
+      {
+       "project_id": "response_preference",
+       "batch_id": "rp_batch_15",
+       "channel_id": "C_RP_QA",
+       "thread_id": "1790940523.000045",
+       "member_id": "member_5a0db8eea777cc90029866c4"
+      }
+     ],
+     "reporting_window": {
+      "start": "2026-10-01T12:54:02.000048+00:00",
+      "end": "2026-10-02T11:30:16.000226+00:00"
+     },
+     "historical_recurrence": {
+      "status": "FOUND",
+      "sources": [
+       {
+        "kind": "knowledge_source",
+        "project_id": "response_preference",
+        "batch_id": "rp_batch_14",
+        "scope": "project",
+        "channel_id": null,
+        "thread_id": null,
+        "message_id": null,
+        "document_id": "knowledge_eaa88591b22f97c5f325f12ee24f0717a532797133b5afc0271b1cd7a2537978",
+        "version_id": "version_f0c37174a20ad2f3df91f07ba5e79998c1f09d9e2d6ce72b7ef8d5e77455faf8",
+        "authoring_document_id": "rp-tie-calibration-approval",
+        "authoring_version": "1.0",
+        "section": "Context",
+        "chunk_id": "chunk_99b5da48de39c5fbf66d1e8830084cd8",
+        "candidate_group_id": null,
+        "member_id": null,
+        "artifact": null,
+        "artifact_sha256": null,
+        "quote": null,
+        "note": "k:rp-tie-calibration-approval@1.0:99b5da48 (PRIOR_DECISION; CURRENT)"
+       }
+      ],
+      "event_series_ids": []
+     },
+     "known_denominator": null,
+     "structural": {
+      "threads": 3,
+      "messages": 9,
+      "distinct_participants": 7,
+      "duplicate_threads_ignored": 0,
+      "duplicate_messages_ignored": 0,
+      "computed_from": "topic member threads (original Slack messages)",
+      "participants_are_not_affected_reporters": true
+     },
+     "semantic_identification": "ASSESSED"
+    },
+    "inherited_from": {
+     "level": "UNKNOWN",
+     "assessment_status": "UNASSESSED",
+     "assessment_deferred_to": "AGENT3",
+     "reason": "Agent 2 performs taxonomy only."
+    }
+   },
+   "issues": [],
+   "notes": [],
+   "proposal": {
+    "level": "MEDIUM",
+    "rationale": "A tutor and a QA tutor raise comparable uncertainty about the tie-versus-preference criterion across three threads. This can change labels, but the messages do not establish broad disruption or incorrect submissions.",
+    "signals": [
+     {
+      "level": "MEDIUM",
+      "signal_index": 0,
+      "signal_text": "Recurring confusion about the same rule, tool behavior, or scoring criterion that suggests meaningful workflow or labeling impact",
+      "support": "A tutor asks whether slightly clearer wording warrants choosing B, while a QA tutor raises clarity and cleanliness-versus-detail comparisons in two threads; these concern whether to assign a preference rather than a tie.",
+      "evidence_ids": [
+       "m:C_RP_GENERAL:1790859242.000048",
+       "m:C_RP_GENERAL:1790904354.000049",
+       "m:C_RP_QA:1790940523.000045"
+      ]
+     }
+    ],
+    "affected_reporters": [
+     {
+      "author_id": "U013",
+      "evidence_id": "m:C_RP_GENERAL:1790904354.000049"
+     },
+     {
+      "author_id": "U008",
+      "evidence_id": "m:C_RP_QA:1790940523.000045"
+     }
+    ],
+    "recurrence": "FOUND",
+    "recurrence_evidence_ids": [
+     "k:rp-tie-calibration-approval@1.0:99b5da48"
+    ],
+    "reported_recurrence_evidence_ids": []
+   }
+  },
+  "resolution": {
+   "topic": "MIXED",
+   "members": {
+    "member_a6c0032f49d046f8e80dd119": "PARTIALLY_RESOLVED",
+    "member_b7f9b6276cc5d77211bb73c7": "UNRESOLVED",
+    "member_5a0db8eea777cc90029866c4": "PARTIALLY_RESOLVED"
+   },
+   "agent1_attributed": [
+    {
+     "member_id": "member_a6c0032f49d046f8e80dd119",
+     "state": "UNRESOLVED",
+     "agent1_verification_status": "CORRECTED",
+     "agent1_review_required": false
+    },
+    {
+     "member_id": "member_b7f9b6276cc5d77211bb73c7",
+     "state": "UNRESOLVED",
+     "agent1_verification_status": "NEEDS_REVIEW",
+     "agent1_review_required": true
+    },
+    {
+     "member_id": "member_5a0db8eea777cc90029866c4",
+     "state": "UNRESOLVED",
+     "agent1_verification_status": "CORRECTED",
+     "agent1_review_required": false
+    }
+   ]
+  },
+  "established_handling": [],
+  "coverage_issues": [],
+  "action_source": "DRAFT",
+  "action_notes": [],
+  "tot": {
+   "status": "NOT_TRIGGERED",
+   "triggers": [],
+   "choice_after_grounding": {
+    "status": "NOT_COMPARED",
+    "viable": []
+   }
+  },
+  "evidence_ledger": {
+   "m:C_RP_GENERAL:1790859242.000048": {
+    "evidence_id": "m:C_RP_GENERAL:1790859242.000048",
+    "origin": "member_message",
+    "use": "MEMBER_REPORT",
+    "member_id": "member_a6c0032f49d046f8e80dd119",
+    "channel_id": "C_RP_GENERAL",
+    "thread_id": "1790859242.000048",
+    "message_id": "1790859242.000048",
+    "author_id": "U008",
+    "author_name": "Hana",
+    "author_role": "QA_TUTOR",
+    "timestamp": "2026-10-01T12:54:02.000048Z",
+    "thread_starter_id": "U008",
+    "thread_starter_role": "QA_TUTOR",
+    "reactions": [],
+    "excerpt": "Both are okay, but B sounds a bit clearer."
+   },
+   "m:C_RP_GENERAL:1790859300.000113": {
+    "evidence_id": "m:C_RP_GENERAL:1790859300.000113",
+    "origin": "member_message",
+    "use": "MEMBER_REPORT",
+    "member_id": "member_a6c0032f49d046f8e80dd119",
+    "channel_id": "C_RP_GENERAL",
+    "thread_id": "1790859242.000048",
+    "message_id": "1790859300.000113",
+    "author_id": "U007",
+    "author_name": "Leo",
+    "author_role": "QA_TUTOR",
+    "timestamp": "2026-10-01T12:55:00.000113Z",
+    "thread_starter_id": "U008",
+    "thread_starter_role": "QA_TUTOR",
+    "reactions": [],
+    "excerpt": "What meaningful user-facing benefit would justify a preference? Can you point to an actual improvement in completeness or clarity?"
+   },
+   "m:C_RP_GENERAL:1790859337.000226": {
+    "evidence_id": "m:C_RP_GENERAL:1790859337.000226",
+    "origin": "member_message",
+    "use": "MEMBER_REPORT",
+    "member_id": "member_a6c0032f49d046f8e80dd119",
+    "channel_id": "C_RP_GENERAL",
+    "thread_id": "1790859242.000048",
+    "message_id": "1790859337.000226",
+    "author_id": "U001",
+    "author_name": "Alex",
+    "author_role": "TEAM_LEAD",
+    "timestamp": "2026-10-01T12:55:37.000226Z",
+    "thread_starter_id": "U008",
+    "thread_starter_role": "QA_TUTOR",
+    "reactions": [],
+    "excerpt": "Before calling a slight preference, specify which response materially helps the user more."
+   },
+   "m:C_RP_GENERAL:1790904354.000049": {
+    "evidence_id": "m:C_RP_GENERAL:1790904354.000049",
+    "origin": "member_message",
+    "use": "MEMBER_REPORT",
+    "member_id": "member_b7f9b6276cc5d77211bb73c7",
+    "channel_id": "C_RP_GENERAL",
+    "thread_id": "1790904354.000049",
+    "message_id": "1790904354.000049",
+    "author_id": "U013",
+    "author_name": "Jun",
+    "author_role": "TUTOR",
+    "timestamp": "2026-10-02T01:25:54.000049Z",
+    "thread_starter_id": "U013",
+    "thread_starter_role": "TUTOR",
+    "reactions": [],
+    "excerpt": "Both are acceptable. Is slightly clearer wording enough to pick B? (task ref RP-4354)"
+   },
+   "m:C_RP_GENERAL:1790904409.000113": {
+    "evidence_id": "m:C_RP_GENERAL:1790904409.000113",
+    "origin": "member_message",
+    "use": "MEMBER_REPORT",
+    "member_id": "member_b7f9b6276cc5d77211bb73c7",
+    "channel_id": "C_RP_GENERAL",
+    "thread_id": "1790904354.000049",
+    "message_id": "1790904409.000113",
+    "author_id": "U010",
+    "author_name": "Avery",
+    "author_role": "TUTOR",
+    "timestamp": "2026-10-02T01:26:49.000113Z",
+    "thread_starter_id": "U013",
+    "thread_starter_role": "TUTOR",
+    "reactions": [],
+    "excerpt": "A answers the question fully; B adds only a sentence that changes nothing substantive."
+   },
+   "m:C_RP_GENERAL:1790904449.000226": {
+    "evidence_id": "m:C_RP_GENERAL:1790904449.000226",
+    "origin": "member_message",
+    "use": "MEMBER_REPORT",
+    "member_id": "member_b7f9b6276cc5d77211bb73c7",
+    "channel_id": "C_RP_GENERAL",
+    "thread_id": "1790904354.000049",
+    "message_id": "1790904449.000226",
+    "author_id": "U014",
+    "author_name": "Linh",
+    "author_role": "QA_TUTOR",
+    "timestamp": "2026-10-02T01:27:29.000226Z",
+    "thread_starter_id": "U013",
+    "thread_starter_role": "TUTOR",
+    "reactions": [],
+    "excerpt": "What meaningful user-facing benefit would justify a preference?"
+   },
+   "m:C_RP_QA:1790940523.000045": {
+    "evidence_id": "m:C_RP_QA:1790940523.000045",
+    "origin": "member_message",
+    "use": "MEMBER_REPORT",
+    "member_id": "member_5a0db8eea777cc90029866c4",
+    "channel_id": "C_RP_QA",
+    "thread_id": "1790940523.000045",
+    "message_id": "1790940523.000045",
+    "author_id": "U008",
+    "author_name": "Hana",
+    "author_role": "QA_TUTOR",
+    "timestamp": "2026-10-02T11:28:43.000045Z",
+    "thread_starter_id": "U008",
+    "thread_starter_role": "QA_TUTOR",
+    "reactions": [],
+    "excerpt": "A is cleaner and B is more detailed; does that warrant slight preference?"
+   },
+   "m:C_RP_QA:1790940571.000113": {
+    "evidence_id": "m:C_RP_QA:1790940571.000113",
+    "origin": "member_message",
+    "use": "MEMBER_REPORT",
+    "member_id": "member_5a0db8eea777cc90029866c4",
+    "channel_id": "C_RP_QA",
+    "thread_id": "1790940523.000045",
+    "message_id": "1790940571.000113",
+    "author_id": "U002",
+    "author_name": "Mina",
+    "author_role": "QA_TUTOR",
+    "timestamp": "2026-10-02T11:29:31.000113Z",
+    "thread_starter_id": "U008",
+    "thread_starter_role": "QA_TUTOR",
+    "reactions": [
+     {
+      "name": "thumbsup",
+      "users": [
+       {
+        "id": "U004",
+        "name": "Sofia"
+       }
+      ]
+     }
+    ],
+    "excerpt": "What meaningful user-facing benefit would justify a preference? The difference might be cosmetic; the exact user task should decide."
+   },
+   "m:C_RP_QA:1790940616.000226": {
+    "evidence_id": "m:C_RP_QA:1790940616.000226",
+    "origin": "member_message",
+    "use": "MEMBER_REPORT",
+    "member_id": "member_5a0db8eea777cc90029866c4",
+    "channel_id": "C_RP_QA",
+    "thread_id": "1790940523.000045",
+    "message_id": "1790940616.000226",
+    "author_id": "U001",
+    "author_name": "Alex",
+    "author_role": "TEAM_LEAD",
+    "timestamp": "2026-10-02T11:30:16.000226Z",
+    "thread_starter_id": "U008",
+    "thread_starter_role": "QA_TUTOR",
+    "reactions": [],
+    "excerpt": "Before calling a slight preference, specify which response materially helps the user more. The difference might be cosmetic; the exact user task should decide."
+   },
+   "k:response-preference-instructions@1.1:176ce67d": {
+    "evidence_id": "k:response-preference-instructions@1.1:176ce67d",
+    "origin": "retrieved_source",
+    "use": "CURRENT_GUIDANCE",
+    "citation": {
+     "document_id": "knowledge_c49652bd3dfc0e71a42597bd9128f922ba1700cc4d7eb83a39cfbaad9a43ed6d",
+     "version_id": "version_497eb858ea77dcb88133f2ba1afd5eaf08d1a1d380c3a5cad663f8f55b7d3c65",
+     "chunk_id": "chunk_176ce67d1ceba70602148f9331ac3a5e",
+     "authoring": "response-preference-instructions@1.1",
+     "title": "Response Preference — Instructions (v1.1)",
+     "sections": [
+      "Ties"
+     ],
+     "source": {
+      "batch_id": null,
+      "channel_id": null,
+      "manual_key": "response-preference-instructions",
+      "message_id": null,
+      "permalink": null,
+      "project_id": "response_preference",
+      "reference": null,
+      "system": "manual",
+      "thread_id": null,
+      "workspace_id": null
+     }
+    },
+    "source_type": "guideline",
+    "record_kind": "guideline",
+    "applicability": {
+     "state": "CURRENT",
+     "revision_state": "CURRENT",
+     "version_mode": "current",
+     "replaced_by": [],
+     "unverified_supersession": [],
+     "supersedes": [],
+     "enactment": null,
+     "other_revisions": []
+    },
+    "dates": {
+     "source_date": "2026-08-30T13:00:00Z",
+     "basis": "effective_at",
+     "effective_at": "2026-08-30T13:00:00Z",
+     "created_at": null,
+     "valid_until": null,
+     "expired_as_of": false,
+     "reference_time": "2026-10-02T12:00:00Z"
+    },
+    "scope": {
+     "project_id": "response_preference",
+     "batch_id": null,
+     "scope": "project",
+     "batch_relation": "project_wide"
+    },
+    "authority": {
+     "role": "TEAM_LEAD",
+     "actor": "U001",
+     "actor_relation": "RECORD_AUTHORITY",
+     "approval_status": "EXPLICIT_SOURCE_MARKER",
+     "provenance": "synthetic_manual_record"
+    },
+    "authorship": {
+     "author_id": null,
+     "verified": false,
+     "basis": "NO_AUTHOR_RECORDED"
+    },
+    "recorded_states": {
+     "status": "approved",
+     "decision_status": null,
+     "execution_status": null,
+     "outcome_status": null
+    },
+    "upstream_review": null,
+    "excerpt": "## Ties\nChoose a tie when neither response has a meaningful quality advantage. Cosmetic phrasing alone does not justify a preference. Explain the user-facing benefit when selecting a response on a small difference."
+   },
+   "k:rp-tie-calibration-approval@1.0:99b5da48": {
+    "evidence_id": "k:rp-tie-calibration-approval@1.0:99b5da48",
+    "origin": "retrieved_source",
+    "use": "PRIOR_DECISION",
+    "citation": {
+     "document_id": "knowledge_eaa88591b22f97c5f325f12ee24f0717a532797133b5afc0271b1cd7a2537978",
+     "version_id": "version_f0c37174a20ad2f3df91f07ba5e79998c1f09d9e2d6ce72b7ef8d5e77455faf8",
+     "chunk_id": "chunk_99b5da48de39c5fbf66d1e8830084cd8",
+     "authoring": "rp-tie-calibration-approval@1.0",
+     "title": "RP-20260916-01 — Approve tie calibration advice",
+     "sections": [
+      "Context",
+      "Suggested advice",
+      "TL approval",
+      "State"
+     ],
+     "source": {
+      "batch_id": "rp_batch_14",
+      "channel_id": null,
+      "manual_key": "rp-tie-calibration-approval",
+      "message_id": null,
+      "permalink": null,
+      "project_id": "response_preference",
+      "reference": null,
+      "system": "manual",
+      "thread_id": null,
+      "workspace_id": null
+     }
+    },
+    "source_type": "decision",
+    "record_kind": "advice_review",
+    "applicability": {
+     "state": "CURRENT",
+     "revision_state": "CURRENT",
+     "version_mode": "current",
+     "replaced_by": [],
+     "unverified_supersession": [],
+     "supersedes": [],
+     "enactment": {
+      "status": "NOT_ENACTED",
+      "basis": null,
+      "governing_sources": [],
+      "missing": [
+       "OUT_OF_SCOPE",
+       "NOT_A_POLICY_CHANGE",
+       "NO_ENACTMENT_EVIDENCE"
+      ],
+      "recorded": {
+       "decision_status": "tl_approved",
+       "execution_status": "pending_post",
+       "authority_role": "TEAM_LEAD",
+       "batch_id": "rp_batch_14",
+       "valid_until": null,
+       "effective_at": "2026-09-16T13:30:00Z"
+      }
+     },
+     "other_revisions": []
+    },
+    "dates": {
+     "source_date": "2026-09-16T13:30:00Z",
+     "basis": "effective_at",
+     "effective_at": "2026-09-16T13:30:00Z",
+     "created_at": null,
+     "valid_until": null,
+     "expired_as_of": false,
+     "reference_time": "2026-10-02T12:00:00Z"
+    },
+    "scope": {
+     "project_id": "response_preference",
+     "batch_id": "rp_batch_14",
+     "scope": "project",
+     "batch_relation": "other_batch"
+    },
+    "authority": {
+     "role": "TEAM_LEAD",
+     "actor": "U001",
+     "actor_relation": "RECORD_AUTHORITY",
+     "approval_status": "EXPLICIT_SOURCE_MARKER",
+     "provenance": "synthetic_manual_record"
+    },
+    "authorship": {
+     "author_id": null,
+     "verified": false,
+     "basis": "NO_AUTHOR_RECORDED"
+    },
+    "recorded_states": {
+     "status": "tl_approved",
+     "decision_status": "tl_approved",
+     "execution_status": "pending_post",
+     "outcome_status": "not_observed"
+    },
+    "upstream_review": null,
+    "excerpt": "[PRIOR RECORD (advice_review; decision_status: tl_approved; execution_status: pending_post; outcome_status: not_observed) - history, not a standing rule.]\n# RP-20260916-01 — Approve tie calibration advice\n\n## Context\nThe prior batch's calibration packet contained one pair differing only in wording and another in which one response omitted a fact needed for the user's request. Reviewers were using “slightly clearer” without explaining whether it changed usefulness.\n\n## Suggested advice\nThe simulated Advisor proposed a brief alignment announcement and a review of eight sampled pairs, using the existing meaningful-quality-difference criterion.\n\n## TL approval\nAlex approved the proposal. Ask reviewers to identify the actual user-facing benefit; a cosmetic wording preference alone is not sufficient. Keep material accuracy or instruction defects visible rather than forcing ties.\n\nThis is a calibration of the existing criterion, not a new numerical preference threshold. The approval covers the batch-14 exercise.\n\n## State\nPosting and the review exercise are authorized but not recorded as completed in this approval."
+   },
+   "k:slack:C_RP_ANNOUNCEMENTS:1790883558.000028:d0ddced2": {
+    "evidence_id": "k:slack:C_RP_ANNOUNCEMENTS:1790883558.000028:d0ddced2",
+    "origin": "retrieved_source",
+    "use": "ANNOUNCEMENT",
+    "citation": {
+     "document_id": "knowledge_7fc19a0d63fa4064c72475fc9f7a177f7d220630686ec558071baa2902726fcc",
+     "version_id": "version_60b3e89e8c9519c74cff2483967904df14f58243724f59f5aae4eae24bb31cec",
+     "chunk_id": "chunk_d0ddced26213c2ad458fc35bf4f7c16c",
+     "authoring": null,
+     "title": "Slack announcement in response-preference-announcements at 2026-10-01T19:39:18.000028+00:00",
+     "sections": [],
+     "source": {
+      "batch_id": "rp_batch_15",
+      "channel_id": "C_RP_ANNOUNCEMENTS",
+      "manual_key": null,
+      "message_id": "1790883558.000028",
+      "permalink": null,
+      "project_id": "response_preference",
+      "reference": null,
+      "system": "slack",
+      "thread_id": "1790883558.000028",
+      "workspace_id": null
+     }
+    },
+    "source_type": "announcement",
+    "record_kind": "announcement",
+    "applicability": {
+     "state": "CURRENT",
+     "revision_state": "CURRENT",
+     "version_mode": "current",
+     "replaced_by": [],
+     "unverified_supersession": [],
+     "supersedes": [],
+     "enactment": null,
+     "other_revisions": []
+    },
+    "dates": {
+     "source_date": "2026-10-01T19:39:18.000028+00:00",
+     "basis": "created_at",
+     "effective_at": null,
+     "created_at": "2026-10-01T19:39:18.000028+00:00",
+     "valid_until": null,
+     "expired_as_of": false,
+     "reference_time": "2026-10-02T12:00:00Z"
+    },
+    "scope": {
+     "project_id": "response_preference",
+     "batch_id": "rp_batch_15",
+     "scope": "project",
+     "batch_relation": "same_batch"
+    },
+    "authority": {
+     "role": "TEAM_LEAD",
+     "actor": "U001",
+     "actor_relation": "MESSAGE_AUTHOR",
+     "approval_status": "UNKNOWN",
+     "provenance": null
+    },
+    "authorship": {
+     "author_id": "U001",
+     "verified": true,
+     "basis": "SLACK_MESSAGE_AUTHOR"
+    },
+    "recorded_states": {
+     "status": null,
+     "decision_status": null,
+     "execution_status": null,
+     "outcome_status": null
+    },
+    "upstream_review": {
+     "review_required": true,
+     "review_reasons": [
+      "Still unverified after one targeted revision: Independent evidence audit unavailable or invalid: ValueError: summary:3: quotation is not verbatim source evidence.",
+      "The only message instructs participants to add affected task references while tracking an issue. The candidate calls this a requested decision about which references should be added. An information-collection request and a request for a selection rule are different; the one-message source does not resolve that framing ambiguity. Keep these fields provisional rather than claiming a definite contradiction or an answered policy question."
+     ]
+    },
+    "excerpt": "[ANNOUNCEMENT posted 2026-10-01T19:39:18.000028+00:00 by TEAM_LEAD (rp_batch_15): not established as handling for this topic until you show it is relevant and gives a directive.]\nQA tracking (RP-3558): Model/task connection drops during preference evaluation. Add affected task references here; no policy change has been announced."
+   },
+   "k:response-preference-instructions@1.1:4745e3e0": {
+    "evidence_id": "k:response-preference-instructions@1.1:4745e3e0",
+    "origin": "retrieved_source",
+    "use": "CURRENT_GUIDANCE",
+    "citation": {
+     "document_id": "knowledge_c49652bd3dfc0e71a42597bd9128f922ba1700cc4d7eb83a39cfbaad9a43ed6d",
+     "version_id": "version_497eb858ea77dcb88133f2ba1afd5eaf08d1a1d380c3a5cad663f8f55b7d3c65",
+     "chunk_id": "chunk_4745e3e0b93e43f6fa0946382493a655",
+     "authoring": "response-preference-instructions@1.1",
+     "title": "Response Preference — Instructions (v1.1)",
+     "sections": [
+      "Project purpose"
+     ],
+     "source": {
+      "batch_id": null,
+      "channel_id": null,
+      "manual_key": "response-preference-instructions",
+      "message_id": null,
+      "permalink": null,
+      "project_id": "response_preference",
+      "reference": null,
+      "system": "manual",
+      "thread_id": null,
+      "workspace_id": null
+     }
+    },
+    "source_type": "guideline",
+    "record_kind": "guideline",
+    "applicability": {
+     "state": "CURRENT",
+     "revision_state": "CURRENT",
+     "version_mode": "current",
+     "replaced_by": [],
+     "unverified_supersession": [],
+     "supersedes": [],
+     "enactment": null,
+     "other_revisions": []
+    },
+    "dates": {
+     "source_date": "2026-08-30T13:00:00Z",
+     "basis": "effective_at",
+     "effective_at": "2026-08-30T13:00:00Z",
+     "created_at": null,
+     "valid_until": null,
+     "expired_as_of": false,
+     "reference_time": "2026-10-02T12:00:00Z"
+    },
+    "scope": {
+     "project_id": "response_preference",
+     "batch_id": null,
+     "scope": "project",
+     "batch_relation": "project_wide"
+    },
+    "authority": {
+     "role": "TEAM_LEAD",
+     "actor": "U001",
+     "actor_relation": "RECORD_AUTHORITY",
+     "approval_status": "EXPLICIT_SOURCE_MARKER",
+     "provenance": "synthetic_manual_record"
+    },
+    "authorship": {
+     "author_id": null,
+     "verified": false,
+     "basis": "NO_AUTHOR_RECORDED"
+    },
+    "recorded_states": {
+     "status": "approved",
+     "decision_status": null,
+     "execution_status": null,
+     "outcome_status": null
+    },
+    "upstream_review": null,
+    "excerpt": "## Project purpose\nCompare two responses against the user's prompt. Record meaningful differences in factual accuracy, instruction adherence, citation support and usefulness."
+   },
+   "k:response-preference-faq@1.1:4683724f": {
+    "evidence_id": "k:response-preference-faq@1.1:4683724f",
+    "origin": "retrieved_source",
+    "use": "CURRENT_GUIDANCE",
+    "citation": {
+     "document_id": "knowledge_8267f474fe0a050bdbcaf6140c458ee11ad457fdc2afe9f79de12a23de8575e9",
+     "version_id": "version_6c9da15dd304e1be3d453ea1de9cbfd1e8cc54f0939ce516dd89cf0457f82a86",
+     "chunk_id": "chunk_4683724f24eb1ddb53c613284c5f330b",
+     "authoring": "response-preference-faq@1.1",
+     "title": "Response Preference — FAQ (v1.1)",
+     "sections": [
+      "Ties and preferences"
+     ],
+     "source": {
+      "batch_id": null,
+      "channel_id": null,
+      "manual_key": "response-preference-faq",
+      "message_id": null,
+      "permalink": null,
+      "project_id": "response_preference",
+      "reference": null,
+      "system": "manual",
+      "thread_id": null,
+      "workspace_id": null
+     }
+    },
+    "source_type": "faq",
+    "record_kind": "faq",
+    "applicability": {
+     "state": "CURRENT",
+     "revision_state": "CURRENT",
+     "version_mode": "current",
+     "replaced_by": [],
+     "unverified_supersession": [],
+     "supersedes": [],
+     "enactment": null,
+     "other_revisions": []
+    },
+    "dates": {
+     "source_date": "2026-09-05T13:00:00Z",
+     "basis": "effective_at",
+     "effective_at": "2026-09-05T13:00:00Z",
+     "created_at": null,
+     "valid_until": null,
+     "expired_as_of": false,
+     "reference_time": "2026-10-02T12:00:00Z"
+    },
+    "scope": {
+     "project_id": "response_preference",
+     "batch_id": null,
+     "scope": "project",
+     "batch_relation": "project_wide"
+    },
+    "authority": {
+     "role": "TEAM_LEAD",
+     "actor": "U001",
+     "actor_relation": "RECORD_AUTHORITY",
+     "approval_status": "EXPLICIT_SOURCE_MARKER",
+     "provenance": "synthetic_manual_record"
+    },
+    "authorship": {
+     "author_id": null,
+     "verified": false,
+     "basis": "NO_AUTHOR_RECORDED"
+    },
+    "recorded_states": {
+     "status": "approved",
+     "decision_status": null,
+     "execution_status": null,
+     "outcome_status": null
+    },
+    "upstream_review": null,
+    "excerpt": "## Ties and preferences\n\n### Q: How much improvement is needed to avoid a tie?\nThe difference must offer a meaningful benefit to the user. Cosmetic phrasing alone usually does not. Explain that benefit; otherwise a tie can be appropriate.\n\n### Q: QA is reversing ties on similar pairs. What should I do?\nShare the pairs, relevant prompt constraints and both rationales for calibration. Check whether the cases are actually comparable. An answer to one pair should not be generalized without matching its scope."
+   }
+  },
+  "card": {
+   "contract_version": "agent3-advice-card-v5",
+   "record_type": "ADVICE_CARD",
+   "card_id": "card_910ceac9c670f475b947939b4d069f38",
+   "project_id": "response_preference",
+   "topic_name": "Preference requires material user benefit",
+   "card_line": "NEEDS_REVIEW",
+   "summary": "A tutor asks whether slightly clearer wording justifies preferring B on RP-4354; a QA tutor asks whether cleanliness versus detail warrants a slight preference. Current guidance requires meaningful user benefit, but the RP-4354 thread has not yet received a handling answer.",
+   "severity": {
+    "level": "MEDIUM",
+    "assessment_status": "ASSESSED",
+    "rubric_version": "severity-rubric-v3-semantic-signals",
+    "rubric_content_sha256": "eccaa31a2ab84a0aa7c005216a92fc39681e1dd10107117344948235a76673f4",
+    "rubric_project_id": null,
+    "rubric_scope": "SHARED_DEFAULT",
+    "rationale": "A tutor and a QA tutor raise comparable uncertainty about the tie-versus-preference criterion across three threads. This can change labels, but the messages do not establish broad disruption or incorrect submissions.",
+    "matched_signals": [
+     {
+      "level": "MEDIUM",
+      "signal_index": 0,
+      "signal_text": "Recurring confusion about the same rule, tool behavior, or scoring criterion that suggests meaningful workflow or labeling impact",
+      "support": "A tutor asks whether slightly clearer wording warrants choosing B, while a QA tutor raises clarity and cleanliness-versus-detail comparisons in two threads; these concern whether to assign a preference rather than a tie.",
+      "evidence": [
+       {
+        "kind": "slack_message",
+        "project_id": "response_preference",
+        "batch_id": "rp_batch_15",
+        "scope": "project",
+        "channel_id": "C_RP_GENERAL",
+        "thread_id": "1790859242.000048",
+        "message_id": "1790859242.000048",
+        "document_id": null,
+        "version_id": null,
+        "authoring_document_id": null,
+        "authoring_version": null,
+        "section": null,
+        "chunk_id": null,
+        "candidate_group_id": null,
+        "member_id": "member_a6c0032f49d046f8e80dd119",
+        "artifact": null,
+        "artifact_sha256": null,
+        "quote": null,
+        "note": "m:C_RP_GENERAL:1790859242.000048"
+       },
+       {
+        "kind": "slack_message",
+        "project_id": "response_preference",
+        "batch_id": "rp_batch_15",
+        "scope": "project",
+        "channel_id": "C_RP_GENERAL",
+        "thread_id": "1790904354.000049",
+        "message_id": "1790904354.000049",
+        "document_id": null,
+        "version_id": null,
+        "authoring_document_id": null,
+        "authoring_version": null,
+        "section": null,
+        "chunk_id": null,
+        "candidate_group_id": null,
+        "member_id": "member_b7f9b6276cc5d77211bb73c7",
+        "artifact": null,
+        "artifact_sha256": null,
+        "quote": null,
+        "note": "m:C_RP_GENERAL:1790904354.000049"
+       },
+       {
+        "kind": "slack_message",
+        "project_id": "response_preference",
+        "batch_id": "rp_batch_15",
+        "scope": "project",
+        "channel_id": "C_RP_QA",
+        "thread_id": "1790940523.000045",
+        "message_id": "1790940523.000045",
+        "document_id": null,
+        "version_id": null,
+        "authoring_document_id": null,
+        "authoring_version": null,
+        "section": null,
+        "chunk_id": null,
+        "candidate_group_id": null,
+        "member_id": "member_5a0db8eea777cc90029866c4",
+        "artifact": null,
+        "artifact_sha256": null,
+        "quote": null,
+        "note": "m:C_RP_QA:1790940523.000045"
+       }
+      ]
+     }
+    ],
+    "evidence": [
+     {
+      "kind": "slack_message",
+      "project_id": "response_preference",
+      "batch_id": "rp_batch_15",
+      "scope": "project",
+      "channel_id": "C_RP_GENERAL",
+      "thread_id": "1790859242.000048",
+      "message_id": "1790859242.000048",
+      "document_id": null,
+      "version_id": null,
+      "authoring_document_id": null,
+      "authoring_version": null,
+      "section": null,
+      "chunk_id": null,
+      "candidate_group_id": null,
+      "member_id": "member_a6c0032f49d046f8e80dd119",
+      "artifact": null,
+      "artifact_sha256": null,
+      "quote": null,
+      "note": "m:C_RP_GENERAL:1790859242.000048"
+     },
+     {
+      "kind": "slack_message",
+      "project_id": "response_preference",
+      "batch_id": "rp_batch_15",
+      "scope": "project",
+      "channel_id": "C_RP_GENERAL",
+      "thread_id": "1790904354.000049",
+      "message_id": "1790904354.000049",
+      "document_id": null,
+      "version_id": null,
+      "authoring_document_id": null,
+      "authoring_version": null,
+      "section": null,
+      "chunk_id": null,
+      "candidate_group_id": null,
+      "member_id": "member_b7f9b6276cc5d77211bb73c7",
+      "artifact": null,
+      "artifact_sha256": null,
+      "quote": null,
+      "note": "m:C_RP_GENERAL:1790904354.000049"
+     },
+     {
+      "kind": "slack_message",
+      "project_id": "response_preference",
+      "batch_id": "rp_batch_15",
+      "scope": "project",
+      "channel_id": "C_RP_QA",
+      "thread_id": "1790940523.000045",
+      "message_id": "1790940523.000045",
+      "document_id": null,
+      "version_id": null,
+      "authoring_document_id": null,
+      "authoring_version": null,
+      "section": null,
+      "chunk_id": null,
+      "candidate_group_id": null,
+      "member_id": "member_5a0db8eea777cc90029866c4",
+      "artifact": null,
+      "artifact_sha256": null,
+      "quote": null,
+      "note": "m:C_RP_QA:1790940523.000045"
+     }
+    ],
+    "occurrence": {
+     "affected_reporters": {
+      "status": "LOWER_BOUND",
+      "count": 2,
+      "ids": [
+       "U013",
+       "U008"
+      ],
+      "basis": "Distinct authors whose own cited message reports the problem; other participants are not counted.",
+      "evidence": [
+       {
+        "kind": "slack_message",
+        "project_id": "response_preference",
+        "batch_id": "rp_batch_15",
+        "scope": "project",
+        "channel_id": "C_RP_GENERAL",
+        "thread_id": "1790904354.000049",
+        "message_id": "1790904354.000049",
+        "document_id": null,
+        "version_id": null,
+        "authoring_document_id": null,
+        "authoring_version": null,
+        "section": null,
+        "chunk_id": null,
+        "candidate_group_id": null,
+        "member_id": "member_b7f9b6276cc5d77211bb73c7",
+        "artifact": null,
+        "artifact_sha256": null,
+        "quote": null,
+        "note": "m:C_RP_GENERAL:1790904354.000049"
+       },
+       {
+        "kind": "slack_message",
+        "project_id": "response_preference",
+        "batch_id": "rp_batch_15",
+        "scope": "project",
+        "channel_id": "C_RP_QA",
+        "thread_id": "1790940523.000045",
+        "message_id": "1790940523.000045",
+        "document_id": null,
+        "version_id": null,
+        "authoring_document_id": null,
+        "authoring_version": null,
+        "section": null,
+        "chunk_id": null,
+        "candidate_group_id": null,
+        "member_id": "member_5a0db8eea777cc90029866c4",
+        "artifact": null,
+        "artifact_sha256": null,
+        "quote": null,
+        "note": "m:C_RP_QA:1790940523.000045"
+       }
+      ]
+     },
+     "affected_tasks": {
+      "status": "UNKNOWN",
+      "count": null,
+      "ids": [],
+      "basis": null,
+      "evidence": []
+     },
+     "relevant_threads": [
+      {
+       "project_id": "response_preference",
+       "batch_id": "rp_batch_15",
+       "channel_id": "C_RP_GENERAL",
+       "thread_id": "1790859242.000048",
+       "member_id": "member_a6c0032f49d046f8e80dd119"
+      },
+      {
+       "project_id": "response_preference",
+       "batch_id": "rp_batch_15",
+       "channel_id": "C_RP_GENERAL",
+       "thread_id": "1790904354.000049",
+       "member_id": "member_b7f9b6276cc5d77211bb73c7"
+      },
+      {
+       "project_id": "response_preference",
+       "batch_id": "rp_batch_15",
+       "channel_id": "C_RP_QA",
+       "thread_id": "1790940523.000045",
+       "member_id": "member_5a0db8eea777cc90029866c4"
+      }
+     ],
+     "reporting_window": {
+      "start": "2026-10-01T12:54:02.000048+00:00",
+      "end": "2026-10-02T11:30:16.000226+00:00"
+     },
+     "historical_recurrence": {
+      "status": "FOUND",
+      "sources": [
+       {
+        "kind": "knowledge_source",
+        "project_id": "response_preference",
+        "batch_id": "rp_batch_14",
+        "scope": "project",
+        "channel_id": null,
+        "thread_id": null,
+        "message_id": null,
+        "document_id": "knowledge_eaa88591b22f97c5f325f12ee24f0717a532797133b5afc0271b1cd7a2537978",
+        "version_id": "version_f0c37174a20ad2f3df91f07ba5e79998c1f09d9e2d6ce72b7ef8d5e77455faf8",
+        "authoring_document_id": "rp-tie-calibration-approval",
+        "authoring_version": "1.0",
+        "section": "Context",
+        "chunk_id": "chunk_99b5da48de39c5fbf66d1e8830084cd8",
+        "candidate_group_id": null,
+        "member_id": null,
+        "artifact": null,
+        "artifact_sha256": null,
+        "quote": null,
+        "note": "k:rp-tie-calibration-approval@1.0:99b5da48 (PRIOR_DECISION; CURRENT)"
+       }
+      ],
+      "event_series_ids": []
+     },
+     "known_denominator": null,
+     "structural": {
+      "threads": 3,
+      "messages": 9,
+      "distinct_participants": 7,
+      "duplicate_threads_ignored": 0,
+      "duplicate_messages_ignored": 0,
+      "computed_from": "topic member threads (original Slack messages)",
+      "participants_are_not_affected_reporters": true
+     },
+     "semantic_identification": "ASSESSED"
+    },
+    "inherited_from": {
+     "level": "UNKNOWN",
+     "assessment_status": "UNASSESSED",
+     "assessment_deferred_to": "AGENT3",
+     "reason": "Agent 2 performs taxonomy only."
+    }
+   },
+   "severity_is_provisional": false,
+   "resolution_status": "MIXED",
+   "recommended_action": {
+    "action_type": "POST_ALIGNMENT",
+    "draft_text": "For RP-4354, slightly clearer wording alone is not enough to establish a preference. Under the current instructions, choose a tie when neither response has a meaningful quality advantage; cosmetic phrasing alone does not justify a preference. If you select B on a small difference, explain the user-facing benefit. Please identify what the clearer wording improves for the user's request, rather than relying on clarity as a label.",
+    "scope_note": "This reply explains the criterion for RP-4354; it does not decide which response has a meaningful advantage.",
+    "label": "Post a reminder",
+    "instruction": "Reply in the RP-4354 thread with the current tie rule and ask for the user-facing benefit behind any preference.",
+    "rationale": "The current instructions directly answer the criterion question. A focused reply supplies that rule without treating the other threads' instructions as project-wide guidance or deciding the label without a stated benefit.",
+    "targets": [],
+    "essential_premise_ids": [
+     "claim:c2",
+     "claim:c4",
+     "claim:c7"
+    ],
+    "source": "DRAFT"
+   },
+   "reasoning": "What the evidence shows: A QA tutor reports that both responses are acceptable but B sounds clearer. A tutor asks whether slightly clearer wording is enough to prefer B when both responses are acceptable on RP-4354. A QA tutor asks whether A being cleaner and B being more detailed warrants a slight preference. The RP-4354 thread contains a tutor's question, another tutor's assessment that A answers fully and B adds nothing substantive, and a QA tutor's request for a meaningful user-facing benefit, but no handling answer. In the earlier clarity thread, the team lead instructs the QA tutor to specify which response materially helps the user more before calling a slight preference; the supplied thread contains no subsequent explanation. In the cleanliness-versus-detail thread, the team lead instructs the QA tutor to specify which response materially helps the user more and says the exact user task should decide; the supplied thread contains no subsequent explanation. The current project instructions require a tie when neither response has a meaningful quality advantage, reject cosmetic phrasing alone as justification for a preference, and require explaining the user-facing benefit when selecting on a small difference. The earlier batch-14 approval records reviewers using slight clarity differences without explaining usefulness and authorizes advice and an eight-pair review exercise; posting and review completion are not recorded, and outcomes were not observed. Its approval is limited to that exercise, not a standing policy change. The batch announcement asks for affected task references for model/task connection drops; it does not address the criterion for a preference. Thread status, read from each thread's own messages: partially resolved ×2, unresolved ×1. Agent 1's earlier labels (an input, not evidence): unresolved ×3; 1 of 3 were not verified by Agent 1.",
+   "supporting_sources": [
+    {
+     "kind": "knowledge_source",
+     "project_id": "response_preference",
+     "batch_id": null,
+     "scope": "project",
+     "channel_id": null,
+     "thread_id": null,
+     "message_id": null,
+     "document_id": "knowledge_c49652bd3dfc0e71a42597bd9128f922ba1700cc4d7eb83a39cfbaad9a43ed6d",
+     "version_id": "version_497eb858ea77dcb88133f2ba1afd5eaf08d1a1d380c3a5cad663f8f55b7d3c65",
+     "authoring_document_id": "response-preference-instructions",
+     "authoring_version": "1.1",
+     "section": "Ties",
+     "chunk_id": "chunk_176ce67d1ceba70602148f9331ac3a5e",
+     "candidate_group_id": null,
+     "member_id": null,
+     "artifact": null,
+     "artifact_sha256": null,
+     "quote": null,
+     "note": "k:response-preference-instructions@1.1:176ce67d (CURRENT_GUIDANCE; CURRENT)"
+    },
+    {
+     "kind": "knowledge_source",
+     "project_id": "response_preference",
+     "batch_id": "rp_batch_14",
+     "scope": "project",
+     "channel_id": null,
+     "thread_id": null,
+     "message_id": null,
+     "document_id": "knowledge_eaa88591b22f97c5f325f12ee24f0717a532797133b5afc0271b1cd7a2537978",
+     "version_id": "version_f0c37174a20ad2f3df91f07ba5e79998c1f09d9e2d6ce72b7ef8d5e77455faf8",
+     "authoring_document_id": "rp-tie-calibration-approval",
+     "authoring_version": "1.0",
+     "section": "Context",
+     "chunk_id": "chunk_99b5da48de39c5fbf66d1e8830084cd8",
+     "candidate_group_id": null,
+     "member_id": null,
+     "artifact": null,
+     "artifact_sha256": null,
+     "quote": null,
+     "note": "k:rp-tie-calibration-approval@1.0:99b5da48 (PRIOR_DECISION; CURRENT)"
+    },
+    {
+     "kind": "knowledge_source",
+     "project_id": "response_preference",
+     "batch_id": "rp_batch_15",
+     "scope": "project",
+     "channel_id": null,
+     "thread_id": null,
+     "message_id": null,
+     "document_id": "knowledge_7fc19a0d63fa4064c72475fc9f7a177f7d220630686ec558071baa2902726fcc",
+     "version_id": "version_60b3e89e8c9519c74cff2483967904df14f58243724f59f5aae4eae24bb31cec",
+     "authoring_document_id": null,
+     "authoring_version": null,
+     "section": null,
+     "chunk_id": "chunk_d0ddced26213c2ad458fc35bf4f7c16c",
+     "candidate_group_id": null,
+     "member_id": null,
+     "artifact": null,
+     "artifact_sha256": null,
+     "quote": null,
+     "note": "k:slack:C_RP_ANNOUNCEMENTS:1790883558.000028:d0ddced2 (ANNOUNCEMENT; CURRENT)"
+    },
+    {
+     "kind": "slack_message",
+     "project_id": "response_preference",
+     "batch_id": "rp_batch_15",
+     "scope": "project",
+     "channel_id": "C_RP_GENERAL",
+     "thread_id": "1790859242.000048",
+     "message_id": "1790859242.000048",
+     "document_id": null,
+     "version_id": null,
+     "authoring_document_id": null,
+     "authoring_version": null,
+     "section": null,
+     "chunk_id": null,
+     "candidate_group_id": null,
+     "member_id": "member_a6c0032f49d046f8e80dd119",
+     "artifact": null,
+     "artifact_sha256": null,
+     "quote": null,
+     "note": "m:C_RP_GENERAL:1790859242.000048"
+    },
+    {
+     "kind": "slack_message",
+     "project_id": "response_preference",
+     "batch_id": "rp_batch_15",
+     "scope": "project",
+     "channel_id": "C_RP_GENERAL",
+     "thread_id": "1790904354.000049",
+     "message_id": "1790904354.000049",
+     "document_id": null,
+     "version_id": null,
+     "authoring_document_id": null,
+     "authoring_version": null,
+     "section": null,
+     "chunk_id": null,
+     "candidate_group_id": null,
+     "member_id": "member_b7f9b6276cc5d77211bb73c7",
+     "artifact": null,
+     "artifact_sha256": null,
+     "quote": null,
+     "note": "m:C_RP_GENERAL:1790904354.000049"
+    },
+    {
+     "kind": "slack_message",
+     "project_id": "response_preference",
+     "batch_id": "rp_batch_15",
+     "scope": "project",
+     "channel_id": "C_RP_QA",
+     "thread_id": "1790940523.000045",
+     "message_id": "1790940523.000045",
+     "document_id": null,
+     "version_id": null,
+     "authoring_document_id": null,
+     "authoring_version": null,
+     "section": null,
+     "chunk_id": null,
+     "candidate_group_id": null,
+     "member_id": "member_5a0db8eea777cc90029866c4",
+     "artifact": null,
+     "artifact_sha256": null,
+     "quote": null,
+     "note": "m:C_RP_QA:1790940523.000045"
+    },
+    {
+     "kind": "slack_message",
+     "project_id": "response_preference",
+     "batch_id": "rp_batch_15",
+     "scope": "project",
+     "channel_id": "C_RP_GENERAL",
+     "thread_id": "1790904354.000049",
+     "message_id": "1790904409.000113",
+     "document_id": null,
+     "version_id": null,
+     "authoring_document_id": null,
+     "authoring_version": null,
+     "section": null,
+     "chunk_id": null,
+     "candidate_group_id": null,
+     "member_id": "member_b7f9b6276cc5d77211bb73c7",
+     "artifact": null,
+     "artifact_sha256": null,
+     "quote": null,
+     "note": "m:C_RP_GENERAL:1790904409.000113"
+    },
+    {
+     "kind": "slack_message",
+     "project_id": "response_preference",
+     "batch_id": "rp_batch_15",
+     "scope": "project",
+     "channel_id": "C_RP_GENERAL",
+     "thread_id": "1790904354.000049",
+     "message_id": "1790904449.000226",
+     "document_id": null,
+     "version_id": null,
+     "authoring_document_id": null,
+     "authoring_version": null,
+     "section": null,
+     "chunk_id": null,
+     "candidate_group_id": null,
+     "member_id": "member_b7f9b6276cc5d77211bb73c7",
+     "artifact": null,
+     "artifact_sha256": null,
+     "quote": null,
+     "note": "m:C_RP_GENERAL:1790904449.000226"
+    },
+    {
+     "kind": "slack_message",
+     "project_id": "response_preference",
+     "batch_id": "rp_batch_15",
+     "scope": "project",
+     "channel_id": "C_RP_GENERAL",
+     "thread_id": "1790859242.000048",
+     "message_id": "1790859337.000226",
+     "document_id": null,
+     "version_id": null,
+     "authoring_document_id": null,
+     "authoring_version": null,
+     "section": null,
+     "chunk_id": null,
+     "candidate_group_id": null,
+     "member_id": "member_a6c0032f49d046f8e80dd119",
+     "artifact": null,
+     "artifact_sha256": null,
+     "quote": null,
+     "note": "m:C_RP_GENERAL:1790859337.000226"
+    },
+    {
+     "kind": "slack_message",
+     "project_id": "response_preference",
+     "batch_id": "rp_batch_15",
+     "scope": "project",
+     "channel_id": "C_RP_QA",
+     "thread_id": "1790940523.000045",
+     "message_id": "1790940616.000226",
+     "document_id": null,
+     "version_id": null,
+     "authoring_document_id": null,
+     "authoring_version": null,
+     "section": null,
+     "chunk_id": null,
+     "candidate_group_id": null,
+     "member_id": "member_5a0db8eea777cc90029866c4",
+     "artifact": null,
+     "artifact_sha256": null,
+     "quote": null,
+     "note": "m:C_RP_QA:1790940616.000226"
+    }
+   ],
+   "related_threads": [
+    {
+     "project_id": "response_preference",
+     "batch_id": "rp_batch_15",
+     "channel_id": "C_RP_GENERAL",
+     "thread_id": "1790859242.000048",
+     "member_id": "member_a6c0032f49d046f8e80dd119",
+     "permalink": null,
+     "display_reference": "1790859242.000048",
+     "label": "#response-preference-general, 2026-10-01, started by a QA tutor: \"Both are okay, but B sounds a bit clearer.\"",
+     "opening_text": "Both are okay, but B sounds a bit clearer."
+    },
+    {
+     "project_id": "response_preference",
+     "batch_id": "rp_batch_15",
+     "channel_id": "C_RP_GENERAL",
+     "thread_id": "1790904354.000049",
+     "member_id": "member_b7f9b6276cc5d77211bb73c7",
+     "permalink": null,
+     "display_reference": "1790904354.000049",
+     "label": "#response-preference-general, 2026-10-02, started by a tutor: \"Both are acceptable.\"",
+     "opening_text": "Both are acceptable. Is slightly clearer wording enough to pick B? (task ref RP-4354)"
+    },
+    {
+     "project_id": "response_preference",
+     "batch_id": "rp_batch_15",
+     "channel_id": "C_RP_QA",
+     "thread_id": "1790940523.000045",
+     "member_id": "member_5a0db8eea777cc90029866c4",
+     "permalink": null,
+     "display_reference": "1790940523.000045",
+     "label": "#response-preference-qa, 2026-10-02, started by a QA tutor: \"A is cleaner and B is more detailed; does that warrant slight preference?\"",
+     "opening_text": "A is cleaner and B is more detailed; does that warrant slight preference?"
+    }
+   ],
+   "confidence": 0.91,
+   "confidence_band": "HIGH",
+   "needs_review_reasons": [
+    {
+     "code": "INHERITED_FLAG",
+     "detail": "Upstream obligations remain open: inherited_agent1_review x1",
+     "obligation_ids": [],
+     "evidence": []
+    }
+   ],
+   "inherited_flags": [
+    {
+     "origin": "agent1",
+     "kind": "inherited_agent1_review",
+     "candidate_group_id": "cluster_750b7b5060124563",
+     "obligation_id": null,
+     "member_ids": [
+      "member_b7f9b6276cc5d77211bb73c7"
+     ],
+     "detail": "The single targeted revision failed: ValueError: The model cited authority evidence without an eligible author role or a qualifying TEAM_LEAD endorsement. Ineligible message IDs: ['1790904409.000113', '1790904449.000226']"
+    }
+   ],
+   "checks": {
+    "grounding": "PASSED",
+    "temporal_conflict": "NONE_FOUND",
+    "open_confirmation": "NONE"
+   },
+   "lineage": {
+    "agent3_run_id": "agent3overnight_bdc099a76ee76bdc391050df2aded225",
+    "handoff_contract": "agent2-taxonomy-handoff-v2",
+    "agent2_export_sha256": "6f1f56bf5a5b1f02287d7ac958dc205c05cc9e0ea3e6d5f3fdd7279da0c9e1e7",
+    "agent2_schema_version": 8,
+    "candidate_group_id": "cluster_750b7b5060124563",
+    "topic_id": "cluster_750b7b5060124563/topic_1",
+    "member_ids": [
+     "member_a6c0032f49d046f8e80dd119",
+     "member_b7f9b6276cc5d77211bb73c7",
+     "member_5a0db8eea777cc90029866c4"
+    ],
+    "project_id": "response_preference",
+    "batch_id": "rp_batch_15"
+   },
+   "review_notes": [
+    "1 earlier review flag is still open on these threads."
+   ],
+   "details": [
+    "In an earlier thread, the same QA tutor reports that both responses are acceptable but B sounds clearer.",
+    "The team lead instructed the QA tutor in both threads to specify which response materially helps the user more; neither thread contains the requested explanation.",
+    "In the RP-4354 thread, a tutor reports that A answers fully and B adds nothing substantive, while a QA tutor asks what meaningful user-facing benefit would justify a preference.",
+    "An earlier batch-14 approval records a similar concern about unexplained clarity preferences, but posting and the review exercise were still pending and their outcomes were not observed."
+   ],
+   "next_step": {
+    "status": "ACTION_RECOMMENDED",
+    "rationale": "The current instructions directly answer the criterion question. A focused reply supplies that rule without treating the other threads' instructions as project-wide guidance or deciding the label without a stated benefit.",
+    "explanation": null
+   },
+   "briefing": {
+    "status": "IN_BRIEFING",
+    "relevance": "PROJECT",
+    "label_id": "rel_cluster_750b7b5060124563_topic_1",
+    "label_source": "DEVELOPER_AUDIT_2026-11-05/06 (prepared by the coding assistant from the saved source threads; not confirmed by a team lead)",
+    "kept_because": [],
+    "basis": "Project work: annotation guidance, model behavior, tooling or review process.",
+    "evidence_statement_ids": []
+   },
+   "outstanding_step": null,
+   "derivation": {
+    "policy_version": "briefing-routing-v2",
+    "provenance": "OFFLINE_POLICY_APPLICATION",
+    "text_provenance": "PARENT_RUN_JUDGMENTS",
+    "parent_run": "data/experiments/threadsense_full_v1/stages/agent3/overnight_run",
+    "parent_run_instance": "4a48d67e4d8322cf6912e26032663b41fd5f0447103ed8081e5581b3d3183ff8",
+    "parent_card_id": "card_0480e421391b87e21a8a63974b46c1f2",
+    "parent_card_sha256": "c56f15645c6acf90bdd145adf9fa3cb5ad2246fb09cf35c6eb39ffe139a4747c",
+    "parent_contract_version": "agent3-advice-card-v4",
+    "changes": []
+   }
+  },
+  "review_items": [
+   {
+    "contract_version": "agent3-model-review-item-v1",
+    "record_type": "MODEL_REVIEW_ITEM",
+    "item_id": "review_0249ba79bedafef26a4c8cefb4cb0f05",
+    "origin": "agent1",
+    "kind": "inherited_agent1_review",
+    "project_id": "response_preference",
+    "batch_id": "rp_batch_15",
+    "candidate_group_id": "cluster_750b7b5060124563",
+    "topic_id": "cluster_750b7b5060124563/topic_1",
+    "member_ids": [
+     "member_b7f9b6276cc5d77211bb73c7"
+    ],
+    "obligation_id": null,
+    "reason": "The single targeted revision failed: ValueError: The model cited authority evidence without an eligible author role or a qualifying TEAM_LEAD endorsement. Ineligible message IDs: ['1790904409.000113', '1790904449.000226']",
+    "source_obligation": {
+     "origin": "agent1",
+     "member_id": "member_b7f9b6276cc5d77211bb73c7",
+     "project_id": "response_preference",
+     "batch_id": "rp_batch_15",
+     "channel_id": "C_RP_GENERAL",
+     "thread_id": "1790904354.000049",
+     "candidate_group_id": "cluster_750b7b5060124563",
+     "candidate_sha256": "f8aff8f4c71692deb44f90875971418d448a1a2c38b458f52c30c58029f76683",
+     "source_sha256": "458e6e4907bebb23a8ef2c206d56acd49b8bf8651fab66d6b6c6ca44ea9a698d",
+     "agent1_record": {
+      "project_id": "response_preference",
+      "batch_id": "rp_batch_15",
+      "channel_id": "C_RP_GENERAL",
+      "thread_id": "1790904354.000049",
+      "language": null,
+      "model": "openai/gpt-4o-mini-2024-07-18",
+      "run_config_sha256": "870eedfaf3fa8cbd76fa560cac924fedefdab58ed91ff72ccac0a6e4ca14b251",
+      "handoff_version": 1,
+      "verification_origin": "bounded_verification",
+      "input_sha256": "458e6e4907bebb23a8ef2c206d56acd49b8bf8651fab66d6b6c6ca44ea9a698d",
+      "candidate_sha256": "f8aff8f4c71692deb44f90875971418d448a1a2c38b458f52c30c58029f76683",
+      "source_message_ids": [
+       "1790904354.000049",
+       "1790904409.000113",
+       "1790904449.000226"
+      ],
+      "interpretation": {
+       "thread_id": "1790904354.000049",
+       "summary": "The thread discusses the acceptability of two responses, A and B, in relation to task RP-4354. Jun asks if slightly clearer wording is sufficient to prefer response B over A. Avery states that response A fully answers the question, while response B only adds a sentence that does not change anything substantive. Linh questions what meaningful user-facing benefit would justify a preference for one response over the other.",
+       "central_question": "Is slightly clearer wording enough to pick B over A for task RP-4354?",
+       "resolution_state": "UNRESOLVED",
+       "authoritative_response_present": false,
+       "authority_evidence_message_ids": [],
+       "resolution_rationale": "The thread does not establish a clear preference for either response A or B. While opinions are shared regarding the completeness of response A and the minimal change in response B, no definitive conclusion or guidance is provided on whether to prefer one over the other.",
+       "confidence": 0.8
+      },
+      "automated_verification_status": "NEEDS_REVIEW",
+      "verification_status": "NEEDS_REVIEW",
+      "review_required": true,
+      "revision_count": 1,
+      "provisional_fields": [
+       "summary",
+       "central_question",
+       "resolution_state",
+       "resolution_rationale",
+       "authoritative_response_present",
+       "authority_evidence_message_ids",
+       "confidence"
+      ],
+      "review_reason": "The single targeted revision failed: ValueError: The model cited authority evidence without an eligible author role or a qualifying TEAM_LEAD endorsement. Ineligible message IDs: ['1790904409.000113', '1790904449.000226']",
+      "review_reasons": [
+       "The single targeted revision failed: ValueError: The model cited authority evidence without an eligible author role or a qualifying TEAM_LEAD endorsement. Ineligible message IDs: ['1790904409.000113', '1790904449.000226']"
+      ],
+      "review_findings": [
+       {
+        "category": "RESOLUTION",
+        "explanation": "Independent decision coverage establishes PARTIALLY_RESOLVED; interpretation reports UNRESOLVED. Avery's reply suggests that slightly clearer wording is not enough to justify picking B if there is no substantive change, but does not fully address whether there are circumstances where clarity alone could justify a preference. Linh's reply seeks further justification but does not answer the question.",
+        "evidence_message_ids": [
+         "1790904409.000113",
+         "1790904449.000226"
+        ],
+        "evidence_quotes": [],
+        "disputed_fields": [
+         "resolution_state",
+         "resolution_rationale"
+        ],
+        "origin": "automated_verification"
+       },
+       {
+        "category": "EVIDENCE",
+        "explanation": "The single targeted revision failed: ValueError: The model cited authority evidence without an eligible author role or a qualifying TEAM_LEAD endorsement. Ineligible message IDs: ['1790904409.000113', '1790904449.000226']",
+        "evidence_message_ids": [],
+        "evidence_quotes": [],
+        "disputed_fields": [
+         "summary",
+         "central_question",
+         "resolution_state",
+         "resolution_rationale",
+         "authoritative_response_present",
+         "authority_evidence_message_ids",
+         "confidence"
+        ],
+        "origin": "automated_verification"
+       }
+      ],
+      "content_reviews": [],
+      "review_applicability": [],
+      "lineage": {
+       "baseline_file": "data\\experiments\\threadsense_full_v1\\stages\\agent1_interpret\\agent1_interpretations_v1\\interpretations.json",
+       "baseline_record_sha256": "f5f4eb6dc3ea47fcdceb77774f69d7755250a7f4ffa10a787055db4be541dfc8",
+       "baseline_run_config_sha256": "b4a7353aace8119bb25073b3dbab05388e6036aa312a1f74d38f4b0268fbb7b8",
+       "baseline_model": "openai/gpt-4o-mini-2024-07-18",
+       "baseline_created_at": "2026-11-05T16:39:06.386876+00:00",
+       "source_file": "sources/458e6e4907bebb23a8ef2c206d56acd49b8bf8651fab66d6b6c6ca44ea9a698d.json",
+       "verification_file": "records/9d72864e80f7188f0947779d81261483387bd3829f67f13d45d2c642eddd8a3c/result.json",
+       "effective_attempt": "original",
+       "original_candidate_sha256": "f8aff8f4c71692deb44f90875971418d448a1a2c38b458f52c30c58029f76683",
+       "revised_candidate_sha256": null,
+       "effective_candidate_sha256": "f8aff8f4c71692deb44f90875971418d448a1a2c38b458f52c30c58029f76683",
+       "original_candidate_reference": "records/9d72864e80f7188f0947779d81261483387bd3829f67f13d45d2c642eddd8a3c/result.json#/result/original_interpretation",
+       "revised_candidate_reference": null,
+       "audit_history_reference": "records/9d72864e80f7188f0947779d81261483387bd3829f67f13d45d2c642eddd8a3c/result.json#/result/passes"
+      }
+     },
+     "agent1_export_file": "D:\\Christie\\2026_AgenticAI\\threadsense\\data\\experiments\\threadsense_full_v1\\stages\\agent1_verify\\agent1_verified_v2\\interpretations.json",
+     "agent1_export_sha256": "0629a7346373addf833a86ba1caff676a537e543cc26954a9836fd6610485270",
+     "agent1_lineage_base": "D:\\Christie\\2026_AgenticAI\\threadsense\\data\\experiments\\threadsense_full_v1\\stages\\agent1_verify\\agent1_verified_v2"
+    },
+    "related_card_ids": [
+     "card_0480e421391b87e21a8a63974b46c1f2"
+    ],
+    "actions": []
+   }
+  ],
+  "coverage": {
+   "group_members_outside_this_card": [
+    "member_225803f43142caa5d3c165cf"
+   ],
+   "uncarried_obligations": []
+  },
+  "budget": {
+   "consumed": {
+    "retrieval_calls": 1,
+    "model_calls": 2
+   },
+   "limits": {
+    "model_calls_per_topic": 4,
+    "model_calls_total": 28,
+    "retrieval_calls_per_topic": 6,
+    "retrieval_calls_total": 42
+   }
+  },
+  "diagnostics": []
+ },
+ "derivation": {
+  "policy_version": "briefing-routing-v2",
+  "parent_topic_file": "data/experiments/threadsense_full_v1/stages/agent3/overnight_run/topics/topic__cluster_750b7b5060124563__topic_1.json",
+  "parent_topic_sha256": "1a46741698188412989415708bdb93c6db0479375dcca014a1d9af40f1a76df5",
+  "replaced": [
+   "result.card",
+   "workflow.card_id",
+   "workflow.card_line"
+  ]
+ }
+}

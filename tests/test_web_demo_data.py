@@ -26,3 +26,31 @@ def test_bundle_matches_a_fresh_snapshot_of_its_run():
     assert paths <= {'/api/runs', '/api/lessons'} | {p for p in paths if p.startswith(f"/api/runs/{bundle['run_key']}/")}
     assert json.loads(json.dumps(bundle['responses']['/api/runs']['body']))['runs'][0]['run_key'] == bundle['run_key']
     assert len(bundle['responses']['/api/runs']['body']['runs']) == 1
+
+
+def test_every_listed_run_has_its_own_current_bundle_and_the_recorded_run_stays_first():
+    """web/demo/runs.json (several runs in one demo): each bundle is the saved API output of its run, the listing is
+    rebuilt from the bundles, and the run a visit without #run= opens is the one in briefing.json."""
+    import hashlib
+    index_path = ROOT/'web/demo/runs.json'
+    if not index_path.exists():
+        return
+    script = load_script()
+    listing = json.loads(index_path.read_text(encoding='utf-8'))
+    assert listing['contract_version'] == script.INDEX_CONTRACT
+    assert listing['runs'][0]['file'] == 'briefing.json'
+    assert listing['default_run'] == json.loads(BUNDLE.read_text(encoding='utf-8'))['run_key']
+    bundles = []
+    for entry in listing['runs']:
+        text = (BUNDLE.parent/entry['file']).read_text(encoding='utf-8')
+        bundle = json.loads(text)
+        assert hashlib.sha256(text.encode()).hexdigest() == entry['sha256']
+        assert (bundle['run_key'], bundle['run_instance']) == (entry['run_key'], entry['run_instance'])
+        assert not [p.pattern for p in script.FORBIDDEN if p.search(text)]
+        if entry['file'] != 'briefing.json':  # briefing.json is checked by the test above
+            run, responses, _ = script.snapshot(bundle['run_key'], [ROOT/'data/experiments'])
+            assert bundle['run_instance'] == run.instance
+            assert bundle['responses'] == script.relative_paths(responses, [0])
+        bundles.append((None, text, entry['file']))
+    assert listing == script.index(bundles)
+    assert [r['run_key'] for r in listing['api_runs']['runs']] == [e['run_key'] for e in listing['runs']]

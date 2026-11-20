@@ -6,6 +6,11 @@ until no new evidence or thread link appears), the review queue, decisions and l
 The run directory is only read. Read-only by default (prints the plan); --write saves the bundle.
 
   uv run --locked python scripts/build_web_demo_data.py [--run threadsense_full_v1_combined_v2] [--write web/demo/briefing.json]
+      [--extra-run threadsense_full_v1_combined_v3 ...]
+
+--extra-run adds further saved runs to the same demo: each gets its own bundle (web/demo/runs/<run>.json, fetched only
+when that run is opened) and web/demo/runs.json lists every run, the --run bundle first. That first run stays the one a
+visit without #run= opens. Without --extra-run nothing else is written and the demo serves the one bundle, as before.
 """
 import argparse
 import hashlib
@@ -25,6 +30,7 @@ from threadsense.routing import ROOT
 
 DEFAULT_RUN = 'threadsense_full_v1_combined_v2'
 CONTRACT = 'threadsense-web-demo-v1'
+INDEX_CONTRACT = 'threadsense-web-demo-index-v1'
 TEAM_LEAD = 'U006'
 # Nothing machine-specific or secret may reach a public bundle. Checked on the serialized JSON text, where a literal
 # backslash is written as two (so an escaped newline after a colon is not a drive path).
@@ -110,13 +116,9 @@ def snapshot(run_key, roots):
     return run, responses, done
 
 
-def main():
-    parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    parser.add_argument('--run', default=DEFAULT_RUN)
-    parser.add_argument('--runs', type=Path, action='append', help='Run root (default data/experiments).')
-    parser.add_argument('--write', type=Path, help='Write the bundle here (for example web/demo/briefing.json).')
-    args = parser.parse_args()
-    run, responses, done = snapshot(args.run, args.runs or [ROOT/'data/experiments'])
+def bundle_text(run_key, roots):
+    """(run, bundle text, summary line, leaks) for one saved run."""
+    run, responses, done = snapshot(run_key, roots)
     rewritten = [0]
     responses = relative_paths(responses, rewritten)
     bundle = {'contract_version': CONTRACT, 'run_key': run.key, 'run_instance': run.instance, 'team_lead': TEAM_LEAD,
@@ -127,15 +129,65 @@ def main():
     statuses = {}
     for r in responses.values():
         statuses[r['status']] = statuses.get(r['status'], 0) + 1
-    print(f'run {run.key} ({run.instance}): {len(responses)} responses {statuses}; {len(done["evidence"])} evidence, '
-          f'{len(done["threads"])} threads; {rewritten[0]} absolute paths made relative; {len(text) / 1e6:.2f} MB; sha256 {hashlib.sha256(text.encode()).hexdigest()[:16]}')
-    if leaks:
-        print(f'Refused: machine-specific or secret-looking text in the bundle: {leaks}', file=sys.stderr)
+    line = (f'run {run.key} ({run.instance}): {len(responses)} responses {statuses}; {len(done["evidence"])} evidence, '
+            f'{len(done["threads"])} threads; {rewritten[0]} absolute paths made relative; {len(text) / 1e6:.2f} MB; sha256 {hashlib.sha256(text.encode()).hexdigest()[:16]}')
+    return run, text, line, leaks
+
+
+def index(bundles):
+    """The run list of a demo with several bundles: the first bundle's /api/runs body with every run's summary, in order."""
+    first = json.loads(bundles[0][1])['responses']['/api/runs']['body']
+    runs, actors = [], {}
+    for _, text, file in bundles:
+        body = json.loads(text)['responses']['/api/runs']['body']
+        runs += body['runs']
+        for a in body.get('actors') or []:
+            actors.setdefault(a['actor_id'], a)
+    return {'contract_version': INDEX_CONTRACT, 'default_run': runs[0]['run_key'],
+            'runs': [{'run_key': json.loads(t)['run_key'], 'run_instance': json.loads(t)['run_instance'], 'file': f,
+                      'sha256': hashlib.sha256(t.encode()).hexdigest()} for _, t, f in bundles],
+            'api_runs': {**first, 'runs': runs, **({'actors': list(actors.values())} if 'actors' in first else {})}}
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+    parser.add_argument('--run', default=DEFAULT_RUN)
+    parser.add_argument('--extra-run', action='append', default=[], help='Another saved run in the same demo (its own bundle).')
+    parser.add_argument('--runs', type=Path, action='append', help='Run root (default data/experiments).')
+    parser.add_argument('--write', type=Path, help='Write the bundle here (for example web/demo/briefing.json).')
+    args = parser.parse_args()
+    roots = args.runs or [ROOT/'data/experiments']
+    bundles, refused = [], False
+    for i, key in enumerate([args.run, *args.extra_run]):
+        run, text, line, leaks = bundle_text(key, roots)
+        print(line)
+        if leaks:
+            print(f'Refused: machine-specific or secret-looking text in the bundle of {key}: {leaks}', file=sys.stderr)
+            refused = True
+        file = args.write.name if i == 0 and args.write else f'runs/{run.key}.json'
+        if args.write and (args.write.parent/file).exists():
+            # A bundle already saved for the same run instance with the same responses keeps its exact bytes (only the
+            # count of rewritten paths, which depends on the checkout location, could differ).
+            saved = (args.write.parent/file).read_text(encoding='utf-8')
+            old, new = json.loads(saved), json.loads(text)
+            if all(old.get(k) == new.get(k) for k in ('contract_version', 'run_key', 'run_instance', 'responses')):
+                print(f'{file}: unchanged for this run instance; kept as saved')
+                text = saved
+        bundles.append((run, text, file))
+    if refused:
         return 1
     if args.write:
         args.write.parent.mkdir(parents=True, exist_ok=True)
-        args.write.write_text(text, encoding='utf-8')
+        args.write.write_text(bundles[0][1], encoding='utf-8')
         print(f'wrote {args.write}')
+        if args.extra_run:
+            for run, text, file in bundles[1:]:
+                (args.write.parent/file).parent.mkdir(parents=True, exist_ok=True)
+                (args.write.parent/file).write_text(text, encoding='utf-8')
+                print(f'wrote {args.write.parent/file}')
+            listing = json.dumps(index([(r, t, f) for r, t, f in bundles]), ensure_ascii=False, separators=(',', ':'), sort_keys=True)
+            (args.write.parent/'runs.json').write_text(listing, encoding='utf-8')
+            print(f"wrote {args.write.parent/'runs.json'}")
     return 0
 
 
